@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="263132128082540.yawl" name="263132128082540">
-    <Annotation id="id05fa565c-50eb-4bb6-b61b-a3a575ab2631">
+<anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="263132128082540.yawl" name="263132128082540">
+    <Annotation id="ab8a256c-6f58-4f45-a86c-4ba7eda8fda1">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="AU" language="en"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>263132128082540</title>
@@ -13,41 +13,41 @@
             <identifier>263132128082540</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id1d5065e1-de32-4053-ab8d-e75a033bed8b" cpfId="C-263132128310379"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id21e32066-c31c-41cc-a458-505985e7dc7c" cpfId="id3ddf67a7-8b2c-40cf-8d9f-2f9637b6a2f7"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id46a79780-fc40-4175-8019-6de381bd35f2" cpfId="id85a99bfa-fdc6-4a9c-a480-6e8e875b9586"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idd3557600-4249-4727-b569-997ad174d1fe" cpfId="C-263132128334599"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="c30dd59c-7ddd-425e-bb28-148e168e4e67" cpfId="C-263132128334599-263132128642489"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="e03d887c-a051-4888-a1a4-ee5d1c13b453" cpfId="C-263132128642489"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="e0a577bb-18f4-43f3-80f0-390f2e4dfc62" cpfId="C-263132128642489-263132128614984"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="f7a7ce62-56b1-45ce-b173-6e3e9f1e0c5a" cpfId="C-263132128614984"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id406bf294-3649-4fd8-8199-59552d7654db" cpfId="C-263132128614984-263132128799308"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id185fc49c-bde6-4c3c-8be9-fbf129a5ff6c" cpfId="C-263132128799308"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id7be7a101-3af5-4d27-b4c4-b707941d882a" cpfId="C-263132128799308-263132128770161"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="d07c6648-b0c5-4090-aa2a-823cbe45640a" cpfId="C-263132128770161"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="adeefc0e-a29c-4c72-be91-30764cef0176" cpfId="C-263132128770161-263132128565311"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id64ad4608-cecf-44c2-bf7a-fa6ecd806abf" cpfId="C-263132128565311"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ide81d13e2-a22a-4372-97ec-531d56f81a23" cpfId="C-263132128565311-263132128738961"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="e3c332b5-eb70-4e17-b91e-c17c0b417fa7" cpfId="C-263132128738961-263132128565311"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idc834baa5-4497-4b46-bbd9-842b3d5db0d2" cpfId="C-263132128738961"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="e2ee6dbf-28fa-4a83-bcf9-c06f7cd83220" cpfId="C-263132128565311-263132128578037"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id9184bbc4-50bb-4d08-8092-1b1f57fb29b2" cpfId="C-263132128578037"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id74093bf2-1622-418a-a874-d8bf1ffec537" cpfId="C-263132128578037-263132128434356"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idb85285a2-e14d-4390-9de5-6bf02e0c36c5" cpfId="C-263132128434356"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id8c995389-47a4-4730-b719-f14e586dbc99" cpfId="C-263132128434356-263132128392483"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="edc97bde-c819-444f-b14f-5b933f43c060" cpfId="C-263132128392483"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="cee87020-e1f2-461b-919b-db5619142537" cpfId="C-263132128392483-263132128696678"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="b631467e-595c-4898-8864-a09566934d0b" cpfId="C-263132128696678"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id3b62b6bb-4b93-4384-af9e-3ee2ed248935" cpfId="C-263132128696678-263132128662194"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ce84c598-1186-4c83-8140-f91724052a58" cpfId="id000238b4-fff0-46a0-870a-9d31948f886d"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ce4dbf4b-cf97-4551-99f8-d008d46a9c80" cpfId="C-263132128662194"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a7abe9c2-c618-4100-8bdb-9c3940ed3794" cpfId="id431cb79a-2c1c-498b-a360-8d630ce9146d"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idd2e8421c-bbe0-41c2-9c9d-e54cc314d955" cpfId="C-263132128488134"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ide42dc1cd-198b-48ad-9066-63928cf96e13" cpfId="C-263132128488134-263132128497165"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id6c016932-9491-4a0a-b35d-03d54e3d9775" cpfId="C-263132128497165"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id3de6d887-0e0f-4af9-8a68-7489f26f731f" cpfId="C-263132128497165-263132128375651"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id124b32d1-405d-4b8a-8271-f523e855721b" cpfId="id4a48dc87-d19b-47ef-936a-5e0a1c316ca5"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="b9ef03e5-849a-4fd5-8399-aba8c3a6bcdf" cpfId="C-263132128375651"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ida14f123d-8f49-44ea-b48b-6ad0a2b97448" cpfId="iddacfb2a1-2f04-4c50-93be-cec29278911d"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idb3c1a754-be5c-45b1-b60b-48265ab2659e" cpfId="C-263132128325978"/>
-</ns2:Annotations>
+    <Annotation xsi:type="anf:GraphicsType" id="id80806afd-7ce5-4343-9851-0fa4779229c1" cpfId="C-263132128310379"/>
+    <Annotation xsi:type="anf:GraphicsType" id="c75d248e-7ffc-4acf-a5d4-a98864932989" cpfId="id69590db1-19e3-453a-9257-c4eeea5fa2c0"/>
+    <Annotation xsi:type="anf:GraphicsType" id="c3459f98-0eab-431a-863f-e936be48f522" cpfId="idfd81464b-eb6a-471d-b573-9966bc7df40c"/>
+    <Annotation xsi:type="anf:GraphicsType" id="d64cacc4-810b-442d-9dc2-905ad2a0379a" cpfId="C-263132128334599"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idca54cc9c-5a44-4c1a-a82c-6b9d21e2acef" cpfId="C-263132128334599-263132128642489"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idfc33cc6c-e336-4bdc-950e-b05bcddd275f" cpfId="C-263132128642489"/>
+    <Annotation xsi:type="anf:GraphicsType" id="a35f46ca-ecb1-4b81-8c8a-eb6932db23f4" cpfId="C-263132128642489-263132128614984"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id753ed95d-5134-4e8f-808e-37b5f35c810c" cpfId="C-263132128614984"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id1bad755f-89b5-4276-9c99-a682f4cb68f7" cpfId="C-263132128614984-263132128799308"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id15c9a425-dfec-4de3-8127-a77fdb733240" cpfId="C-263132128799308"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idb22c22dc-f7e1-4436-a676-f555ab921396" cpfId="C-263132128799308-263132128770161"/>
+    <Annotation xsi:type="anf:GraphicsType" id="d8b0f457-10b5-4c9d-8086-1b40fb339dd3" cpfId="C-263132128770161"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ide87d4ba3-a599-4f47-992c-63f9b85aec71" cpfId="C-263132128770161-263132128565311"/>
+    <Annotation xsi:type="anf:GraphicsType" id="iddfd101ee-52f0-490d-9fbf-bb2b8569d5e4" cpfId="C-263132128565311"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idd86bea00-15bc-42fc-a8ab-722069ad2885" cpfId="C-263132128565311-263132128738961"/>
+    <Annotation xsi:type="anf:GraphicsType" id="b1ddbda2-59b9-4e89-be42-e178fca2fb6a" cpfId="C-263132128738961-263132128565311"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ide2b8e26f-9628-4793-ac16-10f29e8c9bbd" cpfId="C-263132128738961"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id5181a71a-6804-4736-aa5d-3e6720b1e6a2" cpfId="C-263132128565311-263132128578037"/>
+    <Annotation xsi:type="anf:GraphicsType" id="c9c5b669-01f0-498d-8388-cd24acc6a920" cpfId="C-263132128578037"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ida5a5c432-e96b-4939-ad63-412562656735" cpfId="C-263132128578037-263132128434356"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idcfac3b0a-eb23-4052-a810-0b41c4778888" cpfId="C-263132128434356"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id9e370500-c417-4895-ae9a-5dde76da4462" cpfId="C-263132128434356-263132128392483"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ide7a3025f-adfc-407d-9946-6d099fd0729e" cpfId="C-263132128392483"/>
+    <Annotation xsi:type="anf:GraphicsType" id="cff032cf-10cd-4f74-a3c7-e858e45c3a5d" cpfId="C-263132128392483-263132128696678"/>
+    <Annotation xsi:type="anf:GraphicsType" id="iddb0411e1-0344-4eb2-b9e7-96f893b7d84d" cpfId="C-263132128696678"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id11599cbe-1180-4179-b31d-85d643b637a5" cpfId="C-263132128696678-263132128662194"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idbc27c733-0710-4acb-9ed6-9f354177c73e" cpfId="id11751964-9f65-4fd8-aad8-c35db866ef77"/>
+    <Annotation xsi:type="anf:GraphicsType" id="c22e7fc6-4bb5-4701-ab05-7eef8337ed4c" cpfId="C-263132128662194"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idf5e0a4c2-3231-4b39-8b8e-575b0b028ee6" cpfId="id83dd450a-7544-4c76-89fb-cd15ab9563a9"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id68b96050-49b2-4de1-9d6e-6d1ee438bd9e" cpfId="C-263132128488134"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id801a3e06-8971-4155-ab7e-fb6879d01d52" cpfId="C-263132128488134-263132128497165"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id55562672-71a8-49c0-b314-ba64a0bbdc2e" cpfId="C-263132128497165"/>
+    <Annotation xsi:type="anf:GraphicsType" id="bf1d1b42-bb8c-4ee8-8a56-a11ed1c010a1" cpfId="C-263132128497165-263132128375651"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ca37a4f5-0f15-403b-88ce-190a5880740c" cpfId="id097b6711-c2a6-4e12-b586-bf3ed7b72176"/>
+    <Annotation xsi:type="anf:GraphicsType" id="c973848d-402c-46ff-a39e-4a75e1040c5f" cpfId="C-263132128375651"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id55a00504-19fc-47fe-9474-2b766ff54083" cpfId="id71b3e3d2-d566-4f45-ac59-fee877f654b0"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idad501f3e-ed32-4c1b-8f7a-130179d9dbf3" cpfId="C-263132128325978"/>
+</anf:Annotations>

@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="TimerTaskOnEnablement" version="0.1" name="TimerTaskOnEnablement" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="TimerTaskOnEnablement" version="0.1" name="TimerTaskOnEnablement" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="a7dc25cb-03a6-4ae7-a1cb-89c244e5e5ab"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P3M" id="id55e500e7-1f50-4dd6-94c8-06b871791be3">
-            <cancelNodeId refId="C-A"/>
+        <Node xsi:type="cpf:ANDSplitType" id="d0d78c31-c7e7-4856-a5c8-324183d40d82"/>
+        <Node xsi:type="cpf:TimerType" timeDuration="P3M" id="id552eb2dc-d6d0-4eda-ba04-18aff739bc6d">
+            <cancelNodeId refId="fa8be937-0c95-4bb0-87ec-445728863703"/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:MessageType" id="fa8be937-0c95-4bb0-87ec-445728863703">
+            <cancelNodeId refId="id552eb2dc-d6d0-4eda-ba04-18aff739bc6d"/>
+            <direction>incoming</direction>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="id62f78ff3-2cc7-4c2f-a944-370ddb7e06eb"/>
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <cancelNodeId refId="id55e500e7-1f50-4dd6-94c8-06b871791be3"/>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id35154872-7bd6-46bd-a39f-77d4cce3348a"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id9bb0c991-83e7-4d94-b9fa-54f2f0626bf5" sourceId="a7dc25cb-03a6-4ae7-a1cb-89c244e5e5ab" targetId="id55e500e7-1f50-4dd6-94c8-06b871791be3"/>
-        <Edge id="id05fefc56-69c6-447b-a096-e15b80a8a2fc" sourceId="a7dc25cb-03a6-4ae7-a1cb-89c244e5e5ab" targetId="C-A"/>
-        <Edge id="id6170f4f5-efa4-41e0-9805-41519bca1d4a" sourceId="id55e500e7-1f50-4dd6-94c8-06b871791be3" targetId="id35154872-7bd6-46bd-a39f-77d4cce3348a"/>
-        <Edge id="id43ff2dae-f320-4da9-9894-cfe5774e1d41" sourceId="C-A" targetId="id35154872-7bd6-46bd-a39f-77d4cce3348a"/>
-        <Edge id="id13611e7c-cc2a-4708-a418-b375755005c5" default="false" sourceId="C-InputCondition" targetId="a7dc25cb-03a6-4ae7-a1cb-89c244e5e5ab"/>
-        <Edge id="ide9b9a2f0-65d6-4b34-b071-14b2d07a8a33" default="false" sourceId="id35154872-7bd6-46bd-a39f-77d4cce3348a" targetId="C-OutputCondition"/>
+        <Edge id="id5b29bbeb-84a0-43e1-aec6-420529328b99" sourceId="d0d78c31-c7e7-4856-a5c8-324183d40d82" targetId="id552eb2dc-d6d0-4eda-ba04-18aff739bc6d"/>
+        <Edge id="id168caf34-1d2f-42ba-8f05-54e20abef876" sourceId="d0d78c31-c7e7-4856-a5c8-324183d40d82" targetId="fa8be937-0c95-4bb0-87ec-445728863703"/>
+        <Edge id="idd91bca7f-fbc5-4cee-bbf9-57402f476ef1" sourceId="id552eb2dc-d6d0-4eda-ba04-18aff739bc6d" targetId="id62f78ff3-2cc7-4c2f-a944-370ddb7e06eb"/>
+        <Edge id="idf90b1a75-c4bb-40e1-b706-e79cd9cf5c7a" sourceId="fa8be937-0c95-4bb0-87ec-445728863703" targetId="id62f78ff3-2cc7-4c2f-a944-370ddb7e06eb"/>
+        <Edge id="idb5552ab7-f8eb-4f89-a79b-0347cbbe2d4d" sourceId="id62f78ff3-2cc7-4c2f-a944-370ddb7e06eb" targetId="C-A"/>
+        <Edge id="id1689c54e-a8bd-41c9-98ca-69093c93ea7f" default="false" sourceId="C-InputCondition" targetId="d0d78c31-c7e7-4856-a5c8-324183d40d82"/>
+        <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

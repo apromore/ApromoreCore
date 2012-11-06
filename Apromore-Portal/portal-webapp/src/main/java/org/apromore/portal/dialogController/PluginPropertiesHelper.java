@@ -238,27 +238,33 @@ public class PluginPropertiesHelper {
      * @return Set of RequestParameterType
      */
     public Set<RequestParameterType<?>> readPluginProperties(final String parameterCategory) {
-        PluginParameters mandatoryParameters = this.currentPluginInfo.getMandatoryParameters();
-        PluginParameters optionalParameters = this.currentPluginInfo.getOptionalParameters();
         Set<RequestParameterType<?>> requestProperties = new HashSet<RequestParameterType<?>>();
 
-        for (PluginParameter prop: mandatoryParameters.getParameter()) {
-            if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
-                RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
-                if (requestProp != null) {
-                    requestProperties.add(requestProp);
+        if (this.currentPluginInfo != null) {
+            PluginParameters mandatoryParameters = this.currentPluginInfo.getMandatoryParameters();
+            PluginParameters optionalParameters = this.currentPluginInfo.getOptionalParameters();
+
+            for (PluginParameter prop: mandatoryParameters.getParameter()) {
+                if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                    if (requestProp != null) {
+                        requestProperties.add(requestProp);
+                    }
                 }
             }
+
+            for (PluginParameter prop: optionalParameters.getParameter()) {
+                if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                    if (requestProp != null) {
+                        requestProperties.add(requestProp);
+                    }
+                }
+            }
+        } else {
+            LOGGER.warn("Could not read plugin parameters from UI, maybe there are none available!");
         }
 
-        for (PluginParameter prop: optionalParameters.getParameter()) {
-            if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
-                RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
-                if (requestProp != null) {
-                    requestProperties.add(requestProp);
-                }
-            }
-        }
         return requestProperties;
     }
 

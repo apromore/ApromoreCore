@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="YAWL4Film_Process" version="3.9" name="Film Production Process" author="ouyang" rootIds="N-Film-Production-Process">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="YAWL4Film_Process" version="3.9" name="Film Production Process" author="ouyang" rootIds="N-Film-Production-Process">
     <Net id="N-Film-Production-Process" originalID="Film_Production_Process">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-start-production-1" originalID="start_production_1">
+        <Node xsi:type="cpf:EventType" id="C-start-production-1" originalID="start_production_1">
             <name>start production</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Welcome-to-Start-Process-3258" originalID="Welcome_to_Start_Process_3258">
+        <Node xsi:type="cpf:TaskType" id="C-Welcome-to-Start-Process-3258" originalID="Welcome_to_Start_Process_3258">
             <name>Welcome to Start Process</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -22,8 +22,8 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="ide1ff3bd4-a973-4233-a51f-7e6d1bc853e4" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <objectRef id="id45ee3468-ccf4-476e-9ea8-a51dca6d2137" objectId="D-N-Film-Production-Process-production" type="output" optional="false" consumed="true"/>
+            <resourceTypeRef id="id4392e584-5591-48af-8d22-9366b58df8a8" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <objectRef id="b0e53764-b934-4e15-a79a-1f1fdd24f874" objectId="D-N-Film-Production-Process-production" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>production = {/Welcome_to_Start_Process/production/text()}</expression>
@@ -31,8 +31,8 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id846c6944-4335-4301-ae45-08a15a9cdd46"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Input-Location-Notes-3256" originalID="Input_Location_Notes_3256">
+        <Node xsi:type="cpf:ANDSplitType" id="c9fc7537-3c6e-4096-8c06-2badd4490184"/>
+        <Node xsi:type="cpf:TaskType" id="C-Input-Location-Notes-3256" originalID="Input_Location_Notes_3256">
             <name>Input Location Notes</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -56,11 +56,11 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id622b70ef-f6fd-430f-a254-61c39911ca55" resourceTypeId="id8e130965-6575-4e5b-8206-274ee2cc4d37" qualifier="Primary"/>
-            <resourceTypeRef id="id750ea867-dd38-4f16-9234-a2fbd2b930e8" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="id24cd687b-a6cb-4c0d-b782-e097c2f413c3" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="id20123a17-d3cc-4fe2-9878-cebc515eb942" objectId="D-N-Film-Production-Process-locationInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb4ad4f7f-884c-4bba-9e34-f50e26dcd166" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="eb8cf594-9c5b-40ed-81ac-79673b3f2e5b" resourceTypeId="id05f35742-28ed-41d7-a3f2-f9b68e1e0312" qualifier="Primary"/>
+            <resourceTypeRef id="e8927d42-4a54-4396-a954-02c911e200c7" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="idf02c9caf-0f2b-4e7b-819d-ffc6046c62ec" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="dcbc7c93-e57b-4b8c-a792-2b704fac75d4" objectId="D-N-Film-Production-Process-locationInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="id6dadcfbd-2d8c-48df-9193-d0387d194160" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>production = {cpf:getObjectValue('production')/text()}</expression>
@@ -71,7 +71,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Input-Cast-List-5189" originalID="Input_Cast_List_5189">
+        <Node xsi:type="cpf:TaskType" id="C-Input-Cast-List-5189" originalID="Input_Cast_List_5189">
             <name>Input Cast List</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -95,11 +95,11 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id940ac61a-29d5-4a7a-b03f-22dc66cf7e13" resourceTypeId="id8e130965-6575-4e5b-8206-274ee2cc4d37" qualifier="Primary"/>
-            <resourceTypeRef id="id73726c0e-4b7a-47a5-8da3-b9cc53c2d215" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="b7c47275-919c-495e-913e-73bffd36767a" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="id1725edc0-2f10-4b32-b5d7-da693617e32b" objectId="D-N-Film-Production-Process-castInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="b7771b19-5857-4490-b534-dff9e842ecd0" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id1852e6ed-dd36-4fe6-8d6d-30d24ef036f3" resourceTypeId="id05f35742-28ed-41d7-a3f2-f9b68e1e0312" qualifier="Primary"/>
+            <resourceTypeRef id="e34ed9f3-f582-48da-b8ad-ed72529d7ed5" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="ce07aeb5-f7fc-4070-9c0c-9ab2182dc37b" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="idfff6bcec-05b5-479b-a120-4d20fdf51a09" objectId="D-N-Film-Production-Process-castInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="idbc13b43b-fe1a-4376-b34d-ef543da067d0" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>production = {cpf:getObjectValue('production')/text()}</expression>
@@ -110,7 +110,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Input-Crew-List-3257" originalID="Input_Crew_List_3257">
+        <Node xsi:type="cpf:TaskType" id="C-Input-Crew-List-3257" originalID="Input_Crew_List_3257">
             <name>Input Crew List</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -142,13 +142,13 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id519b1c59-8be5-4d8a-b97d-584a5cd60fce" resourceTypeId="id8e130965-6575-4e5b-8206-274ee2cc4d37" qualifier="Primary"/>
-            <resourceTypeRef id="idf4180bf7-4311-4069-abb7-79768b8614ff" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="idd1ca92c7-99ba-41f8-817a-3d577a0bec4b" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="iddd6b6e3b-f78f-44d0-8385-5f303a2a494d" objectId="D-N-Film-Production-Process-crewInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="idf49140e6-0bdd-48de-8d42-eb2267e43256" objectId="D-N-Film-Production-Process-crewMember" type="output" optional="false" consumed="true"/>
-            <objectRef id="id8bd74926-f71b-4012-924e-45cfa84fb3a1" objectId="D-N-Film-Production-Process-crewInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="id4dedcf99-045d-4f9b-8dcc-262da7b98a1f" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="fff30d88-f4c7-4069-958d-75211c4a9dbf" resourceTypeId="id05f35742-28ed-41d7-a3f2-f9b68e1e0312" qualifier="Primary"/>
+            <resourceTypeRef id="ide616ab78-f1d8-4caa-8d36-b40cd03daa65" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="b5096ddb-c5a1-4437-a28d-e16d0ca8cc6f" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="id3665a2fe-d3a0-4278-9087-5116952824bf" objectId="D-N-Film-Production-Process-crewInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="e21da2f7-2d6f-4662-b64f-2007494313bf" objectId="D-N-Film-Production-Process-crewMember" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb4c35b15-651b-4b84-8bcb-4bf1f768bd16" objectId="D-N-Film-Production-Process-crewInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="id5168ed4a-7bb6-4ac7-b0a5-aa6012082781" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>crewInfo = {cpf:getObjectValue('crewInfo')/*}</expression>
@@ -167,7 +167,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Input-Shooting-Schedule-3255" originalID="Input_Shooting_Schedule_3255">
+        <Node xsi:type="cpf:TaskType" id="C-Input-Shooting-Schedule-3255" originalID="Input_Shooting_Schedule_3255">
             <name>Input Shooting Schedule</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -223,15 +223,15 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id1a1b3664-101a-4ef3-943b-9dae9636ac80" resourceTypeId="id08ba49fa-a9ff-4fe8-952a-5f52e0a8c4bb" qualifier="Primary"/>
-            <resourceTypeRef id="idfcd97bd5-a5ce-4a2f-876c-86aca98e063b" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="ida274b1bb-7c75-45d6-ae0f-9aaa31ca615a" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="id4f7b2db6-eb12-4d26-abd3-ffd1818c5e10" objectId="idb337f922-e636-41ce-b1e8-44a5b726a0d4" type="output" optional="false" consumed="true"/>
-            <objectRef id="idfc46bc20-64d0-4eac-a535-566de23cf549" objectId="D-N-Film-Production-Process-totalScenes" type="output" optional="false" consumed="true"/>
-            <objectRef id="e832907f-29ca-4371-b59b-0658e7c2fad1" objectId="id58851fee-00ec-4459-be27-371eaf9512b1" type="output" optional="false" consumed="true"/>
-            <objectRef id="id3bc2ae50-0652-406e-ba33-4f02f8e0a1f1" objectId="id70090798-fd59-4c74-aac5-be0b19613d19" type="output" optional="false" consumed="true"/>
-            <objectRef id="cb83839a-724e-45ce-8f28-5fa8b3a55125" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="idec244bd0-9b15-4197-8ec3-f286c8ba8fa6" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="e322a251-e192-4fee-b324-f473e1e7cb05" resourceTypeId="id664caecd-09b4-4c4b-a70b-2c4451d3736f" qualifier="Primary"/>
+            <resourceTypeRef id="d957c96f-6466-420f-8f83-79e0a008d476" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="a286210c-def7-48b6-8d12-80b320d5e521" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="e531a9f9-2ff4-420c-b79b-afb6b9492868" objectId="id38752596-8a3e-42e4-aae8-66fd00f31435" type="output" optional="false" consumed="true"/>
+            <objectRef id="idcdf0bdab-5747-45fb-b209-8470106871d9" objectId="D-N-Film-Production-Process-totalScenes" type="output" optional="false" consumed="true"/>
+            <objectRef id="id8e5ed00d-ac8d-4ff2-a986-11971094a4db" objectId="id014709fb-da02-4b47-98a4-5d8b950e579e" type="output" optional="false" consumed="true"/>
+            <objectRef id="id141a8d59-794a-4389-875c-a949118fc7d6" objectId="id2af18a26-d8a2-4788-b785-b5bd18fbcfcf" type="output" optional="false" consumed="true"/>
+            <objectRef id="f26275bd-ff85-4f24-a840-81c14c245b17" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="bae933b7-839e-4a71-bd25-9d86cbd294dd" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>shootingSchedule =  &lt;lastUpdatedDate&gt;{current-date()}&lt;/lastUpdatedDate&gt;  {cpf:getObjectValue('crewMember')/director}  {cpf:getObjectValue('crewMember')/producer}  &lt;startDate&gt;{current-date()}&lt;/startDate&gt;  &lt;scheduledFinish&gt;{current-date()}&lt;/scheduledFinish&gt;  &lt;scheduledShootingDays&gt;0&lt;/scheduledShootingDays&gt;</expression>
@@ -258,13 +258,13 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="idfac86a92-17a2-4f5d-88f3-73318ccb5b70"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-null-3253" originalID="null_3253"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idf1ffcca5-1468-47e6-9ba4-5fe02073061d"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id07443fe5-49cd-4613-83ca-5ea98e0f9f32"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-null-3279" originalID="null_3279"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id7a4b700b-b3ef-462b-9750-7a56196ac5ed"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Create-Call-Sheet-7902" originalID="Create_Call_Sheet_7902">
+        <Node xsi:type="cpf:ANDJoinType" id="b7dec31f-203a-46ce-a6f9-5da3c8de9a86"/>
+        <Node xsi:type="cpf:TaskType" id="C-null-3253" originalID="null_3253"/>
+        <Node xsi:type="cpf:XORJoinType" id="id43b17416-981c-48ca-bb0a-c73dcdc18f36"/>
+        <Node xsi:type="cpf:XORSplitType" id="id448ef63d-17c8-4abf-9d31-524b9c85af3d"/>
+        <Node xsi:type="cpf:TaskType" id="C-null-3279" originalID="null_3279"/>
+        <Node xsi:type="cpf:XORJoinType" id="f63bb34c-cdeb-4f23-8526-ca79c217e8c6"/>
+        <Node xsi:type="cpf:TaskType" id="C-Create-Call-Sheet-7902" originalID="Create_Call_Sheet_7902">
             <name>Create Call Sheet</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -282,9 +282,9 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <resourceTypeRef id="id5f4faa15-d6d8-4fad-8769-f8c9d5aab94d" resourceTypeId="id1d1a1ac0-a945-40af-8315-a68bfe8740d8"/>
-            <objectRef id="aae999e5-b944-4f34-a79b-f791e871ce7a" objectId="id7910f1cc-83b7-4683-9b35-11a00b623f3a" type="output" optional="false" consumed="true"/>
-            <objectRef id="a254501d-b4e3-437f-bcfd-0eaea15a717c" objectId="idbe3351a8-5084-4017-9433-f74788ee17e9" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="ide28e2f29-33c4-401c-aff0-f6b1dd61305f" resourceTypeId="id3d60766d-99d1-410b-80db-e49548c37f58"/>
+            <objectRef id="f6d96980-dec5-4d00-aaa6-758b91acbd1f" objectId="ide02e0cc3-c5ba-43d1-9496-9d528280fd24" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc7b23860-4c76-4344-8a53-3d95dfc9f2aa" objectId="id2806d364-8c0e-4165-a77d-ad5e10184aa4" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>callSheet =  {/Film_Production_Process/productionOffice}  {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text() return  &lt;emergencyInfo&gt;   &lt;fireAmbulance&gt;000&lt;/fireAmbulance&gt;   &lt;hospital&gt;   {if (for $y in /Film_Production_Process/locationInfo/singleLocationInfo         where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /Film_Production_Process/locationInfo/singleLocationInfo           where $y/locationID=$x/sceneSchedule/locationID return data($y/hospital))    else 'Missing info...'}   &lt;/hospital&gt;   &lt;police&gt;   {if (for $y in /Film_Production_Process/locationInfo/singleLocationInfo         where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /Film_Production_Process/locationInfo/singleLocationInfo           where $y/locationID=$x/sceneSchedule/locationID return data($y/police))    else 'Missing info...'}   &lt;/police&gt;  &lt;/emergencyInfo&gt;}  {/Film_Production_Process/crewMember/director}  {/Film_Production_Process/crewMember/producer}  {for $x in /Film_Production_Process/crewInfo/singleCrewInfo   where contains($x/role,'Production Manager') return  &lt;productionManager&gt;   {concat($x/firstName,' ',$x/lastName,' ',$x/contactNo)}  &lt;/productionManager&gt;}  &lt;firstAD&gt;   {for $x in /Film_Production_Process/crewInfo/singleCrewInfo    where $x/role='1st AD' return     concat($x/firstName,' ',$x/lastName,' ',$x/contactNo)}  &lt;/firstAD&gt;  {/Film_Production_Process/sunrise}  {/Film_Production_Process/sunset}  {/Film_Production_Process/weather}   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text() return  &lt;callTimes&gt;   &lt;crewCall&gt;&lt;callTime&gt;{$x/crewCall/text()}&lt;/callTime&gt;&lt;/crewCall&gt;   &lt;locationCall&gt;&lt;callTime&gt;{$x/travelToLoc/text()}&lt;/callTime&gt;&lt;/locationCall&gt;   &lt;makeupHair&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/makeupHair&gt;   &lt;wardrobe&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/wardrobe&gt;   &lt;unit&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/unit&gt;   &lt;breakfast&gt;&lt;from&gt;00:00:00&lt;/from&gt;&lt;to&gt;00:00:00&lt;/to&gt;&lt;/breakfast&gt;  &lt;/callTimes&gt;}  &lt;wrapTimes&gt;  &lt;estWrap&gt;Estimate the wrap time...&lt;/estWrap&gt;  &lt;/wrapTimes&gt;  &lt;location&gt;   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text()   return    (if (for $y in /Film_Production_Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /Film_Production_Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return   &lt;singleLocation&gt;    {$y/locationName}    {$y/address}    {$y/contact}    {$y/contactNo}    {$y/UBDMapRef}    {$y/locationNotes}   &lt;/singleLocation&gt;)    else    &lt;singleLocation&gt;    &lt;locationName&gt;Missing Info. Please Check ...&lt;/locationName&gt;    &lt;address&gt;n/a&lt;/address&gt;    &lt;contact&gt;n/a&lt;/contact&gt;    &lt;contactNo&gt;0&lt;/contactNo&gt;    &lt;UBDMapRef&gt;0&lt;/UBDMapRef&gt;    &lt;locationNotes&gt;n/a&lt;/locationNotes&gt;   &lt;/singleLocation&gt;)}  &lt;/location&gt;   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule    where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text() return   &lt;dailySchedule&gt;   &lt;startDayNotes&gt;   {if (contains($x/startDayNotes,'')) then $x/startDayNotes/text() else 'nil'}&lt;/startDayNotes&gt;   {for $y in $x/sceneSchedule return   &lt;sceneSchedule&gt;    {$y/scene}    {$y/pageTime}    {$y/estScriptTiming}    {$y/D_N}    {$y/IN_EX}    &lt;setLocation&gt;    {if (for $z in /Film_Production_Process/locationInfo/singleLocationInfo      where $z/locationID=$y/locationID return true())     then (for $z in /Film_Production_Process/locationInfo/singleLocationInfo      where $z/locationID=$y/locationID return concat($y/set,' @ ',$z/locationName))     else 'Missing info. Please check ...'}    &lt;/setLocation&gt;    {$y/synopsis}    {for $z in $y/characters/character return    &lt;artistTimeInfo&gt;     {$z}     {if (for $w in /Film_Production_Process/castInfo/singleCastInfo      where $w/character=$z return true())      then (for $w in /Film_Production_Process/castInfo/singleCastInfo      where $w/character=$z return $w/artist)      else &lt;artist&gt;Missing info. Please Check ...&lt;/artist&gt;}     &lt;pickup&gt;-&lt;/pickup&gt;     &lt;makeup&gt;-&lt;/makeup&gt;     &lt;wardrobe&gt;-&lt;/wardrobe&gt;     &lt;onSet&gt;-&lt;/onSet&gt;    &lt;/artistTimeInfo&gt;}    {$y/estShootTimes}    &lt;sceneNotes&gt;-&lt;/sceneNotes&gt;    {$y/mealBreak}      &lt;/sceneSchedule&gt;}   {$x/endDayNotes}   {$x/totalScriptPages}  &lt;/dailySchedule&gt;}   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule    where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text()   return   &lt;dailySetRequirements&gt;   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Background Actors' return   &lt;singleEntry&gt;    &lt;item&gt;Background Actors&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Background Actors' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Stunts' return   &lt;singleEntry&gt;    &lt;item&gt;Stunts&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Stunts' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Vehicles' return   &lt;singleEntry&gt;    &lt;item&gt;Vehicles&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Vehicles' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Props' return   &lt;singleEntry&gt;    &lt;item&gt;Props&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Props' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Camera' return   &lt;singleEntry&gt;    &lt;item&gt;Camera&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Camera' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Special Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Special Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Special Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Wardrobe' return   &lt;singleEntry&gt;    &lt;item&gt;Wardrobe&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Wardrobe' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Makeup/Hair' return   &lt;singleEntry&gt;    &lt;item&gt;Makeup/Hair&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Makeup/Hair' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Animal' return   &lt;singleEntry&gt;    &lt;item&gt;Animal&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Animal' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Animal Wrangler' return   &lt;singleEntry&gt;    &lt;item&gt;Animal Wrangler&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Animal Wrangler' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Music' return   &lt;singleEntry&gt;    &lt;item&gt;Music&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Music' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Sound' return   &lt;singleEntry&gt;    &lt;item&gt;Sound&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Sound' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Art Department' return   &lt;singleEntry&gt;    &lt;item&gt;Art Department&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Art Department' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Set Dressing' return   &lt;singleEntry&gt;    &lt;item&gt;Set Dressing&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Set Dressing' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Greenery' return   &lt;singleEntry&gt;    &lt;item&gt;Greenery&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Greenery' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Special Equipment' return   &lt;singleEntry&gt;    &lt;item&gt;Special Equipment&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Special Equipment' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Security' return   &lt;singleEntry&gt;    &lt;item&gt;Security&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Security' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Additional Labor' return   &lt;singleEntry&gt;    &lt;item&gt;Additional Labor&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Additional Labor' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Visual Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Visual Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Visual Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Mechanical Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Mechanical Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Mechanical Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Miscellaneous' return   &lt;singleEntry&gt;    &lt;item&gt;Miscellaneous&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Miscellaneous' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Notes' return   &lt;singleEntry&gt;    &lt;item&gt;Notes&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Notes' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}  &lt;/dailySetRequirements&gt;}  &lt;unit&gt;   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text()   return   (if (for $y in /Film_Production_Process/locationInfo/singleLocationInfo    where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /Film_Production_Process/locationInfo/singleLocationInfo    where $y/locationID=$x/sceneSchedule/locationID    return concat($y/locationID,': ',$y/unit,'.'))    else 'Missing info...')}  &lt;/unit&gt;  {/Film_Production_Process/callSheetNotes/additionalEquipment}  {/Film_Production_Process/callSheetNotes/additionalCrew}   {/Film_Production_Process/callSheetNotes/directions}  &lt;parking&gt;   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text()   return    (if (for $y in /Film_Production_Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /Film_Production_Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID    return concat($y/locationID,': ',$y/parking,'.'))    else 'Missing info...')}  &lt;/parking&gt;   {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=cpf:getObjectValue('shootDayNoNextday')/text()   return  &lt;catering&gt;   &lt;singleMeal&gt;    &lt;meal&gt;breakfast&lt;/meal&gt;    &lt;break&gt;0000-0000&lt;/break&gt;    &lt;serveNo&gt;0&lt;/serveNo&gt;    &lt;location&gt;...&lt;/location&gt;   &lt;/singleMeal&gt;   {for $z in $x/sceneSchedule/mealBreak return   &lt;singleMeal&gt;    {$z/meal}    {$z/break}    &lt;serveNo&gt;0&lt;/serveNo&gt;    &lt;location&gt;...&lt;/location&gt;   &lt;/singleMeal&gt;}  &lt;/catering&gt;}  {/Film_Production_Process/callSheetNotes/productionNotes}  {/Film_Production_Process/callSheetNotes/locationCrewNotes}  {/Film_Production_Process/callSheetNotes/lunchPickup}  {/Film_Production_Process/callSheetNotes/exposedRushes}  {/Film_Production_Process/callSheetNotes/rushesScreening}  {/Film_Production_Process/callSheetNotes/crewAgreements}  {for $x in /Film_Production_Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=number(cpf:getObjectValue('shootDayNoNextday')/text())+1   return  &lt;advancedSchedule&gt;   {$x/shootDayNo}    {$x/shootDayDate}    {$x/shootDayWeekday}   {for $z in $x/sceneSchedule return   &lt;adSceneSchedule&gt;     {$z/scene}    {$z/pageTime}    {$z/D_N}    {$z/IN_EX}    &lt;setSynopsis&gt;{concat($z/set,' / ',$z/synopsis)}&lt;/setSynopsis&gt;    &lt;location&gt;{$z/locationID/text()}&lt;/location&gt;    {$z/characters}   &lt;/adSceneSchedule&gt;}   &lt;/advancedSchedule&gt;}  {/Film_Production_Process/callSheetNotes/additionalNotes}</expression>
@@ -294,9 +294,9 @@
                 <expression>callSheetNextday = {/Create_Call_Sheet/callSheet/*}</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id10085c5e-0930-431b-a698-8a3155bf93cc"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-null-7903" originalID="null_7903"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Revise-Shooting-Schedule-3282" originalID="Revise_Shooting_Schedule_3282">
+        <Node xsi:type="cpf:XORJoinType" id="id7c35feec-314a-4c3c-a4b2-c89c040d0904"/>
+        <Node xsi:type="cpf:StateType" id="C-null-7903" originalID="null_7903"/>
+        <Node xsi:type="cpf:TaskType" id="C-Revise-Shooting-Schedule-3282" originalID="Revise_Shooting_Schedule_3282">
             <name>Revise Shooting Schedule</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -352,15 +352,15 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id2a8c1a11-aaf5-41a6-b130-1c68b7df9e5d" resourceTypeId="id08ba49fa-a9ff-4fe8-952a-5f52e0a8c4bb" qualifier="Primary"/>
-            <resourceTypeRef id="idc1a954d2-f997-470e-a83b-56e277ce8bc2" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="f58cea3e-ce2b-48b5-923e-a977aa1abe51" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="d9215557-cbd1-4f22-9a54-96649f587912" objectId="idb337f922-e636-41ce-b1e8-44a5b726a0d4" type="output" optional="false" consumed="true"/>
-            <objectRef id="id7b11b711-6fda-4960-9820-722f0625a075" objectId="id58851fee-00ec-4459-be27-371eaf9512b1" type="output" optional="false" consumed="true"/>
-            <objectRef id="c72187ba-85fe-4cb9-ba10-17d557d802c5" objectId="D-N-Film-Production-Process-totalScenes" type="output" optional="false" consumed="true"/>
-            <objectRef id="becded61-37dc-4f27-8af5-2aca3b25f947" objectId="id70090798-fd59-4c74-aac5-be0b19613d19" type="output" optional="false" consumed="true"/>
-            <objectRef id="db6c93a1-859c-4609-a5fa-a71252e2dc88" objectId="idb337f922-e636-41ce-b1e8-44a5b726a0d4" type="input" optional="false" consumed="true"/>
-            <objectRef id="id01c5207e-2aa3-44d8-9f77-f9f909e6b98e" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="idca237753-3fe9-4e70-ae14-a99f9e36d8ae" resourceTypeId="id664caecd-09b4-4c4b-a70b-2c4451d3736f" qualifier="Primary"/>
+            <resourceTypeRef id="d8f2d028-d5e9-4fea-b3aa-c7e88433a4f4" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="ada627a4-2a1e-4eff-b301-074cffcc718b" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="idf4ee643d-9c13-4d36-8d5f-cec101488210" objectId="id38752596-8a3e-42e4-aae8-66fd00f31435" type="output" optional="false" consumed="true"/>
+            <objectRef id="id29577365-643b-436e-9bfc-8eac7f6a7ace" objectId="id014709fb-da02-4b47-98a4-5d8b950e579e" type="output" optional="false" consumed="true"/>
+            <objectRef id="ac737a6c-d101-4dd5-b082-6dcebd3973b2" objectId="D-N-Film-Production-Process-totalScenes" type="output" optional="false" consumed="true"/>
+            <objectRef id="id3d6df3a7-0c5c-4617-83c7-32e3198ab1dc" objectId="id2af18a26-d8a2-4788-b785-b5bd18fbcfcf" type="output" optional="false" consumed="true"/>
+            <objectRef id="id4b3d6845-a02d-4f05-ba52-aee20fc748d8" objectId="id38752596-8a3e-42e4-aae8-66fd00f31435" type="input" optional="false" consumed="true"/>
+            <objectRef id="e670cd99-04be-4a07-a795-307be2df4b33" objectId="D-N-Film-Production-Process-production" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>shootingSchedule = {cpf:getObjectValue('shootingSchedule')/*}</expression>
@@ -387,10 +387,10 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-null-3280" originalID="null_3280"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id2a4df610-f4d4-4a18-b992-45cb5e1663f8"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="d2205545-10b4-41d8-b93d-2118bfdb0157"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Update-Call-Sheet-4740" originalID="Update_Call_Sheet_4740">
+        <Node xsi:type="cpf:TaskType" id="C-null-3280" originalID="null_3280"/>
+        <Node xsi:type="cpf:ORJoinType" id="aea68c49-89db-4688-874a-c04cbb5f9689"/>
+        <Node xsi:type="cpf:XORSplitType" id="cb2c59d2-2de3-4ffe-a39f-05fc6306151e"/>
+        <Node xsi:type="cpf:TaskType" id="C-Update-Call-Sheet-4740" originalID="Update_Call_Sheet_4740">
             <name>Update Call Sheet</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -446,19 +446,19 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id3b8f46bc-1875-41e6-872e-915596489de9" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="id5bd6a998-8bd2-47a4-8d71-15dbf2a404ec" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
-            <objectRef id="idd23b7d37-421e-4b37-a4fa-2485ca2c35b4" objectId="idfeeca0c1-c704-4407-a252-58e1d748b77f" type="output" optional="false" consumed="true"/>
-            <objectRef id="id8f022b2e-d915-4c62-b8bb-0e6acce5a259" objectId="D-N-Film-Production-Process-sunset" type="output" optional="false" consumed="true"/>
-            <objectRef id="f467032f-5042-4a3f-8f95-f566576ba10a" objectId="D-N-Film-Production-Process-weather" type="output" optional="false" consumed="true"/>
-            <objectRef id="bd6f0f99-5e2d-4824-a648-8adad8755e79" objectId="id2bb5999c-b87e-4da0-a176-ff4d6958c2db" type="output" optional="false" consumed="true"/>
-            <objectRef id="id0610653c-e7c0-44c4-80d7-3e94a406d327" objectId="id7910f1cc-83b7-4683-9b35-11a00b623f3a" type="output" optional="false" consumed="true"/>
-            <objectRef id="ide2e37907-abcd-443e-80eb-e70c73ace0d3" objectId="idde51a973-6cf3-4493-986e-3c63730d8b75" type="output" optional="false" consumed="true"/>
-            <objectRef id="id27ce26fe-3b8e-4bda-8a8b-ecb02f937a61" objectId="D-N-Film-Production-Process-sunrise" type="output" optional="false" consumed="true"/>
-            <objectRef id="e59d5e08-0ef7-4af1-a326-1375f1f37a5c" objectId="id54521d95-27f1-45d2-a4b0-0a1b8b752ee4" type="output" optional="false" consumed="true"/>
-            <objectRef id="idadd8ff85-672f-4abc-bd61-d1b4865b2bf7" objectId="id7910f1cc-83b7-4683-9b35-11a00b623f3a" type="input" optional="false" consumed="true"/>
-            <objectRef id="id55dfe60f-be00-4905-8a43-330b32a08c71" objectId="idbe3351a8-5084-4017-9433-f74788ee17e9" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf61f900b-c7b4-4aa0-a7e7-4a9611088f46" objectId="idb337f922-e636-41ce-b1e8-44a5b726a0d4" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="idfc3d4443-833b-4d23-b74a-6c876fe8336b" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="idee012d8c-0b2c-43df-9cab-9cb4cf9e3390" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
+            <objectRef id="idfed2769b-e912-418a-8a9e-3de19ca0bc22" objectId="id31eaef1a-a71f-41bb-a708-76c46dc0f184" type="output" optional="false" consumed="true"/>
+            <objectRef id="ided4690a6-a66e-4baa-9ff1-af61c676eb5b" objectId="D-N-Film-Production-Process-sunset" type="output" optional="false" consumed="true"/>
+            <objectRef id="f1779a9c-96b0-4a71-812b-3a2c9e925280" objectId="D-N-Film-Production-Process-weather" type="output" optional="false" consumed="true"/>
+            <objectRef id="iddef88136-c581-40e2-9e25-accafd377f51" objectId="id4f44e74c-9fdd-4966-91c1-1667d1ab2278" type="output" optional="false" consumed="true"/>
+            <objectRef id="b2141b07-2c9e-4d2e-a7b2-29e135df0704" objectId="ide02e0cc3-c5ba-43d1-9496-9d528280fd24" type="output" optional="false" consumed="true"/>
+            <objectRef id="a138ae1f-7f94-43d3-a259-fcbc90331cb2" objectId="id163429b7-1db2-4c88-9ddf-33b20337db3a" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb63dcb54-af05-4684-a906-4fc4d70eb3b6" objectId="D-N-Film-Production-Process-sunrise" type="output" optional="false" consumed="true"/>
+            <objectRef id="id8e0b4346-2afb-4ba9-83bd-13ec20d6fa06" objectId="id76814bd9-3e98-4d5a-817c-8fdd17e5eaf9" type="output" optional="false" consumed="true"/>
+            <objectRef id="c03f0429-4ac6-4628-8374-1f73f4f5f86d" objectId="ide02e0cc3-c5ba-43d1-9496-9d528280fd24" type="input" optional="false" consumed="true"/>
+            <objectRef id="e4d6d63a-def8-4ac4-a717-da8839ceecf2" objectId="id2806d364-8c0e-4165-a77d-ad5e10184aa4" type="input" optional="false" consumed="true"/>
+            <objectRef id="id5b95ba6d-61d4-4152-a4a6-d42832a2b8a6" objectId="id38752596-8a3e-42e4-aae8-66fd00f31435" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>callSheet = {cpf:getObjectValue('callSheetNextday')/*}</expression>
@@ -505,8 +505,8 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="be549d86-f3a3-4095-a308-132f87e274c4"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Start-Another-Shoot-Day-3268" originalID="Start_Another_Shoot_Day_3268">
+        <Node xsi:type="cpf:XORSplitType" id="idfaa9d039-8f88-4c9e-9efa-625255802b2b"/>
+        <Node xsi:type="cpf:TaskType" id="C-Start-Another-Shoot-Day-3268" originalID="Start_Another_Shoot_Day_3268">
             <name>Start Another Shoot Day</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -556,23 +556,23 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <resourceTypeRef id="e1f4df81-1b05-47dc-ae84-6bf887c85203" resourceTypeId="ida5b83aa0-51a2-4edc-adee-3986068d9dd7"/>
-            <objectRef id="id11b3f1c7-3e16-4219-b197-91d3fb93c185" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="output" optional="false" consumed="true"/>
-            <objectRef id="id382ebbc7-3f51-43b6-b89c-3ddb00e7e727" objectId="id100e634b-3357-4436-b933-065387270279" type="output" optional="false" consumed="true"/>
-            <objectRef id="b3595327-8b7d-4c1f-b08c-e583151bf45f" objectId="idbe3351a8-5084-4017-9433-f74788ee17e9" type="output" optional="false" consumed="true"/>
-            <objectRef id="e708337d-e71e-43b3-abe3-da462443e121" objectId="idba941d99-cec3-4ea2-9347-83570c9e2877" type="output" optional="false" consumed="true"/>
-            <objectRef id="idfc78630a-5d57-4349-a451-3697486021e5" objectId="D-N-Film-Production-Process-weather" type="output" optional="false" consumed="true"/>
-            <objectRef id="id098a957c-7992-4164-9495-e93c622c3874" objectId="D-N-Film-Production-Process-sunrise" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb7d50b3a-923f-43af-9b75-f0cf0ab5f59e" objectId="id5910e89b-0468-4f68-8803-ff4d24f56276" type="output" optional="false" consumed="true"/>
-            <objectRef id="idca0ec68f-4a9e-4709-a051-bfa91a38c9a1" objectId="idab73af4a-8dc5-4158-ae19-48b010fac546" type="output" optional="false" consumed="true"/>
-            <objectRef id="id07e2203b-5622-458b-a54a-0fb057157f07" objectId="ida8197551-0fe7-44ef-82c8-e9ca4056d5c0" type="output" optional="false" consumed="true"/>
-            <objectRef id="bf0be6e4-0016-4325-8c83-6f43f5c10c71" objectId="id05cad86d-a96c-4156-b7d5-0356f6c68644" type="output" optional="false" consumed="true"/>
-            <objectRef id="ccac9946-be89-45d8-bf72-fde7aacf2c7c" objectId="iddcf2268e-f6e6-4477-b1f1-68b1868bd1cc" type="output" optional="false" consumed="true"/>
-            <objectRef id="f3926f62-9511-4512-821b-5898fb426d1b" objectId="D-N-Film-Production-Process-sunset" type="output" optional="false" consumed="true"/>
-            <objectRef id="id0d3815bc-3e9b-44d7-a574-ab32b6a7e29e" objectId="id54521d95-27f1-45d2-a4b0-0a1b8b752ee4" type="output" optional="false" consumed="true"/>
-            <objectRef id="id2537f79b-5b33-4f98-b662-c34e5f4899c3" objectId="idde51a973-6cf3-4493-986e-3c63730d8b75" type="input" optional="false" consumed="true"/>
-            <objectRef id="f38d358f-1437-48f3-af89-e300fe5dfc8f" objectId="id7910f1cc-83b7-4683-9b35-11a00b623f3a" type="input" optional="false" consumed="true"/>
-            <objectRef id="f5164d34-21f1-43e5-9aa7-c69f311ae38e" objectId="idbe3351a8-5084-4017-9433-f74788ee17e9" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="idc20627f1-ffca-4d0e-b0cd-51edc6eb7028" resourceTypeId="id4828c15c-c309-49de-934b-f9473cadb0f8"/>
+            <objectRef id="id4c3a4656-1989-4ef8-bc1d-7c74ff1a31da" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="output" optional="false" consumed="true"/>
+            <objectRef id="bf329986-d179-4615-85ae-abd02b610409" objectId="id8b433c6f-1d2c-4232-a7df-8d62540568ba" type="output" optional="false" consumed="true"/>
+            <objectRef id="iddb3fb6ac-f3e7-42f3-b464-8838a5c32aba" objectId="id2806d364-8c0e-4165-a77d-ad5e10184aa4" type="output" optional="false" consumed="true"/>
+            <objectRef id="id760274bb-13e7-4eec-bc36-d6a74ac85dfc" objectId="id60856e7e-d439-4d7c-8560-0a17fbf93e53" type="output" optional="false" consumed="true"/>
+            <objectRef id="c4761663-a1a9-470b-9418-49808c98a2bf" objectId="D-N-Film-Production-Process-weather" type="output" optional="false" consumed="true"/>
+            <objectRef id="b2ece29d-1312-485e-9975-2fa10bddd941" objectId="D-N-Film-Production-Process-sunrise" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida3912327-bcc1-46a1-8ca5-341b2df0d579" objectId="id503b8053-0f46-4137-b52a-bf26b25f6d75" type="output" optional="false" consumed="true"/>
+            <objectRef id="id3b85f0ee-309c-490a-ba29-eaefff9c1bd6" objectId="id33043188-46c6-4c26-9ef5-57a1d907fdcc" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida0c3a9d4-3a0d-4495-af0a-72fd8d67f441" objectId="id10ee1540-57cc-4c0b-9dfa-009330de24f9" type="output" optional="false" consumed="true"/>
+            <objectRef id="id47fa1d9e-e3b1-4e1b-89ef-c4664d0597f4" objectId="id8775cca3-fcb4-4e33-b765-48cf839a559d" type="output" optional="false" consumed="true"/>
+            <objectRef id="a9e57915-e1e9-4223-ba2e-0efcecbeaa82" objectId="idf71f8151-38f8-46e1-8b92-cce6c93843ae" type="output" optional="false" consumed="true"/>
+            <objectRef id="id15255671-72ea-46b7-a12a-455c8fadfe79" objectId="D-N-Film-Production-Process-sunset" type="output" optional="false" consumed="true"/>
+            <objectRef id="c6e6ca17-5253-4310-842d-73c31d8023d7" objectId="id76814bd9-3e98-4d5a-817c-8fdd17e5eaf9" type="output" optional="false" consumed="true"/>
+            <objectRef id="f56783c5-3bfc-427d-ba68-ba0d6340b658" objectId="id163429b7-1db2-4c88-9ddf-33b20337db3a" type="input" optional="false" consumed="true"/>
+            <objectRef id="e299101e-256f-4240-a6fd-7f91757c942f" objectId="ide02e0cc3-c5ba-43d1-9496-9d528280fd24" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf287f269-f05d-4698-a4e2-d131598a06a3" objectId="id2806d364-8c0e-4165-a77d-ad5e10184aa4" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>generalInfo = {cpf:getObjectValue('generalInfoNextday')/*}</expression>
@@ -638,8 +638,8 @@
                 <expression>callSheetNotes = &lt;additionalEquipment&gt;nil&lt;/additionalEquipment&gt; &lt;additionalCrew&gt;nil&lt;/additionalCrew&gt; &lt;directions&gt;nil&lt;/directions&gt; &lt;productionNotes&gt;nil&lt;/productionNotes&gt; &lt;locationCrewNotes&gt;nil&lt;/locationCrewNotes&gt; &lt;lunchPickup&gt;nil&lt;/lunchPickup&gt; &lt;exposedRushes&gt;nil&lt;/exposedRushes&gt; &lt;rushesScreening&gt;nil&lt;/rushesScreening&gt; &lt;crewAgreements&gt;nil&lt;/crewAgreements&gt; &lt;additionalNotes&gt;nil&lt;/additionalNotes&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="abadc184-7579-4888-b5fd-c076a449a5e8"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Distribute-Call-Sheet-64" originalID="Distribute_Call_Sheet_64">
+        <Node xsi:type="cpf:ANDSplitType" id="bd72c712-1cd9-45ba-8689-7379e9026ce1"/>
+        <Node xsi:type="cpf:TaskType" id="C-Distribute-Call-Sheet-64" originalID="Distribute_Call_Sheet_64">
             <name>Distribute Call Sheet</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -647,12 +647,12 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="ebbc9a04-50c1-43eb-b03c-004fa87de42b" resourceTypeId="id8e130965-6575-4e5b-8206-274ee2cc4d37" qualifier="Primary"/>
-            <resourceTypeRef id="bc2a9cf6-30e3-4f7d-8b6c-2fe9b56b3ff1" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <resourceTypeRef id="id8d60a733-a3be-49da-a2ad-a11310ca5b8b" resourceTypeId="id6156b837-ce24-443e-868e-023f86701a56" qualifier="Primary"/>
+            <resourceTypeRef id="ba9bb17e-965c-4b20-acfd-7a067f6d3ae0" resourceTypeId="id05f35742-28ed-41d7-a3f2-f9b68e1e0312" qualifier="Primary"/>
+            <resourceTypeRef id="idd077487b-4bab-4707-bbba-53a1e6a0c998" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <resourceTypeRef id="ed0eb6b5-0f2c-4e7a-95bc-7783455a531b" resourceTypeId="id9930e3ce-d3a8-429d-8244-fe070431a397" qualifier="Primary"/>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Fill-Out-Continuity-Report-36" originalID="Fill_Out_Continuity_Report_36">
+        <Node xsi:type="cpf:TaskType" id="C-Fill-Out-Continuity-Report-36" originalID="Fill_Out_Continuity_Report_36">
             <name>Fill Out Continuity Report</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -734,16 +734,16 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id8c94d0d4-3985-4981-87b2-aa85ad23f4cf" resourceTypeId="id41062622-6f02-40f4-845f-6a40bb14f6bc" qualifier="Primary"/>
-            <objectRef id="e3cce408-5eb5-4cc1-90ee-38b735942d9e" objectId="id5f434e5b-b7a8-4626-9b1e-78f06ef14276" type="output" optional="false" consumed="true"/>
-            <objectRef id="faf27245-6554-4883-9781-96d7758196b8" objectId="id100e634b-3357-4436-b933-065387270279" type="output" optional="false" consumed="true"/>
-            <objectRef id="id3dfce42f-4dfd-422e-8f32-68959ee6a323" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id98fb99bb-ac1c-475f-b6c2-890f4feba4bf" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide0f5a408-8c18-44f6-adae-cbd98fcbb84b" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="idbb775399-4424-4ef6-9a33-7c044ee20169" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="acb13712-14b5-4c40-bc0b-b16257164025" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id27a4a05c-aa03-4b7e-ad6e-bacc168788a2" objectId="id100e634b-3357-4436-b933-065387270279" type="input" optional="false" consumed="true"/>
-            <objectRef id="c9b9131b-60cc-4068-af1f-46a29273e5e6" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="d940e35f-123c-4c5d-97ed-24a85ab1b378" resourceTypeId="id21f15900-d574-4f88-9fd7-a544693b2dac" qualifier="Primary"/>
+            <objectRef id="f47fff53-ac9e-4b9b-beea-29689b2f7efd" objectId="idf042828d-e951-43e5-bcf3-81767da1e70a" type="output" optional="false" consumed="true"/>
+            <objectRef id="id6addb9fd-8943-4842-9276-40ae65150ac2" objectId="id8b433c6f-1d2c-4232-a7df-8d62540568ba" type="output" optional="false" consumed="true"/>
+            <objectRef id="id9c3b1025-e78c-4f99-a677-67635c22acfe" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="c504bd1a-ae6b-4982-b62e-416a8060b72c" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="idabaecbb1-92fd-485e-9e7a-ac9328a01333" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide4e06f76-6bd8-4c9e-beac-6e1d04d11512" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="id6455d71b-d47a-4b8b-bc83-086d13539177" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="d69b1a17-8fea-438c-8b54-07c0d0f384a6" objectId="id8b433c6f-1d2c-4232-a7df-8d62540568ba" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8a9d61c1-e5f6-4557-b7bc-b903d47b62cc" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>continuity = {cpf:getObjectValue('crewMember')/continuity/text()}</expression>
@@ -783,9 +783,9 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idd18958bf-f509-41dc-aded-2f75fe97c5c1"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id3f2a5609-2254-4cb6-9f78-d62502b5876f"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Fill-Out-AD-Report-41" originalID="Fill_Out_AD_Report_41">
+        <Node xsi:type="cpf:XORJoinType" id="id265b1e40-2138-4b44-819c-e795bb7252bd"/>
+        <Node xsi:type="cpf:XORSplitType" id="id3775631b-017f-45cc-9dc0-f37d278498f7"/>
+        <Node xsi:type="cpf:TaskType" id="C-Fill-Out-AD-Report-41" originalID="Fill_Out_AD_Report_41">
             <name>Fill Out AD Report</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -851,14 +851,14 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="idc71c693d-54c6-47ce-9b50-31c6452fb2e8" resourceTypeId="id09e4a1ff-e2ec-4bed-866f-1389c87224ad" qualifier="Primary"/>
-            <objectRef id="d568c1f9-c519-48c0-bb7d-6938dd9c0b06" objectId="idab73af4a-8dc5-4158-ae19-48b010fac546" type="output" optional="false" consumed="true"/>
-            <objectRef id="fc8b7fec-f612-48a1-8ace-862b18a28337" objectId="idbfbb2fd5-cda4-463d-a933-135ae9ffb33f" type="output" optional="false" consumed="true"/>
-            <objectRef id="idf2d7ee35-10df-4754-ba80-a41e8d9bb0b4" objectId="idab73af4a-8dc5-4158-ae19-48b010fac546" type="input" optional="false" consumed="true"/>
-            <objectRef id="idb36c50da-e004-499e-8fe4-06441e02d1f0" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="b7096941-d5f1-4388-b800-d7a20beb2ef3" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id1d144a02-ff13-4205-b8f1-83400d707a77" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="idb078fe52-7ed9-44e0-8bb1-f5b0da17b058" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="d93a6939-b21f-4fa3-a3b5-d8add474aa6c" resourceTypeId="id0f957ac3-b9b3-4de3-b53e-1e409b7d3275" qualifier="Primary"/>
+            <objectRef id="id2c61cbaf-fc09-4c39-8cbf-e628549136a5" objectId="id33043188-46c6-4c26-9ef5-57a1d907fdcc" type="output" optional="false" consumed="true"/>
+            <objectRef id="ad7ab70b-b2c8-408a-bcbb-05234b83df43" objectId="ida1a6b6dd-9e61-4a9f-83d0-e5299ce0f2a8" type="output" optional="false" consumed="true"/>
+            <objectRef id="idee157003-182f-4dc0-b085-510bbdc79d07" objectId="id33043188-46c6-4c26-9ef5-57a1d907fdcc" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf73ddb3e-23fd-47f0-bac5-dd7d747951ed" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="f8266e43-7d36-44b3-9fc1-adee1896e694" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id7831b866-5687-41c8-8f17-e4f7c63fec2e" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8d8891d7-fd98-47a2-9f34-6e16a45ece12" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>timeSheetInfo = {cpf:getObjectValue('timeSheetInfo')/*}</expression>
@@ -890,9 +890,9 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="f589bfdf-18f3-4331-9787-6df0c54a472b"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="fd0ae1a7-0f91-4306-a942-dfdcffec193b"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Fill-Out-Sound-Sheets-39" originalID="Fill_Out_Sound_Sheets_39">
+        <Node xsi:type="cpf:XORJoinType" id="b55aa254-643d-47ae-8730-d7c8ea778458"/>
+        <Node xsi:type="cpf:XORSplitType" id="d0aa2f00-6212-4a0c-80a8-e61a17c5c181"/>
+        <Node xsi:type="cpf:TaskType" id="C-Fill-Out-Sound-Sheets-39" originalID="Fill_Out_Sound_Sheets_39">
             <name>Fill Out Sound Sheets</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -990,16 +990,16 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="c72ac712-b788-406b-b7fd-5a2338e9ea29" resourceTypeId="id156a9a30-9e80-4748-bcad-7839775f4814" qualifier="Primary"/>
-            <objectRef id="f9edd564-c1df-4939-82a9-d8d77a7c7772" objectId="D-N-Film-Production-Process-soundInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="id8441bc18-71f6-4019-8ec9-4fbc6ebcab92" objectId="ida8197551-0fe7-44ef-82c8-e9ca4056d5c0" type="output" optional="false" consumed="true"/>
-            <objectRef id="e8840854-7dd9-4b23-9fa8-5d189bc57466" objectId="ide6ad59e9-6e29-43ef-81c5-3fa181f08755" type="output" optional="false" consumed="true"/>
-            <objectRef id="cdabce46-f6ea-409a-b521-32f65999e486" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id863c1b07-88e3-494a-bb83-0a4c229cdf8c" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="id965447b7-53a1-43ae-888d-03d643e8764a" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide7e2e2ad-c709-4439-aa46-033eeccfff89" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide33db1e6-2f0c-4146-a41d-220ac1b61557" objectId="ida8197551-0fe7-44ef-82c8-e9ca4056d5c0" type="input" optional="false" consumed="true"/>
-            <objectRef id="id2e03f9f1-e027-4100-b7e3-8e40a3d53fa8" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="bea37f4c-e9af-46cb-8d66-24bdd84a8c0b" resourceTypeId="idefdaf7ee-8d1c-4c2c-8e1e-b8ce24299e9e" qualifier="Primary"/>
+            <objectRef id="idbdb1fbb2-2a4f-4dbb-a590-df3cbc68d68e" objectId="D-N-Film-Production-Process-soundInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="iddb3cb9b2-402c-462e-9210-e17f862b5d12" objectId="id10ee1540-57cc-4c0b-9dfa-009330de24f9" type="output" optional="false" consumed="true"/>
+            <objectRef id="id395ed85c-c4df-46ac-a1bb-2a5cb4dcb2eb" objectId="id76018b24-b065-4b5a-9d97-fdb82d4679d6" type="output" optional="false" consumed="true"/>
+            <objectRef id="idd5a290c3-c625-4ba7-9e61-e8d1a3491ac5" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="a682537b-d132-44cd-9d87-07b572566592" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="id55ec8692-e6b3-4507-b8d8-62b5723a5c3e" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="idc6efde8f-f068-474c-8e95-af6986f1c375" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="ebcb7cdd-11ed-4e30-8261-21a23c3f4859" objectId="id10ee1540-57cc-4c0b-9dfa-009330de24f9" type="input" optional="false" consumed="true"/>
+            <objectRef id="e7796cc3-3a2c-4615-b51d-564d8532687b" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>editor = {cpf:getObjectValue('crewMember')/editor/text()}</expression>
@@ -1047,9 +1047,9 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idba4ddf4c-340d-4257-bd6a-b0c99d71f9f1"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id4df65c72-598e-4cbc-bff3-2bd5c1e3b7a1"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Fill-Out-Camera-Sheets-40" originalID="Fill_Out_Camera_Sheets_40">
+        <Node xsi:type="cpf:XORJoinType" id="id59906226-95f0-4583-99e5-f7e662103a19"/>
+        <Node xsi:type="cpf:XORSplitType" id="id41419cc9-7805-41c0-b077-eadfd02b60d6"/>
+        <Node xsi:type="cpf:TaskType" id="C-Fill-Out-Camera-Sheets-40" originalID="Fill_Out_Camera_Sheets_40">
             <name>Fill Out Camera Sheets</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1169,23 +1169,23 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id636c6c3c-3ab9-47d9-a33e-14151ed54e9a" resourceTypeId="id1a2c1ca9-ab57-4a19-a06b-7ecfe23963c4" qualifier="Primary"/>
-            <resourceTypeRef id="d7e3435a-01de-475a-8853-8f7a90f8a6ce" resourceTypeId="id3b25e6c8-7072-4b8e-98a3-9292da5b8723" qualifier="Primary"/>
-            <objectRef id="f7295515-3f91-4b76-8d01-62ac40bcee5f" objectId="ideca64f52-2e86-4b2d-a32b-b2cbaafc0e47" type="output" optional="false" consumed="true"/>
-            <objectRef id="id22997a74-e140-4526-89e2-89f301afb273" objectId="id5910e89b-0468-4f68-8803-ff4d24f56276" type="output" optional="false" consumed="true"/>
-            <objectRef id="a7487785-5532-4c64-9db7-fa51537e8835" objectId="idba941d99-cec3-4ea2-9347-83570c9e2877" type="output" optional="false" consumed="true"/>
-            <objectRef id="e001962d-3ffb-4102-a90b-968f305dbb6b" objectId="D-N-Film-Production-Process-shortEndMin" type="output" optional="false" consumed="true"/>
-            <objectRef id="ided012f8d-3309-45e8-bf12-ee90e5957fb1" objectId="D-N-Film-Production-Process-cameraInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="idbcefc94b-adc2-418c-8f7c-91ec9b9f7117" objectId="id1794c98a-bbbd-4378-b0cf-68ea414b8ba2" type="output" optional="false" consumed="true"/>
-            <objectRef id="ccc39d1b-aef2-4ef7-bba3-58655e43df91" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id595de271-c00f-48ac-92a6-6def6bee4456" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="b8e0a615-6011-4f43-9b11-aa08f257cb6a" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="id0975ff70-47f3-4ea6-a5c1-66da4e9103ad" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf1510fd5-23b1-401c-9bc6-41dcb42f9a94" objectId="id1794c98a-bbbd-4378-b0cf-68ea414b8ba2" type="input" optional="false" consumed="true"/>
-            <objectRef id="f5ae5919-fb0c-4f2b-991e-166e3666a9ee" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id5c74e78c-5352-4d02-a641-541933e364e8" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="fbbd0c7a-36a9-4aa0-9406-fe0020e6e035" objectId="id5910e89b-0468-4f68-8803-ff4d24f56276" type="input" optional="false" consumed="true"/>
-            <objectRef id="edc8276d-ae87-4776-874d-4704fcfe72f2" objectId="idba941d99-cec3-4ea2-9347-83570c9e2877" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="e050cf79-a56b-4142-b847-8d903d8d1324" resourceTypeId="idad9251d5-054a-428c-a161-f3b2ca31ffdf" qualifier="Primary"/>
+            <resourceTypeRef id="idf255f1d5-423f-4569-a8ef-ee7c48405130" resourceTypeId="id03f641fd-2219-4c5b-ba5d-2499c49dd302" qualifier="Primary"/>
+            <objectRef id="id0909dc4e-6c28-48a0-ae90-d206dc683f7f" objectId="id3a3efab5-7132-4ded-822a-16ac0d1b9bd5" type="output" optional="false" consumed="true"/>
+            <objectRef id="id400a8e80-5fe7-45c6-9a49-8a8c76b82753" objectId="id503b8053-0f46-4137-b52a-bf26b25f6d75" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc2e5b2ae-a23e-460a-b392-120fef6d3eea" objectId="id60856e7e-d439-4d7c-8560-0a17fbf93e53" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida4671d9f-8e57-4fba-b694-92292b66dafe" objectId="D-N-Film-Production-Process-shortEndMin" type="output" optional="false" consumed="true"/>
+            <objectRef id="d9864d60-a7f4-4f55-b86a-7e9391eb27c7" objectId="D-N-Film-Production-Process-cameraInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida0f27a62-f8db-41c8-8b03-e6e28005805a" objectId="id77447791-03fe-422e-9ef6-79659f812c36" type="output" optional="false" consumed="true"/>
+            <objectRef id="bc6405ad-0565-41cb-82dd-29927f72551d" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id4fa3f7bb-99f9-4a5a-837e-9e5e56ec49dc" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="da1d18b9-962c-4944-b981-26410b84d0f8" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="ca53c76a-4320-4832-bb1b-dec17baea10f" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id51013beb-bb3b-4ef3-afd0-170abdc1e5f9" objectId="id77447791-03fe-422e-9ef6-79659f812c36" type="input" optional="false" consumed="true"/>
+            <objectRef id="c8f47108-d4dc-41cc-9305-93fb7c214b88" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id61144b2a-9d39-4525-a0e7-657c3297af5c" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id3ede0e52-aff3-4bcd-abe6-e67d9e38ae06" objectId="id503b8053-0f46-4137-b52a-bf26b25f6d75" type="input" optional="false" consumed="true"/>
+            <objectRef id="id0d2580a2-8dc0-4f88-beb5-b152faea7db6" objectId="id60856e7e-d439-4d7c-8560-0a17fbf93e53" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>cameraOperator = {cpf:getObjectValue('crewMember')/cameraOperator/text()}</expression>
@@ -1252,13 +1252,13 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idae6c614b-e34e-4965-8545-0b626ef2edda"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="c3d7a400-9dc2-404a-a40c-7423e08ed69e"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-null-3275" originalID="null_3275"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-null-3273" originalID="null_3273"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-null-3276" originalID="null_3276"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-null-3271" originalID="null_3271"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Create-DPR-10" originalID="Create_DPR_10">
+        <Node xsi:type="cpf:XORJoinType" id="idbfd94bde-093c-4fc4-b1c1-c6f48b827fac"/>
+        <Node xsi:type="cpf:XORSplitType" id="id51bf93d3-d359-4f0f-966c-9c2807c2ca96"/>
+        <Node xsi:type="cpf:EventType" id="C-null-3275" originalID="null_3275"/>
+        <Node xsi:type="cpf:EventType" id="C-null-3273" originalID="null_3273"/>
+        <Node xsi:type="cpf:EventType" id="C-null-3276" originalID="null_3276"/>
+        <Node xsi:type="cpf:EventType" id="C-null-3271" originalID="null_3271"/>
+        <Node xsi:type="cpf:TaskType" id="C-Create-DPR-10" originalID="Create_DPR_10">
             <name>Create DPR</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1324,22 +1324,22 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="d5d40194-c9a3-4168-ad42-1f830fa1de41" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
-            <objectRef id="id02432638-68e9-4e6c-b13f-c5fd47945a96" objectId="id5910e89b-0468-4f68-8803-ff4d24f56276" type="output" optional="false" consumed="true"/>
-            <objectRef id="id2d4de563-3581-4d14-92f1-0a2ce5b8ca92" objectId="D-N-Film-Production-Process-prevShot" type="output" optional="false" consumed="true"/>
-            <objectRef id="id6e669de9-1893-43a9-ba04-c7c1cedd64a4" objectId="id4d85bd1a-69ff-4d16-8272-9705496d22cd" type="output" optional="false" consumed="true"/>
-            <objectRef id="ide30f0f64-19f6-4038-8fd6-ef01642df1aa" objectId="idcff86892-c160-4a4e-9741-3a82739b71df" type="output" optional="false" consumed="true"/>
-            <objectRef id="id0fbeb8ae-aa74-4965-80ff-54b8fbfd6ba5" objectId="id0bd73be5-71d5-4f14-9463-589751c9b1f4" type="output" optional="false" consumed="true"/>
-            <objectRef id="a6e09128-b682-411a-ab16-e4cdf4cbc925" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id8cbf919d-8902-4764-a8a8-4fcb8db9fd30" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="idcc89eaa6-f8ee-49e7-b842-e6d1367f68bf" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="ea6eb73d-9b9c-46b2-815d-7eba836982e6" objectId="id5910e89b-0468-4f68-8803-ff4d24f56276" type="input" optional="false" consumed="true"/>
-            <objectRef id="bb0ec0ee-3a7f-4d24-8f38-403cfc9a110d" objectId="id4a76f18f-10a4-4782-b118-62e471f10f3c" type="input" optional="false" consumed="true"/>
-            <objectRef id="bd6b7bb4-fe86-49b8-ae43-c6388adc9bd3" objectId="idcff86892-c160-4a4e-9741-3a82739b71df" type="input" optional="false" consumed="true"/>
-            <objectRef id="eb9ab46c-1bc0-4ea1-b84d-8ae389e3600d" objectId="id05cad86d-a96c-4156-b7d5-0356f6c68644" type="input" optional="false" consumed="true"/>
-            <objectRef id="id3fe6e8ad-9bbe-4542-a09d-7f3fbad89804" objectId="ida8197551-0fe7-44ef-82c8-e9ca4056d5c0" type="input" optional="false" consumed="true"/>
-            <objectRef id="id51880df3-1e36-4f77-abae-4230d387decc" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
-            <objectRef id="id02a63032-0aeb-4cb4-aa2d-e460bd59aa34" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="a6edd1de-58ce-406b-8bc4-e32caef172b1" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
+            <objectRef id="ab6aeaa3-8c09-4a09-94cd-0623f4e68257" objectId="id503b8053-0f46-4137-b52a-bf26b25f6d75" type="output" optional="false" consumed="true"/>
+            <objectRef id="id974ca473-69b4-4229-9853-2a36daca582a" objectId="D-N-Film-Production-Process-prevShot" type="output" optional="false" consumed="true"/>
+            <objectRef id="id97470c23-35de-40ad-be7f-0f2c509a3270" objectId="id57295f75-0df4-415b-b9f1-86829cb678ff" type="output" optional="false" consumed="true"/>
+            <objectRef id="id9896805c-251c-469e-b604-3c9aa33d60c5" objectId="ida5cf3a63-5d92-479c-a061-2adbbec19374" type="output" optional="false" consumed="true"/>
+            <objectRef id="id061497ed-8819-4958-9d34-75ab016ea26b" objectId="id14d1cd18-3a7b-4fd1-921c-5e7e9bc57a12" type="output" optional="false" consumed="true"/>
+            <objectRef id="idd82d2f07-0dab-45ce-a3d9-9de2ea75c6fd" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="idc17f2532-d674-42ec-8b7e-0ab553ab6323" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="id1b6fe508-4cf9-40ca-8deb-f1d1542bf1ea" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="dff9a343-d877-4605-8d13-b987bef8790e" objectId="id503b8053-0f46-4137-b52a-bf26b25f6d75" type="input" optional="false" consumed="true"/>
+            <objectRef id="e91bb55e-2a8b-4baa-a95d-4f6ca22a6d53" objectId="id1b6bd560-802f-4b16-a9a7-37930e01492c" type="input" optional="false" consumed="true"/>
+            <objectRef id="cdf8ef7c-b99f-4598-90d2-2551913266df" objectId="ida5cf3a63-5d92-479c-a061-2adbbec19374" type="input" optional="false" consumed="true"/>
+            <objectRef id="idee558004-a7bc-4a56-b3bc-868effcbe61a" objectId="id8775cca3-fcb4-4e33-b765-48cf839a559d" type="input" optional="false" consumed="true"/>
+            <objectRef id="a08577e6-8def-4539-b021-baeb74c30abd" objectId="id10ee1540-57cc-4c0b-9dfa-009330de24f9" type="input" optional="false" consumed="true"/>
+            <objectRef id="ca56b88b-4f46-48dc-9bbc-95f65bca6443" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
+            <objectRef id="idd648d65d-de89-4b64-8e90-8256ea33b47e" objectId="D-N-Film-Production-Process-crewMember" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>directorOfPhotography = {cpf:getObjectValue('crewMember')/DOP/text()}</expression>
@@ -1387,8 +1387,8 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Fill-Out-Continuity-Daily-Report-3283" originalID="Fill_Out_Continuity_Daily_Report_3283">
+        <Node xsi:type="cpf:ANDJoinType" id="bed5ea07-cc18-4e45-920c-a07c00591014"/>
+        <Node xsi:type="cpf:TaskType" id="C-Fill-Out-Continuity-Daily-Report-3283" originalID="Fill_Out_Continuity_Daily_Report_3283">
             <name>Fill Out Continuity Daily Report</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1422,13 +1422,13 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="id6a2ceda5-9636-40c9-a2f0-9f3f96c91129" resourceTypeId="id41062622-6f02-40f4-845f-6a40bb14f6bc" qualifier="Primary"/>
-            <objectRef id="idaba94c75-6e11-40f2-8475-e37dd22c22d6" objectId="id1f7b14fb-c0c0-4d33-9479-c57ac489e257" type="output" optional="false" consumed="true"/>
-            <objectRef id="id51093b52-ac11-4dff-b30f-e642ae74c909" objectId="id8e395930-a10e-4506-93bd-151cbfb8a07b" type="output" optional="false" consumed="true"/>
-            <objectRef id="idf0b84adf-dcda-4754-96bb-b734cc54f91f" objectId="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" type="input" optional="false" consumed="true"/>
-            <objectRef id="id8a28cde6-e8fd-45fc-9aa6-c27ec685f7f9" objectId="D-N-Film-Production-Process-totalScenes" type="input" optional="false" consumed="true"/>
-            <objectRef id="id907a2ca2-5cbf-44e6-99e7-2948f34410bd" objectId="id8e395930-a10e-4506-93bd-151cbfb8a07b" type="input" optional="false" consumed="true"/>
-            <objectRef id="id707a8088-ded9-4a95-a6d8-a9a838a8b8e2" objectId="id58851fee-00ec-4459-be27-371eaf9512b1" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="bb0914c1-1833-479b-a09f-2477890a2c6d" resourceTypeId="id21f15900-d574-4f88-9fd7-a544693b2dac" qualifier="Primary"/>
+            <objectRef id="id36886e34-1f50-4ca6-89d5-8846b8fbfa6d" objectId="id508051d6-b2ea-4a1e-a3ee-49f82f6e58e9" type="output" optional="false" consumed="true"/>
+            <objectRef id="c509a5df-572b-498c-9075-b81bd50c490f" objectId="idaeca53b5-d8d1-4d82-b1fb-c52771b90bf8" type="output" optional="false" consumed="true"/>
+            <objectRef id="d7712879-bb50-4508-a183-6925bb789ff5" objectId="idd92e97ba-8814-4214-a552-c83a00e464e9" type="input" optional="false" consumed="true"/>
+            <objectRef id="id15bc43e5-e9df-46b4-9806-9d679cedd9d2" objectId="D-N-Film-Production-Process-totalScenes" type="input" optional="false" consumed="true"/>
+            <objectRef id="fad4f210-e246-49ca-bdfb-11f6af9e65db" objectId="idaeca53b5-d8d1-4d82-b1fb-c52771b90bf8" type="input" optional="false" consumed="true"/>
+            <objectRef id="iddfedccdd-49cb-406c-9056-10a186b3960a" objectId="id014709fb-da02-4b47-98a4-5d8b950e579e" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>generalInfo = {cpf:getObjectValue('generalInfoToday')/*}</expression>
@@ -1448,7 +1448,7 @@
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-Distribute-DPR-11" originalID="Distribute_DPR_11">
+        <Node xsi:type="cpf:TaskType" id="C-Distribute-DPR-11" originalID="Distribute_DPR_11">
             <name>Distribute DPR</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocator">
                 <allocator:allocator xmlns:allocator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1458,108 +1458,108 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="c808afc8-fdd3-4632-869e-d9d640143277" resourceTypeId="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" qualifier="Primary"/>
+            <resourceTypeRef id="id8c60e0dd-ad70-4c0a-955e-b842c2c8c68e" resourceTypeId="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" qualifier="Primary"/>
             <teamWork>false</teamWork>
             <allocationStrategy>Other</allocationStrategy>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>end production</name>
         </Node>
-        <Edge id="id2ef493ae-47b2-4b2e-a105-6a618f5de348" default="false" sourceId="C-start-production-1" targetId="C-Welcome-to-Start-Process-3258"/>
-        <Edge id="id65f9f3c3-d523-4efa-bb5a-fd2a686ed4e7" sourceId="C-Welcome-to-Start-Process-3258" targetId="id846c6944-4335-4301-ae45-08a15a9cdd46"/>
-        <Edge id="id45469a3b-3ce1-4131-b9a2-ef151d449059" default="false" sourceId="id846c6944-4335-4301-ae45-08a15a9cdd46" targetId="C-Input-Location-Notes-3256"/>
-        <Edge id="id7d788070-c784-4344-80e4-7f4b019f4542" default="false" sourceId="id846c6944-4335-4301-ae45-08a15a9cdd46" targetId="C-Input-Cast-List-5189"/>
-        <Edge id="idb3fead79-3700-42a6-a8b5-2a7303e4abf4" default="false" sourceId="id846c6944-4335-4301-ae45-08a15a9cdd46" targetId="C-Input-Crew-List-3257"/>
-        <Edge id="id77b41ca3-ece6-43ad-aa62-c6a71d9ce3ed" sourceId="idfac86a92-17a2-4f5d-88f3-73318ccb5b70" targetId="C-Input-Shooting-Schedule-3255"/>
-        <Edge id="id09b13412-20ee-4d00-bc77-17c39d8bb7e5" default="false" sourceId="C-Input-Location-Notes-3256" targetId="idfac86a92-17a2-4f5d-88f3-73318ccb5b70"/>
-        <Edge id="id137c66eb-7b36-4778-a744-e6888348fb9c" default="false" sourceId="C-Input-Cast-List-5189" targetId="idfac86a92-17a2-4f5d-88f3-73318ccb5b70"/>
-        <Edge id="idccc430fa-4ab0-43b5-94a9-589faadd3386" default="false" sourceId="C-Input-Crew-List-3257" targetId="idfac86a92-17a2-4f5d-88f3-73318ccb5b70"/>
-        <Edge id="idae8cac70-de9e-4caf-91fb-83fa834016f9" sourceId="idf1ffcca5-1468-47e6-9ba4-5fe02073061d" targetId="C-null-3253"/>
-        <Edge id="id79a58b1f-09ad-4e07-855f-d3c24aac07ba" default="false" sourceId="C-Input-Shooting-Schedule-3255" targetId="idf1ffcca5-1468-47e6-9ba4-5fe02073061d"/>
-        <Edge id="id6cad1044-b03d-4885-baa8-450e85e84dc2" sourceId="C-null-3253" targetId="id07443fe5-49cd-4613-83ca-5ea98e0f9f32"/>
-        <Edge id="idb726c8df-2a79-4d4c-a129-48943ff66204" sourceId="id7a4b700b-b3ef-462b-9750-7a56196ac5ed" targetId="C-null-3279"/>
-        <Edge id="id90bf48e6-32ac-4b38-a457-0429d49c06e3" default="false" sourceId="id07443fe5-49cd-4613-83ca-5ea98e0f9f32" targetId="id7a4b700b-b3ef-462b-9750-7a56196ac5ed">
+        <Edge id="id61b115fb-672b-491a-99cd-9979a03cb68d" default="false" sourceId="C-start-production-1" targetId="C-Welcome-to-Start-Process-3258"/>
+        <Edge id="idf946df84-ab95-47f0-ae3b-58695b8183ed" sourceId="C-Welcome-to-Start-Process-3258" targetId="c9fc7537-3c6e-4096-8c06-2badd4490184"/>
+        <Edge id="idf9c241ef-b19d-4d36-959d-558fab014e37" default="false" sourceId="c9fc7537-3c6e-4096-8c06-2badd4490184" targetId="C-Input-Location-Notes-3256"/>
+        <Edge id="idbbb0fa2b-0314-483b-9c1a-ce5f9aed34f3" default="false" sourceId="c9fc7537-3c6e-4096-8c06-2badd4490184" targetId="C-Input-Cast-List-5189"/>
+        <Edge id="idfd82d20f-4714-4883-8ad1-7a81b645329a" default="false" sourceId="c9fc7537-3c6e-4096-8c06-2badd4490184" targetId="C-Input-Crew-List-3257"/>
+        <Edge id="id0ec995aa-c3fa-4b36-b12c-5acc39355217" sourceId="b7dec31f-203a-46ce-a6f9-5da3c8de9a86" targetId="C-Input-Shooting-Schedule-3255"/>
+        <Edge id="id87a68c13-f4f9-4a1b-ae37-f246b65e606a" default="false" sourceId="C-Input-Location-Notes-3256" targetId="b7dec31f-203a-46ce-a6f9-5da3c8de9a86"/>
+        <Edge id="idcbda9427-2031-4841-8020-3e04fa452eee" default="false" sourceId="C-Input-Cast-List-5189" targetId="b7dec31f-203a-46ce-a6f9-5da3c8de9a86"/>
+        <Edge id="id12c0d999-c7d0-42b9-856f-41b7037d9975" default="false" sourceId="C-Input-Crew-List-3257" targetId="b7dec31f-203a-46ce-a6f9-5da3c8de9a86"/>
+        <Edge id="id21d60d9f-cd4d-44d8-a0ac-baeb8c786d58" sourceId="id43b17416-981c-48ca-bb0a-c73dcdc18f36" targetId="C-null-3253"/>
+        <Edge id="id0aba27e8-0dcf-4f03-8a78-ace6ebc2affc" default="false" sourceId="C-Input-Shooting-Schedule-3255" targetId="id43b17416-981c-48ca-bb0a-c73dcdc18f36"/>
+        <Edge id="id05638ab8-fb1b-4733-8009-d1fe91d016fe" sourceId="C-null-3253" targetId="id448ef63d-17c8-4abf-9d31-524b9c85af3d"/>
+        <Edge id="id812ea6a7-1019-4f0d-a0ac-bfe8c4ebe05a" sourceId="f63bb34c-cdeb-4f23-8526-ca79c217e8c6" targetId="C-null-3279"/>
+        <Edge id="id9c4ea4e6-3503-4f96-bdf2-340fe0526ce6" default="false" sourceId="id448ef63d-17c8-4abf-9d31-524b9c85af3d" targetId="f63bb34c-cdeb-4f23-8526-ca79c217e8c6">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(number(/Film_Production_Process/shootDayNoToday/text())=number(/Film_Production_Process/shootingSchedule/scheduledShootingDays/text()))</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id38916db2-0481-4ed1-a409-4ed47f260c60" sourceId="id10085c5e-0930-431b-a698-8a3155bf93cc" targetId="C-Create-Call-Sheet-7902"/>
-        <Edge id="id4601e456-e8e5-43bc-a6c7-72579f2b154c" default="true" sourceId="id07443fe5-49cd-4613-83ca-5ea98e0f9f32" targetId="id10085c5e-0930-431b-a698-8a3155bf93cc"/>
+        <Edge id="ide260123e-7899-4e75-947a-b95f8c2a4cd0" sourceId="id7c35feec-314a-4c3c-a4b2-c89c040d0904" targetId="C-Create-Call-Sheet-7902"/>
+        <Edge id="ide0668591-14bc-496d-b789-5b7380005c69" default="true" sourceId="id448ef63d-17c8-4abf-9d31-524b9c85af3d" targetId="id7c35feec-314a-4c3c-a4b2-c89c040d0904"/>
         <Edge id="C-Create-Call-Sheet-7902-null-7903" default="false" sourceId="C-Create-Call-Sheet-7902" targetId="C-null-7903"/>
-        <Edge id="id9c029b3a-e040-4c25-b3bb-d9298f9f5d6e" default="false" sourceId="C-null-7903" targetId="C-Revise-Shooting-Schedule-3282"/>
-        <Edge id="idd987b3c2-3b36-46e1-872f-4629cf3886ff" default="false" sourceId="C-Revise-Shooting-Schedule-3282" targetId="id10085c5e-0930-431b-a698-8a3155bf93cc"/>
-        <Edge id="id11acc120-ae7b-4506-b7a9-649b146325f5" sourceId="id2a4df610-f4d4-4a18-b992-45cb5e1663f8" targetId="C-null-3280"/>
-        <Edge id="idbd2e3b0e-2250-46d4-adf7-c9379d49486f" default="false" sourceId="C-null-3279" targetId="id2a4df610-f4d4-4a18-b992-45cb5e1663f8"/>
-        <Edge id="idf8d7bf22-4583-4a71-97fe-bf494e545d92" sourceId="C-null-3280" targetId="d2205545-10b4-41d8-b93d-2118bfdb0157"/>
+        <Edge id="idff1fa68a-80ff-41fd-940d-ca3d11b94e45" default="false" sourceId="C-null-7903" targetId="C-Revise-Shooting-Schedule-3282"/>
+        <Edge id="id21707a68-859b-4c61-9209-612627f6c9a8" default="false" sourceId="C-Revise-Shooting-Schedule-3282" targetId="id7c35feec-314a-4c3c-a4b2-c89c040d0904"/>
+        <Edge id="id061341ee-425a-4ccf-982a-2f37e2693654" sourceId="aea68c49-89db-4688-874a-c04cbb5f9689" targetId="C-null-3280"/>
+        <Edge id="idcd2cc373-ac09-42c9-8007-53a382f72831" default="false" sourceId="C-null-3279" targetId="aea68c49-89db-4688-874a-c04cbb5f9689"/>
+        <Edge id="id0c848e24-e123-4078-9a8d-4eadd5b84a4d" sourceId="C-null-3280" targetId="cb2c59d2-2de3-4ffe-a39f-05fc6306151e"/>
         <Edge id="C-null-7903-Update-Call-Sheet-4740" default="false" sourceId="C-null-7903" targetId="C-Update-Call-Sheet-4740"/>
-        <Edge id="idaeef39c3-5974-4f7d-9797-24e375475fd2" sourceId="C-Update-Call-Sheet-4740" targetId="be549d86-f3a3-4095-a308-132f87e274c4"/>
-        <Edge id="id63621f45-df25-445d-a7b2-4e0a4854e0d2" default="false" sourceId="be549d86-f3a3-4095-a308-132f87e274c4" targetId="C-null-7903">
+        <Edge id="id4564af3e-cfdd-4e1f-b969-bc370083fc17" sourceId="C-Update-Call-Sheet-4740" targetId="idfaa9d039-8f88-4c9e-9efa-625255802b2b"/>
+        <Edge id="idd962d9cb-9ea3-4c46-ae7e-bfcaca7690dd" default="false" sourceId="idfaa9d039-8f88-4c9e-9efa-625255802b2b" targetId="C-null-7903">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(/Film_Production_Process/finalCallSheetSubmission/text()='false')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idb1747f72-04ff-4cd1-b226-9929145764d0" default="false" sourceId="d2205545-10b4-41d8-b93d-2118bfdb0157" targetId="C-Start-Another-Shoot-Day-3268">
+        <Edge id="ided742998-99a0-4579-b010-1ddcf28e1c76" default="false" sourceId="cb2c59d2-2de3-4ffe-a39f-05fc6306151e" targetId="C-Start-Another-Shoot-Day-3268">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(number(/Film_Production_Process/shootDayNoToday/text())&lt;number(/Film_Production_Process/shootingSchedule/scheduledShootingDays/text()))</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id1b454328-464d-401c-97ef-31a3cc93bec6" sourceId="C-Start-Another-Shoot-Day-3268" targetId="abadc184-7579-4888-b5fd-c076a449a5e8"/>
-        <Edge id="id729030eb-81ad-4619-a076-7adbe6222ca0" default="false" sourceId="abadc184-7579-4888-b5fd-c076a449a5e8" targetId="idf1ffcca5-1468-47e6-9ba4-5fe02073061d"/>
-        <Edge id="id4ae8a41c-582b-4978-be44-259182a0a19e" default="true" sourceId="be549d86-f3a3-4095-a308-132f87e274c4" targetId="C-Distribute-Call-Sheet-64"/>
-        <Edge id="id5adc5df2-7afd-4e90-90cd-04ad5fc8c0fe" default="false" sourceId="C-Distribute-Call-Sheet-64" targetId="id7a4b700b-b3ef-462b-9750-7a56196ac5ed"/>
-        <Edge id="ide2621eac-5a16-4ae9-b775-c2dab3b72b8d" sourceId="idd18958bf-f509-41dc-aded-2f75fe97c5c1" targetId="C-Fill-Out-Continuity-Report-36"/>
-        <Edge id="idf5831913-0661-4a32-85d9-b1d32d95a154" default="false" sourceId="abadc184-7579-4888-b5fd-c076a449a5e8" targetId="idd18958bf-f509-41dc-aded-2f75fe97c5c1"/>
-        <Edge id="id62a73754-79a8-47bb-a59b-9a8ed6616bf7" sourceId="C-Fill-Out-Continuity-Report-36" targetId="id3f2a5609-2254-4cb6-9f78-d62502b5876f"/>
-        <Edge id="id7973b88e-c1ed-40d3-8dda-6cb4c1eaba15" sourceId="f589bfdf-18f3-4331-9787-6df0c54a472b" targetId="C-Fill-Out-AD-Report-41"/>
-        <Edge id="id77763693-89d8-494c-9810-1cb6697a2b57" default="false" sourceId="abadc184-7579-4888-b5fd-c076a449a5e8" targetId="f589bfdf-18f3-4331-9787-6df0c54a472b"/>
-        <Edge id="id5fa136ad-d670-4823-8a96-8ff6c8911f71" sourceId="C-Fill-Out-AD-Report-41" targetId="fd0ae1a7-0f91-4306-a942-dfdcffec193b"/>
-        <Edge id="idad390123-d791-47ac-83e1-74a57c0c7bd0" sourceId="idba4ddf4c-340d-4257-bd6a-b0c99d71f9f1" targetId="C-Fill-Out-Sound-Sheets-39"/>
-        <Edge id="id7ba6665c-f944-4b26-b7f3-7f421df574da" default="false" sourceId="abadc184-7579-4888-b5fd-c076a449a5e8" targetId="idba4ddf4c-340d-4257-bd6a-b0c99d71f9f1"/>
-        <Edge id="id8569a232-ef07-4408-a3a9-e4cbcb66cc20" sourceId="C-Fill-Out-Sound-Sheets-39" targetId="id4df65c72-598e-4cbc-bff3-2bd5c1e3b7a1"/>
-        <Edge id="idd0da1de9-93e8-49d9-a50a-d5ba23b0aa63" sourceId="idae6c614b-e34e-4965-8545-0b626ef2edda" targetId="C-Fill-Out-Camera-Sheets-40"/>
-        <Edge id="id13c5403e-09fb-4acd-a3ca-f5125499bba0" default="false" sourceId="abadc184-7579-4888-b5fd-c076a449a5e8" targetId="idae6c614b-e34e-4965-8545-0b626ef2edda"/>
-        <Edge id="id31f3d145-55f4-42b1-aeac-6c3acad399fe" sourceId="C-Fill-Out-Camera-Sheets-40" targetId="c3d7a400-9dc2-404a-a40c-7423e08ed69e"/>
-        <Edge id="idf13dd6a8-2aad-4a40-a4cc-31322aa7b36b" default="false" sourceId="c3d7a400-9dc2-404a-a40c-7423e08ed69e" targetId="C-null-3275">
+        <Edge id="idcabf3e8c-3a95-4fb5-9a4c-40ba05082a10" sourceId="C-Start-Another-Shoot-Day-3268" targetId="bd72c712-1cd9-45ba-8689-7379e9026ce1"/>
+        <Edge id="ideec196c3-8fea-4947-be63-fbb3b02e5635" default="false" sourceId="bd72c712-1cd9-45ba-8689-7379e9026ce1" targetId="id43b17416-981c-48ca-bb0a-c73dcdc18f36"/>
+        <Edge id="id328db312-ca2e-4676-82d8-8cbf3a28728b" default="true" sourceId="idfaa9d039-8f88-4c9e-9efa-625255802b2b" targetId="C-Distribute-Call-Sheet-64"/>
+        <Edge id="idaf6f2447-3b85-408c-aedf-d986a33b09f5" default="false" sourceId="C-Distribute-Call-Sheet-64" targetId="f63bb34c-cdeb-4f23-8526-ca79c217e8c6"/>
+        <Edge id="idf1771614-8a67-4e3d-8147-83c6e814c91f" sourceId="id265b1e40-2138-4b44-819c-e795bb7252bd" targetId="C-Fill-Out-Continuity-Report-36"/>
+        <Edge id="idd36e7d25-0b43-49ff-a449-ff7fd652b88e" default="false" sourceId="bd72c712-1cd9-45ba-8689-7379e9026ce1" targetId="id265b1e40-2138-4b44-819c-e795bb7252bd"/>
+        <Edge id="id6847b1a3-eb5b-4de1-b5b2-471d26eddb39" sourceId="C-Fill-Out-Continuity-Report-36" targetId="id3775631b-017f-45cc-9dc0-f37d278498f7"/>
+        <Edge id="idb77695e7-1457-43db-9057-7e7550ff6ae1" sourceId="b55aa254-643d-47ae-8730-d7c8ea778458" targetId="C-Fill-Out-AD-Report-41"/>
+        <Edge id="id9c3b92b8-d224-4e2e-99c2-aa65e375cd2f" default="false" sourceId="bd72c712-1cd9-45ba-8689-7379e9026ce1" targetId="b55aa254-643d-47ae-8730-d7c8ea778458"/>
+        <Edge id="id267bfb4b-cc68-4067-8c6d-a6ebdd8c7c7e" sourceId="C-Fill-Out-AD-Report-41" targetId="d0aa2f00-6212-4a0c-80a8-e61a17c5c181"/>
+        <Edge id="id6d3e1af1-9d33-487a-83d8-24a04718ceeb" sourceId="id59906226-95f0-4583-99e5-f7e662103a19" targetId="C-Fill-Out-Sound-Sheets-39"/>
+        <Edge id="id4a10517a-f6fa-403c-bbf8-dc8ea78fe22e" default="false" sourceId="bd72c712-1cd9-45ba-8689-7379e9026ce1" targetId="id59906226-95f0-4583-99e5-f7e662103a19"/>
+        <Edge id="ida8e240d9-6b4a-42c9-b06d-11f8de69162d" sourceId="C-Fill-Out-Sound-Sheets-39" targetId="id41419cc9-7805-41c0-b077-eadfd02b60d6"/>
+        <Edge id="id18f30011-e2c5-4646-a9f4-610b1e883309" sourceId="idbfd94bde-093c-4fc4-b1c1-c6f48b827fac" targetId="C-Fill-Out-Camera-Sheets-40"/>
+        <Edge id="id38f0fa88-50fc-407c-adcc-f6c5effd8106" default="false" sourceId="bd72c712-1cd9-45ba-8689-7379e9026ce1" targetId="idbfd94bde-093c-4fc4-b1c1-c6f48b827fac"/>
+        <Edge id="id7c8a34f8-51ea-40f9-bc6f-440585e72dc1" sourceId="C-Fill-Out-Camera-Sheets-40" targetId="id51bf93d3-d359-4f0f-966c-9c2807c2ca96"/>
+        <Edge id="idaa2c6831-0146-43a9-ad89-05323cea8a15" default="false" sourceId="id51bf93d3-d359-4f0f-966c-9c2807c2ca96" targetId="C-null-3275">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(/Film_Production_Process/anotherCamRoll/text()='true')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id9d3ce3de-f584-4b5b-8df8-589c85a619c8" default="false" sourceId="C-null-3275" targetId="idae6c614b-e34e-4965-8545-0b626ef2edda"/>
-        <Edge id="id5dd98188-6065-4c63-85ad-f4509deac775" default="false" sourceId="id4df65c72-598e-4cbc-bff3-2bd5c1e3b7a1" targetId="C-null-3273">
+        <Edge id="id8969d8a8-f02c-41f0-9548-a917b550d7eb" default="false" sourceId="C-null-3275" targetId="idbfd94bde-093c-4fc4-b1c1-c6f48b827fac"/>
+        <Edge id="id7ad156d0-45e1-4c95-9079-d3c4ae4e1518" default="false" sourceId="id41419cc9-7805-41c0-b077-eadfd02b60d6" targetId="C-null-3273">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(/Film_Production_Process/anotherSoundRoll/text()='true')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idad05009d-ccb7-4ba2-9702-e0677339cf2b" default="false" sourceId="C-null-3273" targetId="idba4ddf4c-340d-4257-bd6a-b0c99d71f9f1"/>
-        <Edge id="id280380f1-fb9a-48e2-9a40-62e4117f0f6f" default="false" sourceId="fd0ae1a7-0f91-4306-a942-dfdcffec193b" targetId="C-null-3276">
+        <Edge id="idd5a85956-a2d8-47ab-9b71-e34f21d301a3" default="false" sourceId="C-null-3273" targetId="id59906226-95f0-4583-99e5-f7e662103a19"/>
+        <Edge id="id14615a45-7ad8-44e6-b4ad-30f2f8caebe8" default="false" sourceId="d0aa2f00-6212-4a0c-80a8-e61a17c5c181" targetId="C-null-3276">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(/Film_Production_Process/finalADSubmission/text()='false')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idd562b459-56de-470f-b6d1-4a1ededa0bad" default="false" sourceId="C-null-3276" targetId="f589bfdf-18f3-4331-9787-6df0c54a472b"/>
-        <Edge id="id37901e06-8d13-4648-9215-8ee2bbf5d6e3" default="false" sourceId="id3f2a5609-2254-4cb6-9f78-d62502b5876f" targetId="C-null-3271">
+        <Edge id="id0f9b36e0-31c1-422b-b441-77acf301d546" default="false" sourceId="C-null-3276" targetId="b55aa254-643d-47ae-8730-d7c8ea778458"/>
+        <Edge id="id4e569631-0bd8-4516-9412-641a012d1c5d" default="false" sourceId="id3775631b-017f-45cc-9dc0-f37d278498f7" targetId="C-null-3271">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>boolean(/Film_Production_Process/finalContinuitySubmission/text()='false')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id5e25720c-d998-40fc-9cc2-32eee8eb5bbf" default="false" sourceId="C-null-3271" targetId="idd18958bf-f509-41dc-aded-2f75fe97c5c1"/>
-        <Edge id="id5fef5e76-a8b5-4ec2-8fb6-a754d795388c" sourceId="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a" targetId="C-Create-DPR-10"/>
-        <Edge id="id1d2e0dc3-e6e2-4b05-8912-b01ec0160da5" default="true" sourceId="fd0ae1a7-0f91-4306-a942-dfdcffec193b" targetId="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a"/>
-        <Edge id="id299f3bfd-60fb-4fd2-8a57-417e5c07dc5f" default="true" sourceId="id4df65c72-598e-4cbc-bff3-2bd5c1e3b7a1" targetId="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a"/>
-        <Edge id="id615bb3a2-ac81-4533-8066-2f61b594d959" default="true" sourceId="c3d7a400-9dc2-404a-a40c-7423e08ed69e" targetId="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a"/>
-        <Edge id="ida19a1419-6a9a-41b9-be4b-acf3886ef3e9" default="true" sourceId="id3f2a5609-2254-4cb6-9f78-d62502b5876f" targetId="C-Fill-Out-Continuity-Daily-Report-3283"/>
-        <Edge id="ided58b948-f483-44bc-8a4c-38d67b14cd58" default="false" sourceId="C-Fill-Out-Continuity-Daily-Report-3283" targetId="id0bdce403-b40b-41e7-8067-4eb9b1f59a9a"/>
+        <Edge id="id53411bca-caee-4e1c-9054-05bfe4a5cbc0" default="false" sourceId="C-null-3271" targetId="id265b1e40-2138-4b44-819c-e795bb7252bd"/>
+        <Edge id="idc7b40b79-59ba-4390-9016-a4faaac7772a" sourceId="bed5ea07-cc18-4e45-920c-a07c00591014" targetId="C-Create-DPR-10"/>
+        <Edge id="idf880be1d-12cd-43ac-b339-b5f9d6f03807" default="true" sourceId="d0aa2f00-6212-4a0c-80a8-e61a17c5c181" targetId="bed5ea07-cc18-4e45-920c-a07c00591014"/>
+        <Edge id="id92fa56b9-05ee-45b8-80b9-2f3a200f6890" default="true" sourceId="id41419cc9-7805-41c0-b077-eadfd02b60d6" targetId="bed5ea07-cc18-4e45-920c-a07c00591014"/>
+        <Edge id="idcc3990f3-8d8f-4196-920d-d94a7e350907" default="true" sourceId="id51bf93d3-d359-4f0f-966c-9c2807c2ca96" targetId="bed5ea07-cc18-4e45-920c-a07c00591014"/>
+        <Edge id="id190eca26-eb41-4c1b-a9f2-0e825a9a02aa" default="true" sourceId="id3775631b-017f-45cc-9dc0-f37d278498f7" targetId="C-Fill-Out-Continuity-Daily-Report-3283"/>
+        <Edge id="id08eea4c2-45c2-4e51-a743-1c498f2e467e" default="false" sourceId="C-Fill-Out-Continuity-Daily-Report-3283" targetId="bed5ea07-cc18-4e45-920c-a07c00591014"/>
         <Edge id="C-Create-DPR-10-Distribute-DPR-11" default="false" sourceId="C-Create-DPR-10" targetId="C-Distribute-DPR-11"/>
-        <Edge id="id72b96f85-8e46-4d1c-b5ec-9ba44774dc0b" default="false" sourceId="C-Distribute-DPR-11" targetId="id2a4df610-f4d4-4a18-b992-45cb5e1663f8"/>
-        <Edge id="idd2b233ee-389a-4454-b5ed-1f391abf8047" default="true" sourceId="d2205545-10b4-41d8-b93d-2118bfdb0157" targetId="C-OutputCondition-2"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-DPRinfo" originalID="N-Film-Production-Process_DPRinfo">
+        <Edge id="id37d8668e-1936-47d7-801c-73f6fdd00254" default="false" sourceId="C-Distribute-DPR-11" targetId="aea68c49-89db-4688-874a-c04cbb5f9689"/>
+        <Edge id="id6fffe5bd-997a-4501-8e81-23cfa93de306" default="true" sourceId="cb2c59d2-2de3-4ffe-a39f-05fc6306151e" targetId="C-OutputCondition-2"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-DPRinfo" originalID="N-Film-Production-Process_DPRinfo">
             <name>DPRinfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1579,7 +1579,7 @@
             </attribute>
             <type>DPRinfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="ideca64f52-2e86-4b2d-a32b-b2cbaafc0e47" originalID="N-Film-Production-Process_anotherCamRoll">
+        <Object xsi:type="cpf:SoftType" id="id3a3efab5-7132-4ded-822a-16ac0d1b9bd5" originalID="N-Film-Production-Process_anotherCamRoll">
             <name>anotherCamRoll</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1599,7 +1599,7 @@
             </attribute>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="ide6ad59e9-6e29-43ef-81c5-3fa181f08755" originalID="N-Film-Production-Process_anotherSoundRoll">
+        <Object xsi:type="cpf:SoftType" id="id76018b24-b065-4b5a-9d97-fdb82d4679d6" originalID="N-Film-Production-Process_anotherSoundRoll">
             <name>anotherSoundRoll</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1619,7 +1619,7 @@
             </attribute>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id7910f1cc-83b7-4683-9b35-11a00b623f3a" originalID="N-Film-Production-Process_callSheetNextday">
+        <Object xsi:type="cpf:SoftType" id="ide02e0cc3-c5ba-43d1-9496-9d528280fd24" originalID="N-Film-Production-Process_callSheetNextday">
             <name>callSheetNextday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1639,7 +1639,7 @@
             </attribute>
             <type>callSheetType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id54521d95-27f1-45d2-a4b0-0a1b8b752ee4" originalID="N-Film-Production-Process_callSheetNotes">
+        <Object xsi:type="cpf:SoftType" id="id76814bd9-3e98-4d5a-817c-8fdd17e5eaf9" originalID="N-Film-Production-Process_callSheetNotes">
             <name>callSheetNotes</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1661,7 +1661,7 @@
             </attribute>
             <type>callSheetNotesType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="iddcf2268e-f6e6-4477-b1f1-68b1868bd1cc" originalID="N-Film-Production-Process_callSheetToday">
+        <Object xsi:type="cpf:SoftType" id="idf71f8151-38f8-46e1-8b92-cce6c93843ae" originalID="N-Film-Production-Process_callSheetToday">
             <name>callSheetToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1681,7 +1681,7 @@
             </attribute>
             <type>callSheetType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id4a76f18f-10a4-4782-b118-62e471f10f3c" originalID="N-Film-Production-Process_camRollsPrevious">
+        <Object xsi:type="cpf:SoftType" id="id1b6bd560-802f-4b16-a9a7-37930e01492c" originalID="N-Film-Production-Process_camRollsPrevious">
             <name>camRollsPrevious</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1694,7 +1694,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id5910e89b-0468-4f68-8803-ff4d24f56276" originalID="N-Film-Production-Process_camRollsToday">
+        <Object xsi:type="cpf:SoftType" id="id503b8053-0f46-4137-b52a-bf26b25f6d75" originalID="N-Film-Production-Process_camRollsToday">
             <name>camRollsToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1714,7 +1714,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-cameraInfo" originalID="N-Film-Production-Process_cameraInfo">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-cameraInfo" originalID="N-Film-Production-Process_cameraInfo">
             <name>cameraInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1734,7 +1734,7 @@
             </attribute>
             <type>cameraInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id1794c98a-bbbd-4378-b0cf-68ea414b8ba2" originalID="N-Film-Production-Process_cameraSheetNo">
+        <Object xsi:type="cpf:SoftType" id="id77447791-03fe-422e-9ef6-79659f812c36" originalID="N-Film-Production-Process_cameraSheetNo">
             <name>cameraSheetNo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1747,7 +1747,7 @@
             </attribute>
             <type>long</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-castInfo" originalID="N-Film-Production-Process_castInfo">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-castInfo" originalID="N-Film-Production-Process_castInfo">
             <name>castInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1767,7 +1767,7 @@
             </attribute>
             <type>castInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id1f7b14fb-c0c0-4d33-9479-c57ac489e257" originalID="N-Film-Production-Process_continuityDailyReport">
+        <Object xsi:type="cpf:SoftType" id="id508051d6-b2ea-4a1e-a3ee-49f82f6e58e9" originalID="N-Film-Production-Process_continuityDailyReport">
             <name>continuityDailyReport</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1787,7 +1787,7 @@
             </attribute>
             <type>continuityDailyReportType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id100e634b-3357-4436-b933-065387270279" originalID="N-Film-Production-Process_continuityInfo">
+        <Object xsi:type="cpf:SoftType" id="id8b433c6f-1d2c-4232-a7df-8d62540568ba" originalID="N-Film-Production-Process_continuityInfo">
             <name>continuityInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1807,7 +1807,7 @@
             </attribute>
             <type>continuityInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-crewInfo" originalID="N-Film-Production-Process_crewInfo">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-crewInfo" originalID="N-Film-Production-Process_crewInfo">
             <name>crewInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1823,7 +1823,7 @@
             </attribute>
             <type>crewInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-crewMember" originalID="N-Film-Production-Process_crewMember">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-crewMember" originalID="N-Film-Production-Process_crewMember">
             <name>crewMember</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1843,7 +1843,7 @@
             </attribute>
             <type>crewMemberType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idbfbb2fd5-cda4-463d-a933-135ae9ffb33f" originalID="N-Film-Production-Process_finalADSubmission">
+        <Object xsi:type="cpf:SoftType" id="ida1a6b6dd-9e61-4a9f-83d0-e5299ce0f2a8" originalID="N-Film-Production-Process_finalADSubmission">
             <name>finalADSubmission</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1863,7 +1863,7 @@
             </attribute>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id2bb5999c-b87e-4da0-a176-ff4d6958c2db" originalID="N-Film-Production-Process_finalCallSheetSubmission">
+        <Object xsi:type="cpf:SoftType" id="id4f44e74c-9fdd-4966-91c1-1667d1ab2278" originalID="N-Film-Production-Process_finalCallSheetSubmission">
             <name>finalCallSheetSubmission</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1883,7 +1883,7 @@
             </attribute>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id5f434e5b-b7a8-4626-9b1e-78f06ef14276" originalID="N-Film-Production-Process_finalContinuitySubmission">
+        <Object xsi:type="cpf:SoftType" id="idf042828d-e951-43e5-bcf3-81767da1e70a" originalID="N-Film-Production-Process_finalContinuitySubmission">
             <name>finalContinuitySubmission</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1903,7 +1903,7 @@
             </attribute>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idde51a973-6cf3-4493-986e-3c63730d8b75" originalID="N-Film-Production-Process_generalInfoNextday">
+        <Object xsi:type="cpf:SoftType" id="id163429b7-1db2-4c88-9ddf-33b20337db3a" originalID="N-Film-Production-Process_generalInfoNextday">
             <name>generalInfoNextday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1923,7 +1923,7 @@
             </attribute>
             <type>generalInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idfe1c343f-33c8-4a98-b1fa-dd2f7a8fe3f5" originalID="N-Film-Production-Process_generalInfoToday">
+        <Object xsi:type="cpf:SoftType" id="idd92e97ba-8814-4214-a552-c83a00e464e9" originalID="N-Film-Production-Process_generalInfoToday">
             <name>generalInfoToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1943,7 +1943,7 @@
             </attribute>
             <type>generalInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-locationInfo" originalID="N-Film-Production-Process_locationInfo">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-locationInfo" originalID="N-Film-Production-Process_locationInfo">
             <name>locationInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1963,7 +1963,7 @@
             </attribute>
             <type>locationInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id58851fee-00ec-4459-be27-371eaf9512b1" originalID="N-Film-Production-Process_originalTiming">
+        <Object xsi:type="cpf:SoftType" id="id014709fb-da02-4b47-98a4-5d8b950e579e" originalID="N-Film-Production-Process_originalTiming">
             <name>originalTiming</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1983,7 +1983,7 @@
             </attribute>
             <type>time</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-prevShot" originalID="N-Film-Production-Process_prevShot">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-prevShot" originalID="N-Film-Production-Process_prevShot">
             <name>prevShot</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -1999,7 +1999,7 @@
             </attribute>
             <type>scriptTimingType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-production" originalID="N-Film-Production-Process_production">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-production" originalID="N-Film-Production-Process_production">
             <name>production</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2019,7 +2019,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idfeeca0c1-c704-4407-a252-58e1d748b77f" originalID="N-Film-Production-Process_productionOffice">
+        <Object xsi:type="cpf:SoftType" id="id31eaef1a-a71f-41bb-a708-76c46dc0f184" originalID="N-Film-Production-Process_productionOffice">
             <name>productionOffice</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2032,7 +2032,7 @@
             </attribute>
             <type>productionOfficeType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id8e395930-a10e-4506-93bd-151cbfb8a07b" originalID="N-Film-Production-Process_revisedTiming">
+        <Object xsi:type="cpf:SoftType" id="idaeca53b5-d8d1-4d82-b1fb-c52771b90bf8" originalID="N-Film-Production-Process_revisedTiming">
             <name>revisedTiming</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2052,7 +2052,7 @@
             </attribute>
             <type>time</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id0bd73be5-71d5-4f14-9463-589751c9b1f4" originalID="N-Film-Production-Process_scheduledRatio">
+        <Object xsi:type="cpf:SoftType" id="id14d1cd18-3a7b-4fd1-921c-5e7e9bc57a12" originalID="N-Film-Production-Process_scheduledRatio">
             <name>scheduledRatio</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2065,7 +2065,7 @@
             </attribute>
             <type>double</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idbe3351a8-5084-4017-9433-f74788ee17e9" originalID="N-Film-Production-Process_shootDayNoNextday">
+        <Object xsi:type="cpf:SoftType" id="id2806d364-8c0e-4165-a77d-ad5e10184aa4" originalID="N-Film-Production-Process_shootDayNoNextday">
             <name>shootDayNoNextday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2078,7 +2078,7 @@
             </attribute>
             <type>long</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id05cad86d-a96c-4156-b7d5-0356f6c68644" originalID="N-Film-Production-Process_shootDayNoToday">
+        <Object xsi:type="cpf:SoftType" id="id8775cca3-fcb4-4e33-b765-48cf839a559d" originalID="N-Film-Production-Process_shootDayNoToday">
             <name>shootDayNoToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2091,7 +2091,7 @@
             </attribute>
             <type>long</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idb337f922-e636-41ce-b1e8-44a5b726a0d4" originalID="N-Film-Production-Process_shootingSchedule">
+        <Object xsi:type="cpf:SoftType" id="id38752596-8a3e-42e4-aae8-66fd00f31435" originalID="N-Film-Production-Process_shootingSchedule">
             <name>shootingSchedule</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2111,7 +2111,7 @@
             </attribute>
             <type>shootingScheduleType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-shortEndMin" originalID="N-Film-Production-Process_shortEndMin">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-shortEndMin" originalID="N-Film-Production-Process_shortEndMin">
             <name>shortEndMin</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2124,7 +2124,7 @@
             </attribute>
             <type>long</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-soundInfo" originalID="N-Film-Production-Process_soundInfo">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-soundInfo" originalID="N-Film-Production-Process_soundInfo">
             <name>soundInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2144,7 +2144,7 @@
             </attribute>
             <type>soundInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idcff86892-c160-4a4e-9741-3a82739b71df" originalID="N-Film-Production-Process_soundRollsPrevious">
+        <Object xsi:type="cpf:SoftType" id="ida5cf3a63-5d92-479c-a061-2adbbec19374" originalID="N-Film-Production-Process_soundRollsPrevious">
             <name>soundRollsPrevious</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2157,7 +2157,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="ida8197551-0fe7-44ef-82c8-e9ca4056d5c0" originalID="N-Film-Production-Process_soundRollsToday">
+        <Object xsi:type="cpf:SoftType" id="id10ee1540-57cc-4c0b-9dfa-009330de24f9" originalID="N-Film-Production-Process_soundRollsToday">
             <name>soundRollsToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2177,7 +2177,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id4d85bd1a-69ff-4d16-8272-9705496d22cd" originalID="N-Film-Production-Process_stockInfoPrevious">
+        <Object xsi:type="cpf:SoftType" id="id57295f75-0df4-415b-b9f1-86829cb678ff" originalID="N-Film-Production-Process_stockInfoPrevious">
             <name>stockInfoPrevious</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2196,7 +2196,7 @@
             </attribute>
             <type>stockInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idc032dfa7-e12c-49c6-baf7-0780bd084ed7" originalID="N-Film-Production-Process_stockInfoToDate">
+        <Object xsi:type="cpf:SoftType" id="iddc77e797-06fe-4a2d-bf0e-76c766239d13" originalID="N-Film-Production-Process_stockInfoToDate">
             <name>stockInfoToDate</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2216,7 +2216,7 @@
             </attribute>
             <type>stockInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idba941d99-cec3-4ea2-9347-83570c9e2877" originalID="N-Film-Production-Process_stockInfoToday">
+        <Object xsi:type="cpf:SoftType" id="id60856e7e-d439-4d7c-8560-0a17fbf93e53" originalID="N-Film-Production-Process_stockInfoToday">
             <name>stockInfoToday</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2235,7 +2235,7 @@
             </attribute>
             <type>stockInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-sunrise" originalID="N-Film-Production-Process_sunrise">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-sunrise" originalID="N-Film-Production-Process_sunrise">
             <name>sunrise</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2248,7 +2248,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-sunset" originalID="N-Film-Production-Process_sunset">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-sunset" originalID="N-Film-Production-Process_sunset">
             <name>sunset</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2261,7 +2261,7 @@
             </attribute>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="idab73af4a-8dc5-4158-ae19-48b010fac546" originalID="N-Film-Production-Process_timeSheetInfo">
+        <Object xsi:type="cpf:SoftType" id="id33043188-46c6-4c26-9ef5-57a1d907fdcc" originalID="N-Film-Production-Process_timeSheetInfo">
             <name>timeSheetInfo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2281,7 +2281,7 @@
             </attribute>
             <type>timeSheetInfoType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id70090798-fd59-4c74-aac5-be0b19613d19" originalID="N-Film-Production-Process_totalPageTime">
+        <Object xsi:type="cpf:SoftType" id="id2af18a26-d8a2-4788-b785-b5bd18fbcfcf" originalID="N-Film-Production-Process_totalPageTime">
             <name>totalPageTime</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2301,7 +2301,7 @@
             </attribute>
             <type>pageTimeType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-totalScenes" originalID="N-Film-Production-Process_totalScenes">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-totalScenes" originalID="N-Film-Production-Process_totalScenes">
             <name>totalScenes</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2321,7 +2321,7 @@
             </attribute>
             <type>long</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Film-Production-Process-weather" originalID="N-Film-Production-Process_weather">
+        <Object xsi:type="cpf:SoftType" id="D-N-Film-Production-Process-weather" originalID="N-Film-Production-Process_weather">
             <name>weather</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -2335,91 +2335,91 @@
             <type>string</type>
         </Object>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" specializationIds="ide30456b4-2d13-4ff6-a4f9-9129ef934133" originalID="RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0">
+    <ResourceType xsi:type="cpf:HumanType" id="ide5ee1366-09eb-4252-89ae-c3d2f60fee60" specializationIds="idd6a42548-d276-4b0f-be4a-875a4d3975da" originalID="RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0">
         <name>Production Manager</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ida82e6239-9d5d-442e-bcaf-1777c40d83a3" specializationIds="id20d7818a-b2d5-4eb4-9173-eae14b2852a0 id590a9ea2-fd83-4138-8f2f-2ebe8a6ac76e" originalID="RO-1c74a581-b2fd-46db-8d9f-078a3f72207c">
+    <ResourceType xsi:type="cpf:HumanType" id="ida7ce270d-e746-4b02-8536-c9420e535c0b" specializationIds="idf16c46ca-1cf7-421b-b174-aece96916bd3 ide5ee1366-09eb-4252-89ae-c3d2f60fee60" originalID="RO-1c74a581-b2fd-46db-8d9f-078a3f72207c">
         <name>Producer</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id20d7818a-b2d5-4eb4-9173-eae14b2852a0" originalID="PA-e70e8912-275c-46cd-9375-5728742112a9">
+    <ResourceType xsi:type="cpf:HumanType" id="idf16c46ca-1cf7-421b-b174-aece96916bd3" originalID="PA-e70e8912-275c-46cd-9375-5728742112a9">
         <name>Michael West</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide30456b4-2d13-4ff6-a4f9-9129ef934133" originalID="PA-6477f285-8b81-4b01-a2f1-9e5be1670810">
+    <ResourceType xsi:type="cpf:HumanType" id="idd6a42548-d276-4b0f-be4a-875a4d3975da" originalID="PA-6477f285-8b81-4b01-a2f1-9e5be1670810">
         <name>Alice White</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id8e130965-6575-4e5b-8206-274ee2cc4d37" specializationIds="id30c5e2d3-50dd-43ee-bb4a-ec9d4f2e55a7" originalID="RO-dcf922c4-3738-49b5-b64b-f368520128a8">
+    <ResourceType xsi:type="cpf:HumanType" id="id05f35742-28ed-41d7-a3f2-f9b68e1e0312" specializationIds="idcbe89bbd-e73f-4154-b9e2-822cf292791a" originalID="RO-dcf922c4-3738-49b5-b64b-f368520128a8">
         <name>Production Assistant</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id30c5e2d3-50dd-43ee-bb4a-ec9d4f2e55a7" originalID="PA-4725b666-8cb2-4de1-8692-6bcd2d59179b">
+    <ResourceType xsi:type="cpf:HumanType" id="idcbe89bbd-e73f-4154-b9e2-822cf292791a" originalID="PA-4725b666-8cb2-4de1-8692-6bcd2d59179b">
         <name>Grace Wilson</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id6156b837-ce24-443e-868e-023f86701a56" specializationIds="iddf63de9e-c64e-4810-a258-fab037434a8c" originalID="RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca">
+    <ResourceType xsi:type="cpf:HumanType" id="id9930e3ce-d3a8-429d-8244-fe070431a397" specializationIds="id19fba79c-289c-4150-8a55-fc4bb981797c" originalID="RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca">
         <name>Production Coordinator</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="iddf63de9e-c64e-4810-a258-fab037434a8c" originalID="PA-b7a79138-158d-4fce-b875-61029bb85431">
+    <ResourceType xsi:type="cpf:HumanType" id="id19fba79c-289c-4150-8a55-fc4bb981797c" originalID="PA-b7a79138-158d-4fce-b875-61029bb85431">
         <name>Jane Lee</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id08ba49fa-a9ff-4fe8-952a-5f52e0a8c4bb" specializationIds="id0d01ba71-ff5c-4dad-8a66-076c24c77815" originalID="RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b">
+    <ResourceType xsi:type="cpf:HumanType" id="id664caecd-09b4-4c4b-a70b-2c4451d3736f" specializationIds="idd46379ff-4631-4b1b-a03c-9a9c44160246" originalID="RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b">
         <name>1st AD</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id0d01ba71-ff5c-4dad-8a66-076c24c77815" originalID="PA-488e7f11-7bc4-48c1-ab10-78f6845ffb7d">
+    <ResourceType xsi:type="cpf:HumanType" id="idd46379ff-4631-4b1b-a03c-9a9c44160246" originalID="PA-488e7f11-7bc4-48c1-ab10-78f6845ffb7d">
         <name>Cheryl Smith</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id1d1a1ac0-a945-40af-8315-a68bfe8740d8">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id3d60766d-99d1-410b-80db-e49548c37f58">
         <name>Unkown Service or Codelet</name>
         <type>SoftwareSystem</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="ida5b83aa0-51a2-4edc-adee-3986068d9dd7">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id4828c15c-c309-49de-934b-f9473cadb0f8">
         <name>Unkown Service or Codelet</name>
         <type>SoftwareSystem</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id41062622-6f02-40f4-845f-6a40bb14f6bc" specializationIds="ide0f57bdd-b9c2-4dcd-993d-664538029bde" originalID="RO-5cf6afa6-36cd-4398-890f-829ceaa282b4">
+    <ResourceType xsi:type="cpf:HumanType" id="id21f15900-d574-4f88-9fd7-a544693b2dac" specializationIds="ide2d767f4-1e5a-4235-a32f-e4db44d2b826" originalID="RO-5cf6afa6-36cd-4398-890f-829ceaa282b4">
         <name>Continuity</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide0f57bdd-b9c2-4dcd-993d-664538029bde" originalID="PA-c8ebc8d8-71a0-49ac-b951-9d99a7323998">
+    <ResourceType xsi:type="cpf:HumanType" id="ide2d767f4-1e5a-4235-a32f-e4db44d2b826" originalID="PA-c8ebc8d8-71a0-49ac-b951-9d99a7323998">
         <name>Jay Green</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id09e4a1ff-e2ec-4bed-866f-1389c87224ad" specializationIds="idd6b016fb-fd72-4d37-80c0-ffb5d7ee03b2" originalID="RO-d0e1e1d0-6413-433f-8043-56c821686eaa">
+    <ResourceType xsi:type="cpf:HumanType" id="id0f957ac3-b9b3-4de3-b53e-1e409b7d3275" specializationIds="id62e4840a-d6b7-4a05-a2af-c87c18470e9b" originalID="RO-d0e1e1d0-6413-433f-8043-56c821686eaa">
         <name>2nd AD</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idd6b016fb-fd72-4d37-80c0-ffb5d7ee03b2" originalID="PA-a4d14861-276c-4ea0-8bb9-cf7dcd94406f">
+    <ResourceType xsi:type="cpf:HumanType" id="id62e4840a-d6b7-4a05-a2af-c87c18470e9b" originalID="PA-a4d14861-276c-4ea0-8bb9-cf7dcd94406f">
         <name>Ben Laumen</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id156a9a30-9e80-4748-bcad-7839775f4814" specializationIds="id2d8daffe-83fb-4bdd-a66d-a78481f1249d" originalID="RO-41d22a3d-76f0-46e7-8f0f-109b1056803a">
+    <ResourceType xsi:type="cpf:HumanType" id="idefdaf7ee-8d1c-4c2c-8e1e-b8ce24299e9e" specializationIds="id58ec8f13-c5c6-4910-806d-29cb2724560c" originalID="RO-41d22a3d-76f0-46e7-8f0f-109b1056803a">
         <name>Sound Recordist</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id2d8daffe-83fb-4bdd-a66d-a78481f1249d" originalID="PA-4c189068-6342-4ed4-9e38-4830180207ac">
+    <ResourceType xsi:type="cpf:HumanType" id="id58ec8f13-c5c6-4910-806d-29cb2724560c" originalID="PA-4c189068-6342-4ed4-9e38-4830180207ac">
         <name>Harry Newman</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id1a2c1ca9-ab57-4a19-a06b-7ecfe23963c4" specializationIds="ida11901ff-8891-45ca-acf0-ca9afd243d91" originalID="RO-aefd909c-9ca4-45ab-b0a0-1320008d7768">
+    <ResourceType xsi:type="cpf:HumanType" id="idad9251d5-054a-428c-a161-f3b2ca31ffdf" specializationIds="idf956c486-64c4-45c9-8f8f-14a4c012354b" originalID="RO-aefd909c-9ca4-45ab-b0a0-1320008d7768">
         <name>D.O.P.</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ida11901ff-8891-45ca-acf0-ca9afd243d91" originalID="PA-7413e85b-3e29-48b8-986a-b4eaba3f8303">
+    <ResourceType xsi:type="cpf:HumanType" id="idf956c486-64c4-45c9-8f8f-14a4c012354b" originalID="PA-7413e85b-3e29-48b8-986a-b4eaba3f8303">
         <name>Vincent Rain</name>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id3b25e6c8-7072-4b8e-98a3-9292da5b8723" specializationIds="id0f402b5e-7f2b-4a5e-bfb2-8b64b85c13f5" originalID="RO-d00eaa77-0fe7-44c6-916e-c0dbc5710baf">
+    <ResourceType xsi:type="cpf:HumanType" id="id03f641fd-2219-4c5b-ba5d-2499c49dd302" specializationIds="id639c067a-664d-41e4-8df8-c4dc7f6f93e8" originalID="RO-d00eaa77-0fe7-44c6-916e-c0dbc5710baf">
         <name>Camera Assistant</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id0f402b5e-7f2b-4a5e-bfb2-8b64b85c13f5" originalID="PA-73158bc9-072d-4dec-9cb1-323698c1e276">
+    <ResourceType xsi:type="cpf:HumanType" id="id639c067a-664d-41e4-8df8-c4dc7f6f93e8" originalID="PA-73158bc9-072d-4dec-9cb1-323698c1e276">
         <name>Thomas Raymond</name>
         <type>Participant</type>
     </ResourceType>
@@ -2845,4 +2845,4 @@
         &lt;/sequence&gt;&#xD;
       &lt;/complexType&gt;&#xD;
     &lt;/schema&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

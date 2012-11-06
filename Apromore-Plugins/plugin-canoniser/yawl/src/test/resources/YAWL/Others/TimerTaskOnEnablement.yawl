@@ -26,7 +26,7 @@
           <split code="and" />
           <timer>
             <trigger>OnEnabled</trigger>
-            <duration>P3M</duration>
+            <duration>PT3M</duration>
           </timer>
           <resourcing>
             <offer initiator="user" />
@@ -49,9 +49,9 @@
     <specification id="TimerTaskOnEnablement">
       <size w="103" h="28" />
       <net id="Net">
-        <bounds x="0" y="0" w="1764" h="682" />
-        <frame x="2" y="25" w="1767" h="685" />
-        <viewport x="0" y="0" w="1767" h="685" />
+        <bounds x="0" y="0" w="1758" h="682" />
+        <frame x="2" y="25" w="1761" h="685" />
+        <viewport x="0" y="0" w="1761" h="685" />
         <container id="InputCondition">
           <vertex>
             <attributes>
@@ -88,6 +88,12 @@
             </attributes>
           </label>
         </container>
+        <flow source="InputCondition" target="A">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
         <flow source="A" target="OutputCondition">
           <label>Timeout+onEnablement</label>
           <ports in="13" out="12" />
@@ -99,12 +105,6 @@
               <value x="375,0" y="343,5" />
               <value x="464,0" y="387,5" />
             </points>
-          </attributes>
-        </flow>
-        <flow source="InputCondition" target="A">
-          <ports in="13" out="12" />
-          <attributes>
-            <lineStyle>11</lineStyle>
           </attributes>
         </flow>
       </net>

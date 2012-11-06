@@ -22,8 +22,7 @@ import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CancellationRefType;
-import org.apromore.cpf.DirectionEnum;
-import org.apromore.cpf.MessageType;
+import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerExpressionType;
@@ -64,6 +63,7 @@ public class TimerTaskHandler extends BaseTaskHandler {
             // So the Task will automatically be completed as soon as the Timer expires.
 
             if (getObject().getTimer().getTrigger().equals(TimerTriggerType.ON_ENABLED)) {
+
                 final ANDSplitType andSplit = createANDSplit();
                 final TimerType timerNode = createTimer(getObject().getTimer());
                 final TaskType taskNode = createTask(getObject());
@@ -78,25 +78,26 @@ public class TimerTaskHandler extends BaseTaskHandler {
                 // Link correctly to predecessor and successors separating the routing behavior from the task.
                 linkToPredecessors(andSplit);
                 linkToSucessors(xorJoin);
-
             } else {
+
+                EventType subProcessStartEvent = createEvent();
                 final ANDSplitType andSplit = createANDSplit();
+                createSimpleEdge(subProcessStartEvent, andSplit);
                 final TimerType timerNode = createTimer(getObject().getTimer());
-                final MessageType messageNode = createMessage(DirectionEnum.INCOMING);
-                timerNode.getCancelNodeId().add(createCancellationRegion(messageNode));
-                messageNode.getCancelNodeId().add(createCancellationRegion(timerNode));
+                final TaskType taskNode = createTask(getObject());
+                timerNode.getCancelNodeId().add(createCancellationRegion(taskNode));
+                taskNode.getCancelNodeId().add(createCancellationRegion(timerNode));
                 createSimpleEdge(andSplit, timerNode);
-                createSimpleEdge(andSplit, messageNode);
+                createSimpleEdge(andSplit, taskNode);
                 final XORJoinType xorJoin = createXORJoin();
                 createSimpleEdge(timerNode, xorJoin);
-                createSimpleEdge(messageNode, xorJoin);
-
-                final TaskType task = createTask(getObject());
-                createSimpleEdge(xorJoin, task);
+                createSimpleEdge(taskNode, xorJoin);
+                EventType subProcessEndEvent = createEvent();
+                createSimpleEdge(xorJoin, subProcessEndEvent);
 
                 // Link correctly to predecessor and successors separating the routing behavior from the task.
-                linkToPredecessors(andSplit);
-                linkToSucessors(task);
+                linkToPredecessors(subProcessStartEvent);
+                linkToSucessors(subProcessEndEvent);
             }
         }
 

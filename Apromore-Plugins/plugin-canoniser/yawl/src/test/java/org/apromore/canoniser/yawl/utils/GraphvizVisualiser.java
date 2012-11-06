@@ -13,11 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.TaskType;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
 import org.jbpt.graph.abs.IEdge;
@@ -36,13 +33,13 @@ public class GraphvizVisualiser {
         super();
     }
 
-    public void createImageAsPNG(final NetType net, final File file) throws IOException {
+    public void createImageAsPNG(final NetType net, final boolean withLabels, final File file) throws IOException {
         final String[] args = new String[] { getDOTPath(), "-Eshape=normal", "-Nshape=rectangle", "-Tpng" };
         final ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectOutput(file);
         pb.redirectErrorStream(false);
         final Process dotProcess = pb.start();
-        createImageAsDOT(net, new BufferedOutputStream(dotProcess.getOutputStream()));
+        createImageAsDOT(net, withLabels, new BufferedOutputStream(dotProcess.getOutputStream()));
         while (dotProcess.getErrorStream().read() != -1) {
             // No Op
         }
@@ -53,9 +50,9 @@ public class GraphvizVisualiser {
         }
     }
 
-    public void createImageAsPNG(final NetType net, final OutputStream output) throws IOException {
+    public void createImageAsPNG(final NetType net, final boolean withLabels, final OutputStream output) throws IOException {
         final File tempFile = File.createTempFile(net.getId(), null);
-        createImageAsPNG(net, tempFile);
+        createImageAsPNG(net, withLabels, tempFile);
         final FileInputStream fileInputStream = new FileInputStream(tempFile);
         try {
             final FileChannel source = fileInputStream.getChannel();
@@ -88,36 +85,28 @@ public class GraphvizVisualiser {
         throw new IOException("Can not find Graphviz binary!");
     }
 
-    public void createImageAsDOT(final NetType net, final OutputStream os) {
-        final PrintWriter writer = new PrintWriter(os);
-        writer.write(createImageAsDOT(net));
-        writer.flush();
-        writer.close();
+    public void createImageAsDOT(final NetType net, final boolean withLabels, final OutputStream os) {
+        try (PrintWriter writer = new PrintWriter(os)) {
+            writer.write(createImageAsDOT(net, withLabels));
+            writer.flush();
+            writer.close();
+        }
     }
 
-    public String createImageAsDOT(final NetType net) {
-        final DirectedGraph graph = createGraph(net);
+    public String createImageAsDOT(final NetType net, final boolean withLabels) {
+        final DirectedGraph graph = createGraph(net, withLabels);
         return new DotSerializer(new DotSerializer.GraphDecorator() {
 
             @Override
             public String decorate(final AbstractMultiHyperGraph<?, ?> graph) {
-                return "node [style=\"n\"];\n" + "edge [style=\"e\",lblstyle=\"auto\"];\n";
+                return "rankdir=\"LR\";\n" + "node [style=\"n\"];\n" + "edge [style=\"e\",lblstyle=\"auto\"];\n";
             }
         }, new DotSerializer.NodeDecorator() {
 
             @Override
             public String decorate(final IVertex vertex) {
                 final NodeType node = (NodeType) vertex.getTag();
-                if (node instanceof TaskType) {
-                    return "style=\"ntask\"";
-                }
-                if (node instanceof RoutingType) {
-                    return "style=\"nrouting\"";
-                }
-                if (node instanceof EventType) {
-                    return "style=\"nevent\"";
-                }
-                return "";
+                return "style=\"n"+node.getClass().getSimpleName()+"\"";
             }
         }, new DotSerializer.EdgeDecorator() {
 
@@ -132,22 +121,31 @@ public class GraphvizVisualiser {
         }).serialize(graph);
     }
 
-    private DirectedGraph createGraph(final NetType net) {
+    private DirectedGraph createGraph(final NetType net, final boolean withLabels) {
         final Map<String, Vertex> nodeMap = new HashMap<String, Vertex>();
         final DirectedGraph g = new DirectedGraph();
 
         int edgeCounter = 0;
-        int nodeCounter = 0;
+        int nodeNameCounter = 0;
+        int nodeIdCounter = 0;
 
         for (final NodeType node : net.getNode()) {
             final Vertex vertex = new Vertex();
-            String nodeType = node.getClass().getSimpleName().replaceFirst("Type$", "");
+            if (withLabels) {
+                String nodeType = node.getClass().getSimpleName().replaceFirst("Type$", "");
+                if (node.getName() != null) {
+                    // Already present in YAWL
+                    vertex.setName(node.getName() + " (" + nodeType + ")");
+                } else {
+                    // Introduced node in the conversion
+                    vertex.setName("N" + (nodeNameCounter++) + " (" + nodeType + ")");
+                }
+            }
             if (node.getName() != null) {
-                // Already present in YAWL
-                vertex.setName(node.getName() + "_{" + nodeType + "}");
+                //TODO prevent duplicate names
+                vertex.setId(node.getName());
             } else {
-                // Introduced node in the conversion
-                vertex.setName("N" + (nodeCounter++) + "_{" + nodeType + "}");
+                vertex.setId("N" + (nodeIdCounter++));
             }
             vertex.setTag(node);
             g.addVertex(vertex);
