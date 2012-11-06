@@ -7,31 +7,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public interface IObject {
-
-    /**
-     * Return this {@link IObject} Id.
-     * @return the Id of the Resource
-     */
-    String getId();
-
-    /**
-     * Set if this {@link IObject} id.
-     * @param id if configurable or not
-     */
-    void setId(String id);
-
-    /**
-     * Return this {@link IObject} name.
-     * @return the name of the object
-     */
-    String getName();
-
-    /**
-     * Set if this {@link IObject} newName.
-     * @param newName the name
-     */
-    void setName(String newName);
+public interface IObject extends org.jbpt.hypergraph.abs.IGObject {
 
     /**
      * Return this {@link IObject} ObjectId.

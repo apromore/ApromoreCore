@@ -23,7 +23,8 @@ public class TreeVisitor {
     private static final Pattern COMPILE = Pattern.compile("\\s+");
 
 
-    public TreeVisitor() { }
+    public TreeVisitor() {
+    }
 
 
     private String getBestLabelHash(Canonical graph, Set<Edge> edges, Set<Node> vertices,
@@ -37,7 +38,7 @@ public class TreeVisitor {
             StringBuffer buffer = new StringBuffer(0);
             Map<INode, Integer> idmap = new HashMap<INode, Integer>(0);
             for (QueueEntry ent : perm) {
-                idmap.put((INode) ent.getVertex(), idmap.size());
+                idmap.put(ent.getVertex(), idmap.size());
                 buffer.append(ent.getLabel());
             }
 
@@ -45,14 +46,15 @@ public class TreeVisitor {
 
             for (int i = 0; i < idmap.size(); i++) {
                 for (int j = 0; j < idmap.size(); j++) {
-                    if (i != j)
+                    if (i != j) {
                         matrix[i][j] = '0';
-                    else if (i == 0)
+                    } else if (i == 0) {
                         matrix[i][j] = entry.getName().charAt(0);
-                    else if (i == idmap.size() - 1)
+                    } else if (i == idmap.size() - 1) {
                         matrix[i][j] = exit.getName().charAt(0);
-                    else
+                    }else {
                         matrix[i][j] = Character.forDigit(i, 10);
+                    }
                 }
             }
 
@@ -67,8 +69,8 @@ public class TreeVisitor {
                 }
             }
 
-            for (int i = 0; i < matrix.length; i++) {
-                buffer.append(matrix[i]);
+            for (char[] aMatrix : matrix) {
+                buffer.append(aMatrix);
             }
 
             String hash = buffer.toString();

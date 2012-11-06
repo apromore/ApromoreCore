@@ -7,8 +7,6 @@ package org.apromore.graph.canonical;
  */
 public class CanonicalObject extends NonFlowNode implements IObject, Cloneable {
 
-    private String id;
-    private String name;
     private String objectId;
     private String originalId;
     private String type;
@@ -25,11 +23,11 @@ public class CanonicalObject extends NonFlowNode implements IObject, Cloneable {
     public CanonicalObject() { }
 
     /**
-     * @param newId of this
+     * @param newName of this
      * @return a new instance of this class where parent is set to the given one and label is set to <code>null</code>.
      */
-    public CanonicalObject(String newId) {
-        this.id = newId;
+    public CanonicalObject(String newName) {
+        super(newName);
     }
 
 
@@ -37,8 +35,8 @@ public class CanonicalObject extends NonFlowNode implements IObject, Cloneable {
     public CanonicalObject clone() {
         CanonicalObject clone = null;
         clone = (CanonicalObject) super.clone();
-        if (this.id != null) {
-            clone.setId(this.id);
+        if (this.getId() != null) {
+            clone.setId(this.getId());
         }
         if (this.objectId != null) {
             clone.setObjectId(this.objectId);
@@ -46,7 +44,7 @@ public class CanonicalObject extends NonFlowNode implements IObject, Cloneable {
         if (this.originalId != null) {
             clone.setOriginalId(this.originalId);
         }
-        clone.setName(this.name);
+        clone.setName(this.getName());
         clone.setType(this.type);
         clone.setOptional(this.optional);
         clone.setConsumed(this.consumed);
@@ -58,40 +56,6 @@ public class CanonicalObject extends NonFlowNode implements IObject, Cloneable {
         return clone;
     }
 
-
-    /**
-     * Return this {@link org.apromore.graph.canonical.IObject} id.
-     * @return the id of the Object
-     */
-    @Override
-    public void setId(String newId) {
-        id = newId;
-    }
-
-    /**
-     * Set if this {@link org.apromore.graph.canonical.IObject} Id.
-     * @return Id the id
-     */
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Set if this {@link org.apromore.graph.canonical.IObject} Name.
-     * @return name the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Return this {@link org.apromore.graph.canonical.IObject} name.
-     * @return the name of the Object
-     */
-    public void setName(String newName) {
-        name = newName;
-    }
 
     /**
      * Return this {@link org.apromore.graph.canonical.IObject} ObjectId.

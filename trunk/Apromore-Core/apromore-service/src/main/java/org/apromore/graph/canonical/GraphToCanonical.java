@@ -67,7 +67,7 @@ public class GraphToCanonical {
 
         // Create the Nets / Nodes / Edges - > return Objects, Resources
         buildNets(graph, c);
-        addResourcesForCpf(findResourceList(graph), c);
+        addResourcesForCpf(constructResourceList(graph), c);
         addPropertiesForCanonical(graph, c);
 
         return c;
@@ -80,7 +80,7 @@ public class GraphToCanonical {
         net.setId(graph.getId());
         net.getObject().addAll(new ArrayList<ObjectType>(0));
 
-        addObjectsForCpf(findObjectList(graph), net);
+        addObjectsForCpf(constructObjectList(graph), net);
         for (Node node : graph.getNodes()) {
             buildNodesForNet(node, net);
         }
@@ -117,7 +117,7 @@ public class GraphToCanonical {
     }
 
 
-    private static List<IResource> findResourceList(final Canonical graph) {
+    private static List<IResource> constructResourceList(final Canonical graph) {
         List<IResource> resources = new ArrayList<IResource>(0);
         Collection<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
@@ -126,17 +126,17 @@ public class GraphToCanonical {
         return resources;
     }
 
-    private static Collection<IObject> findObjectList(final Canonical graph) {
-        Map<String, IObject> resources = new HashMap<String, IObject>(0);
+    private static Collection<IObject> constructObjectList(final Canonical graph) {
+        Map<String, IObject> objects = new HashMap<String, IObject>(0);
         Collection<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
             for (IObject obj : node.getObjects()) {
-                if (!resources.containsKey(obj.getObjectId())) {
-                    resources.put(obj.getObjectId(), obj);
+                if (!objects.containsKey(obj.getOriginalId())) {
+                    objects.put(obj.getOriginalId(), obj);
                 }
             }
         }
-        return resources.values();
+        return objects.values();
     }
 
     private static Collection<? extends TypeAttribute> addAttributes(final Node n) {
@@ -160,8 +160,12 @@ public class GraphToCanonical {
             object.setObjectId(obj.getObjectId());
             object.setConsumed(obj.getConsumed());
             object.setOptional(obj.getOptional());
-            object.setType(InputOutputType.valueOf(obj.getType()));
-            object.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
+            if (obj.getType() != null) {
+                object.setType(InputOutputType.valueOf(obj.getType()));
+            }
+            if (obj.getAttributes() != null && !obj.getAttributes().isEmpty()) {
+                object.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
+            }
             objs.add(object);
         }
         return objs;
@@ -205,6 +209,7 @@ public class GraphToCanonical {
                 typ = new ObjectType();
             }
             typ.setId(obj.getId());
+            typ.setOriginalID(obj.getOriginalId());
             typ.setName(obj.getName());
             typ.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
 
