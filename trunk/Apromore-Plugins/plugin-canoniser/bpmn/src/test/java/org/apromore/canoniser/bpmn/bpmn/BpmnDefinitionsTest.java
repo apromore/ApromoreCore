@@ -88,10 +88,12 @@ public class BpmnDefinitionsTest implements TestConstants {
     private final BpmnDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
 
         // Read the CPF source file
-        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, filename + ".cpf")), true);
+        CpfCanonicalProcessType cpf =
+            CpfCanonicalProcessType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, filename + ".cpf")), true);
 
         // Read the ANF source file
-        AnnotationsType anf = AnfAnnotationsType.newInstance(new FileInputStream(new File(TESTCASES_DIR, filename + ".anf")), true);
+        AnnotationsType anf =
+            AnfAnnotationsType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, filename + ".anf")), true);
 
         // Confirm constraints that can't be expressed in the CPF or ANF schemas
         assertEquals(cpf.getUri(), anf.getUri());
@@ -118,7 +120,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "Case 2.bpmn")), true);
 
         // TODO - Inspect the test instance
 
@@ -133,7 +135,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance2() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn")), false);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "Test1.bpmn")), false);
 
         // Inspect the test instance
         assertNotNull(definitions);
@@ -161,7 +163,8 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance3() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn")), true);
+        BpmnDefinitions definitions =
+            BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "Request_For_Advance_Payment.bpmn")), true);
 
         // TODO - Inspect the test instance
 
@@ -173,7 +176,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance4() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_loan5.bpmn")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ch9_loan5.bpmn")), true);
 
         // TODO - Inspect the test instance
         TDataOutputAssociation doa = (TDataOutputAssociation) definitions.findElementById("sid-9413B494-364E-4F60-9C85-F313479C96F0");
@@ -189,7 +192,8 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance5() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_PurchaseOrder4Complete.bpmn")), true);
+        BpmnDefinitions definitions =
+            BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ch9_PurchaseOrder4Complete.bpmn")), true);
 
         // TODO - Inspect the test instance
 
