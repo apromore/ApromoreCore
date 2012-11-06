@@ -18,12 +18,12 @@ import org.junit.Test;
 public class CpfObjectTypeTest {
 
     /** Test instance. */
-    CpfObjectType object;
+    CpfObjectTypeImpl object;
 
     /** Populate {@link #object} with a freshly-constructed {@link CpfObjectType}. */
     @Before
     public void initializeObject() {
-        object = (CpfObjectType) new ObjectFactory().createObjectType();
+        object = (CpfObjectTypeImpl) new ObjectFactory().createObjectType();
     }
 
     /**

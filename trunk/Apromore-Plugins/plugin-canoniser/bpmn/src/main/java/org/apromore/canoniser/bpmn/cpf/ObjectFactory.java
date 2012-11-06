@@ -16,15 +16,20 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override public CpfANDSplitType         createANDSplitType()         { return new CpfANDSplitType(); }
     @Override public CpfCanonicalProcessType createCanonicalProcessType() { return new CpfCanonicalProcessType(); }
     @Override public CpfEdgeType             createEdgeType()             { return new CpfEdgeType(); }
-    @Override public CpfEventType            createEventType()            { return new CpfEventType(); }
+    @Override public CpfEventTypeImpl        createEventType()            { return new CpfEventTypeImpl(); }
+    @Override public CpfHumanType            createHumanType()            { return new CpfHumanType(); }
     @Override public CpfNetType              createNetType()              { return new CpfNetType(); }
-    @Override public CpfObjectType           createObjectType()           { return new CpfObjectType(); }
+    @Override public CpfNonhumanType         createNonhumanType()         { return new CpfNonhumanType(); }
+    @Override public CpfObjectTypeImpl       createObjectType()           { return new CpfObjectTypeImpl(); }
     @Override public CpfObjectRefType        createObjectRefType()        { return new CpfObjectRefType(); }
     @Override public CpfORJoinType           createORJoinType()           { return new CpfORJoinType(); }
     @Override public CpfORSplitType          createORSplitType()          { return new CpfORSplitType(); }
-    @Override public CpfResourceTypeType     createResourceTypeType()     { return new CpfResourceTypeType(); }
+    @Override public CpfResourceTypeTypeImpl createResourceTypeType()     { return new CpfResourceTypeTypeImpl(); }
     @Override public CpfResourceTypeRefType  createResourceTypeRefType()  { return new CpfResourceTypeRefType(); }
+    @Override public CpfSoftType             createSoftType()             { return new CpfSoftType(); }
+    @Override public CpfStateType            createStateType()            { return new CpfStateType(); }
     @Override public CpfTaskType             createTaskType()             { return new CpfTaskType(); }
+    @Override public CpfTimerType            createTimerType()            { return new CpfTimerType(); }
     @Override public CpfXORJoinType          createXORJoinType()          { return new CpfXORJoinType(); }
     @Override public CpfXORSplitType         createXORSplitType()         { return new CpfXORSplitType(); }
 }
