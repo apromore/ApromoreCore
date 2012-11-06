@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="263132228481278.yawl" version="0.1" name="263132228481278" author="yawl model generator" rootIds="N-YAWL263132228659443">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="263132228481278.yawl" version="0.1" name="263132228481278" author="yawl model generator" rootIds="N-YAWL263132228659443">
     <Net id="N-YAWL263132228659443" originalID="YAWL263132228659443">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132228689411" originalID="263132228689411">
+        <Node xsi:type="cpf:EventType" id="C-263132228689411" originalID="263132228689411">
             <name>Start</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132228708295" originalID="263132228708295">
+        <Node xsi:type="cpf:TaskType" id="C-263132228708295" originalID="263132228708295">
             <name>CQk</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -50,8 +50,8 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-263132228973081" originalID="263132228973081"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132228946397" originalID="263132228946397">
+        <Node xsi:type="cpf:StateType" id="C-263132228973081" originalID="263132228973081"/>
+        <Node xsi:type="cpf:TaskType" id="C-263132228946397" originalID="263132228946397">
             <name>rx</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -113,7 +113,7 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132229004280" originalID="263132229004280">
+        <Node xsi:type="cpf:TaskType" id="C-263132229004280" originalID="263132229004280">
             <name>3k</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -123,8 +123,8 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132229058469" originalID="263132229058469"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132229069963" originalID="263132229069963">
+        <Node xsi:type="cpf:EventType" id="C-263132229058469" originalID="263132229058469"/>
+        <Node xsi:type="cpf:TaskType" id="C-263132229069963" originalID="263132229069963">
             <name>oU</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -134,8 +134,8 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132228903703" originalID="263132228903703"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132228913555" originalID="263132228913555">
+        <Node xsi:type="cpf:EventType" id="C-263132228903703" originalID="263132228903703"/>
+        <Node xsi:type="cpf:TaskType" id="C-263132228913555" originalID="263132228913555">
             <name>agq</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -145,8 +145,8 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132228811336" originalID="263132228811336"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132228820367" originalID="263132228820367">
+        <Node xsi:type="cpf:EventType" id="C-263132228811336" originalID="263132228811336"/>
+        <Node xsi:type="cpf:TaskType" id="C-263132228820367" originalID="263132228820367">
             <name>Eo</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -184,7 +184,7 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132228700085" originalID="263132228700085">
+        <Node xsi:type="cpf:EventType" id="C-263132228700085" originalID="263132228700085">
             <name>End</name>
         </Node>
         <Edge id="C-263132228689411-263132228708295" default="false" sourceId="C-263132228689411" targetId="C-263132228708295"/>
@@ -201,4 +201,4 @@
         <Edge id="C-263132228820367-263132228700085" default="false" sourceId="C-263132228820367" targetId="C-263132228700085"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

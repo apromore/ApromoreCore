@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPD9TaskToTask" version="0.1" name="WPD9TaskToTask" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WPD9TaskToTask" version="0.1" name="WPD9TaskToTask" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -15,14 +15,14 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id92933842-4d9d-4592-8e14-982d7148c39b" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="id9df06b2d-4812-4b0f-be71-0f72926db225" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = Boolean({cpf:getTaskObjectValue('x')/text()})</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
+        <Node xsi:type="cpf:TaskType" id="C-B" originalID="B">
             <name>B</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" optional="true">
@@ -32,20 +32,20 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="febb6c3c-afd0-42e9-9e47-3797afed2394" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
+            <objectRef id="ae0f674e-cb22-4121-9014-98f0e6867705" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>y = {cpf:getObjectValue('x')}</expression>
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B" default="false" sourceId="C-A" targetId="C-B"/>
         <Edge id="C-B-OutputCondition" default="false" sourceId="C-B" targetId="C-OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-x" originalID="N-Net_x">
+        <Object xsi:type="cpf:SoftType" id="D-N-Net-x" originalID="N-Net_x">
             <name>x</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -60,4 +60,4 @@
         </Object>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

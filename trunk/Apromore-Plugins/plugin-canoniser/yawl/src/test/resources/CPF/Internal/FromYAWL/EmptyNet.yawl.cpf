@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet Workfow" author="Firstname Lastname" rootIds="N-EmptyNet">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="EmptyNet" version="0.1" name="EmptyNet Workfow" author="Firstname Lastname" rootIds="N-EmptyNet">
     <Net id="N-EmptyNet" originalID="EmptyNet">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-EmptyNet-variableA" originalID="N-EmptyNet_variableA">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition"/>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-EmptyNet-variableA" originalID="N-EmptyNet_variableA">
             <name>variableA</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
                 <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -33,4 +33,4 @@
         </Object>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

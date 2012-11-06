@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="fe34ac70-c3df-4978-a61f-e5dbd6dbe0cb" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="eb9221c2-5e74-46ec-aa35-6da408d083d1" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="c475476c-c0c0-489a-bbf6-68fb041ca798" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id52e1ee3e-9b4d-43a7-999f-65250adcb5a2" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -34,10 +34,10 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-B-1" originalID="B_1">
+        <Node xsi:type="cpf:StateType" id="C-B-1" originalID="B_1">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C-1" originalID="C_1">
+        <Node xsi:type="cpf:TaskType" id="C-C-1" originalID="C_1">
             <name>C</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -55,8 +55,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="aa5a314d-dc27-4ddd-8cb5-ba4c16cb5758" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="idd8a260a1-cc6a-4705-b78f-473314a43451" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id3f731466-9a47-4fda-82a3-80122a3819fc" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb716cfb4-b477-47be-a0cb-180ae49fa005" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -67,21 +67,21 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D-1" originalID="D_1">
+        <Node xsi:type="cpf:TaskType" id="C-D-1" originalID="D_1">
             <name>D</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
+        <Node xsi:type="cpf:StateType" id="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="false" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="false" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="false" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="id277b38d1-9c64-4a12-864d-3dea4b2bb40f" sourceId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d" targetId="C-OutputCondition"/>
-        <Edge id="iddbd0cb20-2637-4123-9066-3e4db1aa54a5" default="false" sourceId="C-C-1" targetId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
-        <Edge id="id605a7db7-a84f-4120-b83a-503cc80788fb" default="false" sourceId="C-D-1" targetId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
+        <Edge id="id132d290f-ed6a-4660-b2a7-5a631c24a27e" sourceId="cf38fa02-c196-4db0-91ff-48bf3dc362c0" targetId="C-OutputCondition"/>
+        <Edge id="id939b9f44-81b5-432f-8a29-8451da7ad7b0" default="false" sourceId="C-C-1" targetId="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
+        <Edge id="idce835e00-c976-406c-810b-cd71237b0a45" default="false" sourceId="C-D-1" targetId="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
                 <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -96,4 +96,4 @@
         </Object>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

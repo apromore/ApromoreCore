@@ -110,6 +110,9 @@ public abstract class BaseCPF2YAWLTest {
                     annotationsFormat.close();
                 }
             }
+            if (LOGGER.isDebugEnabled()) {
+                createGraphImageBeforeConversion(cpfProcess.getNet().get(0));
+            }
             if (anf != null) {
                 canonical2Yawl.convertToYAWL(cpfProcess, anf);
             } else {
@@ -158,10 +161,22 @@ public abstract class BaseCPF2YAWLTest {
 
     private void createGraphImages(final NetType net) throws FileNotFoundException, IOException {
         final GraphvizVisualiser v = new GraphvizVisualiser();
-        v.createImageAsDOT(net,
+        v.createImageAsDOT(net, false,
                 new BufferedOutputStream(new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".dot"))));
         try {
-            v.createImageAsPNG(net, TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".png"));
+            v.createImageAsPNG(net, true, TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".png"));
+        } catch (final IOException e) {
+            // Just build image if Graphviz exists
+            LOGGER.warn("WARN: " + e.getMessage());
+        }
+    }
+
+    private void createGraphImageBeforeConversion(final NetType net) throws FileNotFoundException, IOException {
+        final GraphvizVisualiser v = new GraphvizVisualiser();
+        v.createImageAsDOT(net, false,
+                new BufferedOutputStream(new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + "-BeforeRewrite.dot"))));
+        try {
+            v.createImageAsPNG(net, true, TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + "-BeforeRewrite.png"));
         } catch (final IOException e) {
             // Just build image if Graphviz exists
             LOGGER.warn("WARN: " + e.getMessage());

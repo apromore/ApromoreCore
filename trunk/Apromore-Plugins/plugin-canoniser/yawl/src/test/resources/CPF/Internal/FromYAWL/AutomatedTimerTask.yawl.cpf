@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="AutomatedTimerTask" version="0.1" name="AutomatedTimerTask" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="AutomatedTimerTask" version="0.1" name="AutomatedTimerTask" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P30M" id="ida8f54d41-0dae-4439-a9de-ac00ba696133"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TimerType" timeDuration="P30M" id="id6dff5b0e-8fef-4e6f-b962-9113c800b9ce"/>
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -34,18 +34,18 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/codelet">
                 <codelet:codelet xmlns:codelet="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">org.yawlfoundation.yawl.resourcing.codelets.RandomWait</codelet:codelet>
             </attribute>
-            <resourceTypeRef id="c1c7b1d9-97f2-464b-ad3a-fbf7a2d7c158" resourceTypeId="id4823b38a-6ac9-4886-80e1-1c0ad10275a4"/>
+            <resourceTypeRef id="f0d0bf8f-748a-47f0-995a-c9b7ed0519f0" resourceTypeId="id9ea15674-8bba-49f0-9871-ed204e814372"/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id835eb31e-aee3-47c6-89d2-a421f299daa3" sourceId="ida8f54d41-0dae-4439-a9de-ac00ba696133" targetId="C-A"/>
-        <Edge id="id8c5262a8-9ba2-427b-8cf6-f586f2a4022e" default="false" sourceId="C-InputCondition" targetId="ida8f54d41-0dae-4439-a9de-ac00ba696133"/>
+        <Edge id="id5b1f2174-7cce-424f-b621-4d102950bbe1" sourceId="id6dff5b0e-8fef-4e6f-b962-9113c800b9ce" targetId="C-A"/>
+        <Edge id="id00e6559e-43bf-45ed-9f38-466855d36eac" default="false" sourceId="C-InputCondition" targetId="id6dff5b0e-8fef-4e6f-b962-9113c800b9ce"/>
         <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id4823b38a-6ac9-4886-80e1-1c0ad10275a4">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id9ea15674-8bba-49f0-9871-ed204e814372">
         <name>org.yawlfoundation.yawl.resourcing.codelets.RandomWait</name>
         <type>SoftwareSystem</type>
     </ResourceType>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

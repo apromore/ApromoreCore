@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="EmptyNet" name="EmptyNet Workfow">
-    <Annotation id="id0a4469ed-c186-4e31-90a2-f0f050fc52c8">
+<anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="EmptyNet" name="EmptyNet Workfow">
+    <Annotation id="id38c5d636-616a-4f2a-a35a-9955458ed3b1">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>EmptyNet Workfow</title>
@@ -13,18 +13,18 @@
             <identifier>UID_d1f45fda-5536-4bc7-b938-a2fbdacb2fb7</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id282c45a6-638f-493d-8603-6bd90854f422" cpfId="N-EmptyNet">
+    <Annotation xsi:type="anf:GraphicsType" id="id7d1d391b-c2d2-493f-a2b8-f1eed46ed6cf" cpfId="N-EmptyNet">
         <size width="1761" height="685"/>
         <fill color="R:204G:204B:204"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="d7142ccd-7085-4eb2-ac7b-6ba2f0c1de16" cpfId="C-InputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id3d6f1e5d-1a0e-4990-b3cf-35885f270d96" cpfId="C-InputCondition">
         <position x="36.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="d7dd37c7-75a4-4d0d-9a26-af96732c2e54" cpfId="C-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="ida335ba40-db2b-4300-92a6-d1a7ef70ce0c" cpfId="C-OutputCondition">
         <position x="1052.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-</ns2:Annotations>
+</anf:Annotations>

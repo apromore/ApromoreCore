@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="RoleWithFilterAndConstraint" version="0.1" name="RoleWithFilterAndConstraint" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="RoleWithFilterAndConstraint" version="0.1" name="RoleWithFilterAndConstraint" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -12,10 +12,10 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="id1ea2aa50-3e7b-4805-bf67-22e0ca618bec" resourceTypeId="ide370f704-9dfe-4c87-9e8c-dd3cfb7c35fd" qualifier="Primary"/>
-            <resourceTypeRef id="id4ac8c6e8-e956-4c0c-8b9a-60edaebd63d0" resourceTypeId="idbea152e9-9723-4475-9ca2-cf0755620d22" qualifier="Primary"/>
-            <resourceTypeRef id="id51aade64-5dbc-4994-9945-e07466597b3d" resourceTypeId="idd0ad28ed-2d9c-4c73-9ed9-b660331c65b0" qualifier="Primary"/>
-            <resourceTypeRef id="id40244a45-d58e-4d24-b842-048596e4d175" resourceTypeId="id29cb05d9-6832-4050-bbe0-3835b2d66d4a" qualifier="Secondary"/>
+            <resourceTypeRef id="iddb1a75aa-6f1d-49fd-bb85-1112b08e9034" resourceTypeId="idf94e5f54-d2a8-40db-b627-31f3d9b282f4" qualifier="Primary"/>
+            <resourceTypeRef id="fa91517a-ce3b-487e-80c8-cd32c7329b4b" resourceTypeId="idbfe71f69-697f-4896-b607-499545619e29" qualifier="Primary"/>
+            <resourceTypeRef id="a3747ade-6d7a-4a4a-a186-3b7ef0069ab5" resourceTypeId="idf6960ed6-de83-467b-aa1d-2ff64332c376" qualifier="Primary"/>
+            <resourceTypeRef id="id0fba7fb7-8f3a-4b01-9cde-ec5965dc0070" resourceTypeId="id1af6f999-f61e-4634-b45e-ef7cc848c77b" qualifier="Secondary"/>
             <teamWork>false</teamWork>
             <filterByDataExpr>
                 <description>in organisational group 'OrgGroupX' and in organisational group 'PositionX' and with capability 'CapabilityX'</description>
@@ -23,39 +23,39 @@
                 <expression>//ResourceType[attribute[@name='OrgGroup' AND @value='OrgGroupX'] AND attribute[@name='Position' AND @value='PositionX'] AND attribute[@name='Capability' AND @value='CapabilityX']]</expression>
             </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide370f704-9dfe-4c87-9e8c-dd3cfb7c35fd" specializationIds="id42a8825b-d465-41c9-a0b9-c6a6c130a861 idcfe5ead1-41be-4fab-9853-1eaeb72f997d idbea152e9-9723-4475-9ca2-cf0755620d22" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xsi:type="cpf:HumanType" id="idf94e5f54-d2a8-40db-b627-31f3d9b282f4" specializationIds="id2f7e592b-33bf-409d-8d99-e23921c6d509 idb9889192-73df-4e88-b2a4-fb13a211e1a5 idbfe71f69-697f-4896-b607-499545619e29" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idd0ad28ed-2d9c-4c73-9ed9-b660331c65b0" specializationIds="id42a8825b-d465-41c9-a0b9-c6a6c130a861 ide370f704-9dfe-4c87-9e8c-dd3cfb7c35fd" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xsi:type="cpf:HumanType" id="idf6960ed6-de83-467b-aa1d-2ff64332c376" specializationIds="id2f7e592b-33bf-409d-8d99-e23921c6d509 idf94e5f54-d2a8-40db-b627-31f3d9b282f4" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id42a8825b-d465-41c9-a0b9-c6a6c130a861" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xsi:type="cpf:HumanType" id="id2f7e592b-33bf-409d-8d99-e23921c6d509" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
         <attribute name="Capability" value="CapabilityX"/>
         <attribute name="Position" value="PositionX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idcfe5ead1-41be-4fab-9853-1eaeb72f997d" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+    <ResourceType xsi:type="cpf:HumanType" id="idb9889192-73df-4e88-b2a4-fb13a211e1a5" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
         <name>TestY TestY</name>
         <attribute name="Capability" value="CapabilityY"/>
         <attribute name="Capability" value="CapabilityX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idbea152e9-9723-4475-9ca2-cf0755620d22" specializationIds="idcfe5ead1-41be-4fab-9853-1eaeb72f997d" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+    <ResourceType xsi:type="cpf:HumanType" id="idbfe71f69-697f-4896-b607-499545619e29" specializationIds="idb9889192-73df-4e88-b2a4-fb13a211e1a5" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
         <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id29cb05d9-6832-4050-bbe0-3835b2d66d4a" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id1af6f999-f61e-4634-b45e-ef7cc848c77b" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
         <name>ResourceA</name>
         <type>Equipment</type>
     </ResourceType>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

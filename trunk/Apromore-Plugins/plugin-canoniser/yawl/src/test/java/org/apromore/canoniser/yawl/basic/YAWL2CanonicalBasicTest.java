@@ -107,9 +107,9 @@ public class YAWL2CanonicalBasicTest {
             // Just build image if Graphviz exists
             if (new File(GraphvizVisualiser.DEFAULT_GRAPHVIZ_WINDOWS_PATH).exists()) {
                 final GraphvizVisualiser v = new GraphvizVisualiser();
-                v.createImageAsDOT(yawl2Canonical.getCpf().getNet().get(0),
+                v.createImageAsDOT(yawl2Canonical.getCpf().getNet().get(0), false,
                         new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.dot")));
-                v.createImageAsPNG(yawl2Canonical.getCpf().getNet().get(0), TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.png"));
+                v.createImageAsPNG(yawl2Canonical.getCpf().getNet().get(0), true, TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.png"));
             }
         }
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WSInvokerTest" version="0.1" name="WSInvokerTest" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WSInvokerTest" version="0.1" name="WSInvokerTest" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition-1" originalID="InputCondition_1">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-1" originalID="InputCondition_1">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A-3" originalID="A_3">
+        <Node xsi:type="cpf:TaskType" id="C-A-3" originalID="A_3">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
@@ -46,19 +46,19 @@
                 <expression>YawlWSInvokerPortName = 80</expression>
             </inputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="idaa74e360-605d-4cc2-9e55-05a5b1d048d7">
+        <Node xsi:type="cpf:MessageType" id="id7af105c1-10d6-4347-bbf0-666e87e24591">
             <direction>outgoing</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="f0f0e408-ffcc-4072-a488-7bb68352e9b1">
+        <Node xsi:type="cpf:MessageType" id="e0f912b5-8cb3-49a5-8da8-d3f3506ceb08">
             <direction>incoming</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id23d64d64-9481-4668-b796-9e41d98e90aa" sourceId="idaa74e360-605d-4cc2-9e55-05a5b1d048d7" targetId="C-A-3"/>
-        <Edge id="id5685680d-f97f-4c17-bc62-b03c5e8f342b" sourceId="C-A-3" targetId="f0f0e408-ffcc-4072-a488-7bb68352e9b1"/>
-        <Edge id="id74507a3f-e743-4338-ba34-95f7e539040c" default="false" sourceId="C-InputCondition-1" targetId="idaa74e360-605d-4cc2-9e55-05a5b1d048d7"/>
-        <Edge id="iddd830ade-64df-40ac-9c49-94a23d27a507" default="false" sourceId="f0f0e408-ffcc-4072-a488-7bb68352e9b1" targetId="C-OutputCondition-2"/>
+        <Edge id="id6facc83a-6842-47f3-8763-a20ba20dd80c" sourceId="id7af105c1-10d6-4347-bbf0-666e87e24591" targetId="C-A-3"/>
+        <Edge id="id0e213ab9-8173-4a38-9229-63fb8076e935" sourceId="C-A-3" targetId="e0f912b5-8cb3-49a5-8da8-d3f3506ceb08"/>
+        <Edge id="ida8540691-73fb-466c-9d84-5cc50aa03e13" default="false" sourceId="C-InputCondition-1" targetId="id7af105c1-10d6-4347-bbf0-666e87e24591"/>
+        <Edge id="id142f5c8b-bd39-4da9-ae8d-918c55cca149" default="false" sourceId="e0f912b5-8cb3-49a5-8da8-d3f3506ceb08" targetId="C-OutputCondition-2"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>
