@@ -73,7 +73,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
                 // Participants
                 for (final TParticipant participant : collaboration.getParticipant()) {
                     if (participant.getProcessRef() == null) {  // black box pool
-                        getResourceType().add(new CpfResourceTypeType(participant, initializer));
+                        getResourceType().add(new CpfResourceTypeTypeImpl(participant, initializer));
                     } else {
                         TProcess process = (TProcess) initializer.findBpmnElement(participant.getProcessRef());
                         if (process == null) {

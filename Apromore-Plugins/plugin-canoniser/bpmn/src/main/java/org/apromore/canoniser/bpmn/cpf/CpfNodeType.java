@@ -15,6 +15,7 @@ import org.apromore.cpf.EdgeType;
 public interface CpfNodeType extends Attributed {
 
     // Methods already present in CPF NodeType
+
     /**
      * @return the identifier for this element, unique within the CPF document
      */
@@ -25,7 +26,7 @@ public interface CpfNodeType extends Attributed {
      */
     String getName();
 
-    // Added convenient methods
+    // Added convenience methods
 
     /**
      * @return every edge which has this node as its target
