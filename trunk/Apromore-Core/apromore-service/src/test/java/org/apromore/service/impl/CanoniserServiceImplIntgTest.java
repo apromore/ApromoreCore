@@ -8,7 +8,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.IOUtils;
 import org.apromore.TestData;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -40,8 +43,11 @@ import org.apromore.service.model.DecanonisedProcess;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -62,6 +68,8 @@ import org.xml.sax.SAXException;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CanoniserServiceImplIntgTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserServiceImplIntgTest.class);
 
     @Autowired
     private CanoniserService cSrv;
@@ -274,6 +282,108 @@ public class CanoniserServiceImplIntgTest {
 
     private AnnotationsType getANFTypeFromXML(final DataSource anf) throws JAXBException, SAXException, IOException {
         return ANFSchema.unmarshalAnnotationFormat(anf.getInputStream(), false).getValue();
+    }
+
+
+    @Test
+    public void canoniseOrderfulfilmentFromYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+
+        if (LOGGER.isDebugEnabled()) {
+            // Save CPF
+            saveCanonisedProcess(oFCanonised);
+        }
+    }
+
+    @Test
+    public void canoniseOrderfulfilmentFromYAWLToYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(deCanonisedYAWL, "OrderFulfillment.yawl");
+        }
+    }
+
+    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-4)
+    @Ignore
+    @Test
+    public void convertOrderfulfilmentFromYAWLToEPML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedEPML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedEPML, "OrderFulfillment.epml");
+        }
+    }
+
+    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-5)
+    @Ignore
+    @Test
+    public void convertOrderfulfilmentFromYAWLToBPMN() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedBPMN);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedBPMN, "OrderFulfillment.bpmn");
+        }
+    }
+
+    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-6)
+    @Ignore
+    @Test
+    public void convertOrderfulfilmentFromYAWLToPNML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedPNML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedPNML, "OrderFulfillment.pnml");
+        }
+    }
+
+    @Test
+    public void convertOrderfulfilmentFromYAWLToXPDL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseOrderfulFilment();
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedXPDL);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedXPDL, "OrderFulfillment.xpdl");
+        }
+    }
+
+    private CanonisedProcess canoniseOrderfulFilment() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised;
+        try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.yawl")) {
+            try (InputStream oFProcessOrgData = ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.ybkp")) {
+
+                HashSet<RequestParameterType<?>> yawlParameters = new HashSet<RequestParameterType<?>>();
+                yawlParameters.add(new RequestParameterType<InputStream>("readOrgData", oFProcessOrgData));
+                oFCanonised = cSrv.canonise("YAWL 2.2", oFProcess, yawlParameters);
+
+            }
+        }
+        return oFCanonised;
+    }
+
+    private void saveCanonisedProcess(final CanonisedProcess canonisedProcess) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream("target/"+canonisedProcess.getCpt().getName())) {
+                CPFSchema.marshalCanoncialFormat(new BufferedOutputStream(fileOutputStream), canonisedProcess.getCpt(), true);
+                fileOutputStream.flush();
+        } catch (JAXBException | SAXException | IOException e) {
+            LOGGER.error("Could not save Canonised Process", e);
+        }
+    }
+
+    private void saveDecanonisedProcess(final DecanonisedProcess decanonisedProcess, final String fileName) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream("target/"+fileName)) {
+            IOUtils.copy(decanonisedProcess.getNativeFormat(), fileOutputStream);
+        } catch (IOException e) {
+            LOGGER.error("Could not save DeCanonised Process", e);
+        }
     }
 
 
