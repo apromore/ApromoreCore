@@ -102,10 +102,23 @@ public class BpmnDefinitionsTest implements TestConstants {
         BpmnDefinitions definitions = BpmnDefinitions.correctFlowNodeRefs(new BpmnDefinitions(cpf, anf), new BpmnObjectFactory());
 
         // Serialize the test instance for offline inspection
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".bpmn")), false);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn")), false);
 
         // Validate the test instance
         definitions.marshal(new NullOutputStream(), true);
+
+        // Round-trip the test instance from BPMN back to the original CPF
+        CpfCanonicalProcessType cpf2 = new CpfCanonicalProcessType(definitions);
+        cpf2.setUri("dummy");
+        cpf2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn.cpf")), false);
+        cpf2.marshal(new NullOutputStream(), true);
+
+        assertEquals(1, definitions.getBPMNDiagram().size());
+
+        AnfAnnotationsType anf2 = new AnfAnnotationsType(definitions, definitions.getBPMNDiagram().get(0));
+        anf2.setUri("dummy");
+        anf2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn.anf")), false);
+        anf2.marshal(new NullOutputStream(), true);
 
         return definitions;
     }

@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.IdFactory;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
@@ -57,26 +58,31 @@ public class AnfAnnotationsType extends AnnotationsType {
      *
      * The resulting document must have its <code>uri</code> element set in order to be schema-legal.
      *
-     * @param diagram  a BPMNDI Diagram element
+     * @param definitions  a BPMN document, from which documentation annotations will be taken; may be <code>null</code>
+     * @param diagram  a BPMNDI Diagram element from <code>definitions</code>, from which graphics annotations will be taken; may be <code>null</code>
      */
-    public AnfAnnotationsType(final BPMNDiagram diagram) {
+    public AnfAnnotationsType(final BpmnDefinitions definitions, final BPMNDiagram diagram) {
 
-       // Generator for identifiers scoped to this ANF document
-       final IdFactory anfIdFactory = new IdFactory();
+        // Generator for identifiers scoped to this ANF document
+        final IdFactory anfIdFactory = new IdFactory();
 
-       // Add an ANF Annotation for each BPMNDI DiagramElement
-       for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElement()) {
-            element.getValue().accept(new BaseVisitor() {
-                @Override
-                public void visit(final BPMNEdge edge) {
-                    getAnnotation().add(new AnfGraphicsType(edge, anfIdFactory));
-                }
+        if (definitions != null) {
+        }
 
-                @Override
-                public void visit(final BPMNShape shape) {
-                    getAnnotation().add(new AnfGraphicsType(shape, anfIdFactory));
-                }
-            });
+        if (diagram != null) {
+            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElement()) {
+                element.getValue().accept(new BaseVisitor() {
+                    @Override
+                    public void visit(final BPMNEdge edge) {
+                        getAnnotation().add(new AnfGraphicsType(edge, anfIdFactory));
+                    }
+
+                    @Override
+                    public void visit(final BPMNShape shape) {
+                        getAnnotation().add(new AnfGraphicsType(shape, anfIdFactory));
+                    }
+                });
+            }
         }
     }
 

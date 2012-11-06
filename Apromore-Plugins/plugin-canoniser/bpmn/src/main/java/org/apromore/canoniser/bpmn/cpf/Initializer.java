@@ -157,20 +157,6 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         populateBaseElement(edge, flowElement);
     }
 
-    void populateSequenceFlow(final EdgeType edge, final TSequenceFlow sequenceFlow) throws CanoniserException {
-        populateFlowElement(edge, sequenceFlow);
-
-        // handle source
-        NodeType source = (NodeType) bpmnElementToCpfElementMap.get(sequenceFlow.getSourceRef());
-        edge.setSourceId(source.getId());
-        ((CpfNodeType) source).getOutgoingEdges().add(edge);
-
-        // handle target
-        NodeType target = (NodeType) bpmnElementToCpfElementMap.get(sequenceFlow.getTargetRef());
-        edge.setTargetId(target.getId());
-        ((CpfNodeType) target).getIncomingEdges().add(edge);
-    }
-
     // Node supertype handlers
 
     void populateBaseElement(final NodeType node, final TBaseElement baseElement) throws CanoniserException {
