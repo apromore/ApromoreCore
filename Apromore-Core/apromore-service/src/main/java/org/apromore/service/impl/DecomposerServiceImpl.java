@@ -28,6 +28,7 @@ import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.RFragment2;
 import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
+import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Collection<RFragment2> cs = f.getChildren();
         Map<String, String> childMappings = mapPocketChildId(f, op, fragmentIds, cs);
 
-        String hash =  UUID.randomUUID().toString();// HashUtil.computeHash(f, f.getType(), op); //"";
+        String hash = HashUtil.computeHash(f, f.getType(), op); //UUID.randomUUID().toString();
         Content matchingContent = null;
         if (matchingContent == null) {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);

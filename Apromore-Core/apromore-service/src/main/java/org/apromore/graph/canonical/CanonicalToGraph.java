@@ -112,6 +112,8 @@ public class CanonicalToGraph {
             obj = new CanonicalObject();
             obj.setId(object.getId());
             obj.setName(object.getName());
+            obj.setOriginalId(object.getOriginalID());
+            obj.setObjectId(object.getId());
             if (object instanceof SoftType) {
                 obj.setObjectType(CanonicalObject.ObjectTypeEnum.SOFT);
             } else {
@@ -200,14 +202,14 @@ public class CanonicalToGraph {
             for (IObject obj : objs) {
                 if (ort.getObjectId() != null && ort.getObjectId().equals(obj.getId())) {
                     o = new CanonicalObject();
-                    o.setId(ort.getId());
+                    o.setId(obj.getId());
                     o.setName(obj.getName());
                     o.setOptional(obj.getOptional());
                     o.setConsumed(obj.getConsumed());
                     o.setConfigurable(obj.isConfigurable());
-                    o.setOriginalId(ort.getObjectId());
-                    o.setObjectId(ort.getObjectId());
-                    o.setType(ort.getType().toString());
+                    o.setOriginalId(obj.getOriginalId());
+                    o.setObjectId(obj.getObjectId());
+                    o.setType(obj.getType());
                     o.setAttributes(buildCombinedAttributeList(obj.getAttributes(), ort.getAttribute()));
                     n.addObject(o);
                 }
@@ -332,7 +334,9 @@ public class CanonicalToGraph {
     private static State constructState(List<IResource> res, List<IObject> obj, Map<String, Node> flow, StateType node) {
         State state = new State(node.getName());
         state.setId(node.getId());
-        state.setLabel(node.getName());
+        if (node.getName() == null || node.getName().equals("")) {
+            state.setName(node.getId());
+        }
         state.setOriginalId(node.getOriginalID());
         if (node.isConfigurable() != null) {
             state.setConfigurable(node.isConfigurable());
@@ -347,7 +351,6 @@ public class CanonicalToGraph {
     private static Task constructTask(List<IResource> res, List<IObject> obj, Map<String, Node> flow, TaskType node) {
         Task typ = new Task(node.getName());
         typ.setId(node.getId());
-        typ.setLabel(node.getName());
         typ.setOriginalId(node.getOriginalID());
         if (node.isConfigurable() != null) {
             typ.setConfigurable(node.isConfigurable());
@@ -369,7 +372,6 @@ public class CanonicalToGraph {
     private static Event constructEvent(List<IResource> res, List<IObject> obj, Map<String, Node> flow, EventType node) {
         Event typ = new Event(node.getName());
         typ.setId(node.getId());
-        typ.setLabel(node.getName());
         typ.setOriginalId(node.getOriginalID());
         if (node.isConfigurable() != null) {
             typ.setConfigurable(node.isConfigurable());
@@ -387,7 +389,6 @@ public class CanonicalToGraph {
     private static Timer constructTimer(List<IResource> res, List<IObject> obj, Map<String, Node> flow, TimerType node) {
         Timer typ = new Timer(node.getName());
         typ.setId(node.getId());
-        typ.setLabel(node.getName());
         typ.setOriginalId(node.getOriginalID());
         if (node.isConfigurable() != null) {
             typ.setConfigurable(node.isConfigurable());
@@ -419,7 +420,6 @@ public class CanonicalToGraph {
     private static Message constructMessage(List<IResource> res, List<IObject> obj, Map<String, Node> flow, MessageType node) {
         Message typ = new Message(node.getName());
         typ.setId(node.getId());
-        typ.setLabel(node.getName());
         typ.setOriginalId(node.getOriginalID());
         if (node.isConfigurable() != null) {
             typ.setConfigurable(node.isConfigurable());
@@ -441,8 +441,12 @@ public class CanonicalToGraph {
         if (node instanceof ANDSplitType) {
             AndSplit andSplit = new AndSplit();
             andSplit.setId(node.getId());
-            andSplit.setLabel(node.getName());
             andSplit.setOriginalId(node.getOriginalID());
+            if (node.getName() == null || node.getName().equals("")) {
+                andSplit.setName("AndSplit");
+            } else {
+                andSplit.setName(node.getName());
+            }
             if (node.isConfigurable() != null) {
                 andSplit.setConfigurable(node.isConfigurable());
             }
@@ -451,8 +455,12 @@ public class CanonicalToGraph {
         } else {
             AndJoin andJoin = new AndJoin();
             andJoin.setId(node.getId());
-            andJoin.setLabel(node.getName());
             andJoin.setOriginalId(node.getOriginalID());
+            if (node.getName() == null || node.getName().equals("")) {
+                andJoin.setName("AndJoin");
+            } else {
+                andJoin.setName(node.getName());
+            }
             if (node.isConfigurable() != null) {
                 andJoin.setConfigurable(node.isConfigurable());
             }
@@ -465,7 +473,11 @@ public class CanonicalToGraph {
         if (node instanceof XORSplitType) {
             XOrSplit xorSplit = new XOrSplit();
             xorSplit.setId(node.getId());
-            xorSplit.setLabel(node.getName());
+            if (node.getName() == null || node.getName().equals("")) {
+                xorSplit.setName("XOrSplit");
+            } else {
+                xorSplit.setName(node.getName());
+            }
             xorSplit.setOriginalId(node.getOriginalID());
             if (node.isConfigurable() != null) {
                 xorSplit.setConfigurable(node.isConfigurable());
@@ -475,8 +487,12 @@ public class CanonicalToGraph {
         } else {
             XOrJoin xorJoin = new XOrJoin();
             xorJoin.setId(node.getId());
-            xorJoin.setLabel(node.getName());
             xorJoin.setOriginalId(node.getOriginalID());
+            if (node.getName() == null || node.getName().equals("")) {
+                xorJoin.setName("XOrJoin");
+            } else {
+                xorJoin.setName(node.getName());
+            }
             if (node.isConfigurable() != null) {
                 xorJoin.setConfigurable(node.isConfigurable());
             }
@@ -489,8 +505,12 @@ public class CanonicalToGraph {
         if (node instanceof ORSplitType) {
             OrSplit orSplit = new OrSplit();
             orSplit.setId(node.getId());
-            orSplit.setLabel(node.getName());
             orSplit.setOriginalId(node.getOriginalID());
+            if (node.getName() == null || node.getName().equals("")) {
+                orSplit.setName("OrSplit");
+            } else {
+                orSplit.setName(node.getName());
+            }
             if (node.isConfigurable() != null) {
                 orSplit.setConfigurable(node.isConfigurable());
             }
@@ -499,8 +519,12 @@ public class CanonicalToGraph {
         } else {
             OrJoin orJoin = new OrJoin();
             orJoin.setId(node.getId());
-            orJoin.setLabel(node.getName());
             orJoin.setOriginalId(node.getOriginalID());
+            if (node.getName() == null || node.getName().equals("")) {
+                orJoin.setName("OrJoin");
+            } else {
+                orJoin.setName(node.getName());
+            }
             if (node.isConfigurable() != null) {
                 orJoin.setConfigurable(node.isConfigurable());
             }

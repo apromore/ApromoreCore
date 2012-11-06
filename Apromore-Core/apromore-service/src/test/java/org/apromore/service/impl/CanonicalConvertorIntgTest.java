@@ -4,8 +4,12 @@ import java.io.InputStream;
 import java.util.HashSet;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.IObject;
 import org.apromore.graph.canonical.Node;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanonicalConverter;
@@ -62,7 +66,12 @@ public class CanonicalConvertorIntgTest {
     public void testConvertYAWLToGraph() throws Exception {
         InputStream input = ClassLoader.getSystemResourceAsStream("models/filmproduction.yawl");
         CanonisedProcess cp = canoniserService.canonise("YAWL 2.2", input, new HashSet<RequestParameterType<?>>());
+        outputObjectList(cp.getCpt());
+        System.out.println("*****************");
+
         Canonical g = converter.convert(cp.getCpt());
+        outputObjectList(g);
+        System.out.println("*****************");
 
         RPST<Edge, Node> rpst = new RPST<Edge, Node>(g);
         IOUtils.toFile("canonised.dot", rpst.toDOT());
@@ -79,11 +88,16 @@ public class CanonicalConvertorIntgTest {
         assertThat(cp.getCpt().getNet().get(0).getEdge().size(), equalTo(59));
         assertThat(cp.getCpt().getNet().get(0).getObject().size(), equalTo(43));
 
-//        CanonicalProcessType cpt = converter.convert(g);
-//
-//        Canonical g1 = converter.convert(cp.getCpt());
-//        RPST<Edge, Node> rpst1 = new RPST<Edge, Node>(g1);
-//        IOUtils.toFile("decanonised.dot", rpst1.toDOT());
+        CanonicalProcessType cpt = converter.convert(g);
+        outputObjectList(cpt);
+        System.out.println("*****************");
+
+        Canonical g1 = converter.convert(cpt);
+        //outputObjectList(g1);
+        //System.out.println("*****************");
+
+        RPST<Edge, Node> rpst1 = new RPST<Edge, Node>(g1);
+        IOUtils.toFile("decanonised.dot", rpst1.toDOT());
 //
 //        canoniserService.deCanonise(1, "1.0", "YAWL 2.2", cpt, null, new HashSet<RequestParameterType<?>>());
 //
@@ -91,6 +105,22 @@ public class CanonicalConvertorIntgTest {
 //        assertThat(cpt.getNet().get(0).getNode().size(), equalTo(46));
 //        assertThat(cpt.getNet().get(0).getEdge().size(), equalTo(59));
 //        assertThat(cpt.getNet().get(0).getObject().size(), equalTo(43));
+    }
+
+    private void outputObjectList(CanonicalProcessType cpt) {
+        for (NetType net : cpt.getNet()) {
+            for (ObjectType ot : net.getObject()) {
+                System.out.println("Object: " + ot.getId() + " - " + ot.getOriginalID() + " - " + ot.getName());
+            }
+        }
+    }
+
+    private void outputObjectList(Canonical g) {
+        for (INode n : g.getNodes()) {
+            for (IObject ot : n.getObjects()) {
+                System.out.println(ot.getObjectId() + " - " + ot.getOriginalId() + " - " + ot.getName());
+            }
+        }
     }
 
 }
