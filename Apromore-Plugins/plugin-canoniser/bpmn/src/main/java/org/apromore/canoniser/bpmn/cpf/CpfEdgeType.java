@@ -1,6 +1,7 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
@@ -34,7 +35,7 @@ public class CpfEdgeType extends EdgeType implements Attributed {
      * @throws CanoniserException if the <code>sequenceFlow</code> has more than one condition expression
      */
     public CpfEdgeType(final TSequenceFlow sequenceFlow, final Initializer initializer) throws CanoniserException {
-        initializer.populateSequenceFlow(this, sequenceFlow);
+        initializer.populateFlowElement(this, sequenceFlow);
 
         if (sequenceFlow.getConditionExpression() != null) {
 
@@ -49,6 +50,21 @@ public class CpfEdgeType extends EdgeType implements Attributed {
             conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
             setConditionExpr(conditionExpr);
         }
+
+        initializer.defer(new Initialization() {
+            public void initialize() throws CanoniserException {
+
+                // handle source
+                CpfNodeType source = (CpfNodeType) initializer.findElement(sequenceFlow.getSourceRef());
+                setSourceId(source.getId());
+                ((CpfNodeType) source).getOutgoingEdges().add(CpfEdgeType.this);
+
+                // handle target
+                CpfNodeType target = (CpfNodeType) initializer.findElement(sequenceFlow.getTargetRef());
+                setTargetId(target.getId());
+                ((CpfNodeType) target).getIncomingEdges().add(CpfEdgeType.this);
+            }
+        });
     }
 
     // Accessors

@@ -53,8 +53,13 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
             canonicalFormat.add(cpf);
 
             // Create the ANF
+            if (definitions.getBPMNDiagram().size() == 0) {
+                final AnnotationsType anf = new AnfAnnotationsType(definitions, null);
+                anf.setUri(cpf.getUri());
+                annotationFormat.add(anf);
+            }
             for (BPMNDiagram diagram : definitions.getBPMNDiagram()) {
-                final AnnotationsType anf = new AnfAnnotationsType(diagram);
+                final AnnotationsType anf = new AnfAnnotationsType(definitions, diagram);
                 anf.setUri(cpf.getUri());
                 annotationFormat.add(anf);
             }
