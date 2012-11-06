@@ -1,5 +1,9 @@
 package org.apromore.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.io.InputStream;
 import java.util.HashSet;
 
@@ -20,16 +24,14 @@ import org.jbpt.algo.tree.tctree.TCType;
 import org.jbpt.utils.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the UserService Implementation.
@@ -43,6 +45,8 @@ import static org.hamcrest.Matchers.notNullValue;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CanonicalConvertorIntgTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConvertorIntgTest.class);
 
     @Autowired
     private CanoniserService canoniserService;
@@ -107,7 +111,7 @@ public class CanonicalConvertorIntgTest {
 //        assertThat(cpt.getNet().get(0).getObject().size(), equalTo(43));
     }
 
-    private void outputObjectList(CanonicalProcessType cpt) {
+    private void outputObjectList(final CanonicalProcessType cpt) {
         for (NetType net : cpt.getNet()) {
             for (ObjectType ot : net.getObject()) {
                 System.out.println("Object: " + ot.getId() + " - " + ot.getOriginalID() + " - " + ot.getName());
@@ -115,7 +119,7 @@ public class CanonicalConvertorIntgTest {
         }
     }
 
-    private void outputObjectList(Canonical g) {
+    private void outputObjectList(final Canonical g) {
         for (INode n : g.getNodes()) {
             for (IObject ot : n.getObjects()) {
                 System.out.println(ot.getObjectId() + " - " + ot.getOriginalId() + " - " + ot.getName());
