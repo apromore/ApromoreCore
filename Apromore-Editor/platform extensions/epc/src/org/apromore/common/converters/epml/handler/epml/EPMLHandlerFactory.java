@@ -24,19 +24,34 @@
  */
 package org.apromore.common.converters.epml.handler.epml;
 
-import de.epml.*;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
-import org.apromore.common.converters.epml.handler.epml.impl.*;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeANDHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeArcHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeEventHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeFunctionHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeORHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeObjectHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeRoleHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeXORHandler;
+
+import de.epml.TypeAND;
+import de.epml.TypeArc;
+import de.epml.TypeEvent;
+import de.epml.TypeFunction;
+import de.epml.TypeOR;
+import de.epml.TypeObject;
+import de.epml.TypeRole;
+import de.epml.TypeXOR;
 
 public class EPMLHandlerFactory {
 
     private final EPMLConversionContext context;
 
-    public EPMLHandlerFactory(EPMLConversionContext context) {
+    public EPMLHandlerFactory(final EPMLConversionContext context) {
         this.context = context;
     }
 
-    public EPMLHandler createNodeConverter(Object obj) {
+    public EPMLHandler createNodeConverter(final Object obj) {
         if (obj instanceof TypeFunction) {
             return new TypeFunctionHandler(context, (TypeFunction) obj);
         } else if (obj instanceof TypeEvent) {
@@ -47,13 +62,15 @@ public class EPMLHandlerFactory {
             return new TypeORHandler(context, (TypeOR) obj);
         } else if (obj instanceof TypeXOR) {
             return new TypeXORHandler(context, (TypeXOR) obj);
-        } else if (obj instanceof TypeArc) {
-            return new TypeArcHandler(context, (TypeArc) obj);
+        } else if (obj instanceof TypeObject) {
+            return new TypeObjectHandler(context, (TypeObject) obj);
+        } else if (obj instanceof TypeRole) {
+            return new TypeRoleHandler(context, (TypeRole) obj);
         }
         return null;
     }
 
-    public EPMLHandler createEdgeConverter(Object obj) {
+    public EPMLHandler createEdgeConverter(final Object obj) {
         if (obj instanceof TypeArc) {
             return new TypeArcHandler(context, (TypeArc) obj);
         }
