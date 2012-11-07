@@ -1170,9 +1170,11 @@ public interface TestData {
             "  </WorkflowProcesses>\n" +
             "</Package>";
 
+    //TODO this process model generates an import exception!
     public static final String EPML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<epml:epml xmlns:epml=\"http://www.epml.de\"\n" +
             "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de EPML_2.0.xsd\">\n" +
+            "<coordinates xOrigin=\"leftToRight\" yOrigin=\"topToBottom\" />"+
             "  <directory>\n" +
             "  <epc epcId=\"1\" name=\"EPC\">\n" +
             "    <event id=\"1\">\n" +
@@ -1275,8 +1277,10 @@ public interface TestData {
             "  </directory>\n" +
             "</epml:epml>";
 
+    //TODO this EPML is invalid according to the spec
     public static final String EPML2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:epml xmlns:ns2=\"http://www.epml.de\">\n" +
+            "<coordinates xOrigin=\"leftToRight\" yOrigin=\"topToBottom\" />"+
             "<directory>\n" +
             "  <epc epcId=\"1\" name=\"EPC\">\n" +
             "    <property name=\"BranchName\" value=\"MAIN\"/>\n" +
@@ -1445,6 +1449,7 @@ public interface TestData {
             "</directory>\n" +
             "</ns2:epml>";
 
+    //TODO this EPML is invalid according to the specification!
     public final static String EPML3 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<epml:epml xmlns:epml=\"http://www.epml.de\"\n" +
             "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de epml_12.xsd\">\n" +
@@ -1488,6 +1493,7 @@ public interface TestData {
             "  </epc>\n" +
             "</epml:epml>";
 
+    //TODO this EPML is invalid according to the specification
     public final static String EPML4 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<epml:epml xmlns:epml=\"http://www.epml.de\"\n" +
             "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de epml_12.xsd\">\n" +
@@ -1515,6 +1521,131 @@ public interface TestData {
             "    </arc>\n" +
             "  </epc>\n" +
             "</epml:epml>";
+
+    public final static String EPML5 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+    		"<epml:epml xmlns:epml=\"http://www.epml.de\"\r\n" +
+    		"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de EPML_2.0.xsd\">\r\n" +
+    		"  <coordinates xOrigin=\"leftToRight\" yOrigin=\"topToBottom\" />\r\n" +
+    		"  <directory>\r\n" +
+    		"      <epc epcId=\"1\" name=\"EPC\">\r\n" +
+    		"        <event id=\"1\">\r\n" +
+    		"          <name>E1</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"110\" y=\"220\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </event>\r\n" +
+    		"        <event id=\"2\">\r\n" +
+    		"          <name>E2</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"400\" y=\"145\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </event>\r\n" +
+    		"        <event id=\"3\">\r\n" +
+    		"          <name>E3</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"405\" y=\"290\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </event>\r\n" +
+    		"        <event id=\"4\">\r\n" +
+    		"          <name>E4</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"695\" y=\"220\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </event>\r\n" +
+    		"        <function id=\"5\">\r\n" +
+    		"          <name>F1</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"215\" y=\"220\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </function>\r\n" +
+    		"        <function id=\"6\">\r\n" +
+    		"          <name>F2</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"525\" y=\"145\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </function>\r\n" +
+    		"        <function id=\"7\">\r\n" +
+    		"          <name>F3</name>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"41\" width=\"81\" x=\"535\" y=\"290\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </function>\r\n" +
+    		"        <or id=\"8\">\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"21\" width=\"21\" x=\"345\" y=\"230\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </or>\r\n" +
+    		"        <or id=\"9\">\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position height=\"21\" width=\"21\" x=\"635\" y=\"230\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </or>\r\n" +
+    		"        <arc id=\"10\">\r\n" +
+    		"          <flow source=\"1\" target=\"5\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"191\" y=\"240\"/>\r\n" +
+    		"            <position x=\"215\" y=\"240\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"11\">\r\n" +
+    		"          <flow source=\"5\" target=\"8\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"296\" y=\"240\"/>\r\n" +
+    		"            <position x=\"345\" y=\"240\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"12\">\r\n" +
+    		"          <flow source=\"8\" target=\"2\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"366\" y=\"230\"/>\r\n" +
+    		"            <position x=\"400\" y=\"165\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"13\">\r\n" +
+    		"          <flow source=\"8\" target=\"3\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"366\" y=\"251\"/>\r\n" +
+    		"            <position x=\"405\" y=\"310\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"14\">\r\n" +
+    		"          <flow source=\"3\" target=\"7\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"486\" y=\"310\"/>\r\n" +
+    		"            <position x=\"535\" y=\"310\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"15\">\r\n" +
+    		"          <flow source=\"2\" target=\"6\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"481\" y=\"165\"/>\r\n" +
+    		"            <position x=\"525\" y=\"165\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"16\">\r\n" +
+    		"          <flow source=\"6\" target=\"9\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"606\" y=\"165\"/>\r\n" +
+    		"            <position x=\"635\" y=\"230\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"17\">\r\n" +
+    		"          <flow source=\"7\" target=\"9\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"616\" y=\"310\"/>\r\n" +
+    		"            <position x=\"635\" y=\"251\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"        <arc id=\"18\">\r\n" +
+    		"          <flow source=\"9\" target=\"4\"/>\r\n" +
+    		"          <graphics>\r\n" +
+    		"            <position x=\"656\" y=\"240\"/>\r\n" +
+    		"            <position x=\"695\" y=\"240\"/>\r\n" +
+    		"          </graphics>\r\n" +
+    		"        </arc>\r\n" +
+    		"      </epc>\r\n" +
+    		"    </directory>\r\n" +
+    		"</epml:epml>";
 
 
     public final static String PNML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1682,4 +1813,569 @@ public interface TestData {
             "  </net>\n" +
             "</pnml>";
 
+
+    public static final String YAWL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+    		"<specificationSet xmlns=\"http://www.yawlfoundation.org/yawlschema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"2.2\" xsi:schemaLocation=\"http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.2.xsd\">\r\n" +
+    		"  <specification uri=\"SimpleMakeTripProcess.ywl\">\r\n" +
+    		"    <metaData>\r\n" +
+    		"      <title>Simple Make Trip Process</title>\r\n" +
+    		"      <creator>Chun Ouyang</creator>\r\n" +
+    		"      <description>A simple one-level process that provides a trip booking service.</description>\r\n" +
+    		"      <validFrom>2008-09-15</validFrom>\r\n" +
+    		"      <version>1.3</version>\r\n" +
+    		"      <persistent>false</persistent>\r\n" +
+    		"      <identifier>UID_47e1bbf0-7677-4469-ba47-2f77a24bab97</identifier>\r\n" +
+    		"    </metaData>\r\n" +
+    		"    <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\r\n" +
+    		"      <xs:complexType name=\"tripRegisterType\">\r\n" +
+    		"        <xs:sequence>\r\n" +
+    		"          <xs:element name=\"startDate\" type=\"xs:date\" />\r\n" +
+    		"          <xs:element name=\"endDate\" type=\"xs:date\" />\r\n" +
+    		"          <xs:element name=\"want_flight\" type=\"xs:boolean\" />\r\n" +
+    		"          <xs:element name=\"want_hotel\" type=\"xs:boolean\" />\r\n" +
+    		"          <xs:element name=\"want_car\" type=\"xs:boolean\" />\r\n" +
+    		"          <xs:element name=\"payAccNumber\" type=\"xs:string\" />\r\n" +
+    		"        </xs:sequence>\r\n" +
+    		"      </xs:complexType>\r\n" +
+    		"    </xs:schema>\r\n" +
+    		"    <decomposition id=\"Make_Trip_Process\" isRootNet=\"true\" xsi:type=\"NetFactsType\">\r\n" +
+    		"      <localVariable>\r\n" +
+    		"        <index>3</index>\r\n" +
+    		"        <name>carDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"        <initialValue>n/a</initialValue>\r\n" +
+    		"      </localVariable>\r\n" +
+    		"      <localVariable>\r\n" +
+    		"        <index>2</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"        <initialValue>Please type name ...</initialValue>\r\n" +
+    		"      </localVariable>\r\n" +
+    		"      <localVariable>\r\n" +
+    		"        <index>4</index>\r\n" +
+    		"        <name>flightDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"        <initialValue>n/a</initialValue>\r\n" +
+    		"      </localVariable>\r\n" +
+    		"      <localVariable>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>hotelDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"        <initialValue>n/a</initialValue>\r\n" +
+    		"      </localVariable>\r\n" +
+    		"      <localVariable>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>registrInfo</name>\r\n" +
+    		"        <type>tripRegisterType</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"        <initialValue />\r\n" +
+    		"      </localVariable>\r\n" +
+    		"      <processControlElements>\r\n" +
+    		"        <inputCondition id=\"InputCondition_1\">\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"register_3\" />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"        </inputCondition>\r\n" +
+    		"        <task id=\"register_3\">\r\n" +
+    		"          <name>register</name>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"book_flight_8\" />\r\n" +
+    		"            <predicate>/Make_Trip_Process/registrInfo/want_flight='true'</predicate>\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"book_car_10\" />\r\n" +
+    		"            <predicate>/Make_Trip_Process/registrInfo/want_car='true'</predicate>\r\n" +
+    		"            <isDefaultFlow />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"book_hotel_9\" />\r\n" +
+    		"            <predicate>/Make_Trip_Process/registrInfo/want_hotel='true'</predicate>\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <join code=\"xor\" />\r\n" +
+    		"          <split code=\"or\" />\r\n" +
+    		"          <startingMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/Make_Trip_Process/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </startingMappings>\r\n" +
+    		"          <completedMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;registrInfo&gt;{/register/registrInfo/*}&lt;/registrInfo&gt;\" />\r\n" +
+    		"              <mapsTo>registrInfo</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/register/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </completedMappings>\r\n" +
+    		"          <resourcing>\r\n" +
+    		"            <offer initiator=\"user\" />\r\n" +
+    		"            <allocate initiator=\"user\" />\r\n" +
+    		"            <start initiator=\"user\" />\r\n" +
+    		"          </resourcing>\r\n" +
+    		"          <decomposesTo id=\"register\" />\r\n" +
+    		"        </task>\r\n" +
+    		"        <task id=\"book_hotel_9\">\r\n" +
+    		"          <name>book hotel</name>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"pay_11\" />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <join code=\"xor\" />\r\n" +
+    		"          <split code=\"and\" />\r\n" +
+    		"          <startingMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;startDate&gt;{/Make_Trip_Process/registrInfo/startDate/text()}&lt;/startDate&gt;\" />\r\n" +
+    		"              <mapsTo>startDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;endDate&gt;{/Make_Trip_Process/registrInfo/endDate/text()}&lt;/endDate&gt;\" />\r\n" +
+    		"              <mapsTo>endDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/Make_Trip_Process/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </startingMappings>\r\n" +
+    		"          <completedMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;hotelDetails&gt;{/book_hotel/hotelDetails/text()}&lt;/hotelDetails&gt;\" />\r\n" +
+    		"              <mapsTo>hotelDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </completedMappings>\r\n" +
+    		"          <resourcing>\r\n" +
+    		"            <offer initiator=\"user\" />\r\n" +
+    		"            <allocate initiator=\"user\" />\r\n" +
+    		"            <start initiator=\"user\" />\r\n" +
+    		"          </resourcing>\r\n" +
+    		"          <decomposesTo id=\"book_hotel\" />\r\n" +
+    		"        </task>\r\n" +
+    		"        <task id=\"book_flight_8\">\r\n" +
+    		"          <name>book flight</name>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"pay_11\" />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <join code=\"xor\" />\r\n" +
+    		"          <split code=\"and\" />\r\n" +
+    		"          <startingMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;startDate&gt;{/Make_Trip_Process/registrInfo/startDate/text()}&lt;/startDate&gt;\" />\r\n" +
+    		"              <mapsTo>startDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;endDate&gt;{/Make_Trip_Process/registrInfo/endDate/text()}&lt;/endDate&gt;\" />\r\n" +
+    		"              <mapsTo>endDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/Make_Trip_Process/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </startingMappings>\r\n" +
+    		"          <completedMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;flightDetails&gt;{/book_flight/flightDetails/text()}&lt;/flightDetails&gt;\" />\r\n" +
+    		"              <mapsTo>flightDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </completedMappings>\r\n" +
+    		"          <resourcing>\r\n" +
+    		"            <offer initiator=\"user\" />\r\n" +
+    		"            <allocate initiator=\"user\" />\r\n" +
+    		"            <start initiator=\"user\" />\r\n" +
+    		"          </resourcing>\r\n" +
+    		"          <decomposesTo id=\"book_flight\" />\r\n" +
+    		"        </task>\r\n" +
+    		"        <task id=\"book_car_10\">\r\n" +
+    		"          <name>book car</name>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"pay_11\" />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <join code=\"xor\" />\r\n" +
+    		"          <split code=\"and\" />\r\n" +
+    		"          <startingMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;startDate&gt;{/Make_Trip_Process/registrInfo/startDate/text()}&lt;/startDate&gt;\" />\r\n" +
+    		"              <mapsTo>startDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;endDate&gt;{/Make_Trip_Process/registrInfo/endDate/text()}&lt;/endDate&gt;\" />\r\n" +
+    		"              <mapsTo>endDate</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/Make_Trip_Process/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </startingMappings>\r\n" +
+    		"          <completedMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;carDetails&gt;{/book_car/carDetails/text()}&lt;/carDetails&gt;\" />\r\n" +
+    		"              <mapsTo>carDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </completedMappings>\r\n" +
+    		"          <resourcing>\r\n" +
+    		"            <offer initiator=\"user\" />\r\n" +
+    		"            <allocate initiator=\"user\" />\r\n" +
+    		"            <start initiator=\"user\" />\r\n" +
+    		"          </resourcing>\r\n" +
+    		"          <decomposesTo id=\"book_car\" />\r\n" +
+    		"        </task>\r\n" +
+    		"        <task id=\"pay_11\">\r\n" +
+    		"          <name>pay</name>\r\n" +
+    		"          <flowsInto>\r\n" +
+    		"            <nextElementRef id=\"OutputCondition_2\" />\r\n" +
+    		"          </flowsInto>\r\n" +
+    		"          <join code=\"or\" />\r\n" +
+    		"          <split code=\"and\" />\r\n" +
+    		"          <startingMappings>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;hotelDetails&gt;{/Make_Trip_Process/hotelDetails/text()}&lt;/hotelDetails&gt;\" />\r\n" +
+    		"              <mapsTo>hotelDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;payAccNumber&gt;{/Make_Trip_Process/registrInfo/payAccNumber/text()}&lt;/payAccNumber&gt;\" />\r\n" +
+    		"              <mapsTo>payAccNumber</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;customer&gt;{/Make_Trip_Process/customer/text()}&lt;/customer&gt;\" />\r\n" +
+    		"              <mapsTo>customer</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;carDetails&gt;{/Make_Trip_Process/carDetails/text()}&lt;/carDetails&gt;\" />\r\n" +
+    		"              <mapsTo>carDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"            <mapping>\r\n" +
+    		"              <expression query=\"&lt;flightDetails&gt;{/Make_Trip_Process/flightDetails/text()}&lt;/flightDetails&gt;\" />\r\n" +
+    		"              <mapsTo>flightDetails</mapsTo>\r\n" +
+    		"            </mapping>\r\n" +
+    		"          </startingMappings>\r\n" +
+    		"          <resourcing>\r\n" +
+    		"            <offer initiator=\"user\" />\r\n" +
+    		"            <allocate initiator=\"user\" />\r\n" +
+    		"            <start initiator=\"user\" />\r\n" +
+    		"          </resourcing>\r\n" +
+    		"          <decomposesTo id=\"pay\" />\r\n" +
+    		"        </task>\r\n" +
+    		"        <outputCondition id=\"OutputCondition_2\" />\r\n" +
+    		"      </processControlElements>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"    <decomposition id=\"register\" xsi:type=\"WebServiceGatewayFactsType\">\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <outputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </outputParam>\r\n" +
+    		"      <outputParam>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>registrInfo</name>\r\n" +
+    		"        <type>tripRegisterType</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </outputParam>\r\n" +
+    		"      <externalInteraction>manual</externalInteraction>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"    <decomposition id=\"book_hotel\" xsi:type=\"WebServiceGatewayFactsType\">\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>startDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>2</index>\r\n" +
+    		"        <name>endDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>3</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <outputParam>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>hotelDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </outputParam>\r\n" +
+    		"      <externalInteraction>manual</externalInteraction>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"    <decomposition id=\"book_car\" xsi:type=\"WebServiceGatewayFactsType\">\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>startDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>2</index>\r\n" +
+    		"        <name>endDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>3</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <outputParam>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>carDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </outputParam>\r\n" +
+    		"      <externalInteraction>manual</externalInteraction>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"    <decomposition id=\"pay\" xsi:type=\"WebServiceGatewayFactsType\">\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>hotelDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>payAccNumber</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>2</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>3</index>\r\n" +
+    		"        <name>carDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>4</index>\r\n" +
+    		"        <name>flightDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <externalInteraction>manual</externalInteraction>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"    <decomposition id=\"book_flight\" xsi:type=\"WebServiceGatewayFactsType\">\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>0</index>\r\n" +
+    		"        <name>startDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>2</index>\r\n" +
+    		"        <name>endDate</name>\r\n" +
+    		"        <type>date</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <inputParam>\r\n" +
+    		"        <index>3</index>\r\n" +
+    		"        <name>customer</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </inputParam>\r\n" +
+    		"      <outputParam>\r\n" +
+    		"        <index>1</index>\r\n" +
+    		"        <name>flightDetails</name>\r\n" +
+    		"        <type>string</type>\r\n" +
+    		"        <namespace>http://www.w3.org/2001/XMLSchema</namespace>\r\n" +
+    		"      </outputParam>\r\n" +
+    		"      <externalInteraction>manual</externalInteraction>\r\n" +
+    		"    </decomposition>\r\n" +
+    		"  </specification>\r\n" +
+    		"  <layout>\r\n" +
+    		"    <locale language=\"de\" country=\"DE\" />\r\n" +
+    		"    <specification id=\"SimpleMakeTripProcess.ywl\">\r\n" +
+    		"      <size w=\"615\" h=\"323\" />\r\n" +
+    		"      <net id=\"Make_Trip_Process\">\r\n" +
+    		"        <bounds x=\"0\" y=\"0\" w=\"1758\" h=\"682\" />\r\n" +
+    		"        <frame x=\"2\" y=\"25\" w=\"1761\" h=\"685\" />\r\n" +
+    		"        <viewport x=\"0\" y=\"0\" w=\"1761\" h=\"685\" />\r\n" +
+    		"        <vertex id=\"InputCondition_1\">\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <bounds x=\"28,0\" y=\"104,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </vertex>\r\n" +
+    		"        <vertex id=\"OutputCondition_2\">\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <bounds x=\"480,0\" y=\"104,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </vertex>\r\n" +
+    		"        <container id=\"pay_11\">\r\n" +
+    		"          <vertex>\r\n" +
+    		"            <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"380,0\" y=\"104,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </vertex>\r\n" +
+    		"          <label>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"344,0\" y=\"136,0\" w=\"97,0\" h=\"21,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </label>\r\n" +
+    		"          <decorator type=\"OR_join\">\r\n" +
+    		"            <position>12</position>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"370,0\" y=\"104,0\" w=\"11,0\" h=\"32,0\" />\r\n" +
+    		"              <size w=\"11\" h=\"32\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </decorator>\r\n" +
+    		"        </container>\r\n" +
+    		"        <container id=\"register_3\">\r\n" +
+    		"          <vertex>\r\n" +
+    		"            <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"132,0\" y=\"104,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </vertex>\r\n" +
+    		"          <label>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"104,0\" y=\"136,0\" w=\"97,0\" h=\"21,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </label>\r\n" +
+    		"          <decorator type=\"OR_split\">\r\n" +
+    		"            <position>13</position>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"163,0\" y=\"104,0\" w=\"11,0\" h=\"32,0\" />\r\n" +
+    		"              <size w=\"11\" h=\"32\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </decorator>\r\n" +
+    		"        </container>\r\n" +
+    		"        <container id=\"book_car_10\">\r\n" +
+    		"          <vertex>\r\n" +
+    		"            <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"258,0\" y=\"176,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </vertex>\r\n" +
+    		"          <label>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"228,0\" y=\"208,0\" w=\"97,0\" h=\"21,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </label>\r\n" +
+    		"        </container>\r\n" +
+    		"        <container id=\"book_flight_8\">\r\n" +
+    		"          <vertex>\r\n" +
+    		"            <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"258,0\" y=\"32,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </vertex>\r\n" +
+    		"          <label>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"228,0\" y=\"64,0\" w=\"97,0\" h=\"21,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </label>\r\n" +
+    		"        </container>\r\n" +
+    		"        <container id=\"book_hotel_9\">\r\n" +
+    		"          <vertex>\r\n" +
+    		"            <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"258,0\" y=\"104,0\" w=\"32,0\" h=\"32,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </vertex>\r\n" +
+    		"          <label>\r\n" +
+    		"            <attributes>\r\n" +
+    		"              <bounds x=\"228,0\" y=\"136,0\" w=\"97,0\" h=\"21,0\" />\r\n" +
+    		"            </attributes>\r\n" +
+    		"          </label>\r\n" +
+    		"        </container>\r\n" +
+    		"        <flow source=\"pay_11\" target=\"OutputCondition_2\">\r\n" +
+    		"          <ports in=\"13\" out=\"12\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"411,0\" y=\"119,5\" />\r\n" +
+    		"              <value x=\"480,0\" y=\"119,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"InputCondition_1\" target=\"register_3\">\r\n" +
+    		"          <ports in=\"13\" out=\"12\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"59,0\" y=\"119,5\" />\r\n" +
+    		"              <value x=\"132,0\" y=\"119,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"book_hotel_9\" target=\"pay_11\">\r\n" +
+    		"          <ports in=\"13\" out=\"2\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"289,0\" y=\"119,5\" />\r\n" +
+    		"              <value x=\"370,0\" y=\"119,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"book_flight_8\" target=\"pay_11\">\r\n" +
+    		"          <ports in=\"13\" out=\"1\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"289,0\" y=\"47,5\" />\r\n" +
+    		"              <value x=\"370,0\" y=\"111,8\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"register_3\" target=\"book_car_10\">\r\n" +
+    		"          <ports in=\"3\" out=\"12\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"173,0\" y=\"127,3\" />\r\n" +
+    		"              <value x=\"258,0\" y=\"191,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"book_car_10\" target=\"pay_11\">\r\n" +
+    		"          <ports in=\"13\" out=\"3\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"289,0\" y=\"191,5\" />\r\n" +
+    		"              <value x=\"370,0\" y=\"127,3\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"register_3\" target=\"book_flight_8\">\r\n" +
+    		"          <ports in=\"1\" out=\"12\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"173,0\" y=\"111,8\" />\r\n" +
+    		"              <value x=\"258,0\" y=\"47,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"        <flow source=\"register_3\" target=\"book_hotel_9\">\r\n" +
+    		"          <ports in=\"2\" out=\"12\" />\r\n" +
+    		"          <attributes>\r\n" +
+    		"            <lineStyle>11</lineStyle>\r\n" +
+    		"            <points>\r\n" +
+    		"              <value x=\"173,0\" y=\"119,5\" />\r\n" +
+    		"              <value x=\"258,0\" y=\"119,5\" />\r\n" +
+    		"            </points>\r\n" +
+    		"          </attributes>\r\n" +
+    		"        </flow>\r\n" +
+    		"      </net>\r\n" +
+    		"    </specification>\r\n" +
+    		"  </layout>\r\n" +
+    		"</specificationSet>\r\n";
 }

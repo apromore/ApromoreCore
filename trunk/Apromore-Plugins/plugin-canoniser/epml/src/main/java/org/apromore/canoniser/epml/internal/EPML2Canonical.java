@@ -138,9 +138,15 @@ public class EPML2Canonical {
             for (int i = 0; i < epml.getDirectory().size(); i++) {
                 for (TExtensibleElements epc : epml.getDirectory().get(i).getEpcOrDirectory()) {
                     if (epc instanceof TypeEPC) {
+                        TypeEPC typeEPC = (TypeEPC) epc;
+                        cproc.setName(typeEPC.getName());
+                        cproc.setUri(typeEPC.getEpcId().toString());
+                        //TODO what version to add here?
+                        cproc.setVersion("1.0");
                         NetType net = new NetType();
-                        translateEpc(net, (TypeEPC) epc);
-                        id_map.put(((TypeEPC) epc).getEpcId(), String.valueOf(ids));
+                        net.setName(typeEPC.getName());
+                        translateEpc(net, typeEPC);
+                        id_map.put(typeEPC.getEpcId(), String.valueOf(ids));
                         net.setId(String.valueOf(ids++));
                         cproc.getNet().add(net);
                     }

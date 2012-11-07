@@ -287,13 +287,13 @@ public class CanonicalToGraph {
     }
 
 
-    private static void addCancelNodes(Work work, WorkType node) {
+    private static void addCancelNodes(final Work work, final WorkType node) {
         for (CancellationRefType canType : node.getCancelNodeId()) {
             work.addCancelNode(canType.getRefId());
         }
     }
 
-    private static void addCancelEdges(Work work, WorkType node) {
+    private static void addCancelEdges(final Work work, final WorkType node) {
         for (CancellationRefType canType : node.getCancelNodeId()) {
             work.addCancelEdge(canType.getRefId());
         }
@@ -302,7 +302,7 @@ public class CanonicalToGraph {
 
 
     /* Add The expressions that are apart of the Work Node. */
-    private static void addWorkExpressions(Work work, WorkType node) {
+    private static void addWorkExpressions(final Work work, final WorkType node) {
         if (node.isTeamWork() != null) {
             work.setTeamWork(node.isTeamWork());
         }
@@ -335,7 +335,7 @@ public class CanonicalToGraph {
     }
 
 
-    private static State constructState(List<IResource> res, List<IObject> obj, Map<String, Node> flow, StateType node) {
+    private static State constructState(final List<IResource> res, final List<IObject> obj, final Map<String, Node> flow, final StateType node) {
         State state = new State(node.getName());
         state.setId(node.getId());
         if (node.getName() == null || node.getName().equals("")) {
@@ -352,7 +352,7 @@ public class CanonicalToGraph {
         return state;
     }
 
-    private static Task constructTask(List<IResource> res, List<IObject> obj, Map<String, Node> flow, TaskType node) {
+    private static Task constructTask(final List<IResource> res, final List<IObject> obj, final Map<String, Node> flow, final TaskType node) {
         Task typ = new Task(node.getName());
         typ.setId(node.getId());
         typ.setOriginalId(node.getOriginalID());
@@ -360,7 +360,7 @@ public class CanonicalToGraph {
             typ.setConfigurable(node.isConfigurable());
         }
         if (node.getSubnetId() != null) {
-            typ.setSubNetId(Integer.parseInt(node.getSubnetId()));
+            typ.setSubNetId(node.getSubnetId());
             typ.setExternal(true);
         }
 
@@ -373,7 +373,7 @@ public class CanonicalToGraph {
         return typ;
     }
 
-    private static Event constructEvent(List<IResource> res, List<IObject> obj, Map<String, Node> flow, EventType node) {
+    private static Event constructEvent(final List<IResource> res, final List<IObject> obj, final Map<String, Node> flow, final EventType node) {
         Event typ = new Event(node.getName());
         typ.setId(node.getId());
         typ.setOriginalId(node.getOriginalID());
@@ -390,7 +390,7 @@ public class CanonicalToGraph {
         return typ;
     }
 
-    private static Timer constructTimer(List<IResource> res, List<IObject> obj, Map<String, Node> flow, TimerType node) {
+    private static Timer constructTimer(final List<IResource> res, final List<IObject> obj, final Map<String, Node> flow, final TimerType node) {
         Timer typ = new Timer(node.getName());
         typ.setId(node.getId());
         typ.setOriginalId(node.getOriginalID());
@@ -421,7 +421,7 @@ public class CanonicalToGraph {
         return typ;
     }
 
-    private static Message constructMessage(List<IResource> res, List<IObject> obj, Map<String, Node> flow, MessageType node) {
+    private static Message constructMessage(final List<IResource> res, final List<IObject> obj, final Map<String, Node> flow, final MessageType node) {
         Message typ = new Message(node.getName());
         typ.setId(node.getId());
         typ.setOriginalId(node.getOriginalID());
@@ -441,7 +441,7 @@ public class CanonicalToGraph {
         return typ;
     }
 
-    private static void constructAndNode(Map<String, Node> flow, NodeType node) {
+    private static void constructAndNode(final Map<String, Node> flow, final NodeType node) {
         if (node instanceof ANDSplitType) {
             AndSplit andSplit = new AndSplit();
             andSplit.setId(node.getId());
@@ -465,7 +465,7 @@ public class CanonicalToGraph {
         }
     }
 
-    private static void constructXOrNode(Map<String, Node> flow, NodeType node) {
+    private static void constructXOrNode(final Map<String, Node> flow, final NodeType node) {
         if (node instanceof XORSplitType) {
             XOrSplit xorSplit = new XOrSplit();
             xorSplit.setId(node.getId());
@@ -489,7 +489,7 @@ public class CanonicalToGraph {
         }
     }
 
-    private static void constructOrNode(Map<String, Node> flow, NodeType node) {
+    private static void constructOrNode(final Map<String, Node> flow, final NodeType node) {
         if (node instanceof ORSplitType) {
             OrSplit orSplit = new OrSplit();
             orSplit.setId(node.getId());

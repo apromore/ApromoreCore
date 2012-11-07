@@ -159,7 +159,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
     private String convertCanonicalExpression(final ConditionExpressionType conditionExpr) {
         // TODO check and convert XPath
-        if (conditionExpr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH)) {
+        if (conditionExpr.getLanguage() != null && conditionExpr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH)) {
             if (conditionExpr.getExpression() != null) {
                 return conditionExpr.getExpression();
             }

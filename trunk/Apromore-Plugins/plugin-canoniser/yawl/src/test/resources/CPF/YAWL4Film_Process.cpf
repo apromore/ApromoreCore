@@ -1,56 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="">
-    <Net id="f9260910-8065-43f9-95cd-3c50146abe77">
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="3">
-            <name>B</name>
-            <configurable>false</configurable>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="1" version="1.0" name="EPC">
+    <Net id="1352291747410">
+        <name>EPC</name>
+        <Node xsi:type="cpf:EventType" id="1352291747392">
+            <name>E1</name>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="2">
-            <name>C</name>
-            <configurable>false</configurable>
+        <Node xsi:type="cpf:EventType" id="1352291747395">
+            <name>E4</name>
         </Node>
-        <Node xsi:type="cpf:ANDJoinType" id="7">
-            <configurable>false</configurable>
+        <Node xsi:type="cpf:TaskType" id="1352291747396">
+            <name>F1</name>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="5">
-            <name>D</name>
-            <configurable>false</configurable>
+        <Node xsi:type="cpf:TaskType" id="1352291747397">
+            <name>F2</name>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="15">
-            <name>A</name>
-            <configurable>false</configurable>
+        <Node xsi:type="cpf:TaskType" id="1352291747398">
+            <name>F3</name>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="16">
-            <name>E</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="13">
-            <name>OUT</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="11">
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="12">
-            <name>IN</name>
-            <configurable>false</configurable>
-        </Node>
-        <Edge id="43216eba-21fe-4d6e-87ba-87a2365f1132" sourceId="11" targetId="5"/>
-        <Edge id="aac27a3e-9c9f-484c-8961-54c6c833b546" sourceId="12" targetId="15"/>
-        <Edge id="c7ad4723-45d6-43e4-8774-65f39c3dd5af" sourceId="15" targetId="11"/>
-        <Edge id="488f08c7-7f32-4a1d-874c-30883f1af31e" sourceId="5" targetId="7"/>
-        <Edge id="8f7fb812-f307-49bd-9925-997a4943b576" sourceId="2" targetId="7"/>
-        <Edge id="1c174e74-4d85-4218-afca-0452952bd9f1" sourceId="3" targetId="7"/>
-        <Edge id="f5868ef4-89a0-48bf-9e3b-8b0e9d06cad8" sourceId="16" targetId="13"/>
-        <Edge id="0d4a936c-86a4-4696-86a0-493fed522194" sourceId="7" targetId="16"/>
-        <Edge id="45d92450-4145-47bb-9419-1cb041b24a22" sourceId="11" targetId="3"/>
-        <Edge id="50ec91a3-8e0c-4e22-b93b-9e47da086c03" sourceId="11" targetId="2"/>
+        <Node xsi:type="cpf:ORSplitType" id="1352291747399"/>
+        <Node xsi:type="cpf:ORJoinType" id="1352291747400"/>
+        <Edge id="1352291747401" sourceId="1352291747392" targetId="1352291747396"/>
+        <Edge id="1352291747402" sourceId="1352291747396" targetId="1352291747399"/>
+        <Edge id="1352291747403" sourceId="1352291747399" targetId="1352291747397">
+            <conditionExpr>
+                <description>E2</description>
+            </conditionExpr>
+        </Edge>
+        <Edge id="1352291747404" sourceId="1352291747399" targetId="1352291747398">
+            <conditionExpr>
+                <description>E3</description>
+            </conditionExpr>
+        </Edge>
+        <Edge id="1352291747407" sourceId="1352291747397" targetId="1352291747400"/>
+        <Edge id="1352291747408" sourceId="1352291747398" targetId="1352291747400"/>
+        <Edge id="1352291747409" sourceId="1352291747400" targetId="1352291747395"/>
     </Net>
-    <attribute name="RootFragmentId" value="5"/>
-    <attribute name="BranchName" value="MAIN"/>
-    <attribute name="ProcessName" value="WP1SequencePattern"/>
-    <attribute name="VersionNumber" value="0.1"/>
-    <attribute name="PMVID" value="1"/>
-    <attribute name="BranchID" value="1"/>
+    <attribute name="IntialFormat" value="EPML"/>
 </cpf:CanonicalProcess>
-
