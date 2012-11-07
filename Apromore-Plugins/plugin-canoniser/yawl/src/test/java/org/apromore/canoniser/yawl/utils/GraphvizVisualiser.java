@@ -148,7 +148,7 @@ public class GraphvizVisualiser {
                 } else {
                     if (nodeNameMap.get(node.getName()) == null) {
                         // Use Name as ID if unique
-                        vertex.setId(node.getName());
+                        vertex.setId(node.getName().replaceAll(" ", ""));
                     } else {
                         // Otherwise use ID
                         vertex.setId(node.getId());
