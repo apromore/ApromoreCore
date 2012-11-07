@@ -179,9 +179,8 @@ public class GraphServiceImpl implements GraphService {
     private org.apromore.graph.canonical.Node buildNodeByType(final Node node) {
         org.apromore.graph.canonical.Node result = null;
         if (node.getCtype().equals(org.apromore.graph.canonical.Node.class.getName())) {
-            throw new IllegalArgumentException("Node "+node.getId()+" is of type 'Node'. This is not supported here!");
-            //result = new org.apromore.graph.canonical.Node(node.getName());
-            //result.setId(String.valueOf(node.getId()));
+            result = new org.apromore.graph.canonical.Node(node.getName());
+            result.setId(String.valueOf(node.getId()));
         } else if (node.getCtype().equals(Message.class.getName())) {
             result = constructMessageNode(node);
         } else if (node.getCtype().equals(Timer.class.getName())) {
