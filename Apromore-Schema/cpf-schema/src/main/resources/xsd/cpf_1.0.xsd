@@ -200,7 +200,7 @@ if it is an outgoing edge of a split {@link SplitType}. It can also be marked as
         <attribute name="originalID" type="string" use="optional" />
     </complexType>
 
-    <complexType name="NodeType"> <!-- TODO: should be abstract -->
+    <complexType name="NodeType"> <!-- abstract="true" -->
         <annotation>
             <documentation>
 <![CDATA[
@@ -219,7 +219,7 @@ Base type of all Nodes
         <attribute name="originalID" type="string" use="optional" />
     </complexType>
 
-    <complexType name="WorkType"> <!-- TODO: should be abstract -->
+    <complexType name="WorkType"> <!-- abstract="true" -->
         <annotation>
             <documentation>
 <![CDATA[
