@@ -3,6 +3,7 @@ package org.apromore.service.helper.extraction;
 import org.apromore.common.Constants;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.Node;
+import org.apromore.service.helper.FragmentProcesser;
 import org.apromore.service.model.RFragment2;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
@@ -20,17 +21,17 @@ public class FNSCSExtractor {
         Node originalChildB1 = cf.getEntry();
         Node originalChildB2 = cf.getExit();
 
-        //Node[] originalChildBoundary = FragmentProcesser.preprocessFragmentV2(cf, f, g);
+        FragmentProcesser.preprocessFragmentV2(cf, f, g);
 
         Node childB1 = cf.getEntry();
         if (childB1.getId().equals(originalChildB1.getId())) {
-            Node newChildB1 = FragmentUtil.duplicateVertex(childB1, g);
+            Node newChildB1 = FragmentUtil.duplicateNode(childB1, g);
             FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
         }
 
         Node childB2 = cf.getExit();
         if (childB2.getId().equals(originalChildB2.getId())) {
-            Node newChildB2 = FragmentUtil.duplicateVertex(childB2, g);
+            Node newChildB2 = FragmentUtil.duplicateNode(childB2, g);
             FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
         }
 

@@ -199,7 +199,6 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-
     private void addObjects(final org.apromore.graph.canonical.Node result, final Node node) {
         IObject object;
         for (ObjectRefType obj : node.getObjectRefTypes()) {

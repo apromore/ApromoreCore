@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.model.Content;
@@ -27,7 +28,6 @@ import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.RFragment2;
 import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
-import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -116,7 +116,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Collection<RFragment2> cs = f.getChildren();
         Map<String, String> childMappings = mapPocketChildId(f, op, fragmentIds, cs);
 
-        String hash = HashUtil.computeHash(f, f.getType(), op); //UUID.randomUUID().toString();
+        String hash = UUID.randomUUID().toString();  //HashUtil.computeHash(f, f.getType(), op);
         Content matchingContent = null;
         if (matchingContent == null) {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);
@@ -168,8 +168,8 @@ public class DecomposerServiceImpl implements DecomposerService {
         op.setTreeVisitor(visitor);
 
         try {
-            Node entry = FragmentUtil.getFirstVertex(graph.getSourceNodes());
-            Node exit = FragmentUtil.getFirstVertex(graph.getSinkNodes());
+            Node entry = FragmentUtil.getFirstNode(graph.getSourceNodes());
+            Node exit = FragmentUtil.getFirstNode(graph.getSinkNodes());
             if (graph.getVertices().size() > 2) {
                 RPST<Edge, Node> rpst = new RPST<Edge, Node>(graph);
                 RFragment2 rFragment2 = MutableTreeConstructor.construct(rpst);
