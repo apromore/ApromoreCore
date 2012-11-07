@@ -63,6 +63,12 @@ public class GraphToCanonical {
         CanonicalProcessType c = new CanonicalProcessType();
 
         c.setName(graph.getName());
+        c.setUri(graph.getVersion());
+        c.setVersion(graph.getVersion());
+        c.setAuthor(graph.getAuthor());
+        c.setCreationDate(graph.getCreationDate());
+        c.setModificationDate(graph.getModifiedDate());
+
         c.getAttribute().addAll(new ArrayList<TypeAttribute>(0));
         c.getResourceType().addAll(new ArrayList<ResourceTypeType>(0));
 
@@ -360,7 +366,7 @@ public class GraphToCanonical {
         } else {
             typ = new XORSplitType();
         }
-        typ.setName("XOR");
+        typ.setName(n.getName());
         typ.setId(n.getId());
         typ.setOriginalID(n.getOriginalId());
         typ.setConfigurable(n.isConfigurable());
@@ -375,7 +381,7 @@ public class GraphToCanonical {
         } else {
             typ = new ANDSplitType();
         }
-        typ.setName("AND");
+        typ.setName(n.getName());
         typ.setId(n.getId());
         typ.setOriginalID(n.getOriginalId());
         typ.setConfigurable(n.isConfigurable());
@@ -390,7 +396,7 @@ public class GraphToCanonical {
         } else {
             typ = new ORSplitType();
         }
-        typ.setName("OR");
+        typ.setName(n.getName());
         typ.setId(n.getId());
         typ.setOriginalID(n.getOriginalId());
         typ.setConfigurable(n.isConfigurable());

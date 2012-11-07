@@ -10,19 +10,13 @@ import java.util.Map.Entry;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
-import org.apromore.graph.canonical.AndJoin;
-import org.apromore.graph.canonical.AndSplit;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.Edge;
 import org.apromore.graph.canonical.Event;
 import org.apromore.graph.canonical.INode;
 import org.apromore.graph.canonical.Node;
-import org.apromore.graph.canonical.OrJoin;
-import org.apromore.graph.canonical.OrSplit;
 import org.apromore.graph.canonical.Routing;
 import org.apromore.graph.canonical.Task;
-import org.apromore.graph.canonical.XOrJoin;
-import org.apromore.graph.canonical.XOrSplit;
 import org.apromore.service.model.RFragment2;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -56,8 +50,7 @@ public class FragmentUtil {
 
         for (Edge fe : fEdges) {
             for (Edge cfe : cfEdges) {
-                if (fe.getSource().getId().equals(cfe.getSource().getId()) &&
-                        fe.getTarget().getId().equals(cfe.getTarget().getId())) {
+                if (fe.getSource().getId().equals(cfe.getSource().getId()) && fe.getTarget().getId().equals(cfe.getTarget().getId())) {
                     f.removeEdge(fe);
                 }
             }
@@ -68,8 +61,7 @@ public class FragmentUtil {
         Collection<Edge> toBeRemoved = new ArrayList<Edge>();
         for (Edge fe : es1) {
             for (Edge cfe : es2) {
-                if (fe.getSource().getId().equals(cfe.getSource().getId()) &&
-                        fe.getTarget().getId().equals(cfe.getTarget().getId())) {
+                if (fe.getSource().getId().equals(cfe.getSource().getId()) && fe.getTarget().getId().equals(cfe.getTarget().getId())) {
                     toBeRemoved.add(fe);
                 }
             }
@@ -121,7 +113,7 @@ public class FragmentUtil {
         return postset;
     }
 
-    public static Node getFirstVertex(final Collection<Node> vertices) {
+    public static Node getFirstNode(final Collection<Node> vertices) {
         return vertices.iterator().next();
     }
 
@@ -194,11 +186,11 @@ public class FragmentUtil {
         Node b1 = f.getEntry();
         Node b2 = f.getExit();
 
-        if (b1.getId().equals(oldB1.getId())) {
+        if (b1.equals(oldB1)) {
             f.setEntry(newB1);
-            reconnectVertices(b1, newB1, f);
-            f.addVertex(newB1);
-            f.removeVertex(b1);
+            reconnectNodes(b1, newB1, f);
+            f.addNode(newB1);
+            f.removeNode(b1);
 
             Collection<RFragment2> childFragments = f.getChildren();
             for (RFragment2 childFragment : childFragments) {
@@ -219,9 +211,9 @@ public class FragmentUtil {
 
         if (b2.equals(oldB2)) {
             f.setExit(newB2);
-            reconnectVertices(b2, newB2, f);
-            f.addVertex(newB2);
-            f.removeVertex(b2);
+            reconnectNodes(b2, newB2, f);
+            f.addNode(newB2);
+            f.removeNode(b2);
 
             Collection<RFragment2> childFragments = f.getChildren();
             for (RFragment2 childFragment : childFragments) {
@@ -233,7 +225,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectVertices(final Node oldVertex, final Node newVertex, final RFragment2 f) {
+    public static void reconnectNodes(final Node oldVertex, final Node newVertex, final RFragment2 f) {
         Collection<Edge> edges = f.getEdges();
         for (Edge edge : edges) {
             if (edge.getSource().getId().equals(oldVertex.getId())) {
@@ -244,33 +236,9 @@ public class FragmentUtil {
         }
     }
 
-    public static Node duplicateVertex(final Node v, final Canonical og) {
-        String label = v.getName();
+    public static Node duplicateNode(final Node v, final Canonical og) {
+        Node newV = (Node) v.clone();
         String type = og.getNodeProperty(v.getId(), Constants.TYPE);
-
-        Node newV;
-//        if (label != null) {
-//            if (label.equals("XOR")) {
-//                newV = new Routing(label);
-//            } else if (label.equals("AND")) {
-//                newV = new Routing(label);
-//            } else if (label.equals("OR")) {
-//                newV = new Routing(label);
-//            } else {
-//                throw new IllegalArgumentException("Invalid Vertex!");
-//            }
-//        } else {
-//            newV = new Node();
-//        }
-        if (v instanceof XOrSplit || v instanceof XOrJoin) {
-            newV = new Routing("XOR");
-        } if (v instanceof OrSplit || v instanceof OrJoin) {
-            newV = new Routing("OR");
-        } if (v instanceof AndSplit || v instanceof AndJoin) {
-            newV = new Routing("AND");
-        } else {
-            throw new IllegalArgumentException("Invalid Vertex!");
-        }
 
         og.addNode(newV);
         og.setNodeProperty(newV.getId(), Constants.TYPE, type);
@@ -318,7 +286,7 @@ public class FragmentUtil {
     @SuppressWarnings("unchecked")
     public static String fragmentToString(final RFragment2 f, final Canonical g) {
         StringBuilder fs = new StringBuilder(0);
-        Collection<Node> vs = f.getVertices();
+        Collection<Node> vs = f.getNodes();
         for (Node v : vs) {
             String label = v.getName();
             fs.append('\n').append(v).append(" : ").append(label);
@@ -331,7 +299,7 @@ public class FragmentUtil {
     @SuppressWarnings("unchecked")
     public static String fragmentToString(final RFragment2 f) {
         StringBuilder fs = new StringBuilder(0);
-        Collection<Node> vs = f.getVertices();
+        Collection<Node> vs = f.getNodes();
         for (Node v : vs) {
             fs.append(v).append(", ");
         }
@@ -340,14 +308,14 @@ public class FragmentUtil {
 
     public static void removeNodes(final RFragment2 Canoncial, final RFragment2 cf) {
         List<Node> toBeRemoved = new ArrayList<Node>();
-        for (Node pn : Canoncial.getVertices()) {
-            for (Node cn : cf.getVertices()) {
+        for (Node pn : Canoncial.getNodes()) {
+            for (Node cn : cf.getNodes()) {
                 if (pn.getId().equals(cn.getId())) {
                     toBeRemoved.add(pn);
                 }
             }
         }
-        Canoncial.removeVertices(toBeRemoved);
+        Canoncial.removeNodes(toBeRemoved);
     }
 
 }

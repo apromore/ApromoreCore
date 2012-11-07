@@ -232,10 +232,18 @@ public class RepositoryServiceImpl implements RepositoryService {
         Canonical processModelGraph = null;
         try {
             processModelGraph = composer.compose(pmv.getRootFragmentVersion().getUri());
+
+            processModelGraph.setUri(pmv.getRootFragmentVersion().getUri());
+            processModelGraph.setName(processName);
+            processModelGraph.setVersion(pmv.getVersionNumber().toString());
+            processModelGraph.setAuthor(pmv.getProcessBranch().getProcess().getUser().getUsername());
+            processModelGraph.setCreationDate(pmv.getProcessBranch().getCreationDate());
+            processModelGraph.setModifiedDate(pmv.getProcessBranch().getLastUpdate());
+
             processModelGraph.setProperty(Constants.PROCESS_NAME, processName);
             processModelGraph.setProperty(Constants.BRANCH_NAME, branchName);
             processModelGraph.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
-            processModelGraph.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
+            processModelGraph.setProperty(Constants.VERSION_NUMBER, pmv.getVersionNumber().toString());
             processModelGraph.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
             processModelGraph.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
             if (lock) {

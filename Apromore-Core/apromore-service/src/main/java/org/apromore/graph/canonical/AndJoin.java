@@ -1,5 +1,7 @@
 package org.apromore.graph.canonical;
 
+import java.util.UUID;
+
 /**
  * Implementation of the Canonical And Join Node.
  *
@@ -29,6 +31,22 @@ public class AndJoin extends Join implements IAndJoin {
      */
     public AndJoin(String label, String desc) {
         super(label, desc);
+    }
+
+
+    @Override
+    public AndJoin clone() {
+        AndJoin clone = (AndJoin) super.clone();
+        clone.setId(UUID.randomUUID().toString());
+
+        if (this.getName() != null) {
+            clone.setName(this.getName());
+        }
+        if (this.getDescription() != null) {
+            clone.setDescription(this.getDescription());
+        }
+
+        return clone;
     }
 
 }

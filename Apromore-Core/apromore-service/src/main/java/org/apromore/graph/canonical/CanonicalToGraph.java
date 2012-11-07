@@ -52,7 +52,13 @@ public class CanonicalToGraph {
      */
     public static Canonical convert(final CanonicalProcessType cpf) {
         Canonical g = new Canonical();
+
         g.setName(cpf.getName());
+        g.setUri(cpf.getUri());
+        g.setVersion(cpf.getVersion());
+        g.setAuthor(cpf.getAuthor());
+        g.setCreationDate(cpf.getCreationDate());
+        g.setModifiedDate(cpf.getModificationDate());
 
         addProperties(cpf, g);
         List<IResource> res = buildResourcesList(cpf);
@@ -189,8 +195,6 @@ public class CanonicalToGraph {
                     graph.setNodeProperty(source.getId(), Constants.TYPE, FragmentUtil.getType(source));
                     graph.setNodeProperty(target.getId(), Constants.TYPE, FragmentUtil.getType(target));
                 }
-            } else {
-                System.out.println("One with either or both source and target is null");
             }
         }
     }
@@ -442,11 +446,7 @@ public class CanonicalToGraph {
             AndSplit andSplit = new AndSplit();
             andSplit.setId(node.getId());
             andSplit.setOriginalId(node.getOriginalID());
-            if (node.getName() == null || node.getName().equals("")) {
-                andSplit.setName("AndSplit");
-            } else {
-                andSplit.setName(node.getName());
-            }
+            andSplit.setName(node.getName());
             if (node.isConfigurable() != null) {
                 andSplit.setConfigurable(node.isConfigurable());
             }
@@ -456,11 +456,7 @@ public class CanonicalToGraph {
             AndJoin andJoin = new AndJoin();
             andJoin.setId(node.getId());
             andJoin.setOriginalId(node.getOriginalID());
-            if (node.getName() == null || node.getName().equals("")) {
-                andJoin.setName("AndJoin");
-            } else {
-                andJoin.setName(node.getName());
-            }
+            andJoin.setName(node.getName());
             if (node.isConfigurable() != null) {
                 andJoin.setConfigurable(node.isConfigurable());
             }
@@ -473,11 +469,7 @@ public class CanonicalToGraph {
         if (node instanceof XORSplitType) {
             XOrSplit xorSplit = new XOrSplit();
             xorSplit.setId(node.getId());
-            if (node.getName() == null || node.getName().equals("")) {
-                xorSplit.setName("XOrSplit");
-            } else {
-                xorSplit.setName(node.getName());
-            }
+            xorSplit.setName(node.getName());
             xorSplit.setOriginalId(node.getOriginalID());
             if (node.isConfigurable() != null) {
                 xorSplit.setConfigurable(node.isConfigurable());
@@ -488,11 +480,7 @@ public class CanonicalToGraph {
             XOrJoin xorJoin = new XOrJoin();
             xorJoin.setId(node.getId());
             xorJoin.setOriginalId(node.getOriginalID());
-            if (node.getName() == null || node.getName().equals("")) {
-                xorJoin.setName("XOrJoin");
-            } else {
-                xorJoin.setName(node.getName());
-            }
+            xorJoin.setName(node.getName());
             if (node.isConfigurable() != null) {
                 xorJoin.setConfigurable(node.isConfigurable());
             }
@@ -506,11 +494,7 @@ public class CanonicalToGraph {
             OrSplit orSplit = new OrSplit();
             orSplit.setId(node.getId());
             orSplit.setOriginalId(node.getOriginalID());
-            if (node.getName() == null || node.getName().equals("")) {
-                orSplit.setName("OrSplit");
-            } else {
-                orSplit.setName(node.getName());
-            }
+            orSplit.setName(node.getName());
             if (node.isConfigurable() != null) {
                 orSplit.setConfigurable(node.isConfigurable());
             }
@@ -520,11 +504,7 @@ public class CanonicalToGraph {
             OrJoin orJoin = new OrJoin();
             orJoin.setId(node.getId());
             orJoin.setOriginalId(node.getOriginalID());
-            if (node.getName() == null || node.getName().equals("")) {
-                orJoin.setName("OrJoin");
-            } else {
-                orJoin.setName(node.getName());
-            }
+            orJoin.setName(node.getName());
             if (node.isConfigurable() != null) {
                 orJoin.setConfigurable(node.isConfigurable());
             }

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
-import org.jbpt.algo.graph.GraphAlgorithms;
 
 /**
  * An implementation of ICanonical interface.
@@ -18,14 +17,72 @@ import org.jbpt.algo.graph.GraphAlgorithms;
  */
 public class Canonical extends AbstractCanonical<Edge, Node, Event, Task, Message, Timer, State, Split, Join> {
 
-    public static GraphAlgorithms<Edge, Node> GRAPH_ALGORITHMS = new GraphAlgorithms<Edge, Node>();
+    //public static GraphAlgorithms<Edge, Node> GRAPH_ALGORITHMS = new GraphAlgorithms<Edge, Node>();
     public static DirectedGraphAlgorithms<Edge, Node> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<Edge, Node>();
+
+    private Node entry = null;
+    private Node exit = null;
+
+    private String uri;
+    private String version;
+    private String author;
+    private String creationDate;
+    private String modifiedDate;
 
     private Map<String, IAttribute> properties = new HashMap<String, IAttribute>(0);
     private final Map<String, Map<String, String>> nodeProperties = new HashMap<String, Map<String, String>>(0);
     private final Map<String, String> originalNodeMapping = new HashMap<String, String>(0);
-    private Node entry = null;
-    private Node exit = null;
+
+
+    @Override
+    public String getUri() {
+        return uri;
+    }
+
+    @Override
+    public void setUri(String newUri) {
+        uri = newUri;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(String newVersion) {
+        version = newVersion;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
+    }
+
+    @Override
+    public void setAuthor(String newAuthor) {
+        author = newAuthor;
+    }
+
+    @Override
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    @Override
+    public void setCreationDate(String newCreationDate) {
+        creationDate = newCreationDate;
+    }
+
+    @Override
+    public String getModifiedDate() {
+        return modifiedDate;
+    }
+
+    @Override
+    public void setModifiedDate(String newModifiedDate) {
+        modifiedDate = newModifiedDate;
+    }
 
     @Override
     public Node getEntry() {
