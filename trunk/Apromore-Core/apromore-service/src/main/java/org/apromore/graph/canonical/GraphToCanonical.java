@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -263,7 +264,7 @@ public class GraphToCanonical {
     }
 
 
-    private static void constructState(State n, NetType net) {
+    private static void constructState(final State n, final NetType net) {
         StateType state = new StateType();
         state.setName(n.getName());
         state.setId(n.getId());
@@ -272,7 +273,7 @@ public class GraphToCanonical {
         net.getNode().add(state);
     }
 
-    private static void constructTask(Task n, NetType net) {
+    private static void constructTask(final Task n, final NetType net) {
         TaskType typ = new TaskType();
         typ.setName(n.getName());
         typ.setId(n.getId());
@@ -286,7 +287,7 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructEvent(Event n, NetType net) {
+    private static void constructEvent(final Event n, final NetType net) {
         EventType typ = new EventType();
         typ.setName(n.getName());
         typ.setId(n.getId());
@@ -299,7 +300,7 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructTimer(Timer n, NetType net) {
+    private static void constructTimer(final Timer n, final NetType net) {
         TimerType typ = new TimerType();
         typ.setName(n.getName());
         typ.setId(n.getId());
@@ -336,7 +337,7 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructMessage(Message n, NetType net) {
+    private static void constructMessage(final Message n, final NetType net) {
         MessageType typ = new MessageType();
         typ.setName(n.getName());
         typ.setId(n.getId());
@@ -352,7 +353,7 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructXOrNode(Node n, NetType net) {
+    private static void constructXOrNode(final Node n, final NetType net) {
         RoutingType typ;
         if (n instanceof XOrJoin) {
             typ = new XORJoinType();
@@ -367,9 +368,9 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructAndNode(Node n, NetType net) {
+    private static void constructAndNode(final Node n, final NetType net) {
         RoutingType typ;
-        if (n instanceof XOrJoin) {
+        if (n instanceof AndJoin) {
             typ = new ANDJoinType();
         } else {
             typ = new ANDSplitType();
@@ -382,7 +383,7 @@ public class GraphToCanonical {
         net.getNode().add(typ);
     }
 
-    private static void constructOrNode(Node n, NetType net) {
+    private static void constructOrNode(final Node n, final NetType net) {
         RoutingType typ;
         if (n instanceof OrJoin) {
             typ = new ORJoinType();

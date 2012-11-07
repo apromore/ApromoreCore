@@ -26,6 +26,7 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -42,12 +43,14 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
+import de.epml.ObjectFactory;
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
@@ -89,6 +92,8 @@ public class Canonical2EPML {
     List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 
     List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
+
+    Map<String, BigInteger> cpfIdMap = new HashMap<String, BigInteger>();
 
     private final TypeEPML epml = new TypeEPML();
     private final TypeDirectory dir = new TypeDirectory();
@@ -338,8 +343,9 @@ public class Canonical2EPML {
      * feature will be set to false as a default value.
      * @param cproc the header for a CPF modelass
      * @param annotations the header for an ANF modelass
+     * @throws CanoniserException
      */
-    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations) {
+    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations) throws CanoniserException {
         main(cproc, false);
         mapNodeAnnotations(annotations);
         mapEdgeAnnotations(annotations);
@@ -350,8 +356,9 @@ public class Canonical2EPML {
      * annotations. The fake feature will be set to false
      * as a default value.
      * @param cproc the header for a CPF modelass
+     * @throws CanoniserException
      */
-    public Canonical2EPML(final CanonicalProcessType cproc) {
+    public Canonical2EPML(final CanonicalProcessType cproc) throws CanoniserException {
         main(cproc, false);
     }
 
@@ -361,8 +368,9 @@ public class Canonical2EPML {
      * @param cproc        The header for a CPF modelass
      * @param annotations  The header for an ANF modelass
      * @param addFakes     Boolean value to either add fake elements or not.
+     * @throws CanoniserException
      */
-    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations, final boolean addFakes) {
+    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations, final boolean addFakes) throws CanoniserException {
         main(cproc, addFakes);
         mapNodeAnnotations(annotations);
         mapEdgeAnnotations(annotations);
@@ -374,9 +382,10 @@ public class Canonical2EPML {
      *
      * @param cproc the header for a CPF modelass
      * @param addFakes Boolean value to either add fake elements or not.
+     * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc,
-			final Boolean addFakes) {
+			final Boolean addFakes) throws CanoniserException {
     	main(cproc, addFakes);
     }
 
@@ -385,16 +394,23 @@ public class Canonical2EPML {
      * for all cases.
      * @param cproc the header for a CPF modelass
      * @param addFakes           Boolean value to either add fake elements or not.
+	 * @throws CanoniserException
      * @since 1.0
      */
-    private void main(final CanonicalProcessType cproc, final boolean addFakes) {
+    private void main(final CanonicalProcessType cproc, final boolean addFakes) throws CanoniserException {
         epml.getDirectory().add(dir);
         epml.setDefinitions(new TypeDefinitions());
 
         for (NetType net : cproc.getNet()) {
             TypeEPC epc = new TypeEPC();
             epc.setEpcId(BigInteger.valueOf(ids++));
-            epc.setName(" ");
+            cpfIdMap.put(net.getId(), epc.getEpcId());
+            if (net.getName() != null) {
+                epc.setName(net.getName());
+            } else {
+                epc.setName(" ");
+            }
+
             translateNet(epc, net);
             for (ObjectType obj : net.getObject()) {
                 if (object_res_list.contains(obj.getId())) {
@@ -422,7 +438,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateNet(final TypeEPC epc, final NetType net) {
+    private void translateNet(final TypeEPC epc, final NetType net) throws CanoniserException {
         for (NodeType node : net.getNode()) {
             if (node instanceof TaskType || node instanceof EventType) {
                 if (node instanceof TaskType) {
@@ -531,7 +547,9 @@ public class Canonical2EPML {
         if (task.getName() == null && task.getSubnetId() != null) {
             TypeProcessInterface pi = new TypeProcessInterface();
             pi.setToProcess(new TypeToProcess());
-            pi.getToProcess().setLinkToEpcId(new BigInteger(task.getSubnetId()));
+            if (cpfIdMap.get(task.getSubnetId()) != null) {
+                pi.getToProcess().setLinkToEpcId(cpfIdMap.get(task.getSubnetId()));
+            }
             pi_list.add(pi);
         } else {
             TypeFunction func = new TypeFunction();
@@ -540,7 +558,9 @@ public class Canonical2EPML {
             func.setName(task.getName());
             func.setDefRef(find_def_id("function", func.getName()));
             if (task.getSubnetId() != null) {
-                func.getToProcess().setLinkToEpcId(new BigInteger(task.getSubnetId()));
+                if (cpfIdMap.get(task.getSubnetId()) != null) {
+                    func.getToProcess().setLinkToEpcId(cpfIdMap.get(task.getSubnetId()));
+                }
                 subnet_list.add(func);
             }
             epc.getEventOrFunctionOrRole().add(func);
@@ -560,7 +580,7 @@ public class Canonical2EPML {
     }
 
     private void translateObject(final ObjectType obj, final TypeEPC epc) {
-        TypeObject object = new TypeObject();
+        TypeObject object = new ObjectFactory().createTypeObject();
         id_map.put(obj.getId(), BigInteger.valueOf(ids));
         object.setId(BigInteger.valueOf(ids++));
         object.setName(obj.getName());
@@ -608,7 +628,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateGateway(final TypeEPC epc, final NodeType node) {
+    private void translateGateway(final TypeEPC epc, final NodeType node) throws CanoniserException {
         if (node instanceof ANDSplitType) {
             TypeAND and = new TypeAND();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
@@ -653,6 +673,9 @@ public class Canonical2EPML {
             or.setName(node.getName());
             epc.getEventOrFunctionOrRole().add(or);
             epcRefMap.put(or.getId(), or);
+        } else if (node instanceof StateType) {
+            // Not Supported
+            throw new CanoniserException("State is not supported by EPC!");
         }
     }
 
@@ -826,7 +849,7 @@ public class Canonical2EPML {
     private BigInteger find_def_id(final String type, final String name) {
         for (TExtensibleElements def : epml.getDefinitions().getDefinitionOrSpecialization()) {
             if (def instanceof TypeDefinition && name != null) {
-                if (((TypeDefinition) def).getType().equals(type) && ((TypeDefinition) def).getName().equals(name)) {
+                if (type.equals(((TypeDefinition) def).getType()) && name.equals(((TypeDefinition) def).getName())) {
                     return ((TypeDefinition) def).getDefId();
                 }
             }
