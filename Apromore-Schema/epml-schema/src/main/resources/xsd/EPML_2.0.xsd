@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.epml.de" xmlns:epml="http://www.epml.de"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.epml.de"
-           elementFormDefault="unqualified" attributeFormDefault="unqualified" version="2.0">
+<xs:schema xmlns="http://www.epml.de" xmlns:epml="http://www.epml.de" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.epml.de" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="2.0">
     <xs:complexType name="tExtensibleElements">
         <xs:sequence>
             <xs:element name="documentation" type="xs:anyType" minOccurs="0"/>
@@ -68,7 +66,7 @@
             <xs:extension base="epml:tExtensibleElements">
                 <xs:sequence>
                     <xs:element name="graphicsDefault" type="epml:typeGraphicsDefault" minOccurs="0"/>
-                    <xs:element name="coordinates" type="epml:typeCoordinates" minOccurs="0"/>
+                    <xs:element name="coordinates" type="epml:typeCoordinates"/>
                     <xs:element name="definitions" type="epml:typeDefinitions" minOccurs="0"/>
                     <xs:element name="attributeTypes" type="epml:typeAttrTypes" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element name="directory" type="epml:typeDirectory" maxOccurs="unbounded">
@@ -194,7 +192,7 @@
                             <xs:keyref name="target" refer="id">
                                 <xs:selector xpath="./arc/*"/>
                                 <xs:field xpath="@target"/>
-                            </xs:keyref>
+                            </xs:keyref>                    
                             <xs:keyref name="goto" refer="id">
                                 <xs:selector xpath=".//configurableConnector/configuration"/>
                                 <xs:field xpath="@goto"/>
@@ -216,7 +214,7 @@
                         <xs:element name="configurationGuideline" type="epml:typeCReq"/>
                         <xs:element name="configurationOrder" type="epml:typeCOrder"/>
                     </xs:choice>
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
                         <xs:element name="event" type="epml:typeEvent" minOccurs="0"/>
                         <xs:element name="function" type="epml:typeFunction" minOccurs="0"/>
                         <xs:element name="role" type="epml:typeRole" minOccurs="0"/>
@@ -228,7 +226,7 @@
                         <xs:element name="range" type="epml:typeRANGE" minOccurs="0"/>
                         <xs:element name="arc" type="epml:typeArc" minOccurs="0"/>
                         <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:choice>
+                    </xs:sequence>
                 </xs:sequence>
                 <xs:attribute name="epcId" type="xs:positiveInteger" use="required"/>
                 <xs:attribute name="name" type="xs:string" use="required"/>
@@ -498,27 +496,27 @@
                     </xs:choice>
                 </xs:sequence>
                 <xs:attribute name="lowerBound" use="required">
-                    <xs:simpleType>
-                        <xs:union memberTypes="xs:positiveInteger">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:enumeration value="k"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:union>
-                    </xs:simpleType>
+                  <xs:simpleType>
+                    <xs:union memberTypes="xs:positiveInteger">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="k"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:union>
+                  </xs:simpleType>
                 </xs:attribute>
                 <xs:attribute name="upperBound" use="required">
-                    <xs:simpleType>
-                        <xs:union memberTypes="xs:positiveInteger">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:enumeration value="k"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:union>
-                    </xs:simpleType>
-                </xs:attribute>
+                  <xs:simpleType>
+                    <xs:union memberTypes="xs:positiveInteger">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="k"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:union>
+                  </xs:simpleType>
+                </xs:attribute>             
                 <xs:attribute name="type" use="optional">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -564,7 +562,7 @@
                                 </xs:simpleType>
                             </xs:union>
                         </xs:simpleType>
-                    </xs:attribute>
+                    </xs:attribute> 
                     <xs:attribute name="decrement" use="optional">
                         <xs:simpleType>
                             <xs:union memberTypes="xs:nonNegativeInteger">
@@ -575,7 +573,7 @@
                                 </xs:simpleType>
                             </xs:union>
                         </xs:simpleType>
-                    </xs:attribute>
+                    </xs:attribute> 
                 </xs:complexType>
             </xs:element>
         </xs:choice>
@@ -604,7 +602,7 @@
     <xs:complexType name="typeFlow">
         <xs:attribute name="source" type="xs:positiveInteger" use="required"/>
         <xs:attribute name="target" type="xs:positiveInteger" use="required"/>
-    </xs:complexType>
+    </xs:complexType>   
     <xs:complexType name="typeRelation">
         <xs:attribute name="source" type="xs:positiveInteger" use="required"/>
         <xs:attribute name="target" type="xs:positiveInteger" use="required"/>
