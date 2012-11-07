@@ -126,6 +126,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             result = pdo;
         } catch (Exception re) {
             LOGGER.error("Failed to add the process model " + processName, re);
+            throw new ImportException("Failed to add the process model", re);
         }
         return result;
     }

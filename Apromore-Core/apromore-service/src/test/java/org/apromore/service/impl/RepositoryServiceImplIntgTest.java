@@ -1,5 +1,9 @@
 package org.apromore.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -21,10 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the CanoniserService Implementation.
@@ -93,10 +93,10 @@ public class RepositoryServiceImplIntgTest {
     }
 
 
-    private void createProcessModel(String name, String version) throws Exception {
+    private void createProcessModel(final String name, final String version) throws Exception {
         String nativeType = "EPML 2.0";
 
-        InputStream data = new ByteArrayInputStream(TestData.EPML3.getBytes());
+        InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
 
         assertThat(cp, notNullValue());

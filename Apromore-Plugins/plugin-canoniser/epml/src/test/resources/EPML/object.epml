@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <epml:epml xmlns:epml="http://www.epml.de"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+  <coordinates xOrigin="leftToRight" yOrigin="topToBottom" />
   <directory>
 	  <epc epcId="1" name="EPC">
 	    <event id="1">
@@ -61,13 +62,13 @@
 	        <position x="645" y="240"/>
 	      </graphics>
 	    </arc>
-	    <object consumed="false" id="20" optional="false" type="Output">
+	    <object consumed="false" id="20" optional="false" type="output">
 	      <name>O1</name>
 	      <graphics>
 	        <position height="21" width="81" x="240" y="285"/>
 	      </graphics>
 	    </object>
-	    <object consumed="false" id="21" optional="false" type="Input">
+	    <object consumed="false" id="21" optional="false" type="input">
 	      <name>O2</name>
 	      <graphics>
 	        <position height="21" width="81" x="505" y="280"/>

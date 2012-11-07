@@ -7,7 +7,7 @@ package org.apromore.graph.canonical;
  */
 public class Task extends Work implements ITask {
 
-    private int subNetId;
+    private String subNetId;
     private boolean external = false;
 
     /**
@@ -21,7 +21,7 @@ public class Task extends Work implements ITask {
      * Constructor with label of the place parameter.
      * @param label String to use as a label of this place.
      */
-    public Task(String label) {
+    public Task(final String label) {
         super(label);
     }
 
@@ -30,7 +30,7 @@ public class Task extends Work implements ITask {
      * @param label String to use as a label of this place.
      * @param desc  String to use as a description of this place.
      */
-    public Task(String label, String desc) {
+    public Task(final String label, final String desc) {
         super(label, desc);
     }
 
@@ -49,7 +49,7 @@ public class Task extends Work implements ITask {
      * @param newId the sub net id
      */
     @Override
-    public void setSubNetId(int newId) {
+    public void setSubNetId(final String newId) {
         subNetId = newId;
     }
 
@@ -58,7 +58,7 @@ public class Task extends Work implements ITask {
      * @return the sub net Id
      */
     @Override
-    public int getSubNetId() {
+    public String getSubNetId() {
         return subNetId;
     }
 
@@ -67,7 +67,7 @@ public class Task extends Work implements ITask {
      * @param newExternal either true or false
      */
     @Override
-    public void setExternal(boolean newExternal) {
+    public void setExternal(final boolean newExternal) {
         external = newExternal;
     }
 

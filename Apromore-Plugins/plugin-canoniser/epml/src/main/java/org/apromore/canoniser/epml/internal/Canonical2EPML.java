@@ -615,19 +615,20 @@ public class Canonical2EPML {
         List<TypeArc> arcs_list = new LinkedList<TypeArc>();
         for (Object obj : epc.getEventAndFunctionAndRole()) {
             List<String> ll;
-            if (obj instanceof TypeArc) {
-                ll = role_map.get(((TypeArc) obj).getId());
+            JAXBElement<?> element = (JAXBElement<?>) obj;
+            if (element.getValue() instanceof TypeArc) {
+                ll = role_map.get(((TypeArc) element.getValue()).getId());
             } else {
-                ll = role_map.get(((TEpcElement) obj).getId());
+                ll = role_map.get(((TEpcElement)element.getValue()).getId());
             }
 
             if (ll != null) {
-                if (obj instanceof TypeFunction) {
+                if (element.getValue() instanceof TypeFunction) {
                     if (ll.contains(resT.getId())) {
                         TypeArc arc1 = new TypeArc();
                         TypeRelation rel = new TypeRelation();
                         rel.setSource(role.getId());
-                        rel.setTarget(((TypeFunction) obj).getId());
+                        rel.setTarget(((TypeFunction) element.getValue()).getId());
                         arc1.setRelation(rel);
                         arcs_list.add(arc1);
                     }

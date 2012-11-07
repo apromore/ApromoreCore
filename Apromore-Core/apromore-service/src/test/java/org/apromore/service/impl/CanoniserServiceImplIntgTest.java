@@ -94,7 +94,7 @@ public class CanoniserServiceImplIntgTest {
         String name ="_____test";
         String version = "0.1";
 
-        InputStream data = new ByteArrayInputStream(TestData.EPML3.getBytes());
+        InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
 
         assertThat(cp, notNullValue());
@@ -256,7 +256,7 @@ public class CanoniserServiceImplIntgTest {
         String uri = "1234567890";
         String nativeType = "EPML 2.0";
 
-        InputStream data = new ByteArrayInputStream(TestData.EPML2.getBytes());
+        InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
 
         assertThat(cp, notNullValue());
@@ -313,10 +313,10 @@ public class CanoniserServiceImplIntgTest {
             fail("Should throw exception because State is not supported!");
         } catch (CanoniserException e) {
         }
+
     }
 
     //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-5)
-    @Ignore
     @Test
     public void convertOrderfulfilmentFromYAWLToBPMN() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
@@ -418,6 +418,7 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
+    //TODO this is failing
     @Ignore
     @Test
     public void convertPaymentSubnetFromYAWLToPNML() throws CanoniserException, IOException {
@@ -443,7 +444,6 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
-    @Ignore
     @Test
     public void convertPaymentSubnetFromYAWLToBPMN() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canonisePaymentSubProcess();
