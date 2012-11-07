@@ -1,5 +1,6 @@
 package org.apromore.dao.jpa;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -8,7 +9,6 @@ import org.apromore.dao.NamedQueries;
 import org.apromore.dao.ProcessBranchDao;
 import org.apromore.dao.model.ProcessBranch;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     @PersistenceContext
@@ -42,11 +41,17 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public ProcessBranch getProcessBranchByProcessBranchName(final Integer processId, final String branchName) {
         Query query = em.createNamedQuery(NamedQueries.GET_BRANCH_BY_PROCESS_BRANCH_NAME);
         query.setParameter("processId", processId);
         query.setParameter("name", branchName);
-        return (ProcessBranch) query.getSingleResult();
+        List<ProcessBranch> result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0);
+        }
     }
 
 

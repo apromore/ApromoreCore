@@ -1,5 +1,8 @@
 package org.apromore.dao.jpa;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
@@ -65,7 +68,9 @@ public class BranchDaoJpaUnitTest {
 
     @Test
     public final void testGetProcessBranchByProcessBranchName() {
+        List<ProcessBranch> lbs = new ArrayList<ProcessBranch>(0);
         ProcessBranch b = new ProcessBranch();
+        lbs.add(b);
         Integer processId = 1;
         String branchName = "branchName";
 
@@ -73,7 +78,7 @@ public class BranchDaoJpaUnitTest {
         expect(manager.createNamedQuery(NamedQueries.GET_BRANCH_BY_PROCESS_BRANCH_NAME)).andReturn(query);
         expect(query.setParameter("processId", processId)).andReturn(query);
         expect(query.setParameter("name", branchName)).andReturn(query);
-        expect(query.getSingleResult()).andReturn(b);
+        expect(query.getResultList()).andReturn(lbs);
 
         replay(manager, query);
 
