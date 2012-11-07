@@ -15,6 +15,67 @@ public interface ICanonical<E extends IEdge<N>, N extends INode, F extends IEven
         S extends IState, P extends ISplit, J extends IJoin> extends IDirectedGraph<E, N> {
 
     /**
+     * returns the graphs URI.
+     * @return the Graphs URI
+     */
+    String getUri();
+
+    /**
+     * Sets the URI for the graph.
+     * @param newUri the graphs URI.
+     */
+    void setUri(final String newUri);
+
+    /**
+     * returns the version of the graph
+     * @return the version of the graph
+     */
+    String getVersion();
+
+    /**
+     * Sets the version for the graph.
+     * @param newVersion the version URI.
+     */
+    void setVersion(final String newVersion);
+
+    /**
+     * returns the author of the graph
+     * @return the author of the graph
+     */
+    String getAuthor();
+
+    /**
+     * Sets the author for the graph.
+     * @param newAuthor the author URI.
+     */
+    void setAuthor(final String newAuthor);
+
+    /**
+     * returns the creation date of the graph
+     * @return the creation date of the graph
+     */
+    String getCreationDate();
+
+    /**
+     * Sets the creation date for the graph.
+     * @param newCreationDate the creation date URI.
+     */
+    void setCreationDate(final String newCreationDate);
+
+    /**
+     * returns the modified date of the graph
+     * @return the modified date of the graph
+     */
+    String getModifiedDate();
+
+    /**
+     * Sets the modified date for the graph.
+     * @param newModifiedDate the modified date URI.
+     */
+    void setModifiedDate(final String newModifiedDate);
+
+
+    /**
      * Returns the entry Node.
      * @return the entry node.
      */
@@ -24,7 +85,7 @@ public interface ICanonical<E extends IEdge<N>, N extends INode, F extends IEven
      * Set the entry Node.
      * @param entry the entry Node.
      */
-    void setEntry(Node entry);
+    void setEntry(final Node entry);
 
     /**
      * Returns the Exit Node.

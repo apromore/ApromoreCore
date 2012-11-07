@@ -18,11 +18,11 @@ public class FNSCNSExtractor {
     @SuppressWarnings("unchecked")
     public static Node extract(RFragment2 f, RFragment2 cf, Canonical g) {
         Node childB1 = cf.getEntry();
-        Node newChildB1 = FragmentUtil.duplicateVertex(childB1, g);
+        Node newChildB1 = FragmentUtil.duplicateNode(childB1, g);
         FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
 
         Node childB2 = cf.getExit();
-        Node newChildB2 = FragmentUtil.duplicateVertex(childB2, g);
+        Node newChildB2 = FragmentUtil.duplicateNode(childB2, g);
         FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
 
         f.removeNodes(cf.getNodes());
@@ -35,16 +35,16 @@ public class FNSCNSExtractor {
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
         f.addNode(pocket);
 
-        if (f.getNodes().contains(childB1))
+        if (f.getNodes().contains(childB1)) {
             f.addEdge(childB1, pocket);
-        else {
+        } else {
             f.addEdge(fragmentB1, pocket);
             log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
         }
 
-        if (f.getNodes().contains(childB2))
+        if (f.getNodes().contains(childB2)) {
             f.addEdge(pocket, childB2);
-        else {
+        } else {
             f.addEdge(pocket, fragmentB2);
             log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
         }

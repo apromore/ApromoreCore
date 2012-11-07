@@ -70,12 +70,8 @@ public class CanonicalConvertorIntgTest {
     public void testConvertYAWLToGraph() throws Exception {
         InputStream input = ClassLoader.getSystemResourceAsStream("models/filmproduction.yawl");
         CanonisedProcess cp = canoniserService.canonise("YAWL 2.2", input, new HashSet<RequestParameterType<?>>());
-        outputObjectList(cp.getCpt());
-        System.out.println("*****************");
 
         Canonical g = converter.convert(cp.getCpt());
-        outputObjectList(g);
-        System.out.println("*****************");
 
         RPST<Edge, Node> rpst = new RPST<Edge, Node>(g);
         IOUtils.toFile("canonised.dot", rpst.toDOT());
@@ -93,8 +89,8 @@ public class CanonicalConvertorIntgTest {
         assertThat(cp.getCpt().getNet().get(0).getObject().size(), equalTo(43));
 
         CanonicalProcessType cpt = converter.convert(g);
-        outputObjectList(cpt);
-        System.out.println("*****************");
+//        outputObjectList(cpt);
+//        System.out.println("*****************");
 
         Canonical g1 = converter.convert(cpt);
         //outputObjectList(g1);
@@ -111,20 +107,20 @@ public class CanonicalConvertorIntgTest {
 //        assertThat(cpt.getNet().get(0).getObject().size(), equalTo(43));
     }
 
-    private void outputObjectList(final CanonicalProcessType cpt) {
-        for (NetType net : cpt.getNet()) {
-            for (ObjectType ot : net.getObject()) {
-                System.out.println("Object: " + ot.getId() + " - " + ot.getOriginalID() + " - " + ot.getName());
-            }
-        }
-    }
-
-    private void outputObjectList(final Canonical g) {
-        for (INode n : g.getNodes()) {
-            for (IObject ot : n.getObjects()) {
-                System.out.println(ot.getObjectId() + " - " + ot.getOriginalId() + " - " + ot.getName());
-            }
-        }
-    }
+//    private void outputObjectList(final CanonicalProcessType cpt) {
+//        for (NetType net : cpt.getNet()) {
+//            for (ObjectType ot : net.getObject()) {
+//                System.out.println("Object: " + ot.getId() + " - " + ot.getOriginalID() + " - " + ot.getName());
+//            }
+//        }
+//    }
+//
+//    private void outputObjectList(final Canonical g) {
+//        for (INode n : g.getNodes()) {
+//            for (IObject ot : n.getObjects()) {
+//                System.out.println(ot.getObjectId() + " - " + ot.getOriginalId() + " - " + ot.getName());
+//            }
+//        }
+//    }
 
 }

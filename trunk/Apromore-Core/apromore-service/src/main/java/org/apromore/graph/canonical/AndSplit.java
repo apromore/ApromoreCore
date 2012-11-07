@@ -1,5 +1,7 @@
 package org.apromore.graph.canonical;
 
+import java.util.UUID;
+
 /**
  * Implementation of the Canonical Split Node.
  *
@@ -31,4 +33,19 @@ public class AndSplit extends Split implements IAndSplit {
         super(label, desc);
     }
 
+
+    @Override
+    public AndSplit clone() {
+        AndSplit clone = (AndSplit) super.clone();
+        clone.setId(UUID.randomUUID().toString());
+
+        if (this.getName() != null) {
+            clone.setName(this.getName());
+        }
+        if (this.getDescription() != null) {
+            clone.setDescription(this.getDescription());
+        }
+
+        return clone;
+    }
 }

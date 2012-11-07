@@ -1,5 +1,7 @@
 package org.apromore.graph.canonical;
 
+import java.util.UUID;
+
 /**
  * Implementation of the Canonical Split Node.
  *
@@ -29,6 +31,22 @@ public class XOrSplit extends Split implements IXOrSplit {
      */
     public XOrSplit(String label, String desc) {
         super(label, desc);
+    }
+
+
+    @Override
+    public XOrSplit clone() {
+        XOrSplit clone = (XOrSplit) super.clone();
+        clone.setId(UUID.randomUUID().toString());
+
+        if (this.getName() != null) {
+            clone.setName(this.getName());
+        }
+        if (this.getDescription() != null) {
+            clone.setDescription(this.getDescription());
+        }
+
+        return clone;
     }
 
 }
