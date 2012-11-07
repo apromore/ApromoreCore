@@ -1,18 +1,17 @@
 package org.apromore.dao.jpa;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.FragmentVersion;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Hibernate implementation of the org.apromore.dao.FragmentVersionDao interface.
@@ -21,7 +20,6 @@ import java.util.Map;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     @PersistenceContext

@@ -1,18 +1,11 @@
 package org.apromore.dao.jpa;
 
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-import org.apromore.dao.EdgeDao;
 import org.apromore.dao.ExpressionDao;
-import org.apromore.dao.NamedQueries;
-import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.Expression;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.EdgeDao interface.
@@ -21,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class ExpressionDaoJpa implements ExpressionDao {
 
     @PersistenceContext

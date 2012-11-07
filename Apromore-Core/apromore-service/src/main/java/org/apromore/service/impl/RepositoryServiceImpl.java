@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Element;
 
@@ -57,7 +56,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service("RepositoryService")
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class RepositoryServiceImpl implements RepositoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryServiceImpl.class);
@@ -415,9 +414,9 @@ public class RepositoryServiceImpl implements RepositoryService {
         Process process = pDao.getProcess(processName);
         ProcessBranch pBranch = pbDao.getProcessBranchByProcessBranchName(process.getId(), branchName);
 
-        if (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 && pBranch.getProcessModelVersions().size() == 0) {
+        if (pBranch == null || (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 &&
+                pBranch.getProcessModelVersions().size() == 0)) {
             deleteProcess(process);
-
         } else {
             ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(pBranch.getId());
             pBranch.setCurrentProcessModelVersion(pmv);

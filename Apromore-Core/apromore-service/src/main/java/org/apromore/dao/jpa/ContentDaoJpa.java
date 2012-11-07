@@ -9,16 +9,15 @@ import org.apromore.dao.ContentDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Content;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ContentDao interface.
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class ContentDaoJpa implements ContentDao {
 
     @PersistenceContext
@@ -27,7 +26,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#findContent(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -38,7 +37,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#getContentByFragmentVersion(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -55,7 +54,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#getContentByCode(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -73,7 +72,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#save(org.apromore.dao.model.Content)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final Content content) {
@@ -82,7 +81,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#update(org.apromore.dao.model.Content)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Content update(final Content content) {
@@ -91,7 +90,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#delete(org.apromore.dao.model.Content)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final Content content) {
@@ -101,6 +100,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working.
+     *
      * @param newEm the entitymanager
      */
     public void setEntityManager(final EntityManager newEm) {
