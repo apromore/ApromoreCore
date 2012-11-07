@@ -527,13 +527,14 @@ public class CanoniserServiceImplIntgTest {
     public void convertCreditCardApplicationFromYAWLToEPML() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
 
-        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
-                new HashSet<RequestParameterType<?>>());
-        assertNotNull(decanonisedEPML);
+        try {
+            DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
+                    new HashSet<RequestParameterType<?>>());
+            fail();
+        } catch (CanoniserException e) {
 
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(decanonisedEPML, "CreditCardApplication.epml");
         }
+
     }
 
     // TODO this is failing
