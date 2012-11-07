@@ -24,9 +24,20 @@
  */
 package org.apromore.common.converters.epml;
 
-import de.epml.TExtensibleElements;
-import de.epml.TypeEPC;
-import de.epml.TypeEPML;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
@@ -37,13 +48,9 @@ import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import de.epml.TExtensibleElements;
+import de.epml.TypeEPC;
+import de.epml.TypeEPML;
 
 /**
  * Converts a EPML Stream to a Signavio/Oryx JSON Stream
@@ -58,7 +65,7 @@ public class EPMLToJSONConverter {
      * @param epmlStream
      * @param jsonStream
      */
-    public void convert(InputStream epmlStream, OutputStream jsonStream) {
+    public void convert(final InputStream epmlStream, final OutputStream jsonStream) {
         try {
             JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(epmlStream);
             convertEPML(nativeElement.getValue(), jsonStream);
@@ -74,18 +81,18 @@ public class EPMLToJSONConverter {
      * @param jsonStream
      * @throws UnsupportedEncodingException
      */
-    public void convert(String epmlString, String encoding, OutputStream jsonStream) throws UnsupportedEncodingException {
+    public void convert(final String epmlString, final String encoding, final OutputStream jsonStream) throws UnsupportedEncodingException {
         convert(new ByteArrayInputStream(epmlString.getBytes(encoding)), jsonStream);
     }
 
     @SuppressWarnings("unchecked")
-    private JAXBElement<TypeEPML> unmarshalNativeFormat(InputStream nativeFormat) throws JAXBException {
+    private JAXBElement<TypeEPML> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
         JAXBContext jc1 = JAXBContext.newInstance(EPML_CONTEXT);
         Unmarshaller u = jc1.createUnmarshaller();
         return (JAXBElement<TypeEPML>) u.unmarshal(nativeFormat);
     }
 
-    private void convertEPML(TypeEPML epml, OutputStream jsonStream) throws JSONException, IOException {
+    private void convertEPML(final TypeEPML epml, final OutputStream jsonStream) throws JSONException, IOException {
         EPMLConversionContext context = new EPMLConversionContext();
         EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(context);
         context.setConverterFactory(converterFactory);
@@ -102,20 +109,14 @@ public class EPMLToJSONConverter {
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
             BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
             Bounds bounds = new Bounds();
-            bounds.setCoordinates(0, 0, 200, 200);
+            bounds.setCoordinates(0, 0, 600, 600);
             diagram.setBounds(bounds);
             context.addDiagram(diagram);
             for (Object obj : epc.getEventOrFunctionOrRole()) {
                 if (obj instanceof JAXBElement) {
-                    obj = ((JAXBElement) obj).getValue();
+                    obj = ((JAXBElement<?>) obj).getValue();
                 }
                 EPMLHandler converter = converterFactory.createNodeConverter(obj);
-                if (converter != null) {
-                    diagram.addChildShape(converter.convert());
-                }
-            }
-            for (Object obj : epc.getEventOrFunctionOrRole()) {
-                EPMLHandler converter = converterFactory.createEdgeConverter(obj);
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
                 }
@@ -126,12 +127,21 @@ public class EPMLToJSONConverter {
                     diagram.addChildShape(converter.convert());
                 }
             }
+            for (Object obj : epc.getEventOrFunctionOrRole()) {
+                if (obj instanceof JAXBElement) {
+                    obj = ((JAXBElement<?>) obj).getValue();
+                }
+                EPMLHandler converter = converterFactory.createEdgeConverter(obj);
+                if (converter != null) {
+                    diagram.addChildShape(converter.convert());
+                }
+            }
         }
 
         writeJson(context, jsonStream);
     }
 
-    private void writeJson(EPMLConversionContext context, OutputStream jsonStream) throws JSONException, IOException {
+    private void writeJson(final EPMLConversionContext context, final OutputStream jsonStream) throws JSONException, IOException {
         BasicDiagram diagram = context.getDiagram(0);
         JSONObject jsonDiagram = GenericJSONBuilder.parseModel(diagram);
         OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, "UTF-8");
