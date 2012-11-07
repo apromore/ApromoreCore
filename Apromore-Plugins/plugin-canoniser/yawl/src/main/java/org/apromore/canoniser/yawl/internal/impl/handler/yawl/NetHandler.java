@@ -19,6 +19,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
+import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -128,6 +129,11 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
             }
         }
         g.setSize(size);
+
+        PositionType position = ANF_FACTORY.createPositionType();
+        position.setX(BigDecimal.ZERO);
+        position.setY(BigDecimal.ZERO);
+        g.getPosition().add(position);
 
         return g;
     }

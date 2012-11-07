@@ -60,9 +60,8 @@ import org.xml.sax.SAXException;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@ContextConfiguration(locations = {
-        "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
-        "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
+@ContextConfiguration(locations = { "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
+        "classpath:META-INF/spring/applicationContext-services-TEST.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -91,7 +90,7 @@ public class CanoniserServiceImplIntgTest {
     @Test
     public void integrationWithProcessService() throws IOException, CanoniserException, JAXBException, SAXException, ImportException {
         String nativeType = "EPML 2.0";
-        String name ="_____test";
+        String name = "_____test";
         String version = "0.1";
 
         InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
@@ -169,7 +168,6 @@ public class CanoniserServiceImplIntgTest {
         MatcherAssert.assertThat(dp.getMessages(), Matchers.notNullValue());
     }
 
-
     @Test
     public void deCanoniseWithoutAnnotationsSuccessEPML() throws Exception {
         Integer processId = 123;
@@ -192,7 +190,6 @@ public class CanoniserServiceImplIntgTest {
         MatcherAssert.assertThat(dp.getMessages(), Matchers.notNullValue());
     }
 
-
     @Test
     public void deCanoniseWithAnnotationsSuccessEPML() throws Exception {
         Integer processId = 123;
@@ -213,13 +210,11 @@ public class CanoniserServiceImplIntgTest {
         Set<ParameterType<?>> optionalProperties = c.getOptionalParameters();
         assertEquals(1, optionalProperties.size());
 
-
         DecanonisedProcess dp = cSrv.deCanonise(processId, version, name, getTypeFromXML(cpf), getANFTypeFromXML(anf), epmlCanoniserRequest);
 
         MatcherAssert.assertThat(dp.getNativeFormat(), Matchers.notNullValue());
         MatcherAssert.assertThat(dp.getMessages(), Matchers.notNullValue());
     }
-
 
     @Test(expected = CanoniserException.class)
     public void canoniseFailureTypeNotFound() throws Exception {
@@ -283,7 +278,6 @@ public class CanoniserServiceImplIntgTest {
         return ANFSchema.unmarshalAnnotationFormat(anf.getInputStream(), false).getValue();
     }
 
-
     @Test
     public void canoniseOrderfulfilmentFromYAWL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
@@ -297,30 +291,33 @@ public class CanoniserServiceImplIntgTest {
     @Test
     public void canoniseOrderfulfilmentFromYAWLToYAWL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
-        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
 
         if (LOGGER.isDebugEnabled()) {
             saveDecanonisedProcess(deCanonisedYAWL, "OrderFulfillment.yawl");
         }
     }
 
-    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-4)
+    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-4)
     @Test
     public void convertOrderfulfilmentFromYAWLToEPML() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
         try {
-            DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+            DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
+                    new HashSet<RequestParameterType<?>>());
             fail("Should throw exception because State is not supported!");
         } catch (CanoniserException e) {
         }
 
     }
 
-    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-5)
+    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-5)
     @Test
     public void convertOrderfulfilmentFromYAWLToBPMN() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
-        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedBPMN);
 
         if (LOGGER.isDebugEnabled()) {
@@ -328,12 +325,13 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
-    //TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-6)
+    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-6)
     @Ignore
     @Test
     public void convertOrderfulfilmentFromYAWLToPNML() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
-        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedPNML);
 
         if (LOGGER.isDebugEnabled()) {
@@ -344,11 +342,238 @@ public class CanoniserServiceImplIntgTest {
     @Test
     public void convertOrderfulfilmentFromYAWLToXPDL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseOrderfulfillment();
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedXPDL);
 
         if (LOGGER.isDebugEnabled()) {
             saveDecanonisedProcess(decanonisedXPDL, "OrderFulfillment.xpdl");
+        }
+    }
+
+    @Test
+    public void convertPaymentSubnetFromYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+
+        if (LOGGER.isDebugEnabled()) {
+            // Save CPF
+            saveCanonisedProcess(oFCanonised, "PaymentSubnet.cpf");
+        }
+    }
+
+    @Test
+    public void canonisePaymentSubnetFromYAWLToYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(deCanonisedYAWL, "PaymentSubnet.yawl");
+        }
+    }
+
+    @Test
+    public void convertPaymentSubnetFromYAWLToEPML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+
+        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedEPML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedEPML, "PaymentSubnet.epml");
+        }
+    }
+
+    // TODO this is failing
+    @Ignore
+    @Test
+    public void convertPaymentSubnetFromYAWLToPNML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+
+        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedPNML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedPNML, "PaymentSubnet.pnml");
+        }
+    }
+
+    @Test
+    public void convertPaymentSubnetFromYAWLToXPDL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedXPDL);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedXPDL, "PaymentSubnet.xpdl");
+        }
+    }
+
+    @Test
+    public void convertPaymentSubnetFromYAWLToBPMN() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
+
+        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedBPMN);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedBPMN, "PaymentSubnet.bpmn");
+        }
+    }
+
+    @Test
+    public void convertSimpleMakeTripFromYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+
+        if (LOGGER.isDebugEnabled()) {
+            // Save CPF
+            saveCanonisedProcess(oFCanonised, "SimpleMakeTrip.cpf");
+        }
+    }
+
+    @Test
+    public void canoniseSimpleMakeTripFromYAWLToYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(deCanonisedYAWL, "SimpleMakeTrip.yawl");
+        }
+    }
+
+    @Test
+    public void convertSimpleMakeTripFromYAWLToEPML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+
+        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedEPML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedEPML, "SimpleMakeTrip.epml");
+        }
+    }
+
+    // TODO this is failing
+    @Ignore
+    @Test
+    public void convertSimpleMakeTripFromYAWLToPNML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+
+        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedPNML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedPNML, "SimpleMakeTrip.pnml");
+        }
+    }
+
+    @Test
+    public void convertSimpleMakeTripFromYAWLToXPDL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedXPDL);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedXPDL, "SimpleMakeTrip.xpdl");
+        }
+    }
+
+    @Test
+    public void convertSimpleMakeTripFromYAWLToBPMN() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseSimpleMakeTripProcess();
+
+        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedBPMN);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedBPMN, "SimpleMakeTrip.bpmn");
+        }
+    }
+
+
+    @Test
+    public void convertCreditCardApplicationFromYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+
+        if (LOGGER.isDebugEnabled()) {
+            // Save CPF
+            saveCanonisedProcess(oFCanonised, "CreditCardApplication.cpf");
+        }
+    }
+
+    @Test
+    public void canoniseCreditCardApplicationFromYAWLToYAWL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(deCanonisedYAWL, "CreditCardApplication.yawl");
+        }
+    }
+
+    @Test
+    public void convertCreditCardApplicationFromYAWLToEPML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+
+        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedEPML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedEPML, "CreditCardApplication.epml");
+        }
+    }
+
+    // TODO this is failing
+    @Ignore
+    @Test
+    public void convertCreditCardApplicationFromYAWLToPNML() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+
+        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedPNML);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedPNML, "CreditCardApplication.pnml");
+        }
+    }
+
+    @Test
+    public void convertCreditCardApplicationFromYAWLToXPDL() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedXPDL);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedXPDL, "CreditCardApplication.xpdl");
+        }
+    }
+
+    @Test
+    public void convertCreditCardApplicationFromYAWLToBPMN() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised = canoniseCreditApplicationProcess();
+
+        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null,
+                new HashSet<RequestParameterType<?>>());
+        assertNotNull(decanonisedBPMN);
+
+        if (LOGGER.isDebugEnabled()) {
+            saveDecanonisedProcess(decanonisedBPMN, "CreditCardApplication.bpmn");
         }
     }
 
@@ -367,92 +592,20 @@ public class CanoniserServiceImplIntgTest {
     }
 
     private void saveCanonisedProcess(final CanonisedProcess canonisedProcess, final String fileName) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream("target/"+fileName)) {
-                CPFSchema.marshalCanoncialFormat(fileOutputStream, canonisedProcess.getCpt(), true);
-                fileOutputStream.flush();
+        try (FileOutputStream fileOutputStream = new FileOutputStream("target/" + fileName)) {
+            CPFSchema.marshalCanoncialFormat(fileOutputStream, canonisedProcess.getCpt(), true);
+            fileOutputStream.flush();
         } catch (JAXBException | SAXException | IOException e) {
             LOGGER.error("Could not save Canonised Process", e);
         }
     }
 
     private void saveDecanonisedProcess(final DecanonisedProcess decanonisedProcess, final String fileName) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream("target/"+fileName)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream("target/" + fileName)) {
             IOUtils.copy(decanonisedProcess.getNativeFormat(), fileOutputStream);
             fileOutputStream.flush();
         } catch (IOException e) {
             LOGGER.error("Could not save DeCanonised Process", e);
-        }
-    }
-
-
-    @Test
-    public void convertPaymentSubnetFromYAWL() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-
-        if (LOGGER.isDebugEnabled()) {
-            // Save CPF
-            saveCanonisedProcess(oFCanonised, "PaymentSubnet.cpf");
-        }
-    }
-
-    @Test
-    public void canonisePaymentSubnetFromYAWLToYAWL() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-        DecanonisedProcess deCanonisedYAWL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "YAWL 2.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
-
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(deCanonisedYAWL, "PaymentSubnet.yawl");
-        }
-    }
-
-
-    @Test
-    public void convertPaymentSubnetFromYAWLToEPML() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-
-        DecanonisedProcess decanonisedEPML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "EPML 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
-        assertNotNull(decanonisedEPML);
-
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(decanonisedEPML, "PaymentSubnet.epml");
-        }
-    }
-
-    //TODO this is failing
-    @Ignore
-    @Test
-    public void convertPaymentSubnetFromYAWLToPNML() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-
-        DecanonisedProcess decanonisedPNML = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "PNML 1.3.2", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
-        assertNotNull(decanonisedPNML);
-
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(decanonisedPNML, "PaymentSubnet.pnml");
-        }
-    }
-
-    @Test
-    public void convertPaymentSubnetFromYAWLToXPDL() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "XPDL 2.1", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
-        assertNotNull(decanonisedXPDL);
-
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(decanonisedXPDL, "PaymentSubnet.xpdl");
-        }
-    }
-
-    @Test
-    public void convertPaymentSubnetFromYAWLToBPMN() throws CanoniserException, IOException {
-        CanonisedProcess oFCanonised = canonisePaymentSubProcess();
-
-        DecanonisedProcess decanonisedBPMN = cSrv.deCanonise(1, oFCanonised.getCpt().getVersion(), "BPMN 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
-        assertNotNull(decanonisedBPMN);
-
-        if (LOGGER.isDebugEnabled()) {
-            saveDecanonisedProcess(decanonisedBPMN, "PaymentSubnet.bpmn");
         }
     }
 
@@ -470,5 +623,24 @@ public class CanoniserServiceImplIntgTest {
         return oFCanonised;
     }
 
+    private CanonisedProcess canoniseSimpleMakeTripProcess() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised;
+        try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream("YAWL_models/SimpleMakeTripProcess.yawl")) {
+            HashSet<RequestParameterType<?>> yawlParameters = new HashSet<RequestParameterType<?>>();
+            oFCanonised = cSrv.canonise("YAWL 2.2", oFProcess, yawlParameters);
+
+        }
+        return oFCanonised;
+    }
+
+    private CanonisedProcess canoniseCreditApplicationProcess() throws CanoniserException, IOException {
+        CanonisedProcess oFCanonised;
+        try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream("YAWL_models/CreditApplicationProcess.yawl")) {
+            HashSet<RequestParameterType<?>> yawlParameters = new HashSet<RequestParameterType<?>>();
+            oFCanonised = cSrv.canonise("YAWL 2.2", oFProcess, yawlParameters);
+
+        }
+        return oFCanonised;
+    }
 
 }
