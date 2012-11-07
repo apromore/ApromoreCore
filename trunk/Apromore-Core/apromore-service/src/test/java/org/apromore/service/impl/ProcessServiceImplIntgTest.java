@@ -73,7 +73,7 @@ public class ProcessServiceImplIntgTest {
     @Test
     @Rollback(true)
     public void testImportSimpleYAWLProcess() throws CanoniserException, IOException, ImportException {
-        String username = "Test";
+        String username = "james";
         String name = "Test Version Control";
         String cpfURI = "12325335343353";
         String version = "1.0";
@@ -96,7 +96,7 @@ public class ProcessServiceImplIntgTest {
     @Test
     @Rollback(true)
     public void testImportComplexYAWLProcess() throws CanoniserException, IOException, ImportException {
-        String username = "Test";
+        String username = "james";
         String name = "Test Version Control";
         String cpfURI = "12325335343353";
         String version = "1.0";
@@ -119,7 +119,7 @@ public class ProcessServiceImplIntgTest {
     @Test
     @Rollback(true)
     public void testImportComplexYAWLProcessWithSubnets() throws CanoniserException, IOException, ImportException {
-        String username = "Test";
+        String username = "james";
         String name = "Test Version Control";
         String cpfURI = "12325335343353";
         String version = "1.0";
