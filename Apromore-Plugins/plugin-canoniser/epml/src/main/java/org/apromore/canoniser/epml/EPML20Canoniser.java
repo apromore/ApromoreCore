@@ -6,11 +6,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
@@ -28,7 +25,9 @@ import org.apromore.plugin.property.PluginParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
 
+import de.epml.EPMLSchema;
 import de.epml.TypeCoordinates;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
@@ -66,7 +65,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 	public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
 
 		try {
-			JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(nativeInput);
+			JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(nativeInput, false);
 			EPML2Canonical epml2canonical = new EPML2Canonical(nativeElement.getValue());
 
 			annotationFormat.add(epml2canonical.getANF());
@@ -74,7 +73,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
 			return newPluginResult();
 
-		} catch (JAXBException e) {
+		} catch (JAXBException | SAXException e) {
 			throw new CanoniserException(e);
 		}
 
@@ -98,7 +97,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 				canonical2epml = new Canonical2EPML(canonicalFormat, request.getRequestParameter(fakeEventsProperty).getValue());
 			}
 
-			marshalEPMLFormat(canonical2epml.getEPML(), nativeOutput);
+			EPMLSchema.marshalEPMLFormat(nativeOutput, canonical2epml.getEPML(), true);
 
 			return newPluginResult();
 
@@ -106,25 +105,11 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 			throw new CanoniserException(e);
 		} catch (PluginPropertyNotFoundException e) {
 		    throw new CanoniserException(e);
+        } catch (SAXException e) {
+            throw new CanoniserException(e);
         }
 
 	}
-
-	@SuppressWarnings("unchecked")
-	private JAXBElement<TypeEPML> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
-		JAXBContext jc1 = JAXBContext.newInstance(EPML_CONTEXT);
-		Unmarshaller u = jc1.createUnmarshaller();
-		return (JAXBElement<TypeEPML>) u.unmarshal(nativeFormat);
-	}
-
-	private void marshalEPMLFormat(final TypeEPML epml, final OutputStream nativeFormat) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance(EPML_CONTEXT);
-		Marshaller m = jc.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(epml);
-		m.marshal(rootepml, nativeFormat);
-	}
-
     /* (non-Javadoc)
      * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, org.apromore.plugin.PluginRequest)
      */
@@ -142,7 +127,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
         directory.setName("Root");
         epml.getDirectory().add(directory);
         TypeEPC epc = new TypeEPC();
-        epc.setEpcId(new BigInteger("1"));
+        epc.setEpcId(BigInteger.ONE);
         if (processName != null) {
             epc.setName(processName);
         } else {
@@ -153,8 +138,11 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
         PluginResultImpl newPluginResult = newPluginResult();
 
         try {
-            marshalEPMLFormat(epml, nativeOutput);
+            EPMLSchema.marshalEPMLFormat(nativeOutput, epml, true);
         } catch (JAXBException e) {
+            LOGGER.error("Could not create initial EPML", e);
+            newPluginResult.addPluginMessage("Could not create initial EPML, reason: {0}", e.getMessage());
+        } catch (SAXException e) {
             LOGGER.error("Could not create initial EPML", e);
             newPluginResult.addPluginMessage("Could not create initial EPML, reason: {0}", e.getMessage());
         }

@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
@@ -55,6 +56,7 @@ import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
 import de.epml.TypeArc;
+import de.epml.TypeCoordinates;
 import de.epml.TypeDefinition;
 import de.epml.TypeDefinitions;
 import de.epml.TypeDirectory;
@@ -79,6 +81,9 @@ import de.epml.TypeToProcess;
 import de.epml.TypeXOR;
 
 public class Canonical2EPML {
+
+    private static ObjectFactory EPML_FACTORY = new ObjectFactory();
+
     Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
     List<String> event_list = new LinkedList<String>();
     Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
@@ -97,7 +102,7 @@ public class Canonical2EPML {
 
     private final TypeEPML epml = new TypeEPML();
     private final TypeDirectory dir = new TypeDirectory();
-    private long ids = System.currentTimeMillis();
+    private long ids = 1;
     private long defIds = 1;
 
     public TypeEPML getEPML() {
@@ -115,7 +120,7 @@ public class Canonical2EPML {
     private void validate_model(final TypeEPC epc) {
         List<TEpcElement> successors;
         int events, funcs;
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
             if (obj instanceof TypeFunction || obj instanceof TypeEvent) {
                 eventFuncList.add((TEpcElement) obj);
             }
@@ -141,7 +146,7 @@ public class Canonical2EPML {
                     TypeFlow flow = new TypeFlow();
                     arc2.setFlow(flow);
                     arc1 = find_post_arc(element, epc);
-                    add_fake(arc1, func, arc2, epc);
+                    add_fake(arc1, EPML_FACTORY.createTypeEPCFunction(func), arc2, epc);
                 } else {
                     if (events > funcs) {
                         // Add fake function after the current event
@@ -151,7 +156,7 @@ public class Canonical2EPML {
                         arc2.setFlow(flow);
 
                         arc1 = find_pre_arc(element, epc);
-                        add_fake(arc1, func, arc2, epc);
+                        add_fake(arc1, EPML_FACTORY.createTypeEPCFunction(func), arc2, epc);
 
                         // Add fake event before each successor function
                         for (TEpcElement tepc : successors) {
@@ -162,7 +167,7 @@ public class Canonical2EPML {
                                 arc22.setFlow(flow1);
 
                                 arc11 = find_pre_arc(element, epc);
-                                add_fake(arc11, event, arc22, epc);
+                                add_fake(arc11, EPML_FACTORY.createTypeEPCEvent(event), arc22, epc);
                             }
                         }
                     } else {
@@ -175,7 +180,7 @@ public class Canonical2EPML {
                                 arc22.setFlow(flow1);
 
                                 arc11 = find_pre_arc(element, epc);
-                                add_fake(arc11, func, arc22, epc);
+                                add_fake(arc11, EPML_FACTORY.createTypeEPCFunction(func), arc22, epc);
                             }
                         }
                     }
@@ -203,7 +208,7 @@ public class Canonical2EPML {
                     arc2.setFlow(flow);
 
                     arc1 = find_post_arc(element, epc);
-                    add_fake(arc1, event, arc2, epc);
+                    add_fake(arc1, EPML_FACTORY.createTypeEPCEvent(event), arc2, epc);
                 } else {
                     if (funcs > events) {
                         TypeEvent event = new TypeEvent();
@@ -212,7 +217,7 @@ public class Canonical2EPML {
                         arc2.setFlow(flow);
 
                         arc1 = find_post_arc(element, epc);
-                        add_fake(arc1, event, arc2, epc);
+                        add_fake(arc1, EPML_FACTORY.createTypeEPCEvent(event), arc2, epc);
 
                         for (TEpcElement tepc : successors) {
                             if (tepc instanceof TypeEvent) {
@@ -222,7 +227,7 @@ public class Canonical2EPML {
                                 arc22.setFlow(flow1);
 
                                 arc11 = find_pre_arc(element, epc);
-                                add_fake(arc11, func, arc22, epc);
+                                add_fake(arc11, EPML_FACTORY.createTypeEPCFunction(func), arc22, epc);
                             }
                         }
                     } else {
@@ -233,7 +238,7 @@ public class Canonical2EPML {
                                 TypeFlow flow1 = new TypeFlow();
                                 arc22.setFlow(flow1);
                                 arc11 = find_pre_arc(element, epc);
-                                add_fake(arc11, event, arc22, epc);
+                                add_fake(arc11, EPML_FACTORY.createTypeEPCEvent(event), arc22, epc);
                             }
                         }
                     }
@@ -250,18 +255,18 @@ public class Canonical2EPML {
      * arc2
      * @since 1.0
      */
-    private void add_fake(final TypeArc arc1, final TEpcElement element, final TypeArc arc2, final TypeEPC epc) {
-        element.setId(BigInteger.valueOf(ids++));
+    private void add_fake(final TypeArc arc1, final JAXBElement<? extends TEpcElement> element, final TypeArc arc2, final TypeEPC epc) {
+        element.getValue().setId(BigInteger.valueOf(ids++));
         QName typeRef = new QName("typeRef");
-        element.getOtherAttributes().put(typeRef, "fake");
-        element.setName("");
+        element.getValue().getOtherAttributes().put(typeRef, "fake");
+        element.getValue().setName("");
         arc2.setId(BigInteger.valueOf(ids++));
-        arc2.getFlow().setSource(element.getId());
+        arc2.getFlow().setSource(element.getValue().getId());
         arc2.getFlow().setTarget(arc1.getFlow().getTarget());
-        arc1.getFlow().setTarget(element.getId());
+        arc1.getFlow().setTarget(element.getValue().getId());
 
-        epc.getEventOrFunctionOrRole().add(element);
-        epc.getEventOrFunctionOrRole().add(arc2);
+        epc.getEventAndFunctionAndRole().add(element);
+        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc2));
     }
 
     /**
@@ -272,7 +277,7 @@ public class Canonical2EPML {
      * @since 1.0
      */
     private TypeArc find_pre_arc(final TEpcElement element, final TypeEPC epc) {
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
             if (obj != null && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getTarget() != null && element != null) {
                 if (((TypeArc) obj).getFlow().getTarget().equals(element.getId())) {
                     return (TypeArc) obj;
@@ -290,7 +295,7 @@ public class Canonical2EPML {
      * @since 1.0
      */
     private TypeArc find_post_arc(final TEpcElement element, final TypeEPC epc) {
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
             if (obj != null && obj instanceof TypeArc && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getSource() != null &&
                     element != null) {
                 if (((TypeArc) obj).getFlow().getSource().equals(element.getId())) {
@@ -321,7 +326,7 @@ public class Canonical2EPML {
                 successors.add((TEpcElement) obj);
             } else {
                 flag = true;
-                for (Object object : epc.getEventOrFunctionOrRole()) {
+                for (Object object : epc.getEventAndFunctionAndRole()) {
                     if (object instanceof TypeArc) {
                         if (((TypeArc) object).getFlow() != null) {
                             TypeFlow flow = ((TypeArc) object).getFlow();
@@ -398,6 +403,13 @@ public class Canonical2EPML {
      * @since 1.0
      */
     private void main(final CanonicalProcessType cproc, final boolean addFakes) throws CanoniserException {
+
+        // Added as the EPML schema requires Coordinates
+        TypeCoordinates coord = new TypeCoordinates();
+        coord.setXOrigin("leftToRight");
+        coord.setYOrigin("topToBottom");
+        epml.setCoordinates(coord);
+
         epml.getDirectory().add(dir);
         epml.setDefinitions(new TypeDefinitions());
 
@@ -484,7 +496,7 @@ public class Canonical2EPML {
                     flow.setTarget(id_map.get(edge.getTargetId()));
                     flow_list.add(flow);
                     arc.setFlow(flow);
-                    epc.getEventOrFunctionOrRole().add(arc);
+                    epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
                     epcRefMap.put(arc.getId(), arc);
                 } else {
                     id_map.put(edge.getTargetId(), id_map.get(edge.getSourceId()));
@@ -523,7 +535,7 @@ public class Canonical2EPML {
                         }
                         arc.setRelation(rel);
                         epcRefMap.put(arc.getId(), arc);
-                        epc.getEventOrFunctionOrRole().add(arc);
+                        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
                     }
                 }
 
@@ -536,7 +548,7 @@ public class Canonical2EPML {
                         rel.setTarget(id_map.get(ref.getResourceTypeId()));
                         rel.setType("role");
                         arc.setRelation(rel);
-                        epc.getEventOrFunctionOrRole().add(arc);
+                        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
                     }
                 }
             }
@@ -563,7 +575,7 @@ public class Canonical2EPML {
                 }
                 subnet_list.add(func);
             }
-            epc.getEventOrFunctionOrRole().add(func);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCFunction(func));
             epcRefMap.put(func.getId(), func);
         }
     }
@@ -575,7 +587,7 @@ public class Canonical2EPML {
         event.setName(node.getName());
         //TODO getName could be NULL, will not work as lookup key!
         event.setDefRef(find_def_id("event", event.getName()));
-        epc.getEventOrFunctionOrRole().add(event);
+        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCEvent(event));
         epcRefMap.put(event.getId(), event);
     }
 
@@ -587,7 +599,7 @@ public class Canonical2EPML {
         //TODO getName could be NULL, will not work as lookup key!
         object.setDefRef(find_def_id("object", object.getName()));
         object.setFinal(obj.isConfigurable());
-        epc.getEventOrFunctionOrRole().add(object);
+        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCObject(object));
         epcRefMap.put(object.getId(), object);
     }
 
@@ -598,10 +610,10 @@ public class Canonical2EPML {
         role.setName(resT.getName());
         //TODO getName could be NULL, will not work as lookup key!
         role.setDefRef(find_def_id("role", role.getName()));
-        epc.getEventOrFunctionOrRole().add(role);
+        epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCRole(role));
 
         List<TypeArc> arcs_list = new LinkedList<TypeArc>();
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
             List<String> ll;
             if (obj instanceof TypeArc) {
                 ll = role_map.get(((TypeArc) obj).getId());
@@ -624,7 +636,7 @@ public class Canonical2EPML {
         }
 
         for (TypeArc arc : arcs_list) {
-            epc.getEventOrFunctionOrRole().add(arc);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
         }
     }
 
@@ -634,21 +646,21 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             and.setId(BigInteger.valueOf(ids++));
             and.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(and);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCAnd(and));
             epcRefMap.put(and.getId(), and);
         } else if (node instanceof ANDJoinType) {
             TypeAND and = new TypeAND();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             and.setId(BigInteger.valueOf(ids++));
             and.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(and);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCAnd(and));
             epcRefMap.put(and.getId(), and);
         } else if (node instanceof XORSplitType) {
             TypeXOR xor = new TypeXOR();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             xor.setId(BigInteger.valueOf(ids++));
             xor.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(xor);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCXor(xor));
             epcRefMap.put(xor.getId(), xor);
             event_list.add(node.getId());
         } else if (node instanceof XORJoinType) {
@@ -656,14 +668,14 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             xor.setId(BigInteger.valueOf(ids++));
             xor.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(xor);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCXor(xor));
             epcRefMap.put(xor.getId(), xor);
         } else if (node instanceof ORSplitType) {
             TypeOR or = new TypeOR();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             or.setId(BigInteger.valueOf(ids++));
             or.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(or);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCOr(or));
             epcRefMap.put(or.getId(), or);
             event_list.add(node.getId());
         } else if (node instanceof ORJoinType) {
@@ -671,7 +683,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             or.setId(BigInteger.valueOf(ids++));
             or.setName(node.getName());
-            epc.getEventOrFunctionOrRole().add(or);
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCOr(or));
             epcRefMap.put(or.getId(), or);
         } else if (node instanceof StateType) {
             // Not Supported
@@ -710,9 +722,9 @@ public class Canonical2EPML {
                     condExpr.setDescription("EPMLEPML");
                     edge.setConditionExpr(condExpr);
 
-                    epc.getEventOrFunctionOrRole().add(arc);
-                    epc.getEventOrFunctionOrRole().add(event);
-                    epc.getEventOrFunctionOrRole().add(arc2);
+                    epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
+                    epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCEvent(event));
+                    epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc2));
                     epcRefMap.put(arc.getId(), arc);
                     epcRefMap.put(arc2.getId(), arc2);
                     epcRefMap.put(event.getId(), event);

@@ -153,17 +153,18 @@ public class EPML2Canonical {
         }
         else {
             // The EPML element doesn't have any directory
-            for (TypeEPC epc : epml.getEpcs()) {
-                NetType net = new NetType();
-                translateEpc(net, epc);
-                id_map.put(epc.getEpcId(), String.valueOf(ids));
-                net.setId(String.valueOf(ids++));
-                cproc.getNet().add(net);
-            }
-            for (TaskType task : subnet_list) {
-                task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
-            }
-            subnet_list.clear();
+            throw new CanoniserException("EPML file is missing a 'directory' invalid!");
+//            for (TypeEPC epc : epml.getEpcs()) {
+//                NetType net = new NetType();
+//                translateEpc(net, epc);
+//                id_map.put(epc.getEpcId(), String.valueOf(ids));
+//                net.setId(String.valueOf(ids++));
+//                cproc.getNet().add(net);
+//            }
+//            for (TaskType task : subnet_list) {
+//                task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
+//            }
+//            subnet_list.clear();
         }
     }
 
@@ -172,9 +173,10 @@ public class EPML2Canonical {
      * and events in case the modelass has them.
      * @param epml the header for an EPML
      * @return epml      the header for the EPML modelass after modification
+     * @throws CanoniserException
      * @since 1.0
      */
-    private TypeEPML removeFakes(final TypeEPML epml) {
+    private TypeEPML removeFakes(final TypeEPML epml) throws CanoniserException {
         List<TEpcElement> remove_list = new LinkedList<TEpcElement>();
         List<TypeArc> arc_remove_list = new LinkedList<TypeArc>();
 
@@ -182,7 +184,7 @@ public class EPML2Canonical {
             for (int i = 0; i < epml.getDirectory().size(); i++) {
                 for (TExtensibleElements epc : epml.getDirectory().get(i).getEpcOrDirectory()) {
                     if (epc instanceof TypeEPC) {
-                        for (Object element : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
+                        for (Object element : ((TypeEPC) epc).getEventAndFunctionAndRole()) {
                             if (element instanceof TypeFunction || element instanceof TypeEvent) {
                                 QName typeRef = new QName("typeRef");
                                 String str = ((TEpcElement) element).getOtherAttributes().get(typeRef);
@@ -192,11 +194,11 @@ public class EPML2Canonical {
                             }
                         }
                         for (TEpcElement element : remove_list) {
-                            for (Object arc : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
+                            for (Object arc : ((TypeEPC) epc).getEventAndFunctionAndRole()) {
                                 if (arc instanceof TypeArc) {
                                     if (((TypeArc) arc).getFlow() != null) {
                                         if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
-                                            for (Object arc2 : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
+                                            for (Object arc2 : ((TypeEPC) epc).getEventAndFunctionAndRole()) {
                                                 if (arc2 instanceof TypeArc) {
                                                     if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
                                                         ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
@@ -209,46 +211,47 @@ public class EPML2Canonical {
                                 }
                             }
                             for (TypeArc arc : arc_remove_list) {
-                                ((TypeEPC) epc).getEventOrFunctionOrRole().remove(arc);
+                                ((TypeEPC) epc).getEventAndFunctionAndRole().remove(arc);
                             }
-                            ((TypeEPC) epc).getEventOrFunctionOrRole().remove(element);
+                            ((TypeEPC) epc).getEventAndFunctionAndRole().remove(element);
                         }
                     }
                 }
             }
         } else {
-            for (TypeEPC epc : epml.getEpcs()) {
-                for (Object element : epc.getEventOrFunctionOrRole()) {
-                    if (element instanceof TypeFunction || element instanceof TypeEvent) {
-                        QName typeRef = new QName("typeRef");
-                        if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
-                            remove_list.add((TEpcElement) element);
-                        }
-                    }
-                }
-                for (TEpcElement element : remove_list) {
-                    for (Object arc : epc.getEventOrFunctionOrRole()) {
-                        if (arc instanceof TypeArc) {
-                            if (((TypeArc) arc).getFlow() != null) {
-                                if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
-                                    for (Object arc2 : epc.getEventOrFunctionOrRole()) {
-                                        if (arc2 instanceof TypeArc) {
-                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
-                                                ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
-                                            }
-                                        }
-                                    }
-                                    arc_remove_list.add((TypeArc) arc);
-                                }
-                            }
-                        }
-                    }
-                    for (TypeArc arc : arc_remove_list) {
-                        epc.getEventOrFunctionOrRole().remove(arc);
-                    }
-                    epc.getEventOrFunctionOrRole().remove(element);
-                }
-            }
+            throw new CanoniserException("Invalid EPC no 'directory'!");
+//            for (TypeEPC epc : epml.getEpcs()) {
+//                for (Object element : epc.getEventAndFunctionAndRole()) {
+//                    if (element instanceof TypeFunction || element instanceof TypeEvent) {
+//                        QName typeRef = new QName("typeRef");
+//                        if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
+//                            remove_list.add((TEpcElement) element);
+//                        }
+//                    }
+//                }
+//                for (TEpcElement element : remove_list) {
+//                    for (Object arc : epc.getEventAndFunctionAndRole()) {
+//                        if (arc instanceof TypeArc) {
+//                            if (((TypeArc) arc).getFlow() != null) {
+//                                if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
+//                                    for (Object arc2 : epc.getEventAndFunctionAndRole()) {
+//                                        if (arc2 instanceof TypeArc) {
+//                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
+//                                                ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
+//                                            }
+//                                        }
+//                                    }
+//                                    arc_remove_list.add((TypeArc) arc);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    for (TypeArc arc : arc_remove_list) {
+//                        epc.getEventAndFunctionAndRole().remove(arc);
+//                    }
+//                    epc.getEventAndFunctionAndRole().remove(element);
+//                }
+//            }
         }
 
         return epml;
@@ -258,7 +261,7 @@ public class EPML2Canonical {
     private void translateEpc(final NetType net, final TypeEPC epc) throws CanoniserException {
         Map<String, String> role_names = new HashMap<String, String>();
 
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
             if (obj instanceof JAXBElement) {
                 JAXBElement<?> element = (JAXBElement<?>) obj;
                 if (element.getValue() instanceof TypeEvent) {

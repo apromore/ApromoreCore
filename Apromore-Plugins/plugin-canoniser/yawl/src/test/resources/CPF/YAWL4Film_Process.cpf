@@ -1,81 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="">
-    <Net id="fb5c3ef9-5adf-4639-af63-00d45ac25cd8">
-        <Node id="125">
-            <name>AndJoin</name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="143">
-            <name>E</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="126">
-            <name>C</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="135">
-            <name>AND</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="127">
-            <name>AndSplit</name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="132">
+    <Net id="f9260910-8065-43f9-95cd-3c50146abe77">
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="3">
             <name>B</name>
             <configurable>false</configurable>
         </Node>
-        <Node id="128">
-            <name>AndSplit</name>
-        </Node>
-        <Node id="133">
-            <name>AndJoin</name>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="138">
-            <name>AND</name>
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="2">
+            <name>C</name>
             <configurable>false</configurable>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="129">
+        <Node xsi:type="cpf:ANDJoinType" id="7">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="5">
             <name>D</name>
             <configurable>false</configurable>
         </Node>
-        <Node id="131">
-            <name>AndSplit</name>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="140">
-            <name>IN</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="130">
-            <name>AndJoin</name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="142">
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="15">
             <name>A</name>
             <configurable>false</configurable>
         </Node>
-        <Node xsi:type="cpf:EventType" id="141">
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="16">
+            <name>E</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="13">
             <name>OUT</name>
             <configurable>false</configurable>
         </Node>
-        <Edge id="a5d41f28-1b33-4aa4-9756-04b2ce9292a5" sourceId="135" targetId="131"/>
-        <Edge id="93b4e5ee-7391-4b00-874f-82ad02a25c0c" sourceId="135" targetId="127"/>
-        <Edge id="529084c9-6581-4953-8a43-d08df1cec4af" sourceId="128" targetId="129"/>
-        <Edge id="8a38d3e3-aab1-41eb-90e9-8442967a9b8a" sourceId="132" targetId="133"/>
-        <Edge id="332aea6a-0d85-46c3-b21c-8ed8e2cf44ee" sourceId="140" targetId="142"/>
-        <Edge id="08e7426d-b952-4b4c-9087-773006f4557b" sourceId="142" targetId="135"/>
-        <Edge id="593bb8b2-2f41-4ebc-9728-37f84e428278" sourceId="130" targetId="138"/>
-        <Edge id="86fb54c9-a2d3-4be0-88a6-2c75a27d51d2" sourceId="125" targetId="138"/>
-        <Edge id="10a80f5e-f633-4b76-9773-21e38b1be9f7" sourceId="135" targetId="128"/>
-        <Edge id="5a88aed8-a784-40ab-b4fc-307641815c6c" sourceId="126" targetId="125"/>
-        <Edge id="f5a9feb7-005d-4dd6-95e1-f15f30619cea" sourceId="143" targetId="141"/>
-        <Edge id="9f539c02-4d6f-4735-9248-40b32a5b6069" sourceId="127" targetId="126"/>
-        <Edge id="231d92e9-280e-41ac-ae52-394e82e27c2b" sourceId="131" targetId="132"/>
-        <Edge id="6e39e61b-5fe2-4252-b85e-1e8f73dc09c3" sourceId="138" targetId="143"/>
-        <Edge id="d00820be-feb8-41e3-af21-ac529014a7ef" sourceId="133" targetId="138"/>
-        <Edge id="fc1f7ded-e9b8-4462-aeaa-b67dd6441717" sourceId="129" targetId="130"/>
+        <Node xsi:type="cpf:ANDSplitType" id="11">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="12">
+            <name>IN</name>
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="43216eba-21fe-4d6e-87ba-87a2365f1132" sourceId="11" targetId="5"/>
+        <Edge id="aac27a3e-9c9f-484c-8961-54c6c833b546" sourceId="12" targetId="15"/>
+        <Edge id="c7ad4723-45d6-43e4-8774-65f39c3dd5af" sourceId="15" targetId="11"/>
+        <Edge id="488f08c7-7f32-4a1d-874c-30883f1af31e" sourceId="5" targetId="7"/>
+        <Edge id="8f7fb812-f307-49bd-9925-997a4943b576" sourceId="2" targetId="7"/>
+        <Edge id="1c174e74-4d85-4218-afca-0452952bd9f1" sourceId="3" targetId="7"/>
+        <Edge id="f5868ef4-89a0-48bf-9e3b-8b0e9d06cad8" sourceId="16" targetId="13"/>
+        <Edge id="0d4a936c-86a4-4696-86a0-493fed522194" sourceId="7" targetId="16"/>
+        <Edge id="45d92450-4145-47bb-9419-1cb041b24a22" sourceId="11" targetId="3"/>
+        <Edge id="50ec91a3-8e0c-4e22-b93b-9e47da086c03" sourceId="11" targetId="2"/>
     </Net>
-    <attribute name="RootFragmentId" value="38"/>
+    <attribute name="RootFragmentId" value="5"/>
     <attribute name="BranchName" value="MAIN"/>
     <attribute name="ProcessName" value="WP1SequencePattern"/>
     <attribute name="VersionNumber" value="0.1"/>
-    <attribute name="PMVID" value="2"/>
-    <attribute name="BranchID" value="2"/>
+    <attribute name="PMVID" value="1"/>
+    <attribute name="BranchID" value="1"/>
 </cpf:CanonicalProcess>
+
