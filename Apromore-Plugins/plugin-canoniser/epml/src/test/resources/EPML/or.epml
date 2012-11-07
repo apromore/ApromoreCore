@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <epml:epml xmlns:epml="http://www.epml.de"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+  <coordinates xOrigin="leftToRight" yOrigin="topToBottom" />
   <directory>
 	  <epc epcId="1" name="EPC">
 	    <event id="1">

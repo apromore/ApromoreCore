@@ -2,7 +2,7 @@ package org.apromore.graph.canonical;
 
 /**
  * Canonical task interface.
- * 
+ *
  * @author Cameron James
  */
 public interface ITask extends IWork {
@@ -11,13 +11,13 @@ public interface ITask extends IWork {
      * set the Sub net Id
      * @param newId the sub net id
      */
-    void setSubNetId(int newId);
+    void setSubNetId(String newId);
 
     /**
      * return the sub net Id
      * @return the sub net Id
      */
-    int getSubNetId();
+    String getSubNetId();
 
     /**
      * set if this task is external

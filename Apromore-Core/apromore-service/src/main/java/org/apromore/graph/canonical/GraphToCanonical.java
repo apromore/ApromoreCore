@@ -285,7 +285,7 @@ public class GraphToCanonical {
         typ.setId(n.getId());
         typ.setOriginalID(n.getOriginalId());
         typ.setConfigurable(n.isConfigurable());
-        typ.setSubnetId(String.valueOf(n.getSubNetId()));
+        typ.setSubnetId(n.getSubNetId());
 
         typ.getAttribute().addAll(addAttributes(n));
         typ.getObjectRef().addAll(addObjectRef(n));

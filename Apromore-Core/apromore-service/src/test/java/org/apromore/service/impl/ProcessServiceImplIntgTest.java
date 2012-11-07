@@ -116,6 +116,7 @@ public class ProcessServiceImplIntgTest {
         assertThat(pst.getOwner(), equalTo(username));
     }
 
+    //TODO this fails in version control!
     @Test
     @Rollback(true)
     public void testImportComplexYAWLProcessWithSubnets() throws CanoniserException, IOException, ImportException {

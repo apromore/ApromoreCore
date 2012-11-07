@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.PropertyException;
 
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -38,7 +40,7 @@ public class EPML20CanoniserUnitTest {
     }
 
     @Test
-    public void testCanonise() throws CanoniserException {
+    public void testCanonise() throws CanoniserException, FileNotFoundException, IOException, PropertyException, JAXBException, SAXException {
         EPML20Canoniser c = new EPML20Canoniser();
         ArrayList<AnnotationsType> anfList = new ArrayList<>();
         ArrayList<CanonicalProcessType> cpfList = new ArrayList<>();
@@ -46,6 +48,10 @@ public class EPML20CanoniserUnitTest {
 
         assertFalse(anfList.isEmpty());
         assertFalse(cpfList.isEmpty());
+
+        try (FileOutputStream canonicalFormat = new FileOutputStream("target/Basic.cpf")) {
+            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+        }
     }
 
     @Test
