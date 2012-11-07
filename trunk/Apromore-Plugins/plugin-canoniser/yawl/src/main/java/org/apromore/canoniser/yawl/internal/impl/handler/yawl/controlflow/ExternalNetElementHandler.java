@@ -276,7 +276,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
                     if (sourceVertex != null && targetVertex != null) {
                         try {
                             graphics.getPosition().add(calculateFlowPosition(sourceVertex, flowLayout.getPorts().getOut()));
-                            graphics.getPosition().add(calculateFlowPosition(sourceVertex, flowLayout.getPorts().getIn()));
+                            graphics.getPosition().add(calculateFlowPosition(targetVertex, flowLayout.getPorts().getIn()));
                         } catch (ParseException e) {
                             throw new CanoniserException("Could not calculate default position for flow from " + sourceId + " to " + targetId, e);
                         }
