@@ -179,8 +179,9 @@ public class GraphServiceImpl implements GraphService {
     private org.apromore.graph.canonical.Node buildNodeByType(final Node node) {
         org.apromore.graph.canonical.Node result = null;
         if (node.getCtype().equals(org.apromore.graph.canonical.Node.class.getName())) {
-            result = new org.apromore.graph.canonical.Node(node.getName());
-            result.setId(String.valueOf(node.getId()));
+            throw new IllegalArgumentException("Node "+node.getId()+" is of type 'Node'. This is not supported here!");
+            //result = new org.apromore.graph.canonical.Node(node.getName());
+            //result.setId(String.valueOf(node.getId()));
         } else if (node.getCtype().equals(Message.class.getName())) {
             result = constructMessageNode(node);
         } else if (node.getCtype().equals(Timer.class.getName())) {
@@ -244,7 +245,7 @@ public class GraphServiceImpl implements GraphService {
 //        }
 //    }
 
-    private org.apromore.graph.canonical.Node constructAndNode(Node node) {
+    private org.apromore.graph.canonical.Node constructAndNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         if (node.getCtype().equals(AndSplit.class.getName())) {
             result = new AndSplit(node.getName());
@@ -258,7 +259,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructXOrNode(Node node) {
+    private org.apromore.graph.canonical.Node constructXOrNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         if (node.getCtype().equals(AndSplit.class.getName())) {
             result = new XOrSplit(node.getName());
@@ -272,7 +273,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructOrNode(Node node) {
+    private org.apromore.graph.canonical.Node constructOrNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         if (node.getCtype().equals(AndSplit.class.getName())) {
             result = new OrSplit(node.getName());
@@ -286,7 +287,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructEventNode(Node node) {
+    private org.apromore.graph.canonical.Node constructEventNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         result = new Event(node.getName());
         result.setId(String.valueOf(node.getId()));
@@ -296,7 +297,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructTaskNode(Node node) {
+    private org.apromore.graph.canonical.Node constructTaskNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         result = new Task(node.getName());
         result.setId(String.valueOf(node.getId()));
@@ -306,7 +307,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructTimerNode(Node node) {
+    private org.apromore.graph.canonical.Node constructTimerNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         result = new Timer(node.getName());
         result.setId(String.valueOf(node.getId()));
@@ -316,7 +317,7 @@ public class GraphServiceImpl implements GraphService {
         return result;
     }
 
-    private org.apromore.graph.canonical.Node constructMessageNode(Node node) {
+    private org.apromore.graph.canonical.Node constructMessageNode(final Node node) {
         org.apromore.graph.canonical.Node result;
         result = new Message(node.getName());
         result.setId(String.valueOf(node.getId()));

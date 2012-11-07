@@ -10,13 +10,19 @@ import java.util.Map.Entry;
 import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
+import org.apromore.graph.canonical.AndJoin;
+import org.apromore.graph.canonical.AndSplit;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.Edge;
 import org.apromore.graph.canonical.Event;
 import org.apromore.graph.canonical.INode;
 import org.apromore.graph.canonical.Node;
+import org.apromore.graph.canonical.OrJoin;
+import org.apromore.graph.canonical.OrSplit;
 import org.apromore.graph.canonical.Routing;
 import org.apromore.graph.canonical.Task;
+import org.apromore.graph.canonical.XOrJoin;
+import org.apromore.graph.canonical.XOrSplit;
 import org.apromore.service.model.RFragment2;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -29,8 +35,8 @@ public class FragmentUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FragmentUtil.class);
 
-    
-    public static String getFragmentType(RFragment2 f) {
+
+    public static String getFragmentType(final RFragment2 f) {
         String nodeType = "UNKNOWN";
         if (TCType.POLYGON.equals(f.getType())) {
             nodeType = "P";
@@ -45,7 +51,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void removeEdges(RFragment2 f, Collection<Edge> cfEdges) {
+    public static void removeEdges(final RFragment2 f, final Collection<Edge> cfEdges) {
         Collection<Edge> fEdges = f.getEdges();
 
         for (Edge fe : fEdges) {
@@ -58,7 +64,7 @@ public class FragmentUtil {
         }
     }
 
-    public static void removeEdges(Collection<Edge> es1, Collection<Edge> es2) {
+    public static void removeEdges(final Collection<Edge> es1, final Collection<Edge> es2) {
         Collection<Edge> toBeRemoved = new ArrayList<Edge>();
         for (Edge fe : es1) {
             for (Edge cfe : es2) {
@@ -71,7 +77,7 @@ public class FragmentUtil {
         es1.removeAll(toBeRemoved);
     }
 
-    public static Collection<Edge> getIncomingEdges(Node v, Collection<Edge> es) {
+    public static Collection<Edge> getIncomingEdges(final Node v, final Collection<Edge> es) {
         Collection<Edge> incomingEdges = new ArrayList<Edge>();
         for (Edge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
@@ -81,7 +87,7 @@ public class FragmentUtil {
         return incomingEdges;
     }
 
-    public static Collection<Edge> getOutgoingEdges(Node v, Collection<Edge> es) {
+    public static Collection<Edge> getOutgoingEdges(final Node v, final Collection<Edge> es) {
         Collection<Edge> outgoingEdges = new ArrayList<Edge>();
         for (Edge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
@@ -91,7 +97,7 @@ public class FragmentUtil {
         return outgoingEdges;
     }
 
-    public static List<Node> getPreset(Node v, Collection<Edge> es) {
+    public static List<Node> getPreset(final Node v, final Collection<Edge> es) {
         List<Node> preset = new ArrayList<Node>(0);
         if (v != null) {
             for (Edge e: es) {
@@ -103,7 +109,7 @@ public class FragmentUtil {
         return preset;
     }
 
-    public static List<Node> getPostset(Node v, Collection<Edge> es) {
+    public static List<Node> getPostset(final Node v, final Collection<Edge> es) {
         List<Node> postset = new ArrayList<Node>(0);
         if (v != null) {
             for (Edge e: es) {
@@ -115,11 +121,11 @@ public class FragmentUtil {
         return postset;
     }
 
-    public static Node getFirstVertex(Collection<Node> vertices) {
+    public static Node getFirstVertex(final Collection<Node> vertices) {
         return vertices.iterator().next();
     }
 
-    public static Edge getFirstEdge(Collection<Edge> c) {
+    public static Edge getFirstEdge(final Collection<Edge> c) {
         return c.iterator().next();
     }
 
@@ -128,7 +134,7 @@ public class FragmentUtil {
      * @param childMappings map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
-    public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
+    public static Map<String, String> remapChildren(final Map<String, String> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
         Map<String, String> newChildMapping = new HashMap<String, String>();
         for (Entry<String, String> stringStringEntry : childMappings.entrySet()) {
@@ -151,7 +157,7 @@ public class FragmentUtil {
      * @param childMappings map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
-    public static Map<String, String> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
+    public static Map<String, String> remapChildren(final List<FragmentVersionDag> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
         Map<String, String> newChildMapping = new HashMap<String, String>(0);
         for (FragmentVersionDag fvd : childMappings) {
@@ -169,7 +175,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void cleanFragment(RFragment2 f) {
+    public static void cleanFragment(final RFragment2 f) {
         Collection<Edge> es = f.getEdges();
         Collection<Node> vs = f.getNodes();
         Collection<Edge> removableEdges = new ArrayList<Edge>();
@@ -184,7 +190,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectBoundary1(RFragment2 f, Node oldB1, Node newB1) {
+    public static void reconnectBoundary1(final RFragment2 f, final Node oldB1, final Node newB1) {
         Node b1 = f.getEntry();
         Node b2 = f.getExit();
 
@@ -208,7 +214,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectBoundary2(RFragment2 f, Node oldB2, Node newB2) {
+    public static void reconnectBoundary2(final RFragment2 f, final Node oldB2, final Node newB2) {
         Node b2 = f.getExit();
 
         if (b2.equals(oldB2)) {
@@ -227,7 +233,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectVertices(Node oldVertex, Node newVertex, RFragment2 f) {
+    public static void reconnectVertices(final Node oldVertex, final Node newVertex, final RFragment2 f) {
         Collection<Edge> edges = f.getEdges();
         for (Edge edge : edges) {
             if (edge.getSource().getId().equals(oldVertex.getId())) {
@@ -238,23 +244,32 @@ public class FragmentUtil {
         }
     }
 
-    public static Node duplicateVertex(Node v, Canonical og) {
+    public static Node duplicateVertex(final Node v, final Canonical og) {
         String label = v.getName();
         String type = og.getNodeProperty(v.getId(), Constants.TYPE);
 
         Node newV;
-        if (label != null) {
-            if (label.equals("XOR")) {
-                newV = new Routing(label);
-            } else if (label.equals("AND")) {
-                newV = new Routing(label);
-            } else if (label.equals("OR")) {
-                newV = new Routing(label);
-            } else {
-                newV = new Node(label);
-            }
+//        if (label != null) {
+//            if (label.equals("XOR")) {
+//                newV = new Routing(label);
+//            } else if (label.equals("AND")) {
+//                newV = new Routing(label);
+//            } else if (label.equals("OR")) {
+//                newV = new Routing(label);
+//            } else {
+//                throw new IllegalArgumentException("Invalid Vertex!");
+//            }
+//        } else {
+//            newV = new Node();
+//        }
+        if (v instanceof XOrSplit || v instanceof XOrJoin) {
+            newV = new Routing("XOR");
+        } if (v instanceof OrSplit || v instanceof OrJoin) {
+            newV = new Routing("OR");
+        } if (v instanceof AndSplit || v instanceof AndJoin) {
+            newV = new Routing("AND");
         } else {
-            newV = new Node();
+            throw new IllegalArgumentException("Invalid Vertex!");
         }
 
         og.addNode(newV);
@@ -262,7 +277,7 @@ public class FragmentUtil {
         return newV;
     }
 
-    public static String getType(Node node) {
+    public static String getType(final Node node) {
         String type = null;
         if (node instanceof Task) {
             type = Constants.FUNCTION;
@@ -281,7 +296,7 @@ public class FragmentUtil {
         return type;
     }
 
-    public static String getType(INode node) {
+    public static String getType(final INode node) {
         String type = null;
         if (node instanceof Task) {
             type = Constants.FUNCTION;
@@ -301,7 +316,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static String fragmentToString(RFragment2 f, Canonical g) {
+    public static String fragmentToString(final RFragment2 f, final Canonical g) {
         StringBuilder fs = new StringBuilder(0);
         Collection<Node> vs = f.getVertices();
         for (Node v : vs) {
@@ -314,7 +329,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static String fragmentToString(RFragment2 f) {
+    public static String fragmentToString(final RFragment2 f) {
         StringBuilder fs = new StringBuilder(0);
         Collection<Node> vs = f.getVertices();
         for (Node v : vs) {
@@ -323,7 +338,7 @@ public class FragmentUtil {
         return fs.toString();
     }
 
-    public static void removeNodes(RFragment2 Canoncial, RFragment2 cf) {
+    public static void removeNodes(final RFragment2 Canoncial, final RFragment2 cf) {
         List<Node> toBeRemoved = new ArrayList<Node>();
         for (Node pn : Canoncial.getVertices()) {
             for (Node cn : cf.getVertices()) {
