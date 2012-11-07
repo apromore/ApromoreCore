@@ -1,423 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="">
-    <Net id="84ffcb92-8bd7-4425-b537-81c04a573d34">
-        <Node id="116">
-            <name></name>
+    <Net id="fb5c3ef9-5adf-4639-af63-00d45ac25cd8">
+        <Node id="125">
+            <name>AndJoin</name>
         </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="79">
-            <name>Create Call Sheet</name>
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="143">
+            <name>E</name>
             <configurable>false</configurable>
         </Node>
-        <Node id="117">
-            <name></name>
-        </Node>
-        <Node id="78">
-            <name></name>
-        </Node>
-        <Node id="77">
-            <name></name>
-        </Node>
-        <Node id="115">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="112">
-            <name>XOR</name>
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="126">
+            <name>C</name>
             <configurable>false</configurable>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="113">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="158">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="157">
-            <name>AND</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="156">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="118">
-            <name>Fill Out Continuity Report</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="154">
-            <name></name>
-        </Node>
-        <Node id="119">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="153">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="151">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="80">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="86">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="85">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="66">
+        <Node xsi:type="cpf:ANDSplitType" id="135">
             <name>AND</name>
             <configurable>false</configurable>
         </Node>
         <Node id="127">
-            <name></name>
+            <name>AndSplit</name>
         </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="68">
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="132">
+            <name>B</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node id="128">
+            <name>AndSplit</name>
+        </Node>
+        <Node id="133">
+            <name>AndJoin</name>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="138">
             <name>AND</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="121">
-            <configurable>false</configurable>
-        </Node>
-        <Node id="122">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="123">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="124">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="169">
-            <name>AND</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="166">
-            <name>Create DPR</name>
             <configurable>false</configurable>
         </Node>
         <Node xsi:type="cpf:TaskType" subnetId="0" id="129">
-            <name>Fill Out Continuity Daily Report</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="165">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="163">
-            <name>Distribute DPR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="71">
-            <name></name>
-        </Node>
-        <Node id="120">
-            <name></name>
-        </Node>
-        <Node id="72">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="73">
-            <name>Revise Shooting Schedule</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="74">
-            <name></name>
-        </Node>
-        <Node id="75">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="76">
-            <name>Update Call Sheet</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="134">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="135">
-            <configurable>false</configurable>
-        </Node>
-        <Node id="132">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="133">
-            <name>Fill Out Camera Sheets</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="59">
-            <name></name>
-        </Node>
-        <Node id="58">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="57">
-            <name>Input Crew List</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="136">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="137">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="179">
-            <name>end production</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="178">
-            <name>start production</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="177">
-            <name>Input Shooting Schedule</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="176">
-            <name>Welcome to Start Process</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:ORJoinType" id="170">
-            <name>OR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="109">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="108">
-            <name>Fill Out Sound Sheets</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="172">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="107">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="173">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="64">
-            <name></name>
-        </Node>
-        <Node id="106">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="65">
-            <name>Input Cast List</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="105">
-            <name></name>
-        </Node>
-        <Node id="62">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:EventType" id="104">
-            <configurable>false</configurable>
-        </Node>
-        <Node id="63">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="103">
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="60">
-            <name>Input Location Notes</name>
+            <name>D</name>
             <configurable>false</configurable>
         </Node>
         <Node id="131">
-            <name></name>
+            <name>AndSplit</name>
         </Node>
-        <Node id="99">
-            <name></name>
-        </Node>
-        <Node id="102">
-            <name></name>
-        </Node>
-        <Node id="61">
-            <name></name>
+        <Node xsi:type="cpf:EventType" id="140">
+            <name>IN</name>
+            <configurable>false</configurable>
         </Node>
         <Node id="130">
-            <name></name>
+            <name>AndJoin</name>
         </Node>
-        <Node id="101">
-            <name></name>
-        </Node>
-        <Node id="100">
-            <name></name>
-        </Node>
-        <Node id="143">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="98">
-            <name>Start Another Shoot Day</name>
+        <Node xsi:type="cpf:TaskType" subnetId="0" id="142">
+            <name>A</name>
             <configurable>false</configurable>
         </Node>
-        <Node id="144">
-            <name></name>
-        </Node>
-        <Node id="97">
-            <name></name>
-        </Node>
-        <Node id="145">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="96">
+        <Node xsi:type="cpf:EventType" id="141">
+            <name>OUT</name>
             <configurable>false</configurable>
         </Node>
-        <Node xsi:type="cpf:EventType" id="146">
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="95">
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="147">
-            <name>Fill Out AD Report</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="94">
-            <name></name>
-        </Node>
-        <Node id="148">
-            <name></name>
-        </Node>
-        <Node id="149">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="92">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="90">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node xsi:type="cpf:XORJoinType" id="140">
-            <name>XOR</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="142">
-            <name></name>
-        </Node>
-        <Node xsi:type="cpf:TaskType" subnetId="0" id="88">
-            <name>Distribute Call Sheet</name>
-            <configurable>false</configurable>
-        </Node>
-        <Node id="89">
-            <name></name>
-        </Node>
-        <Edge id="3a64862b-f3da-4806-b486-db26139ccb3f" sourceId="66" targetId="61"/>
-        <Edge id="527c00fe-bc92-4433-b7f8-a53cb251c69d" sourceId="66" targetId="58"/>
-        <Edge id="89369a46-fb5d-4d76-bf1e-073c8961cbf8" sourceId="121" targetId="120"/>
-        <Edge id="8b90e10e-c41a-49bd-a6bc-bf99e177e0be" sourceId="151" targetId="156"/>
-        <Edge id="49fa2c95-8a96-4ca4-8fa6-8a379f0e03a5" sourceId="71" targetId="73"/>
-        <Edge id="934d66a9-3e09-46fb-815b-95f41249e0eb" sourceId="178" targetId="176"/>
-        <Edge id="9cd49004-5674-4414-a0a6-e51ff11ac675" sourceId="154" targetId="153"/>
-        <Edge id="f029e7ba-2e97-4a9f-86f3-4c6bae298724" sourceId="133" targetId="131"/>
-        <Edge id="a88d083a-635d-46a9-b209-844330e460e4" sourceId="60" targetId="62"/>
-        <Edge id="575727d2-2208-4d98-8d3e-024f1134cae8" sourceId="75" targetId="76"/>
-        <Edge id="7dd37dc8-6a3e-4b75-8c17-a9b9faa806e3" sourceId="104" targetId="106"/>
-        <Edge id="38d6f468-f767-48b1-a905-d15e8ff3a464" sourceId="65" targetId="63"/>
-        <Edge id="f84c0f85-7569-460c-86aa-adea79a1cbba" sourceId="157" targetId="166"/>
-        <Edge id="d8389aea-2a83-404f-9b8f-0e83f08e0cb6" sourceId="176" targetId="66"/>
-        <Edge id="eb0ec709-ed81-4be6-b520-658de18f4316" sourceId="137" targetId="132"/>
-        <Edge id="0e836947-180e-4397-a8ca-c1a17a828c9c" sourceId="59" targetId="68"/>
-        <Edge id="371e134d-dcdb-42dd-a3ba-e6e910b45e55" sourceId="74" targetId="80"/>
-        <Edge id="df375e9b-02c5-4bcd-8b7d-bef7af4d8438" sourceId="131" targetId="140"/>
-        <Edge id="39594d4d-a3aa-4c43-9684-43163c5a2267" sourceId="99" targetId="169"/>
-        <Edge id="3cf9c1e9-8c32-4ed8-a9a2-5b58c8eabcc9" sourceId="109" targetId="108"/>
-        <Edge id="27a1ed06-6584-4211-8902-30ea4225219e" sourceId="98" targetId="99"/>
-        <Edge id="58a5b6c2-f5d5-4934-9a86-62070b93f7d5" sourceId="112" targetId="115"/>
-        <Edge id="3ee7c245-0194-4a3b-b516-5c2e1a60c5bd" sourceId="97" targetId="170"/>
-        <Edge id="e5deaf12-e2fc-424f-9a17-87ac35e73461" sourceId="79" targetId="77"/>
-        <Edge id="e10d14df-9f85-4ca7-99db-fa5136e7ef07" sourceId="148" targetId="151"/>
-        <Edge id="484db7b3-e268-495b-af38-fc062ed96341" sourceId="163" targetId="165"/>
-        <Edge id="277eb4d2-d380-4b26-8cda-1a97ee7ec289" sourceId="136" targetId="137"/>
-        <Edge id="eff8945e-f080-4a63-ad5f-1a333edef446" sourceId="142" targetId="157"/>
-        <Edge id="9f86a3a9-db3b-43ec-b1f3-f3c29257b6fc" sourceId="169" targetId="158"/>
-        <Edge id="954c2364-023d-4c0c-b872-74f150832d7c" sourceId="116" targetId="113"/>
-        <Edge id="9d2a7019-47f5-404b-a643-ecbfc9d77ee4" sourceId="172" targetId="179"/>
-        <Edge id="dae899b5-4127-44be-82f0-230b45138c85" sourceId="129" targetId="127"/>
-        <Edge id="964e4f3f-54f6-4c24-8cf4-532e17502e43" sourceId="117" targetId="118"/>
-        <Edge id="cb9d354c-75b0-4445-b293-05a6c235a069" sourceId="170" targetId="102"/>
-        <Edge id="c991ac90-965a-44d8-a394-b83bd4922b31" sourceId="140" targetId="142"/>
-        <Edge id="2743d497-e43c-4be5-9f48-9a60124c9d72" sourceId="132" targetId="133"/>
-        <Edge id="82d7a413-67e0-4902-be6d-40fa4c6092ac" sourceId="101" targetId="172"/>
-        <Edge id="884ae5fd-641f-4f01-9aef-981dfaf2c2d5" sourceId="151" targetId="145"/>
-        <Edge id="38119eab-7b33-4780-a024-1a29a38a8ea7" sourceId="64" targetId="65"/>
-        <Edge id="54d99808-c92f-4143-93ca-3c260433e35f" sourceId="73" targetId="72"/>
-        <Edge id="6619c94b-13e4-453f-94f7-6d45367c086d" sourceId="90" targetId="92"/>
-        <Edge id="59231247-1eb6-4621-9678-6a555f43596a" sourceId="158" targetId="154"/>
-        <Edge id="0f16c82e-f48a-4322-a0df-4be11f267553" sourceId="149" targetId="147"/>
-        <Edge id="b7a17853-2632-4fdd-a0c6-fb426632deab" sourceId="177" targetId="173"/>
-        <Edge id="402a5dfb-dbbe-415a-9cb8-25c0d93b8fb7" sourceId="120" targetId="123"/>
-        <Edge id="eaceda62-b561-4a08-8eb0-29c0980062a4" sourceId="88" targetId="86"/>
-        <Edge id="ee167bc4-52d7-40b8-a8a3-4d7dc2c89f74" sourceId="145" targetId="146"/>
-        <Edge id="49890576-44a8-423b-b339-22552244e1a3" sourceId="169" targetId="173"/>
-        <Edge id="a25c3c02-9a27-4688-832b-63f1a86c4fe1" sourceId="112" targetId="105"/>
-        <Edge id="c5d95d83-7a83-4dc5-89dc-988e052cff8b" sourceId="153" targetId="149"/>
-        <Edge id="f7275672-6f2a-4010-88cd-e7ca5a8ef9a5" sourceId="123" targetId="117"/>
-        <Edge id="0277e7ab-7d42-4e20-9915-1d84167621e9" sourceId="62" targetId="68"/>
-        <Edge id="83867227-c7ef-4dd2-9db9-32c40c83a857" sourceId="115" targetId="157"/>
-        <Edge id="6ed8c982-4168-4979-aff8-16fee1a201eb" sourceId="66" targetId="64"/>
-        <Edge id="4d9cfc18-ea5b-426f-8c70-22034f689900" sourceId="108" targetId="107"/>
-        <Edge id="08cb8fc9-58e6-4fa6-a78b-2d6e7b63e46f" sourceId="124" targetId="129"/>
-        <Edge id="cfaa0623-2b1d-4e40-957c-4f9eee933975" sourceId="76" targetId="74"/>
-        <Edge id="eceeeba8-998b-4532-a17f-e54f88f47949" sourceId="140" targetId="134"/>
-        <Edge id="d7181ce6-db56-4210-b277-27a7e942f6ee" sourceId="135" targetId="136"/>
-        <Edge id="9a8ea553-8d7d-4824-9ee2-85b2c694f62b" sourceId="165" targetId="170"/>
-        <Edge id="8193af83-9a1b-44b0-9ec3-167839ef35ac" sourceId="113" targetId="109"/>
-        <Edge id="e2f1484b-e67f-43ae-9da9-8f707ac76515" sourceId="166" targetId="163"/>
-        <Edge id="b33cf70e-1dab-473d-9234-34eb986e5567" sourceId="147" targetId="148"/>
-        <Edge id="36ffaaa3-af40-4d3e-9691-86ed3cf22bba" sourceId="95" targetId="97"/>
-        <Edge id="37328d5a-03fc-4440-9172-5e53d7162c43" sourceId="122" targetId="121"/>
-        <Edge id="8024053e-a5e0-459a-b912-dee411f834df" sourceId="90" targetId="89"/>
-        <Edge id="55ffb270-72fd-449f-8387-b14c6d8f4d01" sourceId="89" targetId="85"/>
-        <Edge id="a7dec50c-d0a1-4275-a15b-46c8e36c7051" sourceId="102" targetId="103"/>
-        <Edge id="96110e9c-4623-4947-b5d9-dd0ebd67d3a6" sourceId="80" targetId="88"/>
-        <Edge id="0a871fe0-b87f-4815-b496-829353ea12f8" sourceId="103" targetId="101"/>
-        <Edge id="14426d71-4e80-4397-b9a6-127608d2bd73" sourceId="96" targetId="90"/>
-        <Edge id="49538c02-bf63-4718-bc60-0a629d8e97eb" sourceId="68" targetId="177"/>
-        <Edge id="bec9ec26-76d6-4a11-a3bf-1f378f387702" sourceId="156" targetId="157"/>
-        <Edge id="14b49448-b03a-42b9-8737-04f2261e52ed" sourceId="130" targetId="123"/>
-        <Edge id="be751ff8-e0c1-4ab5-8fea-e723bd4c7f49" sourceId="72" targetId="85"/>
-        <Edge id="aa787ecf-4ed6-4d5d-a0f3-bfc79959afa2" sourceId="85" targetId="78"/>
-        <Edge id="b28e6730-b411-45e2-aea1-d0210082b5e2" sourceId="63" targetId="68"/>
-        <Edge id="9d5d8b05-3ea5-40a0-8007-a34b4479a380" sourceId="58" targetId="57"/>
-        <Edge id="b4b716a3-7689-463a-be55-75118430c4aa" sourceId="158" targetId="143"/>
-        <Edge id="ed793628-83d7-468a-a2ae-923ba1c61002" sourceId="127" targetId="157"/>
-        <Edge id="5c9fc69d-6d47-4e6f-8b28-4083c0eae26c" sourceId="119" targetId="124"/>
-        <Edge id="409d70e2-30b8-4cf7-bf6f-a966ab2a1190" sourceId="124" targetId="122"/>
-        <Edge id="b2782aa3-3223-4760-ae96-926ee934b9db" sourceId="172" targetId="100"/>
-        <Edge id="ab01429d-5441-4e18-b22d-a96e852e06fd" sourceId="158" targetId="130"/>
-        <Edge id="80deea72-38fa-4ca4-902f-09816087b098" sourceId="118" targetId="119"/>
-        <Edge id="b92543cd-2fda-4523-a485-0b6bd286c345" sourceId="143" targetId="137"/>
-        <Edge id="ce9736d8-40a5-4315-b041-f5605fb3f33b" sourceId="78" targetId="79"/>
-        <Edge id="3fbf4129-69c7-40eb-9ffa-c412ce879eaf" sourceId="107" targetId="112"/>
-        <Edge id="8192a64a-e30a-4fa0-a844-3e4bc2895ec1" sourceId="146" targetId="144"/>
-        <Edge id="b0b11dc5-f1f4-49b6-8277-d1dd66fa48d1" sourceId="144" targetId="153"/>
-        <Edge id="8cbf68ee-fc1b-4796-9390-ee7bb78a76b8" sourceId="134" targetId="135"/>
-        <Edge id="9093f289-11f9-41b0-a065-254d3f811ba8" sourceId="86" targetId="92"/>
-        <Edge id="05a2b538-2647-4e8c-803d-47961eef3349" sourceId="106" targetId="113"/>
-        <Edge id="599681f5-ccb4-4cd0-9cd2-3b6b30d6d502" sourceId="57" targetId="59"/>
-        <Edge id="09bb7273-47c4-4eb0-a5ae-3db000166c2b" sourceId="173" targetId="94"/>
-        <Edge id="98301320-a313-495a-98a7-80ba32aa83a6" sourceId="100" targetId="98"/>
-        <Edge id="500d2d8d-894f-457e-9601-beffbb262973" sourceId="158" targetId="116"/>
-        <Edge id="28f03915-7558-4f4d-9868-74cd068b60eb" sourceId="105" targetId="104"/>
-        <Edge id="d33a4484-7fb6-473b-bd5f-cca272e85dba" sourceId="92" targetId="95"/>
-        <Edge id="99915609-0f80-4198-81e7-f6326d2b0b7b" sourceId="61" targetId="60"/>
-        <Edge id="a884a398-13e6-4e60-9965-f599f7066e1c" sourceId="94" targetId="96"/>
+        <Edge id="a5d41f28-1b33-4aa4-9756-04b2ce9292a5" sourceId="135" targetId="131"/>
+        <Edge id="93b4e5ee-7391-4b00-874f-82ad02a25c0c" sourceId="135" targetId="127"/>
+        <Edge id="529084c9-6581-4953-8a43-d08df1cec4af" sourceId="128" targetId="129"/>
+        <Edge id="8a38d3e3-aab1-41eb-90e9-8442967a9b8a" sourceId="132" targetId="133"/>
+        <Edge id="332aea6a-0d85-46c3-b21c-8ed8e2cf44ee" sourceId="140" targetId="142"/>
+        <Edge id="08e7426d-b952-4b4c-9087-773006f4557b" sourceId="142" targetId="135"/>
+        <Edge id="593bb8b2-2f41-4ebc-9728-37f84e428278" sourceId="130" targetId="138"/>
+        <Edge id="86fb54c9-a2d3-4be0-88a6-2c75a27d51d2" sourceId="125" targetId="138"/>
+        <Edge id="10a80f5e-f633-4b76-9773-21e38b1be9f7" sourceId="135" targetId="128"/>
+        <Edge id="5a88aed8-a784-40ab-b4fc-307641815c6c" sourceId="126" targetId="125"/>
+        <Edge id="f5a9feb7-005d-4dd6-95e1-f15f30619cea" sourceId="143" targetId="141"/>
+        <Edge id="9f539c02-4d6f-4735-9248-40b32a5b6069" sourceId="127" targetId="126"/>
+        <Edge id="231d92e9-280e-41ac-ae52-394e82e27c2b" sourceId="131" targetId="132"/>
+        <Edge id="6e39e61b-5fe2-4252-b85e-1e8f73dc09c3" sourceId="138" targetId="143"/>
+        <Edge id="d00820be-feb8-41e3-af21-ac529014a7ef" sourceId="133" targetId="138"/>
+        <Edge id="fc1f7ded-e9b8-4462-aeaa-b67dd6441717" sourceId="129" targetId="130"/>
     </Net>
-    <attribute name="RootFragmentId" value="48"/>
+    <attribute name="RootFragmentId" value="38"/>
     <attribute name="BranchName" value="MAIN"/>
-    <attribute name="ProcessName" value="YAWL4Film_Process"/>
-    <attribute name="VersionNumber" value="3.9"/>
-    <attribute name="PMVID" value="4"/>
-    <attribute name="BranchID" value="4"/>
+    <attribute name="ProcessName" value="WP1SequencePattern"/>
+    <attribute name="VersionNumber" value="0.1"/>
+    <attribute name="PMVID" value="2"/>
+    <attribute name="BranchID" value="2"/>
 </cpf:CanonicalProcess>

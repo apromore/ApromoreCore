@@ -269,12 +269,46 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
             graphics.setLine(convertFlowLineStyle(flowLayout));
             try {
                 graphics.getPosition().addAll(convertFlowPositions(flowLayout));
+                if (graphics.getPosition().isEmpty()) {
+                    // Calculate start and end position
+                    LayoutVertexFactsType sourceVertex = getContext().getLayoutVertexForElement(sourceId);
+                    LayoutVertexFactsType targetVertex = getContext().getLayoutVertexForElement(targetId);
+                    if (sourceVertex != null && targetVertex != null) {
+                        try {
+                            graphics.getPosition().add(calculateFlowPosition(sourceVertex, flowLayout.getPorts().getOut()));
+                            graphics.getPosition().add(calculateFlowPosition(sourceVertex, flowLayout.getPorts().getIn()));
+                        } catch (ParseException e) {
+                            throw new CanoniserException("Could not calculate default position for flow from " + sourceId + " to " + targetId, e);
+                        }
+                    }
+                }
+
             } catch (final ParseException e) {
                 throw new CanoniserException("Could not convert layout of flow from " + sourceId + " to " + targetId, e);
             }
         }
 
         getContext().getAnnotationResult().getAnnotation().add(graphics);
+    }
+
+    private PositionType calculateFlowPosition(final LayoutVertexFactsType vertex, final BigInteger port) throws ParseException {
+        PositionType position = ANF_FACTORY.createPositionType();
+        LayoutRectangleType rect = getRectangleFromVertex(vertex);
+        //TODO decide based on port
+        position.setX(convertToBigDecimal(rect.getX()));
+        position.setY(convertToBigDecimal(rect.getY()));
+        return position;
+    }
+
+    private LayoutRectangleType getRectangleFromVertex(final LayoutVertexFactsType vertex) {
+        final LayoutAttributesFactsType attr = vertex.getAttributes();
+        for (final JAXBElement<?> element : attr.getAutosizeOrBackgroundColorOrBendable()) {
+            final Object elementValue = element.getValue();
+            if (elementValue instanceof LayoutRectangleType) {
+                return (LayoutRectangleType) elementValue;
+            }
+        }
+        return null;
     }
 
     private Collection<PositionType> convertFlowPositions(final LayoutFlowFactsType flowLayout) throws ParseException {
