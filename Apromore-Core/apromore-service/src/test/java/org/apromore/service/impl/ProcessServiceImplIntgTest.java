@@ -127,7 +127,7 @@ public class ProcessServiceImplIntgTest {
         String domain = "Airport";
         String created = "12/12/2011";
         String lastUpdate = "12/12/2011";
-        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/oderfulfillment.yawl"), "text/xml"));
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.yawl"), "text/xml"));
 
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
