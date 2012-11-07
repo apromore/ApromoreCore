@@ -9,7 +9,6 @@ import org.apromore.dao.NamedQueries;
 import org.apromore.dao.NodeDao;
 import org.apromore.dao.model.Node;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class NodeDaoJpa implements NodeDao {
 
     @PersistenceContext

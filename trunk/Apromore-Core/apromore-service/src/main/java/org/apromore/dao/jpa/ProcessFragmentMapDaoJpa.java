@@ -6,8 +6,6 @@ import javax.persistence.PersistenceContext;
 import org.apromore.dao.ProcessFragmentMapDao;
 import org.apromore.dao.model.ProcessFragmentMap;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ProcessFragmentMapDao interface.
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class ProcessFragmentMapDaoJpa implements ProcessFragmentMapDao {
 
     @PersistenceContext

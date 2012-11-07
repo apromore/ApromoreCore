@@ -64,7 +64,7 @@ CREATE TABLE `process` (
   `owner`           int(11) DEFAULT NULL,
   `original_type`   int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_process1` FOREIGN KEY (`owner`) REFERENCES `user` (`id`)  ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_process1` FOREIGN KEY (`owner`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_process2` FOREIGN KEY (`original_type`) REFERENCES `native_type` (`id`)  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -237,7 +237,7 @@ CREATE TABLE `node` (
     `teamWork`                  varchar(1) NULL DEFAULT '0',
     `allocation`                varchar(40) NULL,
     `resourceDataExpressionId`  int(11) NULL,
-    `resourceRunExpressionId`   int(11) NULL, 
+    `resourceRunExpressionId`   int(11) NULL,
     `timeDate`                  datetime DEFAULT NULL,
     `timeDuration`              varchar(100) NULL,
     PRIMARY KEY (`id`),
@@ -252,7 +252,7 @@ CREATE TABLE `edge` (
     `sourceNodeId`              int(11) NOT NULL,
     `targetNodeId`              int(11) NOT NULL,
     `originalId`                varchar(40) NULL,
-    `conditionExpressionId`     int(11) NULL, 
+    `conditionExpressionId`     int(11) NULL,
     `def`                       varchar(1) DEFAULT '0',
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_content_edge` FOREIGN KEY (`contentId`) REFERENCES `content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

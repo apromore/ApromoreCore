@@ -9,8 +9,6 @@ import org.apromore.dao.NamedQueries;
 import org.apromore.dao.NativeTypeDao;
 import org.apromore.dao.model.NativeType;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.NativeDao interface.
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class NativeTypeDaoJpa implements NativeTypeDao {
 
     @PersistenceContext

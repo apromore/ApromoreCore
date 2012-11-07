@@ -30,15 +30,12 @@ import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryCluster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ClusteringDao interface.
  * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Repository
-@Transactional(propagation = Propagation.REQUIRED)
 public class ClusteringDaoJpa implements ClusteringDao {
 
     @PersistenceContext
