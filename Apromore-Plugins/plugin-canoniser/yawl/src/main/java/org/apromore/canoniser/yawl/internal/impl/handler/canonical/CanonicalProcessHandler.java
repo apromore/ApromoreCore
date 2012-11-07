@@ -13,6 +13,7 @@ package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.UUID;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -68,7 +69,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
         final YAWLSpecificationFactsType spec = YAWL_FACTORY.createYAWLSpecificationFactsType();
         specSet.getSpecification().add(spec);
-        spec.setName(getObject().getName());
+        spec.setName(convertName());
         spec.setUri(generateUUID(getObject().getUri()));
         spec.setMetaData(convertMetaData(getObject()));
         spec.setAny(createDataTypeElement());
@@ -78,6 +79,14 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
         for (final NetType n : getObject().getNet()) {
             getContext().createHandler(n, spec, getObject()).convert();
+        }
+    }
+
+    private String convertName() {
+        if (getObject().getName() == null || getObject().getName().isEmpty()) {
+            return UUID.randomUUID().toString();
+        } else {
+            return getObject().getName();
         }
     }
 
