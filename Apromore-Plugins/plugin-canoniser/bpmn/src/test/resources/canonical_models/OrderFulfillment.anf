@@ -12,7 +12,6 @@
         </metadata:metadata>
     </Annotation>
     <Annotation xsi:type="anf:GraphicsType" id="id1d671309-3a71-47da-96e3-af729fdf8926" cpfId="N-Overall">
-        <position x="0" y="0"/>
         <size width="1265" height="503"/>
     </Annotation>
     <Annotation xsi:type="anf:GraphicsType" id="id928921da-391b-4ae6-aa61-722f1f380ae1" cpfId="C-InputCondition-1">
