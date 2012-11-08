@@ -87,6 +87,12 @@ public class BpmndiDiagram extends BPMNDiagram {
                             bpmnElement instanceof TParticipant         ||
                             bpmnElement instanceof TProcess) {
 
+                            // TODO - remove/refine this kludge, which exists to humor the YAWL canoniser
+                            if (graphics.getPosition().size() == 0) {
+                                initializer.warn("Skipping ANF Graphics with no waypoint, since it's probably the top-level Net");
+                                return;  // skip generating a shape for this element
+                            }
+
                             bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(new BpmndiShape(graphics, initializer)));
 
                         } else if (bpmnElement instanceof TDataAssociation ||
