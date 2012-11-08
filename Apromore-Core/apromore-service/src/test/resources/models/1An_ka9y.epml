@@ -1,465 +1,383 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <epml:epml xmlns:epml="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
-	<epc epcId="0" name="1An_ka9y">
-		<function defRef="26" id="26">
-			<name> Asset
-Maintenance</name>
-		</function>
-		<function defRef="28" id="28">
-			<name> Specific
-Valuations</name>
-		</function>
-		<function defRef="31" id="31">
-			<name>Receipts</name>
-		</function>
-		<function defRef="39" id="39">
-			<name> Investment
-Support</name>
-		</function>
-		<function defRef="44" id="44">
-			<name>Retirements</name>
-		</function>
-		<function defRef="46" id="46">
-			<name>Depreciation</name>
-		</function>
-		<function defRef="47" id="47">
-			<name> Business
-Transactions</name>
-		</function>
-		<function defRef="49" id="49">
-			<name> Closing
-Operations
-[Asset
-Accounting]</name>
-		</function>
-		<event defRef="0" id="0">
-			<name> Transactions
-completed</name>
-		</event>
-		<event defRef="1" id="1">
-			<name> Index series
-was updated</name>
-		</event>
-		<event defRef="3" id="3">
-			<name>
-Cost-accounting
-depreciation/
-interest
-transferred to
-Cost
-Accounting</name>
-		</event>
-		<event defRef="7" id="7">
-			<name> Insurance
-contract was
-closed</name>
-		</event>
-		<event defRef="8" id="8">
-			<name> Acquisitions
-to be entered</name>
-		</event>
-		<event defRef="9" id="9">
-			<name> Revaluation
-should be
-carr. out f
-first time</name>
-		</event>
-		<event defRef="12" id="12">
-			<name> New master
-record is
-necessary</name>
-		</event>
-		<event defRef="13" id="13">
-			<name>
-Post-capitalization
-to be posted</name>
-		</event>
-		<event defRef="15" id="15">
-			<name> Fixed asset
-was found</name>
-		</event>
-		<event defRef="16" id="16">
-			<name> Investment
-support was
-created
-/changed</name>
-		</event>
-		<event defRef="17" id="17">
-			<name> Group asset
-to be created</name>
-		</event>
-		<event defRef="18" id="18">
-			<name> Retirement
-was posted and
-checked</name>
-		</event>
-		<event defRef="19" id="19">
-			<name> Asset master
-record does
-not exist</name>
-		</event>
-		<event defRef="20" id="20">
-			<name> Retirements
-to be entered</name>
-		</event>
-		<event defRef="21" id="21">
-			<name> Periodic
-reports are
-created</name>
-		</event>
-		<event defRef="22" id="22">
-			<name> Planned
-accrued
-depreciation
-and interest
-were
-transferred to
-CO</name>
-		</event>
-		<event defRef="23" id="23">
-			<name> Special tax
-depreciation
-is only to be
-partly claimed</name>
-		</event>
-		<event defRef="24" id="24">
-			<name> [Depreciation
-posting run
-was carried
-out]</name>
-		</event>
-		<event defRef="25" id="25">
-			<name> Leased asset
-was bought</name>
-		</event>
-		<event defRef="27" id="27">
-			<name> Write-up on
-asset(s) to be
-posted</name>
-		</event>
-		<event defRef="29" id="29">
-			<name> Depreciation
-should be
-posted
-regularly</name>
-		</event>
-		<event defRef="33" id="33">
-			<name> Fixed asset
-was given</name>
-		</event>
-		<event defRef="34" id="34">
-			<name> G/L accounts
-were posted</name>
-		</event>
-		<event defRef="35" id="35">
-			<name> Asset(s) to
-be transferred</name>
-		</event>
-		<event defRef="36" id="36">
-			<name> [Unplanned
-depreciation
-should be
-used]</name>
-		</event>
-		<event defRef="37" id="37">
-			<name> G/L accounts
-were posted</name>
-		</event>
-		<event defRef="40" id="40">
-			<name> Fixed asset
-was bought w/o
-purchase order</name>
-		</event>
-		<event defRef="41" id="41">
-			<name> Index series
-must be
-updated</name>
-		</event>
-		<event defRef="42" id="42">
-			<name> Revaluation
-was made</name>
-		</event>
-		<event defRef="43" id="43">
-			<name> Acquisition
-posted to
-Asset
-Accounting</name>
-		</event>
-		<event defRef="45" id="45">
-			<name> Claim for
-support exists</name>
-		</event>
-		<event defRef="48" id="48">
-			<name> Investment
-support is
-posted</name>
-		</event>
-		<event defRef="50" id="50">
-			<name> Revaluation
-is used
-repeatedly</name>
-		</event>
-		<event defRef="51" id="51">
-			<name> Posting is
-possible to
-assets in new
-fiscal year</name>
-		</event>
-		<event defRef="52" id="52">
-			<name>
-Unit-of-production
-depreciation
-is to be
-posted</name>
-		</event>
-		<event defRef="53" id="53">
-			<name> Fixed asset
-should be
-insured</name>
-		</event>
-		<event defRef="54" id="54">
-			<name> Settlement
+  <directory>
+    <epc epcId="0" name="1An_ka9y">
+        <function defRef="26" id="26">
+            <name>Asset Maintenance</name>
+        </function>
+        <function defRef="28" id="28">
+            <name>Specific Valuations</name>
+        </function>
+        <function defRef="31" id="31">
+            <name>Receipts</name>
+        </function>
+        <function defRef="39" id="39">
+            <name>Investment Support</name>
+        </function>
+        <function defRef="44" id="44">
+            <name>Retirements</name>
+        </function>
+        <function defRef="46" id="46">
+            <name>Depreciation</name>
+        </function>
+        <function defRef="47" id="47">
+            <name>Business Transactions</name>
+        </function>
+        <function defRef="49" id="49">
+            <name>Closing Operations [Asset Accounting]</name>
+        </function>
+        <event defRef="0" id="0">
+            <name>Transactions completed</name>
+        </event>
+        <event defRef="1" id="1">
+            <name>Index series was updated</name>
+        </event>
+        <event defRef="3" id="3">
+            <name>Cost-accounting depreciation / interest transferred to Cost Accounting</name>
+        </event>
+        <event defRef="7" id="7">
+            <name>Insurance contract was closed</name>
+        </event>
+        <event defRef="8" id="8">
+            <name>Acquisitions to be entered</name>
+        </event>
+        <event defRef="9" id="9">
+            <name>Revaluation should be carr. out f first time</name>
+        </event>
+        <event defRef="12" id="12">
+            <name>New master record is necessary</name>
+        </event>
+        <event defRef="13" id="13">
+            <name>Post-capitalization to be posted</name>
+        </event>
+        <event defRef="15" id="15">
+            <name>Fixed asset was found</name>
+        </event>
+        <event defRef="16" id="16">
+            <name>Investment support was created / changed</name>
+        </event>
+        <event defRef="17" id="17">
+            <name>Group asset to be created</name>
+        </event>
+        <event defRef="18" id="18">
+            <name>Retirement was posted and checked</name>
+        </event>
+        <event defRef="19" id="19">
+            <name>Asset master record does not exist</name>
+        </event>
+        <event defRef="20" id="20">
+            <name>Retirements to be entered</name>
+        </event>
+        <event defRef="21" id="21">
+            <name>Periodic reports are created</name>
+        </event>
+        <event defRef="22" id="22">
+            <name>Planned accrued depreciation and interest were transferred to CO</name>
+        </event>
+        <event defRef="23" id="23">
+            <name>Special tax depreciation is only to be partly claimed</name>
+        </event>
+        <event defRef="24" id="24">
+            <name>[Depreciation posting run was carried out]</name> 
+        </event>
+        <event defRef="25" id="25">
+            <name>Leased asset was bought</name>
+        </event>
+        <event defRef="27" id="27">
+            <name>Write-up on asset(s) to be posted</name>
+        </event>
+        <event defRef="29" id="29">
+            <name>Depreciation should be posted regularly</name>
+        </event>
+        <event defRef="33" id="33">
+            <name>Fixed asset was given</name>
+        </event>
+        <event defRef="34" id="34">
+            <name>G/L accounts were posted</name>
+        </event>
+        <event defRef="35" id="35">
+            <name>Asset(s) to be transferred</name>
+        </event>
+        <event defRef="36" id="36">
+            <name>[Unplanned depreciation should be used]</name>
+        </event>
+        <event defRef="37" id="37">
+            <name>G/L accounts were posted</name>
+        </event>
+        <event defRef="40" id="40">
+            <name>Fixed asset was bought w/o purchase order</name>
+        </event>
+        <event defRef="41" id="41">
+            <name> Index series must be updated</name>
+        </event>
+        <event defRef="42" id="42">
+            <name> Revaluation was made</name>
+        </event>
+        <event defRef="43" id="43">
+            <name> Acquisition posted to Asset Accounting</name>
+        </event>
+        <event defRef="45" id="45">
+            <name> Claim for support exists</name>
+        </event>
+        <event defRef="48" id="48">
+            <name> Investment support is posted</name>
+        </event>
+        <event defRef="50" id="50">
+            <name> Revaluation is used repeatedly</name>
+        </event>
+        <event defRef="51" id="51">
+            <name> Posting is possible to assets in new fiscal year</name>
+        </event>
+        <event defRef="52" id="52">
+            <name> Unit-of-production depreciation is to be posted</name>
+        </event>
+        <event defRef="53" id="53">
+            <name> Fixed asset should be insured</name>
+        </event>
+        <event defRef="54" id="54">
+            <name> Settlement
 for asset
 under
 construction
 due</name>
-		</event>
-		<and id="10">
-			<name/>
-		</and>
-		<and id="14">
-			<name/>
-		</and>
-		<or id="2">
-			<name/>
-		</or>
-		<or id="6">
-			<name/>
-		</or>
-		<xor id="4">
-			<name/>
-		</xor>
-		<xor id="5">
-			<name/>
-		</xor>
-		<xor id="11">
-			<name/>
-		</xor>
-		<xor id="30">
-			<name/>
-		</xor>
-		<xor id="32">
-			<name/>
-		</xor>
-		<xor id="38">
-			<name/>
-		</xor>
-		<arc id="7">
-			<flow source="0" target="6"/>
-		</arc>
-		<arc id="150">
-			<flow source="2" target="39"/>
-		</arc>
-		<arc id="172">
-			<flow source="3" target="6"/>
-		</arc>
-		<arc id="247">
-			<flow source="4" target="26"/>
-		</arc>
-		<arc id="304">
-			<flow source="5" target="28"/>
-		</arc>
-		<arc id="380">
-			<flow source="6" target="49"/>
-		</arc>
-		<arc id="472">
-			<flow source="8" target="31"/>
-		</arc>
-		<arc id="501">
-			<flow source="9" target="5"/>
-		</arc>
-		<arc id="572">
-			<flow source="10" target="21"/>
-		</arc>
-		<arc id="573">
-			<flow source="10" target="22"/>
-		</arc>
-		<arc id="585">
-			<flow source="10" target="34"/>
-		</arc>
-		<arc id="602">
-			<flow source="10" target="51"/>
-		</arc>
-		<arc id="652">
-			<flow source="11" target="46"/>
-		</arc>
-		<arc id="665">
-			<flow source="12" target="4"/>
-		</arc>
-		<arc id="746">
-			<flow source="13" target="30"/>
-		</arc>
-		<arc id="774">
-			<flow source="14" target="3"/>
-		</arc>
-		<arc id="795">
-			<flow source="14" target="24"/>
-		</arc>
-		<arc id="808">
-			<flow source="14" target="37"/>
-		</arc>
-		<arc id="830">
-			<flow source="15" target="4"/>
-		</arc>
-		<arc id="883">
-			<flow source="16" target="2"/>
-		</arc>
-		<arc id="940">
-			<flow source="17" target="4"/>
-		</arc>
-		<arc id="997">
-			<flow source="18" target="6"/>
-		</arc>
-		<arc id="1050">
-			<flow source="19" target="4"/>
-		</arc>
-		<arc id="1145">
-			<flow source="20" target="44"/>
-		</arc>
-		<arc id="1277">
-			<flow source="23" target="11"/>
-		</arc>
-		<arc id="1327">
-			<flow source="24" target="6"/>
-		</arc>
-		<arc id="1380">
-			<flow source="25" target="4"/>
-		</arc>
-		<arc id="1469">
-			<flow source="26" target="38"/>
-		</arc>
-		<arc id="1516">
-			<flow source="27" target="30"/>
-		</arc>
-		<arc id="1573">
-			<flow source="28" target="32"/>
-		</arc>
-		<arc id="1607">
-			<flow source="29" target="11"/>
-		</arc>
-		<arc id="1698">
-			<flow source="30" target="47"/>
-		</arc>
-		<arc id="1749">
-			<flow source="31" target="43"/>
-		</arc>
-		<arc id="1762">
-			<flow source="32" target="1"/>
-		</arc>
-		<arc id="1768">
-			<flow source="32" target="7"/>
-		</arc>
-		<arc id="1803">
-			<flow source="32" target="42"/>
-		</arc>
-		<arc id="1820">
-			<flow source="33" target="4"/>
-		</arc>
-		<arc id="1956">
-			<flow source="35" target="30"/>
-		</arc>
-		<arc id="1992">
-			<flow source="36" target="11"/>
-		</arc>
-		<arc id="2042">
-			<flow source="37" target="6"/>
-		</arc>
-		<arc id="2099">
-			<flow source="38" target="8"/>
-		</arc>
-		<arc id="2100">
-			<flow source="38" target="9"/>
-		</arc>
-		<arc id="2104">
-			<flow source="38" target="13"/>
-		</arc>
-		<arc id="2107">
-			<flow source="38" target="16"/>
-		</arc>
-		<arc id="2111">
-			<flow source="38" target="20"/>
-		</arc>
-		<arc id="2114">
-			<flow source="38" target="23"/>
-		</arc>
-		<arc id="2118">
-			<flow source="38" target="27"/>
-		</arc>
-		<arc id="2120">
-			<flow source="38" target="29"/>
-		</arc>
-		<arc id="2126">
-			<flow source="38" target="35"/>
-		</arc>
-		<arc id="2127">
-			<flow source="38" target="36"/>
-		</arc>
-		<arc id="2132">
-			<flow source="38" target="41"/>
-		</arc>
-		<arc id="2136">
-			<flow source="38" target="45"/>
-		</arc>
-		<arc id="2141">
-			<flow source="38" target="50"/>
-		</arc>
-		<arc id="2143">
-			<flow source="38" target="52"/>
-		</arc>
-		<arc id="2144">
-			<flow source="38" target="53"/>
-		</arc>
-		<arc id="2145">
-			<flow source="38" target="54"/>
-		</arc>
-		<arc id="2194">
-			<flow source="39" target="48"/>
-		</arc>
-		<arc id="2205">
-			<flow source="40" target="4"/>
-		</arc>
-		<arc id="2261">
-			<flow source="41" target="5"/>
-		</arc>
-		<arc id="2372">
-			<flow source="43" target="6"/>
-		</arc>
-		<arc id="2439">
-			<flow source="44" target="18"/>
-		</arc>
-		<arc id="2478">
-			<flow source="45" target="2"/>
-		</arc>
-		<arc id="2545">
-			<flow source="46" target="14"/>
-		</arc>
-		<arc id="2586">
-			<flow source="47" target="0"/>
-		</arc>
-		<arc id="2706">
-			<flow source="49" target="10"/>
-		</arc>
-		<arc id="2756">
-			<flow source="50" target="5"/>
-		</arc>
-		<arc id="2872">
-			<flow source="52" target="11"/>
-		</arc>
-		<arc id="2921">
-			<flow source="53" target="5"/>
-		</arc>
-		<arc id="3001">
-			<flow source="54" target="30"/>
-		</arc>
-	</epc>
+        </event>
+        <and id="10">
+            <name/>
+        </and>
+        <and id="14">
+            <name/>
+        </and>
+        <or id="2">
+            <name/>
+        </or>
+        <or id="6">
+            <name/>
+        </or>
+        <xor id="4">
+            <name/>
+        </xor>
+        <xor id="5">
+            <name/>
+        </xor>
+        <xor id="11">
+            <name/>
+        </xor>
+        <xor id="30">
+            <name/>
+        </xor>
+        <xor id="32">
+            <name/>
+        </xor>
+        <xor id="38">
+            <name/>
+        </xor>
+        <arc id="7">
+            <flow source="0" target="6"/>
+        </arc>
+        <arc id="150">
+            <flow source="2" target="39"/>
+        </arc>
+        <arc id="172">
+            <flow source="3" target="6"/>
+        </arc>
+        <arc id="247">
+            <flow source="4" target="26"/>
+        </arc>
+        <arc id="304">
+            <flow source="5" target="28"/>
+        </arc>
+        <arc id="380">
+            <flow source="6" target="49"/>
+        </arc>
+        <arc id="472">
+            <flow source="8" target="31"/>
+        </arc>
+        <arc id="501">
+            <flow source="9" target="5"/>
+        </arc>
+        <arc id="572">
+            <flow source="10" target="21"/>
+        </arc>
+        <arc id="573">
+            <flow source="10" target="22"/>
+        </arc>
+        <arc id="585">
+            <flow source="10" target="34"/>
+        </arc>
+        <arc id="602">
+            <flow source="10" target="51"/>
+        </arc>
+        <arc id="652">
+            <flow source="11" target="46"/>
+        </arc>
+        <arc id="665">
+            <flow source="12" target="4"/>
+        </arc>
+        <arc id="746">
+            <flow source="13" target="30"/>
+        </arc>
+        <arc id="774">
+            <flow source="14" target="3"/>
+        </arc>
+        <arc id="795">
+            <flow source="14" target="24"/>
+        </arc>
+        <arc id="808">
+            <flow source="14" target="37"/>
+        </arc>
+        <arc id="830">
+            <flow source="15" target="4"/>
+        </arc>
+        <arc id="883">
+            <flow source="16" target="2"/>
+        </arc>
+        <arc id="940">
+            <flow source="17" target="4"/>
+        </arc>
+        <arc id="997">
+            <flow source="18" target="6"/>
+        </arc>
+        <arc id="1050">
+            <flow source="19" target="4"/>
+        </arc>
+        <arc id="1145">
+            <flow source="20" target="44"/>
+        </arc>
+        <arc id="1277">
+            <flow source="23" target="11"/>
+        </arc>
+        <arc id="1327">
+            <flow source="24" target="6"/>
+        </arc>
+        <arc id="1380">
+            <flow source="25" target="4"/>
+        </arc>
+        <arc id="1469">
+            <flow source="26" target="38"/>
+        </arc>
+        <arc id="1516">
+            <flow source="27" target="30"/>
+        </arc>
+        <arc id="1573">
+            <flow source="28" target="32"/>
+        </arc>
+        <arc id="1607">
+            <flow source="29" target="11"/>
+        </arc>
+        <arc id="1698">
+            <flow source="30" target="47"/>
+        </arc>
+        <arc id="1749">
+            <flow source="31" target="43"/>
+        </arc>
+        <arc id="1762">
+            <flow source="32" target="1"/>
+        </arc>
+        <arc id="1768">
+            <flow source="32" target="7"/>
+        </arc>
+        <arc id="1803">
+            <flow source="32" target="42"/>
+        </arc>
+        <arc id="1820">
+            <flow source="33" target="4"/>
+        </arc>
+        <arc id="1956">
+            <flow source="35" target="30"/>
+        </arc>
+        <arc id="1992">
+            <flow source="36" target="11"/>
+        </arc>
+        <arc id="2042">
+            <flow source="37" target="6"/>
+        </arc>
+        <arc id="2099">
+            <flow source="38" target="8"/>
+        </arc>
+        <arc id="2100">
+            <flow source="38" target="9"/>
+        </arc>
+        <arc id="2104">
+            <flow source="38" target="13"/>
+        </arc>
+        <arc id="2107">
+            <flow source="38" target="16"/>
+        </arc>
+        <arc id="2111">
+            <flow source="38" target="20"/>
+        </arc>
+        <arc id="2114">
+            <flow source="38" target="23"/>
+        </arc>
+        <arc id="2118">
+            <flow source="38" target="27"/>
+        </arc>
+        <arc id="2120">
+            <flow source="38" target="29"/>
+        </arc>
+        <arc id="2126">
+            <flow source="38" target="35"/>
+        </arc>
+        <arc id="2127">
+            <flow source="38" target="36"/>
+        </arc>
+        <arc id="2132">
+            <flow source="38" target="41"/>
+        </arc>
+        <arc id="2136">
+            <flow source="38" target="45"/>
+        </arc>
+        <arc id="2141">
+            <flow source="38" target="50"/>
+        </arc>
+        <arc id="2143">
+            <flow source="38" target="52"/>
+        </arc>
+        <arc id="2144">
+            <flow source="38" target="53"/>
+        </arc>
+        <arc id="2145">
+            <flow source="38" target="54"/>
+        </arc>
+        <arc id="2194">
+            <flow source="39" target="48"/>
+        </arc>
+        <arc id="2205">
+            <flow source="40" target="4"/>
+        </arc>
+        <arc id="2261">
+            <flow source="41" target="5"/>
+        </arc>
+        <arc id="2372">
+            <flow source="43" target="6"/>
+        </arc>
+        <arc id="2439">
+            <flow source="44" target="18"/>
+        </arc>
+        <arc id="2478">
+            <flow source="45" target="2"/>
+        </arc>
+        <arc id="2545">
+            <flow source="46" target="14"/>
+        </arc>
+        <arc id="2586">
+            <flow source="47" target="0"/>
+        </arc>
+        <arc id="2706">
+            <flow source="49" target="10"/>
+        </arc>
+        <arc id="2756">
+            <flow source="50" target="5"/>
+        </arc>
+        <arc id="2872">
+            <flow source="52" target="11"/>
+        </arc>
+        <arc id="2921">
+            <flow source="53" target="5"/>
+        </arc>
+        <arc id="3001">
+            <flow source="54" target="30"/>
+        </arc>
+    </epc>
+  </directory>
 </epml:epml>

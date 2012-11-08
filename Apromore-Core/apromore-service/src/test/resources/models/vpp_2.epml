@@ -2,6 +2,7 @@
 <epml:epml xmlns:epml="http://www.epml.de"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de epml_12.xsd">
   <coordinates xOrigin="leftToRight" yOrigin="topToBottom"/>
+  <directory>
   <epc epcId="1" name="2">
     <event id="7">
       <name>Film shooting</name>
@@ -126,4 +127,5 @@
       </graphics>
     </arc>
   </epc>
+  </directory>
 </epml:epml>
