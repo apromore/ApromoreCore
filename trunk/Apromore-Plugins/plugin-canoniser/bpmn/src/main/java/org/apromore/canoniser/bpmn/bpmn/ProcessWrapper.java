@@ -103,9 +103,9 @@ public class ProcessWrapper {
                 initializer.populateGateway(gateway, node);
                 return initializer.getFactory().createExclusiveGateway(gateway);
             } else if (node instanceof StateType) {
-                TComplexGateway gateway = new TComplexGateway();
+                TEventBasedGateway gateway = new TEventBasedGateway();
                 initializer.populateGateway(gateway, node);
-                return initializer.getFactory().createComplexGateway(gateway);
+                return initializer.getFactory().createEventBasedGateway(gateway);
             } else {
                 throw new CanoniserException("Routing \"" + node.getId() + " is not a supported type");
             }
