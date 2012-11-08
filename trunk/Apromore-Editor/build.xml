@@ -197,7 +197,7 @@
         <java classname="de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter" classpathref="executable.path" fork="yes" output="test.json" logError="yes">
             <jvmarg value="-enableassertions"/>
             <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
-            <arg value="/Users/raboczi/Project/signavio-configuration/test.bpmn.xml"/>
+            <arg value="test.bpmn"/>
         </java>
     </target>
 
@@ -207,7 +207,7 @@
         <java classname="de.hpi.bpmn2_0.BPMNSerializationTest" classpathref="executable.path" fork="yes" output="test2.bpmn.xml" logError="yes">
             <jvmarg value="-enableassertions"/>
             <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
-            <arg value="/Users/raboczi/Project/signavio-configuration/test2.json"/>
+            <arg value="test2.json"/>
         </java>
     </target>
 
