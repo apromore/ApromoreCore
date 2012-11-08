@@ -26,6 +26,7 @@ import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
 
@@ -77,6 +78,11 @@ public class BpmndiShape extends BPMNShape {
         // Handle @bpmnElement
         setBpmnElement(new QName(initializer.getTargetNamespace(),
                                  initializer.findElement(graphics.getCpfId()).getId()));
+
+        // Handle @isExpanded
+        if (bpmnElement instanceof TSubProcess) {
+            setIsExpanded(true);  // TODO - this should dereference graphics.getCpfId() to determine a proper value
+        }
 
         // add the ANF position and size as a BPMNDI bounds
         Bounds bounds = new Bounds();

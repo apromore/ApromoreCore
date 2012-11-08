@@ -100,6 +100,9 @@ public class CpfNetType extends NetType implements Attributed {
                 }
 
                 @Override public void visit(final TComplexGateway complexGateway) {
+                    unimplemented(complexGateway);
+                    /* TODO - figure out how ComplexGateway and EventBasedGateway are to be distinguished in CPF
+
                     try {
                         RoutingType routing = new CpfStateType();
 
@@ -110,6 +113,7 @@ public class CpfNetType extends NetType implements Attributed {
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
+                    */
                 }
 
                 @Override public void visit(final TDataObject dataObject) {
@@ -140,8 +144,17 @@ public class CpfNetType extends NetType implements Attributed {
                     }
                 }
 
-                @Override public void visit(final TEventBasedGateway that) {
-                    unimplemented(that);
+                @Override public void visit(final TEventBasedGateway eventBasedGateway) {
+                    try {
+                        RoutingType routing = new CpfStateType();
+
+                        initializer.populateFlowNode(routing, eventBasedGateway);
+
+                        net.getNode().add(routing);
+
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TExclusiveGateway exclusiveGateway) {
