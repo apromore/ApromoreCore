@@ -11,7 +11,6 @@ import org.apromore.cpf.EdgeType;
  * CPF 1.0 AND split routing with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @since 0.4
  */
 public class CpfANDSplitType extends ANDSplitType implements CpfRoutingType {
 

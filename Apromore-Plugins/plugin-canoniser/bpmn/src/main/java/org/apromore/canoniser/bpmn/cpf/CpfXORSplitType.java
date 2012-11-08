@@ -4,14 +4,13 @@ package org.apromore.canoniser.bpmn.cpf;
 import java.util.Set;
 
 // Local packages
-import org.apromore.cpf.XORSplitType;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.XORSplitType;
 
 /**
  * CPF 1.0 XOR split routing with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @since 0.4
  */
 public class CpfXORSplitType extends XORSplitType implements CpfRoutingType {
 
