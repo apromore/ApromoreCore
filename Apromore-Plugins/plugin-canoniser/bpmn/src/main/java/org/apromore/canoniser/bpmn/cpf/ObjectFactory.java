@@ -17,6 +17,7 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override public CpfCanonicalProcessType createCanonicalProcessType() { return new CpfCanonicalProcessType(); }
     @Override public CpfEdgeType             createEdgeType()             { return new CpfEdgeType(); }
     @Override public CpfEventTypeImpl        createEventType()            { return new CpfEventTypeImpl(); }
+    @Override public CpfHardType             createHardType()             { return new CpfHardType(); }
     @Override public CpfHumanType            createHumanType()            { return new CpfHumanType(); }
     @Override public CpfNetType              createNetType()              { return new CpfNetType(); }
     @Override public CpfNonhumanType         createNonhumanType()         { return new CpfNonhumanType(); }

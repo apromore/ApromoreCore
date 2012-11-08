@@ -1,26 +1,16 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
-import java.util.Map;
 import javax.xml.namespace.QName;
 
 // Local packages
-import org.apromore.anf.AnnotationType;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.BaseVisitor;
-import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
-import org.apromore.anf.SimulationType;
-import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
-import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.model.TDataAssociation;
 import org.omg.spec.bpmn._20100524.model.TMessageFlow;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
 
 /**
@@ -36,8 +26,9 @@ public class BpmndiEdge extends BPMNEdge {
     /**
      * Construct a BPMNDI Edge corresponding to an ANF Graphics annotation.
      *
-     * @param anf  an ANF model, never <code>null</code>
+     * @param graphics  an ANF graphics annotation, never <code>null</code>
      * @param initializer  BPMN document construction state
+     * @throws CanoniserException if the edge can't be constructed
      */
     public BpmndiEdge(final GraphicsType graphics, final Initializer initializer) throws CanoniserException {
         initializer.populateDiagramElement(this, graphics);

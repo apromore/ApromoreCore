@@ -67,6 +67,7 @@ public class AnfAnnotationsType extends AnnotationsType {
         final IdFactory anfIdFactory = new IdFactory();
 
         if (definitions != null) {
+            // TODO - extract DocumentationTypes from the BPMN semantics
         }
 
         if (diagram != null) {

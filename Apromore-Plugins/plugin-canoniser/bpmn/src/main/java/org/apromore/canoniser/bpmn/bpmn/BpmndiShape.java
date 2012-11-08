@@ -1,22 +1,11 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
-import java.util.Map;
 import javax.xml.namespace.QName;
 
 // Local packages
-import org.apromore.anf.AnnotationType;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.BaseVisitor;
-import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
-import org.apromore.anf.PositionType;
-import org.apromore.anf.SimulationType;
-import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
-import org.omg.spec.bpmn._20100524.di.BPMNEdge;
-import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
@@ -28,7 +17,6 @@ import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.dd._20100524.dc.Bounds;
-import org.omg.spec.dd._20100524.dc.Point;
 
 /**
  * BPMNDI Shape element with canonisation methods.
@@ -43,8 +31,9 @@ public class BpmndiShape extends BPMNShape {
     /**
      * Construct a BPMNDI Shape corresponding to an ANF Graphics annotation.
      *
-     * @param anf  an ANF model, never <code>null</code>
+     * @param graphics  an ANF graphics annotation, never <code>null</code>
      * @param initializer  BPMN document construction state
+     * @throws CanoniserException if the shape can't be constructed
      */
     public BpmndiShape(final GraphicsType graphics, final Initializer initializer) throws CanoniserException {
         initializer.populateDiagramElement(this, graphics);
@@ -62,8 +51,10 @@ public class BpmndiShape extends BPMNShape {
         // Validate the cpfId: must reference a BPMN element that has a bounding box
         TBaseElement bpmnElement = initializer.findElement(graphics.getCpfId());
         if (bpmnElement instanceof TProcess) {
-             java.util.logging.Logger.getAnonymousLogger().warning("ANF graphics " + graphics.getId() + " references CPF element " + graphics.getCpfId() +
-                                                                   " which corresponds to a BPMN process " + bpmnElement.getId());
+            java.util.logging.Logger.getAnonymousLogger().warning(
+                "ANF graphics " + graphics.getId() + " references CPF element " + graphics.getCpfId() + " which corresponds to a BPMN process " +
+                bpmnElement.getId()
+            );
         } else if (!(bpmnElement instanceof TDataObject          ||
                      bpmnElement instanceof TDataObjectReference ||
                      bpmnElement instanceof TDataStoreReference  ||

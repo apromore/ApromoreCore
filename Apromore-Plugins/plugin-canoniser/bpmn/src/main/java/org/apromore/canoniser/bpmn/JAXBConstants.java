@@ -8,8 +8,8 @@ package org.apromore.canoniser.bpmn;
 public interface JAXBConstants {
 
     /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
-    final String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
+    String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
 
     /** Property name for use with {@link Unmarshaller#setProperty} to configure an alternate JAXB ObjectFactory. */
-    final String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
+    String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
 }

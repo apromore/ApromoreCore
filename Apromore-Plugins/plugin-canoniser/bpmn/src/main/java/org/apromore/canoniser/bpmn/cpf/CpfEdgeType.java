@@ -55,14 +55,14 @@ public class CpfEdgeType extends EdgeType implements Attributed {
             public void initialize() throws CanoniserException {
 
                 // handle source
-                CpfNodeType source = (CpfNodeType) initializer.findElement(sequenceFlow.getSourceRef());
-                setSourceId(source.getId());
-                ((CpfNodeType) source).getOutgoingEdges().add(CpfEdgeType.this);
+                CpfNodeType sourceRef = (CpfNodeType) initializer.findElement(sequenceFlow.getSourceRef());
+                setSourceId(sourceRef.getId());
+                ((CpfNodeType) sourceRef).getOutgoingEdges().add(CpfEdgeType.this);
 
                 // handle target
-                CpfNodeType target = (CpfNodeType) initializer.findElement(sequenceFlow.getTargetRef());
-                setTargetId(target.getId());
-                ((CpfNodeType) target).getIncomingEdges().add(CpfEdgeType.this);
+                CpfNodeType targetRef = (CpfNodeType) initializer.findElement(sequenceFlow.getTargetRef());
+                setTargetId(targetRef.getId());
+                ((CpfNodeType) targetRef).getIncomingEdges().add(CpfEdgeType.this);
             }
         });
     }
