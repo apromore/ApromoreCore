@@ -5,7 +5,7 @@
             "description":"BPMN 1.2 stencil set specification.",
             "uri":"/bpmn1.1/bpmn1.1.json",
             "icon_url":"/diagrams/bpmn-22x22.png",
-            "visible":false,
+            "visible":true,
 			"extensions":["http://oryx-editor.org/stencilsets/extensions/bpmn1.1basicsubset#"]
         }, {
             "title":"Business Process Diagram (BPMN 2.0)",

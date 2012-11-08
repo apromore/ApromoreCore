@@ -462,7 +462,8 @@ public class EditorHandler extends BasisHandler {
     }
     
     private String getModelHandlerURI(HttpServletRequest req) {
-    	return req.getRequestURI().replace(this.getHandlerURI(), "") + "/model";
+        //FM, 08.11.2012 - Just replace the last part, because otherwise the URL is wrong if the Editor is deployed as "editor.war"!
+    	return req.getRequestURI().replaceFirst(this.getHandlerURI()+"$", "") + "/model";
     }
     
     private boolean isSupported(HttpServletRequest req) {
