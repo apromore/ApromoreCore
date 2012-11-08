@@ -1,7 +1,6 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import java.util.HashSet;
 import java.util.Set;
 
 // Local packages
@@ -13,25 +12,23 @@ import org.apromore.cpf.StateType;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfStateType extends StateType implements CpfNodeType {
+public class CpfStateType extends StateType implements CpfRoutingType {
 
-    /** Incoming edges. */
-    private Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    /** Secondary superclass. */
+    private final CpfNodeTypeImpl super2;
 
-    /** Outgoing edges. */
-    private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
-
-    /**
-     * @return every edge which has this node as its target
-     */
-    public Set<EdgeType> getIncomingEdges() {
-        return incomingEdges;
+    /** Constructor. */
+    public CpfStateType() {
+        super2 = new CpfNodeTypeImpl();
     }
 
-    /**
-     * @return every edge which has this node as its source
-     */
+    /** {@inheritDoc} */
+    public Set<EdgeType> getIncomingEdges() {
+        return super2.getIncomingEdges();
+    }
+
+    /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
-        return outgoingEdges;
+        return super2.getOutgoingEdges();
     }
 }
