@@ -17,7 +17,7 @@ public class AnfDocumentationType extends DocumentationType {
     public AnfDocumentationType() { }
 
     /**
-     * Construct an ANF documentation annotation for a BPMN Documentation element
+     * Construct an ANF documentation annotation for a BPMN Documentation element.
      *
      * @param bpmnDocumentation  a BPMN Documentation element
      * @param parent  the parent element of <code>bpmnDocumentation</code>

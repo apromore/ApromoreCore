@@ -5,7 +5,7 @@ import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.SoftType;
+import org.apromore.cpf.HardType;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
 
@@ -14,7 +14,7 @@ import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfSoftType extends SoftType implements CpfObjectType {
+public class CpfHardType extends HardType implements CpfObjectType {
 
     /** Second superclass. */
     private final CpfObjectType super2;
@@ -22,19 +22,19 @@ public class CpfSoftType extends SoftType implements CpfObjectType {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfSoftType() {
+    public CpfHardType() {
         super2 = new CpfObjectTypeImpl();
     }
 
     /**
-     * Construct a CPF Soft Object corresponding to a BPMN Data Object.
+     * Construct a CPF Hard Object corresponding to a BPMN Data Object.
      *
      * @param dataObject  a BPMN Data Object
      * @param parent  the CPF Net this Object will belong to
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
-    public CpfSoftType(final TDataObject dataObject,
+    public CpfHardType(final TDataObject dataObject,
                        final CpfNetType  parent,
                        final Initializer initializer) throws CanoniserException {
 
@@ -42,14 +42,14 @@ public class CpfSoftType extends SoftType implements CpfObjectType {
     }
 
     /**
-     * Construct a CPF Soft Object corresponding to a BPMN Data Store Reference.
+     * Construct a CPF Hard Object corresponding to a BPMN Data Store Reference.
      *
      * @param dataStoreReference a BPMN Data Store Reference
      * @param parent  the CPF Net this Object will belong to
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
-    public CpfSoftType(final TDataStoreReference dataStoreReference,
+    public CpfHardType(final TDataStoreReference dataStoreReference,
                        final CpfNetType          parent,
                        final Initializer         initializer) throws CanoniserException {
 

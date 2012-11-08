@@ -13,12 +13,16 @@ public interface CpfResourceTypeType extends Attributed {
 
     // Methods already present on CPF ResourceTypeType
 
-    public String getId();
+    /**
+     * @return unique element identifier
+     * @see {@link ResourceTypeType#getId}
+     */
+    String getId();
 
     // Additional convenience methods
 
     /**
      * @return every other resource type which has this one as a specialization
      */
-    public List<CpfResourceTypeType> getGeneralizationRefs();
+    List<CpfResourceTypeType> getGeneralizationRefs();
 }
