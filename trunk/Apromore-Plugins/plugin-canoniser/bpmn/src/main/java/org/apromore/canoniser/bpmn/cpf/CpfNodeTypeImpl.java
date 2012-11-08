@@ -22,11 +22,6 @@ public class CpfNodeTypeImpl {
     /** Outgoing edges. */
     private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
 
-    // Constructor
-
-    /** No-arg constructor. */
-    public CpfNodeTypeImpl() { }
-
     // Accessor methods
 
     /** @return every edge which has this node as its target */

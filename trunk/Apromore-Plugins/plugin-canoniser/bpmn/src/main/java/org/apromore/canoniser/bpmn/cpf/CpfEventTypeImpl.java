@@ -44,7 +44,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     /**
      * Construct a CPF Task corresponding to a BPMN Intermediate Throw Event.
      *
-     * @param endEvent  a BPMN Intermediate Throw Event
+     * @param intermediateThrowEvent  a BPMN Intermediate Throw Event
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */

@@ -1,7 +1,6 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import java.util.HashSet;
 import java.util.Set;
 
 // Local packages
