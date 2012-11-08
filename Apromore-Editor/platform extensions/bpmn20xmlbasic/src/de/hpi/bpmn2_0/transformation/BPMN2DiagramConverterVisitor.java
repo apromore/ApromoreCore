@@ -367,16 +367,26 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 
 		logger.finer("Activity has " + that.getDataInputAssociation().size() + " data input associations");
 		for (DataInputAssociation dataInputAssociation : that.getDataInputAssociation()) {
-			BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
-			bpmndiMap.get(dataInputAssociation).acceptVisitor(subVisitor);
-			diagram.addChildShape(subVisitor.getShape());
+                        if (bpmndiMap.get(dataInputAssociation) == null) {
+				logger.warning("DataInputAssociation " + dataInputAssociation.getId() + " lacks a BPMNEdge");
+                        }
+			else {
+				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+				bpmndiMap.get(dataInputAssociation).acceptVisitor(subVisitor);
+				diagram.addChildShape(subVisitor.getShape());
+			}
 		}
 
 		logger.finer("Activity has " + that.getDataOutputAssociation().size() + " data output associations");
 		for (DataOutputAssociation dataOutputAssociation : that.getDataOutputAssociation()) {
-			BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
-			bpmndiMap.get(dataOutputAssociation).acceptVisitor(subVisitor);
-			diagram.addChildShape(subVisitor.getShape());
+                        if (bpmndiMap.get(dataOutputAssociation) == null) {
+				logger.warning("DataOutputAssociation " + dataOutputAssociation.getId() + " lacks a BPMNEdge");
+                        }
+			else {
+				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+				bpmndiMap.get(dataOutputAssociation).acceptVisitor(subVisitor);
+				diagram.addChildShape(subVisitor.getShape());
+			}
 		}
 
 		if (that.getLoopCharacteristics() == null) {
