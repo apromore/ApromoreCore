@@ -12,7 +12,6 @@
         </metadata:metadata>
     </Annotation>
     <Annotation xsi:type="anf:GraphicsType" id="b49d0ad4-7bbe-46c2-8d01-4edaae0a5c37" cpfId="N-Payment">
-        <position x="0" y="0"/>
         <size width="1517" height="864"/>
     </Annotation>
     <Annotation xsi:type="anf:GraphicsType" id="ide33c2a7b-0a8a-417a-ad42-0f44604ee85b" cpfId="C-InputCondition-44">
