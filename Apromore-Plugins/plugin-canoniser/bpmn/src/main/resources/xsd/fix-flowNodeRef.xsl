@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-  xmlns      = "http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:bpmn = "http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsl  = "http://www.w3.org/1999/XSL/Transform">
 
@@ -10,7 +9,7 @@
 <!-- Work around XJC's trouble with bpmn:dataSource/sourceRef.
      The Java classes BpmnDataInputAssociation and BpmnDataOutputAssociation insert the @workaround attributes -->
 <xsl:template match="bpmn:dataInputAssociation/*|bpmn:dataOutputAssociation/*">
-    <sourceRef><xsl:value-of select="../@workaround"/></sourceRef>
+    <bpmn:sourceRef><xsl:value-of select="../@workaround"/></bpmn:sourceRef>
     <xsl:copy>
         <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
@@ -19,7 +18,7 @@
 
 <!-- Work around XJC's trouble with bpmn:lane/flowNodeRef. -->
 <xsl:template match="bpmn:lane/*">
-    <xsl:element name="flowNodeRef">
+    <xsl:element name="flowNodeRef" namespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
         <xsl:value-of select="@id"/>
     </xsl:element>
 </xsl:template>

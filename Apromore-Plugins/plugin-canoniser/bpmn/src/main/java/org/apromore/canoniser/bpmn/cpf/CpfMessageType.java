@@ -7,16 +7,16 @@ import java.util.Set;
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.TimerType;
+import org.apromore.cpf.MessageType;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
 /**
- * CPF 1.0 timer event with convenience methods.
+ * CPF 1.0 message event with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfTimerType extends TimerType implements CpfEventType {
+public class CpfMessageType extends MessageType implements CpfEventType {
 
     /** Second superclass. */
     private final CpfEventType super2;
@@ -24,29 +24,29 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfTimerType() {
+    public CpfMessageType() {
         super2 = new CpfEventTypeImpl();
     }
 
     /**
-     * Construct a CPF Timer corresponding to a BPMN End Event.
+     * Construct a CPF Message corresponding to a BPMN End Event.
      *
      * @param endEvent  a BPMN End Event
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
-    public CpfTimerType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
+    public CpfMessageType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         super2 = new CpfEventTypeImpl(endEvent, initializer);
     }
 
     /**
-     * Construct a CPF Timer corresponding to a BPMN Start Event.
+     * Construct a CPF Message corresponding to a BPMN Start Event.
      *
      * @param startEvent  a BPMN Start Event
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
-    public CpfTimerType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
+    public CpfMessageType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
         super2 = new CpfEventTypeImpl(startEvent, initializer);
     }
 

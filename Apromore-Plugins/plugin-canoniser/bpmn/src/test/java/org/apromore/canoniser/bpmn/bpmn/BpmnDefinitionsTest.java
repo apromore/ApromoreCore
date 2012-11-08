@@ -391,6 +391,16 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     /**
+     * Test decanonisation of <code>PaymentSubnet.cpf</code>.
+     */
+    @Test
+    public final void testDecanonisePaymentSubnet() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("PaymentSubnet.yawl");
+    }
+
+    /**
      * Test decanonisation of <code>OrderFulfillment.cpf</code>.
      */
     @Test
