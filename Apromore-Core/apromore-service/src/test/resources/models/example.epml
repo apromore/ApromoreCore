@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:epml xmlns:ns2="http://www.epml.de">
+    <directory>
+        <epc epcId="14" name="EPC Name">
+            <event id="1">
+                <name>Invoice Prepared</name>
+            </event>
+            <function id="2">
+                <name>Process Invoice</name>
+            </function>
+            <and id="3"/>
+            <function id="4">
+                <name>Control Invoice</name>
+            </function>
+            <function id="5">
+                <name>Store Invoice</name>
+            </function>
+            <and id="6"/>
+            <arc id="7">
+                <flow target="1"/>
+            </arc>
+            <arc id="8">
+                <flow source="1" target="2"/>
+            </arc>
+            <arc id="9">
+                <flow source="2" target="3"/>
+            </arc>
+            <arc id="10">
+                <flow source="3" target="4"/>
+            </arc>
+            <arc id="11">
+                <flow source="3" target="5"/>
+            </arc>
+            <arc id="12">
+                <flow source="4" target="6"/>
+            </arc>
+            <arc id="13">
+                <flow source="5" target="6"/>
+            </arc>
+        </epc>
+        <epc epcId="16" name="EPC Name">
+            <arc id="15">
+                <flow/>
+            </arc>
+        </epc>
+    </directory>
+</ns2:epml>
