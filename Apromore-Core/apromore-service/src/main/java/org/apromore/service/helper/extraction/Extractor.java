@@ -25,14 +25,18 @@ public class Extractor {
      * @return ID of the pocket inserted by replacing the child f
      */
     public static Node extractChildFragment(final RFragment2 f, final RFragment2 c, final Canonical g) {
-        Node pocket = null;
+        Node pocket;
         if (f.getType().equals(TCType.POLYGON)) {
             if (c.getType() != TCType.POLYGON) {
                 LOGGER.debug("Processing FS CNS");
                 pocket = FSCNSExtractor.extract(f, c, g);
                 LOGGER.debug("Pocket Id: " + pocket.getId());
+            } else {
+                // TODO what if both are of type POLYGON??? potential NPE, This is a hack
+                LOGGER.debug("Processing FNS CS");
+                pocket = FNSCSExtractor.extract(f, c, g);
+                LOGGER.debug("Pocket Id: " + pocket.getId());
             }
-            //TODO what if both are of type POLYGON??? potential NPE
         } else {
             if (c.getType().equals(TCType.POLYGON)) {
                 LOGGER.debug("Processing FNS CS");

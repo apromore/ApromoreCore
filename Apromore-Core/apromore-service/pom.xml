@@ -216,7 +216,11 @@
         <!-- BPM Imports -->
         <dependency>
             <groupId>org.jbpt</groupId>
-            <artifactId>jbpt</artifactId>
+            <artifactId>jbpt-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-deco</artifactId>
         </dependency>
         <dependency>
             <groupId>ee.ut</groupId>

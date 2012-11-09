@@ -110,7 +110,7 @@ public class DecomposerServiceImpl implements DecomposerService {
     public FragmentVersion decompose(final RFragment2 f, final OperationContext op, final List<String> fragmentIds)
             throws RepositoryException {
         String keywords = "";
-         int fragmentSize = f.getVertices().size();
+        int fragmentSize = f.getVertices().size();
         String nodeType = FragmentUtil.getFragmentType(f);
 
         Collection<RFragment2> cs = f.getChildren();
