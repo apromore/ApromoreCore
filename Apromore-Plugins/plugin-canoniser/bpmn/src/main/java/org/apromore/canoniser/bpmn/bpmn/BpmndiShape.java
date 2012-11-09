@@ -25,6 +25,8 @@ import org.omg.spec.dd._20100524.dc.Bounds;
  */
 public class BpmndiShape extends BPMNShape {
 
+    private static final double SCALE = 1;
+
     /** No-arg constructor. */
     public BpmndiShape() { }
 
@@ -77,10 +79,10 @@ public class BpmndiShape extends BPMNShape {
 
         // add the ANF position and size as a BPMNDI bounds
         Bounds bounds = new Bounds();
-        bounds.setHeight(graphics.getSize().getHeight().doubleValue());
-        bounds.setWidth(graphics.getSize().getWidth().doubleValue());
-        bounds.setX(graphics.getPosition().get(0).getX().doubleValue());
-        bounds.setY(graphics.getPosition().get(0).getY().doubleValue());
+        bounds.setHeight(SCALE * graphics.getSize().getHeight().doubleValue());
+        bounds.setWidth(SCALE * graphics.getSize().getWidth().doubleValue());
+        bounds.setX(SCALE * graphics.getPosition().get(0).getX().doubleValue());
+        bounds.setY(SCALE * graphics.getPosition().get(0).getY().doubleValue());
 
         setBounds(bounds);
     }

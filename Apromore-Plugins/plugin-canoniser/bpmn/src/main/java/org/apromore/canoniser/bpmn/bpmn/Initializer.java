@@ -32,7 +32,6 @@ import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
-import org.omg.spec.bpmn._20100524.model.TAuditing;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TComplexGateway;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
@@ -42,7 +41,6 @@ import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
-import org.omg.spec.bpmn._20100524.model.TMonitoring;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.dd._20100524.di.DiagramElement;
@@ -150,13 +148,13 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
     void populateFlowElement(final TFlowElement flowElement, final CpfEdgeType cpfEdge) {
         populateBaseElement(flowElement, cpfEdge);
 
-        // TODO - handle @name attribute as an extension
-        String name = flowElement.getName();
+        // Handle @name
+        flowElement.setName(cpfEdge.getName());
 
         // TODO - handle the following attributes, which are in the standard but not used in practice
-        TAuditing auditing = flowElement.getAuditing();
-        List<QName> categoryValueRef = flowElement.getCategoryValueRef();
-        TMonitoring monitoring = flowElement.getMonitoring();
+        flowElement.setAuditing(null);
+        flowElement.getCategoryValueRef();  // .add((QName)...);
+        flowElement.setMonitoring(null);
     }
 
     // ...for CpfNetType

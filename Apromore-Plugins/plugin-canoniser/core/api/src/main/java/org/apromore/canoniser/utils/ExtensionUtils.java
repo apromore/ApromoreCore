@@ -1,6 +1,7 @@
 package org.apromore.canoniser.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -225,6 +226,77 @@ public final class ExtensionUtils {
     }
 
     /**
+     * Sets a value on a CPF element which can be read back using {@link #hasExtension}.
+     *
+     * @param attributes  the attributes of the CPF element to annotate
+     * @param name  {@link TypeAttribute#getName} of the attribute to flag
+     * @param value  whether to flag the attribute as present or absent
+     */
+    public static void flagExtension(final List<TypeAttribute> attributes, final String name, boolean value) {
+        if (value) {
+            // Check whether there's already an existing flag
+            for (TypeAttribute attribute : attributes) {
+                if (name.equals(attribute.getName())) {
+                    return;  // already flagged, so nothing needs to be changed
+                }
+            }
+
+            // Didn't find an existing flag, so create and add one
+            TypeAttribute attribute = new TypeAttribute();
+            attribute.setName(name);
+            attributes.add(attribute);
+
+        } else {
+            // Remove any existing flags
+            Iterator<TypeAttribute> i = attributes.iterator();
+            while (i.hasNext()) {
+                if (name.equals(i.next().getName())) {
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets a value on a CPF element which was assigned using {@link #setString}.
+     *
+     * @param attributes  the attributes of the annotated CPF element
+     * @param name  {@link TypeAttribute#getName} of the attribute
+     * @return stored text
+     */
+    public static String getString(final List<TypeAttribute> attributes, final String name) {
+        TypeAttribute attribute = getExtensionFromAttributes(attributes, name);
+        return attribute == null ? null : attribute.getValue();
+    }
+
+    /**
+     * Sets a value on a CPF element which can be read back using {@link #getString}.
+     *
+     * @param attributes  the attributes of the CPF element to annotate
+     * @param name  {@link TypeAttribute#getName} of the attribute to flag
+     * @param value  stored text
+     */
+    public static void setString(final List<TypeAttribute> attributes, final String name, final String value) {
+
+        // Remove any existing attributes for this name
+        Iterator<TypeAttribute> i = attributes.iterator();
+        while (i.hasNext()) {
+            if (name.equals(i.next().getName())) {
+                i.remove();
+            }
+        }
+
+        if (name != null) {
+            // Add an attribute
+            TypeAttribute attribute = new TypeAttribute();
+            attribute.setName(name);
+            attribute.setValue(value);
+            attributes.add(attribute);
+        }
+
+    }
+
+    /**
      * Get all matching extension attribute from a CPF Node.
      *
      * @param node
@@ -255,7 +327,7 @@ public final class ExtensionUtils {
     }
 
     private static TypeAttribute getExtensionFromAttributes(final List<TypeAttribute> attributeList, final String name) {
-        for (TypeAttribute attr :attributeList) {
+        for (TypeAttribute attr : attributeList) {
             if (name.equals(attr.getName()) || (YAWLSCHEMA_URL + "/" + name).equals(attr.getName())) {
                 return attr;
             }
