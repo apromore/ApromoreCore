@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de epml_12.xsd">
+  <directory>
+      <epc epcId="1" name="Test EPML 1">
+        <function id="2">
+          <name>FUNCTION 2</name>
+        </function>
+        <function id="3">
+          <name>FUNCTION 3</name>
+        </function>
+        <xor id="1">
+          <name>SPLIT 1</name>
+        </xor>
+        <xor id="4">
+          <name>JOIN 4</name>
+        </xor>
+        <arc id="6">
+          <flow source="1" target="2"/>
+        </arc>
+        <arc id="7">
+          <flow source="1" target="3"/>
+        </arc>
+        <arc id="8">
+          <flow source="2" target="4"/>
+        </arc>
+        <arc id="9">
+          <flow source="3" target="4"/>
+        </arc>
+      </epc>
+  </directory>
+</epml:epml>

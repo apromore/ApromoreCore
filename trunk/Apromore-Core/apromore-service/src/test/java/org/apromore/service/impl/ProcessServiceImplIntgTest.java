@@ -4,12 +4,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FileUtils;
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.exception.ImportException;
@@ -119,7 +124,7 @@ public class ProcessServiceImplIntgTest {
     //TODO this fails in version control!
     @Test
     @Rollback(true)
-    public void testImportComplexYAWLProcessWithSubnets() throws CanoniserException, IOException, ImportException {
+    public void testImportComplexYAWLProcessWithSubnets() throws CanoniserException, IOException, ImportException, JAXBException {
         String username = "james";
         String name = "Test Version Control";
         String cpfURI = "12325335343353";
@@ -131,6 +136,8 @@ public class ProcessServiceImplIntgTest {
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.yawl"), "text/xml"));
 
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
+
+        FileUtils.writeStringToFile(new File("orderfulfillment.cpf"), cSrv.CPFtoString(cp.getCpt()));
 
         ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
