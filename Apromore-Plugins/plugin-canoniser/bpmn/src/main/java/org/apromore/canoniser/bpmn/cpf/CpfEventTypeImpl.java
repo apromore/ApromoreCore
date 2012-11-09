@@ -8,6 +8,8 @@ import java.util.Set;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.WorkType;
+import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
@@ -38,7 +40,10 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventTypeImpl(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode(this, endEvent);
+        construct(this, endEvent, initializer);
+    }
+    static void construct(final CpfEventType this2, final TEvent event, final Initializer initializer) throws CanoniserException {
+        initializer.populateFlowNode((WorkType) this2, event);
     }
 
     /**
@@ -49,7 +54,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventTypeImpl(final TIntermediateThrowEvent intermediateThrowEvent, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode(this, intermediateThrowEvent);
+        construct(this, intermediateThrowEvent, initializer);
     }
 
     /**
@@ -60,7 +65,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventTypeImpl(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode(this, startEvent);
+        construct(this, startEvent, initializer);
     }
 
     // Accessor methods
