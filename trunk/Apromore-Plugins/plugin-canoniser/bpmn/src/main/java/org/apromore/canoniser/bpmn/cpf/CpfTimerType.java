@@ -8,6 +8,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.TimerType;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
 /**
@@ -36,6 +37,17 @@ public class CpfTimerType extends TimerType implements CpfEventType {
      */
     public CpfTimerType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         super2 = new CpfEventTypeImpl(endEvent, initializer);
+    }
+
+    /**
+     * Construct a CPF Timer corresponding to a BPMN Intermediate Throw Event.
+     *
+     * @param endEvent  a BPMN Intermediate Throw Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfTimerType(final TIntermediateThrowEvent intermediateThrowEvent, final Initializer initializer) throws CanoniserException {
+        super2 = new CpfEventTypeImpl(intermediateThrowEvent, initializer);
     }
 
     /**

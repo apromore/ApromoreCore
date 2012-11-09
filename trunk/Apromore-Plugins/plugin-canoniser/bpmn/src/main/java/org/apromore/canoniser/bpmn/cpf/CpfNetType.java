@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
@@ -22,6 +23,8 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class CpfNetType extends NetType implements Attributed {
+
+    private enum EventTypeEnum {MESSAGE, NONE, TERMINATE, TIMER};
 
     /** In CPF, no two Objects within the same Net may have the same name, so we have to keep track of the names that have occurred. */
     private final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator
@@ -138,7 +141,15 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TEndEvent endEvent) {
                     try {
-                        net.getNode().add(new CpfEventTypeImpl(endEvent, initializer));
+                        switch (eventType(endEvent)) {
+                        case MESSAGE:   net.getNode().add(new CpfMessageType(endEvent, initializer));   break;
+                        case NONE:      net.getNode().add(new CpfEventTypeImpl(endEvent, initializer)); break;
+                        case TERMINATE: net.getNode().add(new CpfEventTypeImpl(endEvent, initializer)); break;
+                        case TIMER:
+                            initializer.warn("BPMN event " + endEvent.getId() + " is a timer end, not legal BPMN");
+                            net.getNode().add(new CpfTimerType(endEvent, initializer));
+                            break;
+                        }
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -215,6 +226,12 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TIntermediateThrowEvent intermediateThrowEvent) {
                     try {
+                        switch (eventType(intermediateThrowEvent)) {
+                        case MESSAGE:   net.getNode().add(new CpfMessageType(intermediateThrowEvent, initializer));   break;
+                        case NONE:      net.getNode().add(new CpfEventTypeImpl(intermediateThrowEvent, initializer)); break;
+                        case TERMINATE: throw new CanoniserException("No such thing as a BPMN intermediate Terminate Event");
+                        case TIMER:     net.getNode().add(new CpfTimerType(intermediateThrowEvent, initializer));     break;
+                        }
                         net.getNode().add(new CpfEventTypeImpl(intermediateThrowEvent, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
@@ -295,7 +312,12 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TStartEvent startEvent) {
                     try {
-                        net.getNode().add(new CpfEventTypeImpl(startEvent, initializer));
+                        switch (eventType(startEvent)) {
+                        case MESSAGE:   net.getNode().add(new CpfMessageType(startEvent, initializer));   break;
+                        case NONE:      net.getNode().add(new CpfEventTypeImpl(startEvent, initializer)); break;
+                        case TERMINATE: throw new CanoniserException("No such thing as a BPMN start Terminate Event");
+                        case TIMER:     net.getNode().add(new CpfTimerType(startEvent, initializer));     break;
+                        }
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -328,6 +350,54 @@ public class CpfNetType extends NetType implements Attributed {
                 }
 
                 // Internal methods
+
+                /**
+                 * Classify BPMN events by trigger type (message, timer, etc).
+                 *
+                 * @param a BPMN Catch Event
+                 * @return the special type of the specified event
+                 * @throws CanoniserException if the trigger type isn't supported
+                 */
+                private EventTypeEnum eventType(final TCatchEvent event) throws CanoniserException {
+                    return eventType(event.getEventDefinition(), event.getEventDefinitionRef());
+                }
+
+                /**
+                 * Classify BPMN events by trigger type (message, timer, etc).
+                 *
+                 * @param a BPMN Throw Event
+                 * @return the special type of the specified event
+                 * @throws CanoniserException if the trigger type isn't supported
+                 */
+                private EventTypeEnum eventType(final TThrowEvent event) throws CanoniserException {
+                    return eventType(event.getEventDefinition(), event.getEventDefinitionRef());
+                }
+                    
+                private EventTypeEnum eventType(final List<JAXBElement<? extends TEventDefinition>> eventDefinitionList,
+                                                final List<QName> eventDefinitionRefList) throws CanoniserException {
+
+                    if (eventDefinitionRefList.size() > 0) {
+                        throw new CanoniserException("BPMN EventDefinition references not supported");
+                    }
+
+                    switch (eventDefinitionList.size()) {
+                    case 0:
+                        return EventTypeEnum.NONE;
+                    case 1:
+                        TEventDefinition eventDef = eventDefinitionList.get(0).getValue();
+                        if (eventDef instanceof TMessageEventDefinition) {
+                            return EventTypeEnum.MESSAGE;
+                        } else if (eventDef instanceof TTerminateEventDefinition) {
+                            return EventTypeEnum.TERMINATE;
+                        } else if (eventDef instanceof TTimerEventDefinition) {
+                            return EventTypeEnum.TIMER;
+                        } else {
+                            throw new CanoniserException("Unsupported BPMN EventDefinition type: " + eventDef.getClass());
+                        }
+                    default:
+                        throw new CanoniserException("BPMN Multiple Event not supported");
+                    }
+                }
 
                 private void unimplemented(final Object o) {
                     throw new RuntimeException(new CanoniserException("Unimplemented BPMN element: " + o));
