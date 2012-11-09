@@ -3,9 +3,11 @@ package org.apromore.canoniser.bpmn.cpf;
 // Local packages
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 
 /**
@@ -15,6 +17,9 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
  * @since 0.4
  */
 public class CpfEdgeType extends EdgeType implements Attributed {
+
+    /** {@link TypeAttribute} name for the name of the original BPMN sequence flow. */
+    private static final String  NAME = "name";
 
     /** This edge's source node. */
     protected NodeType source;
@@ -37,6 +42,7 @@ public class CpfEdgeType extends EdgeType implements Attributed {
     public CpfEdgeType(final TSequenceFlow sequenceFlow, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowElement(this, sequenceFlow);
 
+        // Handle conditionExpression
         if (sequenceFlow.getConditionExpression() != null) {
 
             // We don't handle multiple conditions
@@ -50,6 +56,9 @@ public class CpfEdgeType extends EdgeType implements Attributed {
             conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
             setConditionExpr(conditionExpr);
         }
+
+        // Handle @name
+        setName(sequenceFlow.getName());
 
         initializer.defer(new Initialization() {
             public void initialize() throws CanoniserException {
@@ -69,14 +78,19 @@ public class CpfEdgeType extends EdgeType implements Attributed {
 
     // Accessors
 
+    /** @return this edge's original BPMN name */
+    public String getName() {
+        return ExtensionUtils.getString(getAttribute(), NAME);
+    }
+
+    /** @param node  the name of the original BPMN sequence flow */
+    public void setName(final String name) {
+        ExtensionUtils.setString(getAttribute(), NAME, name);
+    }
+
     /** @return this edge's source node */
     public NodeType getSourceRef() {
         return source;
-    }
-
-    /** @return this edge's target node */
-    public NodeType getTargetRef() {
-        return target;
     }
 
     /** @param node  the new source node */
@@ -87,5 +101,10 @@ public class CpfEdgeType extends EdgeType implements Attributed {
     /** @param node  the new target node */
     public void setTargetRef(final NodeType node) {
         target = node;
+    }
+
+    /** @return this edge's target node */
+    public NodeType getTargetRef() {
+        return target;
     }
 }

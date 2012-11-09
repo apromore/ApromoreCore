@@ -20,6 +20,8 @@ import org.omg.spec.dd._20100524.dc.Point;
  */
 public class BpmndiEdge extends BPMNEdge {
 
+    private static final double SCALE = 1;
+
     /** No-arg constructor. */
     public BpmndiEdge() { }
 
@@ -63,8 +65,8 @@ public class BpmndiEdge extends BPMNEdge {
         // add each ANF position as a BPMNDI waypoint
         for (PositionType position : graphics.getPosition()) {
             Point point = new Point();
-            point.setX(position.getX().doubleValue());
-            point.setY(position.getY().doubleValue());
+            point.setX(SCALE * position.getX().doubleValue());
+            point.setY(SCALE * position.getY().doubleValue());
             getWaypoint().add(point);
         }
     }

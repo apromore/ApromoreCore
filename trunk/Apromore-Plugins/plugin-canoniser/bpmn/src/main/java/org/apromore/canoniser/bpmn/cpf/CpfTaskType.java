@@ -2,13 +2,13 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
@@ -113,80 +113,22 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
 
     /** @return the identifier of the called element of a BPMN Call Activity */
     public QName getCalledElement() {
-
-        // Check for an existing attribute with the right name
-        for (TypeAttribute attribute : getAttribute()) {
-            if (CALLED_ELEMENT.equals(attribute.getName())) {
-                return QName.valueOf(attribute.getValue());
-            }
-        }
-
-        // Didn't find a called element
-        return null;
+        String s = ExtensionUtils.getString(getAttribute(), CALLED_ELEMENT);
+        return s == null ? null : QName.valueOf(s);
     }
 
     /** @param id  The identifier of the called element, or <code>null</code> to clear the property */
     public void setCalledElement(final QName id) {
-
-        // Remove any existing attribute
-        Iterator<TypeAttribute> i = getAttribute().iterator();
-        while (i.hasNext()) {
-            if (CALLED_ELEMENT.equals(i.next().getName())) {
-                i.remove();
-            }
-        }
-
-        if (id != null) {
-            // Create a new attribute for the specified called element
-            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
-            attribute.setName(CALLED_ELEMENT);
-            attribute.setValue(id.toString());
-            getAttribute().add(attribute);
-
-            assert id.equals(getCalledElement());
-        } else {
-            assert getCalledElement() == null;
-        }
+        ExtensionUtils.setString(getAttribute(), CALLED_ELEMENT, id == null ? null : id.toString());
     }
 
     /** @return whether this task has any attribute named {@link #TRIGGERED_BY_EVENT}. */
     public boolean isTriggeredByEvent() {
-        for (TypeAttribute attribute : getAttribute()) {
-            if (TRIGGERED_BY_EVENT.equals(attribute.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return ExtensionUtils.hasExtension(getAttribute(), TRIGGERED_BY_EVENT);
     }
 
     /** @param value  whether this CPF task corresponds to a BPMN event-triggered subprocess */
     public void setTriggeredByEvent(final Boolean value) {
-
-        if (value) {
-            // Check whether there's already an existing flag
-            for (TypeAttribute attribute : getAttribute()) {
-                if (TRIGGERED_BY_EVENT.equals(attribute.getName())) {
-                    return;  // already flagged, so nothing needs to be changed
-                }
-            }
-
-            // Didn't find an existing flag, so create and add one
-            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
-            attribute.setName(TRIGGERED_BY_EVENT);
-            getAttribute().add(attribute);
-
-            assert isTriggeredByEvent();
-
-        } else {
-            // Remove any existing flags
-            Iterator<TypeAttribute> i = getAttribute().iterator();
-            while (i.hasNext()) {
-                if (TRIGGERED_BY_EVENT.equals(i.next().getName())) {
-                    i.remove();
-                }
-            }
-
-            assert !isTriggeredByEvent();
-        }
+        ExtensionUtils.flagExtension(getAttribute(), TRIGGERED_BY_EVENT, value);
     }
 }
