@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
@@ -87,77 +88,23 @@ public class CpfObjectTypeImpl extends ObjectType implements CpfObjectType {
 
     /** @return current value of the <code>dataStore</code> property */
     public QName getDataStore() {
-        for (TypeAttribute attribute : getAttribute()) {
-            if (DATA_STORE.equals(attribute.getName())) {
-                return QName.valueOf(attribute.getValue());
-            }
-        }
-        return null;
+        String s = ExtensionUtils.getString(getAttribute(), DATA_STORE);
+        return s == null ? null : QName.valueOf(s);
     }
 
     /** @param value  new value for the dataStore property */
     public void setDataStore(final QName value) {
-
-        // Remove any existing attribute
-        Iterator<TypeAttribute> i = getAttribute().iterator();
-        while (i.hasNext()) {
-            if (DATA_STORE.equals(i.next().getName())) {
-                i.remove();
-            }
-        }
-
-        if (value != null) {
-            // Create a new attribute for the original name
-            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
-            attribute.setName(DATA_STORE);
-            attribute.setValue(value.toString());
-            getAttribute().add(attribute);
-
-            assert value.equals(getDataStore());
-        } else {
-            assert getDataStore() == null;
-        }
+        ExtensionUtils.setString(getAttribute(), DATA_STORE, value == null ? null : value.toString());
     }
 
     /** @return whether this task has any attribute named {@link #IS_COLLECTION}. */
     public boolean isIsCollection() {
-        for (TypeAttribute attribute : getAttribute()) {
-            if (IS_COLLECTION.equals(attribute.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return ExtensionUtils.hasExtension(getAttribute(), IS_COLLECTION);
     }
 
     /** @param value  whether this CPF task corresponds to a BPMN collection data object */
     public void setIsCollection(final Boolean value) {
-
-        if (value) {
-            // Check whether there's already an existing flag
-            for (TypeAttribute attribute : getAttribute()) {
-                if (IS_COLLECTION.equals(attribute.getName())) {
-                    return;  // already flagged, so nothing needs to be changed
-                }
-            }
-
-            // Didn't find an existing flag, so create and add one
-            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
-            attribute.setName(IS_COLLECTION);
-            getAttribute().add(attribute);
-
-            assert isIsCollection();
-
-        } else {
-            // Remove any existing flags
-            Iterator<TypeAttribute> i = getAttribute().iterator();
-            while (i.hasNext()) {
-                if (IS_COLLECTION.equals(i.next().getName())) {
-                    i.remove();
-                }
-            }
-
-            assert !isIsCollection();
-        }
+        ExtensionUtils.flagExtension(getAttribute(), IS_COLLECTION, value);
     }
 
     /** @return the CPF Net this instance belongs to */
@@ -177,16 +124,7 @@ public class CpfObjectTypeImpl extends ObjectType implements CpfObjectType {
      * @return the name of the corresponding flow element from the original BPMN document
      */
     public String getOriginalName() {
-
-        // Check for an existing attribute with the right name
-        for (TypeAttribute attribute : getAttribute()) {
-            if (ORIGINAL_NAME.equals(attribute.getName())) {
-                return attribute.getValue();
-            }
-        }
-
-        // Didn't find an original name
-        return null;
+        return ExtensionUtils.getString(getAttribute(), ORIGINAL_NAME);
     }
 
     /**
@@ -195,25 +133,6 @@ public class CpfObjectTypeImpl extends ObjectType implements CpfObjectType {
      * @param value  the name of the corresponding flow element from the original BPMN document
      */
     public void setOriginalName(final String value) {
-
-        // Remove any existing attribute
-        Iterator<TypeAttribute> i = getAttribute().iterator();
-        while (i.hasNext()) {
-            if (ORIGINAL_NAME.equals(i.next().getName())) {
-                i.remove();
-            }
-        }
-
-        if (value != null) {
-            // Create a new attribute for the original name
-            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
-            attribute.setName(ORIGINAL_NAME);
-            attribute.setValue(value);
-            getAttribute().add(attribute);
-
-            assert value.equals(getOriginalName());
-        } else {
-            assert getOriginalName() == null;
-        }
+        ExtensionUtils.setString(getAttribute(), ORIGINAL_NAME, value);
     }
 }
