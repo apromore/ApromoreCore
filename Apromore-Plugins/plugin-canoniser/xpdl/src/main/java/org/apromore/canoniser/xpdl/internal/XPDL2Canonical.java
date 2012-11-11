@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.FillType;
@@ -123,6 +124,10 @@ public class XPDL2Canonical {
         this.anf = new AnnotationsType();
 
         this.cpf.setName(pkg.getName());
+        //TODO which URI to use here?
+        this.cpf.setUri("id"+UUID.randomUUID().toString());
+        //TODO which version to use here?
+        this.cpf.setVersion("1.0");
 
         if (pkg.getPools() != null) {
             for (Pool pool : pkg.getPools().getPool()) {

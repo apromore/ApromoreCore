@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
+import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
 import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ObjectRefType;
@@ -50,28 +51,12 @@ public abstract class BaseVarMappingHandler extends YAWLConversionHandler<VarMap
      * @return Set of ObjectType names
      */
     protected Set<String> calculateUsedNetVariables(final String xQuery, final NetType parentNet) {
-        // TODO improve using an XQuery Parser
-        final Set<String> usedVariables = new HashSet<String>();
-        // This will capture most of the variables that are used in a YAWL input mapping!
-        final Pattern p = Pattern.compile("/" + parentNet.getOriginalID() + "/([a-zA-Z0-9_]+)/text()");
-        final Matcher m = p.matcher(xQuery);
-        while (m.find()) {
-            final String varName = m.group(1);
+        final Set<String> usedVariables = ExpressionUtils.determinedUsedVariables(xQuery, parentNet);
+    
+        for (String varName: usedVariables) {
             final ObjectType object = getContext().getObjectByName(varName, parentNet);
             if (object != null) {
                 usedVariables.add(varName);
-            }
-        }
-        if (usedVariables.isEmpty()) {
-            // Try whole XML element without 'text()'
-            final Pattern p2 = Pattern.compile("/" + parentNet.getOriginalID() + "/([a-zA-Z0-9_]+)");
-            final Matcher m2 = p2.matcher(xQuery);
-            while (m2.find()) {
-                final String varName = m2.group(1);
-                final ObjectType object = getContext().getObjectByName(varName, parentNet);
-                if (object != null) {
-                    usedVariables.add(varName);
-                }
             }
         }
         return usedVariables;

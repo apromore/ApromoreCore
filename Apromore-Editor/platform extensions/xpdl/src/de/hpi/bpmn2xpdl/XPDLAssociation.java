@@ -89,7 +89,10 @@ public class XPDLAssociation extends XPDLThingConnectorGraphics {
     public void writeJSONstencil(JSONObject modelElement) throws JSONException {
 
         String directionValue = getDirection();
-        if (directionValue.equals("To")) {
+        if (directionValue == null) {
+            putProperty(modelElement, "direction", "None");
+            writeStencil(modelElement, "Association_Undirected");
+        } else if (directionValue.equals("To")) {
             putProperty(modelElement, "direction", directionValue);
             writeStencil(modelElement, "Association_Unidirectional");
         } else if (directionValue.equals("Both")) {

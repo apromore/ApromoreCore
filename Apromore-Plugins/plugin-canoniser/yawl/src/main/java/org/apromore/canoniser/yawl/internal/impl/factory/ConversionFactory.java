@@ -26,7 +26,7 @@ public interface ConversionFactory {
      * @param obj
      * @param convertedParent
      * @param originalParent
-     * @return
+     * @return a Conversion Handler 
      * @throws CanoniserException
      */
     ConversionHandler<? extends Object, ? extends Object> createHandler(Object obj, Object convertedParent, Object originalParent)

@@ -14,6 +14,7 @@ package org.apromore.canoniser.yawl.internal.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,6 @@ import org.apromore.cpf.InputExpressionType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.OutputExpressionType;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
@@ -49,7 +49,11 @@ import org.yawlfoundation.yawlschema.NetFactsType;
  */
 public final class ExpressionUtils {
 
-    private static final Pattern NCNAME = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}-_\\x2E]*");
+    private static final Pattern NCNAME_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}-_\\x2E]*");
+    
+    private static final String XPATH_NET_VARIABLE_REGEX_FORMAT_STRING = "/%1$s/([a-zA-Z0-9_]+)(/[a-zA-Z0-9_]+)?(/text\\(\\))?";
+    
+    private static final String XPATH_TASK_VARIABLE_REGEX_FORMAT_STRING = "/%1$s/([a-zA-Z0-9_]+)";
 
     public static final String DEFAULT_TYPE_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 
@@ -100,9 +104,9 @@ public final class ExpressionUtils {
      */
     public static String createQueryReferencingTaskVariables(final String xQuery, final ExternalTaskFactsType yawlTask) throws CanoniserException {
         String originalQuery = convertEmbeddedXQueryToStandalone(xQuery);
-        String yawlTaskId = yawlTask.getId();
+        String yawlTaskIdForExpressions = yawlTask.getId().replaceFirst("_[0-9]+$", "");
         // TODO this should be done with a XQuery parser, so we really just convert the Task-ID in canonical form!
-        Pattern taskIdPattern = Pattern.compile("/" + yawlTaskId + "/([^/]*)");
+        Pattern taskIdPattern = Pattern.compile(String.format(XPATH_TASK_VARIABLE_REGEX_FORMAT_STRING, yawlTaskIdForExpressions));
         Matcher matcher = taskIdPattern.matcher(originalQuery);
         if (matcher.find()) {
             return matcher.replaceAll(CPFSchema.createGetTaskObjectValueExpr("$1"));
@@ -184,7 +188,7 @@ public final class ExpressionUtils {
         }
         String queryPart = getQueryPart(expression);
         // TODO this should be done with a XQuery parser, so we really just convert the user defined functions
-        Pattern netQueryPattern = Pattern.compile("cpf:getObjectValue\\('(.+)'\\)");
+        Pattern netQueryPattern = Pattern.compile("cpf:getObjectValue\\('(.+?)'\\)");
         Matcher netQueryMatcher = netQueryPattern.matcher(queryPart);
         String newQueryPart = netQueryMatcher.replaceAll("/"+net.getId()+"/$1");
         String taskName = CPFSchema.getTaskObjectName(expression.getExpression());
@@ -210,7 +214,7 @@ public final class ExpressionUtils {
          }
         String queryPart = getQueryPart(expression);
         // TODO this should be done with a XQuery parser, so we really just convert the user defined functions
-        Pattern netQueryPattern = Pattern.compile("cpf:getTaskObjectValue\\('(.+)'\\)");
+        Pattern netQueryPattern = Pattern.compile("cpf:getTaskObjectValue\\('(.+?)'\\)");
         Matcher netQueryMatcher = netQueryPattern.matcher(queryPart);
         String newQueryPart = netQueryMatcher.replaceAll("/"+task.getId()+"/$1");
         String netObjectName = CPFSchema.getNetObjectName(expression.getExpression());
@@ -222,24 +226,30 @@ public final class ExpressionUtils {
         }
     }
 
-    private static String getQueryPart(final ExpressionType expr) {
+    private static String getQueryPart(final ExpressionType expr) throws CanoniserException {
         String[] splittedQuery = expr.getExpression().split(" = ");
         StringBuilder queryBuilder = new StringBuilder(expr.getExpression().length());
-        for (int i = 1; i < splittedQuery.length; i++) {
-            queryBuilder.append(splittedQuery[i]);
+        if (splittedQuery.length > 1) {
+            for (int i = 1; i < splittedQuery.length; i++) {
+                queryBuilder.append(splittedQuery[i]);
+            }    
+        } else {
+            throw new CanoniserException("CPF query is missing a '='!");
         }
         return queryBuilder.toString();
     }
-
+    
     private static Element createYAWLExpressionElement(final String queryPart, final String targetName) throws ParserConfigurationException, CanoniserException {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document queryDoc = docBuilder.newDocument();
-        if (!NCNAME.matcher(targetName).matches()) {
+        if (!NCNAME_PATTERN.matcher(targetName).matches()) {
             throw new CanoniserException("Could not created YAWL expression element for Object "+targetName+". Invalid name for use in YAWL XML!");
         } else {
-            Element queryElement = queryDoc.createElement(targetName);
-            queryElement.setTextContent(queryPart);
-            return queryElement;
+            String query = String.format("<%1$s>%2$s</%1$s>", targetName, queryPart);
+            try {
+                return docBuilder.parse(new ByteArrayInputStream(query.getBytes("UTF-8"))).getDocumentElement();
+            } catch (SAXException | IOException e) {
+                throw new CanoniserException("Could not created YAWL expression element for Object "+targetName+". Invalid query for use in YAWL XML!", e);
+            }   
         }
     }
 
@@ -272,7 +282,7 @@ public final class ExpressionUtils {
         }
         try {
             final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Element queryElement = docBuilder.parse(new ByteArrayInputStream(xQuery.getBytes())).getDocumentElement();
+            Element queryElement = docBuilder.parse(new ByteArrayInputStream(xQuery.getBytes("UTF-8"))).getDocumentElement();
             if (queryElement.hasChildNodes()) {
                 String outerTagName = queryElement.getNodeName();
                 return xQuery.replaceFirst("<" + outerTagName + ">", "").replaceFirst("</" + outerTagName + ">", "");
@@ -290,6 +300,23 @@ public final class ExpressionUtils {
 
     public static String createYAWLOutputExpression(final String taskObjectName, final ExternalTaskFactsType task) {
         return "/"+task.getId()+"/"+taskObjectName;
+    }
+
+    /**
+     * @param xQuery
+     * @param parentNet
+     * @return a list of variable names that are used in the YAWL xQuery
+     */
+    public static Set<String> determinedUsedVariables(String xQuery, NetType parentNet) {
+        // This will capture most of the variables that are used in a YAWL input mapping!
+        Set<String> usedVariables = new HashSet<String>();
+        final Pattern p = Pattern.compile(String.format(XPATH_NET_VARIABLE_REGEX_FORMAT_STRING, parentNet.getOriginalID()));
+        final Matcher m = p.matcher(xQuery);
+        while (m.find()) {
+            final String varName = m.group(1);
+            usedVariables.add(varName);
+        }
+        return usedVariables;
     }
 
 }

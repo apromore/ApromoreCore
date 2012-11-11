@@ -7,7 +7,7 @@
         <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xsi:type="cpf:ORSplitType" id="id1bbeadd0-a2e3-408d-afc4-fa0aafbeb1ca"/>
+        <Node xsi:type="cpf:ORSplitType" id="id5d8b3db4-dbc4-4624-93d3-00dba1bbad0c"/>
         <Node xsi:type="cpf:TaskType" id="C-D" originalID="D">
             <name>D</name>
         </Node>
@@ -20,34 +20,34 @@
         <Node xsi:type="cpf:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xsi:type="cpf:ORJoinType" id="b96df4c3-5ce6-43aa-9454-02e256b9ad54"/>
+        <Node xsi:type="cpf:ORJoinType" id="ec51826f-0ff2-4d5f-8ab5-c8e098059f01"/>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="ida9516d13-7dec-4075-a351-8f9155d8d4c4" sourceId="C-A" targetId="id1bbeadd0-a2e3-408d-afc4-fa0aafbeb1ca"/>
-        <Edge id="id3dead269-feb8-48e5-929a-2882e96c9d37" default="false" sourceId="id1bbeadd0-a2e3-408d-afc4-fa0aafbeb1ca" targetId="C-D">
+        <Edge id="ida0d7be3e-b053-4003-865d-fa0536b4d38f" sourceId="C-A" targetId="id5d8b3db4-dbc4-4624-93d3-00dba1bbad0c"/>
+        <Edge id="idfafa2c8f-eaed-406a-a65f-ce304995f180" default="false" sourceId="id5d8b3db4-dbc4-4624-93d3-00dba1bbad0c" targetId="C-D">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Net/c&gt;10</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idc5bda5f8-a78c-454c-b576-8848aa372d82" default="true" sourceId="id1bbeadd0-a2e3-408d-afc4-fa0aafbeb1ca" targetId="C-C">
+        <Edge id="ida7958ec5-da06-4408-8150-8e176ff11308" default="true" sourceId="id5d8b3db4-dbc4-4624-93d3-00dba1bbad0c" targetId="C-C">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>true()</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id06a1f542-cf43-4d56-841a-33128b5f80d4" default="false" sourceId="id1bbeadd0-a2e3-408d-afc4-fa0aafbeb1ca" targetId="C-B">
+        <Edge id="idd3656748-9a1f-484b-8c17-a3ad01ce3ec7" default="false" sourceId="id5d8b3db4-dbc4-4624-93d3-00dba1bbad0c" targetId="C-B">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Net/c&lt;=10</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idc1d5cf55-10e1-4b63-aba5-f33e1180dcde" sourceId="b96df4c3-5ce6-43aa-9454-02e256b9ad54" targetId="C-E"/>
-        <Edge id="idbff6b033-a297-4f09-a4d9-2ecafe27fe86" default="false" sourceId="C-D" targetId="b96df4c3-5ce6-43aa-9454-02e256b9ad54"/>
-        <Edge id="idf7ad241a-15f7-434c-884c-a101a755ec6b" default="false" sourceId="C-C" targetId="b96df4c3-5ce6-43aa-9454-02e256b9ad54"/>
-        <Edge id="id21679def-d2d3-45d1-bf5c-c1e1d84c4550" default="false" sourceId="C-B" targetId="b96df4c3-5ce6-43aa-9454-02e256b9ad54"/>
+        <Edge id="id1b0d771f-79e7-4f8f-8529-d19c0874a892" sourceId="ec51826f-0ff2-4d5f-8ab5-c8e098059f01" targetId="C-E"/>
+        <Edge id="ide8124803-e70f-49bb-9911-92ee1d58025b" default="false" sourceId="C-D" targetId="ec51826f-0ff2-4d5f-8ab5-c8e098059f01"/>
+        <Edge id="idaa78a59e-1508-49d4-8160-4c3f86fea7ee" default="false" sourceId="C-C" targetId="ec51826f-0ff2-4d5f-8ab5-c8e098059f01"/>
+        <Edge id="ide47582ea-625b-46ff-9468-2ce9a6e1197e" default="false" sourceId="C-B" targetId="ec51826f-0ff2-4d5f-8ab5-c8e098059f01"/>
         <Edge id="C-E-OutputCondition" default="false" sourceId="C-E" targetId="C-OutputCondition"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>

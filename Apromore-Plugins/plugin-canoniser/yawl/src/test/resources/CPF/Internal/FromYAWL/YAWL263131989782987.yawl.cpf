@@ -4,7 +4,7 @@
         <Node xsi:type="cpf:EventType" id="C-263131989818702" originalID="263131989818702">
             <name>Start</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="ida48dc2bc-4ad5-44e6-a6f1-b5593baa5a01"/>
+        <Node xsi:type="cpf:StateType" id="id225d2a23-c446-4b98-b5cf-18e439596875"/>
         <Node xsi:type="cpf:TaskType" id="C-263131989977983" originalID="263131989977983">
             <name>rq</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -43,8 +43,8 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="ide499ee62-4aa5-4bec-af0e-848a9b05ed75"/>
-        <Node xsi:type="cpf:XORSplitType" id="idaa9afbc5-0a04-45ca-9b1c-be125588ca38"/>
+        <Node xsi:type="cpf:XORJoinType" id="id3477e02b-1a9c-4d81-86fa-51d2decc4098"/>
+        <Node xsi:type="cpf:XORSplitType" id="idfe28f899-7e6e-4811-84a3-8d51b62e6ae9"/>
         <Node xsi:type="cpf:StateType" id="C-263131990035456" originalID="263131990035456"/>
         <Node xsi:type="cpf:EventType" id="C-263131990050235" originalID="263131990050235"/>
         <Node xsi:type="cpf:TaskType" id="C-263131990084308" originalID="263131990084308">
@@ -70,23 +70,23 @@
         <Node xsi:type="cpf:EventType" id="C-263131989830607" originalID="263131989830607">
             <name>End</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="e10c53ed-87cb-4d55-baf2-2f3400b87dcb"/>
-        <Edge id="id4669f507-afa3-4da6-b92b-30805cceb861" sourceId="C-263131989818702" targetId="ida48dc2bc-4ad5-44e6-a6f1-b5593baa5a01"/>
-        <Edge id="id530904a8-eaa6-4270-b72f-09004fa0fe04" default="false" sourceId="ida48dc2bc-4ad5-44e6-a6f1-b5593baa5a01" targetId="C-263131989977983"/>
-        <Edge id="id6d237359-e928-4e41-a347-e9a43658bb19" default="false" sourceId="ida48dc2bc-4ad5-44e6-a6f1-b5593baa5a01" targetId="C-263131989939395"/>
-        <Edge id="id31c2b42b-7fed-4d83-91aa-6a27283a3e5d" sourceId="ide499ee62-4aa5-4bec-af0e-848a9b05ed75" targetId="C-263131989840049"/>
-        <Edge id="id17165bb1-2533-4de6-bb83-d4245544d925" default="false" sourceId="ida48dc2bc-4ad5-44e6-a6f1-b5593baa5a01" targetId="ide499ee62-4aa5-4bec-af0e-848a9b05ed75"/>
-        <Edge id="idfd4c482f-17cb-4685-9fb4-b4ac926c6fb6" sourceId="C-263131989840049" targetId="idaa9afbc5-0a04-45ca-9b1c-be125588ca38"/>
-        <Edge id="id31fd3a97-e088-4f0a-8f24-d3cd185e90e1" default="false" sourceId="idaa9afbc5-0a04-45ca-9b1c-be125588ca38" targetId="C-263131990035456"/>
-        <Edge id="iddffd4915-96ef-49f3-8fa7-2e43c46397f2" default="false" sourceId="idaa9afbc5-0a04-45ca-9b1c-be125588ca38" targetId="C-263131990050235"/>
-        <Edge id="idec14f8d3-3420-46a3-948f-2d90b2f1c901" default="false" sourceId="C-263131990050235" targetId="ide499ee62-4aa5-4bec-af0e-848a9b05ed75"/>
+        <Node xsi:type="cpf:StateType" id="id13127af1-e470-4da3-985b-89d80892f44e"/>
+        <Edge id="ida347d44a-2cf2-4eb8-a4d8-4b3f2e7776a9" sourceId="C-263131989818702" targetId="id225d2a23-c446-4b98-b5cf-18e439596875"/>
+        <Edge id="id900c942f-78d8-4d55-8ac2-cb00b7c4db6b" default="false" sourceId="id225d2a23-c446-4b98-b5cf-18e439596875" targetId="C-263131989977983"/>
+        <Edge id="ide7050dfe-38ee-4347-bb02-d92ee41644a4" default="false" sourceId="id225d2a23-c446-4b98-b5cf-18e439596875" targetId="C-263131989939395"/>
+        <Edge id="id0610e52f-bd90-4d25-87ee-d7c087be4b37" sourceId="id3477e02b-1a9c-4d81-86fa-51d2decc4098" targetId="C-263131989840049"/>
+        <Edge id="id7b5566fc-eb89-4545-9171-369ba6cc8e1c" default="false" sourceId="id225d2a23-c446-4b98-b5cf-18e439596875" targetId="id3477e02b-1a9c-4d81-86fa-51d2decc4098"/>
+        <Edge id="idd5f4b2dc-489e-4cb7-8937-bf3f92426595" sourceId="C-263131989840049" targetId="idfe28f899-7e6e-4811-84a3-8d51b62e6ae9"/>
+        <Edge id="id1cbe855c-2cb3-467e-a772-f77fb71e2aa3" default="false" sourceId="idfe28f899-7e6e-4811-84a3-8d51b62e6ae9" targetId="C-263131990035456"/>
+        <Edge id="idd1e9e4f3-e3fa-4b80-8804-13333a1d9abd" default="false" sourceId="idfe28f899-7e6e-4811-84a3-8d51b62e6ae9" targetId="C-263131990050235"/>
+        <Edge id="id07f7f4fa-560c-48c2-8958-8efd15a682c9" default="false" sourceId="C-263131990050235" targetId="id3477e02b-1a9c-4d81-86fa-51d2decc4098"/>
         <Edge id="C-263131990035456-263131990084308" default="false" sourceId="C-263131990035456" targetId="C-263131990084308"/>
         <Edge id="C-263131990084308-263131990035456" default="false" sourceId="C-263131990084308" targetId="C-263131990035456"/>
         <Edge id="C-263131990035456-263131990007130" default="false" sourceId="C-263131990035456" targetId="C-263131990007130"/>
-        <Edge id="id309a044a-73cc-428b-a26d-6790691e31ae" sourceId="e10c53ed-87cb-4d55-baf2-2f3400b87dcb" targetId="C-263131989830607"/>
-        <Edge id="id05e551a5-7bcb-4aca-bd12-73790b293e44" default="false" sourceId="C-263131989977983" targetId="e10c53ed-87cb-4d55-baf2-2f3400b87dcb"/>
-        <Edge id="id7d3ad2f1-b44a-485d-8fd1-4c93a9b8a306" default="false" sourceId="C-263131989939395" targetId="e10c53ed-87cb-4d55-baf2-2f3400b87dcb"/>
-        <Edge id="idbcce3727-8331-4502-8a6a-fd3a610f6f26" default="false" sourceId="C-263131990007130" targetId="e10c53ed-87cb-4d55-baf2-2f3400b87dcb"/>
+        <Edge id="id28daefc3-a110-4abe-bdd8-4b4718f407cd" sourceId="id13127af1-e470-4da3-985b-89d80892f44e" targetId="C-263131989830607"/>
+        <Edge id="idccab6bfa-1ac3-49c6-ad9a-af3be61254b9" default="false" sourceId="C-263131989977983" targetId="id13127af1-e470-4da3-985b-89d80892f44e"/>
+        <Edge id="idb9fb8230-5e66-4fee-b561-c15a83695ab7" default="false" sourceId="C-263131989939395" targetId="id13127af1-e470-4da3-985b-89d80892f44e"/>
+        <Edge id="idd3cfba07-8ba4-4099-9f7e-0c5f8909c4ad" default="false" sourceId="C-263131990007130" targetId="id13127af1-e470-4da3-985b-89d80892f44e"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </cpf:CanonicalProcess>

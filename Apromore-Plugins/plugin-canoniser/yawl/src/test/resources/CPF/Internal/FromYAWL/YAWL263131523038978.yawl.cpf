@@ -4,7 +4,7 @@
         <Node xsi:type="cpf:EventType" id="C-263131523099324" originalID="263131523099324">
             <name>Start</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="id9639cf77-0516-4a00-8756-46cecb91f544"/>
+        <Node xsi:type="cpf:StateType" id="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5"/>
         <Node xsi:type="cpf:TaskType" id="C-263131523576759" originalID="263131523576759">
             <name>vhf</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -560,11 +560,11 @@
         <Node xsi:type="cpf:EventType" id="C-263131523110408" originalID="263131523110408">
             <name>End</name>
         </Node>
-        <Edge id="idf065d429-4e54-438d-a37a-176231d57879" sourceId="C-263131523099324" targetId="id9639cf77-0516-4a00-8756-46cecb91f544"/>
-        <Edge id="id57572ee7-09d9-4b66-8555-858e809c0c31" default="false" sourceId="id9639cf77-0516-4a00-8756-46cecb91f544" targetId="C-263131523576759"/>
-        <Edge id="idb94fbf99-24f6-41bd-a3e1-5952ed5dba2d" default="false" sourceId="id9639cf77-0516-4a00-8756-46cecb91f544" targetId="C-263131524589100"/>
-        <Edge id="id75159f56-3237-42e7-ab29-51d1ab290d2a" default="false" sourceId="id9639cf77-0516-4a00-8756-46cecb91f544" targetId="C-263131524542711"/>
-        <Edge id="id9c214834-e71f-4c91-8e42-8a997ec41430" default="false" sourceId="id9639cf77-0516-4a00-8756-46cecb91f544" targetId="C-263131523118208"/>
+        <Edge id="idbd706e61-1a05-48dc-8a97-5d3e6104722f" sourceId="C-263131523099324" targetId="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5"/>
+        <Edge id="id701bde55-939a-4367-a006-ada7274d8012" default="false" sourceId="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5" targetId="C-263131523576759"/>
+        <Edge id="id47dc0045-167d-44fa-a4b8-6b791e5241e0" default="false" sourceId="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5" targetId="C-263131524589100"/>
+        <Edge id="id64a05cb3-cb3c-41cc-aa66-d45bd0c999ed" default="false" sourceId="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5" targetId="C-263131524542711"/>
+        <Edge id="idb5ac8e21-3e3b-40a9-98d1-12ee2c2ffa4f" default="false" sourceId="id280eca5b-1d5e-4f23-8237-7dcb2ab603b5" targetId="C-263131523118208"/>
         <Edge id="C-263131523576759-263131523627253" default="false" sourceId="C-263131523576759" targetId="C-263131523627253"/>
         <Edge id="C-263131524589100-263131523627253" default="false" sourceId="C-263131524589100" targetId="C-263131523627253"/>
         <Edge id="C-263131524542711-263131523627253" default="false" sourceId="C-263131524542711" targetId="C-263131523627253"/>

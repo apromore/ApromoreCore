@@ -444,6 +444,15 @@ public class YAWLLayoutConverter {
         } else {
             outDocker = convertTaskDocker(netLayout.getVertexLayout(targetId).getJoinDecorator(), outPort);
         }
+        
+        // Fallback in case the values in XML are wrong
+        if (outDocker == null) {
+            outDocker = YAWLMapping.TASK_PORT_MAP.get(14);
+        }
+        
+        if (inDocker == null) {
+            inDocker = YAWLMapping.TASK_PORT_MAP.get(14);
+        }        
 
         ArrayList<Point> dockers = new ArrayList<Point>();
 

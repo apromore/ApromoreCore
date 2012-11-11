@@ -55,7 +55,7 @@ public class YAWLDeploymentPluginIntgTest {
         if (checkYAWLServerAvailable()) {
             try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
                 PluginResult result = doDeployProcess(cpfInputStream);
-                checkResult(result, "Simple Make Trip Process", "Simple Make Trip Process", "0.1");
+                checkResult(result, "Simple Make Trip Process", "SimpleMakeTripProcess.ywl", "1.3");
             }
         }
     }
@@ -65,7 +65,7 @@ public class YAWLDeploymentPluginIntgTest {
         if (checkYAWLServerAvailable()) {
             try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/filmproduction.yawl.cpf"))) {
                 PluginResult result = doDeployProcess(cpfInputStream);
-                checkResult(result, "Credit Rating Process", "CreditRatingProcess.ywl", "1.0");
+                checkResult(result, "", "", "1.0");
             }
         }
     }
@@ -85,7 +85,7 @@ public class YAWLDeploymentPluginIntgTest {
         if (checkYAWLServerAvailable()) {
             try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/CreditApplicationProcess.yawl.cpf"))) {
                 PluginResult result = doDeployProcess(cpfInputStream);
-                checkResult(result, "Credit application process", "CreditApplication", "0.1");
+                checkResult(result, "Credit application process", "CreditAppProcess2.0", "0.1");
             }
         }
     }

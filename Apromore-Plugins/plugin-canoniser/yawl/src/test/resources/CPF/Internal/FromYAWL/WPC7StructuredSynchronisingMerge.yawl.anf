@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WP1SequencePattern" name="WP1SequencePattern">
-    <Annotation id="baabb9b2-9015-4529-a272-e50295c6ef79">
+    <Annotation id="idbb221a61-8d1f-4f30-821c-e8b63e88a927">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <creator>Felix</creator>
@@ -10,10 +10,10 @@
             <identifier>UID_860b281a-f55e-4d1a-ac33-13f6584e86d9</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id913f190e-b655-43ec-a4f5-98e917b211dd" cpfId="N-Net">
+    <Annotation xsi:type="anf:GraphicsType" id="id0453039a-2e7d-481b-9ab0-893d3c6424a0" cpfId="N-Net">
         <size width="866" height="847"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="e9d7376d-0b14-4ae1-8f0f-c175b566250a" cpfId="C-InputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id260090e2-e1df-4c7b-a8c4-945c8303deed" cpfId="C-InputCondition">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="40,0" y="400,0"/>
@@ -23,17 +23,19 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id7042e510-d508-403e-b01b-b1c3b47851d8" cpfId="C-InputCondition-A">
+    <Annotation xsi:type="anf:GraphicsType" id="id53226db7-d638-4335-b18f-4ad20c8fb1ce" cpfId="C-InputCondition-A">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition" target="A">
             <ports in="13" out="12"/>
             <attributes>
                 <lineStyle>11</lineStyle>
             </attributes>
         </flow:flow>
+        <position x="72.0" y="368.0"/>
+        <position x="132.0" y="368.0"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id62fac812-2a1f-4133-afa7-d6b5bcb12538" cpfId="ida9516d13-7dec-4075-a351-8f9155d8d4c4"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id13adddee-dd74-47d4-bd68-330037481e9a" cpfId="C-A">
+    <Annotation xsi:type="anf:GraphicsType" id="b925d4c6-8c72-4f81-92a5-a5f6a5f7c17d" cpfId="ida0d7be3e-b053-4003-865d-fa0536b4d38f"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id8998fca8-f958-49d7-9734-608a28d0093b" cpfId="C-A">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="OR_split">
             <position>13</position>
             <attributes>
@@ -50,8 +52,8 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="b6eff452-e372-4594-ad9e-f541f1c9071c" cpfId="id3dead269-feb8-48e5-929a-2882e96c9d37"/>
-    <Annotation xsi:type="anf:GraphicsType" id="e7b894a6-562a-4b21-8e94-cae30a3dd8c5" cpfId="C-D">
+    <Annotation xsi:type="anf:GraphicsType" id="a03a016f-f36c-4a9d-a350-78eb2c503807" cpfId="idfafa2c8f-eaed-406a-a65f-ce304995f180"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id0ee98131-2f39-484c-a5e2-ea7b8124c269" cpfId="C-D">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="196,0" y="468,0"/>
@@ -61,8 +63,8 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="e1267d1e-9fd4-4c82-9e41-bd657acfe5df" cpfId="idc5bda5f8-a78c-454c-b576-8848aa372d82"/>
-    <Annotation xsi:type="anf:GraphicsType" id="c0f01537-d3af-48fe-824a-1a8f4b8ff715" cpfId="C-C">
+    <Annotation xsi:type="anf:GraphicsType" id="id1ec1f2f7-4938-43d3-bd8e-05cdd8bb8492" cpfId="ida7958ec5-da06-4408-8150-8e176ff11308"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ide9a8758d-2d1b-476f-a36c-00a723252085" cpfId="C-C">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="21,0" w="97,0" x="196,0" y="400,0"/>
@@ -72,8 +74,8 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idd778c8a1-a555-4bfe-a10d-0545b1e4acf6" cpfId="id06a1f542-cf43-4d56-841a-33128b5f80d4"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id4dd1599c-3b91-4b7d-8a48-5591dcad705c" cpfId="C-B">
+    <Annotation xsi:type="anf:GraphicsType" id="id7d5f5404-3554-44ce-a7f1-13b5f2c830d5" cpfId="idd3656748-9a1f-484b-8c17-a3ad01ce3ec7"/>
+    <Annotation xsi:type="anf:GraphicsType" id="e04d59cd-4354-4954-8160-c35b00ec3a73" cpfId="C-B">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="196,0" y="332,0"/>
@@ -83,11 +85,11 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="c66231df-db44-4386-824f-68e93c1290b5" cpfId="idc1d5cf55-10e1-4b63-aba5-f33e1180dcde"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id25b6da94-5be2-4d10-95c9-5882692d5f40" cpfId="idbff6b033-a297-4f09-a4d9-2ecafe27fe86"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idb390890e-d76d-492b-80cf-42fde82f0cba" cpfId="idf7ad241a-15f7-434c-884c-a101a755ec6b"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idffbd7ab5-7f26-4810-827c-4d3bfc6967e7" cpfId="id21679def-d2d3-45d1-bf5c-c1e1d84c4550"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id808074d1-c783-4e38-afb5-2fe4c9483ea4" cpfId="C-E">
+    <Annotation xsi:type="anf:GraphicsType" id="id3fa4a902-0c53-4e0f-be21-b4627c4bcf37" cpfId="id1b0d771f-79e7-4f8f-8529-d19c0874a892"/>
+    <Annotation xsi:type="anf:GraphicsType" id="abd4fe5b-ddba-46f9-82d8-96770e8e94ed" cpfId="ide8124803-e70f-49bb-9911-92ee1d58025b"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id3844cf21-79ba-4929-b613-08bbba1eb700" cpfId="idaa78a59e-1508-49d4-8160-4c3f86fea7ee"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id3fd3332d-92a5-4054-8117-b22a9d2af1e3" cpfId="ide47582ea-625b-46ff-9468-2ce9a6e1197e"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id5903e7aa-0299-44da-b586-7858c8844957" cpfId="C-E">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="OR_join">
             <position>12</position>
             <attributes>
@@ -104,16 +106,18 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="e6271863-5095-4351-a0d5-1e18ced22e15" cpfId="C-E-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id94b0990b-3a80-49ae-84bd-5cb9f1b21e2b" cpfId="C-E-OutputCondition">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="E" target="OutputCondition">
             <ports in="13" out="12"/>
             <attributes>
                 <lineStyle>11</lineStyle>
             </attributes>
         </flow:flow>
+        <position x="320.0" y="368.0"/>
+        <position x="376.0" y="368.0"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id6948715d-223a-4746-b86e-935307a2ce8b" cpfId="C-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="bdc8df84-a1ad-40eb-b8b6-e9a0e345de0a" cpfId="C-OutputCondition">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="344,0" y="400,0"/>

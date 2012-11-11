@@ -37,7 +37,7 @@ public class YAWLAutoLayouter {
     private static final int ELEMENT_DEFAULT_HEIGHT = 32;
 
     private static final int LABEL_DEFAULT_WIDTH = 96;
-    private static final int LABEL_DEFAULT_HEIGHT = 32;
+    private static final int LABEL_DEFAULT_HEIGHT = 64;
 
     private static final int DECORATOR_DEFAULT_WIDTH = 11;
     private static final int DECORATOR_DEFAULT_HEIGHT = 32;

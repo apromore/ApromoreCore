@@ -133,7 +133,7 @@ public class Canonical2XPDL {
      */
     public Canonical2XPDL(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
         //TODO A canoniser should never know about the source language, otherwise we start to to language to language mappings again!
-        this.EPML_flag = false;
+        this.EPML_flag = true;
         for (TypeAttribute att : cpf.getAttribute()) {
             if (att.getName().equals("IntialFormat")) {
                 if (att.getValue().equals("EPML")) {
@@ -794,7 +794,13 @@ public class Canonical2XPDL {
     }
 
     private String convertConditionExpr(final ConditionExpressionType conditionExpr) {
-        return conditionExpr.getDescription();
+        if (conditionExpr.getDescription() != null) {
+            return conditionExpr.getDescription();   
+        } else if (conditionExpr.getExpression() != null) {
+            return conditionExpr.getExpression();
+        } else {
+            return "";
+        }
     }
 
 
