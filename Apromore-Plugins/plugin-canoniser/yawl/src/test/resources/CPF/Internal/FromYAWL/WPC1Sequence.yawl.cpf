@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id34df387f-b067-4e62-9578-558043bd8d44" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="idd05e2a68-c82a-499b-8e76-a67bcb64479e" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="fba437cc-64ef-4c26-8175-1679c333d3e7" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id93dc72c8-4c58-46f3-9a68-6f6100e71f1e" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -52,8 +52,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id8b9e2113-3c68-46b6-975d-dc757a441485" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id8e00eaf5-98cf-47e3-9126-a9cb7b01e40f" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="e0badbbd-007f-41aa-ac63-cc61dd610f92" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id89583850-d635-4425-9de8-5d856fc92a94" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>

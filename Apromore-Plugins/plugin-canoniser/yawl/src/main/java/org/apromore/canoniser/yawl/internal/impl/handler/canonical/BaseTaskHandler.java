@@ -9,7 +9,11 @@ public abstract class BaseTaskHandler<T,E> extends CanonicalElementHandler<T, E>
 
     protected ExternalTaskFactsType createTask(final NodeType node) {
         final ExternalTaskFactsType taskFacts = YAWL_FACTORY.createExternalTaskFactsType();
-        taskFacts.setName(node.getName());
+        if (node.getName() == null) {
+            taskFacts.setName("");
+        } else {
+            taskFacts.setName(node.getName());   
+        }        
         taskFacts.setId(generateUUID(node.getId()));
         getContext().getControlFlowContext().setElement(node.getId(), taskFacts);
         return taskFacts;

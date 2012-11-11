@@ -144,17 +144,18 @@ public abstract class XMLConvertible {
     }
 
     protected String makeStorable(Object objectToStore) {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        try {
-            //Serialize the Java object
-            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
-            objectStream.writeObject(objectToStore);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //Encode the byte stream with Base64 -> Readable characters for the JSONObject
-        return new String(Base64.encodeBase64(byteStream.toByteArray()));
+//        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+//        try {
+//            //Serialize the Java object
+//            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+//            objectStream.writeObject(objectToStore);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //Encode the byte stream with Base64 -> Readable characters for the JSONObject
+//        return new String(Base64.encodeBase64(byteStream.toByteArray()));
+        return "";
     }
 
     protected boolean hasJSONMethod(String methodName) {

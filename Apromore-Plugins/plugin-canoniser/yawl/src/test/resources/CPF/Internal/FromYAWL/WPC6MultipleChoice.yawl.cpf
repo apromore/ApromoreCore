@@ -7,7 +7,7 @@
         <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xsi:type="cpf:ORSplitType" id="id33b3e364-9158-44e9-8057-eb825715f315"/>
+        <Node xsi:type="cpf:ORSplitType" id="idec078c0a-a38e-444f-b725-58d7df4c5497"/>
         <Node xsi:type="cpf:TaskType" id="C-D-1" originalID="D_1">
             <name>D</name>
         </Node>
@@ -20,34 +20,34 @@
         <Node xsi:type="cpf:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xsi:type="cpf:ORJoinType" id="a75d5686-09f2-4693-9125-c0a93ee05e25"/>
+        <Node xsi:type="cpf:ORJoinType" id="id2c9efe54-8872-4b2d-ba43-edbae607b63f"/>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id55ac986b-711f-4b73-86e4-9c2b359bd24c" sourceId="C-A" targetId="id33b3e364-9158-44e9-8057-eb825715f315"/>
-        <Edge id="idd34dd632-92a7-44ae-817f-632ef119123a" default="false" sourceId="id33b3e364-9158-44e9-8057-eb825715f315" targetId="C-D-1">
+        <Edge id="id34552e47-f05f-4057-b60f-e64e941d52ea" sourceId="C-A" targetId="idec078c0a-a38e-444f-b725-58d7df4c5497"/>
+        <Edge id="id5daa990c-02eb-4065-8ce4-2055187873b4" default="false" sourceId="idec078c0a-a38e-444f-b725-58d7df4c5497" targetId="C-D-1">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>number(/Net/cond/text())&gt;10</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idd3b570e3-4791-4303-afd5-e7390c457fd0" default="true" sourceId="id33b3e364-9158-44e9-8057-eb825715f315" targetId="C-C-1">
+        <Edge id="ida4be6ae0-d9b7-4b75-a9a7-6f8cbbce2056" default="true" sourceId="idec078c0a-a38e-444f-b725-58d7df4c5497" targetId="C-C-1">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>true()</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id90550da0-e7d0-4e42-b460-05d37f21f638" default="false" sourceId="id33b3e364-9158-44e9-8057-eb825715f315" targetId="C-B">
+        <Edge id="ida7e9418c-04af-4f5d-8016-7bc83fb3fabf" default="false" sourceId="idec078c0a-a38e-444f-b725-58d7df4c5497" targetId="C-B">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>number(/Net/cond/text())&lt;=10</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id531c424e-7c08-4a2c-a48c-640adcd38a6f" sourceId="a75d5686-09f2-4693-9125-c0a93ee05e25" targetId="C-E"/>
-        <Edge id="id143dc929-93b2-4a71-a5aa-337857d3d206" default="false" sourceId="C-D-1" targetId="a75d5686-09f2-4693-9125-c0a93ee05e25"/>
-        <Edge id="id30acf78e-4dbb-4e52-9600-3ce920844e9e" default="false" sourceId="C-C-1" targetId="a75d5686-09f2-4693-9125-c0a93ee05e25"/>
-        <Edge id="id39099dc9-835a-404c-8a56-3b8961da4f71" default="false" sourceId="C-B" targetId="a75d5686-09f2-4693-9125-c0a93ee05e25"/>
+        <Edge id="idd62f4348-bbd5-4acf-8e3b-15213c532bf2" sourceId="id2c9efe54-8872-4b2d-ba43-edbae607b63f" targetId="C-E"/>
+        <Edge id="id389850dd-b527-4cd0-8757-84875b4e5be2" default="false" sourceId="C-D-1" targetId="id2c9efe54-8872-4b2d-ba43-edbae607b63f"/>
+        <Edge id="id32a09c19-4f1e-4f1d-b556-45125dc2cb91" default="false" sourceId="C-C-1" targetId="id2c9efe54-8872-4b2d-ba43-edbae607b63f"/>
+        <Edge id="idd58bc347-40cb-46b8-a8d6-92364b16afda" default="false" sourceId="C-B" targetId="id2c9efe54-8872-4b2d-ba43-edbae607b63f"/>
         <Edge id="C-E-OutputCondition" default="false" sourceId="C-E" targetId="C-OutputCondition"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Net-cond" originalID="N-Net_cond">
             <name>cond</name>

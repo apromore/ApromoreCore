@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="ided7d3095-c9e0-4f43-a370-10ef5f5bd61d" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
-            <objectRef id="id30c1b7f2-a550-44c5-aff2-833436cf76c7" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
+            <objectRef id="e8dd3a34-a971-4ab3-8541-5f64d8fb97b1" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
+            <objectRef id="id345c7de0-ad61-4501-87cb-4a036ec2f07e" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>c = {cpf:getObjectValue('c')/text()}</expression>
@@ -34,25 +34,25 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORSplitType" id="ide0933fe7-b148-42de-882f-c3c4abba144c"/>
+        <Node xsi:type="cpf:XORSplitType" id="id70c2e1be-ad9f-42bd-804d-891aa7c9fadf"/>
         <Node xsi:type="cpf:TaskType" subnetId="N-Net" id="C-Net" originalID="Net">
             <name>Net</name>
         </Node>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="idbc51f11e-c116-454c-9e9d-84ec1cb2e49a"/>
+        <Node xsi:type="cpf:StateType" id="id360c0e83-7031-4b5d-b20f-02bc058fec49"/>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id148aeef7-2a6b-4b09-a2c0-c6692697db7f" sourceId="C-A" targetId="ide0933fe7-b148-42de-882f-c3c4abba144c"/>
-        <Edge id="id8e874d37-ab14-4cd2-95d4-be4677fb43de" default="false" sourceId="ide0933fe7-b148-42de-882f-c3c4abba144c" targetId="C-Net">
+        <Edge id="id9a861709-4f73-4f8a-a8da-dc33f6c797ca" sourceId="C-A" targetId="id70c2e1be-ad9f-42bd-804d-891aa7c9fadf"/>
+        <Edge id="idc87c9a2a-6798-4f8d-bcd7-35b4bdc08e2b" default="false" sourceId="id70c2e1be-ad9f-42bd-804d-891aa7c9fadf" targetId="C-Net">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>number(/Net/c/text())&lt;5</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id0b46bf9d-1e34-4e97-a587-944b333e15b6" sourceId="idbc51f11e-c116-454c-9e9d-84ec1cb2e49a" targetId="C-OutputCondition"/>
-        <Edge id="idc5df7a8d-12f6-42d3-9638-e2e10d6b33e6" default="true" sourceId="ide0933fe7-b148-42de-882f-c3c4abba144c" targetId="idbc51f11e-c116-454c-9e9d-84ec1cb2e49a"/>
-        <Edge id="id0edc84b9-8e45-47db-9f41-91a5915ab140" default="false" sourceId="C-Net" targetId="idbc51f11e-c116-454c-9e9d-84ec1cb2e49a"/>
+        <Edge id="idc2489a60-36bc-4f82-a7a2-41d453f9b571" sourceId="id360c0e83-7031-4b5d-b20f-02bc058fec49" targetId="C-OutputCondition"/>
+        <Edge id="id2259713d-f08d-4240-99bb-8fedc4b67312" default="true" sourceId="id70c2e1be-ad9f-42bd-804d-891aa7c9fadf" targetId="id360c0e83-7031-4b5d-b20f-02bc058fec49"/>
+        <Edge id="id3d8a4d90-2ef1-4372-8783-f385010178c5" default="false" sourceId="C-Net" targetId="id360c0e83-7031-4b5d-b20f-02bc058fec49"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
