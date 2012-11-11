@@ -74,7 +74,7 @@ public class TypeXORHandler extends NodeHandler {
       */
     @Override
     protected BasicShape createShape() {
-        return new BasicNode(getShapeId().toString(), "OrConnector");
+        return new BasicNode(getShapeId().toString(), "XorConnector");
     }
 
     /* (non-Javadoc)

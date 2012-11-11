@@ -110,19 +110,23 @@ public class Canonical2EPML {
     }
 
     /**
-     * Validating EPCs modelass against the Event-Function rule. The fake functions and events
-     * will be added as needed. The algorithm will also minimized them as much as possible.
-     * It verifies the functions and events elements one by one until the last element.
-     * This method will only be called if the addFakes boolean value is defined and true.
-     * @param epc the header for an EPCs modelass
+     * Validating EPCs modelass against the Event-Function rule. The fake functions and events will be added as needed. The algorithm will also
+     * minimized them as much as possible. It verifies the functions and events elements one by one until the last element. This method will only be
+     * called if the addFakes boolean value is defined and true.
+     * 
+     * @param epc
+     *            the header for an EPCs modelass
      * @since 1.0
      */
     private void validate_model(final TypeEPC epc) {
         List<TEpcElement> successors;
         int events, funcs;
         for (Object obj : epc.getEventAndFunctionAndRole()) {
-            if (obj instanceof TypeFunction || obj instanceof TypeEvent) {
-                eventFuncList.add((TEpcElement) obj);
+            if (obj instanceof JAXBElement<?>) {
+                JAXBElement<?> element = (JAXBElement<?>) obj;
+                if (element.getValue() instanceof TypeFunction || element.getValue() instanceof TypeEvent) {
+                    eventFuncList.add((TEpcElement) element.getValue());
+                }
             }
         }
 
@@ -138,8 +142,8 @@ public class Canonical2EPML {
                     }
                 }
                 if (events == 0 && funcs == 0) {
-                } else if (events == 0) {  // && funcs != 0
-                } else if (funcs == 0) {   // && events != 0
+                } else if (events == 0) { // && funcs != 0
+                } else if (funcs == 0) { // && events != 0
                     // Add fake function after the current event
                     TypeFunction func = new TypeFunction();
                     TypeArc arc1, arc2 = new TypeArc();
@@ -249,16 +253,16 @@ public class Canonical2EPML {
 
     /**
      * Adds a fake element between the received two arcs.
-     * @param epc the header for an EPCs modelass
-     * element
-     * arc1
-     * arc2
+     * 
+     * @param epc
+     *            the header for an EPCs modelass element arc1 arc2
      * @since 1.0
      */
     private void add_fake(final TypeArc arc1, final JAXBElement<? extends TEpcElement> element, final TypeArc arc2, final TypeEPC epc) {
         element.getValue().setId(BigInteger.valueOf(ids++));
-        QName typeRef = new QName("typeRef");
-        element.getValue().getOtherAttributes().put(typeRef, "fake");
+        //TODO Invalid according to EPML schema
+        //QName typeRef = new QName("typeRef");
+        //element.getValue().getOtherAttributes().put(typeRef, "fake");
         element.getValue().setName("");
         arc2.setId(BigInteger.valueOf(ids++));
         arc2.getFlow().setSource(element.getValue().getId());
@@ -270,17 +274,23 @@ public class Canonical2EPML {
     }
 
     /**
-     * It take two parameters and returns the previous arc element for
-     * the received EPC element if it is exist.
-     * @param epc the header for an EPCs modelass
-     * element   the element from this epc intended to retrieve its previous arc
+     * It take two parameters and returns the previous arc element for the received EPC element if it is exist.
+     * 
+     * @param epc
+     *            the header for an EPCs modelass element the element from this epc intended to retrieve its previous arc
      * @since 1.0
      */
     private TypeArc find_pre_arc(final TEpcElement element, final TypeEPC epc) {
-        for (Object obj : epc.getEventAndFunctionAndRole()) {
-            if (obj != null && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getTarget() != null && element != null) {
-                if (((TypeArc) obj).getFlow().getTarget().equals(element.getId())) {
-                    return (TypeArc) obj;
+        for (Object object : epc.getEventAndFunctionAndRole()) {
+            if (object instanceof JAXBElement<?>) {
+                JAXBElement<?> obj = (JAXBElement<?>) object;
+                if (obj.getValue() instanceof TypeArc) {
+                    TypeArc arc = (TypeArc) obj.getValue();
+                    if (arc != null && arc.getFlow() != null && arc.getFlow().getTarget() != null && element != null) {
+                        if (arc.getFlow().getTarget().equals(element.getId())) {
+                            return arc;
+                        }
+                    }
                 }
             }
         }
@@ -288,18 +298,24 @@ public class Canonical2EPML {
     }
 
     /**
-     * It take two parameters and returns the post arc element for
-     * the received EPC element if it is exist.
-     * @param epc the header for an EPCs modelass
-     * element   the element from this epc intended to retrieve its post arc
+     * It take two parameters and returns the post arc element for the received EPC element if it is exist.
+     * 
+     * @param epc
+     *            the header for an EPCs modelass element the element from this epc intended to retrieve its post arc
      * @since 1.0
      */
     private TypeArc find_post_arc(final TEpcElement element, final TypeEPC epc) {
-        for (Object obj : epc.getEventAndFunctionAndRole()) {
-            if (obj != null && obj instanceof TypeArc && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getSource() != null &&
-                    element != null) {
-                if (((TypeArc) obj).getFlow().getSource().equals(element.getId())) {
-                    return (TypeArc) obj;
+        for (Object object : epc.getEventAndFunctionAndRole()) {
+            if (object instanceof JAXBElement<?>) {
+                JAXBElement<?> obj = (JAXBElement<?>) object;
+                if (obj.getValue() instanceof TypeArc) {
+                    TypeArc arc = (TypeArc) obj.getValue();            
+                    if (obj != null && arc.getFlow() != null && arc.getFlow().getSource() != null &&
+                            element != null) {
+                        if (arc.getFlow().getSource().equals(element.getId())) {
+                            return arc;
+                        }
+                    }
                 }
             }
         }
@@ -307,10 +323,10 @@ public class Canonical2EPML {
     }
 
     /**
-     * It take two parameters and returns all the successors elements for
-     * the received EPC element.
-     * @param epc the header for an EPCs modelass
-     * element   the element from this epc intended to retrieve its successors
+     * It take two parameters and returns all the successors elements for the received EPC element.
+     * 
+     * @param epc
+     *            the header for an EPCs modelass element the element from this epc intended to retrieve its successors
      * @since 1.0
      */
     private List<TEpcElement> retrieve_successors(final TEpcElement element, final TypeEPC epc) {
@@ -327,11 +343,14 @@ public class Canonical2EPML {
             } else {
                 flag = true;
                 for (Object object : epc.getEventAndFunctionAndRole()) {
-                    if (object instanceof TypeArc) {
-                        if (((TypeArc) object).getFlow() != null) {
-                            TypeFlow flow = ((TypeArc) object).getFlow();
-                            if (flow.getSource().equals(((TEpcElement) obj).getId())) {
-                                elements.add(epcRefMap.get(flow.getTarget()));
+                    if (object instanceof JAXBElement<?>) {
+                        JAXBElement<?> jElement = ((JAXBElement<?>) object);
+                        if (jElement.getValue() instanceof TypeArc) {
+                            if (((TypeArc) jElement.getValue()).getFlow() != null) {
+                                TypeFlow flow = ((TypeArc) jElement.getValue()).getFlow();
+                                if (flow.getSource().equals(((TEpcElement) obj).getId())) {
+                                    elements.add(epcRefMap.get(flow.getTarget()));
+                                }
                             }
                         }
                     }
@@ -344,10 +363,12 @@ public class Canonical2EPML {
     }
 
     /**
-     * Constructor for de-canonizing CPF & ANF files. The fake
-     * feature will be set to false as a default value.
-     * @param cproc the header for a CPF modelass
-     * @param annotations the header for an ANF modelass
+     * Constructor for de-canonizing CPF & ANF files. The fake feature will be set to false as a default value.
+     * 
+     * @param cproc
+     *            the header for a CPF modelass
+     * @param annotations
+     *            the header for an ANF modelass
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations) throws CanoniserException {
@@ -357,22 +378,25 @@ public class Canonical2EPML {
     }
 
     /**
-     * Constructor for de-canonizing CPF file without
-     * annotations. The fake feature will be set to false
-     * as a default value.
-     * @param cproc the header for a CPF modelass
+     * Constructor for de-canonizing CPF file without annotations. The fake feature will be set to false as a default value.
+     * 
+     * @param cproc
+     *            the header for a CPF modelass
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc) throws CanoniserException {
         main(cproc, false);
     }
 
-
     /**
      * Constructor for de-canonizing CPF & ANF files.
-     * @param cproc        The header for a CPF modelass
-     * @param annotations  The header for an ANF modelass
-     * @param addFakes     Boolean value to either add fake elements or not.
+     * 
+     * @param cproc
+     *            The header for a CPF modelass
+     * @param annotations
+     *            The header for an ANF modelass
+     * @param addFakes
+     *            Boolean value to either add fake elements or not.
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations, final boolean addFakes) throws CanoniserException {
@@ -382,24 +406,26 @@ public class Canonical2EPML {
     }
 
     /**
-     * Constructor for de-canonizing CPF file without
-     * annotations.
-     *
-     * @param cproc the header for a CPF modelass
-     * @param addFakes Boolean value to either add fake elements or not.
+     * Constructor for de-canonizing CPF file without annotations.
+     * 
+     * @param cproc
+     *            the header for a CPF modelass
+     * @param addFakes
+     *            Boolean value to either add fake elements or not.
      * @throws CanoniserException
      */
-    public Canonical2EPML(final CanonicalProcessType cproc,
-			final Boolean addFakes) throws CanoniserException {
-    	main(cproc, addFakes);
+    public Canonical2EPML(final CanonicalProcessType cproc, final Boolean addFakes) throws CanoniserException {
+        main(cproc, addFakes);
     }
 
-	/**
-     * This main method to be reused by all the constructors
-     * for all cases.
-     * @param cproc the header for a CPF modelass
-     * @param addFakes           Boolean value to either add fake elements or not.
-	 * @throws CanoniserException
+    /**
+     * This main method to be reused by all the constructors for all cases.
+     * 
+     * @param cproc
+     *            the header for a CPF modelass
+     * @param addFakes
+     *            Boolean value to either add fake elements or not.
+     * @throws CanoniserException
      * @since 1.0
      */
     private void main(final CanonicalProcessType cproc, final boolean addFakes) throws CanoniserException {
@@ -585,7 +611,7 @@ public class Canonical2EPML {
         id_map.put(node.getId(), BigInteger.valueOf(ids));
         event.setId(BigInteger.valueOf(ids++));
         event.setName(node.getName());
-        //TODO getName could be NULL, will not work as lookup key!
+        // TODO getName could be NULL, will not work as lookup key!
         event.setDefRef(find_def_id("event", event.getName()));
         epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCEvent(event));
         epcRefMap.put(event.getId(), event);
@@ -596,7 +622,7 @@ public class Canonical2EPML {
         id_map.put(obj.getId(), BigInteger.valueOf(ids));
         object.setId(BigInteger.valueOf(ids++));
         object.setName(obj.getName());
-        //TODO getName could be NULL, will not work as lookup key!
+        // TODO getName could be NULL, will not work as lookup key!
         object.setDefRef(find_def_id("object", object.getName()));
         object.setFinal(obj.isConfigurable());
         epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCObject(object));
@@ -608,7 +634,7 @@ public class Canonical2EPML {
         id_map.put(resT.getId(), BigInteger.valueOf(ids));
         role.setId(BigInteger.valueOf(ids++));
         role.setName(resT.getName());
-        //TODO getName could be NULL, will not work as lookup key!
+        // TODO getName could be NULL, will not work as lookup key!
         role.setDefRef(find_def_id("role", role.getName()));
         epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCRole(role));
 
@@ -619,7 +645,7 @@ public class Canonical2EPML {
             if (element.getValue() instanceof TypeArc) {
                 ll = role_map.get(((TypeArc) element.getValue()).getId());
             } else {
-                ll = role_map.get(((TEpcElement)element.getValue()).getId());
+                ll = role_map.get(((TEpcElement) element.getValue()).getId());
             }
 
             if (ll != null) {
@@ -746,10 +772,18 @@ public class Canonical2EPML {
                 // If there is not textual description then just display the formal expression
                 return conditionExpr.getExpression();
             } else {
-                return null;
+                if (edge.isDefault()) {
+                    return "default";
+                } else {
+                    return null;
+                }
             }
         } else {
-            return null;
+            if (edge.isDefault()) {
+                return "default";
+            } else {
+                return null;
+            }
         }
     }
 

@@ -65,7 +65,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 	public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
 
 		try {
-			JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(nativeInput, true);
+			JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(nativeInput, false);
 			EPML2Canonical epml2canonical = new EPML2Canonical(nativeElement.getValue());
 
 			annotationFormat.add(epml2canonical.getANF());

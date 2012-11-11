@@ -4,25 +4,29 @@
         <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xsi:type="cpf:ANDSplitType" id="id5dfcc744-7071-494a-b043-0312eeec5223"/>
-        <Node xsi:type="cpf:TimerType" timeDuration="P30M" id="f82edc45-5315-45c0-ba3d-c886730fef11">
+        <Node xsi:type="cpf:EventType" id="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462"/>
+        <Node xsi:type="cpf:ANDSplitType" id="a6edef33-adef-4887-9c45-c14328a72ddd"/>
+        <Node xsi:type="cpf:TimerType" timeDuration="P30M" id="eff74b05-7237-45b3-bea0-ac2cd731b452">
             <cancelNodeId refId="C-A"/>
         </Node>
         <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <cancelNodeId refId="f82edc45-5315-45c0-ba3d-c886730fef11"/>
+            <cancelNodeId refId="eff74b05-7237-45b3-bea0-ac2cd731b452"/>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="idb1e4f702-4d1a-416e-815e-0feb8fe96e0f"/>
+        <Node xsi:type="cpf:XORJoinType" id="d7e3cb8a-8af2-41d8-95c5-9039859e1e8e"/>
+        <Node xsi:type="cpf:EventType" id="id8cf2d771-472e-496c-bb37-b0b97de14bdd"/>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="iddb44ea56-1aaf-4652-b815-4e8b60444872" sourceId="id5dfcc744-7071-494a-b043-0312eeec5223" targetId="f82edc45-5315-45c0-ba3d-c886730fef11"/>
-        <Edge id="iddd221cd0-c5db-4c77-9efc-f821d5835440" sourceId="id5dfcc744-7071-494a-b043-0312eeec5223" targetId="C-A"/>
-        <Edge id="id2836f930-8fe4-461f-892e-e46e55f44d2f" sourceId="f82edc45-5315-45c0-ba3d-c886730fef11" targetId="idb1e4f702-4d1a-416e-815e-0feb8fe96e0f"/>
-        <Edge id="idc8a64669-6319-48a6-9077-96614037936f" sourceId="C-A" targetId="idb1e4f702-4d1a-416e-815e-0feb8fe96e0f"/>
-        <Edge id="id5c57d4c2-38c4-48c9-8888-e8944982e6df" default="false" sourceId="C-InputCondition" targetId="id5dfcc744-7071-494a-b043-0312eeec5223"/>
-        <Edge id="idbd70afdf-be0f-4d2a-9bb3-eeceab1e78c0" default="false" sourceId="idb1e4f702-4d1a-416e-815e-0feb8fe96e0f" targetId="C-OutputCondition"/>
+        <Edge id="id1e017ada-9539-47fb-b428-585c8f250cb3" sourceId="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462" targetId="a6edef33-adef-4887-9c45-c14328a72ddd"/>
+        <Edge id="id376cd628-cd18-4408-b14d-1c563776e019" sourceId="a6edef33-adef-4887-9c45-c14328a72ddd" targetId="eff74b05-7237-45b3-bea0-ac2cd731b452"/>
+        <Edge id="id12003ef0-3d3e-4f8b-8571-bff8cf566ee9" sourceId="a6edef33-adef-4887-9c45-c14328a72ddd" targetId="C-A"/>
+        <Edge id="ida5aff464-eb0f-41cb-ab01-f7e89ec7c390" sourceId="eff74b05-7237-45b3-bea0-ac2cd731b452" targetId="d7e3cb8a-8af2-41d8-95c5-9039859e1e8e"/>
+        <Edge id="id06e7c406-328d-48ba-a9b7-df70814e5089" sourceId="C-A" targetId="d7e3cb8a-8af2-41d8-95c5-9039859e1e8e"/>
+        <Edge id="id00c08471-b29e-4ca3-b718-8c32b0ff93e6" sourceId="d7e3cb8a-8af2-41d8-95c5-9039859e1e8e" targetId="id8cf2d771-472e-496c-bb37-b0b97de14bdd"/>
+        <Edge id="id8c4888bd-92c1-436e-ab4a-665dc52111af" default="false" sourceId="C-InputCondition" targetId="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462"/>
+        <Edge id="id9aafdc7a-7031-426c-a7fe-084097d1ba9c" default="false" sourceId="id8cf2d771-472e-496c-bb37-b0b97de14bdd" targetId="C-OutputCondition"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </cpf:CanonicalProcess>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <epml:epml xmlns:epml="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
   <directory>
-    <epc epcId='39' name='01.01 HC. Validate customer policy holding - lvl 4'>
+    <epc epcId='39' name='Insurance Claims Process'>
         <function id='1' defRef='1057'>
             <graphics>
                 <position height='20' width='60' x='186' y='-201'/>
@@ -168,7 +168,7 @@
             <graphics>
                 <position height='20' width='60' x='244' y='-1120'/>
             </graphics>
-            <name>Customer contacted Suncorp to lodge claim</name>
+            <name>Customer contacted Insurance to lodge claim</name>
         </event>
         <arc id='52'>
             <graphics>

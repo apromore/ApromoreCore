@@ -75,6 +75,7 @@ import de.epml.TypeProcessInterface;
 import de.epml.TypeRANGE;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
+
 ;
 
 public class EPML2Canonical {
@@ -95,8 +96,7 @@ public class EPML2Canonical {
 
     private final CanonicalProcessType cproc = new CanonicalProcessType();
     private final AnnotationsType annotations = new AnnotationsType();
-    private long ids = System.currentTimeMillis();
-
+    private long ids = 1;
 
     public CanonicalProcessType getCPF() {
         return cproc;
@@ -107,13 +107,12 @@ public class EPML2Canonical {
     }
 
     /**
-     * The constructor receives the header then does the canonization process
-     * in order to allow the user to retrieve the produced process again into
-     * the canonical format. The user also will be able to retrieve the annotation
-     * element which stores the annotation data for the canonized modelass isolated
-     * from the process flow.
-     * @param epml the header for an EPML (EPC Markup Language) which
-     * is file format for EPC diagrams.
+     * The constructor receives the header then does the canonization process in order to allow the user to retrieve the produced process again into
+     * the canonical format. The user also will be able to retrieve the annotation element which stores the annotation data for the canonized modelass
+     * isolated from the process flow.
+     * 
+     * @param epml
+     *            the header for an EPML (EPC Markup Language) which is file format for EPC diagrams.
      * @throws org.apromore.exception.CanoniserException
      * @since 1.0
      */
@@ -141,7 +140,7 @@ public class EPML2Canonical {
                         TypeEPC typeEPC = (TypeEPC) epc;
                         cproc.setName(typeEPC.getName());
                         cproc.setUri(typeEPC.getEpcId().toString());
-                        //TODO what version to add here?
+                        // TODO what version to add here?
                         cproc.setVersion("1.0");
                         NetType net = new NetType();
                         net.setName(typeEPC.getName());
@@ -156,29 +155,29 @@ public class EPML2Canonical {
                 }
                 subnet_list.clear();
             }
-        }
-        else {
+        } else {
             // The EPML element doesn't have any directory
             throw new CanoniserException("EPML file is missing a 'directory' invalid!");
-//            for (TypeEPC epc : epml.getEpcs()) {
-//                NetType net = new NetType();
-//                translateEpc(net, epc);
-//                id_map.put(epc.getEpcId(), String.valueOf(ids));
-//                net.setId(String.valueOf(ids++));
-//                cproc.getNet().add(net);
-//            }
-//            for (TaskType task : subnet_list) {
-//                task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
-//            }
-//            subnet_list.clear();
+            // for (TypeEPC epc : epml.getEpcs()) {
+            // NetType net = new NetType();
+            // translateEpc(net, epc);
+            // id_map.put(epc.getEpcId(), String.valueOf(ids));
+            // net.setId(String.valueOf(ids++));
+            // cproc.getNet().add(net);
+            // }
+            // for (TaskType task : subnet_list) {
+            // task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
+            // }
+            // subnet_list.clear();
         }
     }
 
     /**
-     * This method for removing the fake functions
-     * and events in case the modelass has them.
-     * @param epml the header for an EPML
-     * @return epml      the header for the EPML modelass after modification
+     * This method for removing the fake functions and events in case the modelass has them.
+     * 
+     * @param epml
+     *            the header for an EPML
+     * @return epml the header for the EPML modelass after modification
      * @throws CanoniserException
      * @since 1.0
      */
@@ -226,38 +225,38 @@ public class EPML2Canonical {
             }
         } else {
             throw new CanoniserException("Invalid EPC no 'directory'!");
-//            for (TypeEPC epc : epml.getEpcs()) {
-//                for (Object element : epc.getEventAndFunctionAndRole()) {
-//                    if (element instanceof TypeFunction || element instanceof TypeEvent) {
-//                        QName typeRef = new QName("typeRef");
-//                        if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
-//                            remove_list.add((TEpcElement) element);
-//                        }
-//                    }
-//                }
-//                for (TEpcElement element : remove_list) {
-//                    for (Object arc : epc.getEventAndFunctionAndRole()) {
-//                        if (arc instanceof TypeArc) {
-//                            if (((TypeArc) arc).getFlow() != null) {
-//                                if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
-//                                    for (Object arc2 : epc.getEventAndFunctionAndRole()) {
-//                                        if (arc2 instanceof TypeArc) {
-//                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
-//                                                ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
-//                                            }
-//                                        }
-//                                    }
-//                                    arc_remove_list.add((TypeArc) arc);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    for (TypeArc arc : arc_remove_list) {
-//                        epc.getEventAndFunctionAndRole().remove(arc);
-//                    }
-//                    epc.getEventAndFunctionAndRole().remove(element);
-//                }
-//            }
+            // for (TypeEPC epc : epml.getEpcs()) {
+            // for (Object element : epc.getEventAndFunctionAndRole()) {
+            // if (element instanceof TypeFunction || element instanceof TypeEvent) {
+            // QName typeRef = new QName("typeRef");
+            // if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
+            // remove_list.add((TEpcElement) element);
+            // }
+            // }
+            // }
+            // for (TEpcElement element : remove_list) {
+            // for (Object arc : epc.getEventAndFunctionAndRole()) {
+            // if (arc instanceof TypeArc) {
+            // if (((TypeArc) arc).getFlow() != null) {
+            // if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
+            // for (Object arc2 : epc.getEventAndFunctionAndRole()) {
+            // if (arc2 instanceof TypeArc) {
+            // if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
+            // ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
+            // }
+            // }
+            // }
+            // arc_remove_list.add((TypeArc) arc);
+            // }
+            // }
+            // }
+            // }
+            // for (TypeArc arc : arc_remove_list) {
+            // epc.getEventAndFunctionAndRole().remove(arc);
+            // }
+            // epc.getEventAndFunctionAndRole().remove(element);
+            // }
+            // }
         }
 
         return epml;
@@ -307,7 +306,15 @@ public class EPML2Canonical {
                 } else if (element.getValue() instanceof TypeProcessInterface) {
                     translatePI(net, (TypeProcessInterface) element.getValue());
                     addNodeAnnotations(element.getValue());
-                } else if (element.getValue() instanceof TypeArc) {
+                }
+            }
+        }
+
+        // Convert Arcs after all Elements are converted, because we need the IDs of all Elements
+        for (Object obj : epc.getEventAndFunctionAndRole()) {
+            if (obj instanceof JAXBElement) {
+                JAXBElement<?> element = (JAXBElement<?>) obj;
+                if (element.getValue() instanceof TypeArc) {
                     TypeArc arc = (TypeArc) element.getValue();
                     if (arc.getFlow() != null) {
                         if (range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget())) {
@@ -366,8 +373,7 @@ public class EPML2Canonical {
                 andJ.setId(String.valueOf(and.getId()));
                 andJ.setName(and.getName());
                 net.getNode().add(andJ);
-            }
-            else {
+            } else {
                 ANDSplitType andS = new ANDSplitType();
                 andS.setId(String.valueOf(and.getId()));
                 andS.setName(and.getName());
@@ -389,8 +395,7 @@ public class EPML2Canonical {
                 orJ.setId(String.valueOf(or.getId()));
                 orJ.setName(or.getName());
                 net.getNode().add(orJ);
-            }
-            else {
+            } else {
                 ORSplitType orS = new ORSplitType();
                 orS.setId(String.valueOf(or.getId()));
                 orS.setName(or.getName());
@@ -413,8 +418,7 @@ public class EPML2Canonical {
                 xorJ.setId(String.valueOf(xor.getId()));
                 xorJ.setName(xor.getName());
                 net.getNode().add(xorJ);
-            }
-            else {
+            } else {
                 XORSplitType xorS = new XORSplitType();
                 xorS.setId(String.valueOf(xor.getId()));
                 xorS.setName(xor.getName());
@@ -424,7 +428,6 @@ public class EPML2Canonical {
         }
         xor_list.clear();
     }
-
 
     private void addEdgeAnnotation(final TypeArc arc) throws CanoniserException {
         LineType line = new LineType();
@@ -532,26 +535,38 @@ public class EPML2Canonical {
         boolean found = false;
         for (EdgeType edge : net.getEdge()) {
             if (edge.getSourceId() != null) {
+                // Test if Edge is from a XOR-split to an Event
                 if (edge.getSourceId().equals(id.toString()) && event_ids.contains(edge.getTargetId())) {
-                    event_id = edge.getTargetId();
-                    for (EdgeType edge2 : net.getEdge()) {
-                        if (edge2.getSourceId() != null && edge2.getSourceId().equals(event_id)) {
-                            edge.setTargetId(edge2.getTargetId());
-                            edge_remove_list.add(edge2);
-                            found = true;
+                    // Test if the target Event is an Exit Event
+                    if (!isExitNode(edge.getTargetId(), net)) {
+                        event_id = edge.getTargetId();
+                        for (EdgeType edge2 : net.getEdge()) {
+                            if (edge2.getSourceId() != null && edge2.getSourceId().equals(event_id)) {
+                                edge.setTargetId(edge2.getTargetId());
+                                edge_remove_list.add(edge2);
+                                found = true;
+                            }
                         }
-                    }
-                    // Delete the unrequired event and set its name as a condition for the edge
-                    for (NodeType node : net.getNode()) {
-                        if (node.getId().equals(event_id)) {
-                            if (found) {
-                                edge.setConditionExpr(convertStringExpression(node.getName()));
-                                node_remove_list.add(node);
+                        // Delete the unrequired event and set its name as a condition for the edge
+                        for (NodeType node : net.getNode()) {
+                            if (node.getId().equals(event_id)) {
+                                if (found) {
+                                    if (node.getName() != null) {
+                                        edge.setConditionExpr(convertStringExpression(node.getName()));   
+                                    }
+                                    node_remove_list.add(node);
+                                } else {
+                                    if (node.getName() != null) {
+                                        edge.setConditionExpr(convertStringExpression(node.getName()));   
+                                    }                                    
+                                    node.setName("");
+                                }
                             }
-                            else {
-                                edge.setConditionExpr(convertStringExpression(node.getName()));
-                                node.setName("");
-                            }
+                        }
+                    } else {
+                        NodeType node = findNodeById(edge.getTargetId(), net);
+                        if (node.getName() != null) {
+                            edge.setConditionExpr(convertStringExpression(node.getName()));
                         }
                     }
                 }
@@ -567,6 +582,35 @@ public class EPML2Canonical {
         }
         node_remove_list.clear();
 
+    }
+
+    /**
+     * @param nodeId of an existing Node
+     * @param net that contains a Node with given ID
+     * @return true if the Node with the given Id has no successors (i.e. is an exit Node)
+     */
+    private boolean isExitNode(String nodeId, NetType net) {
+        NodeType node = findNodeById(nodeId, net);
+        if (node != null) {
+            for (EdgeType e: net.getEdge()) {
+                  if (node.getId().equals(e.getSourceId())) {
+                      return false;
+                  }
+            }
+            return true;
+        } else {
+            throw new IllegalArgumentException("Could not find Node "+nodeId + "in isExitNode!");
+        }
+    }
+
+    private NodeType findNodeById(String nodeId, NetType net) {
+        NodeType node = null;
+        for (NodeType n: net.getNode()) {
+            if (nodeId.equals(n.getId())) {
+                node = n;
+            }
+        }
+        return node;
     }
 
     private ConditionExpressionType convertStringExpression(final String name) {
@@ -607,7 +651,7 @@ public class EPML2Canonical {
         net.getNode().add(task);
     }
 
-    private void translateArc(final NetType net, final TypeArc arc) {
+    private void translateArc(final NetType net, final TypeArc arc) throws CanoniserException {
         if (arc.getFlow() != null && id_map.get(arc.getFlow().getSource()) != null && id_map.get(arc.getFlow().getTarget()) != null) {
             EdgeType edge = new EdgeType();
             id_map.put(arc.getId(), String.valueOf(ids));
@@ -616,8 +660,7 @@ public class EPML2Canonical {
             edge.setTargetId(id_map.get(arc.getFlow().getTarget()));
             net.getEdge().add(edge);
             flow_source_id_list.add(edge.getSourceId());
-        }
-        else if (arc.getRelation() != null) {
+        } else if (arc.getRelation() != null) {
             for (NodeType node : net.getNode()) {
                 if (node.getId().equals(id_map.get(arc.getRelation().getSource()))) {
                     if (arc.getRelation().getType() != null && arc.getRelation().getType().equals("role")) {
@@ -629,13 +672,12 @@ public class EPML2Canonical {
                         ref.getAttribute().add(att);
                         ref.setResourceTypeId(id_map.get(arc.getRelation().getTarget()));
                         if (role_ref.get(arc.getRelation().getSource()) != null) {
-                            //TODO optional removed from CPF schema
-                            //ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
-                            ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
+                            // TODO optional removed from CPF schema
+                            // ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
+                            ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); // / update
                         }
                         ((WorkType) node).getResourceTypeRef().add(ref);
-                    }
-                    else {
+                    } else {
                         ObjectRefType ref = new ObjectRefType();
                         TypeAttribute att = new TypeAttribute();
                         id_map.put(arc.getId(), String.valueOf(ids));
@@ -650,8 +692,7 @@ public class EPML2Canonical {
                         }
                         ((WorkType) node).getObjectRef().add(ref);
                     }
-                }
-                else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
+                } else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
                     ObjectRefType ref = new ObjectRefType();
                     TypeAttribute att = new TypeAttribute();
                     id_map.put(arc.getId(), String.valueOf(ids));
@@ -663,14 +704,15 @@ public class EPML2Canonical {
                     ((WorkType) node).getObjectRef().add(ref);
                 }
             }
+        } else {
+            throw new CanoniserException("Could not find source element or target element for EPC arc '" + arc.getId() + "'!");
         }
     }
 
     private void translateObject(final NetType net, final TypeObject obj) {
         if (obj.getDefRef() != null && def_ref.get(obj.getDefRef()) != null) {
             id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
-        }
-        else {
+        } else {
             ObjectType object = new ObjectType();
             id_map.put(obj.getId(), String.valueOf(ids));
             object.setId(String.valueOf(ids));
@@ -684,8 +726,7 @@ public class EPML2Canonical {
     private void translateRole(final TypeRole role) {
         if (role.getDefRef() != null && def_ref.get(role.getDefRef()) != null) {
             id_map.put(role.getId(), def_ref.get(role.getDefRef()));
-        }
-        else {
+        } else {
             HumanType obj = new HumanType();
             id_map.put(role.getId(), String.valueOf(ids));
             obj.setId(String.valueOf(ids));

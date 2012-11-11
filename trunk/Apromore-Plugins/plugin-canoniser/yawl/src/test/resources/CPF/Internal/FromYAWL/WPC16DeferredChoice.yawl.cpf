@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="c475476c-c0c0-489a-bbf6-68fb041ca798" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id52e1ee3e-9b4d-43a7-999f-65250adcb5a2" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="idaea45acb-aea9-4dc0-8b76-a971378ab7cf" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="f661b257-72ed-4f54-8762-bb944451d15c" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -55,8 +55,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id3f731466-9a47-4fda-82a3-80122a3819fc" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb716cfb4-b477-47be-a0cb-180ae49fa005" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="a4dfc511-929a-42c4-97d1-b5a346c367fc" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id64ce7da7-2ed2-40db-9ae2-6e19bd618f80" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -73,14 +73,14 @@
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
+        <Node xsi:type="cpf:StateType" id="id7b645bc1-5922-41d8-b592-62d725e641c0"/>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="false" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="false" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="false" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="id132d290f-ed6a-4660-b2a7-5a631c24a27e" sourceId="cf38fa02-c196-4db0-91ff-48bf3dc362c0" targetId="C-OutputCondition"/>
-        <Edge id="id939b9f44-81b5-432f-8a29-8451da7ad7b0" default="false" sourceId="C-C-1" targetId="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
-        <Edge id="idce835e00-c976-406c-810b-cd71237b0a45" default="false" sourceId="C-D-1" targetId="cf38fa02-c196-4db0-91ff-48bf3dc362c0"/>
+        <Edge id="id010702e6-240d-4a53-a51c-a05495433b54" sourceId="id7b645bc1-5922-41d8-b592-62d725e641c0" targetId="C-OutputCondition"/>
+        <Edge id="id35eedc54-d687-41d3-be86-6d917fdd3cf8" default="false" sourceId="C-C-1" targetId="id7b645bc1-5922-41d8-b592-62d725e641c0"/>
+        <Edge id="id804ab56a-7ce6-4bc2-8057-4e0cc0579df8" default="false" sourceId="C-D-1" targetId="id7b645bc1-5922-41d8-b592-62d725e641c0"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

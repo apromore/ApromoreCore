@@ -68,8 +68,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                 netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(YAWL_FACTORY.createLayoutNetFactsTypeFlow(existingFlowLayout), sourceElement, targetElement));
             } else {
                 LOGGER.debug("Added layout for flow using default settings. Source {} -> Target {}", sourceElement.getId(), targetElement.getId());
-                if ((getContext().getControlFlowContext().getElementInfo(sourceElement.getId()).getElementSize() != null)
-                        && (getContext().getControlFlowContext().getElementInfo(targetElement.getId()).getElementSize() != null)) {
+                if ((getContext().getControlFlowContext().getElementInfo(edge.getSourceId()).getElementSize() != null)
+                        && (getContext().getControlFlowContext().getElementInfo(edge.getTargetId()).getElementSize() != null)) {
                     netLayout.getBoundsOrFrameOrViewport().add(createDefaultFlowLayout(sourceElement, targetElement, edge));
                 }
             }
@@ -150,7 +150,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         double x = nf.parse(elementSize.getX()).doubleValue();
         double y = nf.parse(elementSize.getY()).doubleValue();
 
-        point.setX(nf.format(x + width));
+        point.setX(nf.format(x + (width /2 )));
         point.setY(nf.format(y + (height / 2)));
 
         return point;
