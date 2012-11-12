@@ -21,14 +21,12 @@ import org.omg.spec.bpmn._20100524.model.TStartEvent;
 public class CpfMessageType extends MessageType implements CpfEventType {
 
     /** Second superclass. */
-    private final CpfEventType super2;
+    private final CpfEventTypeImpl super2 = new CpfEventTypeImpl();
 
     // Constructors
 
     /** No-arg constructor. */
-    public CpfMessageType() {
-        super2 = new CpfEventTypeImpl();
-    }
+    public CpfMessageType() { }
 
     /**
      * Construct a CPF Message corresponding to a BPMN End Event.
@@ -38,8 +36,7 @@ public class CpfMessageType extends MessageType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfMessageType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
-        super2 = new CpfEventTypeImpl(endEvent, initializer);
-        CpfEventTypeImpl.construct(this, endEvent, initializer);
+        super2.construct(this, endEvent, initializer);
 
         setDirection(OUTGOING);
     }
@@ -52,8 +49,7 @@ public class CpfMessageType extends MessageType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfMessageType(final TIntermediateThrowEvent intermediateThrowEvent, final Initializer initializer) throws CanoniserException {
-        super2 = new CpfEventTypeImpl(intermediateThrowEvent, initializer);
-        CpfEventTypeImpl.construct(this, intermediateThrowEvent, initializer);
+        super2.construct(this, intermediateThrowEvent, initializer);
 
         setDirection(OUTGOING);
     }
@@ -66,8 +62,7 @@ public class CpfMessageType extends MessageType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfMessageType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
-        super2 = new CpfEventTypeImpl(startEvent, initializer);
-        CpfEventTypeImpl.construct(this, startEvent, initializer);
+        super2.construct(this, startEvent, initializer);
 
         setDirection(INCOMING);
     }
