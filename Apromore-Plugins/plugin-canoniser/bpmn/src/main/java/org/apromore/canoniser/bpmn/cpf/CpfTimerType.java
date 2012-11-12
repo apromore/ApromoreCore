@@ -4,6 +4,7 @@ package org.apromore.canoniser.bpmn.cpf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -16,6 +17,7 @@ import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TFormalExpression;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
@@ -160,5 +162,10 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
+    }
+
+    /** {@inheritDoc} */
+    public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        return CpfEventTypeImpl.toBpmn(this, initializer);
     }
 }

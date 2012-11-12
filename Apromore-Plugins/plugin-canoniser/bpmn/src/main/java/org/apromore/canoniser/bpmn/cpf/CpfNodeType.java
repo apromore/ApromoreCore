@@ -2,9 +2,12 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.Set;
+import javax.xml.bind.JAXBElement;
 
 // Local packages
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
 
 /**
  * CPF 1.0 node with convenience methods.
@@ -35,4 +38,11 @@ public interface CpfNodeType extends Attributed {
 
     /** @return every edge which has this node as its source */
     Set<EdgeType> getOutgoingEdges();
+
+    /**
+     * @param BPMN initializer  BPMN document's global construction state
+     * @return a BPMN element corresponding to this CPF element
+     * @throws CanoniserException if the BPMN element can't be created
+     */
+    JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException;
 }

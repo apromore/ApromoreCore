@@ -66,65 +66,6 @@ public class ProcessWrapper {
     // Constructor methods used by subclasses
 
     /**
-     * Translate a CPF {@link NodeType} into a BPMN {@link TFlowNode}.
-     *
-     * @param node  a CPF node
-     * @param initializer  BPMN document construction state
-     * @return a {@link TFlowElement} instance, wrapped in a {@link JAXBElement}
-     * @throws CanoniserException if <var>node</var> isn't an event or a task
-     */
-    private static JAXBElement<? extends TFlowNode> createFlowNode(final CpfNodeType node, final Initializer initializer) throws CanoniserException {
-
-        if (node instanceof EventType) {
-            // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
-            CpfNodeType cpfNode = (CpfNodeType) node;
-            if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                // Assuming a StartEvent here, but could be TBoundaryEvent too
-                return initializer.getFactory().createStartEvent(new BpmnStartEvent((CpfEventType) node, initializer));
-            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
-                return initializer.getFactory().createEndEvent(new BpmnEndEvent((CpfEventType) node, initializer));
-            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                // Assuming all intermediate events are ThrowEvents
-                return initializer.getFactory().createIntermediateThrowEvent(new BpmnIntermediateThrowEvent((CpfEventType) node, initializer));
-            } else {
-                throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
-            }
-        } else if (node instanceof RoutingType) {
-            if (node instanceof ANDJoinType || node instanceof ANDSplitType) {
-                TParallelGateway gateway = new TParallelGateway();
-                initializer.populateGateway(gateway, node);
-                return initializer.getFactory().createParallelGateway(gateway);
-            } else if (node instanceof ORJoinType || node instanceof ORSplitType) {
-                TInclusiveGateway gateway = new TInclusiveGateway();
-                initializer.populateGateway(gateway, node);
-                return initializer.getFactory().createInclusiveGateway(gateway);
-            } else if (node instanceof XORJoinType || node instanceof XORSplitType) {
-                TExclusiveGateway gateway = new TExclusiveGateway();
-                initializer.populateGateway(gateway, node);
-                return initializer.getFactory().createExclusiveGateway(gateway);
-            } else if (node instanceof StateType) {
-                TEventBasedGateway gateway = new TEventBasedGateway();
-                initializer.populateGateway(gateway, node);
-                return initializer.getFactory().createEventBasedGateway(gateway);
-            } else {
-                throw new CanoniserException("Routing \"" + node.getId() + " is not a supported type");
-            }
-        } else if (node instanceof TaskType) {
-            CpfTaskType that = (CpfTaskType) node;
-
-            if (that.getCalledElement() != null) {  // This CPF Task is a BPMN CallActivity
-                return initializer.getFactory().createCallActivity(new BpmnCallActivity(that, initializer));
-            } else if (that.getSubnetId() != null) {  // This CPF Task is a BPMN SubProcess
-                return initializer.getFactory().createSubProcess(new BpmnSubProcess(that, initializer));
-            } else {  // This CPF Task is a BPMN Task
-                return initializer.getFactory().createTask(new BpmnTask(that, initializer));
-            }
-        } else {
-            throw new CanoniserException("Node " + node.getId() + " type not supported: " + node.getClass().getCanonicalName());
-        }
-    }
-
-    /**
      * Add the lanes, nodes and so forth to a {@link TProcess} or {@link TSubProcess}.
      *
      * @param process  the {@link TProcess} or {@link TSubProcess} to be populated
@@ -169,7 +110,7 @@ public class ProcessWrapper {
 
         // Add the CPF Nodes as BPMN FlowNodes
         for (NodeType node : net.getNode()) {
-            JAXBElement<? extends TFlowNode> flowNode = createFlowNode((CpfNodeType) node, initializer);
+            JAXBElement<? extends TFlowNode> flowNode = ((CpfNodeType) node).toBpmn(initializer);
             process.getFlowElement().add(flowNode);
 
             if (node instanceof WorkType) {

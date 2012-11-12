@@ -2,6 +2,7 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.Set;
+import javax.xml.bind.JAXBElement;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
@@ -10,6 +11,7 @@ import static org.apromore.cpf.DirectionEnum.OUTGOING;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.MessageType;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
@@ -77,5 +79,10 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
+    }
+
+    /** {@inheritDoc} */
+    public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        return CpfEventTypeImpl.toBpmn(this, initializer);
     }
 }
