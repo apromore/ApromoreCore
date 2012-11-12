@@ -33,6 +33,19 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     public CpfEventTypeImpl() { }
 
     /**
+     * Fake constructor for the secondary superclass, to be called at the beginning of every actual constructor of classes which are
+     * faking multiple inheritance.
+     *
+     * @param this2  the instance under construction
+     * @param event  a BPMN Event <code>this2</code> corresponds to
+     * @param initializer  global construction state 
+     * @throws CanoniserException if construction fails
+     */
+    void construct(final CpfEventType this2, final TEvent event, final Initializer initializer) throws CanoniserException {
+        initializer.populateFlowNode((WorkType) this2, event);
+    }
+
+    /**
      * Construct a CPF Task corresponding to a BPMN End Event.
      *
      * @param endEvent  a BPMN End Event
@@ -42,10 +55,6 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     public CpfEventTypeImpl(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         construct(this, endEvent, initializer);
     }
-    static void construct(final CpfEventType this2, final TEvent event, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode((WorkType) this2, event);
-    }
-
     /**
      * Construct a CPF Task corresponding to a BPMN Intermediate Throw Event.
      *

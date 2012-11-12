@@ -46,6 +46,6 @@ public class AbstractInitializer {
      * @param message  human-legible text message about the canonisation or de-canonisation
      */
     public void warn(final String message) {
-        logger.warning(message);
+        logger.fine(message);
     }
 }

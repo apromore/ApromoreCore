@@ -74,8 +74,22 @@ public class CpfNetType extends NetType implements Attributed {
                     }
                 }
 
-                @Override public void visit(final TBoundaryEvent that) {
-                    unimplemented(that);
+                @Override public void visit(final TBoundaryEvent boundaryEvent) {
+                    //unimplemented(that);
+
+                    try {
+                        switch (eventType(boundaryEvent)) {
+/*
+                        case MESSAGE:   net.getNode().add(new CpfMessageType(boundaryEvent, initializer));   break;
+                        case NONE:      net.getNode().add(new CpfEventTypeImpl(intermediateThrowEvent, initializer)); break;
+                        case TERMINATE: throw new CanoniserException("No such thing as a BPMN intermediate Terminate Event");
+*/
+                        case TIMER:     net.getNode().add(new CpfTimerType(boundaryEvent, initializer));     break;
+                        default:        throw new CanoniserException("Boundary events not supported");
+                        }
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TBusinessRuleTask businessRuleTask) {
@@ -232,7 +246,6 @@ public class CpfNetType extends NetType implements Attributed {
                         case TERMINATE: throw new CanoniserException("No such thing as a BPMN intermediate Terminate Event");
                         case TIMER:     net.getNode().add(new CpfTimerType(intermediateThrowEvent, initializer));     break;
                         }
-                        net.getNode().add(new CpfEventTypeImpl(intermediateThrowEvent, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }

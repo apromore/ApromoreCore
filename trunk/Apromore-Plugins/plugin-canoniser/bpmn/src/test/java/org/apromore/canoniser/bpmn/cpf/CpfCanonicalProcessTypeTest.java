@@ -407,7 +407,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
      */
     @Test
     public void testCanonise12() throws Exception {
-        //BpmnDefinitions definitions = testCanonise("Case 12.bpmn");
+        CpfCanonicalProcessType cpf = testCanonise("Case 12.bpmn");
 
         // not yet implemented
     }
