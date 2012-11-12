@@ -30,6 +30,7 @@ import de.hpi.layouting.model.LayoutingBoundsImpl;
 import de.hpi.layouting.model.LayoutingDockers;
 import de.hpi.layouting.model.LayoutingElement;
 
+import java.lang.RuntimeException;
 import java.util.Random;
 
 /**
@@ -80,8 +81,14 @@ public class EPCEdgeLayouter {
 
     private void calculateGlobals() {
         // should both be only one !
-        this.source = edge.getIncomingLinks().get(0);
-        this.target = edge.getOutgoingLinks().get(0);
+        if (!edge.getIncomingLinks().isEmpty()) {
+            this.source = edge.getIncomingLinks().get(0);
+        } else
+            throw  new RuntimeException("edge hs no source : " + edge.getId());
+        if (!edge.getOutgoingLinks().isEmpty()) {
+            this.target = edge.getOutgoingLinks().get(0);
+        }  else
+            throw  new RuntimeException("edge hs no target : " + edge.getId());
 
         this.sourceGeometry = source.getGeometry();
         this.targetGeometry = target.getGeometry();
