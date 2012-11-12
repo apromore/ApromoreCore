@@ -23,7 +23,6 @@ public class BpmnEndEvent extends TEndEvent {
      * @throws CanoniserException  if the data object can't be constructed
      */
     public BpmnEndEvent(final CpfEventType cpfEvent, final Initializer initializer) throws CanoniserException {
-
-        initializer.populateFlowNode(this, cpfEvent);
+        initializer.populateEvent(this, cpfEvent);
     }
 }
