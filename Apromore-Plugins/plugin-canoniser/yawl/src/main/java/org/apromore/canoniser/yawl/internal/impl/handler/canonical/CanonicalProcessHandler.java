@@ -14,6 +14,7 @@ package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -54,6 +55,8 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalProcessHandler.class);
 
+    private static final Pattern NCNAME_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}-_\\x2E]*");
+    
     /*
      * (non-Javadoc)
      *
@@ -133,7 +136,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         // First try to get our own Extension
         MetaDataType metaData = getContext().getExtensionFromAnnotations(null, ExtensionUtils.METADATA, MetaDataType.class,
                 YAWL_FACTORY.createMetaDataType());
-        // Now override with changes values on CPF
+        // Now override with changed values on CPF
         try {
             if (c.getCreationDate() != null) {
                 DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
@@ -151,7 +154,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         } catch (NumberFormatException e) {
             metaData.setVersion(BigDecimal.ONE);
         }
-        if (metaData.getIdentifier() == null) {
+        if (metaData.getIdentifier() == null || !NCNAME_PATTERN.matcher(metaData.getIdentifier()).find()) {
             metaData.setIdentifier(generateUUID(c.getUri()));
         }
         if (c.getAuthor() != null && metaData.getContributor().isEmpty()) {
