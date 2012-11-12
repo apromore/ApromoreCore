@@ -2,10 +2,14 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.Set;
+import javax.xml.bind.JAXBElement;
 
 // Local packages
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.ORJoinType;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 
 /**
  * CPF 1.0 OR join routing with convenience methods.
@@ -30,5 +34,12 @@ public class CpfORJoinType extends ORJoinType implements CpfRoutingType {
     /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
+    }
+
+    /** {@inheritDoc} */
+    public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        TInclusiveGateway gateway = new TInclusiveGateway();
+        initializer.populateGateway(gateway, this);
+        return initializer.getFactory().createInclusiveGateway(gateway);
     }
 }

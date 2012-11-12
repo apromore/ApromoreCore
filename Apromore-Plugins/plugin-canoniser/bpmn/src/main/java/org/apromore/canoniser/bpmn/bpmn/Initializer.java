@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,11 +16,13 @@ import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.Attributed;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
+import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
+import org.apromore.canoniser.bpmn.cpf.CpfTimerType;
 import org.apromore.canoniser.bpmn.cpf.ExtensionConstants;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.anf.AnnotationType;
@@ -33,16 +36,22 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCatchEvent;
 import org.omg.spec.bpmn._20100524.model.TComplexGateway;
+import org.omg.spec.bpmn._20100524.model.TEvent;
+import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TExtensionElements;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TFormalExpression;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.bpmn._20100524.model.TThrowEvent;
+import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
 import org.omg.spec.dd._20100524.di.DiagramElement;
 
 /**
@@ -50,7 +59,7 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-class Initializer extends AbstractInitializer implements ExtensionConstants {
+public class Initializer extends AbstractInitializer implements ExtensionConstants {
 
     // CPF document root
     private final CanonicalProcessType cpf;
@@ -105,7 +114,7 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
     }
 
     /** @return shared {@link BpmnObjectFactory} instance */
-    BpmnObjectFactory getFactory() {
+    public BpmnObjectFactory getFactory() {
         return factory;
     }
 
@@ -271,7 +280,56 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
         }
     }
 
-    void populateGateway(final TGateway gateway, final CpfNodeType cpfNode) throws CanoniserException {
+    void populateEvent(final TCatchEvent event, final CpfEventType cpfEvent) throws CanoniserException {
+        populateEvent(event, event.getEventDefinition(), cpfEvent);
+    }
+
+    void populateEvent(final TThrowEvent event, final CpfEventType cpfEvent) throws CanoniserException {
+        populateEvent(event, event.getEventDefinition(), cpfEvent);
+    }
+
+    private void populateEvent(final TEvent                                        event,
+                               final List<JAXBElement<? extends TEventDefinition>> eventDefinitionList,
+                               final CpfEventType                                  cpfEvent) throws CanoniserException {
+
+        populateFlowNode(event, cpfEvent);
+
+        if (cpfEvent instanceof CpfTimerType) {
+            CpfTimerType cpfTimer = (CpfTimerType) cpfEvent;
+
+            if (cpfTimer.getTimeDate() != null) {
+                TTimerEventDefinition ted = new TTimerEventDefinition();
+                TFormalExpression fe = new TFormalExpression();
+                try {
+                    fe.setEvaluatesToTypeRef(cpfTimer.getTimeDate().getXMLSchemaType());
+                } catch (IllegalStateException e) { /* skip @evaluatesToTypeRef if no XSD datatype matches */ }
+                fe.getContent().add(cpfTimer.getTimeDate().toXMLFormat());
+                ted.setTimeDate(fe);
+                eventDefinitionList.add(factory.createTimerEventDefinition(ted));
+            }
+
+            if (cpfTimer.getTimeDuration() != null) {
+                TTimerEventDefinition ted = new TTimerEventDefinition();
+                TFormalExpression fe = new TFormalExpression();
+                try {
+                    fe.setEvaluatesToTypeRef(cpfTimer.getTimeDuration().getXMLSchemaType());
+                } catch (IllegalStateException e) { /* skip @evaluatesToTypeRef if no XSD datatype matches */ }
+                fe.getContent().add(cpfTimer.getTimeDuration().toString());
+                ted.setTimeDuration(fe);
+                eventDefinitionList.add(factory.createTimerEventDefinition(ted));
+            }
+
+            if (cpfTimer.getTimeExpression() != null) {
+                TTimerEventDefinition ted = new TTimerEventDefinition();
+                TFormalExpression fe = new TFormalExpression();
+                fe.getContent().add(cpfTimer.getTimeExpression().getExpression());
+                ted.setTimeCycle(fe);
+                eventDefinitionList.add(factory.createTimerEventDefinition(ted));
+            }
+        }
+    }
+
+    public void populateGateway(final TGateway gateway, final CpfNodeType cpfNode) throws CanoniserException {
         assert cpfNode instanceof RoutingType : "Tried to populate " + cpfNode.getId() + " as if it was a gateway";
         populateFlowNode(gateway, cpfNode);
 

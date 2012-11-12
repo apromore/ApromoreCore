@@ -3,9 +3,13 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 // Local packages
+import org.apromore.canoniser.bpmn.bpmn.BpmnCallActivity;
+import org.apromore.canoniser.bpmn.bpmn.BpmnSubProcess;
+import org.apromore.canoniser.bpmn.bpmn.BpmnTask;
 import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
@@ -14,6 +18,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TCallActivity;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
 
@@ -95,6 +100,17 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      */
     public CpfTaskType(final TTask task, final Initializer initializer) throws CanoniserException {
         initializer.populateActivity(this, task);
+    }
+
+    /** {@inheritDoc} */
+    public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        if (getCalledElement() != null) {  // This CPF Task is a BPMN CallActivity
+            return initializer.getFactory().createCallActivity(new BpmnCallActivity(this, initializer));
+        } else if (getSubnetId() != null) {  // This CPF Task is a BPMN SubProcess
+            return initializer.getFactory().createSubProcess(new BpmnSubProcess(this, initializer));
+        } else {  // This CPF Task is a BPMN Task
+            return initializer.getFactory().createTask(new BpmnTask(this, initializer));
+        }
     }
 
     // Accessor methods

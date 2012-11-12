@@ -3,14 +3,19 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.bind.JAXBElement;
 
 // Local packages
+import org.apromore.canoniser.bpmn.bpmn.BpmnEndEvent;
+import org.apromore.canoniser.bpmn.bpmn.BpmnIntermediateThrowEvent;
+import org.apromore.canoniser.bpmn.bpmn.BpmnStartEvent;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
@@ -91,5 +96,23 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      */
     public Set<EdgeType> getOutgoingEdges() {
         return outgoingEdges;
+    }
+
+    /** {@inheritDoc} */
+    public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        return toBpmn(this, initializer);
+    }
+    static <T extends CpfEventType> JAXBElement<? extends TFlowNode> toBpmn(final T event, final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+        if (event.getIncomingEdges().size() == 0 && event.getOutgoingEdges().size() > 0) {
+            // Assuming a StartEvent here, but could be TBoundaryEvent too
+            return initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer));
+        } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() == 0) {
+            return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
+        } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() > 0) {
+            // Assuming all intermediate events are ThrowEvents
+            return initializer.getFactory().createIntermediateThrowEvent(new BpmnIntermediateThrowEvent(event, initializer));
+        } else {
+            throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
+        }
     }
 }
