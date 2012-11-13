@@ -503,7 +503,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">a model with default flows</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.bpmn">a terminate event</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.svg"/></div>
      */
@@ -515,5 +515,16 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         CpfEventType event = (CpfEventType) cpf.getElement("sid-EBF52F7C-557C-48A4-8709-B056A04C97E2");
         assertEquals(3, event.getCancelNodeId().size());
         assertEquals(2, event.getCancelEdgeId().size());
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">error events</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Error.svg"/></div>
+     */
+    @Ignore
+    @Test
+    public void testError() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Error.bpmn");
     }
 }
