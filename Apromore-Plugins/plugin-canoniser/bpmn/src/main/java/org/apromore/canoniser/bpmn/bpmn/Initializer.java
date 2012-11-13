@@ -17,6 +17,7 @@ import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.Attributed;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
+import org.apromore.canoniser.bpmn.cpf.CpfMessageType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectType;
@@ -48,6 +49,7 @@ import org.omg.spec.bpmn._20100524.model.TFormalExpression;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TThrowEvent;
@@ -308,6 +310,21 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                                final CpfEventType                                  cpfEvent) throws CanoniserException {
 
         populateFlowNode(event, cpfEvent);
+
+        if (cpfEvent instanceof CpfMessageType) {
+            CpfMessageType cpfMessage = (CpfMessageType) cpfEvent;
+
+            /*
+            switch (cpfMessage.getDirection) {
+            case INCOMING:
+            case OUTGOING:
+            }
+            */
+
+            TMessageEventDefinition med = new TMessageEventDefinition();
+            //med.setMessageRef((QName) ...);
+            eventDefinitionList.add(factory.createMessageEventDefinition(med));
+        }
 
         if (cpfEvent instanceof CpfTimerType) {
             CpfTimerType cpfTimer = (CpfTimerType) cpfEvent;

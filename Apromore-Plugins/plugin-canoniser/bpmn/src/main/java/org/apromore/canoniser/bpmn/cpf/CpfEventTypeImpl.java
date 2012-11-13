@@ -16,6 +16,7 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.WorkType;
+import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TEventDefinition;
@@ -56,7 +57,18 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     }
 
     /**
-     * Construct a CPF Task corresponding to a BPMN End Event.
+     * Construct a CPF Event corresponding to a BPMN Boundary Event.
+     *
+     * @param endEvent  a BPMN Boundary Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfEventTypeImpl(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
+        construct(this, boundaryEvent, initializer);
+    }
+
+    /**
+     * Construct a CPF Event corresponding to a BPMN End Event.
      *
      * @param endEvent  a BPMN End Event
      * @param initializer  global construction state
@@ -99,7 +111,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
         }
     }
     /**
-     * Construct a CPF Task corresponding to a BPMN Intermediate Throw Event.
+     * Construct a CPF Event corresponding to a BPMN Intermediate Throw Event.
      *
      * @param intermediateThrowEvent  a BPMN Intermediate Throw Event
      * @param initializer  global construction state
@@ -110,7 +122,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     }
 
     /**
-     * Construct a CPF Task corresponding to a BPMN Start Event.
+     * Construct a CPF Event corresponding to a BPMN Start Event.
      *
      * @param startEvent  a BPMN Start Event
      * @param initializer  global construction state
