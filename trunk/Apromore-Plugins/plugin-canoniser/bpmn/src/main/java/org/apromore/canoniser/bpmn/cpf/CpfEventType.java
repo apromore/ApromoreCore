@@ -5,7 +5,7 @@ package org.apromore.canoniser.bpmn.cpf;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public interface CpfEventType extends CpfNodeType {
+public interface CpfEventType extends CpfWorkType {
 
     // null specification
 }

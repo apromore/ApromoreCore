@@ -20,7 +20,7 @@ public class BpmnIntermediateThrowEvent extends TIntermediateThrowEvent {
      *
      * @param cpfEvent  a CPF event
      * @param initializer  BPMN document construction state
-     * @throws CanoniserException  if the data object can't be constructed
+     * @throws CanoniserException  if the throw event can't be constructed
      */
     public BpmnIntermediateThrowEvent(final CpfEventType cpfEvent, final Initializer initializer) throws CanoniserException {
         initializer.populateEvent(this, cpfEvent);

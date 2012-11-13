@@ -20,7 +20,7 @@ public class BpmnBoundaryEvent extends TBoundaryEvent {
      *
      * @param cpfEvent  a CPF event
      * @param initializer  BPMN document construction state
-     * @throws CanoniserException  if the data object can't be constructed
+     * @throws CanoniserException  if the boundary event can't be constructed
      */
     public BpmnBoundaryEvent(final CpfEventType cpfEvent, final Initializer initializer) throws CanoniserException {
         initializer.populateEvent(this, cpfEvent);
