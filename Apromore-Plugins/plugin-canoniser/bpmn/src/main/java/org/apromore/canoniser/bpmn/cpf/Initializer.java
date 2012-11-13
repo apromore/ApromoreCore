@@ -66,7 +66,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
     }
 
     /** @param net  new Net to be added to the top level of the CPF document */
-    void addNet(final NetType net) {
+    void addNet(final CpfNetType net) {
         cpf.getNet().add(net);
     }
 
@@ -127,6 +127,21 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      */
     Object findElement(final TBaseElement bpmnElement) {
         return bpmnElementToCpfElementMap.get(bpmnElement);
+    }
+
+    /**
+     * @param node  a CPF node
+     * @return the CPF Net which the <code>node</code> belongs to
+     */
+    public CpfNetType findParent(final CpfNodeType node) {
+        for (NetType net : cpf.getNet()) {
+            if (net.getNode().contains(node)) {
+                return (CpfNetType) net;
+            }
+        }
+
+        // Didn't find a parent
+        return null;
     }
 
     /**

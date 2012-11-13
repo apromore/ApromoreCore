@@ -27,7 +27,7 @@ import org.omg.spec.bpmn._20100524.model.TTask;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfTaskType extends TaskType implements CpfNodeType {
+public class CpfTaskType extends TaskType implements CpfWorkType {
 
     // Extension attribute names
 

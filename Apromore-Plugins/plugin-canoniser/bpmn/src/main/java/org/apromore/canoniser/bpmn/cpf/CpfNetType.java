@@ -41,10 +41,10 @@ public class CpfNetType extends NetType implements Attributed {
      * @throws CanoniserException  if the net (and its subnets) can't be created and added
      */
     public CpfNetType(final ProcessWrapper process,
-                      final NetType parent,
-                      final Initializer initializer) throws CanoniserException {
+                      final NetType        parent,
+                      final Initializer    initializer) throws CanoniserException {
 
-        final CpfNetType net = this;  // needed so that the inner classes can reference this instance
+        final CpfNetType net = this;  // inner classes are easier to understand if there's an alternative to CpfNetType.this
 
         net.setId(initializer.newId(process.getId()));
         if (parent == null) {
