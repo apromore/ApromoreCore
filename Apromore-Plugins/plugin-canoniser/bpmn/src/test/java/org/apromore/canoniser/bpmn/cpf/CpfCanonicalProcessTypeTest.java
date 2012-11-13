@@ -501,4 +501,19 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         CpfEdgeType edge2 = (CpfEdgeType) cpf.getElement("sid-C2248280-A6CE-4167-B485-7C985973698A");
         assert edge2.isDefault() : "Default edge of Task not found";
     }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">a model with default flows</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.svg"/></div>
+     */
+    @Test
+    public void testTerminate() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Terminate.bpmn");
+
+        // Check that the 3 nodes and 2 edges of the process containing the Terminate event are in the cancellation list
+        CpfEventType event = (CpfEventType) cpf.getElement("sid-EBF52F7C-557C-48A4-8709-B056A04C97E2");
+        assertEquals(3, event.getCancelNodeId().size());
+        assertEquals(2, event.getCancelEdgeId().size());
+    }
 }

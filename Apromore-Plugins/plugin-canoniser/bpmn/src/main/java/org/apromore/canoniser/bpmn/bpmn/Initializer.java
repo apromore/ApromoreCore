@@ -113,6 +113,21 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         return idMap.get(cpfId);
     }
 
+    /**
+     * @param node  a CPF Node
+     * @return the CPF Net containing the <code>node</code>
+     */
+    CpfNetType findParent(final CpfNodeType node) {
+        for (NetType net : cpf.getNet()) {
+            if (net.getNode().contains(node)) {
+                return (CpfNetType) net;
+            }
+        }
+
+        // Didn't find a parent
+        return null;
+    }
+
     /** @return shared {@link BpmnObjectFactory} instance */
     public BpmnObjectFactory getFactory() {
         return factory;
