@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="SimpleMakeTripProcess.ywl" name="Simple Make Trip Process">
-    <Annotation id="id508da127-1e2a-43de-8d28-6be4c4e0957b">
+    <Annotation id="c7de671f-b2a2-450d-9f9a-5ebc39422213">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>Simple Make Trip Process</title>
@@ -12,15 +12,15 @@
             <identifier>UID_47e1bbf0-7677-4469-ba47-2f77a24bab97</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="fcdb9824-fc0a-4bc4-b98b-c82fcf387eeb" cpfId="N-Make-Trip-Process">
+    <Annotation xsi:type="anf:GraphicsType" id="id75839a73-7ca7-4560-99a7-9a60a597b06d" cpfId="N-Make-Trip-Process">
         <size width="1761" height="685"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id85bb7202-c364-4f55-afc7-af017544c41f" cpfId="C-InputCondition-1">
+    <Annotation xsi:type="anf:GraphicsType" id="idb7267c4b-43a1-47cb-99e0-a413bcd5850a" cpfId="C-InputCondition-1">
         <position x="28.0" y="104.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="fb39d7d2-fcac-48e6-adc7-5aabe02c0b95" cpfId="C-InputCondition-1-register-3">
+    <Annotation xsi:type="anf:GraphicsType" id="f141423c-0e2c-4a1d-a2b8-de2d6f6f1840" cpfId="C-InputCondition-1-register-3">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition_1" target="register_3">
             <ports in="13" out="12"/>
             <attributes>
@@ -35,8 +35,8 @@
         <position x="132.0" y="119.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id6e7731bf-6978-40b7-a065-edc16c2c40a2" cpfId="id1ae9ff4b-ea17-4ae5-a0ab-5e1d44a5e805"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id778f93e1-e945-48e8-8a9c-72b0980e6e5e" cpfId="C-register-3">
+    <Annotation xsi:type="anf:GraphicsType" id="id3dae5c43-901a-460d-8469-645051f43835" cpfId="id87b1fa1b-f89c-4e45-af24-e4e404181f56"/>
+    <Annotation xsi:type="anf:GraphicsType" id="af6c75ac-7bac-44eb-8ec0-7211491a7a4d" cpfId="C-register-3">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="OR_split">
             <position>13</position>
             <attributes>
@@ -53,8 +53,8 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idfd2c81e0-b01e-4bf4-9fbd-2c11413827cd" cpfId="idc430bedd-cdd4-46c1-9f86-da6d18361182"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idff91d4fe-9b87-4b80-8f61-e39f832df5ba" cpfId="C-book-hotel-9">
+    <Annotation xsi:type="anf:GraphicsType" id="idb0fcb7b5-f5bf-47b8-b341-cdd029336d19" cpfId="ida0da2af1-29f1-43c8-9569-1581141c71ce"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idfb3897c8-2988-4979-8968-0ca159680051" cpfId="C-book-hotel-9">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="21,0" w="97,0" x="228,0" y="136,0"/>
@@ -64,8 +64,8 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="f0a7923c-b8d7-427e-9547-daf6fc36d830" cpfId="id69fd10a1-c426-4b6a-832a-dcd4d59d9f15"/>
-    <Annotation xsi:type="anf:GraphicsType" id="c4ccfcd3-73c9-4117-bc33-5ce4c1e57468" cpfId="C-book-flight-8">
+    <Annotation xsi:type="anf:GraphicsType" id="id84c86f08-ed2c-4292-8a5a-02ea7728dc1a" cpfId="idc23be72f-850a-4d3f-999b-1cce4f94afee"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idf26fa4d3-f973-4d64-be9c-4f725f7cc86b" cpfId="C-book-flight-8">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="21,0" w="97,0" x="228,0" y="64,0"/>
@@ -75,8 +75,8 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ida397218b-0e6e-4b9a-834c-4f5b76b4d60a" cpfId="idf3c3e0d3-2585-48b0-98af-1bb61efbf5a3"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idef47f73f-3187-402c-9e69-d8c4ffabf7f6" cpfId="C-book-car-10">
+    <Annotation xsi:type="anf:GraphicsType" id="idfc1987d6-772a-4d05-9b2b-64c4a8998d0b" cpfId="iddda119ee-c5ba-467a-97f5-f1fab6590816"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id701d7d4c-b2f7-498b-b671-7c509d992e97" cpfId="C-book-car-10">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="21,0" w="97,0" x="228,0" y="208,0"/>
@@ -86,11 +86,11 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id6531fb07-a9e8-43bd-8dfe-4748b8e13eca" cpfId="id17468bb7-5ecb-4ee0-a2e4-c8748523f6dc"/>
-    <Annotation xsi:type="anf:GraphicsType" id="f6a41ea9-9acd-4d74-ba95-3084570f35de" cpfId="id6a7265e8-7f36-4c34-b4a6-4449379f4130"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idc8f7e5bd-32f6-49a8-ac4a-384610b9c9ca" cpfId="id4b25c465-0d7f-43df-b6f1-2e36600dfe5a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id918b93df-372d-4bf6-aac2-26157c4f4371" cpfId="id47eda9b5-52f4-44da-8e7b-be6fc2127c65"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id20a6dcb6-b72a-4440-bd38-8812cd7b550a" cpfId="C-pay-11">
+    <Annotation xsi:type="anf:GraphicsType" id="id7a28ba74-2473-4553-8eed-821404975be8" cpfId="ida70ff09b-6c49-4e3a-80b9-1be261770157"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idf043f6bf-9944-4a59-b67e-80f52115b130" cpfId="ida63633f4-2a07-441e-bb50-759ff858a238"/>
+    <Annotation xsi:type="anf:GraphicsType" id="f091cf13-2a93-4088-aed8-e373b7d521f6" cpfId="id6932b38c-1ba3-4e40-a8cd-5ecad2770d04"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ideb6e6ffd-d818-4dfa-bdf9-dc6488720545" cpfId="idebd28731-596a-490a-9cc2-48a7d79b998d"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ae775263-042b-41dd-8bce-06ad1515e911" cpfId="C-pay-11">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="OR_join">
             <position>12</position>
             <attributes>
@@ -107,7 +107,7 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id70ef30cf-0fb8-4990-9b57-5b69c2683c2b" cpfId="C-pay-11-OutputCondition-2">
+    <Annotation xsi:type="anf:GraphicsType" id="idca7500a6-3f1b-42db-86c0-ba5f7cf53d98" cpfId="C-pay-11-OutputCondition-2">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="pay_11" target="OutputCondition_2">
             <ports in="13" out="12"/>
             <attributes>
@@ -122,7 +122,7 @@
         <position x="480.0" y="119.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idb9a6cce8-f3e0-459d-bc80-d883726b02ab" cpfId="C-OutputCondition-2">
+    <Annotation xsi:type="anf:GraphicsType" id="b310763c-eae2-4a8e-8e5b-1d276afe6e16" cpfId="C-OutputCondition-2">
         <position x="480.0" y="104.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>

@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="SimpleMakeTripProcess.ywl">
+        <name>Simple Make Trip Process</name>
+        <metaData>
+            <title>Simple Make Trip Process</title>
+            <creator>Chun Ouyang</creator>
+            <description>A simple one-level process that provides a trip booking service.</description>
+            <contributor>Chun Ouyang</contributor>
+            <validFrom>2008-09-15</validFrom>
+            <version>1.3</version>
+            <persistent>false</persistent>
+            <identifier>UID_47e1bbf0-7677-4469-ba47-2f77a24bab97</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id84d497ef-a389-4a9c-9c43-0febb40c68df">
+            <name>register</name>
+            <inputParam>
+                <index>1</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>registrInfo</name>
+                <type>tripRegisterType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="b47dd539-1f1d-4eaa-bf69-1b1611c3ae0e">
+            <name>book hotel</name>
+            <inputParam>
+                <index>1</index>
+                <name>startDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>endDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>hotelDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ide2cacb0d-6d86-470f-a653-9c7d7608cf7f">
+            <name>book flight</name>
+            <inputParam>
+                <index>1</index>
+                <name>startDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>endDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>flightDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="b9b02341-ac25-4f1d-9f72-1481483d8908">
+            <name>book car</name>
+            <inputParam>
+                <index>1</index>
+                <name>startDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>endDate</name>
+                <type>date</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>carDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id9887302a-00fb-44c2-b6bb-99da03177e2c">
+            <name>pay</name>
+            <inputParam>
+                <index>1</index>
+                <name>hotelDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>payAccNumber</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>carDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>flightDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Make-Trip-Process">
+            <name>Make_Trip_Process</name>
+            <localVariable>
+                <index>0</index>
+                <name>carDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>n/a</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>1</index>
+                <name>customer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>Please type name ...</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>2</index>
+                <name>flightDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>n/a</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>3</index>
+                <name>hotelDetails</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>n/a</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>4</index>
+                <name>registrInfo</name>
+                <type>tripRegisterType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue></initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-InputCondition-1">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-register-3"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-register-3">
+                    <name>register</name>
+                    <flowsInto>
+                        <nextElementRef id="C-book-hotel-9"/>
+                        <predicate>/Make_Trip_Process/registrInfo/want_hotel='true'</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-book-flight-8"/>
+                        <predicate>/Make_Trip_Process/registrInfo/want_flight='true'</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-book-car-10"/>
+                        <predicate>/Make_Trip_Process/registrInfo/want_car='true'</predicate>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="or"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/N-Make-Trip-Process/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;registrInfo&gt;{/C-register-3/registrInfo/*}&lt;/registrInfo&gt;"/>
+                            <mapsTo>registrInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/C-register-3/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id84d497ef-a389-4a9c-9c43-0febb40c68df"/>
+                </task>
+                <task id="C-book-hotel-9">
+                    <name>book hotel</name>
+                    <flowsInto>
+                        <nextElementRef id="C-pay-11"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;startDate&gt;{/N-Make-Trip-Process/registrInfo/startDate/text()}&lt;/startDate&gt;"/>
+                            <mapsTo>startDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;endDate&gt;{/N-Make-Trip-Process/registrInfo/endDate/text()}&lt;/endDate&gt;"/>
+                            <mapsTo>endDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/N-Make-Trip-Process/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;hotelDetails&gt;{/C-book-hotel-9/hotelDetails/text()}&lt;/hotelDetails&gt;"/>
+                            <mapsTo>hotelDetails</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="b47dd539-1f1d-4eaa-bf69-1b1611c3ae0e"/>
+                </task>
+                <task id="C-book-flight-8">
+                    <name>book flight</name>
+                    <flowsInto>
+                        <nextElementRef id="C-pay-11"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;startDate&gt;{/N-Make-Trip-Process/registrInfo/startDate/text()}&lt;/startDate&gt;"/>
+                            <mapsTo>startDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;endDate&gt;{/N-Make-Trip-Process/registrInfo/endDate/text()}&lt;/endDate&gt;"/>
+                            <mapsTo>endDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/N-Make-Trip-Process/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;flightDetails&gt;{/C-book-flight-8/flightDetails/text()}&lt;/flightDetails&gt;"/>
+                            <mapsTo>flightDetails</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="ide2cacb0d-6d86-470f-a653-9c7d7608cf7f"/>
+                </task>
+                <task id="C-book-car-10">
+                    <name>book car</name>
+                    <flowsInto>
+                        <nextElementRef id="C-pay-11"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;startDate&gt;{/N-Make-Trip-Process/registrInfo/startDate/text()}&lt;/startDate&gt;"/>
+                            <mapsTo>startDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;endDate&gt;{/N-Make-Trip-Process/registrInfo/endDate/text()}&lt;/endDate&gt;"/>
+                            <mapsTo>endDate</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/N-Make-Trip-Process/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;carDetails&gt;{/C-book-car-10/carDetails/text()}&lt;/carDetails&gt;"/>
+                            <mapsTo>carDetails</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="b9b02341-ac25-4f1d-9f72-1481483d8908"/>
+                </task>
+                <task id="C-pay-11">
+                    <name>pay</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition-2"/>
+                    </flowsInto>
+                    <join code="or"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;hotelDetails&gt;{/N-Make-Trip-Process/hotelDetails/text()}&lt;/hotelDetails&gt;"/>
+                            <mapsTo>hotelDetails</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;payAccNumber&gt;{/N-Make-Trip-Process/registrInfo/payAccNumber/text()}&lt;/payAccNumber&gt;"/>
+                            <mapsTo>payAccNumber</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;customer&gt;{/N-Make-Trip-Process/customer/text()}&lt;/customer&gt;"/>
+                            <mapsTo>customer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;carDetails&gt;{/N-Make-Trip-Process/carDetails/text()}&lt;/carDetails&gt;"/>
+                            <mapsTo>carDetails</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;flightDetails&gt;{/N-Make-Trip-Process/flightDetails/text()}&lt;/flightDetails&gt;"/>
+                            <mapsTo>flightDetails</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id9887302a-00fb-44c2-b6bb-99da03177e2c"/>
+                </task>
+                <outputCondition id="C-OutputCondition-2">
+                    <name></name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="de" country="DE"/>
+        <specification id="SimpleMakeTripProcess.ywl">
+            <size w="100" h="100"/>
+            <net id="N-Make-Trip-Process">
+                <viewport x="0" y="0" w="1761" h="685"/>
+                <frame x="0" y="0" w="1761" h="685"/>
+                <bounds x="0" y="0" w="1761" h="685"/>
+                <container id="C-InputCondition-1">
+                    <vertex>
+                        <attributes>
+                            <bounds x="28,0" y="104,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="12,0" y="136,0" w="96,0" h="64,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-register-3">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="132,0" y="104,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="104,0" y="136,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="OR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="163,0" y="104,0" w="11,0" h="32,0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-book-hotel-9">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="258,0" y="104,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="228,0" y="136,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-book-flight-8">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="258,0" y="32,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="228,0" y="64,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-book-car-10">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="258,0" y="176,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="228,0" y="208,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-pay-11">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="380,0" y="104,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="344,0" y="136,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="OR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="370,0" y="104,0" w="11,0" h="32,0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-OutputCondition-2">
+                    <vertex>
+                        <attributes>
+                            <bounds x="480,0" y="104,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="464,0" y="136,0" w="96,0" h="64,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-book-hotel-9" target="C-pay-11">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="274,0" y="120,0"/>
+                            <value x="396,0" y="120,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-register-3" target="C-book-flight-8">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="148,0" y="120,0"/>
+                            <value x="274,0" y="48,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-book-flight-8" target="C-pay-11">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="274,0" y="48,0"/>
+                            <value x="396,0" y="120,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-register-3" target="C-book-car-10">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="148,0" y="120,0"/>
+                            <value x="274,0" y="192,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-book-car-10" target="C-pay-11">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="274,0" y="192,0"/>
+                            <value x="396,0" y="120,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-pay-11" target="C-OutputCondition-2">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="411,0" y="119,5"/>
+                            <value x="480,0" y="119,5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-register-3" target="C-book-hotel-9">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="148,0" y="120,0"/>
+                            <value x="274,0" y="120,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition-1" target="C-register-3">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="59,0" y="119,5"/>
+                            <value x="132,0" y="119,5"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

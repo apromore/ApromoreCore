@@ -1,0 +1,2776 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="YAWL4Film-Process">
+        <name>Film Production Process</name>
+        <metaData>
+            <title>Film Production Process</title>
+            <creator>ouyang</creator>
+            <description>Automation of film production process on daily basis</description>
+            <contributor>ouyang</contributor>
+            <version>3.9</version>
+            <persistent>false</persistent>
+            <identifier>UID_6b5c7e8d-c539-44f1-a592-100ebc91efe5</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ida815c7b5-7430-498f-a211-f2e80c635ebf">
+            <name>Welcome to Start Process</name>
+            <outputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id44f3bb58-66b2-4dc8-b181-31f42db73258">
+            <name>Input Location Notes</name>
+            <inputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>locationInfo</name>
+                <type>locationInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="iddd51c107-b4dd-491f-910c-11873efc480f">
+            <name>Input Cast List</name>
+            <inputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>castInfo</name>
+                <type>castInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ide1485eb6-7b6a-4877-8bb9-eff16666d52d">
+            <name>Input Crew List</name>
+            <inputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>crewInfo</name>
+                <type>crewInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>crewInfo</name>
+                <type>crewInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id6bdf6333-1851-4c3b-840d-a02b9ed30d0d">
+            <name>Input Shooting Schedule</name>
+            <inputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>shootingSchedule</name>
+                <type>shootingScheduleType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>shootingSchedule</name>
+                <type>shootingScheduleType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>totalScenes</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>totalPageTime</name>
+                <type>pageTimeType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>4</index>
+                <name>originalTiming</name>
+                <type>time</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id75096d09-febe-41ba-ab19-dd04bc6494de"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="c6759588-dbf1-4e39-ac50-083d250db899"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id7ce787e8-7fd9-4945-97bb-66576e544cb4">
+            <name>Create Call Sheet</name>
+            <inputParam>
+                <index>1</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id1ab372c3-fc6a-4fb9-830b-32db921a9216">
+            <name>Revise Shooting Schedule</name>
+            <inputParam>
+                <index>1</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>shootingSchedule</name>
+                <type>shootingScheduleType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>shootingSchedule</name>
+                <type>shootingScheduleType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>totalScenes</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>totalPageTime</name>
+                <type>pageTimeType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>4</index>
+                <name>originalTiming</name>
+                <type>time</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="b2af3d59-5eda-417a-a129-0e47044f6066"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id1aedf08e-ac37-4fb9-aab3-79e22852fe1e">
+            <name>Update Call Sheet</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>scheduledShootingDays</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>finalSubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id702fd51f-9b63-40ce-9dec-28fb98a6e0eb">
+            <name>Start Another Shoot Day</name>
+            <inputParam>
+                <index>1</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>shootDayNo</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>callSheet</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>shootDayNo</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="c0157dd1-de20-4aa9-8305-1950fcf31cb1">
+            <name>Distribute Call Sheet</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id8beb1449-b854-4a4b-a80b-ff84fe75579d">
+            <name>Fill Out Continuity Report</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>producer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>director</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>directorOfPhotography</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>editor</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>6</index>
+                <name>continuity</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>7</index>
+                <name>continuityInfo</name>
+                <type>continuityInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>continuityInfo</name>
+                <type>continuityInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>finalSubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id091e38ba-1f58-4cf2-8f2f-01d4193bf651">
+            <name>Fill Out AD Report</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>producer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>director</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>assistantDirector</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>timeSheetInfo</name>
+                <type>timeSheetInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>timeSheetInfo</name>
+                <type>timeSheetInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>finalSubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id39851f8f-f742-4690-ba79-3a37e69825c2">
+            <name>Fill Out Sound Sheets</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>producer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>director</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>editor</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>soundRecordist</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>6</index>
+                <name>soundInfo</name>
+                <type>soundInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>7</index>
+                <name>anotherRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>8</index>
+                <name>soundRolls</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>soundInfo</name>
+                <type>soundInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>anotherRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>soundRolls</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id3cbbd561-415d-458d-bdf0-ff5b2a11f33e">
+            <name>Fill Out Camera Sheets</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>producer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>director</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>directorOfPhotography</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>cameraOperator</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>6</index>
+                <name>cameraAssistant</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>7</index>
+                <name>cameraInfo</name>
+                <type>cameraInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>8</index>
+                <name>anotherRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>9</index>
+                <name>stockInfo</name>
+                <type>stockInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>10</index>
+                <name>camRolls</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>cameraInfo</name>
+                <type>cameraInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>anotherRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>stockInfo</name>
+                <type>stockInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>4</index>
+                <name>camRolls</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ac312740-1d91-472b-8897-2ca70b15783b">
+            <name>Create DPR</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>producer</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>3</index>
+                <name>director</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>4</index>
+                <name>productionManager</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>5</index>
+                <name>directorOfPhotography</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>6</index>
+                <name>DPRinfo</name>
+                <type>DPRinfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>DPRinfo</name>
+                <type>DPRinfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idab227755-5e6b-402e-9e29-7dbfef2d84c4">
+            <name>Fill Out Continuity Daily Report</name>
+            <inputParam>
+                <index>1</index>
+                <name>generalInfo</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <inputParam>
+                <index>2</index>
+                <name>continuityDailyReport</name>
+                <type>continuityDailyReportType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>continuityDailyReport</name>
+                <type>continuityDailyReportType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="d3c54891-d796-4e96-a056-9d11df59354a">
+            <name>Distribute DPR</name>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Film-Production-Process">
+            <name>Film_Production_Process</name>
+            <outputParam>
+                <index>0</index>
+                <name>DPRinfo</name>
+                <type>DPRinfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>1</index>
+                <name>anotherCamRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>2</index>
+                <name>anotherSoundRoll</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>3</index>
+                <name>callSheetNextday</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>5</index>
+                <name>callSheetToday</name>
+                <type>callSheetType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>7</index>
+                <name>camRollsToday</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>8</index>
+                <name>cameraInfo</name>
+                <type>cameraInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>10</index>
+                <name>castInfo</name>
+                <type>castInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>11</index>
+                <name>continuityDailyReport</name>
+                <type>continuityDailyReportType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>12</index>
+                <name>continuityInfo</name>
+                <type>continuityInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>14</index>
+                <name>crewMember</name>
+                <type>crewMemberType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>15</index>
+                <name>finalADSubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>16</index>
+                <name>finalCallSheetSubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>17</index>
+                <name>finalContinuitySubmission</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>18</index>
+                <name>generalInfoNextday</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>19</index>
+                <name>generalInfoToday</name>
+                <type>generalInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>20</index>
+                <name>locationInfo</name>
+                <type>locationInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>21</index>
+                <name>originalTiming</name>
+                <type>time</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>23</index>
+                <name>production</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>25</index>
+                <name>revisedTiming</name>
+                <type>time</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>29</index>
+                <name>shootingSchedule</name>
+                <type>shootingScheduleType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>31</index>
+                <name>soundInfo</name>
+                <type>soundInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>33</index>
+                <name>soundRollsToday</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>35</index>
+                <name>stockInfoToDate</name>
+                <type>stockInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>39</index>
+                <name>timeSheetInfo</name>
+                <type>timeSheetInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>40</index>
+                <name>totalPageTime</name>
+                <type>pageTimeType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <outputParam>
+                <index>41</index>
+                <name>totalScenes</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+            <localVariable>
+                <index>4</index>
+                <name>callSheetNotes</name>
+                <type>callSheetNotesType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;additionalEquipment&gt;nil&lt;/additionalEquipment&gt;
+&lt;additionalCrew&gt;nil&lt;/additionalCrew&gt;
+&lt;directions&gt;nil&lt;/directions&gt;
+&lt;productionNotes&gt;nil&lt;/productionNotes&gt;
+&lt;locationCrewNotes&gt;nil&lt;/locationCrewNotes&gt;
+&lt;lunchPickup&gt;nil&lt;/lunchPickup&gt;
+&lt;exposedRushes&gt;nil&lt;/exposedRushes&gt;
+&lt;rushesScreening&gt;nil&lt;/rushesScreening&gt;
+&lt;crewAgreements&gt;nil&lt;/crewAgreements&gt;
+&lt;additionalNotes&gt;nil&lt;/additionalNotes&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>6</index>
+                <name>camRollsPrevious</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>nil</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>9</index>
+                <name>cameraSheetNo</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>10001</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>13</index>
+                <name>crewInfo</name>
+                <type>crewInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;singleCrewInfo&gt;
+&lt;role&gt;&lt;/role&gt;&lt;firstName&gt;&lt;/firstName&gt;&lt;lastName&gt;&lt;/lastName&gt;
+&lt;contactNo&gt;&lt;/contactNo&gt;&lt;email&gt;&lt;/email&gt;
+&lt;/singleCrewInfo&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>22</index>
+                <name>prevShot</name>
+                <type>scriptTimingType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;scenes&gt;0&lt;/scenes&gt;
+&lt;pageTime&gt;&lt;number&gt;0&lt;/number&gt;&lt;numerator&gt;0&lt;/numerator&gt;&lt;/pageTime&gt;
+&lt;estTiming&gt;00:00:00&lt;/estTiming&gt;
+&lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>24</index>
+                <name>productionOffice</name>
+                <type>productionOfficeType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;address&gt;...&lt;/address&gt;&lt;phone&gt;...&lt;/phone&gt;&lt;fax&gt;...&lt;/fax&gt;&lt;email&gt;...&lt;/email&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>26</index>
+                <name>scheduledRatio</name>
+                <type>double</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>10.0</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>27</index>
+                <name>shootDayNoNextday</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>1</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>28</index>
+                <name>shootDayNoToday</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>0</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>30</index>
+                <name>shortEndMin</name>
+                <type>long</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>0</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>32</index>
+                <name>soundRollsPrevious</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>nil</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>34</index>
+                <name>stockInfoPrevious</name>
+                <type>stockInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;loaded&gt;0&lt;/loaded&gt;
+&lt;gross&gt;0&lt;/gross&gt;
+&lt;exposed&gt;0&lt;/exposed&gt;
+&lt;print&gt;0&lt;/print&gt;
+&lt;N_G&gt;0&lt;/N_G&gt;
+&lt;waste&gt;0&lt;/waste&gt;
+&lt;shortEnds&gt;0&lt;/shortEnds&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>36</index>
+                <name>stockInfoToday</name>
+                <type>stockInfoType</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>&lt;loaded&gt;0&lt;/loaded&gt;
+&lt;gross&gt;0&lt;/gross&gt;
+&lt;exposed&gt;0&lt;/exposed&gt;
+&lt;print&gt;0&lt;/print&gt;
+&lt;N_G&gt;0&lt;/N_G&gt;
+&lt;waste&gt;0&lt;/waste&gt;
+&lt;shortEnds&gt;0&lt;/shortEnds&gt;</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>37</index>
+                <name>sunrise</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>sunrise time</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>38</index>
+                <name>sunset</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>sunset time</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>42</index>
+                <name>weather</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>weather forecast</initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-start-production-1">
+                    <name>start production</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Welcome-to-Start-Process-3258"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-Welcome-to-Start-Process-3258">
+                    <name>Welcome to Start Process</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Location-Notes-3256"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Cast-List-5189"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Crew-List-3257"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/C-Welcome-to-Start-Process-3258/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="ida815c7b5-7430-498f-a211-f2e80c635ebf"/>
+                </task>
+                <task id="C-Input-Location-Notes-3256">
+                    <name>Input Location Notes</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Shooting-Schedule-3255"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/N-Film-Production-Process/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;locationInfo&gt;{/C-Input-Location-Notes-3256/locationInfo/*}&lt;/locationInfo&gt;"/>
+                            <mapsTo>locationInfo</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-dcf922c4-3738-49b5-b64b-f368520128a8</role>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id44f3bb58-66b2-4dc8-b181-31f42db73258"/>
+                </task>
+                <task id="C-Input-Cast-List-5189">
+                    <name>Input Cast List</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Shooting-Schedule-3255"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/N-Film-Production-Process/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;castInfo&gt;{/C-Input-Cast-List-5189/castInfo/*}&lt;/castInfo&gt;"/>
+                            <mapsTo>castInfo</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-dcf922c4-3738-49b5-b64b-f368520128a8</role>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="iddd51c107-b4dd-491f-910c-11873efc480f"/>
+                </task>
+                <task id="C-Input-Crew-List-3257">
+                    <name>Input Crew List</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Input-Shooting-Schedule-3255"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;crewInfo&gt;{/N-Film-Production-Process/crewInfo/*}&lt;/crewInfo&gt;"/>
+                            <mapsTo>crewInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/N-Film-Production-Process/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;crewInfo&gt;{/C-Input-Crew-List-3257/crewInfo/*}&lt;/crewInfo&gt;"/>
+                            <mapsTo>crewInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;crewMember&gt; &lt;producer&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Producer'    return concat($x/firstName,' ',$x/lastName)}  &lt;/producer&gt;  &lt;director&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Director'    return concat($x/firstName,' ',$x/lastName)}  &lt;/director&gt;  {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where contains($x/role,'Production Manager') return  &lt;productionManager&gt;   {concat($x/firstName,' ',$x/lastName)}  &lt;/productionManager&gt;}  &lt;DOP&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='D.O.P.'   return concat($x/firstName,' ',$x/lastName)}  &lt;/DOP&gt;  &lt;editor&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Editor'   return concat($x/firstName,' ',$x/lastName)}  &lt;/editor&gt;  &lt;continuity&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Continuity'   return concat($x/firstName,' ',$x/lastName)}  &lt;/continuity&gt;  &lt;soundRecordist&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Sound Recordist'   return concat($x/firstName,' ',$x/lastName)}  &lt;/soundRecordist&gt;  &lt;cameraOperator&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Camera Operator'   return concat($x/firstName,' ',$x/lastName)}  &lt;/cameraOperator&gt;  &lt;cameraAssistant&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='Camera Assistant'   return concat($x/firstName,' ',$x/lastName)}  &lt;/cameraAssistant&gt;  &lt;firstAD&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='1st AD'   return concat($x/firstName,' ',$x/lastName)}  &lt;/firstAD&gt;  &lt;secondAD&gt;   {for $x in /C-Input-Crew-List-3257/crewInfo/singleCrewInfo where $x/role='2nd AD'   return concat($x/firstName,' ',$x/lastName)}  &lt;/secondAD&gt;&lt;/crewMember&gt;"/>
+                            <mapsTo>crewMember</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-dcf922c4-3738-49b5-b64b-f368520128a8</role>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="ide1485eb6-7b6a-4877-8bb9-eff16666d52d"/>
+                </task>
+                <task id="C-Input-Shooting-Schedule-3255">
+                    <name>Input Shooting Schedule</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3253"/>
+                    </flowsInto>
+                    <join code="and"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;shootingSchedule&gt; &lt;lastUpdatedDate&gt;{current-date()}&lt;/lastUpdatedDate&gt;  {/N-Film-Production-Process/crewMember/director}  {/N-Film-Production-Process/crewMember/producer}  &lt;startDate&gt;{current-date()}&lt;/startDate&gt;  &lt;scheduledFinish&gt;{current-date()}&lt;/scheduledFinish&gt;  &lt;scheduledShootingDays&gt;0&lt;/scheduledShootingDays&gt;&lt;/shootingSchedule&gt;"/>
+                            <mapsTo>shootingSchedule</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/N-Film-Production-Process/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;shootingSchedule&gt;{/C-Input-Shooting-Schedule-3255/shootingSchedule/*}&lt;/shootingSchedule&gt;"/>
+                            <mapsTo>shootingSchedule</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;totalScenes&gt;{/C-Input-Shooting-Schedule-3255/totalScenes/text()}&lt;/totalScenes&gt;"/>
+                            <mapsTo>totalScenes</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;originalTiming&gt;{/C-Input-Shooting-Schedule-3255/originalTiming/text()}&lt;/originalTiming&gt;"/>
+                            <mapsTo>originalTiming</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;totalPageTime&gt;{/C-Input-Shooting-Schedule-3255/totalPageTime/*}&lt;/totalPageTime&gt;"/>
+                            <mapsTo>totalPageTime</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id6bdf6333-1851-4c3b-840d-a02b9ed30d0d"/>
+                </task>
+                <task id="C-null-3253">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3279"/>
+                        <predicate ordering="0">boolean(number(/Film_Production_Process/shootDayNoToday/text())=number(/Film_Production_Process/shootingSchedule/scheduledShootingDays/text()))</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-Call-Sheet-7902"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id75096d09-febe-41ba-ab19-dd04bc6494de"/>
+                </task>
+                <task id="C-null-3279">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3280"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="c6759588-dbf1-4e39-ac50-083d250db899"/>
+                </task>
+                <task id="C-Create-Call-Sheet-7902">
+                    <name>Create Call Sheet</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-7903"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;callSheet&gt; {/N-Film-Production-Process/productionOffice}  {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text() return  &lt;emergencyInfo&gt;   &lt;fireAmbulance&gt;000&lt;/fireAmbulance&gt;   &lt;hospital&gt;   {if (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo         where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo           where $y/locationID=$x/sceneSchedule/locationID return data($y/hospital))    else 'Missing info...'}   &lt;/hospital&gt;   &lt;police&gt;   {if (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo         where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo           where $y/locationID=$x/sceneSchedule/locationID return data($y/police))    else 'Missing info...'}   &lt;/police&gt;  &lt;/emergencyInfo&gt;}  {/N-Film-Production-Process/crewMember/director}  {/N-Film-Production-Process/crewMember/producer}  {for $x in /N-Film-Production-Process/crewInfo/singleCrewInfo   where contains($x/role,'Production Manager') return  &lt;productionManager&gt;   {concat($x/firstName,' ',$x/lastName,' ',$x/contactNo)}  &lt;/productionManager&gt;}  &lt;firstAD&gt;   {for $x in /N-Film-Production-Process/crewInfo/singleCrewInfo    where $x/role='1st AD' return     concat($x/firstName,' ',$x/lastName,' ',$x/contactNo)}  &lt;/firstAD&gt;  {/N-Film-Production-Process/sunrise}  {/N-Film-Production-Process/sunset}  {/N-Film-Production-Process/weather}   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text() return  &lt;callTimes&gt;   &lt;crewCall&gt;&lt;callTime&gt;{$x/crewCall/text()}&lt;/callTime&gt;&lt;/crewCall&gt;   &lt;locationCall&gt;&lt;callTime&gt;{$x/travelToLoc/text()}&lt;/callTime&gt;&lt;/locationCall&gt;   &lt;makeupHair&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/makeupHair&gt;   &lt;wardrobe&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/wardrobe&gt;   &lt;unit&gt;&lt;callTime&gt;00:00:00&lt;/callTime&gt;&lt;/unit&gt;   &lt;breakfast&gt;&lt;from&gt;00:00:00&lt;/from&gt;&lt;to&gt;00:00:00&lt;/to&gt;&lt;/breakfast&gt;  &lt;/callTimes&gt;}  &lt;wrapTimes&gt;  &lt;estWrap&gt;Estimate the wrap time...&lt;/estWrap&gt;  &lt;/wrapTimes&gt;  &lt;location&gt;   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()   return    (if (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return   &lt;singleLocation&gt;    {$y/locationName}    {$y/address}    {$y/contact}    {$y/contactNo}    {$y/UBDMapRef}    {$y/locationNotes}   &lt;/singleLocation&gt;)    else    &lt;singleLocation&gt;    &lt;locationName&gt;Missing Info. Please Check ...&lt;/locationName&gt;    &lt;address&gt;n/a&lt;/address&gt;    &lt;contact&gt;n/a&lt;/contact&gt;    &lt;contactNo&gt;0&lt;/contactNo&gt;    &lt;UBDMapRef&gt;0&lt;/UBDMapRef&gt;    &lt;locationNotes&gt;n/a&lt;/locationNotes&gt;   &lt;/singleLocation&gt;)}  &lt;/location&gt;   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule    where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text() return   &lt;dailySchedule&gt;   &lt;startDayNotes&gt;   {if (contains($x/startDayNotes,'')) then $x/startDayNotes/text() else 'nil'}&lt;/startDayNotes&gt;   {for $y in $x/sceneSchedule return   &lt;sceneSchedule&gt;    {$y/scene}    {$y/pageTime}    {$y/estScriptTiming}    {$y/D_N}    {$y/IN_EX}    &lt;setLocation&gt;    {if (for $z in /N-Film-Production-Process/locationInfo/singleLocationInfo      where $z/locationID=$y/locationID return true())     then (for $z in /N-Film-Production-Process/locationInfo/singleLocationInfo      where $z/locationID=$y/locationID return concat($y/set,' @ ',$z/locationName))     else 'Missing info. Please check ...'}    &lt;/setLocation&gt;    {$y/synopsis}    {for $z in $y/characters/character return    &lt;artistTimeInfo&gt;     {$z}     {if (for $w in /N-Film-Production-Process/castInfo/singleCastInfo      where $w/character=$z return true())      then (for $w in /N-Film-Production-Process/castInfo/singleCastInfo      where $w/character=$z return $w/artist)      else &lt;artist&gt;Missing info. Please Check ...&lt;/artist&gt;}     &lt;pickup&gt;-&lt;/pickup&gt;     &lt;makeup&gt;-&lt;/makeup&gt;     &lt;wardrobe&gt;-&lt;/wardrobe&gt;     &lt;onSet&gt;-&lt;/onSet&gt;    &lt;/artistTimeInfo&gt;}    {$y/estShootTimes}    &lt;sceneNotes&gt;-&lt;/sceneNotes&gt;    {$y/mealBreak}      &lt;/sceneSchedule&gt;}   {$x/endDayNotes}   {$x/totalScriptPages}  &lt;/dailySchedule&gt;}   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule    where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()   return   &lt;dailySetRequirements&gt;   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Background Actors' return   &lt;singleEntry&gt;    &lt;item&gt;Background Actors&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Background Actors' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Stunts' return   &lt;singleEntry&gt;    &lt;item&gt;Stunts&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Stunts' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Vehicles' return   &lt;singleEntry&gt;    &lt;item&gt;Vehicles&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Vehicles' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Props' return   &lt;singleEntry&gt;    &lt;item&gt;Props&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Props' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Camera' return   &lt;singleEntry&gt;    &lt;item&gt;Camera&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Camera' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Special Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Special Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Special Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Wardrobe' return   &lt;singleEntry&gt;    &lt;item&gt;Wardrobe&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Wardrobe' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Makeup/Hair' return   &lt;singleEntry&gt;    &lt;item&gt;Makeup/Hair&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Makeup/Hair' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Animal' return   &lt;singleEntry&gt;    &lt;item&gt;Animal&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Animal' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Animal Wrangler' return   &lt;singleEntry&gt;    &lt;item&gt;Animal Wrangler&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Animal Wrangler' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Music' return   &lt;singleEntry&gt;    &lt;item&gt;Music&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Music' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Sound' return   &lt;singleEntry&gt;    &lt;item&gt;Sound&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Sound' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Art Department' return   &lt;singleEntry&gt;    &lt;item&gt;Art Department&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Art Department' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Set Dressing' return   &lt;singleEntry&gt;    &lt;item&gt;Set Dressing&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Set Dressing' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Greenery' return   &lt;singleEntry&gt;    &lt;item&gt;Greenery&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Greenery' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Special Equipment' return   &lt;singleEntry&gt;    &lt;item&gt;Special Equipment&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Special Equipment' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Security' return   &lt;singleEntry&gt;    &lt;item&gt;Security&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Security' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Additional Labor' return   &lt;singleEntry&gt;    &lt;item&gt;Additional Labor&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Additional Labor' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Visual Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Visual Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Visual Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Mechanical Effects' return   &lt;singleEntry&gt;    &lt;item&gt;Mechanical Effects&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Mechanical Effects' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Miscellaneous' return   &lt;singleEntry&gt;    &lt;item&gt;Miscellaneous&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Miscellaneous' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}   {let $y:=$x/sceneSchedule/setRequirements/singleEntry    where $y/item='Notes' return   &lt;singleEntry&gt;    &lt;item&gt;Notes&lt;/item&gt;    {for $w in $x/sceneSchedule, $z in $w/setRequirements/singleEntry     where $z/item='Notes' return    &lt;description&gt;     {$w/scene}     {$z/requirements}    &lt;/description&gt;}   &lt;/singleEntry&gt;}  &lt;/dailySetRequirements&gt;}  &lt;unit&gt;   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()   return   (if (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo    where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo    where $y/locationID=$x/sceneSchedule/locationID    return concat($y/locationID,': ',$y/unit,'.'))    else 'Missing info...')}  &lt;/unit&gt;  {/N-Film-Production-Process/callSheetNotes/additionalEquipment}  {/N-Film-Production-Process/callSheetNotes/additionalCrew}   {/N-Film-Production-Process/callSheetNotes/directions}  &lt;parking&gt;   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()   return    (if (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID return true())    then (for $y in /N-Film-Production-Process/locationInfo/singleLocationInfo     where $y/locationID=$x/sceneSchedule/locationID    return concat($y/locationID,': ',$y/parking,'.'))    else 'Missing info...')}  &lt;/parking&gt;   {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()   return  &lt;catering&gt;   &lt;singleMeal&gt;    &lt;meal&gt;breakfast&lt;/meal&gt;    &lt;break&gt;0000-0000&lt;/break&gt;    &lt;serveNo&gt;0&lt;/serveNo&gt;    &lt;location&gt;...&lt;/location&gt;   &lt;/singleMeal&gt;   {for $z in $x/sceneSchedule/mealBreak return   &lt;singleMeal&gt;    {$z/meal}    {$z/break}    &lt;serveNo&gt;0&lt;/serveNo&gt;    &lt;location&gt;...&lt;/location&gt;   &lt;/singleMeal&gt;}  &lt;/catering&gt;}  {/N-Film-Production-Process/callSheetNotes/productionNotes}  {/N-Film-Production-Process/callSheetNotes/locationCrewNotes}  {/N-Film-Production-Process/callSheetNotes/lunchPickup}  {/N-Film-Production-Process/callSheetNotes/exposedRushes}  {/N-Film-Production-Process/callSheetNotes/rushesScreening}  {/N-Film-Production-Process/callSheetNotes/crewAgreements}  {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule   where $x/shootDayNo=number(/N-Film-Production-Process/shootDayNoNextday/text())+1   return  &lt;advancedSchedule&gt;   {$x/shootDayNo}    {$x/shootDayDate}    {$x/shootDayWeekday}   {for $z in $x/sceneSchedule return   &lt;adSceneSchedule&gt;     {$z/scene}    {$z/pageTime}    {$z/D_N}    {$z/IN_EX}    &lt;setSynopsis&gt;{concat($z/set,' / ',$z/synopsis)}&lt;/setSynopsis&gt;    &lt;location&gt;{$z/locationID/text()}&lt;/location&gt;    {$z/characters}   &lt;/adSceneSchedule&gt;}   &lt;/advancedSchedule&gt;}  {/N-Film-Production-Process/callSheetNotes/additionalNotes}&lt;/callSheet&gt;"/>
+                            <mapsTo>callSheet</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;callSheetNextday&gt;{/C-Create-Call-Sheet-7902/callSheet/*}&lt;/callSheetNextday&gt;"/>
+                            <mapsTo>callSheetNextday</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <decomposesTo id="id7ce787e8-7fd9-4945-97bb-66576e544cb4"/>
+                </task>
+                <condition id="C-null-7903">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Revise-Shooting-Schedule-3282"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Update-Call-Sheet-4740"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                </condition>
+                <task id="C-Revise-Shooting-Schedule-3282">
+                    <name>Revise Shooting Schedule</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-Call-Sheet-7902"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;shootingSchedule&gt;{/N-Film-Production-Process/shootingSchedule/*}&lt;/shootingSchedule&gt;"/>
+                            <mapsTo>shootingSchedule</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;production&gt;{/N-Film-Production-Process/production/text()}&lt;/production&gt;"/>
+                            <mapsTo>production</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;shootingSchedule&gt;{/C-Revise-Shooting-Schedule-3282/shootingSchedule/lastUpdatedDate} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/director} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/producer} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/startDate} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/scheduledFinish} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/revisedFinish} {/C-Revise-Shooting-Schedule-3282/shootingSchedule/scheduledShootingDays} {for $x in /C-Revise-Shooting-Schedule-3282/shootingSchedule/singleDaySchedule  return  &lt;singleDaySchedule&gt;  {$x/shootDayNo}  {$x/shootDayDate}  {$x/shootDayWeekday}  {$x/crewCall}  {$x/travelToLoc}  {$x/bumpIn}  {$x/startDayNotes}  {for $y in $x/sceneSchedule    where not(contains($y/scene,'nil'))   return $y}  {$x/endDayNotes}  {$x/totalScriptPages}  &lt;/singleDaySchedule&gt;}&lt;/shootingSchedule&gt;"/>
+                            <mapsTo>shootingSchedule</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;originalTiming&gt;{/C-Revise-Shooting-Schedule-3282/originalTiming/text()}&lt;/originalTiming&gt;"/>
+                            <mapsTo>originalTiming</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;totalScenes&gt;{/C-Revise-Shooting-Schedule-3282/totalScenes/text()}&lt;/totalScenes&gt;"/>
+                            <mapsTo>totalScenes</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;totalPageTime&gt;{/C-Revise-Shooting-Schedule-3282/totalPageTime/*}&lt;/totalPageTime&gt;"/>
+                            <mapsTo>totalPageTime</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id1ab372c3-fc6a-4fb9-830b-32db921a9216"/>
+                </task>
+                <task id="C-null-3280">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Start-Another-Shoot-Day-3268"/>
+                        <predicate ordering="0">boolean(number(/Film_Production_Process/shootDayNoToday/text())&lt;number(/Film_Production_Process/shootingSchedule/scheduledShootingDays/text()))</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition-2"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="or"/>
+                    <split code="xor"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="b2af3d59-5eda-417a-a129-0e47044f6066"/>
+                </task>
+                <task id="C-Update-Call-Sheet-4740">
+                    <name>Update Call Sheet</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-7903"/>
+                        <predicate ordering="0">boolean(/Film_Production_Process/finalCallSheetSubmission/text()='false')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Distribute-Call-Sheet-64"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;callSheet&gt;{/N-Film-Production-Process/callSheetNextday/*}&lt;/callSheet&gt;"/>
+                            <mapsTo>callSheet</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/production} &lt;date&gt; {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule  where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()  return $x/shootDayDate/text()} &lt;/date&gt; &lt;weekday&gt; {for $x in /N-Film-Production-Process/shootingSchedule/singleDaySchedule  where $x/shootDayNo=/N-Film-Production-Process/shootDayNoNextday/text()  return $x/shootDayWeekday/text()} &lt;/weekday&gt; &lt;shootDayNo&gt;{/N-Film-Production-Process/shootDayNoNextday/text()}&lt;/shootDayNo&gt;&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;scheduledShootingDays&gt;{/N-Film-Production-Process/shootingSchedule/scheduledShootingDays/text()}&lt;/scheduledShootingDays&gt;"/>
+                            <mapsTo>scheduledShootingDays</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;productionOffice&gt;{/C-Update-Call-Sheet-4740/callSheet/productionOffice/*}&lt;/productionOffice&gt;"/>
+                            <mapsTo>productionOffice</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;sunset&gt;{/C-Update-Call-Sheet-4740/callSheet/sunset/text()}&lt;/sunset&gt;"/>
+                            <mapsTo>sunset</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;weather&gt;{/C-Update-Call-Sheet-4740/callSheet/weather/text()}&lt;/weather&gt;"/>
+                            <mapsTo>weather</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;finalCallSheetSubmission&gt;{/C-Update-Call-Sheet-4740/finalSubmission/text()}&lt;/finalCallSheetSubmission&gt;"/>
+                            <mapsTo>finalCallSheetSubmission</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;callSheetNextday&gt;{/C-Update-Call-Sheet-4740/callSheet/*}&lt;/callSheetNextday&gt;"/>
+                            <mapsTo>callSheetNextday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfoNextday&gt;{/C-Update-Call-Sheet-4740/generalInfo/*}&lt;/generalInfoNextday&gt;"/>
+                            <mapsTo>generalInfoNextday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;sunrise&gt;{/C-Update-Call-Sheet-4740/callSheet/sunrise/text()}&lt;/sunrise&gt;"/>
+                            <mapsTo>sunrise</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;callSheetNotes&gt;{/C-Update-Call-Sheet-4740/callSheet/additionalEquipment} {/C-Update-Call-Sheet-4740/callSheet/additionalCrew} {/C-Update-Call-Sheet-4740/callSheet/directions} {/C-Update-Call-Sheet-4740/callSheet/productionNotes} {/C-Update-Call-Sheet-4740/callSheet/locationCrewNotes} {/C-Update-Call-Sheet-4740/callSheet/lunchPickup} {/C-Update-Call-Sheet-4740/callSheet/exposedRushes} {/C-Update-Call-Sheet-4740/callSheet/rushesScreening} {/C-Update-Call-Sheet-4740/callSheet/crewAgreements} {/C-Update-Call-Sheet-4740/callSheet/additionalNotes}&lt;/callSheetNotes&gt;"/>
+                            <mapsTo>callSheetNotes</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id1aedf08e-ac37-4fb9-aab3-79e22852fe1e"/>
+                </task>
+                <task id="C-Start-Another-Shoot-Day-3268">
+                    <name>Start Another Shoot Day</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3253"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Continuity-Report-36"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-AD-Report-41"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Sound-Sheets-39"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Camera-Sheets-40"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoNextday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;callSheet&gt;{/N-Film-Production-Process/callSheetNextday/*}&lt;/callSheet&gt;"/>
+                            <mapsTo>callSheet</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;shootDayNo&gt;{number(/N-Film-Production-Process/shootDayNoNextday/text())}&lt;/shootDayNo&gt;"/>
+                            <mapsTo>shootDayNo</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;generalInfoToday&gt;{/C-Start-Another-Shoot-Day-3268/generalInfo/*}&lt;/generalInfoToday&gt;"/>
+                            <mapsTo>generalInfoToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;continuityInfo&gt;&lt;sceneInfo&gt;   &lt;scene&gt;-&lt;/scene&gt;   &lt;slateInfo&gt;     &lt;slate&gt;-&lt;/slate&gt;     &lt;takeInfo&gt;       &lt;take&gt;0&lt;/take&gt;       &lt;duration&gt;00:00:00&lt;/duration&gt;       &lt;directorChoice&gt;false&lt;/directorChoice&gt;       &lt;print&gt;false&lt;/print&gt;       &lt;comments&gt;-&lt;/comments&gt;       &lt;camRoll&gt;-&lt;/camRoll&gt;       &lt;soundRoll&gt;-&lt;/soundRoll&gt;     &lt;/takeInfo&gt;   &lt;/slateInfo&gt; &lt;/sceneInfo&gt; &lt;remarks&gt;-&lt;/remarks&gt;&lt;/continuityInfo&gt;"/>
+                            <mapsTo>continuityInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;shootDayNoNextday&gt;{number(/C-Start-Another-Shoot-Day-3268/shootDayNo/text())+1}&lt;/shootDayNoNextday&gt;"/>
+                            <mapsTo>shootDayNoNextday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;stockInfoToday&gt; &lt;loaded&gt;0&lt;/loaded&gt;  &lt;gross&gt;0&lt;/gross&gt;  &lt;exposed&gt;0&lt;/exposed&gt;  &lt;print&gt;0&lt;/print&gt;  &lt;N_G&gt;0&lt;/N_G&gt;  &lt;waste&gt;0&lt;/waste&gt;  &lt;shortEnds&gt;0&lt;/shortEnds&gt;&lt;/stockInfoToday&gt;"/>
+                            <mapsTo>stockInfoToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;weather&gt;weather forecast&lt;/weather&gt;"/>
+                            <mapsTo>weather</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;sunrise&gt;sunrise timie&lt;/sunrise&gt;"/>
+                            <mapsTo>sunrise</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;camRollsToday&gt;nil&lt;/camRollsToday&gt;"/>
+                            <mapsTo>camRollsToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;timeSheetInfo&gt;        &lt;artistTimeSheet&gt;             &lt;singleArtist&gt;                 &lt;artist&gt;-&lt;/artist&gt;                 &lt;P_U&gt;-&lt;/P_U&gt;                 &lt;MU_WD_Call_scheduled&gt;00:00:00&lt;/MU_WD_Call_scheduled&gt;                 &lt;MU_WD_Call_actualArrival&gt;00:00:00&lt;/MU_WD_Call_actualArrival&gt;                 &lt;mealBreak&gt;00:00:00&lt;/mealBreak&gt;                 &lt;timeWrap&gt;00:00:00&lt;/timeWrap&gt;                 &lt;travel&gt;00:00:00&lt;/travel&gt;                 &lt;signature_url/&gt;             &lt;/singleArtist&gt;         &lt;/artistTimeSheet&gt;         &lt;extrasTimeSheet/&gt;         &lt;childrenTimeSheet/&gt;         &lt;crewTimeSheet&gt;             &lt;singleCrew&gt;                 &lt;crew&gt;-&lt;/crew&gt;                 &lt;crewCall&gt;00:00:00&lt;/crewCall&gt;                 &lt;travelIn&gt;00:00:00&lt;/travelIn&gt;                 &lt;locationCall&gt;00:00:00&lt;/locationCall&gt;                 &lt;mealBreak&gt;00:00:00&lt;/mealBreak&gt;                 &lt;wrap&gt;00:00:00&lt;/wrap&gt;                 &lt;wrapLoc&gt;00:00:00&lt;/wrapLoc&gt;                 &lt;departLoc&gt;00:00:00&lt;/departLoc&gt;                 &lt;travelOut&gt;00:00:00&lt;/travelOut&gt;                 &lt;remarks/&gt;             &lt;/singleCrew&gt;         &lt;/crewTimeSheet&gt;         &lt;mealInfo&gt;             &lt;singleMeal&gt;                 &lt;meal&gt;Breakfast&lt;/meal&gt;                 &lt;mealTimes&gt;                     &lt;from&gt;00:00:00&lt;/from&gt;                     &lt;to&gt;00:00:00&lt;/to&gt;                 &lt;/mealTimes&gt;                 &lt;duration&gt;00:00:00&lt;/duration&gt;                 &lt;numbers&gt;0&lt;/numbers&gt;                 &lt;location&gt;-&lt;/location&gt;                 &lt;remarks/&gt;             &lt;/singleMeal&gt;         &lt;/mealInfo&gt;         &lt;livestock/&gt;         &lt;accidents_delays/&gt;         &lt;majorProps_actionVehicles_extraEquipment/&gt;         &lt;additionalPersonnel/&gt;         &lt;generalComments/&gt;&lt;/timeSheetInfo&gt;"/>
+                            <mapsTo>timeSheetInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundRollsToday&gt;nil&lt;/soundRollsToday&gt;"/>
+                            <mapsTo>soundRollsToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;shootDayNoToday&gt;{/C-Start-Another-Shoot-Day-3268/shootDayNo/text()}&lt;/shootDayNoToday&gt;"/>
+                            <mapsTo>shootDayNoToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;callSheetToday&gt;{/C-Start-Another-Shoot-Day-3268/callSheet/*}&lt;/callSheetToday&gt;"/>
+                            <mapsTo>callSheetToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;sunset&gt;sunset time&lt;/sunset&gt;"/>
+                            <mapsTo>sunset</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;callSheetNotes&gt;&lt;additionalEquipment&gt;nil&lt;/additionalEquipment&gt; &lt;additionalCrew&gt;nil&lt;/additionalCrew&gt; &lt;directions&gt;nil&lt;/directions&gt; &lt;productionNotes&gt;nil&lt;/productionNotes&gt; &lt;locationCrewNotes&gt;nil&lt;/locationCrewNotes&gt; &lt;lunchPickup&gt;nil&lt;/lunchPickup&gt; &lt;exposedRushes&gt;nil&lt;/exposedRushes&gt; &lt;rushesScreening&gt;nil&lt;/rushesScreening&gt; &lt;crewAgreements&gt;nil&lt;/crewAgreements&gt; &lt;additionalNotes&gt;nil&lt;/additionalNotes&gt;&lt;/callSheetNotes&gt;"/>
+                            <mapsTo>callSheetNotes</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <decomposesTo id="id702fd51f-9b63-40ce-9dec-28fb98a6e0eb"/>
+                </task>
+                <task id="C-Distribute-Call-Sheet-64">
+                    <name>Distribute Call Sheet</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3279"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-dcf922c4-3738-49b5-b64b-f368520128a8</role>
+    <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="c0157dd1-de20-4aa9-8305-1950fcf31cb1"/>
+                </task>
+                <task id="C-Fill-Out-Continuity-Report-36">
+                    <name>Fill Out Continuity Report</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3271"/>
+                        <predicate ordering="0">boolean(/Film_Production_Process/finalContinuitySubmission/text()='false')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Continuity-Daily-Report-3283"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;continuity&gt;{/N-Film-Production-Process/crewMember/continuity/text()}&lt;/continuity&gt;"/>
+                            <mapsTo>continuity</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;editor&gt;{/N-Film-Production-Process/crewMember/editor/text()}&lt;/editor&gt;"/>
+                            <mapsTo>editor</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;directorOfPhotography&gt;{/N-Film-Production-Process/crewMember/DOP/text()}&lt;/directorOfPhotography&gt;"/>
+                            <mapsTo>directorOfPhotography</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;producer&gt;{/N-Film-Production-Process/crewMember/producer/text()}&lt;/producer&gt;"/>
+                            <mapsTo>producer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;continuityInfo&gt;{/N-Film-Production-Process/continuityInfo/*}&lt;/continuityInfo&gt;"/>
+                            <mapsTo>continuityInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;director&gt;{/N-Film-Production-Process/crewMember/director/text()}&lt;/director&gt;"/>
+                            <mapsTo>director</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;finalContinuitySubmission&gt;{/C-Fill-Out-Continuity-Report-36/finalSubmission/text()}&lt;/finalContinuitySubmission&gt;"/>
+                            <mapsTo>finalContinuitySubmission</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;continuityInfo&gt;{/C-Fill-Out-Continuity-Report-36/continuityInfo/*}&lt;/continuityInfo&gt;"/>
+                            <mapsTo>continuityInfo</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-5cf6afa6-36cd-4398-890f-829ceaa282b4</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id8beb1449-b854-4a4b-a80b-ff84fe75579d"/>
+                </task>
+                <task id="C-Fill-Out-AD-Report-41">
+                    <name>Fill Out AD Report</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3276"/>
+                        <predicate ordering="0">boolean(/Film_Production_Process/finalADSubmission/text()='false')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-DPR-10"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;timeSheetInfo&gt;{/N-Film-Production-Process/timeSheetInfo/*}&lt;/timeSheetInfo&gt;"/>
+                            <mapsTo>timeSheetInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;producer&gt;{/N-Film-Production-Process/crewMember/producer/text()}&lt;/producer&gt;"/>
+                            <mapsTo>producer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;director&gt;{/N-Film-Production-Process/crewMember/director/text()}&lt;/director&gt;"/>
+                            <mapsTo>director</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;assistantDirector&gt;{/N-Film-Production-Process/crewMember/secondAD/text()}&lt;/assistantDirector&gt;"/>
+                            <mapsTo>assistantDirector</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;timeSheetInfo&gt;{/C-Fill-Out-AD-Report-41/timeSheetInfo/*}&lt;/timeSheetInfo&gt;"/>
+                            <mapsTo>timeSheetInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;finalADSubmission&gt;{/C-Fill-Out-AD-Report-41/finalSubmission/text()}&lt;/finalADSubmission&gt;"/>
+                            <mapsTo>finalADSubmission</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-d0e1e1d0-6413-433f-8043-56c821686eaa</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id091e38ba-1f58-4cf2-8f2f-01d4193bf651"/>
+                </task>
+                <task id="C-Fill-Out-Sound-Sheets-39">
+                    <name>Fill Out Sound Sheets</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3273"/>
+                        <predicate ordering="0">boolean(/Film_Production_Process/anotherSoundRoll/text()='true')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-DPR-10"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;editor&gt;{/N-Film-Production-Process/crewMember/editor/text()}&lt;/editor&gt;"/>
+                            <mapsTo>editor</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;anotherRoll&gt;false&lt;/anotherRoll&gt;"/>
+                            <mapsTo>anotherRoll</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundInfo&gt;  &lt;soundRoll/&gt;&lt;/soundInfo&gt;"/>
+                            <mapsTo>soundInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundRecordist&gt;{/N-Film-Production-Process/crewMember/soundRecordist/text()}&lt;/soundRecordist&gt;"/>
+                            <mapsTo>soundRecordist</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;producer&gt;{/N-Film-Production-Process/crewMember/producer/text()}&lt;/producer&gt;"/>
+                            <mapsTo>producer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundRolls&gt;{/N-Film-Production-Process/soundRollsToday/text()}&lt;/soundRolls&gt;"/>
+                            <mapsTo>soundRolls</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;director&gt;{/N-Film-Production-Process/crewMember/director/text()}&lt;/director&gt;"/>
+                            <mapsTo>director</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;soundInfo&gt;{/C-Fill-Out-Sound-Sheets-39/soundInfo/*}&lt;/soundInfo&gt;"/>
+                            <mapsTo>soundInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundRollsToday&gt;{if (/C-Fill-Out-Sound-Sheets-39/soundRolls/text()='nil')  then /C-Fill-Out-Sound-Sheets-39/soundInfo/soundRoll/text()  else concat(/C-Fill-Out-Sound-Sheets-39/soundRolls/text(),' ',       /C-Fill-Out-Sound-Sheets-39/soundInfo/soundRoll/text())}&lt;/soundRollsToday&gt;"/>
+                            <mapsTo>soundRollsToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;anotherSoundRoll&gt;{/C-Fill-Out-Sound-Sheets-39/anotherRoll/text()}&lt;/anotherSoundRoll&gt;"/>
+                            <mapsTo>anotherSoundRoll</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-41d22a3d-76f0-46e7-8f0f-109b1056803a</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id39851f8f-f742-4690-ba79-3a37e69825c2"/>
+                </task>
+                <task id="C-Fill-Out-Camera-Sheets-40">
+                    <name>Fill Out Camera Sheets</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3275"/>
+                        <predicate ordering="0">boolean(/Film_Production_Process/anotherCamRoll/text()='true')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-DPR-10"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;cameraOperator&gt;{/N-Film-Production-Process/crewMember/cameraOperator/text()}&lt;/cameraOperator&gt;"/>
+                            <mapsTo>cameraOperator</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;anotherRoll&gt;false&lt;/anotherRoll&gt;"/>
+                            <mapsTo>anotherRoll</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;directorOfPhotography&gt;{/N-Film-Production-Process/crewMember/DOP/text()}&lt;/directorOfPhotography&gt;"/>
+                            <mapsTo>directorOfPhotography</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;producer&gt;{/N-Film-Production-Process/crewMember/producer/text()}&lt;/producer&gt;"/>
+                            <mapsTo>producer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;cameraInfo&gt;  &lt;sheetNumber&gt;{/N-Film-Production-Process/cameraSheetNo/text()}&lt;/sheetNumber&gt;   &lt;camRoll/&gt;   &lt;studios_location&gt;     {for $x in /N-Film-Production-Process/callSheetToday/location/singleLocation     return concat(' ',$x/locationName,' @ ',$x/address,'.')}   &lt;/studios_location&gt;   {/N-Film-Production-Process/shortEndMin}   &lt;instructionsToLab&gt;     PROCESS NORMAL     PREP FOR TELECINE   &lt;/instructionsToLab&gt;   &lt;signatureOfCameraAssistant&gt;     {/N-Film-Production-Process/crewMember/cameraAssistant/text()}   &lt;/signatureOfCameraAssistant&gt;&lt;/cameraInfo&gt;"/>
+                            <mapsTo>cameraInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;cameraAssistant&gt;{/N-Film-Production-Process/crewMember/cameraAssistant/text()}&lt;/cameraAssistant&gt;"/>
+                            <mapsTo>cameraAssistant</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;director&gt;{/N-Film-Production-Process/crewMember/director/text()}&lt;/director&gt;"/>
+                            <mapsTo>director</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;camRolls&gt;{/N-Film-Production-Process/camRollsToday/text()}&lt;/camRolls&gt;"/>
+                            <mapsTo>camRolls</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;stockInfo&gt;{/N-Film-Production-Process/stockInfoToday/*}&lt;/stockInfo&gt;"/>
+                            <mapsTo>stockInfo</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;anotherCamRoll&gt;{/C-Fill-Out-Camera-Sheets-40/anotherRoll/text()}&lt;/anotherCamRoll&gt;"/>
+                            <mapsTo>anotherCamRoll</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;camRollsToday&gt;{if (/C-Fill-Out-Camera-Sheets-40/camRolls/text()='nil')  then /C-Fill-Out-Camera-Sheets-40/cameraInfo/camRoll/text()  else concat(/C-Fill-Out-Camera-Sheets-40/camRolls/text(),' ',       /C-Fill-Out-Camera-Sheets-40/cameraInfo/camRoll/text())}&lt;/camRollsToday&gt;"/>
+                            <mapsTo>camRollsToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;stockInfoToday&gt;&lt;loaded&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/loaded/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/footageLoaded/text())} &lt;/loaded&gt; &lt;gross&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/gross/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/totalExposed/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/waste/text())} &lt;/gross&gt; &lt;exposed&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/exposed/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/totalExposed/text())} &lt;/exposed&gt; &lt;print&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/print/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/totalExposed/text())} &lt;/print&gt; &lt;N_G&gt;{/C-Fill-Out-Camera-Sheets-40/stockInfo/N_G/text()}&lt;/N_G&gt; &lt;waste&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/waste/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/waste/text())} &lt;/waste&gt; &lt;shortEnds&gt; {number(/C-Fill-Out-Camera-Sheets-40/stockInfo/shortEnds/text())+  number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/camInfoSum/shortEnds/text())} &lt;/shortEnds&gt;&lt;/stockInfoToday&gt;"/>
+                            <mapsTo>stockInfoToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;shortEndMin&gt;{/C-Fill-Out-Camera-Sheets-40/cameraInfo/shortEndMin/text()}&lt;/shortEndMin&gt;"/>
+                            <mapsTo>shortEndMin</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;cameraInfo&gt;{/C-Fill-Out-Camera-Sheets-40/cameraInfo/*}&lt;/cameraInfo&gt;"/>
+                            <mapsTo>cameraInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;cameraSheetNo&gt;{number(/C-Fill-Out-Camera-Sheets-40/cameraInfo/sheetNumber/text())+1}&lt;/cameraSheetNo&gt;"/>
+                            <mapsTo>cameraSheetNo</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-d00eaa77-0fe7-44c6-916e-c0dbc5710baf</role>
+    <role>RO-aefd909c-9ca4-45ab-b0a0-1320008d7768</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="id3cbbd561-415d-458d-bdf0-ff5b2a11f33e"/>
+                </task>
+                <condition id="C-null-3275">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Camera-Sheets-40"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-null-3273">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Sound-Sheets-39"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-null-3276">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-AD-Report-41"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-null-3271">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-Fill-Out-Continuity-Report-36"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-Create-DPR-10">
+                    <name>Create DPR</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Distribute-DPR-11"/>
+                    </flowsInto>
+                    <join code="and"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;directorOfPhotography&gt;{/N-Film-Production-Process/crewMember/DOP/text()}&lt;/directorOfPhotography&gt;"/>
+                            <mapsTo>directorOfPhotography</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;productionManager&gt;{/N-Film-Production-Process/crewMember/productionManager/text()}&lt;/productionManager&gt;"/>
+                            <mapsTo>productionManager</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;DPRinfo&gt;{/N-Film-Production-Process/shootingSchedule/startDate} {/N-Film-Production-Process/shootingSchedule/scheduledFinish} {/N-Film-Production-Process/shootingSchedule/revisedFinish}  &lt;shootingDaysSchedule&gt;   &lt;scheduledDays&gt;     {/N-Film-Production-Process/shootingSchedule/scheduledShootingDays/text()}   &lt;/scheduledDays&gt;   &lt;daysToDate&gt;     {/N-Film-Production-Process/shootDayNoToday/text()}   &lt;/daysToDate&gt;   &lt;estdToComplete&gt;     {number(/N-Film-Production-Process/shootingSchedule/scheduledShootingDays/text())-     number(/N-Film-Production-Process/shootDayNoToday/text())}   &lt;/estdToComplete&gt;   &lt;estdTotal&gt;     {/N-Film-Production-Process/shootingSchedule/scheduledShootingDays/text()}   &lt;/estdTotal&gt; &lt;/shootingDaysSchedule&gt;  {/N-Film-Production-Process/continuityDailyReport/locationSets}  &lt;slateNOs&gt;   {/N-Film-Production-Process/continuityDailyReport/slateNos/singleUnit/slate} &lt;/slateNOs&gt;  {/N-Film-Production-Process/continuityDailyReport/scheduledScenesShot} {/N-Film-Production-Process/continuityDailyReport/scheduledScenesNotShot} &lt;ScenesNotYetCompleted&gt;{/N-Film-Production-Process/continuityDailyReport/scenesNotYetCompleted/*}&lt;/ScenesNotYetCompleted&gt; &lt;ScenesDeleted&gt;{/N-Film-Production-Process/continuityDailyReport/scenesDeleted/*}&lt;/ScenesDeleted&gt; &lt;ScenesAdded&gt;{/N-Film-Production-Process/continuityDailyReport/scenesAdded/*}&lt;/ScenesAdded&gt; {/N-Film-Production-Process/continuityDailyReport/unscheduledScenesShot}  {/N-Film-Production-Process/continuityDailyReport/scriptTiming}  &lt;ratioTimingSpec&gt;   {/N-Film-Production-Process/scheduledRatio}   &lt;dailyRatio&gt;     {let $x:= /N-Film-Production-Process/continuityDailyReport/scriptTiming/shotToday/actualTiming,     $a:= number(substring($x,1,2))*60+number(substring($x,4,2))+(round(number(substring($x,7,2))*100 div 60) div 100),     $b:= /N-Film-Production-Process/stockInfoToday/gross     return (round($b*100 div ($a*36)) div 100)}   &lt;/dailyRatio&gt;   &lt;averageRatio&gt;     {let $x:= /N-Film-Production-Process/continuityDailyReport/scriptTiming/shotToDate/actualTiming,     $a:= number(substring($x,1,2))*60+number(substring($x,4,2))+(round(number(substring($x,7,2))*100 div 60) div 100),     $b:= /N-Film-Production-Process/stockInfoPrevious/gross,     $c:= /N-Film-Production-Process/stockInfoToday/gross     return (round(($b+$c)*100 div ($a*36)) div 100)}   &lt;/averageRatio&gt;   &lt;averageTiming&gt;     {let $x:= /N-Film-Production-Process/continuityDailyReport/scriptTiming/shotToDate/actualTiming,     $y:= /N-Film-Production-Process/shootDayNoToday,     $z:= round((number(substring($x,1,2))*3600 + number(substring($x,4,2))*60 + number(substring($x,7,2))) div $y),     $s:=($z mod 3600) mod 60,     $m:=(($z - $s) div 60) mod 60,     $h:= round((($z - $s) div 60 - $m) div 60),     $S:= if ($s &amp;gt; 10) then string($s) else (if ($s &amp;gt; 0) then concat('0',string($s)) else '00'),     $M:= if ($m &amp;gt; 10) then string($m) else (if ($m &amp;gt; 0) then concat('0',string($m)) else '00'),     $H:= if ($h &amp;gt; 10) then string($h) else (if ($h &amp;gt; 0) then concat('0',string($h)) else '00')     return concat(string($H),':',string($M),':',string($S))}   &lt;/averageTiming&gt;   {let $x:= /N-Film-Production-Process/continuityDailyReport/scriptTiming/shotToDate/actualTiming,   $y:= /N-Film-Production-Process/continuityDailyReport/scriptTiming/shotToDate/estTiming,   $u:= number(substring($x,1,2))*3600 + number(substring($x,4,2))*60 + number(substring($x,7,2)),   $v:= number(substring($y,1,2))*3600 + number(substring($y,4,2))*60 + number(substring($y,7,2)),   $z:= abs($u - $v),   $s:= ($z mod 3600) mod 60,   $m:= (($z - $s) div 60) mod 60,   $h:= round((($z - $s) div 60 - $m) div 60),   $S:= if ($s &amp;gt; 10) then string($s) else (if ($s &amp;gt; 0) then concat('0',string($s)) else '00'),   $M:= if ($m &amp;gt; 10) then string($m) else (if ($m &amp;gt; 0) then concat('0',string($m)) else '00'),   $H:= if ($h &amp;gt; 10) then string($h) else (if ($h &amp;gt; 0) then concat('0',string($h)) else '00')   return   &lt;cumulative&gt;     &lt;sign&gt;       {if ($u &amp;gt;= $v) then true() else false()}     &lt;/sign&gt;     &lt;varTime&gt;       {concat(string($H),':',string($M),':',string($S))}     &lt;/varTime&gt;   &lt;/cumulative&gt;}   {/N-Film-Production-Process/originalTiming} &lt;/ratioTimingSpec&gt;  {for $x in /N-Film-Production-Process/stockInfoPrevious,  $y in /N-Film-Production-Process/stockInfoToday return &lt;stockInfo&gt;     &lt;previously&gt;       {$x/*}       &lt;soundRolls&gt;{/N-Film-Production-Process/soundRollsPrevious/text()}&lt;/soundRolls&gt;       &lt;camRolls&gt;{/N-Film-Production-Process/camRollsPrevious/text()}&lt;/camRolls&gt;     &lt;/previously&gt;     &lt;today&gt;       {$y/*}       &lt;soundRolls&gt;{/N-Film-Production-Process/soundRollsToday/text()}&lt;/soundRolls&gt;       &lt;camRolls&gt;{/N-Film-Production-Process/camRollsToday/text()}&lt;/camRolls&gt;     &lt;/today&gt;     &lt;totalToDate&gt;       &lt;loaded&gt;{number($x/loaded/text())+number($y/loaded/text())}&lt;/loaded&gt;       &lt;gross&gt;{number($x/gross/text())+number($y/gross/text())}&lt;/gross&gt;       &lt;exposed&gt;{number($x/exposed/text())+number($y/exposed/text())}&lt;/exposed&gt;       &lt;print&gt;{number($x/print/text())+number($y/print/text())}&lt;/print&gt;       &lt;N_G&gt;{number($x/N_G/text())+number($y/N_G/text())}&lt;/N_G&gt;       &lt;waste&gt;{number($x/waste/text())+number($y/waste/text())}&lt;/waste&gt;       &lt;shortEnds&gt;{number($x/shortEnds/text())+number($y/shortEnds/text())}&lt;/shortEnds&gt;       &lt;soundRolls&gt;         {if (/N-Film-Production-Process/soundRollsPrevious/text()='nil')         then /N-Film-Production-Process/soundRollsToday/text() else         concat(/N-Film-Production-Process/soundRollsPrevious/text(),' ',         /N-Film-Production-Process/soundRollsToday/text())}       &lt;/soundRolls&gt;       &lt;camRolls&gt;         {if (/N-Film-Production-Process/camRollsPrevious/text()='nil')         then /N-Film-Production-Process/camRollsToday/text() else         concat(/N-Film-Production-Process/camRollsPrevious/text(),' ',         /N-Film-Production-Process/camRollsToday/text())}       &lt;/camRolls&gt;     &lt;/totalToDate&gt; &lt;/stockInfo&gt;}  &lt;artistTimeSheet&gt;   {for $x in /N-Film-Production-Process/timeSheetInfo/artistTimeSheet/singleArtist   return   &lt;singleArtist&gt;     {$x/artist}     {if (for $y in /N-Film-Production-Process/castInfo/singleCastInfo          where $y/artist=$x/artist return true())      then (for $y in /N-Film-Production-Process/castInfo/singleCastInfo          where $y/artist=$x/artist return $y/character)      else &lt;character&gt;character?&lt;/character&gt;}     {$x/P_U}     {$x/MU_WD_Call_scheduled}     {$x/MU_WD_Call_actualArrival}     {$x/mealBreak}     {$x/timeWrap}     {$x/travel}     &lt;totalHRs&gt;00:00:00&lt;/totalHRs&gt;   &lt;/singleArtist&gt;} &lt;/artistTimeSheet&gt;  &lt;extrasTimeSheet&gt;   {for $x in /N-Film-Production-Process/timeSheetInfo/extrasTimeSheet/singleArtist   return   &lt;singleArtist&gt;     {$x/artist}     &lt;character&gt;background character&lt;/character&gt;     {$x/P_U}     {$x/MU_WD_Call_scheduled}     {$x/MU_WD_Call_actualArrival}     {$x/mealBreak}     {$x/timeWrap}     {$x/travel}     &lt;totalHRs&gt;00:00:00&lt;/totalHRs&gt;   &lt;/singleArtist&gt;} &lt;/extrasTimeSheet&gt;  &lt;crewTimeSheet&gt;   {for $x in /N-Film-Production-Process/timeSheetInfo/crewTimeSheet/singleCrew   return   &lt;singleCrew&gt;     &lt;crewName&gt;       {for $y in /N-Film-Production-Process/crewInfo/singleCrewInfo       where $y/role=$x/crew return concat($y/firstName,' ',$y/lastName)}     &lt;/crewName&gt;     &lt;crewRole&gt;{$x/crew/text()}&lt;/crewRole&gt;     {$x/crewCall}     {$x/travelIn}     {$x/locationCall}     {if ($x/MU_WD_Call_mealBreak='00:00:00')     then &lt;mealBreak&gt;00:00:00&lt;/mealBreak&gt;     else &lt;mealBreak&gt;00:45:00&lt;/mealBreak&gt;}     {$x/wrap}     {$x/wrapLoc}     {$x/departLoc}     {$x/travelOut}     &lt;totalHRs&gt;00:00:00&lt;/totalHRs&gt;   &lt;/singleCrew&gt;} &lt;/crewTimeSheet&gt;  &lt;majorProps_actionVehicles_additionalEquipment&gt;   {/N-Film-Production-Process/timeSheetInfo/majorProps_actionVehicles_extraEquipment/text()} &lt;/majorProps_actionVehicles_additionalEquipment&gt;   &lt;additionalCrew&gt;   {/N-Film-Production-Process/timeSheetInfo/additionalPersonnel/text()} &lt;/additionalCrew&gt;   &lt;livestocks_other&gt;   {/N-Film-Production-Process/timeSheetInfo/livestock/text()} &lt;/livestocks_other&gt;   &lt;accidents_delays&gt;   {/N-Film-Production-Process/timeSheetInfo/accidents_delays/text()} &lt;/accidents_delays&gt;  &lt;catering&gt;   {for $x in /N-Film-Production-Process/timeSheetInfo/mealInfo/singleMeal return   &lt;singleMeal&gt;     {$x/meal}     &lt;time&gt;{$x/duration/text()}&lt;/time&gt;     {$x/numbers}     {$x/location}   &lt;/singleMeal&gt;} &lt;/catering&gt;  &lt;generalRemarks&gt;   {concat(/N-Film-Production-Process/timeSheetInfo/generalComments/text(),   /N-Film-Production-Process/continuityDailyReport/remarks/text())} &lt;/generalRemarks&gt;&lt;/DPRinfo&gt;"/>
+                            <mapsTo>DPRinfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;producer&gt;{/N-Film-Production-Process/crewMember/producer/text()}&lt;/producer&gt;"/>
+                            <mapsTo>producer</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;director&gt;{/N-Film-Production-Process/crewMember/director/text()}&lt;/director&gt;"/>
+                            <mapsTo>director</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;camRollsToday&gt;{/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/camRolls/text()}&lt;/camRollsToday&gt;"/>
+                            <mapsTo>camRollsToday</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;prevShot&gt;{/C-Create-DPR-10/DPRinfo/scriptTiming/shotToDate/*}&lt;/prevShot&gt;"/>
+                            <mapsTo>prevShot</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;stockInfoPrevious&gt;{/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/loaded} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/gross} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/exposed} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/print} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/N_G} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/waste} {/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/shortEnds}&lt;/stockInfoPrevious&gt;"/>
+                            <mapsTo>stockInfoPrevious</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;soundRollsPrevious&gt;{/C-Create-DPR-10/DPRinfo/stockInfo/totalToDate/soundRolls/text()}&lt;/soundRollsPrevious&gt;"/>
+                            <mapsTo>soundRollsPrevious</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;scheduledRatio&gt;{/C-Create-DPR-10/DPRinfo/ratioTimingSpec/scheduledRatio/text()}&lt;/scheduledRatio&gt;"/>
+                            <mapsTo>scheduledRatio</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="ac312740-1d91-472b-8897-2ca70b15783b"/>
+                </task>
+                <task id="C-Fill-Out-Continuity-Daily-Report-3283">
+                    <name>Fill Out Continuity Daily Report</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Create-DPR-10"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;generalInfo&gt;{/N-Film-Production-Process/generalInfoToday/*}&lt;/generalInfo&gt;"/>
+                            <mapsTo>generalInfo</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;continuityDailyReport&gt;  &lt;locationSets&gt;     {for $x in /N-Film-Production-Process/callSheetToday return     (for $y in $x/location/singleLocation return     &lt;singleLocation&gt;       {$y/locationName}       {$y/address}       {for $z in $x/dailySchedule/sceneSchedule       where contains($z/setLocation,$y/locationName) return       &lt;set&gt;{substring-before($z/setLocation,' @')}&lt;/set&gt;}     &lt;/singleLocation&gt;)}   &lt;/locationSets&gt;   &lt;slateNos&gt;     &lt;singleUnit&gt;       &lt;unit&gt;Main Unit&lt;/unit&gt;       {/N-Film-Production-Process/continuityInfo/sceneInfo/slateInfo/slate}     &lt;/singleUnit&gt;   &lt;/slateNos&gt;   &lt;soundRollsDatTapes&gt;     {distinct-values(data(/N-Film-Production-Process/continuityInfo/sceneInfo/slateInfo/takeInfo/soundRoll))}   &lt;/soundRollsDatTapes&gt;   &lt;scheduledScenes&gt;     {/N-Film-Production-Process/callSheetToday/dailySchedule/sceneSchedule/scene}   &lt;/scheduledScenes&gt;   &lt;scenesShot&gt;     {/N-Film-Production-Process/continuityInfo/sceneInfo/scene}   &lt;/scenesShot&gt;   &lt;scheduledScenesShot&gt;     {for $x in /N-Film-Production-Process/callSheetToday/dailySchedule/sceneSchedule/scene,     $y in /N-Film-Production-Process/continuityInfo/sceneInfo/scene     where $x=$y return $x}   &lt;/scheduledScenesShot&gt;   &lt;scheduledScenesNotShot/&gt;   &lt;scenesNotYetCompleted/&gt;   &lt;scenesDeleted/&gt;   &lt;scenesAdded/&gt;   &lt;unscheduledScenesShot/&gt;   &lt;scenesTiming&gt;     {for $x in /N-Film-Production-Process/continuityInfo/sceneInfo return     &lt;singleSceneTiming&gt;       {$x/scene}       {if (for $y in /N-Film-Production-Process/shootingSchedule/singleDaySchedule/sceneSchedule            where $y/scene=$x/scene return true())       then (for $y in /N-Film-Production-Process/shootingSchedule/singleDaySchedule/sceneSchedule             where $y/scene=$x/scene return $y/pageTime)       else        &lt;pageTime&gt;         &lt;number&gt;0&lt;/number&gt;         &lt;numerator&gt;0&lt;/numerator&gt;       &lt;/pageTime&gt;}       &lt;estTiming&gt;         {if (for $y in /N-Film-Production-Process/shootingSchedule/singleDaySchedule/sceneSchedule              where $y/scene=$x/scene return true())          then (for $y in /N-Film-Production-Process/shootingSchedule/singleDaySchedule/sceneSchedule                where $y/scene=$x/scene return $y/estScriptTiming/text())          else '00:00:00'}       &lt;/estTiming&gt;       &lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;     &lt;/singleSceneTiming&gt;}   &lt;/scenesTiming&gt;   &lt;scriptTiming&gt;     &lt;originalEstTotal&gt;{/N-Film-Production-Process/originalTiming/text()}&lt;/originalEstTotal&gt;     &lt;revisedEstTotal&gt;  {if (number(/N-Film-Production-Process/generalInfoToday/shootDayNo/text())=1)   then /N-Film-Production-Process/originalTiming/text()   else /N-Film-Production-Process/revisedTiming/text()}     &lt;/revisedEstTotal&gt;     &lt;prevShot&gt;{/N-Film-Production-Process/prevShot/*}&lt;/prevShot&gt;     &lt;shotToday&gt;         &lt;scenes&gt;0&lt;/scenes&gt;         &lt;pageTime&gt;           &lt;number&gt;0&lt;/number&gt;           &lt;numerator&gt;0&lt;/numerator&gt;         &lt;/pageTime&gt;         &lt;estTiming&gt;00:00:00&lt;/estTiming&gt;         &lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;     &lt;/shotToday&gt;     &lt;shotToDate&gt;         &lt;scenes&gt;0&lt;/scenes&gt;         &lt;pageTime&gt;           &lt;number&gt;0&lt;/number&gt;           &lt;numerator&gt;0&lt;/numerator&gt;         &lt;/pageTime&gt;         &lt;estTiming&gt;00:00:00&lt;/estTiming&gt;         &lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;    &lt;/shotToDate&gt;    &lt;toBeShot&gt;         &lt;scenes&gt;0&lt;/scenes&gt;         &lt;pageTime&gt;           &lt;number&gt;0&lt;/number&gt;           &lt;numerator&gt;0&lt;/numerator&gt;         &lt;/pageTime&gt;         &lt;estTiming&gt;00:00:00&lt;/estTiming&gt;         &lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;    &lt;/toBeShot&gt;    &lt;total&gt;       &lt;scenes&gt;{/N-Film-Production-Process/totalScenes/text()}&lt;/scenes&gt;       &lt;pageTime&gt;{/N-Film-Production-Process/totalPageTime/*}&lt;/pageTime&gt;       &lt;estTiming&gt;00:00:00&lt;/estTiming&gt;       &lt;actualTiming&gt;00:00:00&lt;/actualTiming&gt;     &lt;/total&gt;   &lt;/scriptTiming&gt;&lt;/continuityDailyReport&gt;"/>
+                            <mapsTo>continuityDailyReport</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;continuityDailyReport&gt;{/C-Fill-Out-Continuity-Daily-Report-3283/continuityDailyReport/*}&lt;/continuityDailyReport&gt;"/>
+                            <mapsTo>continuityDailyReport</mapsTo>
+                        </mapping>
+                        <mapping>
+                            <expression query="&lt;revisedTiming&gt;{/C-Fill-Out-Continuity-Daily-Report-3283/continuityDailyReport/scriptTiming/revisedEstTotal/text()}&lt;/revisedTiming&gt;"/>
+                            <mapsTo>revisedTiming</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-5cf6afa6-36cd-4398-890f-829ceaa282b4</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="idab227755-5e6b-402e-9e29-7dbfef2d84c4"/>
+                </task>
+                <task id="C-Distribute-DPR-11">
+                    <name>Distribute DPR</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-3280"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet>
+    <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+</initialSet>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="system">
+                            <allocator>
+<name>Random</name>
+                            </allocator>
+                        </allocate>
+                        <start initiator="system"/>
+                    </resourcing>
+                    <decomposesTo id="d3c54891-d796-4e96-a056-9d11df59354a"/>
+                </task>
+                <outputCondition id="C-OutputCondition-2">
+                    <name>end production</name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="en" country="AU"/>
+        <specification id="YAWL4Film-Process">
+            <size w="100" h="100"/>
+            <net id="N-Film-Production-Process">
+                <viewport x="0" y="0" w="1280" h="840"/>
+                <frame x="0" y="0" w="1280" h="840"/>
+                <bounds x="0" y="0" w="1280" h="840"/>
+                <container id="C-start-production-1">
+                    <vertex>
+                        <attributes>
+                            <bounds x="80.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="48.0" y="584.0" w="96.0" h="40.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Welcome-to-Start-Process-3258">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="188.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="160.0" y="584.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="219.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Input-Location-Notes-3256">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="287.9" y="622.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="256.0" y="656.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Input-Cast-List-5189">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="285.3" y="480.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="252.0" y="512.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Input-Crew-List-3257">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="286.4" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="256.0" y="584.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Input-Shooting-Schedule-3255">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="387.6" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="352.0" y="584.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="377.6" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-null-3253">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/RoutingTask.png</iconpath>
+                        <attributes>
+                            <bounds x="486.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="459.0" y="582.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="476.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="517.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-null-3279">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/RoutingTask.png</iconpath>
+                        <attributes>
+                            <bounds x="938.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="917.0" y="582.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="928.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Create-Call-Sheet-7902">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="608.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="572.0" y="584.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="598.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-null-3280">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/RoutingTask.png</iconpath>
+                        <attributes>
+                            <bounds x="954.0" y="303.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="927.0" y="335.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="OR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="944.0" y="303.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="985.0" y="303.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-null-7903">
+                    <vertex>
+                        <attributes>
+                            <bounds x="688.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="672.0" y="582.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Start-Another-Shoot-Day-3268">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="349.0" y="303.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="324.0" y="336.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="380.0" y="303.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-OutputCondition-2">
+                    <vertex>
+                        <attributes>
+                            <bounds x="1,039.0" y="303.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="1008.0" y="336.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Revise-Shooting-Schedule-3282">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="602.0" y="622.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="572.0" y="656.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Update-Call-Sheet-4740">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="744.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="716.0" y="584.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="775.0" y="550.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Fill-Out-Continuity-Report-36">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="491.3" y="143.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="460.0" y="176.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="481.3" y="143.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="522.3" y="143.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Fill-Out-AD-Report-41">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/BlackPDA.png</iconpath>
+                        <attributes>
+                            <bounds x="541.3" y="465.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="508.0" y="496.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="531.3" y="465.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="572.3" y="465.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Fill-Out-Sound-Sheets-39">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="538.3" y="251.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="508.0" y="284.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="528.3" y="251.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="569.3" y="251.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Fill-Out-Camera-Sheets-40">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/BlackPDA.png</iconpath>
+                        <attributes>
+                            <bounds x="540.3" y="357.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="508.0" y="388.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="530.3" y="357.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="571.3" y="357.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Distribute-Call-Sheet-64">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Group.png</iconpath>
+                        <attributes>
+                            <bounds x="844.0" y="550.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="812.0" y="584.0" w="96.0" h="30.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-null-3271">
+                    <vertex>
+                        <attributes>
+                            <bounds x="490.0" y="95.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="474.0" y="127.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Fill-Out-Continuity-Daily-Report-3283">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="593.0" y="143.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="560.0" y="176.0" w="96.0" h="45.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-null-3276">
+                    <vertex>
+                        <attributes>
+                            <bounds x="542.5" y="427.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="526.5" y="459.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Create-DPR-10">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/AutomaticOne.png</iconpath>
+                        <attributes>
+                            <bounds x="727.0" y="303.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="692.0" y="336.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="717.0" y="303.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-null-3273">
+                    <vertex>
+                        <attributes>
+                            <bounds x="538.0" y="211.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="522.0" y="243.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-null-3275">
+                    <vertex>
+                        <attributes>
+                            <bounds x="540.0" y="319.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="524.0" y="351.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-Distribute-DPR-11">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Group.png</iconpath>
+                        <attributes>
+                            <bounds x="822.0" y="303.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="792.0" y="336.0" w="96.0" h="15.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-Start-Another-Shoot-Day-3268" target="C-Fill-Out-Sound-Sheets-39">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="365.0" y="319.0"/>
+                            <value x="554.3" y="267.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Camera-Sheets-40" target="C-null-3275">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="556.3" y="373.0"/>
+                            <value x="556.0" y="335.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Continuity-Report-36" target="C-null-3271">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="507.3" y="159.0"/>
+                            <value x="506.0" y="111.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-7903" target="C-Update-Call-Sheet-4740">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="723.0" y="565.5"/>
+                            <value x="748.0" y="565.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3275" target="C-Fill-Out-Camera-Sheets-40">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="556.0" y="335.0"/>
+                            <value x="556.3" y="373.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Distribute-Call-Sheet-64" target="C-null-3279">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="860.0" y="566.0"/>
+                            <value x="954.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-AD-Report-41" target="C-null-3276">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="557.3" y="481.0"/>
+                            <value x="558.5" y="443.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3253" target="C-Create-Call-Sheet-7902">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="502.0" y="566.0"/>
+                            <value x="624.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Welcome-to-Start-Process-3258" target="C-Input-Location-Notes-3256">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="204.0" y="566.0"/>
+                            <value x="303.9" y="638.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Distribute-DPR-11" target="C-null-3280">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="838.0" y="319.0"/>
+                            <value x="970.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Start-Another-Shoot-Day-3268" target="C-Fill-Out-AD-Report-41">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="365.0" y="319.0"/>
+                            <value x="557.3" y="481.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3273" target="C-Fill-Out-Sound-Sheets-39">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="554.0" y="227.0"/>
+                            <value x="554.3" y="267.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Sound-Sheets-39" target="C-Create-DPR-10">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="554.3" y="267.0"/>
+                            <value x="743.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-start-production-1" target="C-Welcome-to-Start-Process-3258">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="147.0" y="565.5"/>
+                            <value x="204.0" y="565.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Continuity-Daily-Report-3283" target="C-Create-DPR-10">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="609.0" y="159.0"/>
+                            <value x="743.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Sound-Sheets-39" target="C-null-3273">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="554.3" y="267.0"/>
+                            <value x="554.0" y="227.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Input-Shooting-Schedule-3255" target="C-null-3253">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="403.6" y="566.0"/>
+                            <value x="502.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3271" target="C-Fill-Out-Continuity-Report-36">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="506.0" y="111.0"/>
+                            <value x="507.3" y="159.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Start-Another-Shoot-Day-3268" target="C-Fill-Out-Continuity-Report-36">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="365.0" y="319.0"/>
+                            <value x="507.3" y="159.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Input-Location-Notes-3256" target="C-Input-Shooting-Schedule-3255">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="303.9" y="638.0"/>
+                            <value x="403.6" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3280" target="C-Start-Another-Shoot-Day-3268">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="970.0" y="319.0"/>
+                            <value x="365.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Start-Another-Shoot-Day-3268" target="C-Fill-Out-Camera-Sheets-40">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="365.0" y="319.0"/>
+                            <value x="556.3" y="373.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Input-Crew-List-3257" target="C-Input-Shooting-Schedule-3255">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="302.4" y="566.0"/>
+                            <value x="403.6" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Input-Cast-List-5189" target="C-Input-Shooting-Schedule-3255">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="301.3" y="496.0"/>
+                            <value x="403.6" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3280" target="C-OutputCondition-2">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="970.0" y="319.0"/>
+                            <value x="1,055.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Update-Call-Sheet-4740" target="C-Distribute-Call-Sheet-64">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="760.0" y="566.0"/>
+                            <value x="860.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Create-DPR-10" target="C-Distribute-DPR-11">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="762.0" y="318.5"/>
+                            <value x="806.0" y="318.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Continuity-Report-36" target="C-Fill-Out-Continuity-Daily-Report-3283">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="507.3" y="159.0"/>
+                            <value x="609.0" y="159.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Revise-Shooting-Schedule-3282" target="C-Create-Call-Sheet-7902">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="618.0" y="638.0"/>
+                            <value x="624.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Welcome-to-Start-Process-3258" target="C-Input-Crew-List-3257">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="204.0" y="566.0"/>
+                            <value x="302.4" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3279" target="C-null-3280">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="954.0" y="566.0"/>
+                            <value x="970.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Create-Call-Sheet-7902" target="C-null-7903">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="643.0" y="565.5"/>
+                            <value x="692.0" y="565.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3253" target="C-null-3279">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="502.0" y="566.0"/>
+                            <value x="954.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Update-Call-Sheet-4740" target="C-null-7903">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="760.0" y="566.0"/>
+                            <value x="704.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Start-Another-Shoot-Day-3268" target="C-null-3253">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="365.0" y="319.0"/>
+                            <value x="502.0" y="566.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Welcome-to-Start-Process-3258" target="C-Input-Cast-List-5189">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="204.0" y="566.0"/>
+                            <value x="301.3" y="496.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-Camera-Sheets-40" target="C-Create-DPR-10">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="556.3" y="373.0"/>
+                            <value x="743.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-3276" target="C-Fill-Out-AD-Report-41">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="558.5" y="443.0"/>
+                            <value x="557.3" y="481.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Fill-Out-AD-Report-41" target="C-Create-DPR-10">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="557.3" y="481.0"/>
+                            <value x="743.0" y="319.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-7903" target="C-Revise-Shooting-Schedule-3282">
+                    <ports in="11" out="13"/>
+                    <attributes>
+                        <lineStyle>13</lineStyle>
+                        <points>
+                            <value x="703.5" y="581.0"/>
+                            <value x="692.0" y="620.0"/>
+                            <value x="633.0" y="637.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

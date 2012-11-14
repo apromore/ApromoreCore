@@ -4,7 +4,7 @@
         <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xsi:type="cpf:TimerType" timeDuration="P30M" id="idd1865ced-c7b6-4203-b328-7a6a9daf3d69"/>
+        <Node xsi:type="cpf:TimerType" timeDuration="P30M" id="id0bb61056-9ece-4738-bddd-38e97b5567e9"/>
         <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -34,16 +34,16 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/codelet">
                 <codelet:codelet xmlns:codelet="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">org.yawlfoundation.yawl.resourcing.codelets.RandomWait</codelet:codelet>
             </attribute>
-            <resourceTypeRef id="idabd566a8-c26b-4571-aed1-b6777d653c8d" resourceTypeId="id11c56437-b53a-40be-8bbe-52ec6c811b31"/>
+            <resourceTypeRef id="id327f1ff6-ff0c-4bbf-9f97-584a60d67467" resourceTypeId="id6fc1c7af-1abc-4442-a5a6-44effa9e6894"/>
         </Node>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="idf9a21ab2-3b73-491c-9c9e-835ebd901ade" sourceId="idd1865ced-c7b6-4203-b328-7a6a9daf3d69" targetId="C-A"/>
-        <Edge id="id7de38e99-9cda-4463-a624-33a567722752" default="false" sourceId="C-InputCondition" targetId="idd1865ced-c7b6-4203-b328-7a6a9daf3d69"/>
+        <Edge id="id538f70c2-0d8a-4c8b-bf45-d083404bdd16" sourceId="id0bb61056-9ece-4738-bddd-38e97b5567e9" targetId="C-A"/>
+        <Edge id="id94d8f3cb-3ca3-4e4d-8d49-3acbb2c602f8" default="false" sourceId="C-InputCondition" targetId="id0bb61056-9ece-4738-bddd-38e97b5567e9"/>
         <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xsi:type="cpf:NonhumanType" id="id11c56437-b53a-40be-8bbe-52ec6c811b31">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id6fc1c7af-1abc-4442-a5a6-44effa9e6894">
         <name>org.yawlfoundation.yawl.resourcing.codelets.RandomWait</name>
         <type>SoftwareSystem</type>
     </ResourceType>

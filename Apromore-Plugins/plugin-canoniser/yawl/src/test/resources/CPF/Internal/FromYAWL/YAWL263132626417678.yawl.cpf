@@ -4,7 +4,7 @@
         <Node xsi:type="cpf:EventType" id="C-263132626443130" originalID="263132626443130">
             <name>Start</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="idfe97d9ed-5ad5-48fb-a875-2994de99695c"/>
+        <Node xsi:type="cpf:StateType" id="id3c96c549-c3ba-4b88-ad58-f5447a920485"/>
         <Node xsi:type="cpf:TaskType" id="C-263132626455035" originalID="263132626455035">
             <name>qu</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -28,13 +28,13 @@
         <Node xsi:type="cpf:EventType" id="C-263132626450930" originalID="263132626450930">
             <name>End</name>
         </Node>
-        <Node xsi:type="cpf:StateType" id="id8a08a567-76f2-4ab5-b05b-4c61d4bebf14"/>
-        <Edge id="id51fff3c8-09e1-474f-afe1-71c5c065de7f" sourceId="C-263132626443130" targetId="idfe97d9ed-5ad5-48fb-a875-2994de99695c"/>
-        <Edge id="id1b35ed8b-b3a6-4be4-8391-91228654ac47" default="false" sourceId="idfe97d9ed-5ad5-48fb-a875-2994de99695c" targetId="C-263132626455035"/>
-        <Edge id="idb5313aac-cc28-4f67-9c96-42fb6c420c3b" default="false" sourceId="idfe97d9ed-5ad5-48fb-a875-2994de99695c" targetId="C-263132626486645"/>
-        <Edge id="id06dfa7a6-9eec-4df2-a2c1-6f9d62106913" sourceId="id8a08a567-76f2-4ab5-b05b-4c61d4bebf14" targetId="C-263132626450930"/>
-        <Edge id="id885c878a-adb6-44d7-b2a4-b88e141196ea" default="false" sourceId="C-263132626455035" targetId="id8a08a567-76f2-4ab5-b05b-4c61d4bebf14"/>
-        <Edge id="id82bb963b-3fc1-459c-a74c-e03d5b65a2e2" default="false" sourceId="C-263132626486645" targetId="id8a08a567-76f2-4ab5-b05b-4c61d4bebf14"/>
+        <Node xsi:type="cpf:StateType" id="id620d8e9e-0ab1-4a16-ac51-007c0946f8ff"/>
+        <Edge id="id8c65740b-c693-4020-8b47-9adfb9e491a7" sourceId="C-263132626443130" targetId="id3c96c549-c3ba-4b88-ad58-f5447a920485"/>
+        <Edge id="id7d627bd0-dcd5-4d07-bbed-4eb3da2a3e95" default="false" sourceId="id3c96c549-c3ba-4b88-ad58-f5447a920485" targetId="C-263132626455035"/>
+        <Edge id="id4fe56dc8-77a9-4ebd-8922-edb3caa9e5e6" default="false" sourceId="id3c96c549-c3ba-4b88-ad58-f5447a920485" targetId="C-263132626486645"/>
+        <Edge id="id9602bff6-6d9f-4b00-b1ca-044e41923ac9" sourceId="id620d8e9e-0ab1-4a16-ac51-007c0946f8ff" targetId="C-263132626450930"/>
+        <Edge id="ida119e93f-4ecc-4fe5-ac0c-c94f36b9f3a5" default="false" sourceId="C-263132626455035" targetId="id620d8e9e-0ab1-4a16-ac51-007c0946f8ff"/>
+        <Edge id="idf058c580-704c-45af-9738-20f040f76941" default="false" sourceId="C-263132626486645" targetId="id620d8e9e-0ab1-4a16-ac51-007c0946f8ff"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </cpf:CanonicalProcess>

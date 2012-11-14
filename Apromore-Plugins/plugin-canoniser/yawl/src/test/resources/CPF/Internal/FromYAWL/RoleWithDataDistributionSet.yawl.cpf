@@ -15,7 +15,7 @@
             <teamWork>false</teamWork>
             <filterByDataExpr>
                 <description>of type PARTICIPANT choose by value of Object resource</description>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>//ResourceType[type/text()='Participant' AND name/text()='cpf:getObjectValue(resource)']</expression>
             </filterByDataExpr>
         </Node>
@@ -30,7 +30,7 @@
             <teamWork>false</teamWork>
             <filterByDataExpr>
                 <description>of type ROLE choose by value of Object resource</description>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>//ResourceType[type/text()='Role' AND name/text()='cpf:getObjectValue(resource)']</expression>
             </filterByDataExpr>
         </Node>

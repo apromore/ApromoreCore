@@ -54,7 +54,7 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:ORJoinType" id="id93f177a3-9b13-40c1-84a3-f4f9808a338e"/>
+        <Node xsi:type="cpf:ORJoinType" id="db5c1242-53f1-4c4a-9cb7-77b6aad3a30a"/>
         <Node xsi:type="cpf:EventType" id="C-263132128642489" originalID="263132128642489"/>
         <Node xsi:type="cpf:TaskType" id="C-263132128614984" originalID="263132128614984">
             <name>F</name>
@@ -140,7 +140,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORSplitType" id="idc357fed6-280c-4540-a277-99f64f8047fb"/>
+        <Node xsi:type="cpf:XORSplitType" id="id7ff1425c-45ed-4310-85f4-c4aeb10884f8"/>
         <Node xsi:type="cpf:EventType" id="C-263132128488134" originalID="263132128488134"/>
         <Node xsi:type="cpf:TaskType" id="C-263132128497165" originalID="263132128497165">
             <name>WB</name>
@@ -156,8 +156,8 @@
         <Node xsi:type="cpf:EventType" id="C-263132128325978" originalID="263132128325978">
             <name>End</name>
         </Node>
-        <Edge id="idbc104079-2d2a-4ab0-a346-9689b66d9705" sourceId="id93f177a3-9b13-40c1-84a3-f4f9808a338e" targetId="C-263132128334599"/>
-        <Edge id="id081d99b4-d308-4cfc-9416-6bd1b8ff7a45" default="false" sourceId="C-263132128310379" targetId="id93f177a3-9b13-40c1-84a3-f4f9808a338e"/>
+        <Edge id="idc0bcfd9b-4bb5-49d4-94c6-4d16a2ecc1b2" sourceId="db5c1242-53f1-4c4a-9cb7-77b6aad3a30a" targetId="C-263132128334599"/>
+        <Edge id="idfc7a235c-0f99-44dd-92dd-f721563fe12a" default="false" sourceId="C-263132128310379" targetId="db5c1242-53f1-4c4a-9cb7-77b6aad3a30a"/>
         <Edge id="C-263132128334599-263132128642489" default="false" sourceId="C-263132128334599" targetId="C-263132128642489"/>
         <Edge id="C-263132128642489-263132128614984" default="false" sourceId="C-263132128642489" targetId="C-263132128614984"/>
         <Edge id="C-263132128614984-263132128799308" default="false" sourceId="C-263132128614984" targetId="C-263132128799308"/>
@@ -170,12 +170,12 @@
         <Edge id="C-263132128434356-263132128392483" default="false" sourceId="C-263132128434356" targetId="C-263132128392483"/>
         <Edge id="C-263132128392483-263132128696678" default="false" sourceId="C-263132128392483" targetId="C-263132128696678"/>
         <Edge id="C-263132128696678-263132128662194" default="false" sourceId="C-263132128696678" targetId="C-263132128662194"/>
-        <Edge id="id0c427a9a-4e6e-441a-93a2-2dff686def36" sourceId="C-263132128662194" targetId="idc357fed6-280c-4540-a277-99f64f8047fb"/>
-        <Edge id="idd531445e-421d-4e1c-9890-d3bfdbfd6361" default="false" sourceId="idc357fed6-280c-4540-a277-99f64f8047fb" targetId="C-263132128488134"/>
+        <Edge id="idcc3bee96-9a8d-47c5-8626-16062ad1fab3" sourceId="C-263132128662194" targetId="id7ff1425c-45ed-4310-85f4-c4aeb10884f8"/>
+        <Edge id="ida9cc6fee-8147-4b1d-a627-2775bc24bdf5" default="false" sourceId="id7ff1425c-45ed-4310-85f4-c4aeb10884f8" targetId="C-263132128488134"/>
         <Edge id="C-263132128488134-263132128497165" default="false" sourceId="C-263132128488134" targetId="C-263132128497165"/>
         <Edge id="C-263132128497165-263132128375651" default="false" sourceId="C-263132128497165" targetId="C-263132128375651"/>
-        <Edge id="id49a54903-3962-403d-baf9-6b81fd365f5c" default="false" sourceId="C-263132128375651" targetId="id93f177a3-9b13-40c1-84a3-f4f9808a338e"/>
-        <Edge id="id0ceda240-017d-4ef6-b458-5fc47cb4f8ea" default="false" sourceId="idc357fed6-280c-4540-a277-99f64f8047fb" targetId="C-263132128325978"/>
+        <Edge id="id3437c4c1-ab72-4678-a501-156d39750019" default="false" sourceId="C-263132128375651" targetId="db5c1242-53f1-4c4a-9cb7-77b6aad3a30a"/>
+        <Edge id="idb35a295a-131c-4b77-a7d9-9d2cf1edbf9b" default="false" sourceId="id7ff1425c-45ed-4310-85f4-c4aeb10884f8" targetId="C-263132128325978"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </cpf:CanonicalProcess>

@@ -7,25 +7,25 @@
         <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="id11557837-8731-4323-81d9-ea462b34e068"/>
+        <Node xsi:type="cpf:XORJoinType" id="id05650b39-fa4d-4bd1-9ef9-68247ffd9070"/>
         <Node xsi:type="cpf:TaskType" id="C-B" originalID="B">
             <name>B</name>
         </Node>
-        <Node xsi:type="cpf:XORSplitType" id="bef430b4-d1ff-43c0-aa8a-17fc2259f566"/>
+        <Node xsi:type="cpf:XORSplitType" id="id4f808375-1d34-41f0-a10a-71b437b641e3"/>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id4e31db81-758b-4382-8358-69dab376bb5d" sourceId="id11557837-8731-4323-81d9-ea462b34e068" targetId="C-A"/>
-        <Edge id="id4461dd04-0f03-4f0e-8ecc-2b3f86f4c39c" default="false" sourceId="C-InputCondition" targetId="id11557837-8731-4323-81d9-ea462b34e068"/>
+        <Edge id="id469638d3-a155-4359-9150-3c37ee4d4dcd" sourceId="id05650b39-fa4d-4bd1-9ef9-68247ffd9070" targetId="C-A"/>
+        <Edge id="id11ffd7cd-04df-454e-b567-71ea53b499ec" default="false" sourceId="C-InputCondition" targetId="id05650b39-fa4d-4bd1-9ef9-68247ffd9070"/>
         <Edge id="C-A-B" default="false" sourceId="C-A" targetId="C-B"/>
-        <Edge id="id95d22196-68cd-4cba-9c1f-261dd7b8f7d8" sourceId="C-B" targetId="bef430b4-d1ff-43c0-aa8a-17fc2259f566"/>
-        <Edge id="id1aa59a4d-9617-4048-b759-4988aa3481ea" default="false" sourceId="bef430b4-d1ff-43c0-aa8a-17fc2259f566" targetId="id11557837-8731-4323-81d9-ea462b34e068">
+        <Edge id="id0b1ebf92-c57a-41c3-9057-b3033e5d06fa" sourceId="C-B" targetId="id4f808375-1d34-41f0-a10a-71b437b641e3"/>
+        <Edge id="id13b3e70d-8fc5-4107-a518-d33cc9dd6a80" default="false" sourceId="id4f808375-1d34-41f0-a10a-71b437b641e3" targetId="id05650b39-fa4d-4bd1-9ef9-68247ffd9070">
             <conditionExpr>
-                <language>http://www.w3.org/1999/xpath/</language>
+                <language>http://www.w3.org/1999/XPath</language>
                 <expression>true()</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id3f922168-1423-4ab7-be0f-25024a73f0c0" default="true" sourceId="bef430b4-d1ff-43c0-aa8a-17fc2259f566" targetId="C-OutputCondition"/>
+        <Edge id="idd5b1b527-5cb3-4dec-865d-46ac023ecf6e" default="true" sourceId="id4f808375-1d34-41f0-a10a-71b437b641e3" targetId="C-OutputCondition"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Net-cond" originalID="N-Net_cond">
             <name>cond</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

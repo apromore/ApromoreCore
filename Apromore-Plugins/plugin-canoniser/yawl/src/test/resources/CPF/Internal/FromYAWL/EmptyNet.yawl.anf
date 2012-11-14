@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="EmptyNet" name="EmptyNet Workfow">
-    <Annotation id="d11e89d0-1c9e-4628-a3cb-2376eed7482b">
+    <Annotation id="id1e24f274-c122-4af3-97a2-de5d038881ef">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>EmptyNet Workfow</title>
@@ -13,16 +13,16 @@
             <identifier>UID_d1f45fda-5536-4bc7-b938-a2fbdacb2fb7</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ce1aeda9-38fc-4f2d-bcc7-8ec0cec9ff14" cpfId="N-EmptyNet">
+    <Annotation xsi:type="anf:GraphicsType" id="id64de7af2-740b-4dfb-a604-45bbd3eaaf71" cpfId="N-EmptyNet">
         <size width="1761" height="685"/>
         <fill color="R:204G:204B:204"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id87dcd4cf-ea66-4064-ac8d-9c71f4b6cad6" cpfId="C-InputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id1b026d2c-2894-4cf2-9e55-c9fef7969a0b" cpfId="C-InputCondition">
         <position x="36.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id86b7a7f1-3596-4ddf-b9f7-4a122f1ed863" cpfId="C-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id6a24e602-92a3-4274-9dfc-3b97dffb4c87" cpfId="C-OutputCondition">
         <position x="1052.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>

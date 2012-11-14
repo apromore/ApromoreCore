@@ -197,6 +197,7 @@ public class YAWLConversionFactory implements ConversionFactory {
 
     protected boolean isAutomaticTask(final ExternalTaskFactsType task) {
         return task.getDecomposesTo() != null
+                && ((WebServiceGatewayFactsType) getContext().getDecompositionByID(task.getDecomposesTo().getId())).getExternalInteraction() != null
                 && ((WebServiceGatewayFactsType) getContext().getDecompositionByID(task.getDecomposesTo().getId())).getExternalInteraction().equals(
                         ResourcingExternalInteractionType.AUTOMATED);
     }

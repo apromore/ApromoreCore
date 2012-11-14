@@ -78,8 +78,21 @@
                 <position x='343' y='-359'/>
                 <position x='343' y='-329'/>
             </graphics>
-            <flow source='6' target='3'/>
+            <flow source='6' target='122'/>
         </arc>
+        <event id='122'>
+            <graphics>
+                <position height='20' width='60' x='286' y='-246'/>
+            </graphics>
+            <name>Loss date validated</name>
+        </event>
+        <arc id='123'>
+            <graphics>
+                <position x='343' y='-309'/>
+                <position x='343' y='-289'/>
+            </graphics>
+            <flow source='122' target='3'/>
+        </arc>		
         <function id='7' defRef='1063'>
             <graphics>
                 <position height='20' width='60' x='185' y='-635'/>
