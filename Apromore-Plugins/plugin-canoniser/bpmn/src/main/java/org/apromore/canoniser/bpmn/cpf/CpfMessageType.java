@@ -3,6 +3,7 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
@@ -10,6 +11,7 @@ import static org.apromore.cpf.DirectionEnum.INCOMING;
 import static org.apromore.cpf.DirectionEnum.OUTGOING;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.MessageType;
+import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
@@ -29,6 +31,17 @@ public class CpfMessageType extends MessageType implements CpfEventType {
 
     /** No-arg constructor. */
     public CpfMessageType() { }
+
+    /**
+     * Construct a CPF Message corresponding to a BPMN Boundary Event.
+     *
+     * @param endEvent  a BPMN Boundary Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfMessageType(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
+        super2.construct(this, boundaryEvent, initializer);
+    }
 
     /**
      * Construct a CPF Message corresponding to a BPMN End Event.
@@ -79,6 +92,51 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
+    }
+
+    /** {@inheritDoc} */
+    public boolean isCompensation() {
+        return super2.isCompensation();
+    }
+
+    /** {@inheritDoc} */
+    public QName getCompensationActivityRef() {
+        return super2.getCompensationActivityRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setCompensationActivityRef(final QName value) {
+        super2.setCompensationActivityRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isError() {
+        return super2.isError();
+    }
+
+    /** {@inheritDoc} */
+    public QName getErrorRef() {
+        return super2.getErrorRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setErrorRef(final QName value) {
+        super2.setErrorRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isSignal() {
+        return super2.isSignal();
+    }
+
+    /** {@inheritDoc} */
+    public QName getSignalRef() {
+        return super2.getSignalRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setSignalRef(final QName value) {
+        super2.setSignalRef(value);
     }
 
     /** {@inheritDoc} */

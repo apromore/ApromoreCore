@@ -237,6 +237,7 @@ public final class ExtensionUtils {
             // Check whether there's already an existing flag
             for (TypeAttribute attribute : attributes) {
                 if (name.equals(attribute.getName())) {
+                    attribute.setValue(null);
                     return;  // already flagged, so nothing needs to be changed
                 }
             }
