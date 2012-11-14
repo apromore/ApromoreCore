@@ -2,6 +2,7 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
@@ -17,6 +18,7 @@ import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TFormalExpression;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
@@ -50,55 +52,60 @@ public class CpfTimerType extends TimerType implements CpfEventType {
      */
     public CpfTimerType(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
         super2.construct(this, boundaryEvent, initializer);
+        construct(boundaryEvent.getEventDefinition());
+    }
+    private void construct(final List<JAXBElement<? extends TEventDefinition>> eventDefinitionList) throws CanoniserException {
+        for (JAXBElement<? extends TEventDefinition> ed : eventDefinitionList) {
+            if (ed.getValue() instanceof TTimerEventDefinition) {
+                TTimerEventDefinition ted = (TTimerEventDefinition) ed.getValue();
 
-        assert boundaryEvent.getEventDefinition().get(0).getValue() instanceof TTimerEventDefinition;
-        TTimerEventDefinition ted = (TTimerEventDefinition) boundaryEvent.getEventDefinition().get(0).getValue();
+                DatatypeFactory datatypeFactory;
+                try {
+                    datatypeFactory = DatatypeFactory.newInstance();
+                } catch (DatatypeConfigurationException e) { throw new CanoniserException(e); }
 
-        DatatypeFactory datatypeFactory;
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) { throw new CanoniserException(e); }
+                if (ted.getTimeDate() != null) {
+                    if (ted.getTimeDate() instanceof TFormalExpression) {
+                        TFormalExpression fe = (TFormalExpression) ted.getTimeDate();
 
-        if (ted.getTimeDate() != null) {
-            if (ted.getTimeDate() instanceof TFormalExpression) {
-                TFormalExpression fe = (TFormalExpression) ted.getTimeDate();
+                        Set<QName> supportedFormats = new HashSet<QName>();  // TODO - use diamond operator
+                        supportedFormats.add(DatatypeConstants.DATE);
+                        supportedFormats.add(DatatypeConstants.DATETIME);
+                        supportedFormats.add(DatatypeConstants.TIME);
 
-                Set<QName> supportedFormats = new HashSet<QName>();  // TODO - use diamond operator
-                supportedFormats.add(DatatypeConstants.DATE);
-                supportedFormats.add(DatatypeConstants.DATETIME);
-                supportedFormats.add(DatatypeConstants.TIME);
+                        if (supportedFormats.contains(fe.getEvaluatesToTypeRef())) {
+                            if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
+                                setTimeDate(datatypeFactory.newXMLGregorianCalendar((String) fe.getContent().get(0)));
+                            } else { logger.info("Timer date content is not a single String"); }
+                        } else { logger.info("Timer date is not a recognized type"); }
+                    } else { logger.info("Timer date is not formal"); }
+                }
 
-                if (supportedFormats.contains(fe.getEvaluatesToTypeRef())) {
-                    if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
-                        setTimeDate(datatypeFactory.newXMLGregorianCalendar((String) fe.getContent().get(0)));
-                    } else { logger.info("Timer date content is not a single String"); }
-                } else { logger.info("Timer date is not a recognized type"); }
-            } else { logger.info("Timer date is not formal"); }
+                if (ted.getTimeDuration() != null) {
+                    if (ted.getTimeDuration() instanceof TFormalExpression) {
+                        TFormalExpression fe = (TFormalExpression) ted.getTimeDuration();
+
+                        if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
+                            setTimeDuration(datatypeFactory.newDuration((String) fe.getContent().get(0)));
+                        } else { logger.info("Timer duration content is not a single String"); }
+                    } else { logger.info("Timer duration is not formal"); }
+                }
+
+                if (ted.getTimeCycle() != null) {
+                    if (ted.getTimeCycle() instanceof TFormalExpression) {
+                        TFormalExpression fe = (TFormalExpression) ted.getTimeCycle();
+
+                        if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
+                            TimerExpressionType te = new TimerExpressionType();
+                            te.setExpression((String) fe.getContent().get(0));
+                            setTimeExpression(te);
+                        } else { logger.info("Timer cycle content is not a single String"); }
+                    } else { logger.info("Timer cycle is not formal"); }
+                }
+
+                // TODO - ensure that no more than one of the time fields gets populated
+            }
         }
-
-        if (ted.getTimeDuration() != null) {
-            if (ted.getTimeDuration() instanceof TFormalExpression) {
-                TFormalExpression fe = (TFormalExpression) ted.getTimeDuration();
-
-                if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
-                    setTimeDuration(datatypeFactory.newDuration((String) fe.getContent().get(0)));
-                } else { logger.info("Timer duration content is not a single String"); }
-            } else { logger.info("Timer duration is not formal"); }
-        }
-
-        if (ted.getTimeCycle() != null) {
-            if (ted.getTimeCycle() instanceof TFormalExpression) {
-                TFormalExpression fe = (TFormalExpression) ted.getTimeCycle();
-
-                if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
-                    TimerExpressionType te = new TimerExpressionType();
-                    te.setExpression((String) fe.getContent().get(0));
-                    setTimeExpression(te);
-                } else { logger.info("Timer cycle content is not a single String"); }
-            } else { logger.info("Timer cycle is not formal"); }
-        }
-
-        // TODO - ensure that no more than one of the time fields gets populated
     }
 
     /**
@@ -110,24 +117,7 @@ public class CpfTimerType extends TimerType implements CpfEventType {
      */
     public CpfTimerType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         super2.construct(this, endEvent, initializer);
-
-        assert endEvent.getEventDefinition().get(0).getValue() instanceof TTimerEventDefinition;
-        TTimerEventDefinition ted = (TTimerEventDefinition) endEvent.getEventDefinition().get(0).getValue();
-
-        if (ted.getTimeDate() instanceof TFormalExpression) {
-            TFormalExpression e = (TFormalExpression) ted.getTimeDate();
-            QName XSD_DATETIME = new QName("http://www.w3.org/2001/XMLSchema#", "dateTime");
-            if (XSD_DATETIME.equals(e.getEvaluatesToTypeRef())) {
-                logger.info("Timer content " + e.getContent());
-            } else { logger.info("Timer is not a recognized type"); }
-        } else { logger.info("Timer is not formal"); }
-
-        // Only one of the following fields may be populated
-        /*
-        setTimeDate((XMLGregorianCalendar) ted.getTimeDate());
-        setTimeDuration((Duration) ted.getTimeDuration());
-        setTimeExpression((TimerExpressionType) ted.getTimeCycle());
-        */
+        construct(endEvent.getEventDefinition());
     }
 
     /**
@@ -139,6 +129,7 @@ public class CpfTimerType extends TimerType implements CpfEventType {
      */
     public CpfTimerType(final TIntermediateThrowEvent intermediateThrowEvent, final Initializer initializer) throws CanoniserException {
         super2.construct(this, intermediateThrowEvent, initializer);
+        construct(intermediateThrowEvent.getEventDefinition());
     }
 
     /**
@@ -150,6 +141,7 @@ public class CpfTimerType extends TimerType implements CpfEventType {
      */
     public CpfTimerType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
         super2.construct(this, startEvent, initializer);
+        construct(startEvent.getEventDefinition());
     }
 
     // Second superclass methods
@@ -162,6 +154,51 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     /** {@inheritDoc} */
     public Set<EdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
+    }
+
+    /** {@inheritDoc} */
+    public boolean isCompensation() {
+        return super2.isCompensation();
+    }
+
+    /** {@inheritDoc} */
+    public QName getCompensationActivityRef() {
+        return super2.getCompensationActivityRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setCompensationActivityRef(final QName value) {
+        super2.setCompensationActivityRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isError() {
+        return super2.isError();
+    }
+
+    /** {@inheritDoc} */
+    public QName getErrorRef() {
+        return super2.getErrorRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setErrorRef(final QName value) {
+        super2.setErrorRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isSignal() {
+        return super2.isSignal();
+    }
+
+    /** {@inheritDoc} */
+    public QName getSignalRef() {
+        return super2.getSignalRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setSignalRef(final QName value) {
+        super2.setSignalRef(value);
     }
 
     /** {@inheritDoc} */
