@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -38,7 +37,9 @@ import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCatchEvent;
+import org.omg.spec.bpmn._20100524.model.TCompensateEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TComplexGateway;
+import org.omg.spec.bpmn._20100524.model.TErrorEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
@@ -52,6 +53,7 @@ import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.bpmn._20100524.model.TSignalEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
 import org.omg.spec.dd._20100524.di.DiagramElement;
@@ -311,6 +313,18 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         populateFlowNode(event, cpfEvent);
 
+        if (cpfEvent.isCompensation()) {
+            TCompensateEventDefinition ced = new TCompensateEventDefinition();
+            ced.setActivityRef(cpfEvent.getCompensationActivityRef());
+            eventDefinitionList.add(factory.createCompensateEventDefinition(ced));
+        }
+
+        if (cpfEvent.isError()) {
+            TErrorEventDefinition eed = new TErrorEventDefinition();
+            eed.setErrorRef(cpfEvent.getErrorRef());
+            eventDefinitionList.add(factory.createErrorEventDefinition(eed));
+        }
+
         if (cpfEvent instanceof CpfMessageType) {
             CpfMessageType cpfMessage = (CpfMessageType) cpfEvent;
 
@@ -324,6 +338,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             TMessageEventDefinition med = new TMessageEventDefinition();
             //med.setMessageRef((QName) ...);
             eventDefinitionList.add(factory.createMessageEventDefinition(med));
+        }
+
+        if (cpfEvent.isSignal()) {
+            TSignalEventDefinition sed = new TSignalEventDefinition();
+            sed.setSignalRef(cpfEvent.getSignalRef());
+            eventDefinitionList.add(factory.createSignalEventDefinition(sed));
         }
 
         if (cpfEvent instanceof CpfTimerType) {
