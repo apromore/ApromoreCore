@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WPD9TaskToTask" name="WPD9TaskToTask">
-    <Annotation id="idf2e2f8d7-5bd9-44b0-a84b-d665cb978336">
+    <Annotation id="ida9027e83-039b-4765-9151-743f0f35951e">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <creator>Felix</creator>
@@ -10,10 +10,10 @@
             <identifier>UID_f24aa80f-39eb-4421-9337-7c3faf8688cf</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ida8ac9602-220f-4158-b565-2d02db71cb2e" cpfId="N-Net">
+    <Annotation xsi:type="anf:GraphicsType" id="dc186e6d-1942-4ba0-b915-1b4c0be28a20" cpfId="N-Net">
         <size width="1527" height="700"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="a3bf26fc-11ef-419a-8e18-0aaaf9ddee8c" cpfId="C-InputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="id49e63a89-78af-4e57-a453-c32a252dd57b" cpfId="C-InputCondition">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="44,0" y="456,0"/>
@@ -23,7 +23,7 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id08a8bf93-4a61-4d42-af4e-f706895a618e" cpfId="C-InputCondition-A">
+    <Annotation xsi:type="anf:GraphicsType" id="a606a292-d953-45a2-bc20-864388a9ed2f" cpfId="C-InputCondition-A">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition" target="A">
             <label>Task+A%3A+x%3A+string</label>
             <ports in="13" out="12"/>
@@ -41,7 +41,7 @@
         <position x="148.0" y="439.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id4a736197-6655-4b26-bf75-93a92cff6bc6" cpfId="C-A">
+    <Annotation xsi:type="anf:GraphicsType" id="ida48e7197-9fb1-4869-8404-14be3455ec02" cpfId="C-A">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="21,0" w="97,0" x="116,0" y="456,0"/>
@@ -51,7 +51,7 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idcc0a8118-5cee-4418-8a57-2aa5b3b3b0de" cpfId="C-A-B">
+    <Annotation xsi:type="anf:GraphicsType" id="iddb0d77f2-9eb4-4ace-971b-49f7aa465f52" cpfId="C-A-B">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="A" target="B">
             <label>x+-%3E+y</label>
             <ports in="13" out="12"/>
@@ -69,7 +69,7 @@
         <position x="284.0" y="439.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id77dafe7f-f6a3-43af-a0be-3475656c0707" cpfId="C-B">
+    <Annotation xsi:type="anf:GraphicsType" id="id805dfa7e-fbe5-403f-a0ce-9b10506e7612" cpfId="C-B">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="252,0" y="456,0"/>
@@ -79,7 +79,7 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="fa074249-f38f-4ccd-8c75-6579286c8922" cpfId="C-B-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="idaf1e9cc2-954d-41fa-be58-631864b19ebb" cpfId="C-B-OutputCondition">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="B" target="OutputCondition">
             <label>Task+B%3A+y%3A+boolean</label>
             <ports in="13" out="12"/>
@@ -97,7 +97,7 @@
         <position x="412.0" y="439.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idb12d6a4e-d4bf-4b00-af2a-9fdd32c8043d" cpfId="C-OutputCondition">
+    <Annotation xsi:type="anf:GraphicsType" id="idae97f708-23c0-4f56-bad9-3bfd164ad155" cpfId="C-OutputCondition">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="20,0" w="96,0" x="324,0" y="456,0"/>

@@ -62,9 +62,7 @@ public abstract class BaseEventHandler<T extends NodeType> extends CanonicalElem
     protected ExternalConditionFactsType createCondition(final T node) {
         final ExternalConditionFactsType inputCondition = YAWL_FACTORY.createExternalConditionFactsType();
         inputCondition.setId(generateUUID(node.getId()));
-        if (node.getName() == null) {
-            inputCondition.setName("");
-        } else {
+        if (node.getName() != null && !node.getName().isEmpty()) {
             inputCondition.setName(node.getName());   
         }        
         getContext().getControlFlowContext().setElement(node.getId(), inputCondition);

@@ -46,12 +46,12 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="d4f55b7d-8f49-4e86-9b94-9a51e4c81fee" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb7ba4fe8-4e26-4378-8c56-1abbcb027150" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="bf2a9187-91bc-41b2-aee1-afe8e5f7f6c2" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="ebebfa6d-e345-484d-8bd2-0427aedea076" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="d3726032-553b-49c5-9675-1d3066a7736a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="id84bd87ad-4384-4eba-a504-a447fa2f25c4" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8e6dafd4-a2d4-4402-9a29-801b1f409698" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="c22d3790-f37b-4b63-b808-8b284df61364" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="idd49e53fd-96f0-44bb-b698-a5036750052b" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="id50543e54-c7c3-4001-9800-6961132b2282" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="idd3e9f467-22ba-4c61-9496-6f24eab13874" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="c98fb14e-8ab2-4660-a8d7-fef9e24680fe" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = {cpf:getObjectValue('n3')/text()}</expression>
@@ -112,10 +112,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id3222f070-fef8-4183-b947-95b918df0938" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="idc08a0a15-bc66-4c60-a450-4fee6b6002e5" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb8c125fe-e129-49e9-8e5f-f6788be8c674" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="ba81c8e6-9385-45f5-a3ae-35159290e167" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="a5ceebe6-287d-4ef8-8a43-a18a63ffbb35" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc4967d58-7682-4866-a332-78452cd42189" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="dfa75b6d-8734-451b-9543-61fc0a2c7286" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="id9e06e8de-516c-4e4c-a4b1-9f7bd88841fd" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = {cpf:getObjectValue('n2')/text()}</expression>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="263132582485918.yawl" name="263132582485918">
-    <Annotation id="id0857b14f-6876-4ee4-a770-382ec850a73e">
+    <Annotation id="id5a61d03a-f09a-417e-b4a7-1666732965fe">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="AU" language="en"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>263132582485918</title>
@@ -13,9 +13,9 @@
             <identifier>263132582485918</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id4048572b-27e4-4db2-9f50-baf8659e48b1" cpfId="C-263132582674346"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idf4dabda4-66e5-4a9b-9ab9-8ab507f86d64" cpfId="C-263132582674346-263132582686251"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idff0adee0-8067-4c1a-a72e-6c2752a5400a" cpfId="C-263132582686251"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idc81ffd82-2613-4ea7-a03f-0a956f5453c5" cpfId="C-263132582686251-263132582681736"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id032881eb-4f4b-4b26-8afa-2aea3e084582" cpfId="C-263132582681736"/>
+    <Annotation xsi:type="anf:GraphicsType" id="f8f2ffc4-3c23-451e-afd1-b17fb7623708" cpfId="C-263132582674346"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idffd2204d-ce75-4304-8f56-3b33b2d5f2ed" cpfId="C-263132582674346-263132582686251"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id646096d3-5e96-4f33-8922-71938c41854c" cpfId="C-263132582686251"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id5b539425-4611-4fb5-a7a4-c1505b3b4808" cpfId="C-263132582686251-263132582681736"/>
+    <Annotation xsi:type="anf:GraphicsType" id="dff642fd-5518-471d-84ee-589b9f84c799" cpfId="C-263132582681736"/>
 </anf:Annotations>

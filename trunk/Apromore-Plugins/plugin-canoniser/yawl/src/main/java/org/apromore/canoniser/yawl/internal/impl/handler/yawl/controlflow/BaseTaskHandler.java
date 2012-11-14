@@ -124,6 +124,8 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
             connectFromPredecessors(getObject(), routingNode);
         } else if (hasIncomingQueue(getObject())) {
             connectFromPredecessors(getObject(), taskEntryNode);
+        } else {
+            getContext().addIntroducedPredecessor(getObject(), taskEntryNode);
         }
     }
 
@@ -333,6 +335,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     protected boolean isAutomaticTask(final ExternalTaskFactsType task) {
         return task.getDecomposesTo() != null
+                && ((WebServiceGatewayFactsType) getContext().getDecompositionByID(task.getDecomposesTo().getId())).getExternalInteraction() != null
                 && ((WebServiceGatewayFactsType) getContext().getDecompositionByID(task.getDecomposesTo().getId())).getExternalInteraction().equals(
                         ResourcingExternalInteractionType.AUTOMATED);
     }

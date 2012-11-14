@@ -15,7 +15,7 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id1feef4a6-810e-4f53-b4c6-1a836b9bb8f4" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="ac5b76ee-c1fb-4a16-b0b1-638997742944" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = Boolean({cpf:getTaskObjectValue('x')/text()})</expression>
@@ -32,7 +32,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="d0fed361-dcc1-40cf-831e-42cdccaef97d" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
+            <objectRef id="id655e0edd-7ce6-4fde-8f53-ef9ec0e5e6fc" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>y = {cpf:getObjectValue('x')}</expression>

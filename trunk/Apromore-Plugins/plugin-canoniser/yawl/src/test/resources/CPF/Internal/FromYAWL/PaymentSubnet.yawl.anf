@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="orderfulfillment" name="Order Fulfillment">
-    <Annotation id="id0a3278ec-7747-4402-a361-a24d3aceb10d">
+    <Annotation id="e0a20575-b39f-4c33-be0c-e022b53f6b14">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="AU" language="en"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>Order Fulfillment</title>
@@ -11,15 +11,15 @@
             <identifier>UID_d41b58b7-2333-40c6-93fc-bdd89685ffe6</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ida482fe57-0b40-4ad1-b57c-7466b8e71b49" cpfId="N-Payment">
+    <Annotation xsi:type="anf:GraphicsType" id="bd8ad883-90f9-4178-b782-700b3aa59701" cpfId="N-Payment">
         <size width="1517" height="864"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ide99ffafc-1bff-43dd-ac61-0fa37f0cf6e0" cpfId="C-InputCondition-44">
+    <Annotation xsi:type="anf:GraphicsType" id="idef196a7d-4771-45b0-9c60-d9fa7ca86ea4" cpfId="C-InputCondition-44">
         <position x="609.0" y="13.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id6e3c9ac9-6242-48c0-a1cf-1ad004594a12" cpfId="C-InputCondition-44-null-592">
+    <Annotation xsi:type="anf:GraphicsType" id="id1dcd1cbc-ad56-4e79-a43e-5d2996fc9dd0" cpfId="C-InputCondition-44-null-592">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition_44" target="null_592">
             <ports in="11" out="10"/>
             <attributes>
@@ -34,8 +34,8 @@
         <position x="620.5" y="73.0"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id97a0ea78-2eda-4b0f-bf62-12fb4379fea6" cpfId="idfd392450-8e89-44d1-933f-b6dfe3b98b03"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id56193d8f-c0b9-4f06-8372-221afe0014dc" cpfId="C-null-592">
+    <Annotation xsi:type="anf:GraphicsType" id="ida90fbdf8-8b2e-4587-8e3f-5f150f15e542" cpfId="iddb57c546-ff64-429a-a9b3-d4fad2592873"/>
+    <Annotation xsi:type="anf:GraphicsType" id="fe17ee77-f7f1-4559-afef-d00531d2bf58" cpfId="C-null-592">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="AND_split">
             <position>11</position>
             <attributes>
@@ -47,9 +47,9 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="d06e4471-7152-4a63-934f-42979ec8f935" cpfId="id9bcb2bdb-09d7-4c43-b636-751983d8be60"/>
-    <Annotation xsi:type="anf:GraphicsType" id="c392d3a0-897f-4bc9-b454-0836813301ed" cpfId="idba730f2f-3e7b-44e3-a2dd-de76e68c9d4a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="c52aa107-c583-40bf-9d7d-1f98dfc5ee28" cpfId="C-null-596">
+    <Annotation xsi:type="anf:GraphicsType" id="a3b17a5a-adcd-4ef7-8747-372d3ef87181" cpfId="idefc2383f-356a-4a6b-9f76-1e93819ca6bd"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id82c9ccd1-e020-42f4-b552-77b4f274c6a8" cpfId="id25272c00-4251-4f8f-a507-d53610e9dfea"/>
+    <Annotation xsi:type="anf:GraphicsType" id="dd2fa559-bcdf-43dd-9db0-da676fbf7e96" cpfId="C-null-596">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_split">
             <position>11</position>
             <attributes>
@@ -61,9 +61,9 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="db6724a5-fa4b-4ae1-a3be-7be377ba20d2" cpfId="idde8df493-d6e2-4ebd-8d77-e6770ab1b93e"/>
-    <Annotation xsi:type="anf:GraphicsType" id="e5cdf70c-49b8-4ccb-86bc-b5feff80cefa" cpfId="idbc73726b-b0ff-489a-9039-7489f75118af"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id39d9b2db-e358-4491-8581-50d2befe6a90" cpfId="C-Issue-Shipment-Invoice-594">
+    <Annotation xsi:type="anf:GraphicsType" id="iddf6f3b42-3097-48c5-8afe-7bf0f6aff6ad" cpfId="idc35e98df-1bc7-4af1-bcb1-ef171e1ce56a"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id5520da4c-1055-474c-893f-bf4c6a73b8d4" cpfId="ided1b6530-2f60-494b-8c70-14ee1d423caf"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id22865c71-cc2f-48c1-9263-c924f2f3e0a2" cpfId="C-Issue-Shipment-Invoice-594">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_split">
             <position>11</position>
             <attributes>
@@ -80,8 +80,8 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id126d8801-d4bc-4c29-a7d4-ebb895597a89" cpfId="id3a94ba47-653b-4a73-8c6b-b6338837dc8b"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id62488f39-3ba7-4e78-89ab-1d9dcc8d9527" cpfId="C-Issue-Shipment-Remittance-Advice-601">
+    <Annotation xsi:type="anf:GraphicsType" id="idc88014c5-270e-41b1-b863-366d1d212a33" cpfId="id4e4ab070-c5b6-48af-978e-e00491834387"/>
+    <Annotation xsi:type="anf:GraphicsType" id="b2d2735c-b53c-45ef-a640-10ce4e88bd2c" cpfId="C-Issue-Shipment-Remittance-Advice-601">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="56.0" w="96.0" x="504.0" y="368.0"/>
@@ -91,8 +91,8 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="ff4c2faf-97e5-4eb7-a933-41a91c75efba" cpfId="id9153f5bf-bc94-4551-a207-ed29a24d5521"/>
-    <Annotation xsi:type="anf:GraphicsType" id="d3b5f57d-6fea-43e9-adf0-49ace600c37d" cpfId="C-Produce-Freight-Invoice-595">
+    <Annotation xsi:type="anf:GraphicsType" id="id0210f8e8-76b8-4b50-a6c4-b5280f5908f5" cpfId="ida9beb2c5-9bb0-4e48-a527-32c1505f4045"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id9b362517-f442-4dc3-9100-61a71dd14f55" cpfId="C-Produce-Freight-Invoice-595">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="28.0" w="96.0" x="892.0" y="304.0"/>
@@ -102,10 +102,10 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idb7ad1efb-f4b7-4677-9c67-dcdcba62bbd9" cpfId="id8cf0e700-2b18-48f3-8ca0-647db78e8330"/>
-    <Annotation xsi:type="anf:GraphicsType" id="ida6c424d4-b0ee-431e-be84-9ef1aa39d010" cpfId="id83652308-7571-469e-8f6e-de01b68bcc64"/>
-    <Annotation xsi:type="anf:GraphicsType" id="ideaf9d345-5261-483b-bd90-8e6bb8df779d" cpfId="idbadfff62-9a84-4066-b40a-9cf222513aa3"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id9572661e-d420-4230-a2c1-bdea32082816" cpfId="C-null-597">
+    <Annotation xsi:type="anf:GraphicsType" id="id41ad68da-0883-45f3-926c-681ad6eefa36" cpfId="id3142b593-ad10-46e6-a1cc-ccc744f40726"/>
+    <Annotation xsi:type="anf:GraphicsType" id="f7ababb7-250e-4ad4-a9ea-d65dbdc30a23" cpfId="idc46a8e1c-c0a6-489f-a4d3-5e8e7a8720bc"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id0bd5fe6c-69b6-41bb-99b7-554eba998e62" cpfId="id41c08ce6-ddf6-44d1-b98e-c06e9c513b31"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idf6c9dbbe-afdd-47dc-97c1-b62e9423277c" cpfId="C-null-597">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_join">
             <position>10</position>
             <attributes>
@@ -117,8 +117,8 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="e60508ad-c186-4cf0-bc3c-9bc61d39e5ed" cpfId="idbd516bc6-8bf5-409d-999c-ff5dd4e4e287"/>
-    <Annotation xsi:type="anf:GraphicsType" id="d22ae154-9a77-49d1-b549-e657b04a6fb9" cpfId="C-Issue-Shipment-Payment-Order-602">
+    <Annotation xsi:type="anf:GraphicsType" id="id7605b24e-fc0d-4d27-8bcf-bc4a6963b0fb" cpfId="idf401c302-5284-4c6f-bb3c-f463347991ab"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idfa9bdcea-02c9-4235-a9f4-eb6615e436d6" cpfId="C-Issue-Shipment-Payment-Order-602">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="42.0" w="96.0" x="252.0" y="368.0"/>
@@ -128,9 +128,9 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="idec682218-6063-4f9b-8cec-b528b2e08550" cpfId="idc26fb896-df42-44e9-86ac-cf6fd492888a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id206fa613-50ba-4b07-8e3d-a16a357036e3" cpfId="id09729609-1c2e-4f8c-9b3d-dbaccc2e81d0"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id965e064e-2671-44d7-ba9b-a660763bd2ff" cpfId="C-null-607">
+    <Annotation xsi:type="anf:GraphicsType" id="f64f1748-9557-4e71-9d2d-7ccd4ea4f176" cpfId="id9fcda183-e24a-4f22-b839-e8cc627ef044"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id4ade8bbc-89e0-45a6-b935-18827224ef0d" cpfId="id2035785e-8f61-46c5-bbef-876e2681b049"/>
+    <Annotation xsi:type="anf:GraphicsType" id="b62b43fd-8685-4de0-abbf-8ff31f68081d" cpfId="C-null-607">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_join">
             <position>10</position>
             <attributes>
@@ -142,10 +142,10 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id63465917-f601-493a-ac56-63e0be04ccd9" cpfId="idedf8d150-8b7a-4eb0-ae46-45df664783fb"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idaa693026-7d07-41fa-85f3-ab77fe5025f7" cpfId="id757f73ae-9e8a-4f3a-b139-7664e0e1a6a7"/>
-    <Annotation xsi:type="anf:GraphicsType" id="f2a95902-3851-4d36-b343-63e2d4ed890e" cpfId="id0dba36b2-382a-4c8d-a221-ee2335c9e8db"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idb7a720c2-6c6a-4d5e-a0a8-4e246fd968f3" cpfId="C-Approve-Shipment-Payment-Order-593">
+    <Annotation xsi:type="anf:GraphicsType" id="c95cd34c-aba7-4dd2-9b76-d9fb69a38fba" cpfId="id4f5f7fa4-7e33-4102-975c-61f9ea6892ef"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id688dafbb-cc9c-42f2-969f-1c6456516751" cpfId="id4dfcd4d9-3d95-4042-8155-7630c55f1bd0"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ida0cdc89b-2719-41e8-9d3a-a30d773dc4f8" cpfId="id683ce71d-f261-40b4-9376-db73ccc5bd21"/>
+    <Annotation xsi:type="anf:GraphicsType" id="cbb6147d-c183-45b4-8f08-47f41a7bd715" cpfId="C-Approve-Shipment-Payment-Order-593">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_join">
             <position>10</position>
             <attributes>
@@ -169,7 +169,7 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="c6470797-cc6b-47b9-a1bd-d36ef3b98620" cpfId="C-null-597-null-4515">
+    <Annotation xsi:type="anf:GraphicsType" id="ddcb97a0-84c8-45f3-8a56-3ef186c26eaf" cpfId="C-null-597-null-4515">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="null_597" target="null_4515">
             <ports in="11" out="10"/>
             <attributes>
@@ -184,15 +184,15 @@
         <position x="903.5" y="448.0"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id3888148d-0e88-43f8-b62f-e0b4eccaacb4" cpfId="C-null-4515">
+    <Annotation xsi:type="anf:GraphicsType" id="d19605fa-1bb2-4576-97b5-ebfc45957f09" cpfId="C-null-4515">
         <position x="804.0" y="448.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="id37f819ff-ee96-47d5-8c69-4a70cc13ad25" cpfId="id945b04d3-2aed-4943-ad58-5c3902ca4dc4"/>
-    <Annotation xsi:type="anf:GraphicsType" id="e0e04e7a-9da4-4d40-9610-9f17a9cc9788" cpfId="id3cf060f7-eb3e-48ae-a4cb-8ba84e50c2e8"/>
-    <Annotation xsi:type="anf:GraphicsType" id="a0b963b9-1379-446c-b96a-3074862513ac" cpfId="id7ca3cbd0-c062-4c10-9c3b-37a1f4f13b53"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idd9297db9-f124-4bdc-bb58-9f5b9cdb36c6" cpfId="C-null-599">
+    <Annotation xsi:type="anf:GraphicsType" id="id7951bced-0091-46ae-88dc-b9e74db70867" cpfId="id6d642f71-a53f-49b1-97ad-087b430cbd52"/>
+    <Annotation xsi:type="anf:GraphicsType" id="d4556db7-63d1-41a4-9535-84a953926f2a" cpfId="id23c5459d-d71b-4b57-b027-614fd9515bc0"/>
+    <Annotation xsi:type="anf:GraphicsType" id="db001bb4-7a93-4c14-8d8f-72e91559578c" cpfId="idd4d00e69-8ab4-455b-aa4e-1c04fccbd849"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ida0760977-7b70-42b1-98f3-3a0a77dc9925" cpfId="C-null-599">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="AND_join">
             <position>10</position>
             <attributes>
@@ -204,11 +204,11 @@
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="a8c49c03-59e1-4f7e-bdf4-6c61998935bd" cpfId="idf67de012-5d91-48c7-82f0-2dec61a9fd2a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="f206d364-a66e-40dc-b9dc-4ee4c5893bba" cpfId="idda627753-4b93-461e-a641-1298532680ae"/>
-    <Annotation xsi:type="anf:GraphicsType" id="e7277604-1dc7-4eda-821e-d6ba00039a29" cpfId="id7a8f36fc-2af7-481d-b7ba-a7d4f1b839bc"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id8292a26d-acba-40ad-965d-48996b70dc09" cpfId="ida470c8cb-b727-44a6-8d41-c1c029722ab4"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idf5cbd181-813a-4bb4-918c-d04ee7a68eb5" cpfId="C-Process-Shipment-Payment-603">
+    <Annotation xsi:type="anf:GraphicsType" id="fee4c957-3b9e-40ac-90f5-f72ec99bc2d0" cpfId="id1ed8104f-f7a4-4a70-9908-cbc164da3c28"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id2c631445-fb89-4f2d-ab9f-57fba9c334b6" cpfId="ide31a7a7a-9da8-406e-a5ed-8cbfd10e05a8"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id4274c60d-c4de-48ce-a4a4-63fe80bf1f32" cpfId="id0d242c26-dcd6-477b-a923-8b76138c2ed8"/>
+    <Annotation xsi:type="anf:GraphicsType" id="a516d727-7265-4808-bf17-063658dc3a8f" cpfId="id20308347-c8fb-44fd-b95c-cb0456dd3d4a"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ede84b6f-79a7-41ba-9259-696e00fad730" cpfId="C-Process-Shipment-Payment-603">
         <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_join">
             <position>10</position>
             <attributes>
@@ -232,9 +232,9 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="f5448ece-4f36-4959-adcb-e8f016f7bd8f" cpfId="idf7c4b0d7-e804-4b01-bff4-72b17ac7a901"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idc620da87-e348-4ff9-882f-7efdcaa9ecc0" cpfId="id13b32abe-972a-4d80-bfa5-3f302533911e"/>
-    <Annotation xsi:type="anf:GraphicsType" id="idbaefdf1a-f9eb-4e9e-be4d-7d05c5c64ce4" cpfId="C-Update-Shipment-Payment-Order-604">
+    <Annotation xsi:type="anf:GraphicsType" id="id158ca114-477a-4ab5-abad-d7a16a96e95a" cpfId="id7f2b182c-4f69-4c7b-a9a2-fd0ecf69bda8"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id7510043a-176a-48a3-a6bd-7e35f6585edb" cpfId="idc22c3e30-7230-469e-ba5d-a3f232ad1f89"/>
+    <Annotation xsi:type="anf:GraphicsType" id="iddab12487-0234-4528-b834-bccc0c18176e" cpfId="C-Update-Shipment-Payment-Order-604">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="42.0" w="96.0" x="104.0" y="472.0"/>
@@ -244,9 +244,9 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="b27aa355-847c-4d5c-a564-293e9c76c75b" cpfId="id089a4202-077d-4a1a-aa4b-aac461286bd0"/>
-    <Annotation xsi:type="anf:GraphicsType" id="cfe4a5e5-bde8-4bce-9268-45abdb53a4ed" cpfId="id36587a55-65f3-481d-a85b-2af1dc00b82a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id5b25d39a-482b-41c9-b297-3a6e6dc2d99a" cpfId="C-Issue-Credit-Adjustment-606">
+    <Annotation xsi:type="anf:GraphicsType" id="iddcac3597-bf2d-4aa8-828e-40525a6be8a3" cpfId="idd2aea86b-001d-4263-b2e1-c696de648a2a"/>
+    <Annotation xsi:type="anf:GraphicsType" id="dd379c27-f330-4eff-846d-298c5e51c3fb" cpfId="id31239fe1-3fb7-49ec-96da-d3de448e1953"/>
+    <Annotation xsi:type="anf:GraphicsType" id="b125a714-e8cc-4418-b7bd-874bf63babaf" cpfId="C-Issue-Credit-Adjustment-606">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="28.0" w="96.0" x="252.0" y="736.0"/>
@@ -256,9 +256,9 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="fb336da9-79f0-4009-9797-0248833fc9da" cpfId="ided78886d-50cb-4922-b4c7-127c09b1efab"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id97186105-8353-42b2-a005-5588ba6ab9bd" cpfId="idc64e6887-4c05-44c3-97c8-0a284ad71b4a"/>
-    <Annotation xsi:type="anf:GraphicsType" id="id042f477e-4061-472e-af0e-c071ef888f24" cpfId="C-Issue-Debit-Adjustment-605">
+    <Annotation xsi:type="anf:GraphicsType" id="id25bfd84c-a3b8-45d8-9b17-bcf6c304e9e6" cpfId="id2312a5b8-b157-4f45-b56d-ef10668e9b87"/>
+    <Annotation xsi:type="anf:GraphicsType" id="d2ccbfaa-ccf5-45c4-b46c-7fdfcb497066" cpfId="id69849133-7dc3-4f11-93ac-abe2816810c7"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idc98554e8-5141-4a93-a4a6-60e902fa90f3" cpfId="C-Issue-Debit-Adjustment-605">
         <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <attributes>
                 <bounds h="28.0" w="96.0" x="92.0" y="736.0"/>
@@ -268,7 +268,7 @@
         <size width="32.0" height="32.0"/>
         <fill image="/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="da7760b9-e92c-4e45-ad27-783504db3bae" cpfId="C-null-599-OutputCondition-45">
+    <Annotation xsi:type="anf:GraphicsType" id="caa2e79a-1287-46ff-94c4-8b24134b3910" cpfId="C-null-599-OutputCondition-45">
         <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="null_599" target="OutputCondition_45">
             <ports in="11" out="10"/>
             <attributes>
@@ -283,7 +283,7 @@
         <position x="641.5" y="866.0"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xsi:type="anf:GraphicsType" id="c327d1bd-8d19-4ff9-bb5a-5f6d1d64b731" cpfId="C-OutputCondition-45">
+    <Annotation xsi:type="anf:GraphicsType" id="a3670dee-5bd9-4713-acbf-f466c8b9b23c" cpfId="C-OutputCondition-45">
         <position x="626.0" y="862.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>

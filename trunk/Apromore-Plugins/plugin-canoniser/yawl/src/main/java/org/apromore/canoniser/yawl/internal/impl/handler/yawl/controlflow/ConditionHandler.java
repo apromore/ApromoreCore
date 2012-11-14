@@ -41,6 +41,8 @@ public class ConditionHandler extends BaseConditionHandler<ExternalConditionFact
 
         if (hasIncomingQueue(getObject())) {
             connectFromPredecessors(getObject(), eventOrState);
+        } else {
+            getContext().addIntroducedPredecessor(getObject(), eventOrState);
         }
 
         connectToSuccessors(eventOrState, getObject().getFlowsInto());

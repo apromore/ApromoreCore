@@ -46,19 +46,19 @@
                 <expression>YawlWSInvokerPortName = 80</expression>
             </inputExpr>
         </Node>
-        <Node xsi:type="cpf:MessageType" id="id4fd27061-f5dd-4db0-a493-0c12c8e7eaea">
+        <Node xsi:type="cpf:MessageType" id="id21939dd9-25b0-48aa-82a1-3e1014c4af2c">
             <direction>outgoing</direction>
         </Node>
-        <Node xsi:type="cpf:MessageType" id="id0eff8ed2-b2d3-47d7-86f6-ba68a5ee128a">
+        <Node xsi:type="cpf:MessageType" id="bb1c6e70-1055-4067-940b-adf46998b76e">
             <direction>incoming</direction>
         </Node>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id7cf8aeab-9a60-465d-a97d-44eec7b657b7" sourceId="id4fd27061-f5dd-4db0-a493-0c12c8e7eaea" targetId="C-A-3"/>
-        <Edge id="ida17daa3a-2c1f-4844-bdc7-8448527857be" sourceId="C-A-3" targetId="id0eff8ed2-b2d3-47d7-86f6-ba68a5ee128a"/>
-        <Edge id="id53048ac2-1293-4bf2-94a6-834859394313" default="false" sourceId="C-InputCondition-1" targetId="id4fd27061-f5dd-4db0-a493-0c12c8e7eaea"/>
-        <Edge id="ide187deaf-3722-4a89-a5c1-e17f26d513db" default="false" sourceId="id0eff8ed2-b2d3-47d7-86f6-ba68a5ee128a" targetId="C-OutputCondition-2"/>
+        <Edge id="idfb4305b7-6cc3-485f-a89a-442523da6fbd" sourceId="id21939dd9-25b0-48aa-82a1-3e1014c4af2c" targetId="C-A-3"/>
+        <Edge id="id1df9fd2e-8058-46f4-a5d2-14ed20fb0b3f" sourceId="C-A-3" targetId="bb1c6e70-1055-4067-940b-adf46998b76e"/>
+        <Edge id="id0d2d9049-3fd9-49ae-9cb8-9d12e924eb0a" default="false" sourceId="C-InputCondition-1" targetId="id21939dd9-25b0-48aa-82a1-3e1014c4af2c"/>
+        <Edge id="id7a81fa36-2bb7-43fb-bfbb-88a1451981f3" default="false" sourceId="bb1c6e70-1055-4067-940b-adf46998b76e" targetId="C-OutputCondition-2"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </cpf:CanonicalProcess>

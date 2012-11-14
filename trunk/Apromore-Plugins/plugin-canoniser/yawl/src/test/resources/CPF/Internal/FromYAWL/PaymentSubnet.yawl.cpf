@@ -3,9 +3,9 @@
     <Net id="N-Payment" originalID="Payment">
         <Node xsi:type="cpf:EventType" id="C-InputCondition-44" originalID="InputCondition_44"/>
         <Node xsi:type="cpf:TaskType" id="C-null-592" originalID="null_592"/>
-        <Node xsi:type="cpf:ANDSplitType" id="id67fad311-5711-482f-a80d-53419bac8ae8"/>
+        <Node xsi:type="cpf:ANDSplitType" id="id04f41353-71e6-4414-b625-289bbbab82e5"/>
         <Node xsi:type="cpf:TaskType" id="C-null-596" originalID="null_596"/>
-        <Node xsi:type="cpf:XORSplitType" id="idf82934a6-156b-4884-8e3b-0a0349537258"/>
+        <Node xsi:type="cpf:XORSplitType" id="id3868face-2b99-491b-abd5-1dc7f140477f"/>
         <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Invoice-594" originalID="Issue_Shipment_Invoice_594">
             <name>Issue Shipment Invoice</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -30,10 +30,10 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="idaf446b93-2033-46d5-b486-cd4e6b5a4c50" resourceTypeId="id3d3ad7bc-2f54-40f2-808d-c53c5e133429" qualifier="Primary"/>
-            <objectRef id="id0146ae7b-e5db-4dd9-8617-6e25523e35fd" objectId="D-N-Payment-ShipmentInvoice" type="output" optional="false" consumed="true"/>
-            <objectRef id="id6b44ffa8-1330-4c68-9869-582c5cc145ba" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
-            <objectRef id="idada45909-0c43-42d5-85c3-8f75a078f416" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id0f8d8cd9-429e-4130-aad1-9f54bc807604" resourceTypeId="id535c3f2b-6661-4115-8713-b25b163a4201" qualifier="Primary"/>
+            <objectRef id="idb7ebf398-d08d-4686-9c37-b863d8510afd" objectId="D-N-Payment-ShipmentInvoice" type="output" optional="false" consumed="true"/>
+            <objectRef id="id01c3df68-befd-438a-a99d-97afe548e954" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="id66edf1b8-48cf-4288-9985-cf1e0f93916a" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt;&lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt;</expression>
@@ -44,7 +44,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORSplitType" id="dc7d3efb-6596-427d-9a23-0d3080df985f"/>
+        <Node xsi:type="cpf:XORSplitType" id="idd48eb890-a3ba-4484-a897-d49b715e9184"/>
         <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Remittance-Advice-601" originalID="Issue_Shipment_Remittance_Advice_601">
             <name>Issue Shipment Remittance Advice</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -69,9 +69,9 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="ad6c7516-2995-43b3-aaf0-d2c4008129dc" resourceTypeId="id09c85a38-bdf3-4cab-b004-f4c826c26613" qualifier="Primary"/>
-            <objectRef id="b6cdadba-e344-40df-a6b1-2975a72e269d" objectId="D-N-Payment-ShipmentRemittanceAdvice" type="output" optional="false" consumed="true"/>
-            <objectRef id="c7d0f806-9c04-4464-8694-54384673b019" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id010cd4da-005a-43f2-bc95-c5dd7291fef8" resourceTypeId="idb51599c7-ce0d-400b-93a8-de0da72d482b" qualifier="Primary"/>
+            <objectRef id="id1759fb70-1e8a-4802-a2b6-c443c64e4922" objectId="D-N-Payment-ShipmentRemittanceAdvice" type="output" optional="false" consumed="true"/>
+            <objectRef id="e2f4d748-2c21-45f5-afb6-0921f74a9b98" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentRemittanceAdvice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;AmountDebited&gt;0.00&lt;/AmountDebited&gt;</expression>
@@ -106,9 +106,9 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="ide2a83c93-621c-4ee2-baf9-fd574b8b8428" resourceTypeId="id3d3ad7bc-2f54-40f2-808d-c53c5e133429" qualifier="Primary"/>
-            <objectRef id="bf64b016-9846-4275-a532-bbbf971ae34c" objectId="D-N-Payment-FreightInvoice" type="output" optional="false" consumed="true"/>
-            <objectRef id="d492b797-b0b8-42d0-9f04-474d4cf69ab8" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="fc3a2afa-6b0c-4f7d-bae5-50ce49e07cf0" resourceTypeId="id535c3f2b-6661-4115-8713-b25b163a4201" qualifier="Primary"/>
+            <objectRef id="e9521526-11d7-40a1-8453-ca1357a7de42" objectId="D-N-Payment-FreightInvoice" type="output" optional="false" consumed="true"/>
+            <objectRef id="id2cc52c82-0cb1-4b7e-994b-1a0f332b5a1b" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>FreightInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt; &lt;FreightCost&gt;{cpf:getObjectValue('POrder')/FreightCost/text()}&lt;/FreightCost&gt;</expression>
@@ -120,7 +120,7 @@
             <teamWork>false</teamWork>
         </Node>
         <Node xsi:type="cpf:TaskType" id="C-null-597" originalID="null_597"/>
-        <Node xsi:type="cpf:XORJoinType" id="id054093f8-6b3d-4410-b92e-5ac51c2a676b"/>
+        <Node xsi:type="cpf:XORJoinType" id="id2db6562f-ff6d-4efb-bfe8-9d64bd34e395"/>
         <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Payment-Order-602" originalID="Issue_Shipment_Payment_Order_602">
             <name>Issue Shipment Payment Order</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -145,10 +145,10 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="ca84d231-b69b-412d-8785-ee66d625a70e" resourceTypeId="id09c85a38-bdf3-4cab-b004-f4c826c26613" qualifier="Primary"/>
-            <objectRef id="id92224896-c86f-43d0-a595-27f581f49575" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
-            <objectRef id="de047927-7f26-460f-88e4-8938e14a7149" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
-            <objectRef id="id067a4bdc-2fe8-49b0-b54b-5c50fd1c1218" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id824741b3-6ce0-477a-a832-abc31458bc05" resourceTypeId="idb51599c7-ce0d-400b-93a8-de0da72d482b" qualifier="Primary"/>
+            <objectRef id="id54c13eec-2f3a-4bab-9abb-94594beddb3a" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="id2baad895-7840-4ac0-9d83-aea603611538" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="f027468f-9ac9-4bc4-9f48-7619ab141e5e" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = &lt;ShipmentPaymentOrderNumber/&gt; &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt; &lt;Beneficiary&gt; &lt;Beneficiary&gt; &lt;Name/&gt; &lt;Address/&gt; &lt;City/&gt; &lt;State/&gt; &lt;PostCode/&gt; &lt;Phone/&gt; &lt;Fax/&gt; &lt;BusinessNumber/&gt; &lt;/Beneficiary&gt; &lt;Bank/&gt; &lt;BankCode/&gt; &lt;AccountName/&gt; &lt;AccountNumber/&gt; &lt;/Beneficiary&gt;</expression>
@@ -160,7 +160,7 @@
             <teamWork>false</teamWork>
         </Node>
         <Node xsi:type="cpf:TaskType" id="C-null-607" originalID="null_607"/>
-        <Node xsi:type="cpf:XORJoinType" id="id868ce76b-1949-4f8e-93e5-c295afafe85a"/>
+        <Node xsi:type="cpf:XORJoinType" id="d203cdaf-b4e0-46d2-b02f-4eb9cc14a846"/>
         <Node xsi:type="cpf:TaskType" id="C-Approve-Shipment-Payment-Order-593" originalID="Approve_Shipment_Payment_Order_593">
             <name>Approve Shipment Payment Order</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -185,9 +185,9 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="id9f64366c-8758-40c7-a7d5-c7be2b91aa36" resourceTypeId="idd5a5ed53-f7c1-49f9-81b1-f6495f1adbee" qualifier="Primary"/>
-            <objectRef id="bc900f7a-57e5-47e8-82df-cb6e652ae7c9" objectId="D-N-Payment-ShipmentPaymentOrderApproval" type="output" optional="false" consumed="true"/>
-            <objectRef id="c7a47c56-abc0-48da-a8dc-b92601af8660" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="ea931145-4768-4a4b-a7fb-04c2844715dc" resourceTypeId="id6755099a-e3c4-4bce-a2c8-d684352bda13" qualifier="Primary"/>
+            <objectRef id="id31081f9e-a3b4-409a-babf-a1690f6cbf86" objectId="D-N-Payment-ShipmentPaymentOrderApproval" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5ee68a21-360a-407a-95c0-401beb25a44f" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
@@ -198,11 +198,11 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="ida96fbaf1-41b1-41d7-a998-589e02d3a39c"/>
-        <Node xsi:type="cpf:XORSplitType" id="id937a609b-4b3f-4be2-943c-9ed1eef84703"/>
+        <Node xsi:type="cpf:XORJoinType" id="idaf20bbc7-6dfc-4fae-92ce-f02231a8b380"/>
+        <Node xsi:type="cpf:XORSplitType" id="id4995a1bc-2f10-4cb9-996f-ec024aa3ef99"/>
         <Node xsi:type="cpf:TaskType" id="C-null-4515" originalID="null_4515"/>
         <Node xsi:type="cpf:TaskType" id="C-null-599" originalID="null_599"/>
-        <Node xsi:type="cpf:ANDJoinType" id="id109de836-c4d5-48a3-8056-e5ca7bff4c19"/>
+        <Node xsi:type="cpf:ANDJoinType" id="idbbfd57fc-42e4-4929-afd1-54bb22a29a33"/>
         <Node xsi:type="cpf:TaskType" id="C-Process-Shipment-Payment-603" originalID="Process_Shipment_Payment_603">
             <name>Process Shipment Payment</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -227,9 +227,9 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="id8f834787-2752-4702-9f70-f0dcb8854971" resourceTypeId="id30dee89d-963d-408c-a5cb-8be0d992dd57" qualifier="Primary"/>
-            <objectRef id="d9722748-f541-473e-8c24-b590025546e3" objectId="D-N-Payment-ShipmentPayment" type="output" optional="false" consumed="true"/>
-            <objectRef id="id2b4e4605-9be7-421f-aeab-3cf395cb9e47" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id5753f2c4-8f69-4dae-ab93-ee2219d5659d" resourceTypeId="id671f286d-eca4-4829-8634-eff1d5ac2579" qualifier="Primary"/>
+            <objectRef id="f4cddd9c-9bb5-4f5b-b638-4f1dc34d432e" objectId="D-N-Payment-ShipmentPayment" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida8c2ef64-17f3-439b-9b8c-aea27a79c010" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
@@ -240,8 +240,8 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xsi:type="cpf:XORJoinType" id="id1571f9a3-1e31-4be8-847f-8fa17eb45ebe"/>
-        <Node xsi:type="cpf:XORSplitType" id="b02fc4a1-edc2-461c-9009-2bb43295270f"/>
+        <Node xsi:type="cpf:XORJoinType" id="idd8c96f8b-534a-45e5-b8c6-00c17799bed6"/>
+        <Node xsi:type="cpf:XORSplitType" id="f1b32df8-e794-4699-9bc2-0e51e01da4fd"/>
         <Node xsi:type="cpf:TaskType" id="C-Update-Shipment-Payment-Order-604" originalID="Update_Shipment_Payment_Order_604">
             <name>Update Shipment Payment Order</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -268,9 +268,9 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="idd4d48c6a-c043-4860-9c60-fb3747130f90" resourceTypeId="id09c85a38-bdf3-4cab-b004-f4c826c26613" qualifier="Primary"/>
-            <objectRef id="id9d93ff06-2cbc-433c-8ac5-663f65b29519" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
-            <objectRef id="b4d79c8a-f555-42fe-87b7-ee4165a2eedd" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id9b84ef80-ddee-4dfe-98fe-7e66e5335c4c" resourceTypeId="idb51599c7-ce0d-400b-93a8-de0da72d482b" qualifier="Primary"/>
+            <objectRef id="c169b726-b717-438a-980e-68487dbaa2bc" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5195e85c-430f-422f-b840-7fba68787761" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
@@ -315,11 +315,11 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="ide5d72567-1b4f-49ea-a82a-7a289a165a8e" resourceTypeId="id30dee89d-963d-408c-a5cb-8be0d992dd57" qualifier="Primary"/>
-            <objectRef id="id1b766c3c-d4bd-4da1-b4c3-3a622a6ca0ae" objectId="D-N-Payment-CreditAdjustment" type="output" optional="false" consumed="true"/>
-            <objectRef id="ida533619b-80ff-4568-8d3b-c96055987f31" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
-            <objectRef id="ided3441ce-3ef0-46a6-845d-7884b651d38e" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
-            <objectRef id="id36e30a92-8de5-4770-9e3b-aff9a0573cf2" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="c8f35e17-9d37-4bd8-9183-2dea82c0ab91" resourceTypeId="id671f286d-eca4-4829-8634-eff1d5ac2579" qualifier="Primary"/>
+            <objectRef id="ed0e3a69-df3e-4ab6-95d3-dfb4165bb1ef" objectId="D-N-Payment-CreditAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="b9876af1-50d4-4e10-896a-f56e0f0b45a4" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="d9abc9c2-c8bb-4aef-9113-ee2cf1997c4c" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="d8b11afd-a50f-4af9-9600-4b55fa53f4a4" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
@@ -364,10 +364,10 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system"/>
             </attribute>
-            <resourceTypeRef id="ided070aac-ab7f-43c6-a676-5d7e0999bace" resourceTypeId="id30dee89d-963d-408c-a5cb-8be0d992dd57" qualifier="Primary"/>
-            <objectRef id="c61349b9-a8a2-4d6b-b679-2b46201ca071" objectId="D-N-Payment-DebitAdjustment" type="output" optional="false" consumed="true"/>
-            <objectRef id="id58de3b47-ec11-49f3-8c34-fa06369bff83" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
-            <objectRef id="id41ba1826-7532-467f-8c1e-557958e061e9" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <resourceTypeRef id="id4a5b6714-5a57-4486-9ebb-b50e705420e5" resourceTypeId="id671f286d-eca4-4829-8634-eff1d5ac2579" qualifier="Primary"/>
+            <objectRef id="id14af4f8b-c84e-4053-b31d-8f9d755258af" objectId="D-N-Payment-DebitAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="c2b577b8-a89a-4f20-919f-7a1eb90c6a11" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="e6048bf3-6a74-4182-962d-368809e2d982" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
@@ -385,61 +385,61 @@
         </Node>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition-45" originalID="OutputCondition_45"/>
         <Edge id="C-InputCondition-44-null-592" default="false" sourceId="C-InputCondition-44" targetId="C-null-592"/>
-        <Edge id="idfd392450-8e89-44d1-933f-b6dfe3b98b03" sourceId="C-null-592" targetId="id67fad311-5711-482f-a80d-53419bac8ae8"/>
-        <Edge id="id9bcb2bdb-09d7-4c43-b636-751983d8be60" default="false" sourceId="id67fad311-5711-482f-a80d-53419bac8ae8" targetId="C-null-596"/>
-        <Edge id="idba730f2f-3e7b-44e3-a2dd-de76e68c9d4a" sourceId="C-null-596" targetId="idf82934a6-156b-4884-8e3b-0a0349537258"/>
-        <Edge id="idde8df493-d6e2-4ebd-8d77-e6770ab1b93e" default="false" sourceId="id67fad311-5711-482f-a80d-53419bac8ae8" targetId="C-Issue-Shipment-Invoice-594"/>
-        <Edge id="idbc73726b-b0ff-489a-9039-7489f75118af" sourceId="C-Issue-Shipment-Invoice-594" targetId="dc7d3efb-6596-427d-9a23-0d3080df985f"/>
-        <Edge id="id3a94ba47-653b-4a73-8c6b-b6338837dc8b" default="false" sourceId="dc7d3efb-6596-427d-9a23-0d3080df985f" targetId="C-Issue-Shipment-Remittance-Advice-601">
+        <Edge id="iddb57c546-ff64-429a-a9b3-d4fad2592873" sourceId="C-null-592" targetId="id04f41353-71e6-4414-b625-289bbbab82e5"/>
+        <Edge id="idefc2383f-356a-4a6b-9f76-1e93819ca6bd" default="false" sourceId="id04f41353-71e6-4414-b625-289bbbab82e5" targetId="C-null-596"/>
+        <Edge id="id25272c00-4251-4f8f-a507-d53610e9dfea" sourceId="C-null-596" targetId="id3868face-2b99-491b-abd5-1dc7f140477f"/>
+        <Edge id="idc35e98df-1bc7-4af1-bcb1-ef171e1ce56a" default="false" sourceId="id04f41353-71e6-4414-b625-289bbbab82e5" targetId="C-Issue-Shipment-Invoice-594"/>
+        <Edge id="ided1b6530-2f60-494b-8c70-14ee1d423caf" sourceId="C-Issue-Shipment-Invoice-594" targetId="idd48eb890-a3ba-4484-a897-d49b715e9184"/>
+        <Edge id="id4e4ab070-c5b6-48af-978e-e00491834387" default="false" sourceId="idd48eb890-a3ba-4484-a897-d49b715e9184" targetId="C-Issue-Shipment-Remittance-Advice-601">
             <conditionExpr>
                 <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Payment/POrder/PrePaid/text()='true'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id9153f5bf-bc94-4551-a207-ed29a24d5521" default="false" sourceId="idf82934a6-156b-4884-8e3b-0a0349537258" targetId="C-Produce-Freight-Invoice-595">
+        <Edge id="ida9beb2c5-9bb0-4e48-a527-32c1505f4045" default="false" sourceId="id3868face-2b99-491b-abd5-1dc7f140477f" targetId="C-Produce-Freight-Invoice-595">
             <conditionExpr>
                 <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Payment/POrder/InvoiceRequired/text()='true'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id8cf0e700-2b18-48f3-8ca0-647db78e8330" sourceId="id054093f8-6b3d-4410-b92e-5ac51c2a676b" targetId="C-null-597"/>
-        <Edge id="id83652308-7571-469e-8f6e-de01b68bcc64" default="true" sourceId="idf82934a6-156b-4884-8e3b-0a0349537258" targetId="id054093f8-6b3d-4410-b92e-5ac51c2a676b"/>
-        <Edge id="idbadfff62-9a84-4066-b40a-9cf222513aa3" default="false" sourceId="C-Produce-Freight-Invoice-595" targetId="id054093f8-6b3d-4410-b92e-5ac51c2a676b"/>
-        <Edge id="idbd516bc6-8bf5-409d-999c-ff5dd4e4e287" default="true" sourceId="dc7d3efb-6596-427d-9a23-0d3080df985f" targetId="C-Issue-Shipment-Payment-Order-602"/>
-        <Edge id="idc26fb896-df42-44e9-86ac-cf6fd492888a" sourceId="id868ce76b-1949-4f8e-93e5-c295afafe85a" targetId="C-null-607"/>
-        <Edge id="id09729609-1c2e-4f8c-9b3d-dbaccc2e81d0" default="false" sourceId="C-Issue-Shipment-Remittance-Advice-601" targetId="id868ce76b-1949-4f8e-93e5-c295afafe85a"/>
-        <Edge id="idedf8d150-8b7a-4eb0-ae46-45df664783fb" sourceId="ida96fbaf1-41b1-41d7-a998-589e02d3a39c" targetId="C-Approve-Shipment-Payment-Order-593"/>
-        <Edge id="id757f73ae-9e8a-4f3a-b139-7664e0e1a6a7" default="false" sourceId="C-Issue-Shipment-Payment-Order-602" targetId="ida96fbaf1-41b1-41d7-a998-589e02d3a39c"/>
-        <Edge id="id0dba36b2-382a-4c8d-a221-ee2335c9e8db" sourceId="C-Approve-Shipment-Payment-Order-593" targetId="id937a609b-4b3f-4be2-943c-9ed1eef84703"/>
+        <Edge id="id3142b593-ad10-46e6-a1cc-ccc744f40726" sourceId="id2db6562f-ff6d-4efb-bfe8-9d64bd34e395" targetId="C-null-597"/>
+        <Edge id="idc46a8e1c-c0a6-489f-a4d3-5e8e7a8720bc" default="true" sourceId="id3868face-2b99-491b-abd5-1dc7f140477f" targetId="id2db6562f-ff6d-4efb-bfe8-9d64bd34e395"/>
+        <Edge id="id41c08ce6-ddf6-44d1-b98e-c06e9c513b31" default="false" sourceId="C-Produce-Freight-Invoice-595" targetId="id2db6562f-ff6d-4efb-bfe8-9d64bd34e395"/>
+        <Edge id="idf401c302-5284-4c6f-bb3c-f463347991ab" default="true" sourceId="idd48eb890-a3ba-4484-a897-d49b715e9184" targetId="C-Issue-Shipment-Payment-Order-602"/>
+        <Edge id="id9fcda183-e24a-4f22-b839-e8cc627ef044" sourceId="d203cdaf-b4e0-46d2-b02f-4eb9cc14a846" targetId="C-null-607"/>
+        <Edge id="id2035785e-8f61-46c5-bbef-876e2681b049" default="false" sourceId="C-Issue-Shipment-Remittance-Advice-601" targetId="d203cdaf-b4e0-46d2-b02f-4eb9cc14a846"/>
+        <Edge id="id4f5f7fa4-7e33-4102-975c-61f9ea6892ef" sourceId="idaf20bbc7-6dfc-4fae-92ce-f02231a8b380" targetId="C-Approve-Shipment-Payment-Order-593"/>
+        <Edge id="id4dfcd4d9-3d95-4042-8155-7630c55f1bd0" default="false" sourceId="C-Issue-Shipment-Payment-Order-602" targetId="idaf20bbc7-6dfc-4fae-92ce-f02231a8b380"/>
+        <Edge id="id683ce71d-f261-40b4-9376-db73ccc5bd21" sourceId="C-Approve-Shipment-Payment-Order-593" targetId="id4995a1bc-2f10-4cb9-996f-ec024aa3ef99"/>
         <Edge id="C-null-597-null-4515" default="false" sourceId="C-null-597" targetId="C-null-4515"/>
-        <Edge id="id945b04d3-2aed-4943-ad58-5c3902ca4dc4" sourceId="id109de836-c4d5-48a3-8056-e5ca7bff4c19" targetId="C-null-599"/>
-        <Edge id="id3cf060f7-eb3e-48ae-a4cb-8ba84e50c2e8" default="false" sourceId="C-null-607" targetId="id109de836-c4d5-48a3-8056-e5ca7bff4c19"/>
-        <Edge id="id7ca3cbd0-c062-4c10-9c3b-37a1f4f13b53" default="false" sourceId="C-null-4515" targetId="id109de836-c4d5-48a3-8056-e5ca7bff4c19"/>
-        <Edge id="idf67de012-5d91-48c7-82f0-2dec61a9fd2a" sourceId="id1571f9a3-1e31-4be8-847f-8fa17eb45ebe" targetId="C-Process-Shipment-Payment-603"/>
-        <Edge id="idda627753-4b93-461e-a641-1298532680ae" default="true" sourceId="id937a609b-4b3f-4be2-943c-9ed1eef84703" targetId="id1571f9a3-1e31-4be8-847f-8fa17eb45ebe"/>
-        <Edge id="id7a8f36fc-2af7-481d-b7ba-a7d4f1b839bc" sourceId="C-Process-Shipment-Payment-603" targetId="b02fc4a1-edc2-461c-9009-2bb43295270f"/>
-        <Edge id="ida470c8cb-b727-44a6-8d41-c1c029722ab4" default="true" sourceId="b02fc4a1-edc2-461c-9009-2bb43295270f" targetId="id868ce76b-1949-4f8e-93e5-c295afafe85a"/>
-        <Edge id="idf7c4b0d7-e804-4b01-bff4-72b17ac7a901" default="false" sourceId="id937a609b-4b3f-4be2-943c-9ed1eef84703" targetId="C-Update-Shipment-Payment-Order-604">
+        <Edge id="id6d642f71-a53f-49b1-97ad-087b430cbd52" sourceId="idbbfd57fc-42e4-4929-afd1-54bb22a29a33" targetId="C-null-599"/>
+        <Edge id="id23c5459d-d71b-4b57-b027-614fd9515bc0" default="false" sourceId="C-null-607" targetId="idbbfd57fc-42e4-4929-afd1-54bb22a29a33"/>
+        <Edge id="idd4d00e69-8ab4-455b-aa4e-1c04fccbd849" default="false" sourceId="C-null-4515" targetId="idbbfd57fc-42e4-4929-afd1-54bb22a29a33"/>
+        <Edge id="id1ed8104f-f7a4-4a70-9908-cbc164da3c28" sourceId="idd8c96f8b-534a-45e5-b8c6-00c17799bed6" targetId="C-Process-Shipment-Payment-603"/>
+        <Edge id="ide31a7a7a-9da8-406e-a5ed-8cbfd10e05a8" default="true" sourceId="id4995a1bc-2f10-4cb9-996f-ec024aa3ef99" targetId="idd8c96f8b-534a-45e5-b8c6-00c17799bed6"/>
+        <Edge id="id0d242c26-dcd6-477b-a923-8b76138c2ed8" sourceId="C-Process-Shipment-Payment-603" targetId="f1b32df8-e794-4699-9bc2-0e51e01da4fd"/>
+        <Edge id="id20308347-c8fb-44fd-b95c-cb0456dd3d4a" default="true" sourceId="f1b32df8-e794-4699-9bc2-0e51e01da4fd" targetId="d203cdaf-b4e0-46d2-b02f-4eb9cc14a846"/>
+        <Edge id="id7f2b182c-4f69-4c7b-a9a2-fd0ecf69bda8" default="false" sourceId="id4995a1bc-2f10-4cb9-996f-ec024aa3ef99" targetId="C-Update-Shipment-Payment-Order-604">
             <conditionExpr>
                 <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Payment/ShipmentPaymentOrderApproval/Approved/text()='false'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id13b32abe-972a-4d80-bfa5-3f302533911e" default="false" sourceId="C-Update-Shipment-Payment-Order-604" targetId="ida96fbaf1-41b1-41d7-a998-589e02d3a39c"/>
-        <Edge id="id089a4202-077d-4a1a-aa4b-aac461286bd0" default="false" sourceId="b02fc4a1-edc2-461c-9009-2bb43295270f" targetId="C-Issue-Credit-Adjustment-606">
+        <Edge id="idc22c3e30-7230-469e-ba5d-a3f232ad1f89" default="false" sourceId="C-Update-Shipment-Payment-Order-604" targetId="idaf20bbc7-6dfc-4fae-92ce-f02231a8b380"/>
+        <Edge id="idd2aea86b-001d-4263-b2e1-c696de648a2a" default="false" sourceId="f1b32df8-e794-4699-9bc2-0e51e01da4fd" targetId="C-Issue-Credit-Adjustment-606">
             <conditionExpr>
                 <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Payment/ShipmentPayment/Balance/text()&gt;0</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id36587a55-65f3-481d-a85b-2af1dc00b82a" default="false" sourceId="C-Issue-Credit-Adjustment-606" targetId="id868ce76b-1949-4f8e-93e5-c295afafe85a"/>
-        <Edge id="ided78886d-50cb-4922-b4c7-127c09b1efab" default="false" sourceId="b02fc4a1-edc2-461c-9009-2bb43295270f" targetId="C-Issue-Debit-Adjustment-605">
+        <Edge id="id31239fe1-3fb7-49ec-96da-d3de448e1953" default="false" sourceId="C-Issue-Credit-Adjustment-606" targetId="d203cdaf-b4e0-46d2-b02f-4eb9cc14a846"/>
+        <Edge id="id2312a5b8-b157-4f45-b56d-ef10668e9b87" default="false" sourceId="f1b32df8-e794-4699-9bc2-0e51e01da4fd" targetId="C-Issue-Debit-Adjustment-605">
             <conditionExpr>
                 <language>http://www.w3.org/1999/XPath</language>
                 <expression>/Payment/ShipmentPayment/Balance/text()&lt;0</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idc64e6887-4c05-44c3-97c8-0a284ad71b4a" default="false" sourceId="C-Issue-Debit-Adjustment-605" targetId="id1571f9a3-1e31-4be8-847f-8fa17eb45ebe"/>
+        <Edge id="id69849133-7dc3-4f11-93ac-abe2816810c7" default="false" sourceId="C-Issue-Debit-Adjustment-605" targetId="idd8c96f8b-534a-45e5-b8c6-00c17799bed6"/>
         <Edge id="C-null-599-OutputCondition-45" default="false" sourceId="C-null-599" targetId="C-OutputCondition-45"/>
         <Object xsi:type="cpf:SoftType" id="D-N-Payment-CreditAdjustment" originalID="N-Payment_CreditAdjustment">
             <name>CreditAdjustment</name>
@@ -570,67 +570,67 @@
             <type>PurchaseOrderType</type>
         </Object>
     </Net>
-    <ResourceType xsi:type="cpf:HumanType" id="id3d3ad7bc-2f54-40f2-808d-c53c5e133429" specializationIds="idc8728f30-e73a-4a6e-a581-41829fa903b0" originalID="RO-326e7029-c9b5-4a7e-a6ea-d310bc43ca9d">
+    <ResourceType xsi:type="cpf:HumanType" id="id535c3f2b-6661-4115-8713-b25b163a4201" specializationIds="ide3ce0137-f324-461f-993b-7a0dee44aac1" originalID="RO-326e7029-c9b5-4a7e-a6ea-d310bc43ca9d">
         <name>Supply Admin Officer</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="idc8728f30-e73a-4a6e-a581-41829fa903b0" originalID="PA-63c56311-307c-464a-b47d-4251338f08f3">
+    <ResourceType xsi:type="cpf:HumanType" id="ide3ce0137-f324-461f-993b-7a0dee44aac1" originalID="PA-63c56311-307c-464a-b47d-4251338f08f3">
         <name>Tom Hagen</name>
         <attribute name="Capability" value="Master's in SCLM"/>
         <attribute name="Position" value="Assistant head of OD"/>
         <attribute name="Position" value="Head of SD"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id53a8b6da-d995-48c2-90b4-a7f832929759" specializationIds="ida3b1c8fc-30cd-4311-ba32-c1672f41530d id37210e71-71af-49ae-9fe2-65f5cadee79d idc8728f30-e73a-4a6e-a581-41829fa903b0" originalID="RO-5dee0ac5-b65b-42e6-bef3-8e0446f74dca">
+    <ResourceType xsi:type="cpf:HumanType" id="id347eea41-85a6-4595-817e-6e894d7954a7" specializationIds="idaa68d455-e71e-4256-996f-00c7929ef739 idc50a5c71-a9ac-4d34-aea3-f9412bf1b9fd ide3ce0137-f324-461f-993b-7a0dee44aac1" originalID="RO-5dee0ac5-b65b-42e6-bef3-8e0446f74dca">
         <name>Senior Supply Officer</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="ida3b1c8fc-30cd-4311-ba32-c1672f41530d" originalID="PA-24eaf69a-1b6a-45cc-910d-548ba876c684">
+    <ResourceType xsi:type="cpf:HumanType" id="idaa68d455-e71e-4256-996f-00c7929ef739" originalID="PA-24eaf69a-1b6a-45cc-910d-548ba876c684">
         <name>Joe Lucadello</name>
         <attribute name="Capability" value="Bachelor's in SCLM"/>
         <attribute name="Position" value="Warehouse clerk"/>
         <attribute name="Position" value="SD clerk"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id37210e71-71af-49ae-9fe2-65f5cadee79d" originalID="PA-a97f2fc8-2fca-44a8-b415-b29ec6acc07e">
+    <ResourceType xsi:type="cpf:HumanType" id="idc50a5c71-a9ac-4d34-aea3-f9412bf1b9fd" originalID="PA-a97f2fc8-2fca-44a8-b415-b29ec6acc07e">
         <name>Jaggy Jovino</name>
         <attribute name="Capability" value="Master's in SCLM"/>
         <attribute name="Position" value="SD clerk"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id09c85a38-bdf3-4cab-b004-f4c826c26613" specializationIds="id1ea595ad-50c8-4cee-a902-d350fc31ebc2 idfebc0d97-a323-4181-8676-a3aff0cce55f id21461e44-ef03-4346-92c5-26965daaed9b" originalID="RO-6a07958f-127f-4543-8abe-dc331aa217e0">
+    <ResourceType xsi:type="cpf:HumanType" id="idb51599c7-ce0d-400b-93a8-de0da72d482b" specializationIds="idd79883f7-425f-4a0f-bd0b-7ba17267f12e ide029d7ff-eb74-49d9-8636-db5fd7ccb621 idfa81d384-b766-494c-9a14-e8bdf48f798a" originalID="RO-6a07958f-127f-4543-8abe-dc331aa217e0">
         <name>Finance Officer</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id1ea595ad-50c8-4cee-a902-d350fc31ebc2" originalID="PA-9eb3d6b0-c87a-497b-9066-8a6046897243">
+    <ResourceType xsi:type="cpf:HumanType" id="idd79883f7-425f-4a0f-bd0b-7ba17267f12e" originalID="PA-9eb3d6b0-c87a-497b-9066-8a6046897243">
         <name>Captain McCluskey</name>
         <attribute name="Position" value="FD clerk"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="idfebc0d97-a323-4181-8676-a3aff0cce55f" originalID="PA-f64bc8e5-bad7-4981-a306-08aed18aa50b">
+    <ResourceType xsi:type="cpf:HumanType" id="ide029d7ff-eb74-49d9-8636-db5fd7ccb621" originalID="PA-f64bc8e5-bad7-4981-a306-08aed18aa50b">
         <name>Arturo de Ofstede</name>
         <attribute name="Position" value="FD clerk"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id21461e44-ef03-4346-92c5-26965daaed9b" originalID="PA-8e8e09c2-f78f-46cf-85a0-d7ea5b513044">
+    <ResourceType xsi:type="cpf:HumanType" id="idfa81d384-b766-494c-9a14-e8bdf48f798a" originalID="PA-8e8e09c2-f78f-46cf-85a0-d7ea5b513044">
         <name>Emilio Barzini</name>
         <attribute name="Position" value="FD clerk"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="idd5a5ed53-f7c1-49f9-81b1-f6495f1adbee" specializationIds="idab1ce213-ceae-4314-a096-8407f675a513" originalID="RO-7f46b9a2-d8a2-4339-b32c-e67013c622da">
+    <ResourceType xsi:type="cpf:HumanType" id="id6755099a-e3c4-4bce-a2c8-d684352bda13" specializationIds="id02b08b37-5bc3-45e3-9fd3-06904c4e651c" originalID="RO-7f46b9a2-d8a2-4339-b32c-e67013c622da">
         <name>Senior Finance Officer</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="idab1ce213-ceae-4314-a096-8407f675a513" originalID="PA-f1b35629-4062-43ca-a8b4-100993b100d8">
+    <ResourceType xsi:type="cpf:HumanType" id="id02b08b37-5bc3-45e3-9fd3-06904c4e651c" originalID="PA-f1b35629-4062-43ca-a8b4-100993b100d8">
         <name>Virgil 'The Turk' Sollozzo</name>
         <attribute name="Position" value="Head of FD"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id30dee89d-963d-408c-a5cb-8be0d992dd57" specializationIds="id1e75a032-bb01-45fb-94c9-9fff80afe353" originalID="RO-9dcfa67a-e2b0-426c-a42e-801fdca0235a">
+    <ResourceType xsi:type="cpf:HumanType" id="id671f286d-eca4-4829-8634-eff1d5ac2579" specializationIds="id6c5a7988-79fa-4113-8faa-a093bf3411cb" originalID="RO-9dcfa67a-e2b0-426c-a42e-801fdca0235a">
         <name>Account Manager</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id1e75a032-bb01-45fb-94c9-9fff80afe353" originalID="PA-5bc277ef-871a-46e8-bc46-bba249efa7cd">
+    <ResourceType xsi:type="cpf:HumanType" id="id6c5a7988-79fa-4113-8faa-a093bf3411cb" originalID="PA-5bc277ef-871a-46e8-bc46-bba249efa7cd">
         <name>Don Carmine Cuneo</name>
         <attribute name="Position" value="FD clerk"/>
         <type>Participant</type>
