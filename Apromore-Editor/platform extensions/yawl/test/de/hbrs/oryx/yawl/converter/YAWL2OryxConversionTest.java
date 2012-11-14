@@ -24,8 +24,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.Map.Entry;
 
 import org.jdom2.JDOMException;
@@ -84,6 +87,36 @@ public class YAWL2OryxConversionTest {
             FileWriter fWriter = new FileWriter(new File("target/filmproduction-" + diagramEntry.getKey() + ".json"));
             fWriter.write(GenericJSONBuilder.parseModel(diagramEntry.getValue()).toString(4));
             fWriter.close();
+        }
+    }
+    
+    @Test
+    public void testMiscYAWLModels() throws YSyntaxException, JDOMException, IOException {
+        File yawlModelDir = new File("resources/miscYawlModels");
+        File[] testModels = yawlModelDir.listFiles(new FilenameFilter() {
+            
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".yawl");
+            }
+        });
+        
+        for (int i = 0; i < testModels.length; i++) {
+            File model = testModels[i];
+            try (Scanner modelScanner = new Scanner(model, "UTF-8")) {
+                if (model.length() > 0) {
+                    String modelSrc = modelScanner.useDelimiter("\\A").next();
+                    YAWLConverter converter = new YAWLConverter();
+                    OryxResult result = converter.convertYAWLToOryx(modelSrc);
+                    assertNotNull(result);
+                    assertNotNull(result.getRootDiagram());
+                    assertNotNull(result.getWarnings());
+                    assertNotNull(result.getRootNetId());
+                    assertFalse(result.getDiagrams().isEmpty());
+                    assertFalse(result.hasFailed());
+                    System.out.println("Tested conversion of: "+result.getRootNetId());
+                }
+            }
         }
     }
 

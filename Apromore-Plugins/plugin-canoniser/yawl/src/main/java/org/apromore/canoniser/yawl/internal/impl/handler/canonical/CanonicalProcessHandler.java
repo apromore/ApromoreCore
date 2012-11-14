@@ -30,6 +30,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.Output
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RoutingNodeMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.SEMEToSESEMacro;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.WSInvokerMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AutomaticTimerMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.MiscTimerMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.TimerOnEnablementMacro;
@@ -123,12 +124,14 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         patternRewriter.addMacro(new MESEToSESEMacro(getContext()));
         patternRewriter.addMacro(new SEMEToSESEMacro(getContext()));
         patternRewriter.addMacro(new TimerOnEnablementMacro(getContext()));
-        patternRewriter.addMacro(new TimerOnStartMacro(getContext()));
+        //TODO implement
+        //patternRewriter.addMacro(new TimerOnStartMacro(getContext()));
         patternRewriter.addMacro(new AutomaticTimerMacro(getContext()));
         patternRewriter.addMacro(new MiscTimerMacro(getContext()));
         patternRewriter.addMacro(new RoutingNodeMacro(getContext()));
         patternRewriter.addMacro(new InputConditionMacro(getContext()));
         patternRewriter.addMacro(new OutputConditionMacro(getContext()));
+        patternRewriter.addMacro(new WSInvokerMacro(getContext()));
         return patternRewriter;
     }
 

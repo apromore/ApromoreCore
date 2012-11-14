@@ -13,6 +13,7 @@ import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.TimerTriggerType;
 
+@Ignore
 public class SimpleTimerTaskTest extends BaseCPF2YAWLTest {
 
     /*

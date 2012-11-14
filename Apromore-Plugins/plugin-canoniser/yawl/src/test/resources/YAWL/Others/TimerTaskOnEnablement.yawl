@@ -49,9 +49,9 @@
     <specification id="TimerTaskOnEnablement">
       <size w="103" h="28" />
       <net id="Net">
-        <bounds x="0" y="0" w="1758" h="682" />
-        <frame x="2" y="25" w="1761" h="685" />
-        <viewport x="0" y="0" w="1761" h="685" />
+        <bounds x="0" y="0" w="786" h="668" />
+        <frame x="2" y="25" w="789" h="671" />
+        <viewport x="0" y="0" w="789" h="671" />
         <container id="InputCondition">
           <vertex>
             <attributes>
@@ -95,15 +95,15 @@
           </attributes>
         </flow>
         <flow source="A" target="OutputCondition">
-          <label>Timeout+onEnablement</label>
+          <label>onEnablement</label>
           <ports in="13" out="12" />
           <attributes>
-            <offset x="-23,4" y="-11,6" />
-            <labelposition x="0,0" y="-18,9" />
+            <offset x="-15,0" y="0,0" />
+            <labelposition x="0,0" y="-25,5" />
             <lineStyle>11</lineStyle>
             <points>
-              <value x="375,0" y="343,5" />
-              <value x="464,0" y="387,5" />
+              <value x="203,0" y="387,5" />
+              <value x="244,0" y="387,5" />
             </points>
           </attributes>
         </flow>

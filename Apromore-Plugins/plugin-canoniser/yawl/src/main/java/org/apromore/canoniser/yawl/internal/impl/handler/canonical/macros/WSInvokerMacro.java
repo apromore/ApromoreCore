@@ -55,7 +55,7 @@ public class WSInvokerMacro extends ContextAwareRewriteMacro {
         deleteNodeLater(nodeMessageOutgoing);
         deleteNodeLater(nodeMessageIncoming);
         addEdgeLater(createEdge(getContext().getFirstPredecessor(nodeMessageOutgoing.getId()), nodeTask));
-        addEdgeLater(createEdge(nodeTask, getContext().getFirstSuccessor(nodeMessageOutgoing.getId())));
+        addEdgeLater(createEdge(nodeTask, getContext().getFirstSuccessor(nodeMessageIncoming.getId())));
 
         TypeAttribute serviceAttr = ExtensionUtils.getExtensionAttribute(nodeTask, ExtensionUtils.YAWL_SERVICE);
         if (serviceAttr != null) {

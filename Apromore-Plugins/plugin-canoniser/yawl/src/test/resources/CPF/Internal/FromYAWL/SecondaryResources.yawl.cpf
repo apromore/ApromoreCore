@@ -12,11 +12,11 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="a540d34d-48b8-4da1-b361-d4fbfc5e5d4d" resourceTypeId="idd2467eea-a3ae-4444-80eb-4e7b38e151f4" qualifier="Primary"/>
-            <resourceTypeRef id="idf6ceaf2e-7f93-4e7c-ae12-fda659a54868" resourceTypeId="ida5e93ba2-f187-48d4-a3ff-6ffeb1a39cf9" qualifier="Primary"/>
-            <resourceTypeRef id="e6267224-2cb3-4c34-a51b-99e1a1a5a9d8" resourceTypeId="idc758bf35-4ccc-407b-a874-ca57debf408b" qualifier="Secondary"/>
-            <resourceTypeRef id="iddb0c74f1-daaa-48e5-a2c5-5e9efa4beb2c" resourceTypeId="id0f66bf41-660b-4505-9a44-71783c4117ae" qualifier="Secondary"/>
-            <resourceTypeRef id="f5c6a565-b31a-4f2b-8d22-c7d80848ab96" resourceTypeId="id68d4ecf4-d47f-435e-8dc8-a78b55ba8f66" qualifier="Secondary"/>
+            <resourceTypeRef id="idbd825b43-0c27-4250-852f-3962080380de" resourceTypeId="id905b47e8-94e5-4138-ac58-b6411bedddbd" qualifier="Primary"/>
+            <resourceTypeRef id="e850c187-f132-4193-9389-2619743a061b" resourceTypeId="id943f049c-301d-49f3-8007-4413738886b2" qualifier="Primary"/>
+            <resourceTypeRef id="c40f5a3d-6065-4aa2-b199-af075e87c9f4" resourceTypeId="idffa88817-472f-4d46-9afc-db9233443796" qualifier="Secondary"/>
+            <resourceTypeRef id="dd28de5f-3a9b-4437-ae75-4d49dab1d7ba" resourceTypeId="id01044b2c-c3d9-4099-ac92-573311a70924" qualifier="Secondary"/>
+            <resourceTypeRef id="ad649b4d-8773-4564-98f2-eada5ba676c2" resourceTypeId="id053e30a2-155b-4be4-97c6-3050c9516bb6" qualifier="Secondary"/>
             <teamWork>false</teamWork>
         </Node>
         <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
@@ -25,35 +25,35 @@
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xsi:type="cpf:HumanType" id="idd2467eea-a3ae-4444-80eb-4e7b38e151f4" specializationIds="id83b15e58-3741-4540-8664-c02d502ede5e id96c25e32-217c-4b03-b570-26265fb2ec7f ida5e93ba2-f187-48d4-a3ff-6ffeb1a39cf9" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xsi:type="cpf:HumanType" id="id905b47e8-94e5-4138-ac58-b6411bedddbd" specializationIds="idb4bd891c-6a66-43fc-a272-db27b0035a8a id42655527-8690-466c-986c-23129531c421 id943f049c-301d-49f3-8007-4413738886b2" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="idc758bf35-4ccc-407b-a874-ca57debf408b" specializationIds="id83b15e58-3741-4540-8664-c02d502ede5e idd2467eea-a3ae-4444-80eb-4e7b38e151f4" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xsi:type="cpf:HumanType" id="idffa88817-472f-4d46-9afc-db9233443796" specializationIds="idb4bd891c-6a66-43fc-a272-db27b0035a8a id905b47e8-94e5-4138-ac58-b6411bedddbd" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id83b15e58-3741-4540-8664-c02d502ede5e" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xsi:type="cpf:HumanType" id="idb4bd891c-6a66-43fc-a272-db27b0035a8a" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
         <attribute name="Capability" value="CapabilityX"/>
         <attribute name="Position" value="PositionX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="id96c25e32-217c-4b03-b570-26265fb2ec7f" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+    <ResourceType xsi:type="cpf:HumanType" id="id42655527-8690-466c-986c-23129531c421" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
         <name>TestY TestY</name>
         <attribute name="Capability" value="CapabilityY"/>
         <attribute name="Capability" value="CapabilityX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:HumanType" id="ida5e93ba2-f187-48d4-a3ff-6ffeb1a39cf9" specializationIds="id96c25e32-217c-4b03-b570-26265fb2ec7f" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+    <ResourceType xsi:type="cpf:HumanType" id="id943f049c-301d-49f3-8007-4413738886b2" specializationIds="id42655527-8690-466c-986c-23129531c421" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
         <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:NonhumanType" id="id0f66bf41-660b-4505-9a44-71783c4117ae" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id01044b2c-c3d9-4099-ac92-573311a70924" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
         <name>ResourceA</name>
         <type>Equipment</type>
     </ResourceType>
-    <ResourceType xsi:type="cpf:NonhumanType" id="id68d4ecf4-d47f-435e-8dc8-a78b55ba8f66" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
+    <ResourceType xsi:type="cpf:NonhumanType" id="id053e30a2-155b-4be4-97c6-3050c9516bb6" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
         <name>ResourceB</name>
         <type>Equipment</type>
     </ResourceType>

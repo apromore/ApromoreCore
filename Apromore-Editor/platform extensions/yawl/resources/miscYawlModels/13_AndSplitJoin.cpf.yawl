@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="id2cc21c9b-5826-4c6e-bac0-f63c7a43bfba">
+        <name>430d3c26-b700-4231-9cbe-7f1f548f4d26</name>
+        <metaData>
+            <version>1</version>
+            <identifier>id48885641-36ba-4350-81a5-6a38ab0f478a</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ba908511-7d39-4778-bc73-03a612199b0a">
+            <name>t1</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="bf6013bd-6c00-4c0d-b1d8-577c21f9e97a"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id3658a737-a143-4a54-8e93-a17bc799e386"/>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="idce1bce22-0f5f-41b5-88bc-6c840f0f22ad">
+            <processControlElements>
+                <inputCondition id="id4e36d3b2-4cd5-4c41-8a60-0d441e019964">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="idef451708-1b5f-4789-b806-4f297fad5bb5"/>
+                    </flowsInto>
+                </inputCondition>
+                <condition id="id84dc8daa-df1d-42a6-9ac2-8b0943457e6c">
+                    <name>p4</name>
+                    <flowsInto>
+                        <nextElementRef id="id22ae0311-0bb2-426c-9cb7-49704b77f189"/>
+                    </flowsInto>
+                </condition>
+                <condition id="id6a4c705c-b113-4272-b1c1-9546a6df5c89">
+                    <name>p3</name>
+                    <flowsInto>
+                        <nextElementRef id="id22ae0311-0bb2-426c-9cb7-49704b77f189"/>
+                    </flowsInto>
+                </condition>
+                <condition id="idaf3447b6-c45b-42ec-8464-a09ac95392c0">
+                    <name>p2</name>
+                    <flowsInto>
+                        <nextElementRef id="id0d4035d7-b241-482e-b720-ecd41292ab60"/>
+                    </flowsInto>
+                </condition>
+                <condition id="idd61f4ca9-318e-485f-9cf2-0a10ca902eb8">
+                    <name>p1</name>
+                    <flowsInto>
+                        <nextElementRef id="id0d4035d7-b241-482e-b720-ecd41292ab60"/>
+                    </flowsInto>
+                </condition>
+                <task id="id0d4035d7-b241-482e-b720-ecd41292ab60">
+                    <name>t1</name>
+                    <flowsInto>
+                        <nextElementRef id="id6a4c705c-b113-4272-b1c1-9546a6df5c89"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="id84dc8daa-df1d-42a6-9ac2-8b0943457e6c"/>
+                    </flowsInto>
+                    <join code="and"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="ba908511-7d39-4778-bc73-03a612199b0a"/>
+                </task>
+                <task id="idef451708-1b5f-4789-b806-4f297fad5bb5">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="idaf3447b6-c45b-42ec-8464-a09ac95392c0"/>
+                        <predicate>true()</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="idd61f4ca9-318e-485f-9cf2-0a10ca902eb8"/>
+                        <predicate>true()</predicate>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="or"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="bf6013bd-6c00-4c0d-b1d8-577c21f9e97a"/>
+                </task>
+                <task id="id22ae0311-0bb2-426c-9cb7-49704b77f189">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="cacafb51-5163-4dba-9482-f8429c458855"/>
+                    </flowsInto>
+                    <join code="or"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id3658a737-a143-4a54-8e93-a17bc799e386"/>
+                </task>
+                <outputCondition id="cacafb51-5163-4dba-9482-f8429c458855">
+                    <name></name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="en" country="US"/>
+        <specification id="id2cc21c9b-5826-4c6e-bac0-f63c7a43bfba">
+            <size w="100" h="100"/>
+            <net id="idce1bce22-0f5f-41b5-88bc-6c840f0f22ad">
+                <viewport x="0" y="0" w="800" h="800"/>
+                <frame x="0" y="0" w="800" h="800"/>
+                <bounds x="0" y="0" w="800" h="800"/>
+                <container id="id4e36d3b2-4cd5-4c41-8a60-0d441e019964">
+                    <vertex>
+                        <attributes>
+                            <bounds x="10.0" y="100.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="-6.0" y="132.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="idef451708-1b5f-4789-b806-4f297fad5bb5">
+                    <vertex>
+                        <attributes>
+                            <bounds x="110.0" y="100.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="89.0" y="132.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="OR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="141.0" y="100.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="idaf3447b6-c45b-42ec-8464-a09ac95392c0">
+                    <vertex>
+                        <attributes>
+                            <bounds x="160.0" y="330.0" w="40.0" h="40.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="144.0" y="362.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="idd61f4ca9-318e-485f-9cf2-0a10ca902eb8">
+                    <vertex>
+                        <attributes>
+                            <bounds x="160.0" y="80.0" w="40.0" h="40.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="144.0" y="112.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="id0d4035d7-b241-482e-b720-ecd41292ab60">
+                    <vertex>
+                        <attributes>
+                            <bounds x="260.0" y="100.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="233.0" y="132.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="250.0" y="100.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="AND_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="291.0" y="100.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="id6a4c705c-b113-4272-b1c1-9546a6df5c89">
+                    <vertex>
+                        <attributes>
+                            <bounds x="420.0" y="120.0" w="40.0" h="40.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="404.0" y="152.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="id84dc8daa-df1d-42a6-9ac2-8b0943457e6c">
+                    <vertex>
+                        <attributes>
+                            <bounds x="390.0" y="330.0" w="40.0" h="40.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="374.0" y="362.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="id22ae0311-0bb2-426c-9cb7-49704b77f189">
+                    <vertex>
+                        <attributes>
+                            <bounds x="490.0" y="100.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="469.0" y="132.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="OR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="480.0" y="100.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="cacafb51-5163-4dba-9482-f8429c458855">
+                    <vertex>
+                        <attributes>
+                            <bounds x="590.0" y="100.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="574.0" y="132.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="id22ae0311-0bb2-426c-9cb7-49704b77f189" target="cacafb51-5163-4dba-9482-f8429c458855">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="506.0" y="116.0"/>
+                            <value x="606.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="idef451708-1b5f-4789-b806-4f297fad5bb5" target="idd61f4ca9-318e-485f-9cf2-0a10ca902eb8">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="126.0" y="116.0"/>
+                            <value x="180.0" y="100.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="idaf3447b6-c45b-42ec-8464-a09ac95392c0" target="id0d4035d7-b241-482e-b720-ecd41292ab60">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="180.0" y="350.0"/>
+                            <value x="276.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id0d4035d7-b241-482e-b720-ecd41292ab60" target="id84dc8daa-df1d-42a6-9ac2-8b0943457e6c">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="276.0" y="116.0"/>
+                            <value x="410.0" y="350.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="idd61f4ca9-318e-485f-9cf2-0a10ca902eb8" target="id0d4035d7-b241-482e-b720-ecd41292ab60">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="180.0" y="100.0"/>
+                            <value x="276.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="idef451708-1b5f-4789-b806-4f297fad5bb5" target="idaf3447b6-c45b-42ec-8464-a09ac95392c0">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="126.0" y="116.0"/>
+                            <value x="180.0" y="350.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id0d4035d7-b241-482e-b720-ecd41292ab60" target="id6a4c705c-b113-4272-b1c1-9546a6df5c89">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="276.0" y="116.0"/>
+                            <value x="440.0" y="140.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id4e36d3b2-4cd5-4c41-8a60-0d441e019964" target="idef451708-1b5f-4789-b806-4f297fad5bb5">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="26.0" y="116.0"/>
+                            <value x="126.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id84dc8daa-df1d-42a6-9ac2-8b0943457e6c" target="id22ae0311-0bb2-426c-9cb7-49704b77f189">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="410.0" y="350.0"/>
+                            <value x="506.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id6a4c705c-b113-4272-b1c1-9546a6df5c89" target="id22ae0311-0bb2-426c-9cb7-49704b77f189">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="440.0" y="140.0"/>
+                            <value x="506.0" y="116.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

@@ -207,7 +207,9 @@ public class TaskResourcingHelper {
                 primaryResources.add((HumanType) resource);
             }
         } else {
-            getContext().getMessageInterface().addMessage("Can not find any primary resource!");
+            if (primaryResources.isEmpty()) {
+                getContext().getMessageInterface().addMessage("Can not find any primary resource!");   
+            }
         }
         return primaryResources;
     }

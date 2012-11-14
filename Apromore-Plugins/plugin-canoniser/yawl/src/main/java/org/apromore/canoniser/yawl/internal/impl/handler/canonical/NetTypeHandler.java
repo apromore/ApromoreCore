@@ -60,7 +60,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
         final NetFactsType netFactsType = YAWL_FACTORY.createNetFactsType();
 
         netFactsType.setId(generateUUID(getObject().getId()));
-        if (getObject().getOriginalID() != null) {
+        if (getObject().getOriginalID() != null && !getObject().getOriginalID().isEmpty()) {
             netFactsType.setName(getObject().getOriginalID());
         }
 
