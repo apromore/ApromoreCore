@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collections;
+import javax.xml.datatype.DatatypeFactory;
 
 // Third party packages
 import org.apache.commons.io.output.NullOutputStream;
@@ -409,7 +410,19 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     public void testCanonise12() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Case 12.bpmn");
 
-        // not yet implemented
+        // Check that the timer has the correct date
+        CpfTimerType timer = (CpfTimerType) cpf.getElement("sid-9901B6DB-42A9-48EF-B0D6-8EA51944CA42");
+        assertEquals(DatatypeFactory.newInstance().newXMLGregorianCalendar("2012-11-12T20:44:00"), timer.getTimeDate());
+        assertNull(timer.getTimeDuration());
+        assertNull(timer.getTimeExpression());
+
+        // Check that A and its timer boundary event cancel each other
+        CpfTaskType a = (CpfTaskType) cpf.getElement("sid-FA5E54FC-9090-45F4-8649-49052F106ABE");
+        assertEquals(Collections.singleton(timer), a.getBoundaryEvents());
+        assertEquals(1, a.getCancelNodeId().size());
+        assertEquals(timer.getId(), a.getCancelNodeId().get(0).getRefId());
+        assertEquals(1, timer.getCancelNodeId().size());
+        assertEquals(a.getId(), timer.getCancelNodeId().get(0).getRefId());
     }
 
     /**

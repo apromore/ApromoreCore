@@ -13,7 +13,6 @@ import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
@@ -147,12 +146,12 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     // Second superclass methods
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return super2.getIncomingEdges();
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
     }
 
@@ -184,6 +183,11 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     /** {@inheritDoc} */
     public void setErrorRef(final QName value) {
         super2.setErrorRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isInterrupting() {
+        return super2.isInterrupting();
     }
 
     /** {@inheritDoc} */

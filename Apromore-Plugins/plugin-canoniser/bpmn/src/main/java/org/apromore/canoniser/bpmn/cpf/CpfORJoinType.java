@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBElement;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.ORJoinType;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
@@ -27,12 +26,12 @@ public class CpfORJoinType extends ORJoinType implements CpfRoutingType {
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return super2.getIncomingEdges();
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
     }
 

@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-1d35a627-9796-4a41-aa82-ff3bf48bfe94" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-1d35a627-9796-4a41-aa82-ff3bf48bfe94" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <process id="sid-54a350cb-40c1-4101-b3b9-fc0c281e7784" isExecutable="false">
       <startEvent id="sid-9A84F3AB-1F60-431F-A1DC-BF6DD5C1AC51" name="E1">
-         <extensionElements>
-            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
-         </extensionElements>
          <outgoing>sid-795B8561-861E-46AA-B503-A9192E76E66A</outgoing>
       </startEvent>
       <task completionQuantity="1" id="sid-FA5E54FC-9090-45F4-8649-49052F106ABE" isForCompensation="false" name="A" startQuantity="1">
-         <extensionElements>
-            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
-         </extensionElements>
          <incoming>sid-795B8561-861E-46AA-B503-A9192E76E66A</incoming>
          <outgoing>sid-9292B623-3BA0-469E-BEAD-C043A4C92986</outgoing>
       </task>
       <endEvent id="sid-A5419C09-DACA-4EE3-B389-7DFF113755A0" name="E2">
-         <extensionElements>
-            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
-         </extensionElements>
          <incoming>sid-9292B623-3BA0-469E-BEAD-C043A4C92986</incoming>
          <incoming>sid-214712BE-EE1F-49A4-A16A-686A762E8712</incoming>
       </endEvent>
