@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBElement;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.StateType;
 import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
@@ -27,12 +26,12 @@ public class CpfStateType extends StateType implements CpfRoutingType {
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return super2.getIncomingEdges();
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
     }
 

@@ -41,6 +41,9 @@ public interface CpfEventType extends CpfWorkType {
     /** @param signalRef  the BPMN error reference, or <code>null</code> to mark an error event without a reference */
     void setErrorRef(QName errorRef);
 
+    /** @return whether this corresponds to a BPMN interrupting event flavor */
+    boolean isInterrupting();
+
     /** @return whether {@link #setSignalRef} has been called on this instance */
     boolean isSignal();
 
