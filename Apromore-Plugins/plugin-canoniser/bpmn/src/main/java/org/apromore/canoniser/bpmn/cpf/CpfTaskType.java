@@ -39,11 +39,14 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
 
     // Internal state
 
+    /** Attached boundary events. */
+    private Set<CpfEventType> boundaryEvents = new HashSet<CpfEventType>();  // TODO - diamond operator
+
     /** Incoming edges. */
-    private Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<CpfEdgeType> incomingEdges = new HashSet<CpfEdgeType>();  // TODO - diamond operator
 
     /** Outgoing edges. */
-    private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<CpfEdgeType> outgoingEdges = new HashSet<CpfEdgeType>();  // TODO - diamond operator
 
     // Constructors
 
@@ -116,12 +119,17 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
     // Accessor methods
 
     /** @return every edge which has this node as its target */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEventType> getBoundaryEvents() {
+        return boundaryEvents;
+    }
+
+    /** @return every edge which has this node as its target */
+    public Set<CpfEdgeType> getIncomingEdges() {
         return incomingEdges;
     }
 
     /** @return every edge which has this node as its source */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return outgoingEdges;
     }
 

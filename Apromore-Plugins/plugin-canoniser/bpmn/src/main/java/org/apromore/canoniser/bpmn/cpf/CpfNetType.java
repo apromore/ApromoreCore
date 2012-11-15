@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
@@ -431,7 +430,7 @@ public class CpfNetType extends NetType implements Attributed {
                             source instanceof TStartEvent &&
                             target instanceof TDataObject) {
 
-                            java.util.logging.Logger.getAnonymousLogger().info("Detected a spurious Association from ch9_loan");
+                            initializer.warn("Detected a spurious Association from ch9_loan");
                             WorkType   work   = (WorkType)   initializer.findElement(source);
                             ObjectType object = (ObjectType) initializer.findElement(target);
                         }
@@ -523,7 +522,7 @@ public class CpfNetType extends NetType implements Attributed {
                     });
                 } else {
                     String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
-                    Logger.getAnonymousLogger().fine("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
+                    initializer.warn("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
                 }
             }
 

@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBElement;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.EdgeType;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 
 /**
@@ -34,10 +33,10 @@ public interface CpfNodeType extends Attributed {
     // Added convenience methods
 
     /** @return every edge which has this node as its target */
-    Set<EdgeType> getIncomingEdges();
+    Set<CpfEdgeType> getIncomingEdges();
 
     /** @return every edge which has this node as its source */
-    Set<EdgeType> getOutgoingEdges();
+    Set<CpfEdgeType> getOutgoingEdges();
 
     /**
      * @param BPMN initializer  BPMN document's global construction state

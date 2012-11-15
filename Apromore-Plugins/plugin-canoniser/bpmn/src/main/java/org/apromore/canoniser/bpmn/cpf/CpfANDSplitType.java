@@ -27,12 +27,12 @@ public class CpfANDSplitType extends ANDSplitType implements CpfRoutingType {
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return super2.getIncomingEdges();
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
     }
 

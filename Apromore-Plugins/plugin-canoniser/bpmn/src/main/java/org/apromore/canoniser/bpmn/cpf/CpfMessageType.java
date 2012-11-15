@@ -9,7 +9,6 @@ import javax.xml.namespace.QName;
 import org.apromore.canoniser.exception.CanoniserException;
 import static org.apromore.cpf.DirectionEnum.INCOMING;
 import static org.apromore.cpf.DirectionEnum.OUTGOING;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.MessageType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
@@ -85,12 +84,12 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     // Second superclass methods
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return super2.getIncomingEdges();
     }
 
     /** {@inheritDoc} */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return super2.getOutgoingEdges();
     }
 
@@ -122,6 +121,11 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     /** {@inheritDoc} */
     public void setErrorRef(final QName value) {
         super2.setErrorRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isInterrupting() {
+        return super2.isInterrupting();
     }
 
     /** {@inheritDoc} */

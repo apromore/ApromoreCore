@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -22,8 +24,13 @@ import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.BaseVisitor;
+import org.apromore.cpf.CancellationRefType;
+import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TraversingVisitor;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TMessage;
@@ -112,8 +119,24 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             }
         }
 
-        // Populate resourceTypeRefs
+        // Execute deferred operations
         initializer.close();
+
+        // Assemble the list of boundary events
+        final Set<CpfTaskType> tasks = new HashSet<CpfTaskType>();
+        accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+            @Override public void visit(final TaskType task) {
+                CpfTaskType cpfTask = (CpfTaskType) task;
+                if (cpfTask.getBoundaryEvents().size() > 0) {
+                    tasks.add(cpfTask);
+                }
+            }
+        }));
+
+        // Rewrite the boundary events
+        for (CpfTaskType cpfTask : tasks) {
+            rewriteTaskWithBoundaryEvents(cpfTask, initializer);
+        }
     }
 
     /**
@@ -181,5 +204,67 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             marshaller.setSchema(CPFSchema.getCPFSchema());
         }
         marshaller.marshal(new ObjectFactory().createCanonicalProcess(this), out);
+    }
+
+    // Internal methods
+
+    /**
+     * Insert an AND split routing in front of a task, connected to its boundary events.
+     *
+     * The task and any interrupting boundary events will cancel each other.
+     *
+     * @param cpfTask  a CPF task corresponding to a BPMN activity with boundary events
+     * @param initializer  document construction state
+     */
+    private void rewriteTaskWithBoundaryEvents(final CpfTaskType task, final Initializer initializer) {
+        CpfNetType parent = initializer.findParent(task);
+        for (CpfEdgeType incomingEdge : task.getIncomingEdges()) {
+            // Create AND split
+            CpfANDSplitType andSplit = new CpfANDSplitType();
+            andSplit.setId(initializer.newId(task.getId() + "_boundary_routing"));
+            parent.getNode().add(andSplit);
+
+            // Reconnect the incoming edge to the AND split
+            incomingEdge.setTargetId(andSplit.getId());
+
+            // Create a new edge from the AND split to the task
+            CpfEdgeType edge = new CpfEdgeType();
+            edge.setId(initializer.newId(task.getId() + "_boundary_edge"));
+            edge.setSourceId(andSplit.getId());
+            edge.setTargetId(task.getId());
+            parent.getEdge().add(edge);
+
+            for (CpfEventType event : task.getBoundaryEvents()) {
+
+                // Create a new edge from the AND split to the event
+                edge = new CpfEdgeType();
+                edge.setId(initializer.newId(event.getId() + "_boundary_edge"));
+                edge.setSourceId(andSplit.getId());
+                edge.setTargetId(event.getId());
+                parent.getEdge().add(edge);
+
+                // The task cancels the boundary event
+                CancellationRefType cancellationRef = new CancellationRefType();
+                cancellationRef.setRefId(event.getId());
+                task.getCancelNodeId().add(cancellationRef);
+
+                if (event.isInterrupting()) {
+
+                    // Cancel the task
+                    cancellationRef = new CancellationRefType();
+                    cancellationRef.setRefId(task.getId());
+                    event.getCancelNodeId().add(cancellationRef);
+
+                    // Cancel any other boundary events
+                    for (CpfEventType otherEvent : task.getBoundaryEvents()) {
+                        if (!event.equals(otherEvent)) {
+                            cancellationRef = new CancellationRefType();
+                            cancellationRef.setRefId(otherEvent.getId());
+                            event.getCancelNodeId().add(cancellationRef);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

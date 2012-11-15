@@ -19,6 +19,7 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.WorkType;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TCatchEvent;
 import org.omg.spec.bpmn._20100524.model.TCompensateEventDefinition;
@@ -41,15 +42,28 @@ import org.omg.spec.bpmn._20100524.model.TThrowEvent;
 public class CpfEventTypeImpl extends EventType implements CpfEventType {
 
     /** Incoming edges. */
-    private Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<CpfEdgeType> incomingEdges = new HashSet<CpfEdgeType>();  // TODO - diamond operator
 
     /** Outgoing edges. */
-    private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<CpfEdgeType> outgoingEdges = new HashSet<CpfEdgeType>();  // TODO - diamond operator
 
     // Constructors
 
     /** No-arg constructor. */
     public CpfEventTypeImpl() { }
+
+    void construct(final CpfEventType this2, final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
+        construct(this2, (TCatchEvent) boundaryEvent, initializer);
+
+        // Additional construction, specific to Boundary Events
+        initializer.defer(new Initialization() {
+            public void initialize() throws CanoniserException {
+                TBaseElement attachedTo = initializer.findBpmnElement(boundaryEvent.getAttachedToRef());
+                CpfTaskType task = (CpfTaskType) initializer.findElement(attachedTo);
+                task.getBoundaryEvents().add(this2);
+            }
+        });
+    }
 
     /**
      * Fake constructor for the secondary superclass, to be called at the beginning of every actual constructor of classes which are
@@ -129,6 +143,7 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventTypeImpl(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
+        java.util.logging.Logger.getAnonymousLogger().info("Constructing CPF Event from BPMN Boundary Event");
         construct(this, boundaryEvent, initializer);
     }
 
@@ -169,14 +184,14 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     /**
      * @return every edge which has this node as its target
      */
-    public Set<EdgeType> getIncomingEdges() {
+    public Set<CpfEdgeType> getIncomingEdges() {
         return incomingEdges;
     }
 
     /**
      * @return every edge which has this node as its source
      */
-    public Set<EdgeType> getOutgoingEdges() {
+    public Set<CpfEdgeType> getOutgoingEdges() {
         return outgoingEdges;
     }
 
@@ -218,6 +233,11 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
         } else {
             ExtensionUtils.setString(getAttribute(), ERROR, value.toString());
         }
+    }
+
+    /** {@inheritDoc} */
+    public boolean isInterrupting() {
+        return true;  // TODO - currently assuming all events are interrupting, which is not correct
     }
 
     /** {@inheritDoc} */
