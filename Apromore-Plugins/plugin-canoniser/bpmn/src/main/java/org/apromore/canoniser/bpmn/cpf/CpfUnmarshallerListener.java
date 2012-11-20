@@ -30,12 +30,14 @@ public class CpfUnmarshallerListener extends Unmarshaller.Listener {
     /** Map from node IDs to node objects */
     private final Map<String, NodeType> nodeMap = new HashMap<String, NodeType>();  // TODO - diamond operator
 
+    private final Map<String, Object> elementMap = new HashMap<String, Object>();  // TODO - diamond operator
+
     /** {@inheritDoc} */
     @Override
     public void afterUnmarshal(final Object target, final Object parent) {
         if (target instanceof EdgeType) {
             CpfEdgeType edge = (CpfEdgeType) target;
-            //logger.info("Unmarshal edge " + edge + " from " + edge.getSourceId() + " -> " + edge.getTargetId());
+            elementMap.put(edge.getId(), edge);
 
             edge.setSourceRef(nodeMap.get(edge.getSourceId()));
             ((CpfNodeType) edge.getSourceRef()).getOutgoingEdges().add(edge);
@@ -45,7 +47,10 @@ public class CpfUnmarshallerListener extends Unmarshaller.Listener {
 
         } else if (target instanceof NodeType) {
             NodeType node = (NodeType) target;
+            elementMap.put(node.getId(), node);
             nodeMap.put(node.getId(), node);
         }
     }
+
+    Map<String, Object> getElementMap() { return elementMap; }
 }

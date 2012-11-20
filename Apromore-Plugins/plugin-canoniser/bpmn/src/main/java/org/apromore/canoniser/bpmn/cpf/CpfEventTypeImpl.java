@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.bpmn.Initialization;
+import org.apromore.canoniser.bpmn.bpmn.BpmnBoundaryEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnEndEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnIntermediateThrowEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnStartEvent;
@@ -143,7 +144,6 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventTypeImpl(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
-        java.util.logging.Logger.getAnonymousLogger().info("Constructing CPF Event from BPMN Boundary Event");
         construct(this, boundaryEvent, initializer);
     }
 
@@ -264,10 +264,13 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     public JAXBElement<? extends TFlowNode> toBpmn(final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
         return toBpmn(this, initializer);
     }
-    static <T extends CpfEventType> JAXBElement<? extends TFlowNode> toBpmn(final T event, final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+    static <T extends CpfEventType> JAXBElement<? extends TFlowNode>
+        toBpmn(final T event, final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
+
         if (event.getIncomingEdges().size() == 0 && event.getOutgoingEdges().size() > 0) {
-            // Assuming a StartEvent here, but could be TBoundaryEvent too
-            return initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer));
+            String attachedTaskId = initializer.findAttachedTaskId(event);
+            return attachedTaskId == null ? initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer))
+                                          : initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
         } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() == 0) {
             return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
         } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() > 0) {

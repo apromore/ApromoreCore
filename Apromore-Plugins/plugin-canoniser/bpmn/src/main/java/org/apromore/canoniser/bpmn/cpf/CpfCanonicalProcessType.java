@@ -151,13 +151,17 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
     public static CpfCanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException, SAXException {
         Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
                                                .createUnmarshaller();
-        unmarshaller.setListener(new CpfUnmarshallerListener());
+        CpfUnmarshallerListener listener = new CpfUnmarshallerListener();
+        unmarshaller.setListener(listener);
         unmarshaller.setProperty(ID_RESOLVER, new CpfIDResolver());
         unmarshaller.setProperty(OBJECT_FACTORY, new ObjectFactory());
         if (validate) {
             unmarshaller.setSchema(CPFSchema.getCPFSchema());
         }
-        return ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
+        CpfCanonicalProcessType result = ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
+        result.elementMap.clear();
+        result.elementMap.putAll(listener.getElementMap());
+        return result;
     }
 
     /**
@@ -222,16 +226,26 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             // Create AND split
             CpfANDSplitType andSplit = new CpfANDSplitType();
             andSplit.setId(initializer.newId(task.getId() + "_boundary_routing"));
+            elementMap.put(andSplit.getId(), andSplit);
+
             parent.getNode().add(andSplit);
 
             // Reconnect the incoming edge to the AND split
             incomingEdge.setTargetId(andSplit.getId());
+            ((CpfNodeType) elementMap.get(incomingEdge.getTargetId())).getIncomingEdges().remove(incomingEdge);
+            andSplit.getIncomingEdges().add(incomingEdge);
 
             // Create a new edge from the AND split to the task
             CpfEdgeType edge = new CpfEdgeType();
             edge.setId(initializer.newId(task.getId() + "_boundary_edge"));
+            elementMap.put(edge.getId(), edge);
+
             edge.setSourceId(andSplit.getId());
+            andSplit.getOutgoingEdges().add(edge);
+
             edge.setTargetId(task.getId());
+            task.getIncomingEdges().add(edge);
+
             parent.getEdge().add(edge);
 
             for (CpfEventType event : task.getBoundaryEvents()) {
@@ -239,8 +253,14 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
                 // Create a new edge from the AND split to the event
                 edge = new CpfEdgeType();
                 edge.setId(initializer.newId(event.getId() + "_boundary_edge"));
+                elementMap.put(edge.getId(), edge);
+
                 edge.setSourceId(andSplit.getId());
+                andSplit.getOutgoingEdges().add(edge);
+
                 edge.setTargetId(event.getId());
+                event.getIncomingEdges().add(edge);
+
                 parent.getEdge().add(edge);
 
                 // The task cancels the boundary event
