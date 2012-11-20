@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -14,6 +15,8 @@ import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.Attributed;
+import org.apromore.canoniser.bpmn.cpf.CpfANDSplitType;
+import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfMessageType;
@@ -22,16 +25,23 @@ import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
+import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
 import org.apromore.canoniser.bpmn.cpf.CpfTimerType;
 import org.apromore.canoniser.bpmn.cpf.ExtensionConstants;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.anf.AnnotationType;
+import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.BaseVisitor;
+import org.apromore.cpf.CancellationRefType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TraversingVisitor;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
@@ -66,7 +76,7 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
 public class Initializer extends AbstractInitializer implements ExtensionConstants {
 
     // CPF document root
-    private final CanonicalProcessType cpf;
+    private final CpfCanonicalProcessType cpf;
 
     // Generates all identifiers scoped to the BPMN document
     private final IdFactory bpmnIdFactory = new IdFactory();
@@ -77,7 +87,11 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
     // Map from CPF @cpfId node identifiers to BPMN elements
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
 
+    // The BPMN target namespace used for all QName references to elements of this document
     private final String targetNamespace;
+
+    // The CPF identifiers which are cancelled by any CPF Task
+    private final Map<String, String> cancelNodeIdMap = new HashMap<String, String>();
 
     /**
      * Sole constructor.
@@ -85,9 +99,69 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      * @param newBpmnIdFactory;
      * @param newIdMap;
      */
-    Initializer(final CanonicalProcessType newCpf, final String newTargetNamespace) {
+    Initializer(final CpfCanonicalProcessType newCpf, final String newTargetNamespace) {
         cpf             = newCpf;
         targetNamespace = newTargetNamespace;
+
+        // Perform boundary event transformation
+        processBoundaryEvents();
+    }
+
+    /**
+     * Populates {@link #cancelNodeIdMap} so that {@link #findAttachedTaskId} will work, and removes {@link CpfANDSplitType}s
+     * which are to be replaced by boundary events.
+     */
+    private void processBoundaryEvents() {
+
+        // Populate cancelNodeIds
+        cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+            @Override public void visit(final TaskType task) {
+                for (CancellationRefType cancellationRef : task.getCancelNodeId()) {
+                    cancelNodeIdMap.put(cancellationRef.getRefId(), task.getId());
+                }
+            }
+        }));
+
+        // Identify AND splits which can be converted into boundary events
+        final Map<CpfANDSplitType, CpfTaskType> splits = new HashMap<CpfANDSplitType, CpfTaskType>();
+        cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+            @Override public void visit(final ANDSplitType split) {
+                CpfANDSplitType cpfSplit = (CpfANDSplitType) split;
+                CpfTaskType task = null;
+
+                // Find the task which the boundary events are attached to
+                for (CpfEdgeType edge : cpfSplit.getOutgoingEdges()) {
+                    CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
+                    if (node instanceof CpfTaskType) {
+                        task = (CpfTaskType) node;
+                    }
+                }
+
+                if (task != null) {
+                    splits.put(cpfSplit, task);
+                }
+            }
+        }));
+
+        // Remove the identified AND splits
+        for (CpfANDSplitType split : splits.keySet()) {
+
+            // Retarget the AND split's incoming edge to the attached task
+            for (CpfEdgeType in : split.getIncomingEdges()) {
+                CpfTaskType task = splits.get(split);
+                in.setTargetId(task.getId());
+                task.getIncomingEdges().add(in);
+            }
+
+            // Remove the AND split and its outgoing edges
+            CpfNetType parent = findParent(split);
+            parent.getNode().remove(split);
+            parent.getEdge().removeAll(split.getOutgoingEdges());
+            for (CpfEdgeType edge : split.getOutgoingEdges()) {
+                CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
+                node.getIncomingEdges().remove(edge);
+            }
+        }
     }
 
     /**
@@ -147,6 +221,14 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      */
     String getTargetNamespace() {
         return targetNamespace;
+    }
+
+    /**
+     * @param event  a CPF event
+     * @return the identifier of a CPF task which cancels this event, or <code>null</code> if no such task exists
+     */
+    public String findAttachedTaskId(final CpfEventType event) {
+        return cancelNodeIdMap.get(event.getId());
     }
 
     /**
@@ -243,7 +325,19 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
     void populateFlowNode(final TFlowNode flowNode, final CpfNodeType cpfNode) throws CanoniserException {
         populateFlowElement(flowNode, cpfNode);
 
-        // TODO - handle incoming and outgoing
+        // Handle incoming and outgoing
+        if (false) {  // TODO - allow this to be configured by the BPMN canoniser PluginRequest
+            defer(new Initialization() {
+                public void initialize() throws CanoniserException {
+                    for (final EdgeType edge : cpfNode.getIncomingEdges()) {
+                        flowNode.getIncoming().add(new QName(targetNamespace, findElement(edge.getId()).getId()));
+                    }
+                    for (final EdgeType edge : cpfNode.getOutgoingEdges()) {
+                        flowNode.getOutgoing().add(new QName(targetNamespace, findElement(edge.getId()).getId()));
+                    }
+                }
+            });
+        }
 
         // Some flow nodes may have a default sequence flow
         int defaultEdgeCount = 0;

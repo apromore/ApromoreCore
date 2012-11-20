@@ -65,7 +65,7 @@ import org.omg.spec.dd._20100524.di.Plane;
 /**
  * Test suite for {@link BpmnDefinitions}.
  * These are decanonization tests, exercising the constructor {@link BpmnDefinitions#(CanonicalProcessType, AnnotationsType)}.
- * Canonization is tested instead by {@link BPMN20CanoniserTest}.
+ * Canonization is tested instead by {@link CpfCanonicalProcessTypeTest}.
  *
  * A number of these tests are from <cite>Canonization Service for AProMoRe</cite>.
  *
