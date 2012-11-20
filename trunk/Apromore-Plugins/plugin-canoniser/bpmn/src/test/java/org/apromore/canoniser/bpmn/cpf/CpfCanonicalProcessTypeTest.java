@@ -33,6 +33,15 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
 
     // Tests
 
+    /** Test {@link CpfCanonicalProcessType#newInstance} at parsing <code>Basic.cpf</code>.. */
+    @Test
+    public void testNewInstance() throws Exception {
+
+        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, "Basic.cpf")), true);
+
+        // TODO - actually test the content here
+    }
+
     /**
      * Common canonisation test code.
      *
@@ -535,7 +544,6 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Error.svg"/></div>
      */
-    @Ignore
     @Test
     public void testError() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Error.bpmn");

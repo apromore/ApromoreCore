@@ -3,7 +3,9 @@ package org.apromore.canoniser.bpmn.bpmn;
 // Java 2 Standard packges
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
@@ -26,8 +28,12 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import org.apromore.cpf.BaseVisitor;
+import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TraversingVisitor;
 import org.apromore.canoniser.bpmn.Constants;
 import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
@@ -117,11 +123,23 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         TCollaboration collaboration = initializer.getFactory().createTCollaboration();
         JAXBElement<TCollaboration> wrapperCollaboration = initializer.getFactory().createCollaboration(collaboration);
 
+        // Workaround for the Apromore-core's failure to generate the CPF rootIds attribute
+        final List<String> rootIds = cpf.getRootIds();
+        final List<String> subnetIds = new ArrayList<String>();
+        if (rootIds.size() == 0) {
+            cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+                @Override public void visit(final NetType net) { rootIds.add(net.getId()); }
+                @Override public void visit(final TaskType task) { subnetIds.add(task.getSubnetId()); }  // null check not required
+            }));
+            rootIds.removeAll(subnetIds);
+            initializer.warn("Using reconstructed root net list: " + rootIds);
+        }
+
         // Translate CPF Nets as BPMN Processes
         for (final NetType net : cpf.getNet()) {
 
             // Only root elements are decanonised here; subnets are dealt with by recursion
-            if (!cpf.getRootIds().contains(net.getId())) {
+            if (!rootIds.contains(net.getId())) {
                 continue;
             }
 

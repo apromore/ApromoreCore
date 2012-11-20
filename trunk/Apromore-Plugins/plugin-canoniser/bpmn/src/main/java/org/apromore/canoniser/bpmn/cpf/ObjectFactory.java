@@ -19,6 +19,7 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override public CpfEventTypeImpl        createEventType()            { return new CpfEventTypeImpl(); }
     @Override public CpfHardType             createHardType()             { return new CpfHardType(); }
     @Override public CpfHumanType            createHumanType()            { return new CpfHumanType(); }
+    @Override public CpfMessageType          createMessageType()          { return new CpfMessageType(); }
     @Override public CpfNetType              createNetType()              { return new CpfNetType(); }
     @Override public CpfNonhumanType         createNonhumanType()         { return new CpfNonhumanType(); }
     @Override public CpfObjectTypeImpl       createObjectType()           { return new CpfObjectTypeImpl(); }
