@@ -60,7 +60,6 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -161,7 +160,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         out.close();
 
         // Validate the empty BPMN model
-        TDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()), true);
     }
 
     /**
@@ -182,5 +181,16 @@ public class BPMN20CanoniserTest implements TestConstants {
         PluginRequest request = null;
         BPMN20Canoniser canoniser = new BPMN20Canoniser();
         PluginResult result = canoniser.deCanonise(cpf, anf, bpmnOutput, request);
+
+        // Validate plugin result
+        assertNotNull(result.getPluginMessage());
+        assertEquals(1, result.getPluginMessage().size());
+        assertEquals("BPMN 2.0 de-canonised OK", result.getPluginMessage().get(0).getMessage());
+
+        // Write BPMN output out for inspection
+        new FileOutputStream(new File(OUTPUT_DIR, "Basic.bpmn")).write(bpmnOutput.toByteArray());
+
+        // Validate BPMN output
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(bpmnOutput.toByteArray()), true);
     }
 }
