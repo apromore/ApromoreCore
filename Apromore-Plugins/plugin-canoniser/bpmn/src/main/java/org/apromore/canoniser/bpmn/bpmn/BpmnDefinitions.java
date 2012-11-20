@@ -1,6 +1,7 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packges
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -67,6 +69,28 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
 
     /** XML schema for BPMN 2.0. */
     //private static final Schema BPMN_SCHEMA = getBpmnSchema();
+
+    /**
+     * The two halves of the XSLT transformation, occuring before and after the magic token "genid:TARGET".
+     *
+     * This is an ugly and desperate approach to the nigh-impossibility to modifying xmlns declarations via JAXP or XSLT.
+     */
+    private static String[] fixNamespacesXslt;
+
+    /** Initialize {@link #fixNamespacesXslt}. */
+    static {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            TransformerFactory.newInstance().newTransformer().transform(
+                new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-namespaces.xsl")),
+                new StreamResult(baos)
+            );
+            fixNamespacesXslt = baos.toString().split("genid:TARGET");
+            assert fixNamespacesXslt.length == 2 : "genid:TARGET does not occur exactly once within fix-namespaces.xsl";
+        } catch (TransformerException e) {
+            throw new RuntimeException("Couldn't parse fix-namespaces.xslt", e);
+        }
+    }
 
     /** @return BPMN 2.0 XML schema */
     private static Schema getBpmnSchema() {
@@ -219,12 +243,27 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @throws JAXBException if the steam can't be written to
      */
     public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
+      try {
+        // Create an empty DOM
+        DOMResult intermediateResult = new DOMResult();
+
+        // Marshal from JAXB to DOM
         Marshaller marshaller = /*BPMN_CONTEXT*/ newContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         if (validate) {
             marshaller.setSchema(getBpmnSchema() /*BPMN_SCHEMA*/);
         }
-        marshaller.marshal(new BpmnObjectFactory().createDefinitions(this), out);
+        marshaller.marshal(new BpmnObjectFactory().createDefinitions(this), intermediateResult);
+
+        // Apply the XSLT transformation, from DOM to the output stream
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer(
+            new StreamSource(new java.io.StringBufferInputStream(fixNamespacesXslt[0] + getTargetNamespace() + fixNamespacesXslt[1]))
+        );
+        DOMSource finalSource = new DOMSource(intermediateResult.getNode());
+        StreamResult finalResult = new StreamResult(out);
+        transformer.transform(finalSource, finalResult);
+      } catch (TransformerException e) { throw new JAXBException("Dodgy wrapped exception", e); }
     }
 
     /**

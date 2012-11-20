@@ -9,7 +9,7 @@
 <!-- Brutally force namespaces into having standard prefixes -->
 
 <xsl:template match="bpmn:definitions">
-    <bpmn:definitions xmlns="http://www.apromore.org/bpmn/3dc3e17f-5e19-41c8-b479-523e93844ff2#"
+    <bpmn:definitions xmlns="genid:TARGET"
                       xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
                       xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
                       xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
@@ -43,6 +43,15 @@
 </xsl:template>
 
 <!-- Each of BPMN's peculiar QName references needs to be individually corrected -->
+
+<xsl:template match="@attachedToRef">
+    <xsl:attribute name="attachedToRef">
+        <xsl:choose>
+        <xsl:when test="contains(current(),':')"><xsl:value-of select="substring-after(current(), ':')"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="current()"/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:attribute>
+</xsl:template>
 
 <xsl:template match="@bpmnElement">
     <xsl:attribute name="bpmnElement">
