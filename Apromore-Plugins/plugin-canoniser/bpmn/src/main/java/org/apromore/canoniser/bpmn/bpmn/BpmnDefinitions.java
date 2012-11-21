@@ -75,18 +75,22 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      *
      * This is an ugly and desperate approach to the nigh-impossibility to modifying xmlns declarations via JAXP or XSLT.
      */
-    private static String[] fixNamespacesXslt;
+    private final String[] fixNamespacesXslt = getFixNamespacesXslt();
 
     /** Initialize {@link #fixNamespacesXslt}. */
-    static {
+    private String[] getFixNamespacesXslt() {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             TransformerFactory.newInstance().newTransformer().transform(
-                new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-namespaces.xsl")),
+                new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/fix-namespaces.xsl")),
                 new StreamResult(baos)
             );
-            fixNamespacesXslt = baos.toString().split("genid:TARGET");
-            assert fixNamespacesXslt.length == 2 : "genid:TARGET does not occur exactly once within fix-namespaces.xsl";
+            String[] s = baos.toString().split("genid:TARGET");
+            if (s.length != 2) {
+                throw new RuntimeException("genid:TARGET does not occur exactly once within fix-namespaces.xsl");
+            }
+            return s;
+            
         } catch (TransformerException e) {
             throw new RuntimeException("Couldn't parse fix-namespaces.xslt", e);
         }
@@ -263,7 +267,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         DOMSource finalSource = new DOMSource(intermediateResult.getNode());
         StreamResult finalResult = new StreamResult(out);
         transformer.transform(finalSource, finalResult);
-      } catch (TransformerException e) { throw new JAXBException("Dodgy wrapped exception", e); }
+      } catch (TransformerException e) { throw new JAXBException("Dodgy wrapped exception", e); }  // TODO - create transformer elsewhere
     }
 
     /**
