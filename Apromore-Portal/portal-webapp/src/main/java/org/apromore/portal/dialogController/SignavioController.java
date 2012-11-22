@@ -1,24 +1,19 @@
 package org.apromore.portal.dialogController;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import com.sun.xml.bind.IDResolver;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.util.StreamUtil;
-import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Messagebox;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 
 /**
@@ -35,7 +30,7 @@ public class SignavioController extends BaseController {
     private static final String JSON_DATA = "jsonData";
     public static String nativeType;
 
-    private static final Logger logger = Logger.getLogger(SignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class);
 
     public SignavioController() {
         super();
@@ -44,11 +39,9 @@ public class SignavioController extends BaseController {
 
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-
                 event.getData();
-                //System.out.print(event.getData());
+                LOGGER.debug(event.getData().toString());
                 //Clients.evalJavaScript("alert('Saved!');");
-
             }
         });
 
@@ -56,11 +49,9 @@ public class SignavioController extends BaseController {
 
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-
                 event.getData();
-                //System.out.print(event.getData());
+                LOGGER.debug(event.getData().toString());
                 //Clients.evalJavaScript("alert('Saved As!');");
-
             }
         });
 
