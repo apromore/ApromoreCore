@@ -129,6 +129,11 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     }
 
     /** {@inheritDoc} */
+    public void setInterrupting(final boolean value) {
+        super2.setInterrupting(value);
+    }
+
+    /** {@inheritDoc} */
     public boolean isSignal() {
         return super2.isSignal();
     }

@@ -116,7 +116,8 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                                    final PluginRequest        request) throws CanoniserException {
 
         try {
-            new BpmnDefinitions(CpfCanonicalProcessType.remarshal(canonicalFormat), annotationFormat).marshal(bpmnOutput, false);
+            BpmnDefinitions.newInstance(CpfCanonicalProcessType.remarshal(canonicalFormat), annotationFormat)
+                           .marshal(bpmnOutput, false);
 
             // Return a result
             PluginResultImpl result = new PluginResultImpl();

@@ -123,7 +123,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @param anf  annotations for the canonical process model
      * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
-    public BpmnDefinitions(final CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+    private BpmnDefinitions(final CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {
@@ -187,6 +187,28 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
             getBPMNDiagram().add(new BpmndiDiagram(anf, initializer));
+        }
+    }
+
+    /**
+     * Construct a BPMN model from a canonical model.
+     * In other words, de-canonise a CPF/ANF model into a BPMN one.
+     *
+     * @param cpf  a canonical process model
+     * @param anf  annotations for the canonical process model
+     * @return a new BPMN process model corresponding to <code>cpf</code>
+     * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
+     */
+    public static BpmnDefinitions newInstance(final CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+
+        // Use JAXB to construct the de-canonised BPMN document
+        BpmnDefinitions definitions = new BpmnDefinitions(cpf, anf);
+
+        // Use XSLT to work around JAXB's inability to correctly generate IDREFS like bpmn:flowNodeRefs
+        try {
+            return correctFlowNodeRefs(definitions, new BpmnObjectFactory());
+        } catch (JAXBException | TransformerException e) {
+            throw new CanoniserException("Unable to correct JAXB-misgenerated bpmn:flowNodeRef elements", e);
         }
     }
 
@@ -294,8 +316,8 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @return corrected JAXB document
      */
     // TODO - change the return type and the factory parameter to be Definitions and ObjectFactory, and move to bpmn-schema
-    public static BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
-                                                      final BpmnObjectFactory factory) throws JAXBException, TransformerException {
+    private static BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
+                                                       final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
