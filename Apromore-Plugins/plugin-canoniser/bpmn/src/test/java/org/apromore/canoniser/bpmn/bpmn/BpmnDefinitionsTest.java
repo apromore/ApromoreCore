@@ -265,6 +265,22 @@ public class BpmnDefinitionsTest implements TestConstants {
         assertEquals("c5", c5.getId());
         assertEquals(c2, c5.getSourceRef());
         assertEquals(c3, c5.getTargetRef());
+
+        // A single diagram, since 1 ANF file was passed in
+        assertEquals(1, definitions.getBPMNDiagram().size());
+    }
+
+    /**
+     * Test decanonisation of <code>Basic-without-anf.cpf</code>.
+     */
+    @Test
+    public final void testDecanoniseBasicWithoutANF() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("Basic-without-anf");
+
+        // No diagram, since no ANF file was passed in
+        assertEquals(0, definitions.getBPMNDiagram().size());
     }
 
     /**
