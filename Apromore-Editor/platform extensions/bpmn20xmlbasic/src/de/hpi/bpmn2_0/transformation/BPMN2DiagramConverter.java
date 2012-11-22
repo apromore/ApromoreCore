@@ -336,7 +336,7 @@ public class BPMN2DiagramConverter {
          * @param args  first argument is the path of a BPMN XML file
          */
         public static void main(String[] args) throws JAXBException, JSONException {
-
+            try {
                 logger.info("Starting test for " + args[0]);
 
                 // Parse BPMN from XML to JAXB
@@ -358,6 +358,9 @@ public class BPMN2DiagramConverter {
                 for(BasicDiagram diagram : diagrams) System.out.println(diagram.getString());
 
                 logger.info("Completed test for " + args[0]);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
 
     private void writeJson(String json, OutputStream jsonStream) throws JSONException, IOException {
