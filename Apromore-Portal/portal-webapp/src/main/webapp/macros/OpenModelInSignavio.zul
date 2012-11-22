@@ -48,9 +48,7 @@
                                     method: 'POST',
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
-                                        console.log("Save As"+nativeFormat);
                                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', [nativeFormat, svg]));
-                                        //alert("Save As Success");
                                     }.bind(this),
                                     onFailure: function(transport) {
                                         alert("Failed to save process as "+nativeFormat);
@@ -69,9 +67,7 @@
                                     method: 'POST',
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
-                                        console.log("Save "+nativeFormat);
                                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', [nativeFormat, svg]));
-                                        //alert("Save Success");
                                     }.bind(this),
                                     onFailure: function(transport) {
                                         alert("Failed to save process!");
@@ -79,7 +75,6 @@
                                 }
                             );
                         };
-
 
                         var urlData = '${arg.url}'
                         var oryxEditor = new ORYX.Editor({
@@ -100,7 +95,6 @@
                                 'data': '${arg.jsonData}'},
                                 method: 'POST',
                                 onSuccess: function(transport) {
-                                    console.log("Import path "+arg.importPath);
                                     var editorConfig = Ext.decode(transport.responseText);
                                     oryxEditor.importJSON(editorConfig);
 
@@ -113,15 +107,16 @@
                                             });
                                         } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
                                             layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                                alert("Using BPMN Layouter");
                                                 return pluginData.name === "Layout-BPMN";
                                             });
                                         }
 
                                         if (layouter) {
-                                            layouter.functionality();                                            
+                                            layouter.functionality();
                                         } else {
                                             // Could be already layouted model (for example YAWL)
-                                            // alert("Did not find Layouter");
+                                            //alert("Did not find Layouter");
                                         }
 
                                         Ext.select('svg').setVisible(true);
