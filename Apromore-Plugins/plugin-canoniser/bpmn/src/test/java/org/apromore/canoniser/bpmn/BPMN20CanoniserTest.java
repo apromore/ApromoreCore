@@ -184,8 +184,8 @@ public class BPMN20CanoniserTest implements TestConstants {
 
         // Validate plugin result
         assertNotNull(result.getPluginMessage());
-        assertEquals(1, result.getPluginMessage().size());
-        assertEquals("BPMN 2.0 de-canonised OK", result.getPluginMessage().get(0).getMessage());
+        assertEquals(0, result.getPluginMessage().size());
+        //assertEquals("BPMN 2.0 de-canonised OK", result.getPluginMessage().get(0).getMessage());
 
         // Write BPMN output out for inspection
         new FileOutputStream(new File(OUTPUT_DIR, "Basic.bpmn")).write(bpmnOutput.toByteArray());

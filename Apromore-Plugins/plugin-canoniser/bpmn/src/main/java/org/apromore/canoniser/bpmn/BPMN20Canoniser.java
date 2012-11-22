@@ -66,7 +66,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
             // Return a result
             PluginResultImpl result = new PluginResultImpl();
-            result.addPluginMessage("BPMN 2.0 canonised OK");
+            //result.addPluginMessage("BPMN 2.0 canonised OK");
             return result;
 
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
             // Return a result
             PluginResultImpl result = new PluginResultImpl();
-            result.addPluginMessage("BPMN 2.0 de-canonised OK");
+            //result.addPluginMessage("BPMN 2.0 de-canonised OK");
             return result;
 
         } catch (Exception e) {
