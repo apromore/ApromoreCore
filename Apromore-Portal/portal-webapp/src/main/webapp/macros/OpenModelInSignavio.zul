@@ -107,7 +107,6 @@
                                             });
                                         } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
                                             layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                                alert("Using BPMN Layouter");
                                                 return pluginData.name === "Layout-BPMN";
                                             });
                                         }
