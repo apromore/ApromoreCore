@@ -56,7 +56,10 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     void construct(final CpfEventType this2, final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
         construct(this2, (TCatchEvent) boundaryEvent, initializer);
 
-        // Additional construction, specific to Boundary Events
+        // Handle @cancelActivity
+        setInterrupting(boundaryEvent.isCancelActivity());
+
+        // Handle @attachedToRef
         initializer.defer(new Initialization() {
             public void initialize() throws CanoniserException {
                 TBaseElement attachedTo = initializer.findBpmnElement(boundaryEvent.getAttachedToRef());
@@ -237,7 +240,12 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
 
     /** {@inheritDoc} */
     public boolean isInterrupting() {
-        return true;  // TODO - currently assuming all events are interrupting, which is not correct
+        return ExtensionUtils.hasExtension(getAttribute(), INTERRUPTING);
+    }
+
+    /** {@inheritDoc} */
+    public void setInterrupting(final boolean value) {
+        ExtensionUtils.flagExtension(getAttribute(), INTERRUPTING, value);
     }
 
     /** {@inheritDoc} */

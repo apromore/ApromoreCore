@@ -99,7 +99,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         }
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.correctFlowNodeRefs(new BpmnDefinitions(cpf, anf), new BpmnObjectFactory());
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(cpf, anf);
 
         // Serialize the test instance for offline inspection
         definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn")), false);
