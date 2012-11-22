@@ -206,7 +206,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
 
         // Use XSLT to work around JAXB's inability to correctly generate IDREFS like bpmn:flowNodeRefs
         try {
-            return correctFlowNodeRefs(definitions, new BpmnObjectFactory());
+            return definitions.correctFlowNodeRefs(definitions, new BpmnObjectFactory());
         } catch (JAXBException | TransformerException e) {
             throw new CanoniserException("Unable to correct JAXB-misgenerated bpmn:flowNodeRef elements", e);
         }
@@ -316,8 +316,8 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @return corrected JAXB document
      */
     // TODO - change the return type and the factory parameter to be Definitions and ObjectFactory, and move to bpmn-schema
-    private static BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
-                                                       final BpmnObjectFactory factory) throws JAXBException, TransformerException {
+    private BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
+                                                final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
@@ -333,7 +333,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         // Apply the XSLT transformation, generating a new DOM tree
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer(
-            new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-flowNodeRef.xsl"))
+            new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/fix-flowNodeRef.xsl"))
         );
         DOMSource finalSource = new DOMSource(intermediateResult.getNode());
         DOMResult finalResult = new DOMResult();
