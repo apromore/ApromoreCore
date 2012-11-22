@@ -161,7 +161,7 @@ public class ProcessServiceImpl implements ProcessService {
             //TODO XML model of web service should not already be used here, but in ManagerEndpoint
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
-            if ((withAnn && annName.startsWith(Constants.INITIAL_ANNOTATION)) || format.startsWith(Constants.ANNOTATIONS)) {
+            if ((withAnn && format.startsWith(Constants.ANNOTATIONS))) {
                 // Export Annotations only
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(annDao.getAnnotation(processId, version, annName).getContent(), "text/xml")));
             } else if (format.equals(Constants.CANONICAL)) {
