@@ -1,8 +1,7 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
@@ -23,12 +22,11 @@ import java.util.Map;
  */
 public class SignavioController extends BaseController {
 
-    public static ProcessSummaryType process;
-    public static VersionSummaryType version;
-    public static String annotation = null;
-    public static MainController mainC;
     private static final String JSON_DATA = "jsonData";
-    public static String nativeType;
+
+    public static EditSessionType editSession;
+
+    public static MainController mainC;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class);
 
@@ -41,42 +39,41 @@ public class SignavioController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 event.getData();
                 LOGGER.debug(event.getData().toString());
-                //Clients.evalJavaScript("alert('Saved!');");
             }
         });
 
         this.addEventListener("onSaveAs", new EventListener() {
-
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 event.getData();
                 LOGGER.debug(event.getData().toString());
-                //Clients.evalJavaScript("alert('Saved As!');");
             }
         });
 
-
         Map<String, String> param = new HashMap<String, String>();
         try {
-            ExportFormatResultType exportResult = getService().exportFormat(process.getId(), process.getName(), version.getName(),
-                    nativeType, annotation, false, this.mainC.getCurrentUser().getUsername(), new HashSet<RequestParameterType<?>>());
-            String data = "";
-            /*if(nativeType.equals("BPMN 2.1")){
-                BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
-                data = converter.getBPMNJSON(exportResult.getNative().getInputStream());
-            } else */
-                data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-            
+
+            ExportFormatResultType exportResult =
+                    getService().exportFormat(editSession.getProcessId(),
+                                              editSession.getProcessName(),
+                                              editSession.getVersionName(),
+                                              editSession.getNativeType(),
+                                              editSession.getAnnotation(),
+                                              editSession.isWithAnnotation(),
+                                              editSession.getUsername(), new HashSet<RequestParameterType<?>>());
+            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
             this.mainC.showPluginMessages(exportResult.getMessage());
-            this.setTitle(process.getName());
+            this.setTitle(editSession.getProcessName());
+
             param.put(JSON_DATA, data.replace("\n", "").trim());
-            param.put("url", getURL(nativeType));
-            param.put("importPath", getImportPath(nativeType));
+            param.put("url", getURL(editSession.getNativeType()));
+            param.put("importPath", getImportPath(editSession.getNativeType()));
+
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
     
     private String getURL(final String nativeType) {
@@ -85,7 +82,7 @@ public class SignavioController extends BaseController {
             case "XPDL 2.1":
                 url = "http://b3mn.org/stencilset/bpmn1.1#";
                 break;
-            case "BPMN 2.1":
+            case "BPMN 2.0":
                 url = "http://b3mn.org/stencilset/bpmn2.0#";
                 break;
             case "PNML 1.3.2":
@@ -108,7 +105,7 @@ public class SignavioController extends BaseController {
             case "XPDL 2.1":
                 importPath = "/editor/editor/xpdlimport";
                 break;
-            case "BPMN 2.1":
+            case "BPMN 2.0":
                 importPath = "/editor/editor/bpmnimport";
                 break;
             case "PNML 1.3.2":

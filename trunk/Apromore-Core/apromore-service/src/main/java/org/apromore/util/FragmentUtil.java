@@ -50,7 +50,8 @@ public class FragmentUtil {
 
         for (Edge fe : fEdges) {
             for (Edge cfe : cfEdges) {
-                if (fe.getSource().getId().equals(cfe.getSource().getId()) && fe.getTarget().getId().equals(cfe.getTarget().getId())) {
+                if ((fe.getSource() != null && fe.getSource().getId().equals(cfe.getSource().getId())) &&
+                        (fe.getTarget() != null && fe.getTarget().getId().equals(cfe.getTarget().getId()))) {
                     f.removeEdge(fe);
                 }
             }
@@ -61,7 +62,8 @@ public class FragmentUtil {
         Collection<Edge> toBeRemoved = new ArrayList<Edge>();
         for (Edge fe : es1) {
             for (Edge cfe : es2) {
-                if (fe.getSource().getId().equals(cfe.getSource().getId()) && fe.getTarget().getId().equals(cfe.getTarget().getId())) {
+                if ((fe.getSource() != null && fe.getSource().getId().equals(cfe.getSource().getId())) &&
+                        (fe.getTarget() != null && fe.getTarget().getId().equals(cfe.getTarget().getId()))) {
                     toBeRemoved.add(fe);
                 }
             }
@@ -72,7 +74,7 @@ public class FragmentUtil {
     public static Collection<Edge> getIncomingEdges(final Node v, final Collection<Edge> es) {
         Collection<Edge> incomingEdges = new ArrayList<Edge>();
         for (Edge e : es) {
-            if (e.getTarget().getId().equals(v.getId())) {
+            if (e.getTarget() != null && e.getTarget().getId().equals(v.getId())) {
                 incomingEdges.add(e);
             }
         }
@@ -82,7 +84,7 @@ public class FragmentUtil {
     public static Collection<Edge> getOutgoingEdges(final Node v, final Collection<Edge> es) {
         Collection<Edge> outgoingEdges = new ArrayList<Edge>();
         for (Edge e : es) {
-            if (e.getSource().getId().equals(v.getId())) {
+            if (e.getSource() != null && e.getSource().getId().equals(v.getId())) {
                 outgoingEdges.add(e);
             }
         }
@@ -93,7 +95,7 @@ public class FragmentUtil {
         List<Node> preset = new ArrayList<Node>(0);
         if (v != null) {
             for (Edge e: es) {
-                if (e.getTarget().getId().equals(v.getId())) {
+                if (e.getTarget() != null && e.getTarget().getId().equals(v.getId())) {
                     preset.add(e.getSource());
                 }
             }
@@ -105,7 +107,7 @@ public class FragmentUtil {
         List<Node> postset = new ArrayList<Node>(0);
         if (v != null) {
             for (Edge e: es) {
-                if (e.getSource().getId().equals(v.getId())) {
+                if (e.getSource() != null && e.getSource().getId().equals(v.getId())) {
                     postset.add(e.getTarget());
                 }
             }

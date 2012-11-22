@@ -273,18 +273,14 @@ public class MainController extends BaseController {
         editSession.setLastUpdate(version.getLastUpdate());
         if (annotation == null) {
             editSession.setWithAnnotation(false);
-        }
-        else {
+        } else {
             editSession.setWithAnnotation(true);
             editSession.setAnnotation(annotation);
         }
         try {
             // create and store an edit session
             editSessionCode = getService().writeEditSession(editSession);
-            SignavioController.process = process;
-            SignavioController.version = version;
-            SignavioController.annotation = annotation;
-            SignavioController.nativeType = nativeType;
+            SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             url = "macros/OpenModelInSignavio.zul";
             instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV
