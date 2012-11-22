@@ -74,8 +74,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         anf.marshal(new NullOutputStream(), true);
 
         // Round-trip the CPF back into BPMN
-        BpmnDefinitions definitions2 = new BpmnDefinitions(cpf, anf);
-        definitions2 = BpmnDefinitions.correctFlowNodeRefs(definitions2, new BpmnObjectFactory());
+        BpmnDefinitions definitions2 = BpmnDefinitions.newInstance(cpf, anf);
         definitions2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn")), false);
         definitions2.marshal(new NullOutputStream(), true);
 
@@ -432,6 +431,29 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         assertEquals(timer.getId(), a.getCancelNodeId().get(0).getRefId());
         assertEquals(1, timer.getCancelNodeId().size());
         assertEquals(a.getId(), timer.getCancelNodeId().get(0).getRefId());
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 13.bpmn">case #13</a>.
+     *
+     * This is identical to case #12, except that the boundary timer event is non-interrupting.
+     */
+    @Test
+    public void testCanonise13() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Case 13.bpmn");
+
+        // Check that the timer has the correct date
+        CpfTimerType timer = (CpfTimerType) cpf.getElement("sid-9901B6DB-42A9-48EF-B0D6-8EA51944CA42");
+        assertEquals(DatatypeFactory.newInstance().newXMLGregorianCalendar("2012-11-12T20:44:00"), timer.getTimeDate());
+        assertNull(timer.getTimeDuration());
+        assertNull(timer.getTimeExpression());
+
+        // Check that A cancels its timer boundary event, but that the event doesn't cancel the task
+        CpfTaskType a = (CpfTaskType) cpf.getElement("sid-FA5E54FC-9090-45F4-8649-49052F106ABE");
+        assertEquals(Collections.singleton(timer), a.getBoundaryEvents());
+        assertEquals(1, a.getCancelNodeId().size());
+        assertEquals(timer.getId(), a.getCancelNodeId().get(0).getRefId());
+        assertEquals(0, timer.getCancelNodeId().size());
     }
 
     /**

@@ -30,6 +30,8 @@ public class BpmnBoundaryEvent extends TBoundaryEvent {
     public BpmnBoundaryEvent(final CpfEventType cpfEvent, final String attachedId, final Initializer initializer) throws CanoniserException {
         initializer.populateEvent(this, cpfEvent);
 
+        setCancelActivity(cpfEvent.isInterrupting());
+
         initializer.defer(new Initialization() {
             public void initialize() {
                 setAttachedToRef(new QName(initializer.getTargetNamespace(), initializer.findElement(attachedId).getId()));

@@ -18,6 +18,9 @@ public interface CpfEventType extends CpfWorkType {
     /** {@link TypeAttribute#name} indicating that a BPMN Event is an error and its associated error reference. */
     String ERROR = "error";
 
+    /** {@link TypeAttribute#name} indicating that a BPMN BoundaryEvent cancels its attached task. */
+    String INTERRUPTING = "interrupting";
+
     /** {@link TypeAttribute#name} indicating that a BPMN Event is a signal and its associated signal reference. */
     String SIGNAL = "signal";
 
@@ -41,8 +44,11 @@ public interface CpfEventType extends CpfWorkType {
     /** @param signalRef  the BPMN error reference, or <code>null</code> to mark an error event without a reference */
     void setErrorRef(QName errorRef);
 
-    /** @return whether this corresponds to a BPMN interrupting event flavor */
+    /** @return whether this corresponds to an interrupting BPMN boundary event */
     boolean isInterrupting();
+
+    /** @param value  whether this event corresponds to an interrupting BPMN boundary event */
+    void setInterrupting(boolean value);
 
     /** @return whether {@link #setSignalRef} has been called on this instance */
     boolean isSignal();
