@@ -182,9 +182,7 @@
     <servlet>
         <display-name>Oryx Legacy File Download Servlet</display-name>
         <servlet-name>DownloadServlet</servlet-name>
-        <servlet-class>
-            org.oryxeditor.server.MultiDownloader
-        </servlet-class>
+        <servlet-class>org.oryxeditor.server.MultiDownloader</servlet-class>
     </servlet>
 
     <servlet>
@@ -213,7 +211,7 @@
 
     <servlet-mapping>
         <servlet-name>BPMNLayouterServlet</servlet-name>
-        <url-pattern>/editor/bpmnlayouter</url-pattern>
+        <url-pattern>/editor/bpmnlayout</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -261,12 +259,7 @@
         <url-pattern>/editor/rdf2json</url-pattern>
     </servlet-mapping>
 
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
-
     <!--  Added for YAWL Extension -->
-
     <servlet>
         <display-name>YAWLImport</display-name>
         <servlet-name>YAWLImportServlet</servlet-name>
@@ -322,9 +315,20 @@
         <url-pattern>/editor/xpdlimport</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <display-name>BPMN Importer</display-name>
+        <servlet-name>BPMNImporter</servlet-name>
+        <servlet-class>servlet.BPMNImportServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
-        <servlet-name>BPMNLayouterServlet</servlet-name>
-        <url-pattern>/editor/bpmnlayout</url-pattern>
+        <servlet-name>BPMNImporter</servlet-name>
+        <url-pattern>/editor/bpmnimport</url-pattern>
     </servlet-mapping>
+
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
