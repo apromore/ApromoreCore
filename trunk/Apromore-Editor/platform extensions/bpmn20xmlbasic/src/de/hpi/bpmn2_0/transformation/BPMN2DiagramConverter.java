@@ -293,13 +293,13 @@ public class BPMN2DiagramConverter {
         // Parse BPMN from XML to JAXB
         Unmarshaller unmarshaller = null;
         try {
+            StreamSource source = new StreamSource(new StringReader(bpmnString));
             unmarshaller = JAXBContext.newInstance(Definitions.class,
                     ConfigurationAnnotationAssociation.class,
                     ConfigurationAnnotationShape.class)
                     .createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-            Definitions definitions = unmarshaller.unmarshal(new StreamSource(bpmnString), Definitions.class)
-                    .getValue();
+            Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
             
             //return definitions;
 
