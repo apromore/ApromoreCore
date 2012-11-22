@@ -40,8 +40,6 @@
                     window.onOryxResourcesLoaded = function() {
 
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
-                        //alert("Inside Save As");
-                            console.log("Save As");
                             new Ajax.Request('${arg.exportPath}', {
                                     parameters: {
                                         'data': json},
@@ -59,8 +57,6 @@
 
 
                         ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
-                            //alert("Inside Save");
-                            console.log("Save");
                             new Ajax.Request('${arg.exportPath}', {
                                     parameters: {
                                         'data': json},
