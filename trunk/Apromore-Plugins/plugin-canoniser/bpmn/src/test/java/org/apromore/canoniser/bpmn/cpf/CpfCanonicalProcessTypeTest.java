@@ -577,6 +577,28 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitJoin.bpmn">implicit join</a> of
+     * multiple sequence flows entering a task..
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitJoin.svg"/></div>
+     */
+    @Test
+    public void testImplicitJoin() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ImplicitJoin.bpmn");
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitSplit.bpmn">implicit split</a> of
+     * multiple sequence flows exiting a task..
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitSplit.svg"/></div>
+     */
+    @Test
+    public void testImplicitSplit() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ImplicitSplit.bpmn");
+    }
+
+    /**
      * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.bpmn">a terminate event</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.svg"/></div>
@@ -592,7 +614,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">error events</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Error.bpmn">error events</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Error.svg"/></div>
      */
