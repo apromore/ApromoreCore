@@ -3,6 +3,9 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import javax.xml.namespace.QName;
 
+// Local classes
+import org.apromore.cpf.DirectionEnum;
+
 /**
  * CPF 1.0 event with convenience methods.
  *
@@ -21,8 +24,11 @@ public interface CpfEventType extends CpfWorkType {
     /** {@link TypeAttribute#name} indicating that a BPMN BoundaryEvent cancels its attached task. */
     String INTERRUPTING = "interrupting";
 
-    /** {@link TypeAttribute#name} indicating that a BPMN Event is a signal and its associated signal reference. */
-    String SIGNAL = "signal";
+    /** {@link TypeAttribute#name} indicating that a BPMN Catching Event is a signal and its associated signal reference. */
+    String SIGNAL_CAUGHT = "signalCaught";
+
+    /** {@link TypeAttribute#name} indicating that a BPMN Throwing Event is a signal and its associated signal reference. */
+    String SIGNAL_THROWN = "signalThrown";
 
     // Accessors
 
@@ -34,6 +40,9 @@ public interface CpfEventType extends CpfWorkType {
 
     /** @param compensationActivityRef  the BPMN compensation reference, or <code>null</code> to mark a compensation event without a reference */
     void setCompensationActivityRef(QName compensationActivityRef);
+
+    /** @return whether this catches incoming events, or throws outgoing ones */
+    public DirectionEnum getDirection();
 
     /** @return whether {@link #setErrorRef} has been called on this instance */
     boolean isError();
@@ -50,12 +59,21 @@ public interface CpfEventType extends CpfWorkType {
     /** @param value  whether this event corresponds to an interrupting BPMN boundary event */
     void setInterrupting(boolean value);
 
-    /** @return whether {@link #setSignalRef} has been called on this instance */
-    boolean isSignal();
+    /** @return whether {@link #setSignalCaughtRef} has been called on this instance */
+    boolean isSignalCatcher();
 
-    /** @return the value assigned by {@link #setSignalRef}, which may be <code>null</code> */
-    QName getSignalRef();
+    /** @return the value assigned by {@link #setSignalCaughtRef}, which may be <code>null</code> */
+    QName getSignalCaughtRef();
 
     /** @param signalRef  the BPMN signal reference, or <code>null</code> to mark a signal event without a reference */
-    void setSignalRef(QName signalRef);
+    void setSignalCaughtRef(QName signalRef);
+
+    /** @return whether {@link #setSignalThrownRef} has been called on this instance */
+    boolean isSignalThrower();
+
+    /** @return the value assigned by {@link #setSignalThrownRef}, which may be <code>null</code> */
+    QName getSignalThrownRef();
+
+    /** @param signalRef  the BPMN signal reference, or <code>null</code> to mark a signal event without a reference */
+    void setSignalThrownRef(QName signalRef);
 }

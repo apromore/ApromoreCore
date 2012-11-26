@@ -13,6 +13,7 @@ import org.apromore.cpf.MessageType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TIntermediateCatchEvent;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
@@ -40,6 +41,8 @@ public class CpfMessageType extends MessageType implements CpfEventType {
      */
     public CpfMessageType(final TBoundaryEvent boundaryEvent, final Initializer initializer) throws CanoniserException {
         super2.construct(this, boundaryEvent, initializer);
+
+        setDirection(INCOMING);
     }
 
     /**
@@ -53,6 +56,19 @@ public class CpfMessageType extends MessageType implements CpfEventType {
         super2.construct(this, endEvent, initializer);
 
         setDirection(OUTGOING);
+    }
+
+    /**
+     * Construct a CPF Message corresponding to a BPMN Intermediate Catch Event.
+     *
+     * @param endEvent  a BPMN Intermediate Catch Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfMessageType(final TIntermediateCatchEvent intermediateCatchEvent, final Initializer initializer) throws CanoniserException {
+        super2.construct(this, intermediateCatchEvent, initializer);
+
+        setDirection(INCOMING);
     }
 
     /**
@@ -134,18 +150,33 @@ public class CpfMessageType extends MessageType implements CpfEventType {
     }
 
     /** {@inheritDoc} */
-    public boolean isSignal() {
-        return super2.isSignal();
+    public boolean isSignalCatcher() {
+        return super2.isSignalCatcher();
     }
 
     /** {@inheritDoc} */
-    public QName getSignalRef() {
-        return super2.getSignalRef();
+    public QName getSignalCaughtRef() {
+        return super2.getSignalCaughtRef();
     }
 
     /** {@inheritDoc} */
-    public void setSignalRef(final QName value) {
-        super2.setSignalRef(value);
+    public void setSignalCaughtRef(final QName value) {
+        super2.setSignalCaughtRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isSignalThrower() {
+        return super2.isSignalThrower();
+    }
+
+    /** {@inheritDoc} */
+    public QName getSignalThrownRef() {
+        return super2.getSignalThrownRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setSignalThrownRef(final QName value) {
+        super2.setSignalThrownRef(value);
     }
 
     /** {@inheritDoc} */

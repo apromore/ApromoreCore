@@ -11,11 +11,13 @@ import javax.xml.namespace.QName;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.bpmn.BpmnBoundaryEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnEndEvent;
+import org.apromore.canoniser.bpmn.bpmn.BpmnIntermediateCatchEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnIntermediateThrowEvent;
 import org.apromore.canoniser.bpmn.bpmn.BpmnStartEvent;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.CancellationRefType;
+import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
@@ -29,6 +31,7 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TErrorEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TIntermediateCatchEvent;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 import org.omg.spec.bpmn._20100524.model.TSignalEventDefinition;
@@ -80,15 +83,18 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
      */
     void construct(final CpfEventType this2, final TCatchEvent event, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode((WorkType) this2, event);
-        construct(event.getEventDefinition(), initializer);
+        construct(DirectionEnum.INCOMING, event.getEventDefinition(), initializer);
     }
 
     void construct(final CpfEventType this2, final TThrowEvent event, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode((WorkType) this2, event);
-        construct(event.getEventDefinition(), initializer);
+        construct(DirectionEnum.OUTGOING, event.getEventDefinition(), initializer);
     }
 
-    private void construct(final List<JAXBElement<? extends TEventDefinition>> eventDefinitionList, final Initializer initializer) throws CanoniserException {
+    private void construct(final DirectionEnum                                 direction,
+                           final List<JAXBElement<? extends TEventDefinition>> eventDefinitionList,
+                           final Initializer                                   initializer) throws CanoniserException {
+
         for (JAXBElement<? extends TEventDefinition> ted : eventDefinitionList) {
 
             // Handle BPMN compensate event
@@ -103,7 +109,10 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
 
             // Handle BPMN signal event
             if (ted.getValue() instanceof TSignalEventDefinition) {
-                setSignalRef(((TSignalEventDefinition) ted.getValue()).getSignalRef());
+                switch (direction) {
+                case INCOMING: setSignalCaughtRef(((TSignalEventDefinition) ted.getValue()).getSignalRef());  break;
+                case OUTGOING: setSignalThrownRef(((TSignalEventDefinition) ted.getValue()).getSignalRef());  break;
+                }
             }
 
             // Handle BPMN terminate event
@@ -160,6 +169,18 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     public CpfEventTypeImpl(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         construct(this, endEvent, initializer);
     }
+
+    /**
+     * Construct a CPF Event corresponding to a BPMN Intermediate Catch Event.
+     *
+     * @param intermediateCatchEvent  a BPMN Intermediate Catch Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfEventTypeImpl(final TIntermediateCatchEvent intermediateCatchEvent, final Initializer initializer) throws CanoniserException {
+        construct(this, intermediateCatchEvent, initializer);
+    }
+
     /**
      * Construct a CPF Event corresponding to a BPMN Intermediate Throw Event.
      *
@@ -219,6 +240,11 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     }
 
     /** {@inheritDoc} */
+    public DirectionEnum getDirection() {
+        return DirectionEnum.OUTGOING;
+    }
+
+    /** {@inheritDoc} */
     public boolean isError() {
         return ExtensionUtils.hasExtension(getAttribute(), ERROR);
     }
@@ -249,22 +275,42 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     }
 
     /** {@inheritDoc} */
-    public boolean isSignal() {
-        return ExtensionUtils.hasExtension(getAttribute(), SIGNAL);
+    public boolean isSignalCatcher() {
+        return ExtensionUtils.hasExtension(getAttribute(), SIGNAL_CAUGHT);
     }
 
     /** {@inheritDoc} */
-    public QName getSignalRef() {
-        String s = ExtensionUtils.getString(getAttribute(), SIGNAL);
+    public QName getSignalCaughtRef() {
+        String s = ExtensionUtils.getString(getAttribute(), SIGNAL_CAUGHT);
         return s == null ? null : QName.valueOf(s);
     }
 
     /** {@inheritDoc} */
-    public void setSignalRef(final QName value) {
+    public void setSignalCaughtRef(final QName value) {
         if (value == null) {
-            ExtensionUtils.flagExtension(getAttribute(), SIGNAL, true);
+            ExtensionUtils.flagExtension(getAttribute(), SIGNAL_CAUGHT, true);
         } else {
-            ExtensionUtils.setString(getAttribute(), SIGNAL, value.toString());
+            ExtensionUtils.setString(getAttribute(), SIGNAL_CAUGHT, value.toString());
+        }
+    }
+
+    /** {@inheritDoc} */
+    public boolean isSignalThrower() {
+        return ExtensionUtils.hasExtension(getAttribute(), SIGNAL_THROWN);
+    }
+
+    /** {@inheritDoc} */
+    public QName getSignalThrownRef() {
+        String s = ExtensionUtils.getString(getAttribute(), SIGNAL_THROWN);
+        return s == null ? null : QName.valueOf(s);
+    }
+
+    /** {@inheritDoc} */
+    public void setSignalThrownRef(final QName value) {
+        if (value == null) {
+            ExtensionUtils.flagExtension(getAttribute(), SIGNAL_THROWN, true);
+        } else {
+            ExtensionUtils.setString(getAttribute(), SIGNAL_THROWN, value.toString());
         }
     }
 
@@ -275,17 +321,29 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
     static <T extends CpfEventType> JAXBElement<? extends TFlowNode>
         toBpmn(final T event, final org.apromore.canoniser.bpmn.bpmn.Initializer initializer) throws CanoniserException {
 
-        if (event.getIncomingEdges().size() == 0 && event.getOutgoingEdges().size() > 0) {
-            String attachedTaskId = initializer.findAttachedTaskId(event);
-            return attachedTaskId == null ? initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer))
-                                          : initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
-        } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() == 0) {
-            return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
-        } else if (event.getIncomingEdges().size() > 0 && event.getOutgoingEdges().size() > 0) {
-            // Assuming all intermediate events are ThrowEvents
-            return initializer.getFactory().createIntermediateThrowEvent(new BpmnIntermediateThrowEvent(event, initializer));
+        if (event.getIncomingEdges().size() > 0) {
+            if (event.getOutgoingEdges().size() > 0) {
+                // both incoming and outgoing edges
+                switch (event.getDirection()) {
+                case INCOMING: return initializer.getFactory().createIntermediateCatchEvent(new BpmnIntermediateCatchEvent(event, initializer));
+                case OUTGOING: return initializer.getFactory().createIntermediateThrowEvent(new BpmnIntermediateThrowEvent(event, initializer));
+                default: throw new CanoniserException("Unsupported event direction for " + event.getId() + ": " + event.getDirection());
+                }
+            } else {
+                // incoming edges only
+                return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
+            }
         } else {
-            throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
+            if (event.getOutgoingEdges().size() > 0) {
+                // outgoing edges only
+                String attachedTaskId = initializer.findAttachedTaskId(event);
+                return attachedTaskId == null
+                       ? initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer))
+                       : initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
+            } else {
+                // neither incoming nor outgoing edges
+                throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
+            }
         }
     }
 }

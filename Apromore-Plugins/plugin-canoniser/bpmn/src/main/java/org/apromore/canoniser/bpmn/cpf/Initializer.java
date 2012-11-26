@@ -92,6 +92,10 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      */
     TBaseElement findBpmnElement(final QName id) throws CanoniserException {
 
+        assert id != null : "Null QName passed";
+        assert definitions != null : "Null BPMN definitions while seeking " + id;
+        assert definitions.getTargetNamespace() != null : "Null target namespace while seeking " + id;
+
         // Make sure the id is valid for dereferencing within the local namespace
         if (!"".equals(id.getPrefix()) && !definitions.getTargetNamespace().equals(id.getNamespaceURI())) {
             throw new CanoniserException(id + " with prefix \"" + id.getPrefix() + "\" is not in local namespace " +

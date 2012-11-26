@@ -508,6 +508,36 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch3_Downpayment (not used).bpmn">chapter 3 downpayment example</a>.
+     */
+    @Test
+    public void testCh3Downpayment() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch3_Downpayment (not used).bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_CalloverTimer.bpmn">chapter 4 callover timer example</a>.
+     */
+    @Test
+    public void testCh4CalloverTimer() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_CalloverTimer.bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_ExpenseReport2.bpmn">chapter 4 expense report example</a>.
+     */
+    @Ignore
+    @Test
+    public void testCh4ExpenseReport2() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_ExpenseReport2.bpmn");
+
+        CpfEventType event = (CpfEventType) cpf.getElement("sid-F7B97F12-C41D-47E0-ACBE-5D0E42125E64");
+        assertNotNull(event);
+        assertEquals(0, event.getIncomingEdges().size());
+        assertEquals(0, event.getOutgoingEdges().size());
+    }
+
+    /**
      * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch9_loan5.bpmn">chapter 9 loan example</a>.
      */
     @Test
