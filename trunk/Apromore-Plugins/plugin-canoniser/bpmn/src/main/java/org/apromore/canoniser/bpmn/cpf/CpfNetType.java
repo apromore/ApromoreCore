@@ -228,8 +228,18 @@ public class CpfNetType extends NetType implements Attributed {
                     }
                 }
 
-                @Override public void visit(final TIntermediateCatchEvent that) {
-                    unimplemented(that);
+                @Override public void visit(final TIntermediateCatchEvent intermediateCatchEvent) {
+                    try {
+                        switch (eventType(intermediateCatchEvent)) {
+                        case MESSAGE:   net.getNode().add(new CpfMessageType(intermediateCatchEvent, initializer));   break;
+                        case NONE:      net.getNode().add(new CpfEventTypeImpl(intermediateCatchEvent, initializer)); break;
+                        case TIMER:     net.getNode().add(new CpfTimerType(intermediateCatchEvent, initializer));     break;
+                        default: throw new CanoniserException(eventType(intermediateCatchEvent) + " intermediate catch event " +
+                                                              intermediateCatchEvent.getId() + " unsupported");
+                        }
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TIntermediateThrowEvent intermediateThrowEvent) {

@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
 import org.omg.spec.bpmn._20100524.model.TBoundaryEvent;
@@ -20,6 +21,7 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TFormalExpression;
+import org.omg.spec.bpmn._20100524.model.TIntermediateCatchEvent;
 import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
 import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
@@ -120,9 +122,21 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     }
 
     /**
+     * Construct a CPF Timer corresponding to a BPMN Intermediate Catch Event.
+     *
+     * @param intermediateCatchEvent  a BPMN Intermediate Catch Event
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfTimerType(final TIntermediateCatchEvent intermediateCatchEvent, final Initializer initializer) throws CanoniserException {
+        super2.construct(this, intermediateCatchEvent, initializer);
+        construct(intermediateCatchEvent.getEventDefinition());
+    }
+
+    /**
      * Construct a CPF Timer corresponding to a BPMN Intermediate Throw Event.
      *
-     * @param endEvent  a BPMN Intermediate Throw Event
+     * @param intermediateThrowEvent  a BPMN Intermediate Throw Event
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
@@ -170,6 +184,15 @@ public class CpfTimerType extends TimerType implements CpfEventType {
         super2.setCompensationActivityRef(value);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@link DirectionEnum#INCOMING}
+     */
+    public DirectionEnum getDirection() {
+        return DirectionEnum.OUTGOING;
+    }
+
     /** {@inheritDoc} */
     public boolean isError() {
         return super2.isError();
@@ -196,18 +219,33 @@ public class CpfTimerType extends TimerType implements CpfEventType {
     }
 
     /** {@inheritDoc} */
-    public boolean isSignal() {
-        return super2.isSignal();
+    public boolean isSignalCatcher() {
+        return super2.isSignalCatcher();
     }
 
     /** {@inheritDoc} */
-    public QName getSignalRef() {
-        return super2.getSignalRef();
+    public QName getSignalCaughtRef() {
+        return super2.getSignalCaughtRef();
     }
 
     /** {@inheritDoc} */
-    public void setSignalRef(final QName value) {
-        super2.setSignalRef(value);
+    public void setSignalCaughtRef(final QName value) {
+        super2.setSignalCaughtRef(value);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isSignalThrower() {
+        return super2.isSignalThrower();
+    }
+
+    /** {@inheritDoc} */
+    public QName getSignalThrownRef() {
+        return super2.getSignalThrownRef();
+    }
+
+    /** {@inheritDoc} */
+    public void setSignalThrownRef(final QName value) {
+        super2.setSignalThrownRef(value);
     }
 
     /** {@inheritDoc} */

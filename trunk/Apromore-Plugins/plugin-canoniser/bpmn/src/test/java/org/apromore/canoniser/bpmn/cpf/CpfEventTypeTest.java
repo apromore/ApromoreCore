@@ -29,22 +29,23 @@ public class CpfEventTypeTest {
         event = (CpfEventType) new ObjectFactory().createEventType();
     }
      
-    /**
-     * Test {@link CpfEventType#isSignal) and {@link CpfEventType#setIsSignal).
-     */
+    /** Test {@link CpfEventType#isSignalCatcher) and {@link CpfEventType#setSignalCaughtRef). */
     @Test
-    public void testIsSignal() throws Exception {
+    public void testIsSignalCatcher() throws Exception {
         QName signal = new QName("http://example.com", "value");
 
-        assertFalse(event.isSignal());
+        assertFalse(event.isSignalCatcher());
+        assertFalse(event.isSignalThrower());
 
-        event.setSignalRef(signal);
-        assertTrue(event.isSignal());
-        assertEquals(signal, event.getSignalRef());
+        event.setSignalCaughtRef(signal);
+        assertTrue(event.isSignalCatcher());
+        assertEquals(signal, event.getSignalCaughtRef());
+        assertFalse(event.isSignalThrower());
 
         // Make sure that we can represent a signal without a signal reference
-        event.setSignalRef(null);
-        assertTrue(event.isSignal());
-        assertNull(event.getSignalRef());
+        event.setSignalCaughtRef(null);
+        assertTrue(event.isSignalCatcher());
+        assertNull(event.getSignalCaughtRef());
+        assertFalse(event.isSignalThrower());
     }
 }

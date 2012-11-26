@@ -434,9 +434,15 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             eventDefinitionList.add(factory.createMessageEventDefinition(med));
         }
 
-        if (cpfEvent.isSignal()) {
+        if (cpfEvent.isSignalCatcher()) {
             TSignalEventDefinition sed = new TSignalEventDefinition();
-            sed.setSignalRef(cpfEvent.getSignalRef());
+            sed.setSignalRef(cpfEvent.getSignalCaughtRef());
+            eventDefinitionList.add(factory.createSignalEventDefinition(sed));
+        }
+
+        if (cpfEvent.isSignalThrower()) {
+            TSignalEventDefinition sed = new TSignalEventDefinition();
+            sed.setSignalRef(cpfEvent.getSignalThrownRef());
             eventDefinitionList.add(factory.createSignalEventDefinition(sed));
         }
 
