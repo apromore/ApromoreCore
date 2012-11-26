@@ -588,7 +588,9 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitCallActivity(CallActivity that) {
 		super.visitCallActivity(that);
 
+                shape.setStencilId("Task");
 		shape.setProperty("callacitivity", true);  // ...yes, this IS misspelled
+                shape.setProperty("tasktype", "None");
 		// that.getCallableElement()
 	}
 
@@ -746,7 +748,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitEndEvent(EndEvent that) {
 		super.visitEndEvent(that);
 
-		shape.setStencilId("EndNoneEvent");
+		//shape.setStencilId("EndNoneEvent");
 	}
 
 	@Override public void visitEvent(Event that) {
@@ -764,20 +766,24 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 		// Signavio stencil names are mostly systematic
 		String prefix, suffix;
 		if (that instanceof StartEvent) {
+                        shape.setStencilId("StartNoneEvent");
 			prefix = "Start";
 			suffix = "";
 		}
 		else if (that instanceof IntermediateCatchEvent) {
+                        shape.setStencilId("IntermediateEvent");
 			prefix = "Intermediate";
 			suffix = "Catching";
 			needsCentralDocker = !(that instanceof BoundaryEvent);
 		}
 		else if (that instanceof IntermediateThrowEvent) {
+                        shape.setStencilId("IntermediateEvent");
 			prefix = "Intermediate";
 			suffix = "Throwing";
 			needsCentralDocker = true;
 		}
 		else if (that instanceof EndEvent) {
+                        shape.setStencilId("EndNoneEvent");
 			prefix = "End";
 			suffix = "";
 		}
@@ -787,7 +793,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 			// stencil id has been set already
 			shape.setProperty("trigger", "None");
 		}
-		else if (that.getEventDefinition().size() == 2) {
+		else if (that.getEventDefinition().size() > 1) {
 			if (that instanceof CatchEvent && ((CatchEvent) that).isParallelMultiple()) {
 				shape.setStencilId(prefix + "ParallelMultipleEvent" + suffix);
 				shape.setProperty("trigger", "Parallel Multiple");
@@ -1006,14 +1012,14 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitIntermediateCatchEvent(IntermediateCatchEvent that) {
 		super.visitIntermediateCatchEvent(that);
 
-		shape.setStencilId("IntermediateEvent");
+		//shape.setStencilId("IntermediateEvent");
 		// that.getCancelActivity();
 	}
 
 	@Override public void visitIntermediateThrowEvent(IntermediateThrowEvent that) {
 		super.visitIntermediateThrowEvent(that);
 
-		shape.setStencilId("IntermediateEvent");
+		//shape.setStencilId("IntermediateEvent");
 	}
 
 	@Override public void visitLane(Lane that) {
@@ -1066,18 +1072,21 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitParticipant(Participant that) {
 		super.visitParticipant(that);
 
-		if (that.getProcessRef() != null && that.getProcessRef().isIsClosed()) {
+		if (that.getProcessRef() == null) {
 			shape.setStencilId("CollapsedPool");
 		}
 		else {
 			shape.setStencilId("Pool");
 			shape.setProperty("isclosed",             that.getProcessRef().isIsClosed());
 			shape.setProperty("isexecutable",         that.getProcessRef().isExecutable());
-			shape.setProperty("maximum",              that.getParticipantMultiplicity().getMaximum());
-			shape.setProperty("minimum",              that.getParticipantMultiplicity().getMinimum());
-			shape.setProperty("processdocumentation", that.getProcessRef().getDocumentation());
+			//shape.setProperty("processdocumentation", that.getProcessRef().getDocumentation());
 			shape.setProperty("processtype",          that.getProcessRef().getProcessType().value());
 		}
+
+                if (that.getParticipantMultiplicity() != null) {
+			shape.setProperty("maximum", that.getParticipantMultiplicity().getMaximum());
+			shape.setProperty("minimum", that.getParticipantMultiplicity().getMinimum());
+                }
 	}
 
 	@Override public void visitReceiveTask(ReceiveTask that) {
@@ -1144,8 +1153,8 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 		super.visitStartEvent(that);
 
 		// Default start event in the absence of an event definition element in the BPMN
-		shape.setStencilId("StartNoneEvent");
-		shape.setProperty("trigger", "None");
+		//shape.setStencilId("StartNoneEvent");
+		//shape.setProperty("trigger", "None");
 		// that.isIsInterrupting()
 	}
 
