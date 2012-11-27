@@ -34,6 +34,13 @@ import org.omg.spec.bpmn._20100524.model.*;
  */
 public class Initializer extends AbstractInitializer implements ExtensionConstants {
 
+    /**
+     * Whether or not to record the original ID attribute.
+     *
+     * The persistence layer of Apromore uses originalID for its own internal IDs, so generally no point in setting it.
+     */
+    static final boolean RECORD_ORIGINAL_ID = false;
+
     /** The instance executing the {@link CpfCanonicalProcessType#(BpmnDefinitions)} constructor with this {@link Initializer}. */
     private final CpfCanonicalProcessType  cpf;
 
@@ -163,8 +170,11 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         // Handle @id
         edge.setId(cpfIdFactory.newId(baseElement.getId()));
-        edge.setOriginalID(baseElement.getId());
         elementMap.put(edge.getId(), edge);
+
+        if (RECORD_ORIGINAL_ID) {
+            edge.setOriginalID(baseElement.getId());
+        }
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {
@@ -183,8 +193,11 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         // Handle @id
         node.setId(cpfIdFactory.newId(baseElement.getId()));
-        node.setOriginalID(baseElement.getId());
         elementMap.put(node.getId(), node);
+
+        if (RECORD_ORIGINAL_ID) {
+            node.setOriginalID(baseElement.getId());
+        }
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {
@@ -326,7 +339,10 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         // Handle @id
         resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
-        resourceType.setOriginalID(baseElement.getId());
+
+        if (RECORD_ORIGINAL_ID) {
+            resourceType.setOriginalID(baseElement.getId());
+        }
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {

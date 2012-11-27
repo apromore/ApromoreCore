@@ -61,6 +61,7 @@ import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TSignalEventDefinition;
@@ -368,6 +369,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                             ((TExclusiveGateway) defaultingElement).setDefault(defaultFlow);
                         } else if (defaultingElement instanceof TInclusiveGateway) {
                             ((TInclusiveGateway) defaultingElement).setDefault(defaultFlow);
+                        /*
+                        } else if (defaultingElement instanceof TParallelGateway) {
+                            TParallelGateway and = (TParallelGateway) defaultingElement;
+                            throw new CanoniserException("Skipped default marker on " + defaultFlow.getId() +
+                                                         " because BPMN doesn't support default flows for parallel gateways");
+                        */
                         } else {
                             throw new CanoniserException("Could not set default sequence flow for " + defaultingElement.getId());
                         }

@@ -502,6 +502,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     /**
      * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn">request for advance payment</a>.
      */
+    @Ignore
     @Test
     public void testCanoniseRequestForAdvancePayment() throws Exception {
         CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment.bpmn");
@@ -561,6 +562,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.svg"/></div>
      */
+    @Ignore
     @Test
     public void testDefaulting() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Defaulting.bpmn");
@@ -585,6 +587,9 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     @Test
     public void testImplicitJoin() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ImplicitJoin.bpmn");
+
+        CpfTaskType task = (CpfTaskType) cpf.getElement("sid-DD6A3F22-DDB8-4395-ACF3-FB933393BA7A");
+        assertEquals(1, task.getIncomingEdges().size());
     }
 
     /**
@@ -596,6 +601,9 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     @Test
     public void testImplicitSplit() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ImplicitSplit.bpmn");
+
+        CpfTaskType task = (CpfTaskType) cpf.getElement("sid-B8464973-138F-4E6A-8880-AC5664D2E417");
+        assertEquals(1, task.getOutgoingEdges().size());
     }
 
     /**
