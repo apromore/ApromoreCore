@@ -69,6 +69,10 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
         setName(requiredName(definitions.getName()));
         setVersion(CPFSchema.CPF_VERSION);
 
+        // CPF Nodes aren't allowed more than one incoming edge or more than one outgoing edge
+        definitions.rewriteImplicitGatewaysExplicitly();
+
+        // Traverse the BPMN document, creating CPF elements corresponding to each BPMN element
         for (JAXBElement<? extends TRootElement> jere : definitions.getRootElement()) {
             TRootElement rootElement = jere.getValue();
             if (rootElement instanceof TCollaboration) {
@@ -222,10 +226,8 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @param initializer  document construction state
      */
     private void rewriteTaskWithBoundaryEvents(final CpfTaskType task, final Initializer initializer) {
-        java.util.logging.Logger.getAnonymousLogger().info("== rewriting boundary events on task " + task.getId());
         CpfNetType parent = initializer.findParent(task);
         for (CpfEdgeType incomingEdge : new ArrayList<CpfEdgeType>(task.getIncomingEdges())) {
-            java.util.logging.Logger.getAnonymousLogger().info("==== incoming edge " + incomingEdge.getId());
 
             // Create AND split
             CpfANDSplitType andSplit = new CpfANDSplitType();
@@ -253,7 +255,6 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             parent.getEdge().add(edge);
 
             for (CpfEventType event : task.getBoundaryEvents()) {
-                java.util.logging.Logger.getAnonymousLogger().info("====== boundary event " + event.getId());
 
                 // Create a new edge from the AND split to the event
                 edge = new CpfEdgeType();
