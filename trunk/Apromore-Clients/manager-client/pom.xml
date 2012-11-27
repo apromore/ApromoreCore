@@ -6,14 +6,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore</groupId>
-        <artifactId>apromore-parent</artifactId>
-        <version>1.0</version>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
     </parent>
 
-    <groupId>org.apromore</groupId>
     <artifactId>manager-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
 
     <url>http://apromore.org/</url>
     <name>Apromore Manager Client</name>
@@ -95,17 +94,15 @@
     <dependencies>
     
         <!-- Plugin API -->
-		<dependency>
+        <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
-            <version>1.0</version>
         </dependency>
         
         <!-- Canoniser API -->
-		<dependency>
+        <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
-            <version>1.0</version>
         </dependency>
                 
         <dependency>
@@ -117,44 +114,32 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
-            <version>${logback.version}</version>
         </dependency>
 
         <!-- JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb-impl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jaxb2-basics-runtime.version}</version>
         </dependency>
 
         <!-- Spring-WS dependencies -->
@@ -172,10 +157,10 @@
             <scope>runtime</scope>
         </dependency>
         
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

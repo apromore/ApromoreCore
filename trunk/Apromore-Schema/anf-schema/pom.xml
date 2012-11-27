@@ -5,14 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore</groupId>
-        <artifactId>apromore-parent</artifactId>
-        <version>1.0</version>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
     </parent>
 
-    <groupId>org.apromore</groupId>
     <artifactId>anf-schema</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common ANF Generated Code</name>

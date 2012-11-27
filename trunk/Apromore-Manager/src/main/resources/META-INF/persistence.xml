@@ -1,0 +1,41 @@
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+    <persistence-unit name="Apromore" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <class>org.apromore.dao.model.Annotation</class>
+        <class>org.apromore.dao.model.Cluster</class>
+        <class>org.apromore.dao.model.ClusterAssignment</class>
+        <class>org.apromore.dao.model.EditSession</class>
+        <class>org.apromore.dao.model.Native</class>
+        <class>org.apromore.dao.model.NativeType</class>
+        <class>org.apromore.dao.model.Process</class>
+        <class>org.apromore.dao.model.SearchHistory</class>
+        <class>org.apromore.dao.model.TempVersion</class>
+        <class>org.apromore.dao.model.User</class>
+        <class>org.apromore.dao.model.Content</class>
+        <class>org.apromore.dao.model.Edge</class>
+        <class>org.apromore.dao.model.Expression</class>
+        <class>org.apromore.dao.model.FragmentVersion</class>
+        <class>org.apromore.dao.model.FragmentVersionDag</class>
+        <class>org.apromore.dao.model.NonPocketNode</class>
+        <class>org.apromore.dao.model.ProcessBranch</class>
+        <class>org.apromore.dao.model.Process</class>
+        <class>org.apromore.dao.model.ProcessModelVersion</class>
+        <class>org.apromore.dao.model.Node</class>
+        <class>org.apromore.dao.model.ProcessModelAttribute</class>
+        <class>org.apromore.dao.model.ResourceAttribute</class>
+        <class>org.apromore.dao.model.ObjectAttribute</class>
+        <class>org.apromore.dao.model.NodeAttribute</class>
+        <class>org.apromore.dao.model.EdgeAttribute</class>
+        <class>org.apromore.dao.model.ResourceRef</class>
+        <class>org.apromore.dao.model.ResourceRefAttribute</class>
+        <class>org.apromore.dao.model.ObjectRef</class>
+        <class>org.apromore.dao.model.ObjectRefAttribute</class>
+        <class>org.apromore.dao.model.Resource</class>
+        <class>org.apromore.dao.model.Object</class>
+    </persistence-unit>
+
+</persistence>

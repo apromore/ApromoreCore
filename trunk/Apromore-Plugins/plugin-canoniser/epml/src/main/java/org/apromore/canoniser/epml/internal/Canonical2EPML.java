@@ -14,43 +14,6 @@
 
 package org.apromore.canoniser.epml.internal;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-
-import org.apromore.anf.AnnotationType;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.GraphicsType;
-import org.apromore.anf.PositionType;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.ConditionExpressionType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.InputOutputType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ObjectRefType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.StateType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TypeAttribute;
-import org.apromore.cpf.WorkType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
-
 import de.epml.ObjectFactory;
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
@@ -79,8 +42,46 @@ import de.epml.TypeRelation;
 import de.epml.TypeRole;
 import de.epml.TypeToProcess;
 import de.epml.TypeXOR;
+import org.apromore.anf.AnnotationType;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.GraphicsType;
+import org.apromore.anf.PositionType;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputOutputType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.StateType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.WorkType;
+import org.apromore.cpf.XORJoinType;
+import org.apromore.cpf.XORSplitType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.bind.JAXBElement;
 
 public class Canonical2EPML {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2EPML.class);
 
     private static ObjectFactory EPML_FACTORY = new ObjectFactory();
 
@@ -348,8 +349,13 @@ public class Canonical2EPML {
                         if (jElement.getValue() instanceof TypeArc) {
                             if (((TypeArc) jElement.getValue()).getFlow() != null) {
                                 TypeFlow flow = ((TypeArc) jElement.getValue()).getFlow();
-                                if (flow.getSource().equals(((TEpcElement) obj).getId())) {
-                                    elements.add(epcRefMap.get(flow.getTarget()));
+                                if (flow.getSource() != null) {
+                                    if (flow.getSource().equals(((TEpcElement) obj).getId())) {
+                                        elements.add(epcRefMap.get(flow.getTarget()));
+                                        break;
+                                    }
+                                } else {
+                                    LOGGER.error("Flow has a null source.");
                                 }
                             }
                         }

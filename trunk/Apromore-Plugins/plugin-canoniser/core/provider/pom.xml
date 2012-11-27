@@ -6,81 +6,82 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin-parent</artifactId>
-        <version>1.0</version>
+        <artifactId>plugin</artifactId>
+        <version>1.1</version>
+        <relativePath>../../../</relativePath>
     </parent>
 
-    <artifactId>canoniser-api-provider</artifactId>    
+    <artifactId>canoniser-api-provider</artifactId>
     <name>Apromore Canoniser API Provider</name>
-	<description>
-		Provider for Canonisers using OSGi to dynamically discover available Canonisers
-	</description>
+    <description>Provider for Canonisers using OSGi to dynamically discover available Canonisers</description>
 
     <build>
         <plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>plugin-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-			
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>canoniser-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-		
-		<!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>anf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>cpf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-				
-		<!-- Provided dependencies -->
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-		</dependency>
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-		</dependency>
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-		</dependency>    
-		
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency> 
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>	  
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <!-- Change to Provided -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <!-- Change to Provided -->
+        </dependency>
+
+        <!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>anf-schema</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Provided dependencies -->
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
     </dependencies>
-    
+
 </project>

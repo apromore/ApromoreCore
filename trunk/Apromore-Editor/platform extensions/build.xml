@@ -3,8 +3,8 @@
 
     <target name="build-all">
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="diagram core" />
-        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpmn20xmlbasic" />
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="epc" />
+        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpmn20xmlbasic" />
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="jpdl" />
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="xpdl" />
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="syntaxchecker" />
