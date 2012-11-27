@@ -6,62 +6,64 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin-parent</artifactId>
-        <version>1.0</version>
+        <artifactId>plugin</artifactId>
+        <version>1.1</version>
+        <relativePath>../../../</relativePath>
     </parent>
 
-    <artifactId>canoniser-api</artifactId>    
+    <artifactId>canoniser-api</artifactId>
     <name>Apromore Canoniser API</name>
-	<description>
-		API for Canonisers
-	</description>
+    <description>API for Canonisers</description>
 
     <build>
         <plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Export-Package>
-							org.apromore.canoniser,
-							org.apromore.canoniser.exception,
-							org.apromore.canoniser.provider
-						</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.apromore.canoniser,
+                            org.apromore.canoniser.exception,
+                            org.apromore.canoniser.provider
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-    
-	<dependencies>	
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>plugin-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-		
-		<!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>anf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>cpf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-		
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency> 		
-			
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <!-- Change to Provided -->
+        </dependency>
+
+        <!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>anf-schema</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <!-- Change to Provided -->
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
+            <!-- Change to Provided -->
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
     </dependencies>
-    
+
 </project>

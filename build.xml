@@ -14,7 +14,7 @@
 	<property file="local.properties" />
 		
 	<!-- Standard properties for the build enviroment -->
-    <property file="build.properties" />
+    <property file="deploy/build.properties" />
 
     <!-- Delete all deployed WAR files -->
     <target name="clean-war">

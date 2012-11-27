@@ -1,13 +1,5 @@
 package org.apromore.canoniser.xpdl.internal;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -71,6 +63,13 @@ import org.wfmc._2008.xpdl2.TransitionRestrictions;
 import org.wfmc._2008.xpdl2.Transitions;
 import org.wfmc._2008.xpdl2.WorkflowProcesses;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
+
 public class Canonical2XPDL {
 
     Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();
@@ -129,7 +128,7 @@ public class Canonical2XPDL {
      * de-canonize data (canonical) into xpdl using anf data
      * @param cpf the canonical format
      * @param anf the annotation
-     * @throws org.apromore.exception.CanoniserException
+     * @throws CanoniserException
      */
     public Canonical2XPDL(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
         //TODO A canoniser should never know about the source language, otherwise we start to to language to language mappings again!
@@ -822,11 +821,11 @@ public class Canonical2XPDL {
                 a.setAssociationDirection("To");
                 // output
                 if (ref.getType().equals(InputOutputType.OUTPUT)) {
-                    a.setSource(((TaskType) node).getId().toString());
-                    a.setTarget(ref.getObjectId().toString());
+                    a.setSource(node.getId());
+                    a.setTarget(ref.getObjectId());
                 } else {
-                    a.setSource(ref.getObjectId().toString());
-                    a.setTarget(((TaskType) node).getId().toString());
+                    a.setSource(ref.getObjectId());
+                    a.setTarget(node.getId());
                 }
                 for (TypeAttribute att : ref.getAttribute()) {
                     if (att.getName().equals("RefID")) {

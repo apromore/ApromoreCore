@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="jpalogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/manager.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.home}/logs/manager.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>3</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>1MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date %level | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="org.springframework.orm" level="debug">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+    <logger name="org.springframework.jdbc" level="debug">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+    <logger name="org.springframework.transaction" level="debug">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+
+</included>
