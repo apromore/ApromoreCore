@@ -435,4 +435,54 @@ public class BpmnDefinitionsTest implements TestConstants {
         // Obtain the test instance
         BpmnDefinitions definitions = testDecanonise("OrderFulfillment");
     }
+
+    /**
+     * Test {@link BpmnDefinitions#rewriteImplicitGatewaysExplicitly} against
+     * <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitJoin.bpmn">ImplicitJoin.bpmn</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitJoin.svg"/></div>
+     */
+    @Test
+    public final void testRewriteImplicitJoin() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ImplicitJoin.bpmn")), true);
+        BpmnTask task = (BpmnTask) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-DD6A3F22-DDB8-4395-ACF3-FB933393BA7A"));
+        assertEquals(2, task.getIncoming().size());
+
+        // Exercise the rewriting method
+        definitions.rewriteImplicitGatewaysExplicitly();
+
+        // Validate the rewritten model, and write it out for inspection
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ImplicitJoin-rewritten.bpmn")), false);
+        definitions.marshal(new NullOutputStream(), true);
+
+        // Confirm that the rewriting took place
+        assertEquals(1, task.getIncoming().size());
+    }
+
+    /**
+     * Test {@link BpmnDefinitions#rewriteImplicitGatewaysExplicitly} against
+     * <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitSplit.bpmn">ImplicitSplit.bpmn</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitSplit.svg"/></div>
+     */
+    @Test
+    public final void testRewriteImplicitSplit() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ImplicitSplit.bpmn")), true);
+        BpmnTask task = (BpmnTask) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-B8464973-138F-4E6A-8880-AC5664D2E417"));
+        assertEquals(2, task.getOutgoing().size());
+
+        // Exercise the rewriting method
+        definitions.rewriteImplicitGatewaysExplicitly();
+
+        // Validate the rewritten model, and write it out for inspection
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ImplicitSplit-rewritten.bpmn")), false);
+        definitions.marshal(new NullOutputStream(), true);
+
+        // Confirm that the rewriting took place
+        assertEquals(1, task.getOutgoing().size());
+    }
 }

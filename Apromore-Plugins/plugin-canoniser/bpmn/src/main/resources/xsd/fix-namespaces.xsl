@@ -62,6 +62,13 @@
     </xsl:attribute>
 </xsl:template>
 
+<xsl:template match="bpmn:incoming/text()|bpmn:outgoing/text()">
+    <xsl:choose>
+    <xsl:when test="contains(current(),':')"><xsl:value-of select="substring-after(current(), ':')"/></xsl:when>
+    <xsl:otherwise><xsl:value-of select="current()"/></xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
 <!-- Use an identity template so that everything that doesn't need workarounds gets passed through unchanged. -->
 <xsl:template match="@*|node()">
     <xsl:copy>

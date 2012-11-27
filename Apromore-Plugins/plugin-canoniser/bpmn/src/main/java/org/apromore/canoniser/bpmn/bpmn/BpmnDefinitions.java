@@ -17,6 +17,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -30,12 +31,9 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
-import org.apromore.cpf.BaseVisitor;
-import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TraversingVisitor;
 import org.apromore.canoniser.bpmn.Constants;
 import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
@@ -44,6 +42,16 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
 
 /**
  * BPMN 2.0 object model with canonisation methods.
@@ -155,7 +163,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         final List<String> rootIds = cpf.getRootIds();
         final List<String> subnetIds = new ArrayList<String>();
         if (rootIds.size() == 0) {
-            cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+            cpf.accept(new org.apromore.cpf.TraversingVisitor(new org.apromore.cpf.DepthFirstTraverserImpl(), new org.apromore.cpf.BaseVisitor() {
                 @Override public void visit(final NetType net) { rootIds.add(net.getId()); }
                 @Override public void visit(final TaskType task) { subnetIds.add(task.getSubnetId()); }  // null check not required
             }));
@@ -342,5 +350,108 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         // Unmarshal back to JAXB
         Object def2 = context.createUnmarshaller().unmarshal(finalResult.getNode());
         return ((JAXBElement<BpmnDefinitions>) def2).getValue();
+    }
+
+    /**
+     * Replace every instance of multiple incoming sequence flows to an activity with an exclusive data-based gateway,
+     * and every instance of multiple outgoing sequence flows from an activity with a parallel gateway.
+     *
+     * This is required as pre-processing for canonisation, since CPF Work elements must have no more than one incoming edge and
+     * no more than one outgoing edge.
+     *
+     * @throws CanoniserException if the rewriting can't be performed
+     */
+    public void rewriteImplicitGatewaysExplicitly() throws CanoniserException {
+        for (JAXBElement<? extends TRootElement> rootElement : getRootElement()) {
+            if (rootElement.getValue() instanceof TProcess) {
+                TProcess process = (TProcess) rootElement.getValue();
+                rewriteFlowElements(process.getFlowElement());
+            }
+        }
+    }
+
+    private void rewriteFlowElements(List<JAXBElement<? extends TFlowElement>> jfel) throws CanoniserException {
+        for (JAXBElement<? extends TFlowElement> flowElement : new ArrayList<JAXBElement<? extends TFlowElement>>(jfel)) {
+            if (flowElement.getValue() instanceof TFlowNode && !(flowElement.getValue() instanceof TGateway)) {
+                TFlowNode flowNode = (TFlowNode) flowElement.getValue();
+
+                if (flowNode.getIncoming().size() > 1) {
+
+                    // Create a converging XOR gateway
+                    BpmnObjectFactory factory = new BpmnObjectFactory();
+                    TExclusiveGateway xor = factory.createTExclusiveGateway();
+                    xor.setId(flowNode.getId() + "_implicit_join");
+                    xor.setGatewayDirection(TGatewayDirection.CONVERGING);
+                    jfel.add(factory.createExclusiveGateway(xor));
+
+                    // Retarget the incoming flows to the XOR gateway
+                    for (QName incoming: flowNode.getIncoming()) {
+                        BpmnSequenceFlow incomingFlow = (BpmnSequenceFlow) findElement(incoming);
+                        incomingFlow.setTargetRef(xor);
+                    }
+
+                    xor.getIncoming().addAll(flowNode.getIncoming());
+                    flowNode.getIncoming().clear();
+
+                    // Create a flow from the XOR gateway to the flow node
+                    BpmnSequenceFlow flow = factory.createTSequenceFlow();
+                    flow.setId(flowNode.getId() + "_implicit_join_edge");  // TODO - should use IdFactory to ward against clashes
+                    flow.setSourceRef(xor);
+                    flow.setTargetRef(flowNode);
+                    jfel.add(factory.createSequenceFlow(flow));
+
+                    QName flowQName = new QName(targetNamespace, flow.getId());
+                    flowNode.getIncoming().add(flowQName);
+                    xor.getOutgoing().add(flowQName);
+                }
+
+                if (flowNode.getOutgoing().size() > 1) {
+
+                    // Create a diverging AND gateway
+                    BpmnObjectFactory factory = new BpmnObjectFactory();
+                    TParallelGateway and = factory.createTParallelGateway();
+                    and.setId(flowNode.getId() + "_implicit_split");
+                    and.setGatewayDirection(TGatewayDirection.DIVERGING);
+                    jfel.add(factory.createParallelGateway(and));
+
+                    // Change the source of the outgoing flows to be from the AND gateway
+                    for (QName outgoing: flowNode.getOutgoing()) {
+                        BpmnSequenceFlow outgoingFlow = (BpmnSequenceFlow) findElement(outgoing);
+                        outgoingFlow.setSourceRef(and);
+                    }
+
+                    and.getOutgoing().addAll(flowNode.getOutgoing());
+                    flowNode.getOutgoing().clear();
+
+                    // Create a flow to the AND gateway from the flow node
+                    BpmnSequenceFlow flow = factory.createTSequenceFlow();
+                    flow.setId(flowNode.getId() + "_implicit_split_edge");  // TODO - should use IdFactory to ward against clashes
+                    flow.setSourceRef(flowNode);
+                    flow.setTargetRef(and);
+                    jfel.add(factory.createSequenceFlow(flow));
+
+                    QName flowQName = new QName(targetNamespace, flow.getId());
+                    flowNode.getOutgoing().add(flowQName);
+                    and.getIncoming().add(flowQName);
+                }
+
+                // Recursively rewrite any subprocesses
+                if (flowNode instanceof TSubProcess) {
+                    rewriteFlowElements(((TSubProcess) flowNode).getFlowElement());
+                }
+            }
+        }
+    }
+
+    /**
+     * @param id  the name of a BPMN element
+     * @throws CanoniserException if <code>id</code> isn't a BPMN element from the current document
+     */
+    TBaseElement findElement(final QName id) throws CanoniserException {
+        if (!targetNamespace.equals(id.getNamespaceURI())) {
+            throw new CanoniserException(id + " is not local to this BPMN model");
+        }
+
+        return idMap.get(id.getLocalPart());
     }
 }
