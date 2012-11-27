@@ -6,92 +6,88 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin-parent</artifactId>
-        <version>1.0</version>
+        <artifactId>plugin</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
     </parent>
 
-    <artifactId>canoniser-xpdl</artifactId>    
+    <artifactId>canoniser-xpdl</artifactId>
     <name>Apromore Canoniser XPDL</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <build>
         <plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<!-- Export nothing as we're a pure implementation bundle -->
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <!-- Export nothing as we're a pure implementation bundle -->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
-    
-	<dependencies>	
-		<!-- Provided dependencies -->
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-		</dependency>
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-		</dependency>
-		<dependency>
-		  <groupId>org.eclipse.gemini</groupId>
-		  <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>plugin-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-			
-		<dependency>
+
+    <dependencies>
+        <!-- Provided dependencies -->
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
-        </dependency> 
-        
-		<!-- Schema -->
-		<dependency>
+        </dependency>
+
+        <!-- Schema -->
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>xpdl-schema</artifactId>
-            <version>1.0</version>
             <scope>compile</scope>
-        </dependency>    
-		
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency> 
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
-        </dependency>			  
+        </dependency>
 
     </dependencies>
-    
+
 </project>

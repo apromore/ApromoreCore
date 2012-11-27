@@ -4,26 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+    </parent>
 
     <groupId>org.apromore.plugin</groupId>
-    <artifactId>plugin-master</artifactId>
+    <artifactId>plugin</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
 
     <url>http://www.apromore.org/</url>
     <name>Apromore - Core Plugins / API</name>
-    <description>
-		Apromore Plugin API's and core Plugins
-    </description>
-	<inceptionYear>2012</inceptionYear>
-	
+    <description>Apromore Plugin API's and core Plugins</description>
+    <inceptionYear>2012</inceptionYear>
+
     <distributionManagement>
         <site>
             <id>Apromore-site</id>
             <url>dav:http://apromore.qut.edu.au/projects/Apromore-Plugins</url>
         </site>
     </distributionManagement>
-	
+
     <ciManagement>
         <system>Bamboo</system>
         <url>http://apromore-build.qut.edu.au/bamboo</url>
@@ -40,57 +42,245 @@
     </issueManagement>
 
     <modules>
-	
-		<!-- Maven Archetypes -->
-		
-			<!-- <module>plugin-core/module-archetype</module> -->
-			<module>plugin-core/plugin-archetype</module>
-			<module>plugin-core/plugin-api-archetype</module>
-			<module>plugin-core/plugin-api-provider-archetype</module>
-			
-		<!-- 	Plugin Interfaces
-			- http://code.google.com/p/apromore/wiki/PluginAPIHowTo
-		-->
-		
-			<!-- Core Plugin Interface -->
-			<module>plugin-core/api</module>
-			<module>plugin-core/provider</module>
+        <module>plugin-core/plugin-archetype</module>
+        <module>plugin-core/plugin-api-archetype</module>
+        <module>plugin-core/plugin-api-provider-archetype</module>
 
-			<!-- Canoniser Interface -->
-			<module>plugin-canoniser/core/api</module>
-			<module>plugin-canoniser/core/provider</module>
-			
-			<!-- Deplyoment Interface -->
-			<module>plugin-deployment/deployment-api</module>			
-			<module>plugin-deployment/deployment-api-provider</module>				
-	
-		<!-- 	Modules 
-			- http://code.google.com/p/apromore/wiki/ModuleHowTo
-		-->	
-			
-			
-			
-		<!-- 
-				Plugin Implementations 
-			- http://code.google.com/p/apromore/wiki/PluginHowTo
-		-->
-			<!-- 
-				Note: 	I'm not sure if we should include those here, as then we'll always build all Plugins.
-						Maybe we should just add the "core" Plugins here so that these are always build. 
-			-->
-		
-			<!-- Canoniser Plugins -->
-			<module>plugin-canoniser/bpmn</module>
-			<module>plugin-canoniser/epml</module>
-			<module>plugin-canoniser/pnml</module>
-			<module>plugin-canoniser/xpdl</module>
-			<module>plugin-canoniser/yawl</module>
-								
-			<!-- Deployment Plugins -->
-			<module>plugin-deployment/deployment-yawl</module>
+        <!-- Plugin Interfaces - http://code.google.com/p/apromore/wiki/PluginAPIHowTo-->
+        <module>plugin-core/api</module>
+        <module>plugin-core/provider</module>
 
-					
-			
+        <!-- Canoniser Interface -->
+        <module>plugin-canoniser/core/api</module>
+        <module>plugin-canoniser/core/provider</module>
+
+        <!-- Deployment Interface -->
+        <module>plugin-deployment/deployment-api</module>
+        <module>plugin-deployment/deployment-api-provider</module>
+
+        <!-- Modules - http://code.google.com/p/apromore/wiki/ModuleHowTo -->
+
+
+        <!-- Plugin Implementations - http://code.google.com/p/apromore/wiki/PluginHowTo -->
+        <module>plugin-canoniser/bpmn</module>
+        <module>plugin-canoniser/epml</module>
+        <module>plugin-canoniser/pnml</module>
+        <module>plugin-canoniser/xpdl</module>
+        <module>plugin-canoniser/yawl</module>
+
+        <!-- Deployment Plugins -->
+        <module>plugin-deployment/deployment-yawl</module>
     </modules>
- 
+
+    <repositories>
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>plugin-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>deployment-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+
+            <!-- Canonisers -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-api</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-bpmn</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-epml</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-pnml</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-xpdl</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-yawl</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+
+            <!-- Schema -->
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>anf-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>bpmn-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>cpf-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>epml-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>pnml-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>rlf-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>xpdl-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>yawl-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+
+            <!-- Extra Libraries -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-osgi</artifactId>
+                <version>${httpclient-osgi.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.gemini</groupId>
+                <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+                <version>${gemini.blueprint.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>org.springframework.core</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.context</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.asm</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.expression</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.beans</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.aop</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- Change to provided as deployed on Eclipse Virgo -->
+            <dependency>
+                <groupId>org.eclipse.gemini</groupId>
+                <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+                <version>${gemini.blueprint.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>org.springframework.core</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- Change to provided as deployed on Eclipse Virgo -->
+            <dependency>
+                <groupId>org.eclipse.gemini</groupId>
+                <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+                <version>${gemini.blueprint.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>org.springframework.core</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.context</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.context.support</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.beans</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>org.springframework.aop</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Tests -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpcomponents.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <properties>
+        <apromore.schema.version>1.1</apromore.schema.version>
+        <apromore.plugin.version>1.1</apromore.plugin.version>
+        <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
+
+        <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
+        <httpclient-osgi.version>4.2.1</httpclient-osgi.version>
+        <httpcomponents.version>4.2.1</httpcomponents.version>
+    </properties>
+
 </project>

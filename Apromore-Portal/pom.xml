@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>apromore-portal</artifactId>
+    <packaging>war</packaging>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Portal</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Portal/portal-service/</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Portal/portal-service/</connection>
+        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Portal/portal-service/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>Apromore-site</id>
+            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Portal/portal-service</url>
+        </site>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>ZK EE Evaluation</id>
+            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <finalName>portal</finalName>
+    </build>
+
+    <dependencies>
+        <!-- Client -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+
+        <!-- Spring-WS dependencies -->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-xml</artifactId>
+        </dependency>
+
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+
+        <!-- JAXB Settings -->
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+
+        <!-- Commons Libraries -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <!-- ZK Libraries -->
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>breeze</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkmax</artifactId>
+            <version>${zk.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-digester</groupId>
+                    <artifactId>commons-digester</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkplus</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zhtml</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkspring-core</artifactId>
+            <version>${zk.spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <zk.version>5.0.9</zk.version>
+        <zk.spring.version>3.0</zk.spring.version>
+    </properties>
+</project>

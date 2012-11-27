@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <context:property-placeholder location="classpath:/*.properties"/>
+
+    <context:annotation-config />
+    <context:spring-configured />
+    <context:component-scan base-package="org.apromore"/>
+
+    <jpa:repositories base-package="org.apromore.dao" repository-impl-postfix="CustomImpl" />
+
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
+          p:driverClass="${jdbc.driver}" p:jdbcUrl="${jdbc.url}" p:username="${jdbc.username}" p:password="${jdbc.password}"
+          p:maxConnectionsPerPartition="30" p:minConnectionsPerPartition="10" p:partitionCount="5" p:acquireIncrement="5"
+          p:statementsCacheSize="100" p:releaseHelperThreads="3" />
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <tx:annotation-driven proxy-target-class="false" />
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="persistenceUnitName" value="TESTApromore" />
+        <property name="jpaVendorAdapter">
+            <bean id="vendorAdaptor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter"
+                  p:generateDdl="${jpa.generateDDL}" p:database="${jpa.database}" p:showSql="${jpa.showSql}"
+                  p:databasePlatform="${jpa.databasePlatform}" />
+        </property>
+        <property name="jpaProperties">
+            <util:properties id="jpaProperties">
+                <prop key="showSql">true</prop>
+                <prop key="eclipselink.logging.level">INFO</prop>
+                <prop key="eclipselink.weaving">static</prop>
+                <!--<prop key="eclipselink.query-results-cache">true</prop>-->
+                <!--<prop key="eclipselink.jdbc.cache-statements">true</prop>-->
+                <!--<prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>-->
+                <!--<prop key="eclipselink.persistence-context.persist-on-commit">true</prop>-->
+            </util:properties>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<epml:epml xmlns:epml="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+  <directory>
+    <epc epcId='39' name='Insurance Claims Process'>
+        <function id='1' defRef='1057'>
+            <graphics>
+                <position height='20' width='60' x='186' y='-201'/>
+            </graphics>
+            <name>Determine if customer wants to continue with claim</name>
+        </function>
+        <arc id='40'>
+            <graphics>
+                <position x='216' y='-181'/>
+                <position x='216' y='-161'/>
+            </graphics>
+            <flow source='1' target='31'/>
+        </arc>
+        <function id='2' defRef='1058'>
+            <graphics>
+                <position height='20' width='60' x='342' y='-819'/>
+            </graphics>
+            <name>Advise caller cannot proceed with out policy</name>
+        </function>
+        <arc id='41'>
+            <graphics>
+                <position x='372' y='-799'/>
+                <position x='372' y='-769'/>
+            </graphics>
+            <flow source='2' target='39'/>
+        </arc>
+        <function id='3' defRef='1059'>
+            <graphics>
+                <position height='20' width='60' x='313' y='-329'/>
+            </graphics>
+            <name>Determine if date of loss falls within currency</name>
+        </function>
+        <arc id='42'>
+            <graphics>
+                <position x='343' y='-309'/>
+                <position x='343' y='-289'/>
+            </graphics>
+            <flow source='3' target='32'/>
+        </arc>
+        <function id='4' defRef='1060'>
+            <graphics>
+                <position height='20' width='60' x='208' y='-769'/>
+            </graphics>
+            <name>Conduct customer privacy check</name>
+        </function>
+        <arc id='43'>
+            <graphics>
+                <position x='238' y='-749'/>
+                <position x='238' y='-726'/>
+            </graphics>
+            <flow source='4' target='36'/>
+        </arc>
+        <function id='5' defRef='1061'>
+            <graphics>
+                <position height='20' width='60' x='244' y='-1075'/>
+            </graphics>
+            <name>Request policy number</name>
+        </function>
+        <arc id='44'>
+            <graphics>
+                <position x='274' y='-1055'/>
+                <position x='274' y='-1035'/>
+            </graphics>
+            <flow source='5' target='35'/>
+        </arc>
+        <function id='6' defRef='1062'>
+            <graphics>
+                <position height='20' width='60' x='313' y='-379'/>
+            </graphics>
+            <name>Validate loss date against currency</name>
+        </function>
+        <arc id='45'>
+            <graphics>
+                <position x='343' y='-359'/>
+                <position x='343' y='-329'/>
+            </graphics>
+            <flow source='6' target='122'/>
+        </arc>
+        <event id='122'>
+            <graphics>
+                <position height='20' width='60' x='286' y='-246'/>
+            </graphics>
+            <name>Loss date validated</name>
+        </event>
+        <arc id='123'>
+            <graphics>
+                <position x='343' y='-309'/>
+                <position x='343' y='-289'/>
+            </graphics>
+            <flow source='122' target='3'/>
+        </arc>		
+        <function id='7' defRef='1063'>
+            <graphics>
+                <position height='20' width='60' x='185' y='-635'/>
+            </graphics>
+            <name>Advise caller cannot proceed if unable to meet privacy requirements</name>
+        </function>
+        <arc id='46'>
+            <graphics>
+                <position x='215' y='-615'/>
+                <position x='215' y='-592'/>
+            </graphics>
+            <flow source='7' target='23'/>
+        </arc>
+        <function id='8' defRef='1064'>
+            <graphics>
+                <position height='20' width='60' x='370' y='-547'/>
+            </graphics>
+            <name>Record claim type and loss date</name>
+        </function>
+        <arc id='47'>
+            <graphics>
+                <position x='400' y='-527'/>
+                <position x='400' y='-507'/>
+            </graphics>
+            <flow source='8' target='34'/>
+        </arc>
+        <function id='9' defRef='1065'>
+            <graphics>
+                <position height='20' width='60' x='305' y='-947'/>
+            </graphics>
+            <name>Locate policy using additional information</name>
+        </function>
+        <arc id='48'>
+            <graphics>
+                <position x='335' y='-927'/>
+                <position x='335' y='-907'/>
+            </graphics>
+            <flow source='9' target='38'/>
+        </arc>
+        <function id='10' defRef='1066'>
+            <graphics>
+                <position height='20' width='60' x='268' y='-73'/>
+            </graphics>
+            <name>Complete report only details for no coverage</name>
+        </function>
+        <arc id='49'>
+            <graphics>
+                <position x='298' y='-53'/>
+                <position x='298' y='-30'/>
+            </graphics>
+            <flow source='10' target='20'/>
+        </arc>
+        <function id='11' defRef='1067'>
+            <graphics>
+                <position height='20' width='60' x='370' y='-635'/>
+            </graphics>
+            <name>Initiate new claim</name>
+        </function>
+        <arc id='50'>
+            <graphics>
+                <position x='400' y='-615'/>
+                <position x='400' y='-592'/>
+            </graphics>
+            <flow source='11' target='29'/>
+        </arc>
+        <event id='12' defRef='1068'>
+            <graphics>
+                <position height='20' width='60' x='186' y='-246'/>
+            </graphics>
+            <name>Loss outside of risk currency</name>
+        </event>
+        <arc id='51'>
+            <graphics>
+                <position x='216' y='-226'/>
+                <position x='216' y='-201'/>
+            </graphics>
+            <flow source='12' target='1'/>
+        </arc>
+        <event id='13' defRef='1069'>
+            <graphics>
+                <position height='20' width='60' x='67' y='-118'/>
+            </graphics>
+            <name>Loss outside risk currency customer wants to continue</name>
+        </event>
+        <event id='14' defRef='1070'>
+            <graphics>
+                <position height='20' width='60' x='244' y='-1120'/>
+            </graphics>
+            <name>Customer contacted Insurance to lodge claim</name>
+        </event>
+        <arc id='52'>
+            <graphics>
+                <position x='274' y='-1100'/>
+                <position x='274' y='-1075'/>
+            </graphics>
+            <flow source='14' target='5'/>
+        </arc>
+        <event id='15' defRef='1071'>
+            <graphics>
+                <position height='20' width='60' x='313' y='-246'/>
+            </graphics>
+            <name>Loss within risk currency</name>
+        </event>
+        <event id='16' defRef='1072'>
+            <graphics>
+                <position height='20' width='60' x='293' y='-464'/>
+            </graphics>
+            <name>Claim type known</name>
+        </event>
+        <arc id='53'>
+            <graphics>
+                <position x='323' y='-444'/>
+                <position x='343' y='-421'/>
+            </graphics>
+            <flow source='16' target='33'/>
+        </arc>
+        <event id='17' defRef='1073'>
+            <graphics>
+                <position height='20' width='60' x='306' y='-726'/>
+            </graphics>
+            <name>End call</name>
+        </event>
+        <event id='18' defRef='1074'>
+            <graphics>
+                <position height='20' width='60' x='459' y='-726'/>
+            </graphics>
+            <name>Caller wishes to discuss policy requirements with Sales</name>
+        </event>
+        <event id='19' defRef='1075'>
+            <graphics>
+                <position height='20' width='60' x='391' y='-464'/>
+            </graphics>
+            <name>Loss date known</name>
+        </event>
+        <arc id='54'>
+            <graphics>
+                <position x='421' y='-444'/>
+                <position x='343' y='-421'/>
+            </graphics>
+            <flow source='19' target='33'/>
+        </arc>
+        <event id='20' defRef='1076'>
+            <graphics>
+                <position height='20' width='60' x='268' y='-30'/>
+            </graphics>
+            <name>Report only claim identified</name>
+        </event>
+        <event id='21' defRef='1077'>
+            <graphics>
+                <position height='20' width='60' x='451' y='-246'/>
+            </graphics>
+            <name>Loss outside risk currency but active</name>
+        </event>
+        <event id='22' defRef='1078'>
+            <graphics>
+                <position height='20' width='60' x='268' y='-118'/>
+            </graphics>
+            <name>Customer does not want to continue with claim</name>
+        </event>
+        <arc id='55'>
+            <graphics>
+                <position x='298' y='-98'/>
+                <position x='298' y='-73'/>
+            </graphics>
+            <flow source='22' target='10'/>
+        </arc>
+        <event id='23' defRef='1079'>
+            <graphics>
+                <position height='20' width='60' x='185' y='-592'/>
+            </graphics>
+            <name>Report only claim identified</name>
+        </event>
+        <event id='24' defRef='1080'>
+            <graphics>
+                <position height='20' width='60' x='193' y='-680'/>
+            </graphics>
+            <name>Caller unable to complete privacy check</name>
+        </event>
+        <arc id='56'>
+            <graphics>
+                <position x='223' y='-660'/>
+                <position x='215' y='-635'/>
+            </graphics>
+            <flow source='24' target='7'/>
+        </arc>
+        <event id='25' defRef='1081'>
+            <graphics>
+                <position height='20' width='60' x='358' y='-680'/>
+            </graphics>
+            <name>Privacy check sucsessful</name>
+        </event>
+        <arc id='57'>
+            <graphics>
+                <position x='388' y='-660'/>
+                <position x='400' y='-635'/>
+            </graphics>
+            <flow source='25' target='11'/>
+        </arc>
+        <event id='26' defRef='1082'>
+            <graphics>
+                <position height='20' width='60' x='184' y='-992'/>
+            </graphics>
+            <name>Policy Number known</name>
+        </event>
+        <arc id='58'>
+            <graphics>
+                <position x='214' y='-972'/>
+                <position x='238' y='-819'/>
+            </graphics>
+            <flow source='26' target='37'/>
+        </arc>
+        <event id='27' defRef='1083'>
+            <graphics>
+                <position height='20' width='60' x='248' y='-864'/>
+            </graphics>
+            <name>Policy located</name>
+        </event>
+        <arc id='59'>
+            <graphics>
+                <position x='278' y='-844'/>
+                <position x='238' y='-819'/>
+            </graphics>
+            <flow source='27' target='37'/>
+        </arc>
+        <event id='28' defRef='1084'>
+            <graphics>
+                <position height='20' width='60' x='305' y='-992'/>
+            </graphics>
+            <name>Policy Number NOT Known</name>
+        </event>
+        <arc id='60'>
+            <graphics>
+                <position x='335' y='-972'/>
+                <position x='335' y='-947'/>
+            </graphics>
+            <flow source='28' target='9'/>
+        </arc>
+        <event id='29' defRef='1085'>
+            <graphics>
+                <position height='20' width='60' x='370' y='-592'/>
+            </graphics>
+            <name>New claim initiated</name>
+        </event>
+        <arc id='61'>
+            <graphics>
+                <position x='400' y='-572'/>
+                <position x='400' y='-547'/>
+            </graphics>
+            <flow source='29' target='8'/>
+        </arc>
+        <event id='30' defRef='1086'>
+            <graphics>
+                <position height='20' width='60' x='342' y='-864'/>
+            </graphics>
+            <name>Policy not located</name>
+        </event>
+        <arc id='62'>
+            <graphics>
+                <position x='372' y='-844'/>
+                <position x='372' y='-819'/>
+            </graphics>
+            <flow source='30' target='2'/>
+        </arc>
+        <xor id='31'>
+            <graphics>
+                <position height='20' width='20' x='206' y='-161'/>
+            </graphics>
+        </xor>
+        <arc id='63'>
+            <graphics>
+                <position x='216' y='-141'/>
+                <position x='298' y='-118'/>
+            </graphics>
+            <flow source='31' target='22'/>
+        </arc>
+        <arc id='64'>
+            <graphics>
+                <position x='216' y='-141'/>
+                <position x='97' y='-118'/>
+            </graphics>
+            <flow source='31' target='13'/>
+        </arc>
+        <xor id='32'>
+            <graphics>
+                <position height='20' width='20' x='333' y='-289'/>
+            </graphics>
+        </xor>
+        <arc id='65'>
+            <graphics>
+                <position x='343' y='-269'/>
+                <position x='481' y='-246'/>
+            </graphics>
+            <flow source='32' target='21'/>
+        </arc>
+        <arc id='66'>
+            <graphics>
+                <position x='343' y='-269'/>
+                <position x='216' y='-246'/>
+            </graphics>
+            <flow source='32' target='12'/>
+        </arc>
+        <arc id='67'>
+            <graphics>
+                <position x='343' y='-269'/>
+                <position x='343' y='-246'/>
+            </graphics>
+            <flow source='32' target='15'/>
+        </arc>
+        <and id='33'>
+            <graphics>
+                <position height='20' width='20' x='333' y='-421'/>
+            </graphics>
+        </and>
+        <arc id='68'>
+            <graphics>
+                <position x='343' y='-401'/>
+                <position x='343' y='-379'/>
+            </graphics>
+            <flow source='33' target='6'/>
+        </arc>
+        <and id='34'>
+            <graphics>
+                <position height='20' width='20' x='390' y='-507'/>
+            </graphics>
+        </and>
+        <arc id='69'>
+            <graphics>
+                <position x='400' y='-487'/>
+                <position x='421' y='-464'/>
+            </graphics>
+            <flow source='34' target='19'/>
+        </arc>
+        <arc id='70'>
+            <graphics>
+                <position x='400' y='-487'/>
+                <position x='323' y='-464'/>
+            </graphics>
+            <flow source='34' target='16'/>
+        </arc>
+        <xor id='35'>
+            <graphics>
+                <position height='20' width='20' x='264' y='-1035'/>
+            </graphics>
+        </xor>
+        <arc id='71'>
+            <graphics>
+                <position x='274' y='-1015'/>
+                <position x='214' y='-992'/>
+            </graphics>
+            <flow source='35' target='26'/>
+        </arc>
+        <arc id='72'>
+            <graphics>
+                <position x='274' y='-1015'/>
+                <position x='335' y='-992'/>
+            </graphics>
+            <flow source='35' target='28'/>
+        </arc>
+        <xor id='36'>
+            <graphics>
+                <position height='20' width='20' x='228' y='-726'/>
+            </graphics>
+        </xor>
+        <arc id='73'>
+            <graphics>
+                <position x='238' y='-706'/>
+                <position x='223' y='-680'/>
+            </graphics>
+            <flow source='36' target='24'/>
+        </arc>
+        <arc id='74'>
+            <graphics>
+                <position x='238' y='-706'/>
+                <position x='388' y='-680'/>
+            </graphics>
+            <flow source='36' target='25'/>
+        </arc>
+        <xor id='37'>
+            <graphics>
+                <position height='20' width='20' x='228' y='-819'/>
+            </graphics>
+        </xor>
+        <arc id='75'>
+            <graphics>
+                <position x='238' y='-799'/>
+                <position x='238' y='-769'/>
+            </graphics>
+            <flow source='37' target='4'/>
+        </arc>
+        <xor id='38'>
+            <graphics>
+                <position height='20' width='20' x='325' y='-907'/>
+            </graphics>
+        </xor>
+        <arc id='76'>
+            <graphics>
+                <position x='335' y='-887'/>
+                <position x='372' y='-864'/>
+            </graphics>
+            <flow source='38' target='30'/>
+        </arc>
+        <arc id='77'>
+            <graphics>
+                <position x='335' y='-887'/>
+                <position x='278' y='-864'/>
+            </graphics>
+            <flow source='38' target='27'/>
+        </arc>
+        <xor id='39'>
+            <graphics>
+                <position height='20' width='20' x='362' y='-769'/>
+            </graphics>
+        </xor>
+        <arc id='78'>
+            <graphics>
+                <position x='372' y='-749'/>
+                <position x='489' y='-726'/>
+            </graphics>
+            <flow source='39' target='18'/>
+        </arc>
+        <arc id='79'>
+            <graphics>
+                <position x='372' y='-749'/>
+                <position x='336' y='-726'/>
+            </graphics>
+            <flow source='39' target='17'/>
+        </arc>
+    </epc>
+  </directory>
+</epml:epml>
