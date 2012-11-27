@@ -5,15 +5,13 @@ Java 1.7
 Maven 3.0.4
 Ant 1.8.3
 MySQL 5.5
-Tomcat 7\
+Tomcat 7
 
-1. Firstly navigate to the \Apromore-Core\apromore-service\src\main\sql and execute createDB.sql in your mysql database. 
+1. Firstly navigate to the \Apromore-Manager\src\main\sql and execute createDB.sql in your mysql database.
    This will create your database and setup the tables.
 2. next navigate to the \Build-Tools folder and run 'mvn clean install'
-3. then navigate to the \Test-Tools folder and run 'mvn clean install'
-4. next navigate to the \Apromore-Parent folder and run 'mvn clean install'
-5. next navigate to the \Apromore-Plugins\plugin-parent folder and run 'mvn clean install'
-6. Change the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
-7. Finally, change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
+3. Change the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
+4. Finally, change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
+5. Apromore-Editor, make sure the directory defined in the property file build.properties for property(fileSystemRootDirectory) exists.
 
 Start up tomcat and see if it works.
