@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-USE `ApromoreData`;
+USE `Apromore`;
 
 DROP TABLE IF EXISTS `merged_version`;
 DROP TABLE IF EXISTS `derived_version`;
