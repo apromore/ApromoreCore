@@ -4,7 +4,9 @@ package org.apromore.canoniser.bpmn.cpf;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import javax.xml.datatype.DatatypeFactory;
 
 // Third party packages
@@ -91,7 +93,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         CpfCanonicalProcessType cpf = testCanonise("Case 1.bpmn");
 
         // Expect 3 nodes
-        NetType net = cpf.getNet().get(0);
+        CpfNetType net = (CpfNetType) cpf.getNet().get(0);
         assertEquals(3, net.getNode().size());
     
         // Start event "E1"
@@ -502,10 +504,17 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     /**
      * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn">request for advance payment</a>.
      */
-    @Ignore
     @Test
     public void testCanoniseRequestForAdvancePayment() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment.bpmn");
+        CpfCanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment.bpmn");
+
+        CpfNetType net = (CpfNetType) cpf.getNet().get(0);
+        assertEquals(16, net.getNode().size());  // 2 events, 8 tasks, 2 explicit gates, 4 implicit gates
+        assertEquals(18, net.getEdge().size());  // 14 explicit edges, 4 implicit edges
+
+        CpfEventType end3 = (CpfEventType) cpf.getElement("End3");
+        assertEquals(16, end3.getCancelNodeId().size());
+        assertEquals(18, end3.getCancelEdgeId().size());
     }
 
     /**
@@ -527,15 +536,16 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     /**
      * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_ExpenseReport2.bpmn">chapter 4 expense report example</a>.
      */
-    @Ignore
     @Test
     public void testCh4ExpenseReport2() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ch4_ExpenseReport2.bpmn");
 
+        // boundary compensation events are bizarre, and have NO edges in the original BPMN
         CpfEventType event = (CpfEventType) cpf.getElement("sid-F7B97F12-C41D-47E0-ACBE-5D0E42125E64");
         assertNotNull(event);
-        assertEquals(0, event.getIncomingEdges().size());
+        assertEquals(1, event.getIncomingEdges().size());  // this edge was synthesized
         assertEquals(0, event.getOutgoingEdges().size());
+        assert event.isCompensation() : event.getId() + " ought to be a compensation event";
     }
 
     /**
@@ -572,10 +582,22 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         assert !edge0.isDefault() : "Edge of start Event can't be default";
 
         CpfEdgeType edge1 = (CpfEdgeType) cpf.getElement("sid-596877C3-00D7-425E-97E3-398F3FD8ADB0");
-        assert edge1.isDefault() : "Default edge of XORSplit not found";
+        assert edge1.isDefault() : "Default edge of Gate not found";
 
-        CpfEdgeType edge2 = (CpfEdgeType) cpf.getElement("sid-C2248280-A6CE-4167-B485-7C985973698A");
-        assert edge2.isDefault() : "Default edge of Task not found";
+        CpfEdgeType edge2 = (CpfEdgeType) cpf.getElement("sid-61F2F275-41F5-4DA4-8A67-1F0384EBC99E");
+        assert !edge2.isDefault() : "Non-default edge of Gate not found";
+
+        CpfEdgeType edge3 = (CpfEdgeType) cpf.getElement("sid-91051909-BE2D-44AE-B8CE-B66ED9279A41");
+        assert !edge3.isDefault() : "Non-default edge of Task not found";
+
+        CpfEdgeType edge4 = (CpfEdgeType) cpf.getElement("sid-C2248280-A6CE-4167-B485-7C985973698A");
+        assert edge4.isDefault() : "Default edge of Task not found";
+
+        // Look for the synthesized AND split
+        CpfANDSplitType split = (CpfANDSplitType) cpf.getElement("sid-2A1ABDB0-59AD-424A-A0C8-9A73A0679C21_implicit_split");
+        CpfEdgeType splitEdge = (CpfEdgeType) cpf.getElement("sid-2A1ABDB0-59AD-424A-A0C8-9A73A0679C21_implicit_split_edge");
+        assertEquals(Collections.singleton(splitEdge), split.getIncomingEdges());
+        assertEquals(new HashSet<CpfEdgeType>(Arrays.asList(new CpfEdgeType[] {edge3, edge4})), split.getOutgoingEdges());
     }
 
     /**
@@ -587,6 +609,10 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     @Test
     public void testImplicitJoin() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ImplicitJoin.bpmn");
+
+        CpfNetType net = (CpfNetType) cpf.getNet().get(0);
+        assertEquals(5, net.getNode().size());
+        assertEquals(4, net.getEdge().size());
 
         CpfTaskType task = (CpfTaskType) cpf.getElement("sid-DD6A3F22-DDB8-4395-ACF3-FB933393BA7A");
         assertEquals(1, task.getIncomingEdges().size());
@@ -601,6 +627,10 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     @Test
     public void testImplicitSplit() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ImplicitSplit.bpmn");
+
+        CpfNetType net = (CpfNetType) cpf.getNet().get(0);
+        assertEquals(5, net.getNode().size());
+        assertEquals(4, net.getEdge().size());
 
         CpfTaskType task = (CpfTaskType) cpf.getElement("sid-B8464973-138F-4E6A-8880-AC5664D2E417");
         assertEquals(1, task.getOutgoingEdges().size());
