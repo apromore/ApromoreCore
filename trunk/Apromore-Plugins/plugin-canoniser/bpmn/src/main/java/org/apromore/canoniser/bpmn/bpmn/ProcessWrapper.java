@@ -118,8 +118,13 @@ public class ProcessWrapper {
                 // Populate the lane flowNodeRefs
                 for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
                     TLane lane = (TLane) initializer.findElement(resourceTypeRef.getResourceTypeId());
-                    JAXBElement<Object> jeo = (JAXBElement) flowNode;
-                    lane.getFlowNodeRef().add((JAXBElement) flowNode);
+
+                    // Create a fake BPMN element with the same ID(!) as the lane element
+                    TTask fake = initializer.getFactory().createTTask();
+                    fake.setId(flowNode.getValue().getId());
+                    JAXBElement<TFlowNode> jFake = initializer.getFactory().createFlowNode(fake);
+
+                    lane.getFlowNodeRef().add((JAXBElement) jFake);
                 }
             }
         }

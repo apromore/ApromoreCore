@@ -3,8 +3,11 @@ package org.apromore.canoniser.bpmn.bpmn;
 // Java 2 Standard packages
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
@@ -37,6 +40,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
@@ -76,6 +80,9 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
  */
 public class Initializer extends AbstractInitializer implements ExtensionConstants {
 
+    // Instance under construction by this initializer
+    private final BpmnDefinitions bpmn;
+
     // CPF document root
     private final CpfCanonicalProcessType cpf;
 
@@ -100,7 +107,8 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      * @param newBpmnIdFactory;
      * @param newIdMap;
      */
-    Initializer(final CpfCanonicalProcessType newCpf, final String newTargetNamespace) {
+    Initializer(final BpmnDefinitions newBpmn, final CpfCanonicalProcessType newCpf, final String newTargetNamespace) {
+        bpmn            = newBpmn;
         cpf             = newCpf;
         targetNamespace = newTargetNamespace;
 
@@ -118,6 +126,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
             @Override public void visit(final TaskType task) {
                 for (CancellationRefType cancellationRef : task.getCancelNodeId()) {
+                    assert !cancelNodeIdMap.containsKey(cancellationRef.getRefId());
                     cancelNodeIdMap.put(cancellationRef.getRefId(), task.getId());
                 }
             }
@@ -130,16 +139,44 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                 CpfANDSplitType cpfSplit = (CpfANDSplitType) split;
                 CpfTaskType task = null;
 
-                // Find the task which the boundary events are attached to
+                // Check that there's exactly one task and at least one event targeted by the gateway
+                int taskCount  = 0;
+                int eventCount = 0;
                 for (CpfEdgeType edge : cpfSplit.getOutgoingEdges()) {
                     CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
-                    if (node instanceof CpfTaskType) {
+
+                    if (node instanceof CpfEventType) {
+                        eventCount++;
+                    } else if (node instanceof CpfTaskType) {
                         task = (CpfTaskType) node;
+                        taskCount++;
                     }
                 }
 
-                if (task != null) {
-                    splits.put(cpfSplit, task);
+                // Check that the task cancels all the events
+                if (eventCount > 0 && taskCount == 1) {
+                    assert task != null;
+
+                    // Determine the set of candidate boundary events
+                    Set<String> cancelledEdgeIdSet = new HashSet<String>();
+                    for (CpfEdgeType edge : cpfSplit.getOutgoingEdges()) {
+                        CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
+                        if (node instanceof CpfEventType) {
+                            cancelledEdgeIdSet.add(edge.getId());
+                        }
+                    }
+
+                    // Determine the task's cancellation set
+                    Set<String> taskCancelledIdSet = new HashSet<String>();
+                    for (CancellationRefType cancellationRef : task.getCancelNodeId()) {
+                        taskCancelledIdSet.add(cancellationRef.getRefId());
+                    }
+
+                    // If the task cancels all the candidate boundary events, attempt rewriting
+                    if (taskCancelledIdSet.containsAll(cancelledEdgeIdSet)) {
+                        splits.put(cpfSplit, task);
+                        java.util.logging.Logger.getAnonymousLogger().info(cpfSplit.getId() + " can be made into a boundary event");
+                    }
                 }
             }
         }));
@@ -157,10 +194,41 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             // Remove the AND split and its outgoing edges
             CpfNetType parent = findParent(split);
             parent.getNode().remove(split);
+            uncancel(split, parent.getNode());
+
             parent.getEdge().removeAll(split.getOutgoingEdges());
             for (CpfEdgeType edge : split.getOutgoingEdges()) {
                 CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
                 node.getIncomingEdges().remove(edge);
+                uncancel(edge, parent.getNode());
+            }
+        }
+    }
+
+    private void uncancel(final CpfEdgeType edge, final List<NodeType> nodes) {
+        for (NodeType node2 : nodes) {
+            if (node2 instanceof WorkType) {
+                Iterator<CancellationRefType> i = ((WorkType) node2).getCancelEdgeId().iterator();
+                while (i.hasNext()) {
+                    CancellationRefType cancellation = i.next();
+                    if (edge.getId().equals(cancellation.getRefId())) {
+                        i.remove();
+                    }
+                }   
+            }
+        }
+    }
+
+    private void uncancel(final CpfNodeType node, final List<NodeType> nodes) {
+        for (NodeType node2 : nodes) {
+            if (node2 instanceof WorkType) {
+                Iterator<CancellationRefType> i = ((WorkType) node2).getCancelNodeId().iterator();
+                while (i.hasNext()) {
+                    CancellationRefType cancellation = i.next();
+                    if (node.getId().equals(cancellation.getRefId())) {
+                        i.remove();
+                    }
+                }   
             }
         }
     }
@@ -369,12 +437,13 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                             ((TExclusiveGateway) defaultingElement).setDefault(defaultFlow);
                         } else if (defaultingElement instanceof TInclusiveGateway) {
                             ((TInclusiveGateway) defaultingElement).setDefault(defaultFlow);
-                        /*
                         } else if (defaultingElement instanceof TParallelGateway) {
-                            TParallelGateway and = (TParallelGateway) defaultingElement;
-                            throw new CanoniserException("Skipped default marker on " + defaultFlow.getId() +
-                                                         " because BPMN doesn't support default flows for parallel gateways");
-                        */
+                            try {
+                                rewriteExplicitSplitImplicitly((TParallelGateway) defaultingElement);
+                            } catch (CanoniserException e) {
+                                throw new CanoniserException("Default flow " + defaultFlow.getId() + " from gateway " + defaultingElement.getId() +
+                                                             " can't be rewritten", e);
+                            }
                         } else {
                             throw new CanoniserException("Could not set default sequence flow for " + defaultingElement.getId());
                         }
@@ -382,6 +451,28 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                 });
             }
         }
+    }
+
+    /**
+     * Rewrite a diverging parallel gateway implicitly.
+     *
+     * This can only be called once all the BPMN elements have been created and have indexed identifiers.
+     * In other words, it should be called by the {@link #defer} method.
+     *
+     * @param gateway  a diverging parallel gateway
+     * @throws CanoniserException if <code>gateway</code> doesn't have exactly one incoming sequence flow
+     */
+    private void rewriteExplicitSplitImplicitly(final TParallelGateway gateway) throws CanoniserException {
+
+        // Check that this really is a diverging gateway
+        if (gateway.getIncoming().size() != 1) {
+            throw new CanoniserException(gateway.getId() + " is not diverging, incoming flows are " + gateway.getIncoming());
+        }
+
+        // Remove the gateway and its incoming sequence flow
+        BpmnSequenceFlow incomingFlow = (BpmnSequenceFlow) bpmn.findElement(gateway.getIncoming().get(0));
+
+        throw new CanoniserException("Rewriting parallel gateway " + gateway.getId() + " implicitly not yet implemented");
     }
 
     void populateActivity(final TActivity activity, final CpfNodeType cpfNode) throws CanoniserException {

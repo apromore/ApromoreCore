@@ -447,6 +447,10 @@ public class BpmnDefinitionsTest implements TestConstants {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ImplicitJoin.bpmn")), true);
+
+        BpmnProcess process = (BpmnProcess) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-8f7af173-d650-4513-9abf-c5874363bff5"));
+        assertEquals(7, process.getFlowElement().size());
+
         BpmnTask task = (BpmnTask) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-DD6A3F22-DDB8-4395-ACF3-FB933393BA7A"));
         assertEquals(2, task.getIncoming().size());
 
@@ -458,6 +462,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         definitions.marshal(new NullOutputStream(), true);
 
         // Confirm that the rewriting took place
+        assertEquals(9, process.getFlowElement().size());
         assertEquals(1, task.getIncoming().size());
     }
 
@@ -472,6 +477,10 @@ public class BpmnDefinitionsTest implements TestConstants {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, "ImplicitSplit.bpmn")), true);
+
+        BpmnProcess process = (BpmnProcess) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-ebf93c68-5e38-44d0-a9be-10befb2f9160"));
+        assertEquals(7, process.getFlowElement().size());
+
         BpmnTask task = (BpmnTask) definitions.findElement(new QName(definitions.getTargetNamespace(), "sid-B8464973-138F-4E6A-8880-AC5664D2E417"));
         assertEquals(2, task.getOutgoing().size());
 
@@ -483,6 +492,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         definitions.marshal(new NullOutputStream(), true);
 
         // Confirm that the rewriting took place
+        assertEquals(9, process.getFlowElement().size());
         assertEquals(1, task.getOutgoing().size());
     }
 }
