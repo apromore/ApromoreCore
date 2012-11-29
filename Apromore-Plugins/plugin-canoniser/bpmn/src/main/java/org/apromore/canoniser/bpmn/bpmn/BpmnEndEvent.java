@@ -62,7 +62,14 @@ public class BpmnEndEvent extends TEndEvent {
         if (cancelledIdSet.equals(processIdSet)) {
             getEventDefinition().add(initializer.getFactory().createTerminateEventDefinition(new TTerminateEventDefinition()));
         } else if (!cancelledIdSet.isEmpty()) {
-            throw new CanoniserException("CPF Event " + cpfEvent.getId() + " has cancellations that can't be represented in BPMN");
+            Set<String> underCancelledIdSet = new HashSet<String>(processIdSet);
+            underCancelledIdSet.removeAll(cancelledIdSet);
+
+            Set<String> overCancelledIdSet  = new HashSet<String>(cancelledIdSet);
+            overCancelledIdSet.removeAll(processIdSet);
+
+            throw new CanoniserException("CPF Event " + cpfEvent.getId() + " has cancellations that can't be represented in BPMN; it cancels " +
+                                         overCancelledIdSet + " and not " + underCancelledIdSet + ")");
         }
     }
 }

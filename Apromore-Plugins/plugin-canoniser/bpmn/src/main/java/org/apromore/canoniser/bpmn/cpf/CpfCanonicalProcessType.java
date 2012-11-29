@@ -30,8 +30,11 @@ import org.apromore.cpf.CancellationRefType;
 import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TraversingVisitor;
+import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TMessage;
@@ -226,15 +229,31 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @param initializer  document construction state
      */
     private void rewriteTaskWithBoundaryEvents(final CpfTaskType task, final Initializer initializer) {
+        assert task.getIncomingEdges().size() == 1 : task.getId() + " doesn't have a single incoming edge";
+
         CpfNetType parent = initializer.findParent(task);
+
+        // What other elements cancel the task?  They must also cancel the elements we create for rewriting.
+        Set<WorkType> cancelling = new HashSet<WorkType>();
+        for (NodeType node : parent.getNode()) {
+            if (node instanceof WorkType) {
+                WorkType work = (WorkType) node;
+                for (CancellationRefType cancellationRef : work.getCancelNodeId()) {
+                    if (task.getId().equals(cancellationRef.getRefId())) {
+                         cancelling.add(work);
+                    }
+                }
+            }
+        }
+
         for (CpfEdgeType incomingEdge : new ArrayList<CpfEdgeType>(task.getIncomingEdges())) {
 
             // Create AND split
             CpfANDSplitType andSplit = new CpfANDSplitType();
             andSplit.setId(initializer.newId(task.getId() + "_boundary_routing"));
             elementMap.put(andSplit.getId(), andSplit);
-
             parent.getNode().add(andSplit);
+            cancel(andSplit, cancelling);
 
             // Reconnect the incoming edge to the AND split
             incomingEdge.setTargetId(andSplit.getId());
@@ -245,6 +264,8 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             CpfEdgeType edge = new CpfEdgeType();
             edge.setId(initializer.newId(task.getId() + "_boundary_edge"));
             elementMap.put(edge.getId(), edge);
+            parent.getEdge().add(edge);
+            cancel(edge, cancelling);
 
             edge.setSourceId(andSplit.getId());
             andSplit.getOutgoingEdges().add(edge);
@@ -252,22 +273,20 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             edge.setTargetId(task.getId());
             task.getIncomingEdges().add(edge);
 
-            parent.getEdge().add(edge);
-
             for (CpfEventType event : task.getBoundaryEvents()) {
 
                 // Create a new edge from the AND split to the event
                 edge = new CpfEdgeType();
                 edge.setId(initializer.newId(event.getId() + "_boundary_edge"));
                 elementMap.put(edge.getId(), edge);
+                parent.getEdge().add(edge);
+                cancel(edge, cancelling);
 
                 edge.setSourceId(andSplit.getId());
                 andSplit.getOutgoingEdges().add(edge);
 
                 edge.setTargetId(event.getId());
                 event.getIncomingEdges().add(edge);
-
-                parent.getEdge().add(edge);
 
                 // The task cancels the boundary event
                 CancellationRefType cancellationRef = new CancellationRefType();
@@ -290,6 +309,40 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Add a CPF Edge to the cancellation set of a group of CPF Work elements.
+     *
+     * @param cancelledEdge  a CPF Edge identifier
+     * @param cancellingWorks  a set of CPF Work elements
+     */
+    private void cancel(final EdgeType cancelledEdge, Set<WorkType> cancellingWorks) {
+        if (!cancellingWorks.isEmpty()) {
+            CancellationRefType cancellationRef = new CancellationRefType();
+            cancellationRef.setRefId(cancelledEdge.getId());
+
+            for (WorkType work : cancellingWorks) {
+                work.getCancelEdgeId().add(cancellationRef);
+            }
+        }
+    }
+
+    /**
+     * Add a CPF Node to the cancellation set of a group of CPF Work elements.
+     *
+     * @param cancelledNode  a CPF Node identifier
+     * @param cancellingWorks  a set of CPF Work elements
+     */
+    private void cancel(final NodeType cancelledNode, Set<WorkType> cancellingWorks) {
+        if (!cancellingWorks.isEmpty()) {
+            CancellationRefType cancellationRef = new CancellationRefType();
+            cancellationRef.setRefId(cancelledNode.getId());
+
+            for (WorkType work : cancellingWorks) {
+                work.getCancelNodeId().add(cancellationRef);
             }
         }
     }

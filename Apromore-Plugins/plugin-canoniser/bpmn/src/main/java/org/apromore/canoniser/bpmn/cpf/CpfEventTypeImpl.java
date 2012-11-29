@@ -331,17 +331,28 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
                 }
             } else {
                 // incoming edges only
+
+                if (event.isCompensation())  {
+                    String attachedTaskId = initializer.findAttachedTaskId(event);
+                    if (attachedTaskId != null) {
+                       // Boundary interrupting compensation events are a weird case: no outgoing sequence flows, but not an end event
+                       return initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
+                    }
+                }
+
                 return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
             }
         } else {
             if (event.getOutgoingEdges().size() > 0) {
                 // outgoing edges only
+
                 String attachedTaskId = initializer.findAttachedTaskId(event);
                 return attachedTaskId == null
                        ? initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer))
                        : initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
             } else {
                 // neither incoming nor outgoing edges
+
                 throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
             }
         }

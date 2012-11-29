@@ -138,7 +138,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
             throw new CanoniserException("Cannot create BPMN from null CPF");
         }
 
-        Initializer initializer = new Initializer(cpf, "http://www.apromore.org/bpmn/" + UUID.randomUUID() + "#");
+        Initializer initializer = new Initializer(this, cpf, "http://www.apromore.org/bpmn/" + UUID.randomUUID() + "#");
 
         // Set attributes of the document root
         setExporter(APROMORE_URI);
