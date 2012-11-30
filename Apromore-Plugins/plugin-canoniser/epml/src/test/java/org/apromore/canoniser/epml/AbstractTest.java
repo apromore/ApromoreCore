@@ -1,0 +1,58 @@
+package org.apromore.canoniser.epml;
+
+import static org.junit.Assert.assertFalse;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.PropertyException;
+
+import org.apromore.anf.ANFSchema;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.impl.PluginRequestImpl;
+import org.xml.sax.SAXException;
+
+public class AbstractTest {
+
+    /**
+     * @param resource  the name of a resource within the <code>EPML/</code> directory of the classpath, minus its <code>.epml</code> extension
+     */
+    public void testCanonise(final String resource) throws CanoniserException, PropertyException, JAXBException, SAXException, FileNotFoundException, IOException {
+        EPML20Canoniser c = new EPML20Canoniser();
+        ArrayList<AnnotationsType> anfList = new ArrayList<>();
+        ArrayList<CanonicalProcessType> cpfList = new ArrayList<>();
+        c.canonise(ClassLoader.getSystemResourceAsStream("EPML/" + resource + ".epml"), anfList, cpfList, new PluginRequestImpl());
+
+        assertFalse(anfList.isEmpty());
+        assertFalse(cpfList.isEmpty());
+
+        try (FileOutputStream canonicalFormat = new FileOutputStream("target/" + resource + ".epml")) {
+            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+        }
+    }
+
+    /**
+     * @param resource  the name of a resource within both the <code>CPF/</code> and <code>ANF/</code> directories of the classpath, minus
+     *     the respective <code>.cpf</code> and <code>.anf</code> extensions
+     */
+    public void testDeCanonise(final String resource) throws CanoniserException, JAXBException, SAXException, IOException {
+        EPML20Canoniser c = new EPML20Canoniser();
+
+        try (OutputStream epmlStream = new FileOutputStream(new File("target/" + resource + ".epml"));
+                InputStream cpfStream = ClassLoader.getSystemResourceAsStream("CPF/" + resource + ".cpf");
+                InputStream anfStream = ClassLoader.getSystemResourceAsStream("ANF/" + resource + ".anf");) {
+            c.deCanonise(CPFSchema.unmarshalCanonicalFormat(cpfStream, true).getValue(), ANFSchema.unmarshalAnnotationFormat(anfStream, true)
+                    .getValue(), epmlStream, new PluginRequestImpl());
+            epmlStream.flush();
+        }
+    }
+}
