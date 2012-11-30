@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF">
+<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="dummy">
     <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1">
         <position x="115" y="220"/>
         <size width="81" height="41"/>
