@@ -549,6 +549,49 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_FreightInTransit.bpmn">chapter 4 freight in transit example</a>.
+     */
+    @Test
+    public void testCh4FreightInTransit() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_FreightInTransit.bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_ISP.bpmn">chapter 4 ISP example</a>.
+     */
+    @Ignore  // closed subprocess with no content
+    @Test
+    public void testCh4ISP() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_ISP.bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_MinisterialCorrespondenceLoop.bpmn">chapter 4 ministerial correspondence loop example</a>.
+     */
+    @Test
+    public void testCh4MinisterialCorrespondenceLoop() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_MinisterialCorrespondenceLoop.bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_Mortgage5_link1.bpmn">chapter 4 mortage example</a>.
+     */
+    @Ignore  // missing element sid-0FB009D8-F7AC-41B5-8DCB-F2EFDA327A19
+    @Test
+    public void testCh4Mortgage5() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch4_Mortgage5_link1.bpmn");
+    }
+
+    /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Public In-house Course Establishment - To Be Model v7.bpmn">public course example</a>.
+     */
+    @Ignore  // closed subprocess with no content
+    @Test
+    public void testPublicCourse() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Public In-house Course Establishment - To Be Model v7.bpmn");
+    }
+
+    /**
      * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch9_loan5.bpmn">chapter 9 loan example</a>.
      */
     @Test
