@@ -5,6 +5,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.*;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.*;
@@ -97,6 +98,31 @@ public class ProcessWrapper {
             process.getFlowElement().add(initializer.getFactory().createSequenceFlow(sequenceFlow));
         }
 
+        // Add the CPF Nodes as BPMN FlowNodes
+        for (final NodeType node : net.getNode()) {
+            final JAXBElement<? extends TFlowNode> flowNode = ((CpfNodeType) node).toBpmn(initializer);
+            process.getFlowElement().add(flowNode);
+
+            if (node instanceof WorkType) {
+                // Populate the lane flowNodeRefs
+                initializer.defer(new Initialization() {
+                    public void initialize() {
+                        for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
+                            TLane lane = (TLane) initializer.findElement(resourceTypeRef.getResourceTypeId());
+
+                            // Create a fake BPMN element with the same ID(!) as the lane element
+                            // This is a workaround for SAX detecting circularity if a flowNodeRef references a subprocess
+                            TTask fake = initializer.getFactory().createTTask();
+                            fake.setId(flowNode.getValue().getId());
+                            JAXBElement<TFlowNode> jFake = initializer.getFactory().createFlowNode(fake);
+
+                            lane.getFlowNodeRef().add((JAXBElement) jFake);
+                        }
+                    }
+                });
+            }
+        }
+
         // Add the CPF Objects as BPMN DataObjects
         for (ObjectType object : net.getObject()) {
             CpfObjectType cpfObject = (CpfObjectType) object;
@@ -105,27 +131,6 @@ public class ProcessWrapper {
                 process.getFlowElement().add(initializer.getFactory().createDataStoreReference(new BpmnDataStoreReference(cpfObject, initializer)));
             } else {
                 process.getFlowElement().add(initializer.getFactory().createDataObject(new BpmnDataObject(cpfObject, initializer)));
-            }
-        }
-
-        // Add the CPF Nodes as BPMN FlowNodes
-        for (NodeType node : net.getNode()) {
-            JAXBElement<? extends TFlowNode> flowNode = ((CpfNodeType) node).toBpmn(initializer);
-            process.getFlowElement().add(flowNode);
-
-            if (node instanceof WorkType) {
-
-                // Populate the lane flowNodeRefs
-                for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
-                    TLane lane = (TLane) initializer.findElement(resourceTypeRef.getResourceTypeId());
-
-                    // Create a fake BPMN element with the same ID(!) as the lane element
-                    TTask fake = initializer.getFactory().createTTask();
-                    fake.setId(flowNode.getValue().getId());
-                    JAXBElement<TFlowNode> jFake = initializer.getFactory().createFlowNode(fake);
-
-                    lane.getFlowNodeRef().add((JAXBElement) jFake);
-                }
             }
         }
     }

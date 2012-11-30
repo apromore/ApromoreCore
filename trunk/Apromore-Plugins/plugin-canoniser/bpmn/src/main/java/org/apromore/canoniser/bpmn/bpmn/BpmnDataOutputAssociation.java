@@ -4,6 +4,7 @@ package org.apromore.canoniser.bpmn.bpmn;
 import javax.xml.namespace.QName;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.exception.CanoniserException;
 import static  org.apromore.cpf.InputOutputType.OUTPUT;
@@ -38,7 +39,11 @@ public class BpmnDataOutputAssociation extends TDataOutputAssociation {
         // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
         getOtherAttributes().put(new QName("workaround"), parent.getId());
 
-        assert initializer.findElement(objectRef.getObjectId()) != null;
-        setTargetRef(initializer.findElement(objectRef.getObjectId()));
+        initializer.defer(new Initialization() {
+            public void initialize() {
+                assert initializer.findElement(objectRef.getObjectId()) != null;
+                setTargetRef(initializer.findElement(objectRef.getObjectId()));
+            }
+        });
     }
 }
