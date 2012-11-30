@@ -4,6 +4,7 @@ package org.apromore.canoniser.bpmn.bpmn;
 import javax.xml.namespace.QName;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.exception.CanoniserException;
 import static  org.apromore.cpf.InputOutputType.INPUT;
@@ -34,10 +35,14 @@ public class BpmnDataInputAssociation extends TDataInputAssociation {
         assert INPUT.equals(objectRef.getType()) : objectRef.getId() + " is not typed as an input";
         initializer.populateBaseElement(this, objectRef);
 
-        // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
-        // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
-        getOtherAttributes().put(new QName("workaround"), initializer.findElement(objectRef.getObjectId()).getId());
+        initializer.defer(new Initialization() {
+            public void initialize() {
+                setTargetRef(parent);
 
-        setTargetRef(parent);
+                // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
+                // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
+                getOtherAttributes().put(new QName("workaround"), initializer.findElement(objectRef.getObjectId()).getId());
+            }
+        });
     }
 }
