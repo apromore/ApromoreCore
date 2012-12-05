@@ -199,9 +199,13 @@ public class ContentServiceImpl implements ContentService {
                     objectRef.setOptional(cpfObjRef.isOptional());
                     objectRef.setType(cpfObjRef.getObjectRefType());
                     objectRef.setObject(findObject(objects, cpfObjRef.getObjectId()));
-                    node.getObjectRefs().add(objectRef);
-
-                    addObjectAttributes(objectRef, cpfObjRef);
+                    if (objectRef.getObject() != null) {
+                        node.getObjectRefs().add(objectRef);
+                        addObjectAttributes(objectRef, cpfObjRef);
+                    } else {
+                        LOGGER.warn("Object Reference for Node(" + cpfNode.getId() + ") not created, Could not find Object with id: " +
+                                cpfObjRef.getObjectId());
+                    }
                 } else {
                     LOGGER.warn("Object Reference for Node(" + cpfNode.getId() + ") found with a NULL Object ID. Not Adding Reference");
                 }
@@ -233,9 +237,13 @@ public class ContentServiceImpl implements ContentService {
                     resourceRef.setNode(node);
                     resourceRef.setQualifier(cpfResRef.getQualifier());
                     resourceRef.setResource(findResourceType(resources, cpfResRef.getResourceId()));
-                    node.getResourceRefs().add(resourceRef);
-
-                    addResourceAttributes(resourceRef, cpfResRef);
+                    if (resourceRef.getResource() != null) {
+                        node.getResourceRefs().add(resourceRef);
+                        addResourceAttributes(resourceRef, cpfResRef);
+                    } else {
+                        LOGGER.warn("Resource Reference for Node(" + cpfNode.getId() + ") not created, Could not find Resource with id: " +
+                            cpfResRef.getResourceId());
+                    }
                 } else {
                     LOGGER.warn("Resource Reference for Node(" + cpfNode.getId() + ") found with a NULL Resource ID. Not Adding Reference");
                 }

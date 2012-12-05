@@ -1,5 +1,6 @@
 package org.apromore.service;
 
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
@@ -54,7 +55,7 @@ public interface ProcessService {
      *
      */
     ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
-                                     CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
+            CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.
@@ -97,7 +98,7 @@ public interface ProcessService {
      * @throws ExceptionDao if the DAO found an issue.
      */
     ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, Double versionNumber, String versionName,
-                                               int numVertices, int numEdges) throws ExceptionDao;
+            int numVertices, int numEdges) throws ExceptionDao;
 
     /**
      * Used to import a new model into the Database.
@@ -114,9 +115,8 @@ public interface ProcessService {
      * @return the new Id of the model
      * @throws ImportException if the import failed ???
      */
-    ProcessModelVersion addProcessModel(String processName, String versionName, String username, String CanonicalURI, String nativeType,
-                                        String domain, String documentation, String created, String lastUpdated, Canonical pg)
-            throws ImportException;
+    ProcessModelVersion addProcess(String processName, String versionName, String username, String CanonicalURI, String nativeType,
+            String domain, String documentation, String created, String lastUpdated, Canonical pg) throws ImportException;
 
 //    /**
 //     * Update a process Model in the database.

@@ -195,7 +195,7 @@ public class ProcessServiceImpl implements ProcessService {
             NativeType nativeType = formatSrv.findNativeType(natType);
             Canonical pg = converter.convert(cpf.getCpt());
 
-            ProcessModelVersion pmv = addProcessModel(processName, version, user.getUsername(), cpf.getCpt().getUri(),
+            ProcessModelVersion pmv = addProcess(processName, version, user.getUsername(), cpf.getCpt().getUri(),
                     nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
             formatSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
             pro = ui.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), pmv.getVersionName(), version,
@@ -303,11 +303,11 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see ProcessService#addProcessModel(String, String, String, String, String, String, String, String, String, org.apromore.graph.canonical.Canonical)
+     * @see ProcessService#addProcess(String, String, String, String, String, String, String, String, String, org.apromore.graph.canonical.Canonical)
      * {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion addProcessModel(final String processName, final String versionName, final String username, final String uri,
+    public ProcessModelVersion addProcess(final String processName, final String versionName, final String username, final String uri,
             final String nativeType, final String domain, final String documentation, final String created, final String lastUpdated,
             final Canonical proModGrap) throws ImportException {
         if (proModGrap == null || proModGrap.getNodes().isEmpty() || proModGrap.getEdges().isEmpty()) {
@@ -544,6 +544,7 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setNumEdges(numEdges);
         processModel.setNumVertices(numVertices);
         processModel.setLockStatus(Constants.NO_LOCK);
+        processModel.getCurrentProcessModelVersion().add(branch);
 
         addAttributesToProcessModel(proModGrap, processModel);
         addObjectsToProcessModel(proModGrap, processModel);
@@ -582,13 +583,13 @@ public class ProcessServiceImpl implements ProcessService {
                 objTyp.setName(cpfObj.getName());
                 objTyp.setNetId(cpfObj.getNetId());
                 objTyp.setConfigurable(cpfObj.isConfigurable());
+                objTyp.setProcessModelVersion(process);
                 if (cpfObj.getObjectType().equals(ObjectTypeEnum.HARD)) {
                     objTyp.setType(ObjectTypeEnum.HARD);
                 } else {
                     objTyp.setType(ObjectTypeEnum.SOFT);
                     objTyp.setSoftType(cpfObj.getSoftType());
                 }
-                objTyp.setProcessModelVersion(process);
 
                 addObjectAttributes(objTyp, cpfObj);
 
@@ -623,10 +624,14 @@ public class ProcessServiceImpl implements ProcessService {
                 if (cpfRes.getResourceType() != null) {
                     if (cpfRes.getResourceType().equals(ResourceTypeEnum.HUMAN)) {
                         resTyp.setType(ResourceTypeEnum.HUMAN);
-                        resTyp.setTypeName(cpfRes.getHumanType().value());
+                        if (cpfRes.getHumanType() != null) {
+                            resTyp.setTypeName(cpfRes.getHumanType().value());
+                        }
                     } else {
                         resTyp.setType(ResourceTypeEnum.NONHUMAN);
-                        resTyp.setTypeName(cpfRes.getNonHumanType().value());
+                        if (cpfRes.getNonHumanType() != null) {
+                            resTyp.setTypeName(cpfRes.getNonHumanType().value());
+                        }
                     }
                 }
                 resTyp.setProcessModelVersion(process);
