@@ -1,6 +1,5 @@
 package org.apromore.service;
 
-import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
@@ -11,7 +10,6 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
@@ -54,7 +52,7 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
+    ProcessModelVersion importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
             CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
