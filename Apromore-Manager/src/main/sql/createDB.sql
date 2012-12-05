@@ -212,13 +212,13 @@ CREATE TABLE `process_fragment_map` (
 
 CREATE TABLE `fragment_version_dag` (
     `id`                         int(11) NOT NULL AUTO_INCREMENT,
-    `fragmentVersion`            int(11),
-    `childFragmentVersion`       int(11),
+    `fragmentVersionId`          int(11),
+    `childFragmentVersionId`     int(11),
     `pocketId`                   varchar(40),
     PRIMARY KEY (`id`),
-    UNIQUE KEY `un_fragment_version_dag` (`fragmentVersion`, `childFragmentVersion`, `pocketId`),
-    CONSTRAINT `fk_fragment_version_dag` FOREIGN KEY (`fragmentVersion`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_child_fragment_version_dag` FOREIGN KEY (`childFragmentVersion`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    UNIQUE KEY `un_fragment_version_dag` (`fragmentVersionId`, `childFragmentVersionId`, `pocketId`),
+    CONSTRAINT `fk_fragment_version_dag` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_child_fragment_version_dag` FOREIGN KEY (`childFragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `node` (

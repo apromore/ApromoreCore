@@ -150,10 +150,14 @@ public class CanonicalToGraph {
             }
             if (resourceType instanceof HumanType) {
                 cpfResource.setResourceType(ResourceTypeEnum.HUMAN);
-                cpfResource.setHumanType(HumanTypeEnum.fromValue(((HumanType) resourceType).getType().value()));
+                if (((HumanType) resourceType).getType() != null) {
+                    cpfResource.setHumanType(HumanTypeEnum.fromValue(((HumanType) resourceType).getType().value()));
+                }
             } else if (resourceType instanceof NonhumanType) {
                 cpfResource.setResourceType(ResourceTypeEnum.NONHUMAN);
-                cpfResource.setNonHumanType(NonHumanTypeEnum.fromValue(((NonhumanType) resourceType).getType().value()));
+                if (((NonhumanType) resourceType).getType() != null) {
+                    cpfResource.setNonHumanType(NonHumanTypeEnum.fromValue(((NonhumanType) resourceType).getType().value()));
+                }
             }
 
             for (TypeAttribute type : resourceType.getAttribute()) {
