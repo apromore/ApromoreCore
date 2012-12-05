@@ -1,6 +1,6 @@
 package org.apromore.service.impl;
 
-import org.apromore.model.ProcessSummaryType;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 /**
@@ -32,9 +31,9 @@ import static org.hamcrest.Matchers.notNullValue;
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+@TransactionConfiguration(defaultRollback = true)
 public class ImportProcessServiceImplIntgTest {
 
     @Inject
@@ -58,12 +57,9 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-        assertThat(pst.getDomain(), equalTo(domain));
-        assertThat(pst.getOriginalNativeType(), equalTo(natType));
-        assertThat(pst.getOwner(), equalTo(username));
     }
 
     @Test
@@ -75,13 +71,9 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-        assertThat(pst.getDomain(), equalTo(domain));
-        assertThat(pst.getOwner(), equalTo(username));
-        assertThat(pst.getOriginalNativeType(), equalTo(natType));
-        assertThat(pst.getId(), notNullValue());
     }
 
     @Test
@@ -93,13 +85,9 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-        assertThat(pst.getDomain(), equalTo(domain));
-        assertThat(pst.getOwner(), equalTo(username));
-        assertThat(pst.getOriginalNativeType(), equalTo(natType));
-        assertThat(pst.getId(), notNullValue());
 
 //        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
 //        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
@@ -116,7 +104,7 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.yawl"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         // TODO: Make sure you do the Sub Processes.
     }

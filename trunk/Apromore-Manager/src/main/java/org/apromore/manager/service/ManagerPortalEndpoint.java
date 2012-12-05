@@ -6,6 +6,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.EditSession;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
@@ -124,6 +125,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
@@ -179,6 +181,7 @@ public class ManagerPortalEndpoint {
     private SimilarityService simSrv;
     private MergeService merSrv;
     private SessionService sesSrv;
+    private UserInterfaceHelper uiHelper;
     private CanonicalConverter convertor;
     private ManagerCanoniserClient caClient;
 
@@ -198,6 +201,7 @@ public class ManagerPortalEndpoint {
      * @param simSrv Similarity Service.
      * @param merSrv Merge Service.
      * @param sesSrv Session Service.
+     * @param uiHelper UI Helper.
      * @param convertor Convertor
      * @param caClient Old Canoniser Service
      */
@@ -206,7 +210,7 @@ public class ManagerPortalEndpoint {
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv, final SessionService sesSrv,
-            final CanonicalConverter convertor, final ManagerCanoniserClient caClient) {
+            final UserInterfaceHelper uiHelper, final CanonicalConverter convertor, final ManagerCanoniserClient caClient) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -219,6 +223,7 @@ public class ManagerPortalEndpoint {
         this.simSrv = simSrv;
         this.merSrv = merSrv;
         this.sesSrv = sesSrv;
+        this.uiHelper = uiHelper;
         this.convertor = convertor;
         this.caClient = caClient;
     }
@@ -616,8 +621,11 @@ public class ManagerPortalEndpoint {
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
 
-            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType, canonisedProcess,
-                    handler.getInputStream(), domain, "", creationDate, lastUpdate);
+            ProcessModelVersion pmv = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType,
+                    canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
+
+            ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
+                    pmv.getVersionName(), versionName, nativeType, domain, creationDate, lastUpdate, username);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {

@@ -1,8 +1,8 @@
 package org.apromore.service.impl;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
@@ -35,8 +35,8 @@ import static org.hamcrest.Matchers.equalTo;
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-@TransactionConfiguration(defaultRollback = true)
 @Transactional
+@TransactionConfiguration(defaultRollback = true)
 public class ExportProcessServiceImplIntgTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportProcessServiceImplIntgTest.class);
@@ -56,7 +56,6 @@ public class ExportProcessServiceImplIntgTest {
 
 
     @Test
-    @Transactional
     @Rollback(true)
     public void testExportProcessWithSingleEdgeInEPML() throws Exception {
         String cpfURI = "1";
@@ -64,10 +63,9 @@ public class ExportProcessServiceImplIntgTest {
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(epmlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(pst.getName(), pst.getId(), pst.getVersionSummaries().get(0).getName(),
-                pst.getOriginalNativeType(), "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(), epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
         CanonisedProcess endCP = cSrv.canonise(epmlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
@@ -83,7 +81,6 @@ public class ExportProcessServiceImplIntgTest {
     }
 
     @Test
-    @Transactional
     @Rollback(true)
     public void testExportProcessWithJoinAndSplitInEPML() throws Exception {
         String cpfURI = "2";
@@ -91,10 +88,10 @@ public class ExportProcessServiceImplIntgTest {
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(epmlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(pst.getName(), pst.getId(), pst.getVersionSummaries().get(0).getName(),
-                pst.getOriginalNativeType(), "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(),
+                epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
         CanonisedProcess endCP = cSrv.canonise(epmlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
@@ -110,7 +107,6 @@ public class ExportProcessServiceImplIntgTest {
     }
 
     @Test
-    @Transactional
     @Rollback(true)
     public void testExportProcessWithObjectsResourcesInXPDL() throws Exception {
         String cpfURI = "3";
@@ -118,10 +114,10 @@ public class ExportProcessServiceImplIntgTest {
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(xpdlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, xpdlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, xpdlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(pst.getName(), pst.getId(), pst.getVersionSummaries().get(0).getName(),
-                pst.getOriginalNativeType(), "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(),
+                xpdlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
 
         // TODO: De-canonisations doesn't produce the same as input.

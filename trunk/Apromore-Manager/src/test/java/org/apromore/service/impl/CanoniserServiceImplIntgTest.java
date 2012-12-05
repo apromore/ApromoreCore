@@ -8,8 +8,8 @@ import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ImportException;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -48,7 +48,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -105,12 +104,9 @@ public class CanoniserServiceImplIntgTest {
         String created = "12/12/2011";
         String lastUpdate = "12/12/2011";
 
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, nativeType, cp, data, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, nativeType, cp, data, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-        assertThat(pst.getDomain(), equalTo(domain));
-        assertThat(pst.getOriginalNativeType(), equalTo(nativeType));
-        assertThat(pst.getOwner(), equalTo(username));
     }
 
     @Test(expected = JAXBException.class)

@@ -1,7 +1,6 @@
 package org.apromore.dao.model;
 
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.io.Serializable;
 import java.util.HashSet;
