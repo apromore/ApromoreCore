@@ -72,7 +72,7 @@ public class FragmentVersionDag implements Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragmentVersion", nullable = false)
+    @JoinColumn(name = "fragmentVersionId", nullable = false)
     public FragmentVersion getFragmentVersion() {
         return this.fragmentVersion;
     }
@@ -82,7 +82,7 @@ public class FragmentVersionDag implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "childFragmentVersion", nullable = false)
+    @JoinColumn(name = "childFragmentVersionId", nullable = false)
     public FragmentVersion getChildFragmentVersion() {
         return this.childFragmentVersion;
     }
