@@ -27,6 +27,8 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.helper.UIHelper;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.CanonicalConverterAdapter;
 import org.apromore.service.impl.CanoniserServiceImpl;
 import org.apromore.service.impl.ClusterServiceImpl;
@@ -75,6 +77,7 @@ public class ExportProcessEndpointTest {
     private SimilarityService simSrv;
     private MergeService merSrv;
     private SessionService sesSrv;
+    private UserInterfaceHelper uiHelper;
     private CanonicalConverter convertor;
     private ManagerCanoniserClient caClient;
 
@@ -92,12 +95,14 @@ public class ExportProcessEndpointTest {
         simSrv = createMock(SimilarityServiceImpl.class);
         merSrv = createMock(MergeServiceImpl.class);
         sesSrv = createMock(SessionServiceImpl.class);
+        uiHelper = createMock(UIHelper.class);
         convertor = createMock(CanonicalConverterAdapter.class);
         caClient = createMock(ManagerCanoniserClient.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, convertor, caClient);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, uiHelper, convertor, caClient);
     }
+
 
 
     @Test

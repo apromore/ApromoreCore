@@ -23,7 +23,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class ObjectAttribute implements java.io.Serializable {
 
     private Integer id;
-    private String type;
     private String name;
     private String value;
 
@@ -55,15 +54,6 @@ public class ObjectAttribute implements java.io.Serializable {
         this.id = id;
     }
 
-
-    @Column(name = "type", nullable = false, length = 8)
-    public String getType() {
-        return this.type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
 
     @Column(name = "name")

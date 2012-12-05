@@ -41,7 +41,6 @@ import org.apromore.graph.canonical.ResourceTypeEnum;
 import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
@@ -185,29 +184,27 @@ public class ProcessServiceImpl implements ProcessService {
      * * {@inheritDoc}
      */
     @Override
-    public ProcessSummaryType importProcess(final String username, final String processName, final String cpfURI, final String version, final String natType,
+    public ProcessModelVersion importProcess(final String username, final String processName, final String cpfURI, final String version, final String natType,
             final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation, final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
-        ProcessSummaryType pro;
+        ProcessModelVersion pmv;
 
         try {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
             Canonical pg = converter.convert(cpf.getCpt());
 
-            ProcessModelVersion pmv = addProcess(processName, version, user.getUsername(), cpf.getCpt().getUri(),
-                    nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
+            pmv = addProcess(processName, version, user.getUsername(), cpf.getCpt().getUri(), nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
             formatSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
-            pro = ui.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), pmv.getVersionName(), version,
-                    nativeType.getNatType(), domain, created, lastUpdate, user.getUsername());
-
+            //pro = ui.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), pmv.getVersionName(), version,
+            //        nativeType.getNatType(), domain, created, lastUpdate, user.getUsername());
         } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
         }
 
-        return pro;
+        return pmv;
     }
 
     /**
@@ -493,7 +490,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Inserts a new process into the DB. */
-    private Process insertProcess(final String processName, final String username, final String natType, final String domain) throws ImportException {
+    private Process insertProcess(final String processName, final String username, final String natType, final String domain)
+            throws ImportException {
         LOGGER.info("Executing operation Insert Process");
         Process process = new Process();
 
@@ -546,14 +544,17 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setLockStatus(Constants.NO_LOCK);
         processModel.getCurrentProcessModelVersion().add(branch);
 
+        branch.setCurrentProcessModelVersion(processModel);
+
+        // Trying to save before the rest happens.
+        processModel = processModelVersionRepo.save(processModel);
+
         addAttributesToProcessModel(proModGrap, processModel);
         addObjectsToProcessModel(proModGrap, processModel);
         addResourcesToProcessModel(proModGrap, processModel);
         updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
 
-        branch.setCurrentProcessModelVersion(processModel);
-
-        return processModelVersionRepo.save(processModel);
+        return processModel;
     }
 
     /* Insert the Attributes to the ProcessModel */

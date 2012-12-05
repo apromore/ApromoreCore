@@ -153,7 +153,7 @@ public class Resource implements java.io.Serializable {
     }
 
 
-    @OneToMany(mappedBy = "resource")
+    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ResourceRef> getResourceRefs() {
         return this.resourceRefs;
     }

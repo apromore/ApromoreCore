@@ -136,7 +136,7 @@ public class Object implements java.io.Serializable {
     }
 
 
-    @OneToMany(mappedBy = "object")
+    @OneToMany(mappedBy = "object", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ObjectRef> getObjectRefs() {
         return this.objectRefs;
     }
