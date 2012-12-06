@@ -1,12 +1,21 @@
 package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
-import org.apromore.cpf.NetType;
 import org.apromore.dao.ContentRepository;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.NodeRepository;
-import org.apromore.dao.model.*;
-import org.apromore.dao.model.Object;
+import org.apromore.dao.model.Content;
+import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.Expression;
+import org.apromore.dao.model.Node;
+import org.apromore.dao.model.NodeAttribute;
+import org.apromore.dao.model.ObjectAttribute;
+import org.apromore.dao.model.ObjectRef;
+import org.apromore.dao.model.ObjectRefAttribute;
+import org.apromore.dao.model.Resource;
+import org.apromore.dao.model.ResourceAttribute;
+import org.apromore.dao.model.ResourceRef;
+import org.apromore.dao.model.ResourceRefAttribute;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.CPFObject;
@@ -415,7 +424,7 @@ public class GraphServiceImpl implements GraphService {
                     cpfObject.setName(object.getName());
                     cpfObject.setNetId(object.getNetId());
                     cpfObject.setOriginalId(object.getUri());
-                    if (object.getId() != null) {
+                    if (object.getUri() != null) {
                         cpfObject.setId(object.getUri());
                     } else {
                         cpfObject.setId(UUID.randomUUID().toString());
@@ -454,8 +463,8 @@ public class GraphServiceImpl implements GraphService {
                     cpfResource = new CPFResource();
                     cpfResource.setName(resource.getName());
                     cpfResource.setOriginalId(resource.getOriginalId());
-                    if (resource.getId() != null) {
-                        cpfResource.setId(resource.getId().toString());
+                    if (resource.getUri() != null) {
+                        cpfResource.setId(resource.getUri().toString());
                     } else {
                         cpfResource.setId(UUID.randomUUID().toString());
                     }
