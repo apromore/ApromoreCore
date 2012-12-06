@@ -267,7 +267,7 @@ public class Node implements Serializable {
 
     @ManyToMany
     @JoinTable(name = "cancel_nodes",
-            joinColumns = { @JoinColumn(name = "id") },
+            joinColumns = { @JoinColumn(name = "nodeId") },
             inverseJoinColumns = { @JoinColumn(name = "cancelNodeId") })
     public Set<Node> getCancelNodes() {
         return this.cancelNodes;

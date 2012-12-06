@@ -148,18 +148,20 @@ public class ComposerServiceImpl implements ComposerService {
     private boolean canCombineSplit(final CPFNode p1, final CPFNode bS) {
         if (p1 == null || bS == null) {
             return false;
-        } else if ((p1.getNodeType().equals(NodeTypeEnum.XORSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.XORSPLIT))) {
+        } else if (("XOrSplit".equals(p1.getName())) && ("XOrSplit".equals(bS.getName()))) {
             return true;
-        } else if ((p1.getNodeType().equals(NodeTypeEnum.ANDSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.ANDSPLIT))) {
+        } else if (("AndSplit".equals(p1.getName())) && ("AndSplit".equals(bS.getName()))) {
             return true;
-        } else if ((p1.getNodeType().equals(NodeTypeEnum.ORSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.ORSPLIT))) {
+        } else if (("OrSplit".equals(p1.getName())) && ("OrSplit".equals(bS.getName()))) {
             return true;
-        } else if (("XOR".equals(p1.getName())) && ("XOR".equals(bS.getName()))) {
-            return true;
-        } else if (("AND".equals(p1.getName())) && ("AND".equals(bS.getName()))) {
-            return true;
-        } else if (("OR".equals(p1.getName())) && ("OR".equals(bS.getName()))) {
-            return true;
+        } else if (p1.getNodeType() != null && bS.getNodeType() != null) {
+            if ((p1.getNodeType().equals(NodeTypeEnum.XORSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.XORSPLIT))) {
+                return true;
+            } else if ((p1.getNodeType().equals(NodeTypeEnum.ANDSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.ANDSPLIT))) {
+                return true;
+            } else if ((p1.getNodeType().equals(NodeTypeEnum.ORSPLIT)) && (bS.getNodeType().equals(NodeTypeEnum.ORSPLIT))) {
+                return true;
+            }
         }
         return false;
     }
@@ -167,18 +169,20 @@ public class ComposerServiceImpl implements ComposerService {
     private boolean canCombineJoin(final CPFNode p2, final CPFNode bE) {
         if (p2 == null || bE == null) {
             return false;
-        } else if ((p2.getNodeType().equals(NodeTypeEnum.XORJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.XORJOIN))) {
+        } else if (("XOrJoin".equals(p2.getName())) && ("XOrJoin".equals(bE.getName()))) {
             return true;
-        } else if ((p2.getNodeType().equals(NodeTypeEnum.ANDJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.ANDJOIN))) {
+        } else if (("AndJoin".equals(p2.getName())) && ("AndJoin".equals(bE.getName()))) {
             return true;
-        } else if ((p2.getNodeType().equals(NodeTypeEnum.ORJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.ORJOIN))) {
+        } else if (("OrJoin".equals(p2.getName())) && ("OrJoin".equals(bE.getName()))) {
             return true;
-        } else if (("XOR".equals(p2.getName())) && ("XOR".equals(bE.getName()))) {
-            return true;
-        } else if (("AND".equals(p2.getName())) && ("AND".equals(bE.getName()))) {
-            return true;
-        } else if (("OR".equals(p2.getName())) && ("OR".equals(bE.getName()))) {
-            return true;
+        } else if (p2.getNodeType() != null && bE.getNodeType() != null) {
+            if ((p2.getNodeType().equals(NodeTypeEnum.XORJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.XORJOIN))) {
+                return true;
+            } else if ((p2.getNodeType().equals(NodeTypeEnum.ANDJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.ANDJOIN))) {
+                return true;
+            } else if ((p2.getNodeType().equals(NodeTypeEnum.ORJOIN)) && (bE.getNodeType().equals(NodeTypeEnum.ORJOIN))) {
+                return true;
+            }
         }
         return false;
     }

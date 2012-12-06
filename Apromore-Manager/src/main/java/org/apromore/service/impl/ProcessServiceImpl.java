@@ -196,8 +196,6 @@ public class ProcessServiceImpl implements ProcessService {
 
             pmv = addProcess(processName, version, user.getUsername(), cpf.getCpt().getUri(), nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
             formatSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
-            //pro = ui.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), pmv.getVersionName(), version,
-            //        nativeType.getNatType(), domain, created, lastUpdate, user.getUsername());
         } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
