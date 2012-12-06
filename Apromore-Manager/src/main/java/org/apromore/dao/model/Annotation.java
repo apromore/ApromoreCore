@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -67,7 +66,6 @@ public class Annotation implements Serializable {
 
     /**
      * Get the name for the Object.
-     *
      * @return Returns the name.
      */
     @Column(name = "name", unique = false, nullable = true, length = 40)
@@ -77,7 +75,6 @@ public class Annotation implements Serializable {
 
     /**
      * Set the name for the Object.
-     *
      * @param newName The name to set.
      */
     public void setName(final String newName) {
@@ -87,18 +84,16 @@ public class Annotation implements Serializable {
 
     /**
      * Get the contents for the Object.
-     *
      * @return Returns the contents.
      */
     @Lob
-    @Column(name = "content", nullable = true)
+    @Column(name = "content")
     public String getContent() {
         return content;
     }
 
     /**
      * Set the contents for the Object.
-     *
      * @param newContent The contents to set.
      */
     public void setContent(final String newContent) {
@@ -108,10 +103,9 @@ public class Annotation implements Serializable {
 
     /**
      * Get the native format for the Object.
-     *
      * @return Returns the native format.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "native")
     public Native getNatve() {
         return this.natve;
@@ -119,7 +113,6 @@ public class Annotation implements Serializable {
 
     /**
      * Set the native format for the Object.
-     *
      * @param newNative The native format to set.
      */
     public void setNatve(final Native newNative) {
@@ -128,10 +121,9 @@ public class Annotation implements Serializable {
 
     /**
      * Get the process Model Version for the Object.
-     *
      * @return Returns the process Model Version.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
@@ -139,7 +131,6 @@ public class Annotation implements Serializable {
 
     /**
      * Set the process Model Version for the Object.
-     *
      * @param newProcessModelVersion The process Model Version format to set.
      */
     public void setProcessModelVersion(final ProcessModelVersion newProcessModelVersion) {

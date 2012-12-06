@@ -1,14 +1,13 @@
 package org.apromore.dao.model;
 
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -32,7 +31,6 @@ public class Content implements Serializable {
     private Node boundaryE;
     private Node boundaryS;
 
-//    private Set<FragmentVersion> fragmentVersions = new HashSet<FragmentVersion>(0);
     private Set<Node> nodes = new HashSet<Node>(0);
     private Set<Edge> edges = new HashSet<Edge>(0);
 
@@ -75,7 +73,7 @@ public class Content implements Serializable {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "boundary_e")
     public Node getBoundaryE() {
         return this.boundaryE;
@@ -85,7 +83,7 @@ public class Content implements Serializable {
         this.boundaryE = nodeByBoundaryE;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "boundary_s")
     public Node getBoundaryS() {
         return this.boundaryS;
@@ -96,16 +94,8 @@ public class Content implements Serializable {
     }
 
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
-//    public Set<FragmentVersion> getFragmentVersions() {
-//        return this.fragmentVersions;
-//    }
-//
-//    public void setFragmentVersions(final Set<FragmentVersion> newFragmentVersions) {
-//        this.fragmentVersions = newFragmentVersions;
-//    }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Node> getNodes() {
         return this.nodes;
     }
@@ -114,7 +104,7 @@ public class Content implements Serializable {
         this.nodes = newNodes;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Edge> getEdges() {
         return this.edges;
     }

@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -114,7 +114,7 @@ public class ProcessBranch implements Serializable {
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "processId")
     public Process getProcess() {
         return this.process;
@@ -124,7 +124,7 @@ public class ProcessBranch implements Serializable {
         this.process = newProcess;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "currentProcessModelVersion")
     public ProcessModelVersion getCurrentProcessModelVersion() {
         return this.currentProcessModelVersion;
@@ -134,7 +134,7 @@ public class ProcessBranch implements Serializable {
         this.currentProcessModelVersion = newCurrentProcessModelVersion;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "sourceProcessModelVersion")
     public ProcessModelVersion getSourceProcessModelVersion() {
         return this.sourceProcessModelVersion;
@@ -144,7 +144,7 @@ public class ProcessBranch implements Serializable {
         this.sourceProcessModelVersion = newSourceProcessModelVersion;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processBranch")
+    @OneToMany(mappedBy = "processBranch", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }

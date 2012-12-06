@@ -134,7 +134,7 @@ CREATE TABLE `temp_version` (
 CREATE TABLE `process_branch` (
   `id`                                int(11) NOT NULL AUTO_INCREMENT,
   `branch_name`                       varchar(1000),
-  `processId`                         int(11) NOT NULL,
+  `processId`                         int(11) DEFAULT NULL,
   `creation_date`                     varchar(35) DEFAULT NULL,
   `last_update`                       varchar(35) DEFAULT NULL,
   `ranking`                           varchar(10) DEFAULT NULL,
@@ -146,8 +146,8 @@ CREATE TABLE `process_branch` (
 
 CREATE TABLE `process_model_version` (
     `id`                             int(11) NOT NULL AUTO_INCREMENT,
-    `branchId`                       int(11) NULL,
-    `rootFragmentVersionId`          int(11),
+    `branchId`                       int(11) DEFAULT NULL,
+    `rootFragmentVersionId`          int(11) DEFAULT NULL,
     `netId`                          varchar(200),
     `originalId`                     varchar(200),
     `version_number`                 double,
@@ -167,7 +167,7 @@ ALTER TABLE `process_branch` ADD CONSTRAINT `fk_current_version` FOREIGN KEY (`c
 CREATE TABLE `annotation` (
   `id`                          int(11) NOT NULL AUTO_INCREMENT,
   `native`                      int(11) DEFAULT NULL,
-  `processModelVersionId`       int(11) NULL,
+  `processModelVersionId`       int(11) DEFAULT NULL,
   `name`                        varchar(40) DEFAULT NULL,
   `content`                     longtext,
   PRIMARY KEY (`id`),
@@ -178,8 +178,8 @@ CREATE TABLE `annotation` (
 
 CREATE TABLE `content` (
     `id`                  int(11) NOT NULL AUTO_INCREMENT,
-    `boundary_s`          int(11),
-    `boundary_e`          int(11),
+    `boundary_s`          int(11) DEFAULT NULL,
+    `boundary_e`          int(11) DEFAULT NULL,
     `code`                longtext,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_start_edge` FOREIGN KEY (`boundary_s`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -189,7 +189,7 @@ CREATE TABLE `content` (
 CREATE TABLE `fragment_version` (
     `id`                          int(11) NOT NULL AUTO_INCREMENT,
     `uri`                         varchar(40),
-    `contentId`                   int(11),
+    `contentId`                   int(11) DEFAULT NULL,
     `clusterId`                   int(11),
     `child_mapping_code`          varchar(20000),
     `derived_from_fragment`       int(11),
@@ -203,8 +203,8 @@ CREATE TABLE `fragment_version` (
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_fragment_map` (
-    `processModelVersionId`      int(11),
-    `fragmentVersionId`          int(11),
+    `processModelVersionId`      int(11) NOT NULL,
+    `fragmentVersionId`          int(11) NOT NULL,
     PRIMARY KEY (`processModelVersionId`,`fragmentVersionId`),
     CONSTRAINT `fk_process_model_versions_map` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_fragment_versions_map` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -224,19 +224,19 @@ CREATE TABLE `fragment_version_dag` (
 CREATE TABLE `node` (
     `id`                        int(11) NOT NULL AUTO_INCREMENT,
     `uri`                       varchar(40),
-    `contentId`                 int(11),
-    `subVersionId`              int(11),
-    `originalId`                varchar(200) NULL,
-    `netId`                     varchar(200) NULL,
+    `contentId`                 int(11) DEFAULT NULL,
+    `subVersionId`              int(11) DEFAULT NULL,
+    `originalId`                varchar(200) DEFAULT NULL,
+    `netId`                     varchar(200) DEFAULT NULL,
     `name`                      varchar(500),
     `graphType`                 varchar(50),
     `nodeType`                  varchar(50),
     `configuration`             varchar(1) NULL DEFAULT '0',
     `teamWork`                  varchar(1) NULL DEFAULT '0',
-    `allocation`                varchar(40) NULL,
-    `resourceDataExpressionId`  int(11) NULL,
-    `resourceRunExpressionId`   int(11) NULL,
-    `timerExpressionId`         int(11) NULL,
+    `allocation`                varchar(40) DEFAULT NULL,
+    `resourceDataExpressionId`  int(11) DEFAULT NULL,
+    `resourceRunExpressionId`   int(11) DEFAULT NULL,
+    `timerExpressionId`         int(11) DEFAULT NULL,
     `timeDate`                  datetime DEFAULT NULL,
     `timeDuration`              varchar(100) NULL,
     PRIMARY KEY (`id`),
@@ -255,12 +255,12 @@ CREATE TABLE `cancel_nodes` (
 CREATE TABLE `edge` (
     `id`                        int(11) NOT NULL AUTO_INCREMENT,
     `uri`                       varchar(40),
-    `contentId`                 int(11) NOT NULL,
-    `sourceNodeId`              int(11) NOT NULL,
-    `targetNodeId`              int(11) NOT NULL,
-    `cancelNodeId`              int(11) NULL,
-    `originalId`                varchar(40) NULL,
-    `conditionExpressionId`     int(11) NULL,
+    `contentId`                 int(11) DEFAULT NULL,
+    `sourceNodeId`              int(11) DEFAULT NULL,
+    `targetNodeId`              int(11) DEFAULT NULL,
+    `cancelNodeId`              int(11) DEFAULT NULL,
+    `originalId`                varchar(40) DEFAULT NULL,
+    `conditionExpressionId`     int(11) DEFAULT NULL,
     `def`                       varchar(1) DEFAULT '0',
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_content_edge` FOREIGN KEY (`contentId`) REFERENCES `content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -271,17 +271,18 @@ CREATE TABLE `edge` (
 
 CREATE TABLE `non_pocket_node` (
     `id`         int(11) NOT NULL AUTO_INCREMENT,
-    `nodeId`     int(11) NOT NULL,
-    PRIMARY KEY (`id`)
+    `nodeId`     int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_non_pocket_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `expression` (
     `id`                        int(11) NOT NULL AUTO_INCREMENT,
-    `inputNodeId`               int(11) NULL,
-    `outputNodeId`              int(11) NULL,
+    `inputNodeId`               int(11) DEFAULT NULL,
+    `outputNodeId`              int(11) DEFAULT NULL,
     `description`               varchar(255),
     `language`                  varchar(255),
-    `expression`                varchar(500),
+    `expression`                varchar(1000),
     `returnType`                varchar(255),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_node_inexpr` FOREIGN KEY (`inputNodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -311,7 +312,7 @@ CREATE TABLE `object` (
 
 CREATE TABLE `object_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `objectId`                 int(11) NOT NULL,
+    `objectId`                 int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     PRIMARY KEY (`id`),
@@ -320,8 +321,8 @@ CREATE TABLE `object_attribute` (
 
 CREATE TABLE `object_ref` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `objectId`                 int(11) NOT NULL,
-    `nodeId`                   int(11) NOT NULL,
+    `objectId`                 int(11) DEFAULT NULL,
+    `nodeId`                   int(11) DEFAULT NULL,
     `optional`                 boolean not null default 0,
     `consumed`                 boolean not null default 0,
     `type`                     ENUM('Input', 'Output'),
@@ -332,7 +333,7 @@ CREATE TABLE `object_ref` (
 
 CREATE TABLE `object_ref_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `objectRefId`              int(11) NOT NULL,
+    `objectRefId`              int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     PRIMARY KEY (`id`),
@@ -342,7 +343,7 @@ CREATE TABLE `object_ref_attribute` (
 
 CREATE TABLE `resource` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `processModelVersionId`    int(11) NOT NULL,
+    `processModelVersionId`    int(11) DEFAULT NULL,
 	`uri`                      varchar(40),
     `originalId`               varchar(40),
     `name`                     varchar(255),
@@ -363,7 +364,7 @@ CREATE TABLE `resource_specialisations` (
 
 CREATE TABLE `resource_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `resourceId`               int(11) NOT NULL,
+    `resourceId`               int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     PRIMARY KEY (`id`),
@@ -372,8 +373,8 @@ CREATE TABLE `resource_attribute` (
 
 CREATE TABLE `resource_ref` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `resourceId`               int(11) NOT NULL,
-    `nodeId`                   int(11) NOT NULL,
+    `resourceId`               int(11) DEFAULT NULL,
+    `nodeId`                   int(11) DEFAULT NULL,
     `qualifier`                varchar(255),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_resref_pmv` FOREIGN KEY (`resourceId`) REFERENCES `resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -382,7 +383,7 @@ CREATE TABLE `resource_ref` (
 
 CREATE TABLE `resource_ref_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `resourceRefId`            int(11) NOT NULL,
+    `resourceRefId`            int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     PRIMARY KEY (`id`),
@@ -394,7 +395,7 @@ CREATE TABLE `resource_ref_attribute` (
 
 CREATE TABLE `node_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `nodeId`                   int(11) NOT NULL,
+    `nodeId`                   int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     `any`                      longtext NULL,
@@ -404,7 +405,7 @@ CREATE TABLE `node_attribute` (
 
 CREATE TABLE `edge_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `edgeId`                   int(11) NOT NULL,
+    `edgeId`                   int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     `any`                      longtext NULL,
@@ -414,7 +415,7 @@ CREATE TABLE `edge_attribute` (
 
 CREATE TABLE `process_model_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `processModelVersionId`    int(11) NOT NULL,
+    `processModelVersionId`    int(11) DEFAULT NULL,
     `name`                     varchar(255),
     `value`                    longtext,
     `any`                      longtext NULL,

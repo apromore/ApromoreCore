@@ -5,7 +5,6 @@
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <!-- To enable JMX Management -->
     <jmxConfigurator/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -16,6 +15,7 @@
 
     <include resource="logJpaToFile.xml" />
 
+    <logger name="org.apromore" level="DEBUG" />
     <logger name="org.springframework" level="WARN" />
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />

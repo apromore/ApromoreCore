@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -67,7 +66,7 @@ public class EditSession implements Serializable {
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "userId")
     public User getUser() {
         return this.user;
@@ -142,7 +141,7 @@ public class EditSession implements Serializable {
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "processId")
     public Process getProcess() {
         return this.process;
@@ -152,8 +151,8 @@ public class EditSession implements Serializable {
         this.process = newProcess;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="processModelVersionId", nullable=false)
+    @ManyToOne
+    @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

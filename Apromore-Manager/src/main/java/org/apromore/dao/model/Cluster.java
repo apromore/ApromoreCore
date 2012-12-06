@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -119,7 +119,7 @@ public class Cluster implements Serializable {
     }
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cluster")
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ClusterAssignment> getClusterAssignments() {
         return this.clusterAssignments;
     }

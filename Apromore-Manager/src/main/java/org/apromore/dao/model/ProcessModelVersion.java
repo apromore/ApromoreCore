@@ -163,8 +163,10 @@ public class ProcessModelVersion implements Serializable {
 
 
     @ManyToMany
-    @JoinTable(name = "process_fragment_map", joinColumns = {@JoinColumn(name = "processModelVersionId", nullable = false,
-            updatable = false)}, inverseJoinColumns = {@JoinColumn(name = "fragmentVersionId", nullable = false, updatable = false)})
+    @JoinTable(name = "process_fragment_map",
+            joinColumns = { @JoinColumn(name = "processModelVersionId") },
+            inverseJoinColumns = { @JoinColumn(name = "fragmentVersionId") }
+    )
     public Set<FragmentVersion> getFragmentVersions() {
         return this.fragmentVersions;
     }

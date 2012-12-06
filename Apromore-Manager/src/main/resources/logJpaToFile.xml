@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
+
     <appender name="jpalogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${catalina.home}/logs/manager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -17,13 +18,13 @@
     </appender>
 
 
-    <logger name="org.springframework.orm" level="debug">
+    <logger name="org.springframework.orm" level="DEBUG">
         <appender-ref ref="jpalogfile" />
     </logger>
-    <logger name="org.springframework.jdbc" level="debug">
+    <logger name="org.springframework.jdbc" level="DEBUG">
         <appender-ref ref="jpalogfile" />
     </logger>
-    <logger name="org.springframework.transaction" level="debug">
+    <logger name="org.springframework.transaction" level="DEBUG">
         <appender-ref ref="jpalogfile" />
     </logger>
 

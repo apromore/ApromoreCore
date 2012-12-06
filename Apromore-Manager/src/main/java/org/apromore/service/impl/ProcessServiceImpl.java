@@ -322,9 +322,7 @@ public class ProcessServiceImpl implements ProcessService {
 
             Process process = insertProcess(processName, username, nativeType, domain);
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, Constants.TRUNK_NAME);
-            processRepo.flush();
-
-            result = createProcessModelVersion(proModGrap, branch, numVertices, numEdges, versionName);
+            result = insertProcessModelVersion(proModGrap, branch, numVertices, numEdges, versionName);
             result.setRootFragmentVersion(decomposerSrv.decompose(proModGrap, result));
         } catch (Exception re) {
             LOGGER.error("Failed to add the process model " + processName, re);
@@ -533,7 +531,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    private ProcessModelVersion createProcessModelVersion(final Canonical proModGrap, final ProcessBranch branch,
+    private ProcessModelVersion insertProcessModelVersion(final Canonical proModGrap, final ProcessBranch branch,
             final int numVertices, final int numEdges, final String versionNumber) {
         ProcessModelVersion processModel = new ProcessModelVersion();
         processModel.setVersionName(branch.getBranchName());
@@ -546,15 +544,12 @@ public class ProcessServiceImpl implements ProcessService {
 
         branch.setCurrentProcessModelVersion(processModel);
 
-        // Trying to save before the rest happens.
-        processModel = processModelVersionRepo.save(processModel);
-
         addAttributesToProcessModel(proModGrap, processModel);
         addObjectsToProcessModel(proModGrap, processModel);
         addResourcesToProcessModel(proModGrap, processModel);
         updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
 
-        return processModel;
+        return processModelVersionRepo.save(processModel);
     }
 
     /* Insert the Attributes to the ProcessModel */

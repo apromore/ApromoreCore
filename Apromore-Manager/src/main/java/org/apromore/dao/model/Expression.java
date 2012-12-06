@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -98,7 +99,7 @@ public class Expression implements java.io.Serializable {
     }
 
 
-    @OneToMany(mappedBy = "conditionExpression")
+    @OneToMany(mappedBy = "conditionExpression", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Edge> getEdges() {
         return this.edges;
     }
