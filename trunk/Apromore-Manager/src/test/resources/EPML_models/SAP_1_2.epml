@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+  <directory>
+  <epc epcId="1" name="EPC">
+    <event id="1">
+      <name>A</name>
+      <graphics>
+        <position height="41" width="81" x="310" y="100"/>
+      </graphics>
+    </event>
+    <event id="2">
+      <name>Deliveries need to be planned</name>
+      <graphics>
+        <position height="41" width="81" x="165" y="220"/>
+      </graphics>
+    </event>
+    <event id="3">
+      <name>P</name>
+      <graphics>
+        <position height="41" width="81" x="35" y="270"/>
+      </graphics>
+    </event>
+    <event id="4">
+      <name>Shipment is complete</name>
+      <graphics>
+        <position height="41" width="81" x="165" y="465"/>
+      </graphics>
+    </event>
+    <function id="5">
+      <name>B</name>
+      <graphics>
+        <position height="41" width="81" x="310" y="170"/>
+      </graphics>
+    </function>
+    <function id="6">
+      <name>Transporation planning and processing</name>
+      <graphics>
+        <position height="41" width="81" x="165" y="395"/>
+      </graphics>
+    </function>
+    <and id="7">
+      <graphics>
+        <position height="21" width="21" x="195" y="335"/>
+      </graphics>
+    </and>
+    <event id="9">
+      <name>Delivery is relevant for shipment</name>
+      <graphics>
+        <position height="41" width="81" x="310" y="270"/>
+      </graphics>
+    </event>
+    <arc id="8">
+      <flow source="1" target="5"/>
+      <graphics>
+        <position x="350" y="141"/>
+        <position x="350" y="170"/>
+      </graphics>
+    </arc>
+    <arc id="10">
+      <flow source="5" target="9"/>
+      <graphics>
+        <position x="350" y="211"/>
+        <position x="350" y="270"/>
+      </graphics>
+    </arc>
+    <arc id="11">
+      <flow source="2" target="7"/>
+      <graphics>
+        <position x="205" y="261"/>
+        <position x="205" y="335"/>
+      </graphics>
+    </arc>
+    <arc id="12">
+      <flow source="3" target="7"/>
+      <graphics>
+        <position x="75" y="311"/>
+        <position x="195" y="335"/>
+      </graphics>
+    </arc>
+    <arc id="13">
+      <flow source="9" target="7"/>
+      <graphics>
+        <position x="350" y="311"/>
+        <position x="216" y="335"/>
+      </graphics>
+    </arc>
+    <arc id="14">
+      <flow source="7" target="6"/>
+      <graphics>
+        <position x="205" y="356"/>
+        <position x="205" y="395"/>
+      </graphics>
+    </arc>
+    <arc id="15">
+      <flow source="6" target="4"/>
+      <graphics>
+        <position x="205" y="436"/>
+        <position x="205" y="465"/>
+      </graphics>
+    </arc>
+  </epc>
+  </directory>
+</epml:epml>
