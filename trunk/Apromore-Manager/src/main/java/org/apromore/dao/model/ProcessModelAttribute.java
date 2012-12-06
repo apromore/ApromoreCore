@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -75,7 +74,7 @@ public class ProcessModelAttribute implements java.io.Serializable {
         this.value = value;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;

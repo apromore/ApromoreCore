@@ -33,7 +33,7 @@ public class Extractor {
                 LOGGER.debug("Pocket Id: " + pocket.getId());
             } else {
                 // TODO what if both are of type POLYGON??? potential NPE, This is a hack
-                LOGGER.debug("Processing FNS CS");
+                LOGGER.debug("Processing FNS CS - POLYGON");
                 pocket = FNSCSExtractor.extract(f, c, g);
                 LOGGER.debug("Pocket Id: " + pocket.getId());
             }

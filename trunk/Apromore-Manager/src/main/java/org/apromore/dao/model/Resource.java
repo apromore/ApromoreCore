@@ -142,7 +142,7 @@ public class Resource implements java.io.Serializable {
 
     @ManyToMany
     @JoinTable(name = "resource_specialisations",
-            joinColumns = {@JoinColumn(name = "id")},
+            joinColumns = {@JoinColumn(name = "resourceId")},
             inverseJoinColumns = {@JoinColumn(name = "specialisationId")})
     public Set<Resource> getSpecialisations() {
         return specialisations;

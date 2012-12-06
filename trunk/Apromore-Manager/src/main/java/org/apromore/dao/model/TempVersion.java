@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -33,7 +32,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class TempVersion implements Serializable {
 
     private Integer id;
-    private Process process;
     private Date recordTime;
     private String preVersion;
     private String newVersion;
@@ -46,6 +44,8 @@ public class TempVersion implements Serializable {
     private String cpf;
     private String apf;
     private String npf;
+
+    private Process process;
 
 
     /**
@@ -275,8 +275,8 @@ public class TempVersion implements Serializable {
      * Get the Process.
      * @return the Process
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "processId", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "processId")
     public Process getProcess() {
         return this.process;
     }

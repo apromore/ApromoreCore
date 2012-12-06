@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -102,7 +101,7 @@ public class NativeType implements Serializable {
      *
      * @return Returns the natives.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "nativeType")
+    @OneToMany(mappedBy = "nativeType")
     public Set<Native> getNatives() {
         return this.natives;
     }
@@ -121,7 +120,7 @@ public class NativeType implements Serializable {
      *
      * @return Returns the processes.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "nativeType")
+    @OneToMany(mappedBy = "nativeType")
     public Set<Process> getProcesses() {
         return this.processes;
     }

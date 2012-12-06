@@ -82,7 +82,7 @@ public class FNSCSExtractor {
         CPFNode b1 =  f.getEntry();
         CPFNode b2 = f.getExit();
 
-        if (Constants.CONNECTOR.equals(g.getNodeProperty(b1.getId(), Constants.TYPE))) {
+        if (b1 != null && Constants.CONNECTOR.equals(g.getNodeProperty(b1.getId(), Constants.TYPE))) {
             List<CPFNode> postset = FragmentUtil.getPostset(b1, f.getEdges());
             if (postset.size() == 1 && g.getPreset(b1).size() <= 1) {
                 Collection<CPFEdge> postsetEdges = FragmentUtil.getOutgoingEdges(b1, f.getEdges());
@@ -93,7 +93,7 @@ public class FNSCSExtractor {
             }
         }
 
-        if (Constants.CONNECTOR.equals(g.getNodeProperty(b2.getId(), Constants.TYPE))) {
+        if (b2 != null && Constants.CONNECTOR.equals(g.getNodeProperty(b2.getId(), Constants.TYPE))) {
             List<CPFNode> preset = FragmentUtil.getPreset(b2, f.getEdges());
             if (preset.size() == 1 && g.getPreset(b2).size() <= 1) {
                 Collection<CPFEdge> presetEdges = FragmentUtil.getIncomingEdges(b2, f.getEdges());
