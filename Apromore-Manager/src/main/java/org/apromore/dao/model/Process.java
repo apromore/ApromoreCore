@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -109,7 +108,7 @@ public class Process implements Serializable {
      * Get the nativeType for the Object.
      * @return Returns the nativeType.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "original_type")
     public NativeType getNativeType() {
         return this.nativeType;
@@ -127,7 +126,7 @@ public class Process implements Serializable {
      * Get the nativeType for the Object.
      * @return Returns the nativeType.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "owner")
     public User getUser() {
         return this.user;
@@ -146,7 +145,7 @@ public class Process implements Serializable {
      * Get the editSessions for the Object.
      * @return Returns the editSessions.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<EditSession> getEditSessions() {
         return this.editSessions;
     }
@@ -163,7 +162,7 @@ public class Process implements Serializable {
      * Get the process branches for the Object.
      * @return Returns the process branches.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ProcessBranch> getProcessBranches() {
         return this.processBranches;
     }
@@ -176,7 +175,7 @@ public class Process implements Serializable {
         this.processBranches = newProcessBranches;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<TempVersion> getTempVersions() {
         return this.tempVersions;
     }

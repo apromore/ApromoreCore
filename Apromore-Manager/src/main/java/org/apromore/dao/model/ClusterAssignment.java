@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -63,8 +62,8 @@ public class ClusterAssignment implements Serializable {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragmentVersionId", nullable = false, insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "fragmentVersionId", insertable = false, updatable = false)
     public FragmentVersion getFragment() {
         return this.fragment;
     }
@@ -73,8 +72,8 @@ public class ClusterAssignment implements Serializable {
         this.fragment = newFragment;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clusterId", nullable = false, insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "clusterId", insertable = false, updatable = false)
     public Cluster getCluster() {
         return this.cluster;
     }

@@ -280,7 +280,7 @@ public class Node implements Serializable {
 
 
 
-    @OneToMany(mappedBy = "cancelNode")
+    @OneToMany(mappedBy = "cancelNode", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Edge> getCancelEdges() {
         return this.cancelEdges;
     }
@@ -289,7 +289,7 @@ public class Node implements Serializable {
         this.cancelEdges = newCancelEdges;
     }
 
-    @OneToMany(mappedBy = "sourceNode")
+    @OneToMany(mappedBy = "sourceNode", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Edge> getSourceNodes() {
         return this.sourceNodes;
     }
@@ -298,7 +298,7 @@ public class Node implements Serializable {
         this.sourceNodes = newEdges;
     }
 
-    @OneToMany(mappedBy = "targetNode")
+    @OneToMany(mappedBy = "targetNode", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Edge> getTargetNodes() {
         return this.targetNodes;
     }

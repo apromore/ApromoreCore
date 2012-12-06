@@ -5,6 +5,7 @@ import org.apromore.dao.ContentRepository;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.ExpressionRepository;
 import org.apromore.dao.NodeRepository;
+import org.apromore.dao.NonPocketNodeRepository;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.EdgeAttribute;
@@ -53,6 +54,7 @@ public class ContentServiceImpl implements ContentService {
 
     private ContentRepository cRepository;
     private NodeRepository nRepository;
+    private NonPocketNodeRepository npnRepository;
     private EdgeRepository eRepository;
     private ExpressionRepository exRepository;
 
@@ -65,10 +67,11 @@ public class ContentServiceImpl implements ContentService {
      * @param exRepo Expression Repository.
      */
     @Inject
-    public ContentServiceImpl(final ContentRepository cRepo, final NodeRepository nRepo, final EdgeRepository eRepo,
-            final ExpressionRepository exRepo) {
+    public ContentServiceImpl(final ContentRepository cRepo, final NodeRepository nRepo, final NonPocketNodeRepository npnRepo,
+            final EdgeRepository eRepo, final ExpressionRepository exRepo) {
         cRepository = cRepo;
         nRepository = nRepo;
+        npnRepository = npnRepo;
         eRepository = eRepo;
         exRepository = exRepo;
     }
@@ -402,7 +405,7 @@ public class ContentServiceImpl implements ContentService {
         NonPocketNode nonPockNode = new NonPocketNode();
         nonPockNode.setNode(node);
         node.getNonPocketNodes().add(nonPockNode);
-        return nonPockNode;
+        return npnRepository.save(nonPockNode);
     }
 
     /* Given the ObjectId, it finds the Object record and returns it. */

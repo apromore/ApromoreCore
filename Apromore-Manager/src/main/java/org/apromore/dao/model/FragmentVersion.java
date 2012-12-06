@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -46,13 +46,6 @@ public class FragmentVersion implements Serializable {
 
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
     private Set<ProcessModelVersion> rootProcessModelVersions = new HashSet<ProcessModelVersion>(0);
-
-//    private Set<FragmentVersionDag> fragmentVersionDagsForFragmentVersion = new HashSet<FragmentVersionDag>(0);
-//    private Set<FragmentVersionDag> fragmentVersionDagsForChildFragmentVersion = new HashSet<FragmentVersionDag>(0);
-
-//    private Set<ClusterAssignment> clusterAssignments = new HashSet<ClusterAssignment>(0);
-//    private Set<FragmentDistance> fragmentVersionId1 = new HashSet<FragmentDistance>(0);
-//    private Set<FragmentDistance> fragmentVersionId2 = new HashSet<FragmentDistance>(0);
 
 
     /**
@@ -101,7 +94,7 @@ public class FragmentVersion implements Serializable {
     }
 
 
-    @Column(name = "child_mapping_code", length = 20000)
+    @Column(name = "child_mapping_code")
     public String getChildMappingCode() {
         return this.childMappingCode;
     }
@@ -151,7 +144,7 @@ public class FragmentVersion implements Serializable {
     }
 
 
-    @Column(name = "fragment_type", length = 10)
+    @Column(name = "fragment_type")
     public String getFragmentType() {
         return this.fragmentType;
     }
@@ -161,7 +154,7 @@ public class FragmentVersion implements Serializable {
     }
 
 
-    @Column(name = "newest_neighbor", length = 40)
+    @Column(name = "newest_neighbor")
     public String getNewestNeighbor() {
         return this.newestNeighbor;
     }
@@ -172,10 +165,7 @@ public class FragmentVersion implements Serializable {
 
 
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "fragmentVersions")
-//    @JoinTable(name = "process_fragment_map", joinColumns = {
-//            @JoinColumn(name = "fragmentVersionId", nullable = false, updatable = false) }, inverseJoinColumns = {
-//            @JoinColumn(name = "processModelVersionId", nullable = false, updatable = false) })
+    @ManyToMany(mappedBy = "fragmentVersions")
     public Set<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }
@@ -186,7 +176,7 @@ public class FragmentVersion implements Serializable {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "contentId")
     public Content getContent() {
         return this.content;
@@ -196,7 +186,7 @@ public class FragmentVersion implements Serializable {
         this.content = newContent;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "clusterId")
     public Cluster getCluster() {
         return this.cluster;
@@ -207,7 +197,7 @@ public class FragmentVersion implements Serializable {
     }
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rootFragmentVersion")
+    @OneToMany(mappedBy = "rootFragmentVersion", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ProcessModelVersion> getRootProcessModelVersions() {
         return this.rootProcessModelVersions;
     }
@@ -216,27 +206,6 @@ public class FragmentVersion implements Serializable {
         this.rootProcessModelVersions = processModelVersions;
     }
 
-
-//    // bi-directional many-to-one association to FragmentVersionDag
-//    @OneToMany(mappedBy = "fragmentVersionId")
-//    public Set<FragmentVersionDag> getFragmentVersionDags1() {
-//        return this.fragmentVersionDagsForFragmentVersion;
-//    }
-//
-//    public void setFragmentVersionDags1(Set<FragmentVersionDag> fragmentVersionDags) {
-//        this.fragmentVersionDagsForFragmentVersion = fragmentVersionDags;
-//    }
-//
-//
-//    // bi-directional many-to-one association to FragmentVersionDag
-//    @OneToMany(mappedBy = "childFragmentVersionId")
-//    public Set<FragmentVersionDag> getFragmentVersionDagsForChildFragmentVersion() {
-//        return this.fragmentVersionDagsForChildFragmentVersion;
-//    }
-//
-//    public void setFragmentVersionDagsForChildFragmentVersion(Set<FragmentVersionDag> fragmentVersionDags) {
-//        this.fragmentVersionDagsForChildFragmentVersion = fragmentVersionDags;
-//    }
 }
 
 

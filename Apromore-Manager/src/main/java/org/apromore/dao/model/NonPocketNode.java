@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -53,7 +52,7 @@ public class NonPocketNode implements Serializable {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "nodeId")
     public Node getNode() {
         return this.node;

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -90,7 +89,7 @@ public class Native implements Serializable {
      *
      * @return Returns the nativeType.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "nat_type")
     public NativeType getNativeType() {
         return this.nativeType;
@@ -110,7 +109,7 @@ public class Native implements Serializable {
      *
      * @return Returns the process Model Version.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
@@ -130,7 +129,7 @@ public class Native implements Serializable {
      *
      * @return Returns the annotations.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "natve")
+    @OneToMany(mappedBy = "natve")
     public Set<Annotation> getAnnotations() {
         return this.annotations;
     }

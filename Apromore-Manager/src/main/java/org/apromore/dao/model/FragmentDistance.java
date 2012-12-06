@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -63,8 +62,8 @@ public class FragmentDistance implements Serializable {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragmentVersionId2", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "fragmentVersionId2")
     public FragmentVersion getFragmentVersionId2() {
         return this.fragmentVersionId2;
     }
@@ -73,8 +72,8 @@ public class FragmentDistance implements Serializable {
         this.fragmentVersionId2 = newFragmentVersionId2;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragmentVersionId1", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "fragmentVersionId1")
     public FragmentVersion getFragmentVersionId1() {
         return this.fragmentVersionId1;
     }

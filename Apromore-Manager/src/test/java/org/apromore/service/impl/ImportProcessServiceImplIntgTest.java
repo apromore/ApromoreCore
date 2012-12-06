@@ -1,10 +1,16 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.graph.canonical.CPFEdge;
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.converter.CanonicalToGraph;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
+import org.jbpt.algo.tree.rpst.RPST;
+import org.jbpt.utils.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -79,11 +85,13 @@ public class ImportProcessServiceImplIntgTest {
     @Test
     @Rollback(true)
     public void testImportProcessWithObjectsResourcesInXPDL() throws Exception {
-        String natType = "XPDL 2.1";
+        //String natType = "XPDL 2.1";
+        String natType = "EPML 2.0";
         String name = "Test XPDL 1";
         String cpfURI = "3";
 
-        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
+        //DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/SAP_1_2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
         ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
@@ -92,7 +100,7 @@ public class ImportProcessServiceImplIntgTest {
 //        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
 //        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
 //        IOUtils.toFile("graph.dot", graph.toDOT());
-//        IOUtils.invokeDOT("./target/", "graph.png", graph.toDOT());
+//        IOUtils.invokeDOT("target/", "graph.png", graph.toDOT());
     }
 
     @Test
