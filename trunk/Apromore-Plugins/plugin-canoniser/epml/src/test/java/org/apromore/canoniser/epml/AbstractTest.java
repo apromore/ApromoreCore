@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
+import org.apache.commons.io.output.NullOutputStream;
+
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -35,8 +37,16 @@ public class AbstractTest {
         assertFalse(anfList.isEmpty());
         assertFalse(cpfList.isEmpty());
 
-        try (FileOutputStream canonicalFormat = new FileOutputStream("target/" + resource + ".epml")) {
-            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+        try (FileOutputStream cpfOut = new FileOutputStream("target/" + resource + ".epml.cpf");
+             FileOutputStream anfOut = new FileOutputStream("target/" + resource + ".epml.anf")) {
+
+            // Unvalidated write to the target directory           
+            CPFSchema.marshalCanoncialFormat(cpfOut, cpfList.get(0), false);
+            ANFSchema.marshalAnnotationFormat(anfOut, anfList.get(0), false);
+
+            // Validation pass
+            CPFSchema.marshalCanoncialFormat(new NullOutputStream(), cpfList.get(0), true);
+            ANFSchema.marshalAnnotationFormat(new NullOutputStream(), anfList.get(0), true);
         }
     }
 

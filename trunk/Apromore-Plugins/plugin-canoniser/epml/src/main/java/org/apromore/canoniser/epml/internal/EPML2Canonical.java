@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -140,6 +141,7 @@ public class EPML2Canonical {
                         TypeEPC typeEPC = (TypeEPC) epc;
                         cproc.setName(typeEPC.getName());
                         cproc.setUri(typeEPC.getEpcId().toString());
+                        annotations.setUri(cproc.getUri());
                         // TODO what version to add here?
                         cproc.setVersion("1.0");
                         NetType net = new NetType();
@@ -435,7 +437,12 @@ public class EPML2Canonical {
         FontType font = new FontType();
 
         if (arc.getGraphics() != null) {
+            if (id_map.get(arc.getId()) == null && range_relation.contains(arc)) {
+                Logger.getAnonymousLogger().info("Arc " + arc.getId() + " discarded");
+                return;
+            }
             graph.setCpfId(id_map.get(arc.getId()));
+            graph.setId(graph.getCpfId());
             if (arc.getGraphics().size() > 0) {
                 if (arc.getGraphics().get(0) != null) {
                     if (arc.getGraphics().get(0).getFont() != null) {
@@ -522,6 +529,7 @@ public class EPML2Canonical {
             }
 
             graphT.setCpfId(cpfId);
+            graphT.setId(cpfId);
             annotations.getAnnotation().add(graphT);
         }
     }
