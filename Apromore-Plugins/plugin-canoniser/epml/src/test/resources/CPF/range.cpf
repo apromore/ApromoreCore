@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="dummy" version="1.0" name="Range test">
     <Net id="9">
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1">
             <name>E1</name>
@@ -15,14 +15,14 @@
         </Node>
         <Edge id="7" sourceId="1" targetId="3"/>
         <Edge id="8" sourceId="3" targetId="2"/>
+        <Object id="4">
+            <name>O1</name>
+        </Object>
+        <Object id="5">
+            <name>O2</name>
+        </Object>
+        <Object id="6">
+            <name>O3</name>
+        </Object>
     </Net>
-    <Object id="4">
-        <name>O1</name>
-    </Object>
-    <Object id="5">
-        <name>O2</name>
-    </Object>
-    <Object id="6">
-        <name>O3</name>
-    </Object>
 </ns2:CanonicalProcess>
