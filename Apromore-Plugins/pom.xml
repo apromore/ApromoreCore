@@ -62,6 +62,7 @@
 
 
         <!-- Plugin Implementations - http://code.google.com/p/apromore/wiki/PluginHowTo -->
+        <module>plugin-canoniser/aris</module>
         <module>plugin-canoniser/bpmn</module>
         <module>plugin-canoniser/epml</module>
         <module>plugin-canoniser/pnml</module>
@@ -106,6 +107,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-aris</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-bpmn</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
             </dependency>
@@ -134,6 +140,11 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>anf-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>aris-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>
             <dependency>

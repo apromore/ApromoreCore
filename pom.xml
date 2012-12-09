@@ -16,6 +16,7 @@
 
         <!-- Schema's -->
         <module>Apromore-Schema/anf-schema</module>
+        <module>Apromore-Schema/aris-schema</module>
         <module>Apromore-Schema/bpmn-schema</module>
         <module>Apromore-Schema/cpf-schema</module>
         <module>Apromore-Schema/epml-schema</module>
@@ -548,6 +549,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-aris</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-bpmn</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
             </dependency>
@@ -576,6 +582,11 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>anf-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>aris-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>
             <dependency>
