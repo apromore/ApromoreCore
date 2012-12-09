@@ -93,6 +93,7 @@ public class ProcessWrapper {
         }
 
         // Add the CPF Edges as BPMN SequenceFlows
+        // This has to be done before the flow nodes, because events are classified by their incoming and outgoing flow counts
         for (EdgeType edge : net.getEdge()) {
             TSequenceFlow sequenceFlow = new BpmnSequenceFlow((CpfEdgeType) edge, initializer);
             process.getFlowElement().add(initializer.getFactory().createSequenceFlow(sequenceFlow));
