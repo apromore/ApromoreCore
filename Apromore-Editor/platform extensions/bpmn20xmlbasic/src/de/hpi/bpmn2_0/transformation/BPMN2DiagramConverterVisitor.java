@@ -581,8 +581,11 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitBusinessRuleTask(BusinessRuleTask that) {
 		super.visitBusinessRuleTask(that);
 
-		shape.setProperty("implementation", that.getImplementation().value());
 		shape.setProperty("tasktype", "Business Rule");
+
+                if (that.getImplementation() != null) {
+		    shape.setProperty("implementation", that.getImplementation().value());
+                }
 	}
 
 	@Override public void visitCallActivity(CallActivity that) {
@@ -1092,8 +1095,11 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitReceiveTask(ReceiveTask that) {
 		super.visitReceiveTask(that);
 
-		shape.setProperty("implementation", that.getImplementation().value());
 		shape.setProperty("tasktype", "Receive");
+
+                if (that.getImplementation() != null) {
+		    shape.setProperty("implementation", that.getImplementation().value());
+                }
 	}
 
 	@Override public void visitScriptTask(ScriptTask that) {
@@ -1107,15 +1113,21 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitSendTask(SendTask that) {
 		super.visitSendTask(that);
 
-		shape.setProperty("implementation", that.getImplementation().value());
 		shape.setProperty("tasktype", "Send");
+
+                if (that.getImplementation() != null) {
+		    shape.setProperty("implementation", that.getImplementation().value());
+                }
 	}
 
 	@Override public void visitServiceTask(ServiceTask that) {
 		super.visitServiceTask(that);
 
-		shape.setProperty("implementation", that.getImplementation().value());
 		shape.setProperty("tasktype", "Service");
+
+                if (that.getImplementation() != null) {
+		    shape.setProperty("implementation", that.getImplementation().value());
+                }
 	}
 
 	@Override public void visitSequenceFlow(SequenceFlow that) {
@@ -1208,7 +1220,10 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitUserTask(UserTask that) {
 		super.visitUserTask(that);
 
-		shape.setProperty("implementation", that.getImplementation().value());
 		shape.setProperty("tasktype", "User");
+
+                if (that.getImplementation() != null) {
+		    shape.setProperty("implementation", that.getImplementation().value());
+                }
 	}
 }
