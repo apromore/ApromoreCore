@@ -1,17 +1,65 @@
 Apromore Build Instructions
 
-To build apromore you firstly need to have the follow software installed:
-Java 1.7
-Maven 3.0.4
-Ant 1.8.3
-MySQL 5.5
-Tomcat 7
 
-1. Firstly navigate to the \Apromore-Manager\src\main\sql and execute createDB.sql in your mysql database.
-   This will create your database and setup the tables.
-2. next navigate to the \Build-Tools folder and run 'mvn clean install'
-3. Change the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
-4. Finally, change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
-5. Apromore-Editor, make sure the directory defined in the property file build.properties for property(fileSystemRootDirectory) exists.
+REQUIREMENTS
 
-Start up tomcat and see if it works.
+Apromore has been successfully installed on the following platforms:
+- Windows 7
+- Ubuntu 12.04 (32-bit)
+- Mac OS X 10.8
+
+Ensure the following software is installed:
+- Java 1.7
+- Maven 3.0.4
+- Ant 1.8.3
+- MySQL 5.5
+- Subversion 1.6
+- Tomcat 7
+
+Check out the Apromore source tree from the Subversion repository at http://code.google.com/p/apromore/source/checkout
+
+
+CONFIGURATION
+
+Edit the following configuration properties:
+
+- Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root
+  This needs to reference an empty directory with write permission
+
+- Apromore-Deploy/build.properties: dir-tomcat-webapps = C:/Development/Apps/tomcat7/webapps
+  This needs to reference the Tomcat 7 installation
+
+Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
+
+
+DATABASE SETUP
+
+Start MySQL
+$ sudo mysqld_safe
+
+Set the root password of MySQL to the default used by Apromore
+$ mysqladmin -u root password MAcri
+
+Create a user named 'apromore' in your MySQL database.
+$ mysqladmin --user=root --password=MAcri create apromore
+
+Navigate to the directory Apromore-Manager/src/main/sql and execute createDB.sql in your MySQL database.
+This will create your database and setup the tables.
+$ mysql --user=root --password=MAcri < Apromore-Manager/src/main/sql/createDB.sql
+
+
+BUILD IT
+
+Navigate to the Build-Tools folder and run 'mvn clean install'
+
+Change the the Extras folder and run 'upload.bat' (Windows) or 'upload.sh' (Unix/Linux/Mac)
+This will place jars in the build that are needed for the next set.
+
+Change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
+
+
+TRY IT OUT
+
+Start up Tomcat.
+
+Preferably using Mozilla Firefox, browse http://localhost:9000/portal
