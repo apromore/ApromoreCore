@@ -4,7 +4,10 @@
   xmlns:bpmndi = "http://www.omg.org/spec/BPMN/20100524/DI"
   xmlns:dc     = "http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di     = "http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xalan  = "http://xml.apache.org/xslt"
   xmlns:xsl    = "http://www.w3.org/1999/XSL/Transform">
+
+<xsl:output method="xml" indent="yes" xalan:indent-amount="2"/>
 
 <!-- Brutally force namespaces into having standard prefixes -->
 
