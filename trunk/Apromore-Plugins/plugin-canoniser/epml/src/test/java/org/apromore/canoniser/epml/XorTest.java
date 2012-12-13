@@ -6,5 +6,5 @@ import org.junit.Test;
 public class XorTest extends AbstractTest {
 
     @Test public void testCanonise()   throws Exception { testCanonise("xor"); }
-    @Ignore @Test public void testDeCanonise() throws Exception { testDeCanonise("xor"); }
+    @Test public void testDeCanonise() throws Exception { testDeCanonise("xor"); }
 }

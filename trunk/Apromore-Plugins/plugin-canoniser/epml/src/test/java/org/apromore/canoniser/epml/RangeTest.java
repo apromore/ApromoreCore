@@ -6,5 +6,5 @@ import org.junit.Test;
 public class RangeTest extends AbstractTest {
 
     @Test public void testCanonise()   throws Exception { testCanonise("range"); }
-    @Ignore @Test public void testDeCanonise() throws Exception { testDeCanonise("range"); }
+    @Test public void testDeCanonise() throws Exception { testDeCanonise("range"); }
 }

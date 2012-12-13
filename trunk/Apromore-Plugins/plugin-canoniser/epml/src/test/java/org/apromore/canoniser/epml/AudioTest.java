@@ -5,5 +5,6 @@ import org.junit.Test;
 
 public class AudioTest extends AbstractTest {
 
-    @Ignore @Test public void testCanonise() throws Exception { testCanonise("Audio"); }
+    @Ignore("Canonisation of C-IEPC <range> not implemented")
+    @Test public void testCanonise() throws Exception { testCanonise("Audio"); }
 }
