@@ -701,15 +701,26 @@ public class EPML2Canonical {
                         ((WorkType) node).getObjectRef().add(ref);
                     }
                 } else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
-                    ObjectRefType ref = new ObjectRefType();
-                    TypeAttribute att = new TypeAttribute();
-                    id_map.put(arc.getId(), String.valueOf(ids));
-                    att.setName("RefID");
-                    att.setValue(String.valueOf(ids++));
-                    ref.getAttribute().add(att);
-                    ref.setObjectId(id_map.get(arc.getRelation().getSource()));
-                    ref.setType(InputOutputType.INPUT);
-                    ((WorkType) node).getObjectRef().add(ref);
+                    if (arc.getRelation().getType() != null && arc.getRelation().getType().equals("role")) {
+                        ResourceTypeRefType ref = new ResourceTypeRefType();
+                        TypeAttribute att = new TypeAttribute();
+                        id_map.put(arc.getId(), String.valueOf(ids));
+                        att.setName("RefID");
+                        att.setValue(String.valueOf(ids++));
+                        ref.getAttribute().add(att);
+                        ref.setResourceTypeId(id_map.get(arc.getRelation().getSource()));
+                        ((WorkType) node).getResourceTypeRef().add(ref);
+                    } else {
+                        ObjectRefType ref = new ObjectRefType();
+                        TypeAttribute att = new TypeAttribute();
+                        id_map.put(arc.getId(), String.valueOf(ids));
+                        att.setName("RefID");
+                        att.setValue(String.valueOf(ids++));
+                        ref.getAttribute().add(att);
+                        ref.setObjectId(id_map.get(arc.getRelation().getSource()));
+                        ref.setType(InputOutputType.INPUT);
+                        ((WorkType) node).getObjectRef().add(ref);
+                    }
                 }
             }
         } else {
