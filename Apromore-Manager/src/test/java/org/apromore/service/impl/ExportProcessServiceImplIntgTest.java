@@ -8,6 +8,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.util.StreamUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import static org.hamcrest.Matchers.equalTo;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
@@ -56,7 +58,6 @@ public class ExportProcessServiceImplIntgTest {
 
 
     @Test
-    @Rollback(true)
     public void testExportProcessWithSingleEdgeInEPML() throws Exception {
         String cpfURI = "1";
         String name = "Test EPML 1";
@@ -81,7 +82,6 @@ public class ExportProcessServiceImplIntgTest {
     }
 
     @Test
-    @Rollback(true)
     public void testExportProcessWithJoinAndSplitInEPML() throws Exception {
         String cpfURI = "2";
         String name = "Test EPML 2";
@@ -107,7 +107,6 @@ public class ExportProcessServiceImplIntgTest {
     }
 
     @Test
-    @Rollback(true)
     public void testExportProcessWithObjectsResourcesInXPDL() throws Exception {
         String cpfURI = "3";
         String name = "Test XPDL 3";

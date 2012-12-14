@@ -8,6 +8,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -21,7 +22,6 @@ import java.util.HashSet;
 import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
@@ -31,12 +31,13 @@ import static org.junit.Assert.fail;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
-@Transactional
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+@TransactionConfiguration(defaultRollback = true)
 public class UIHelperImplIntgTest {
 
     @Inject
@@ -55,7 +56,7 @@ public class UIHelperImplIntgTest {
 
 
     @Test
-    @Rollback(true)
+    @Rollback
     public void TestUIHelper() throws Exception {
         createProcessModel("testUI", "1.0");
 
@@ -96,9 +97,6 @@ public class UIHelperImplIntgTest {
         ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, nativeType, cp, input, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-//        assertThat(pst.getDomain(), equalTo(domain));
-//        assertThat(pst.getOriginalNativeType(), equalTo(nativeType));
-//        assertThat(pst.getOwner(), equalTo(username));
     }
 
 }
