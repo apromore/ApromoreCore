@@ -16,9 +16,6 @@
                 <name>Store Invoice</name>
             </function>
             <and id="6"/>
-            <arc id="7">
-                <flow target="1"/>
-            </arc>
             <arc id="8">
                 <flow source="1" target="2"/>
             </arc>
@@ -36,11 +33,6 @@
             </arc>
             <arc id="13">
                 <flow source="5" target="6"/>
-            </arc>
-        </epc>
-        <epc epcId="16" name="EPC Name">
-            <arc id="15">
-                <flow/>
             </arc>
         </epc>
     </directory>
