@@ -109,7 +109,7 @@ public abstract class BaseYAWL2CPFTest {
             v.createImageAsPNG(net, true, TestUtils.createTestOutputFile(this.getClass(), getYAWLFile().getName() + "-" + net.getOriginalID() + ".png"));
         } catch (final IOException e) {
             // Just build image if Graphviz exists
-            System.out.println("WARN: " + e.getMessage());
+            LOGGER.debug("WARN: " + e.getMessage());
         }
     }
 

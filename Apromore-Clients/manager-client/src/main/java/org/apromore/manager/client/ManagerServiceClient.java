@@ -529,13 +529,13 @@ public class ManagerServiceClient implements ManagerService {
         //        	String medoidId = c.getMedoidId();
         //        	float avgFragSize = c.getAvgFragmentSize();
         //        	double BCR = c.getBCR();
-        //        	System.out.println(clusterSize + ", " + medoidId + ", " + avgFragSize);
+        //        	LOGGER.debug(clusterSize + ", " + medoidId + ", " + avgFragSize);
         //
         //        	List<FragmentData> fragments = c.getFragments();
         //        	for (FragmentData fragment : fragments) {
         //        		String fragmentId = fragment.getFragmentId();
         //        		double fragmentToMedoidDistance = fragment.getDistance();
-        //        		System.out.println(fragmentId + ": " + fragmentToMedoidDistance);
+        //        		LOGGER.debug(fragmentId + ": " + fragmentToMedoidDistance);
         //        	}
         //        }
         //
