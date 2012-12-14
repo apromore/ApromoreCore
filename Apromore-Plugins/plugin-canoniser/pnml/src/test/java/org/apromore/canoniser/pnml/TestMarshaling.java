@@ -7,6 +7,8 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.pnml.PnmlType;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -37,6 +39,8 @@ import java.io.IOException;
  */
 @Ignore
 public class TestMarshaling {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestMarshaling.class.getName());
 
     @Test
     @SuppressWarnings("unchecked")
@@ -103,7 +107,7 @@ public class TestMarshaling {
         } catch (IOException ioe) {
             throw new Exception("Error reading file.", ioe);
         }
-        System.out.println("If nothing else occured: Success!");
+        LOGGER.debug("If nothing else occured: Success!");
     }
 
 }

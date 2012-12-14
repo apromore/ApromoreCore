@@ -179,7 +179,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             reportingInterval = 0;
             double percentage = (double) processedPairs * 100 / totalPairs;
             percentage = (double) Math.round((percentage * 1000)) / 1000d;
-            System.out.println(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s");
+            //System.out.println(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s");
 
             clusterRepository.insertDistances(dissimmap);
             dissimmap.clear();

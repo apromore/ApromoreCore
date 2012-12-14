@@ -4,60 +4,64 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.Canonical2PNML;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.NamespaceFilter;
 import org.apromore.cpf.CanonicalProcessType;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.apromore.pnml.ObjectFactory;
 import org.apromore.pnml.PnmlType;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import static org.junit.Assert.assertTrue;
 
 @Ignore
 public class Canonical2PNMLTest {
 
-	File anf_file = null;
-	File cpf_file = null;
-	File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
-	File output = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2PNMLTest.class.getName());
+
+    File anf_file = null;
+    File cpf_file = null;
+    File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
+    File output = null;
 
     @Test
     public void testNothing() {
         assertTrue(true);
     }
 
-	/**
-	 * @param args
-	 */
-	public void main(String[] args) {
+    /**
+     * @param args
+     */
+    public void main(String[] args) {
 
-		String cpf_file_without_path = null;
-		String anf_file_without_path = null;
+        String cpf_file_without_path = null;
+        String anf_file_without_path = null;
 
-		File anf_file = null;
-		File cpf_file = null;
-		File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
-		File output = null;
-		File folder = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_cpf_anf");
-		FileFilter fileFilter = new FileFilter() {
-			public boolean accept(File file) {
-				return file.isFile();
-			}
-		};
-		File[] folderContent = folder.listFiles(fileFilter);
-		int n = 0;
+        File anf_file = null;
+        File cpf_file = null;
+        File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
+        File output = null;
+        File folder = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_cpf_anf");
+        FileFilter fileFilter = new FileFilter() {
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+        };
+        File[] folderContent = folder.listFiles(fileFilter);
+        int n = 0;
 
         for (File file : folderContent) {
             String filename = file.getName();
@@ -66,24 +70,22 @@ public class Canonical2PNMLTest {
 
             String extension = filename.split("\\.")[filename.split("\\.").length - 1];
 
-            output = new File(foldersave + "/" + filename_without_path
-                    + ".pnml");
+            output = new File(foldersave + "/" + filename_without_path + ".pnml");
 
             if (!filename.contains("subnet")) {
-                if (extension.compareTo("cpf") == 0
-                        && extension.compareTo("anf") == 0) {
-                    System.out.println("Skipping " + filename);
+                if (extension.compareTo("cpf") == 0 && extension.compareTo("anf") == 0) {
+                    LOGGER.debug("Skipping " + filename);
                 }
 
                 if (extension.compareTo("anf") == 0) {
-                    System.out.println("Analysing " + filename);
+                    LOGGER.debug("Analysing " + filename);
                     n++;
                     anf_file = new File(folder + "/" + filename);
                     anf_file_without_path = filename_without_path;
                 }
 
                 if (extension.compareTo("cpf") == 0) {
-                    System.out.println("Analysing " + filename);
+                    LOGGER.debug("Analysing " + filename);
                     n++;
                     cpf_file = new File(folder + "/" + filename);
                     cpf_file_without_path = filename_without_path;
@@ -91,24 +93,17 @@ public class Canonical2PNMLTest {
                 }
             }
 
-            if (anf_file != null && cpf_file != null
-                    && anf_file_without_path != null
-                    && cpf_file_without_path != null
-                    && anf_file_without_path.equals(cpf_file_without_path)
-                    && !filename.contains("subnet")) {
+            if (anf_file != null && cpf_file != null && anf_file_without_path != null && cpf_file_without_path != null && anf_file_without_path.equals(cpf_file_without_path) && !filename.contains("subnet")) {
 
                 try {
-                    JAXBContext jc = JAXBContext
-                            .newInstance("org.apromore.cpf");
+                    JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
                     Unmarshaller u = jc.createUnmarshaller();
-                    JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u
-                            .unmarshal(cpf_file);
+                    JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_file);
                     CanonicalProcessType cpf = rootElement.getValue();
 
                     jc = JAXBContext.newInstance("org.apromore.anf");
                     u = jc.createUnmarshaller();
-                    JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u
-                            .unmarshal(anf_file);
+                    JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_file);
                     AnnotationsType anf = anfRootElement.getValue();
 
                     // Canonical2EPML canonical2epml_1 = new
@@ -116,8 +111,7 @@ public class Canonical2PNMLTest {
 
                     jc = JAXBContext.newInstance("org.apromore.pnml");
 
-                    Canonical2PNML canonical2pnml = new Canonical2PNML(cpf,
-                            anf, filename_without_path);
+                    Canonical2PNML canonical2pnml = new Canonical2PNML(cpf, anf, filename_without_path);
 
                     Marshaller m1 = jc.createMarshaller();
 
@@ -132,8 +126,7 @@ public class Canonical2PNMLTest {
 
                     XMLWriter writer = null;
                     try {
-                        writer = new XMLWriter(new FileOutputStream(output),
-                                format);
+                        writer = new XMLWriter(new FileOutputStream(output), format);
                     } catch (UnsupportedEncodingException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -157,8 +150,7 @@ public class Canonical2PNMLTest {
                 }
             }
         }
-		System.out.println("Analysed " + n + " files.");
-
-	}
+        LOGGER.debug("Analysed " + n + " files.");
+    }
 
 }
