@@ -639,6 +639,7 @@ public class MainController extends BaseController {
     public void updateSelectedListBox(List<Integer> processIds) {
         BaseListboxController baseListBoxController = getBaseListboxController();
         if (baseListBoxController != null) {
+            baseListBoxController.getListModel().clearSelection();
             if ((baseListBoxController instanceof ProcessListboxController)) {
                 for (ProcessSummaryType pst : (List<ProcessSummaryType>) baseListBoxController.getListModel()) {
                     for (Integer i : processIds) {

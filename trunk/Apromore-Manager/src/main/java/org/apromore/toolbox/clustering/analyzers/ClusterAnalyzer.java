@@ -98,7 +98,7 @@ public class ClusterAnalyzer {
 
                     } else if (medoidProps[1] == maxBenifitCostRatio) {
                         if (medoidProps[0] < maxDistance) {
-                            System.out.println("New medoid is better :)");
+//                            System.out.println("New medoid is better :)");
                             maxDistance = medoidProps[0];
                             maxBenifitCostRatio = medoidProps[1];
                             standardizingEffot = medoidProps[2];
