@@ -1,0 +1,18 @@
+<vlayout>
+    <style>
+        .z-listbox-autopaging .z-listcell-cnt {
+            height: 23px;
+            overflow: hidden;
+        }
+    </style>
+    <listbox id="lstPermissions" vflex="true" span="true" height="300px"
+             autopaging="true" mold="paging" multiple="true">
+        <listhead sizable="true">
+            <listheader hflex="min" label="Name" sort="auto(name)"/>
+            <listheader hflex="min" label="Read"/>
+            <listheader hflex="min" label="Write"/>
+            <listheader hflex="min" label="Owner"/>
+            <listheader hflex="min" label="" visible="true"/>
+        </listhead>
+    </listbox>
+</vlayout>

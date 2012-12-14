@@ -1,5 +1,42 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
+import org.apromore.model.ClusterFilterType;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.FolderType;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginMessage;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SearchHistoriesType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.exception.ExceptionFormats;
+import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.ClientInfoEvent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Window;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,35 +48,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PluginMessage;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.ClientInfoEvent;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.South;
-import org.zkoss.zul.Window;
-
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
@@ -64,10 +72,18 @@ public class MainController extends BaseController {
     private Logger LOG;
     private String msgWhenClose;
     private List<SearchHistoriesType> searchHistory;
+    private Hbox pagingandbuttons;
+    private Component workspaceOptionsPanel;
+    private Html folders;
+    public Html breadCrumbs;
+    private Div listView;
+    private Button btnTileView;
 
+    private WorkspaceOptionsController workspaceOptionsController;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
     private BaseFilterController baseFilterController;
+    private NavigationController navigation;
 
 
     // uncomment when ready
@@ -87,23 +103,30 @@ public class MainController extends BaseController {
                 throw new Exception("Sorry, we currently support firefox only.");
             }
             this.LOG = Logger.getLogger(MainController.class.getName());
-            /**
-             * to get data
-             */
+
             this.mainW = (Window) this.getFellow("mainW");
             this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
+            this.pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
+            this.workspaceOptionsPanel = mainW.getFellow("workspaceOptionsPanel");
+            this.folders = (Html) mainW.getFellow("folders");
+            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+            this.listView = (Div) mainW.getFellow("listView");
+            this.btnTileView = (Button) mainW.getFellow("btnTileView");
+
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.header = new HeaderController(this);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
+            this.workspaceOptionsController = new WorkspaceOptionsController(this);
 
             // this.navigation = new NavigationController (this);
             switchToProcessSummaryView();
+            this.navigation = new NavigationController(this);
+            loadWorkspace();
 
             this.currentUser = null;
             this.searchHistory = new ArrayList<SearchHistoriesType>();
             this.msgWhenClose = null;
-            // read Oryx access point in properties
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
 
             Properties properties = new Properties();
@@ -111,18 +134,92 @@ public class MainController extends BaseController {
             this.host = properties.getProperty("Host");
             this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
             this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
+            UserSessionManager.setMainController(this);
+            toggleView(true);
+
+            this.btnTileView.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    toggleView(true);
+                }
+            });
 
         } catch (Exception e) {
             String message = null;
             if (e.getMessage() == null) {
                 message = "Please contact Apromore's administrator";
-            }
-            else {
+            } else {
                 message = e.getMessage();
             }
             e.printStackTrace();
             Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+
+    public void loadTree() {
+        List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        UserSessionManager.setTree(folders);
+        this.navigation.loadWorkspace();
+    }
+
+    public void toggleView(boolean showTiles) {
+        this.pagingandbuttons.setVisible(!showTiles);
+        this.workspaceOptionsPanel.setVisible(showTiles);
+        this.folders.setVisible(showTiles);
+        this.listView.setVisible(!showTiles);
+    }
+
+    public void loadWorkspace() {
+        updateActions();
+        String userId = UserSessionManager.getCurrentUser().getId();
+        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+
+        this.loadTree();
+
+        List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
+        List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
+
+        Html html = (Html) (this.getFellow("folders"));
+        if (UserSessionManager.getCurrentFolder() != null) {
+            FolderType folder = UserSessionManager.getCurrentFolder();
+            folder.getFolders().clear();
+            for (FolderType newFolder : folders) {
+                folder.getFolders().add(newFolder);
+            }
+            UserSessionManager.setCurrentFolder(folder);
+        }
+
+        buildWorkspaceControls(html, folders, availableProcesses);
+        Clients.evalJavaScript("bindTiles();");
+    }
+
+    public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
+        String content = "<ul class='workspace'>";
+
+        for (FolderType folder : folders) {
+            int access = 1;
+            if (folder.isHasWrite()) {
+                access = 2;
+            }
+            if (folder.isHasOwnership()) {
+                access = 4;
+            }
+            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
+        }
+
+        for (ProcessSummaryType process : processes) {
+            int access = 1;
+            if (process.isHasWrite()) {
+                access = 2;
+            }
+            if (process.isHasOwnership()) {
+                access = 4;
+            }
+            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
+        }
+
+        content += "</ul>";
+        html.setContent(content);
+
     }
 
     /**
@@ -142,23 +239,19 @@ public class MainController extends BaseController {
      * @param version
      * @throws Exception
      */
-    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult,
-            final ProcessSummaryType process, final VersionSummaryType version) {
+    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult, final ProcessSummaryType process, final VersionSummaryType version) {
         if (isQueryResult) {
             clearProcessVersions();
         }
 
         // TODO switch to process query result view
         switchToProcessSummaryView();
-        ((ProcessListboxController) this.baseListboxController)
-                .displayProcessSummaries(processSummaries, isQueryResult,
-                        process, version);
+        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(processSummaries, isQueryResult, process, version);
     }
 
     // disable/enable features depending on user status
     public void updateActions() {
-
-        Boolean connected = this.currentUser != null;
+        Boolean connected = UserSessionManager.getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
         Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
@@ -173,17 +266,23 @@ public class MainController extends BaseController {
     }
 
     public void reloadProcessSummaries() {
-        ProcessSummariesType processSummaries = getService()
-                .readProcessSummaries("");
+        ProcessSummariesType processSummaries = getService().readProcessSummaries("");
+        processSummaries.getProcessSummary().clear();
+        UserType user = UserSessionManager.getCurrentUser();
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+
+        List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
+        for (ProcessSummaryType processSummary : processSummaryTypes) {
+            processSummaries.getProcessSummary().add(processSummary);
+        }
+
         String message = null;
         if (processSummaries.getProcessSummary().size() > 1) {
             message = " processes.";
-        }
-        else {
+        } else {
             message = " process.";
         }
-        this.displayMessage(processSummaries.getProcessSummary().size()
-                + message);
+        this.displayMessage(processSummaries.getProcessSummary().size() + message);
         this.simplesearch.clearSearches();
         this.displayProcessSummaries(processSummaries, false, null, null);
     }
@@ -206,10 +305,9 @@ public class MainController extends BaseController {
      */
     public void displayNewProcess(final ProcessSummaryType returnedProcess) {
         switchToProcessSummaryView();
-        ((ProcessListboxController) this.baseListboxController)
-                .displayNewProcess(returnedProcess);
-        this.displayMessage(this.baseListboxController.getListModel().getSize()
-                + " processes.");
+        ((ProcessListboxController) this.baseListboxController).displayNewProcess(returnedProcess);
+        this.displayMessage(this.baseListboxController.getListModel().getSize() + " processes.");
+        loadWorkspace();
     }
 
     /**
@@ -255,10 +353,7 @@ public class MainController extends BaseController {
      * @throws InterruptedException
      * @throws Exception
      */
-    public void editProcess(final ProcessSummaryType process,
-                            final VersionSummaryType version, final String nativeType, final String annotation,
-                            final String readOnly) throws InterruptedException {
-
+    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation, final String readOnly) throws InterruptedException {
         String instruction = "", url = getHost();
         int offsetH = 100, offsetV = 200;
         int editSessionCode;
@@ -267,7 +362,7 @@ public class MainController extends BaseController {
         editSession.setNativeType(nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
-        editSession.setUsername(this.getCurrentUser().getUsername());
+        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
         editSession.setVersionName(version.getName());
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
@@ -283,16 +378,12 @@ public class MainController extends BaseController {
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             url = "macros/OpenModelInSignavio.zul";
-            instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV
-                    + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+            instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'); ";
 
             // Send http post to Oryx
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
-            Messagebox
-                    .show("Cannot edit " + process.getName() + " ("
-                            + e.getMessage() + ")", "Attention", Messagebox.OK,
-                            Messagebox.ERROR);
+            Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -344,10 +435,9 @@ public class MainController extends BaseController {
         this.currentUser = currentUser;
         if (currentUser == null) {
             this.msgWhenClose = null;
-        }
-        else {
+        } else {
             this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
-            this.searchHistory = this.currentUser.getSearchHistories();
+            //this.searchHistory = this.currentUser.getSearchHistories();
         }
     }
 
@@ -415,28 +505,24 @@ public class MainController extends BaseController {
         HashMap<String, String> formats = new HashMap<String, String>();
         NativeTypesType nativeTypesDB = getService().readNativeTypes();
         for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
-            formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
-                    nativeTypesDB.getNativeType().get(i).getFormat());
+            formats.put(nativeTypesDB.getNativeType().get(i).getExtension(), nativeTypesDB.getNativeType().get(i).getFormat());
         }
         return formats;
     }
 
     public void displayProcessVersions(final ProcessSummaryType data) {
         switchToProcessSummaryView();
-        ((ProcessVersionDetailController) this.baseDetailController)
-                .displayProcessVersions(data);
+        ((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
     public void clearProcessVersions() {
         switchToProcessSummaryView();
-        ((ProcessVersionDetailController) this.baseDetailController)
-                .clearProcesVersions();
+        ((ProcessVersionDetailController) this.baseDetailController).clearProcesVersions();
     }
 
     public void displaySimilarityClusters(final ClusterFilterType filter) {
         switchToSimilarityClusterView();
-        ((SimilarityClustersListboxController) this.baseListboxController)
-                .displaySimilarityClusters(filter);
+        ((SimilarityClustersListboxController) this.baseListboxController).displaySimilarityClusters(filter);
     }
 
     @SuppressWarnings("unchecked")
@@ -445,8 +531,7 @@ public class MainController extends BaseController {
             ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
             //ZK returns untyped Set, but we can assume it is of type ProcessSummaryType here!
             return processController.getListModel().getSelection();
-        }
-        else {
+        } else {
             return new HashSet<ProcessSummaryType>();
         }
     }
@@ -466,12 +551,9 @@ public class MainController extends BaseController {
      * Attaches the the listbox, detail and filter view
      */
     private void reattachDynamicUI() {
-        getFellow("baseFilter").getFellow("filtercomp").appendChild(
-                this.baseFilterController);
-        getFellow("baseListbox").getFellow("tablecomp").appendChild(
-                this.baseListboxController);
-        getFellow("baseDetail").getFellow("detailcomp").appendChild(
-                this.baseDetailController);
+        getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
+        getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
+        getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
     }
 
     /**
@@ -479,16 +561,13 @@ public class MainController extends BaseController {
      * listbox, detail and filter view
      */
     private void switchToProcessSummaryView() {
-
         // TODO should replace this with TabBox!! and without all these
         // instanceof checks!
-
         if (this.baseListboxController != null) {
             if ((this.baseListboxController instanceof ProcessListboxController)) {
                 // Everything is correctly setup
                 return;
-            }
-            else {
+            } else {
                 // Another view is currently displayed
                 deattachDynamicUI();
             }
@@ -521,8 +600,7 @@ public class MainController extends BaseController {
             if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
                 // Everything is correctly setup
                 return;
-            }
-            else {
+            } else {
                 // Another view is currently displayed
                 deattachDynamicUI();
             }
@@ -530,12 +608,8 @@ public class MainController extends BaseController {
 
         // Otherwise create new Listbox
         this.baseFilterController = new SimilarityClustersFilterController(this);
-        this.baseDetailController = new SimilarityClustersFragmentsListboxController(
-                this);
-        this.baseListboxController = new SimilarityClustersListboxController(
-                this,
-                (SimilarityClustersFilterController) this.baseFilterController,
-                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+        this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
+        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
 
@@ -556,6 +630,24 @@ public class MainController extends BaseController {
             }
             if (sb.length() > 0) {
                 Messagebox.show(sb.toString(), "Plugin Warnings", Messagebox.OK, Messagebox.EXCLAMATION);
+            }
+        }
+    }
+
+    /* Update the List box from the folder view with what is selected and what isn't. */
+    @SuppressWarnings("unchecked")
+    public void updateSelectedListBox(List<Integer> processIds) {
+        BaseListboxController baseListBoxController = getBaseListboxController();
+        if (baseListBoxController != null) {
+            if ((baseListBoxController instanceof ProcessListboxController)) {
+                for (ProcessSummaryType pst : (List<ProcessSummaryType>) baseListBoxController.getListModel()) {
+                    for (Integer i : processIds) {
+                        if (pst != null && pst.getId().equals(i)) {
+                            baseListBoxController.getListModel().addSelection(pst);
+                        }
+                    }
+                }
+                displayProcessVersions((ProcessSummaryType) getBaseListboxController().getListModel().getSelection().iterator().next());
             }
         }
     }

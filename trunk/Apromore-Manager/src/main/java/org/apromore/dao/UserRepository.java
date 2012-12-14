@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Interface domain model Data access object User.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
@@ -12,14 +14,26 @@ import org.springframework.stereotype.Repository;
  * @see org.apromore.dao.model.User
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer>, UserRepositoryCustom {
 
     /**
-     * Finds a User in the System.
+     * Gets specified User in the System.
      * @param username the username of the user we are searching for.
      * @return the username of the user we are searching for.
      */
-    @Query("SELECT usr FROM User usr WHERE usr.username = ?1")
-    User findUserByLogin(String username);
+    User findByUsername(String username);
 
+    /**
+     * Gets specified User in the System.
+     * @param rowGuid the id of the user we are searching for.
+     * @return the id of the user we are searching for.
+     */
+    User findByRowGuid(String rowGuid);
+
+    /**
+     * Searches user by username.
+     * @param searchString the username of the user we are searching for.
+     * @return the username of the user we are searching for.
+     */
+    List<User> findByUsernameLike(String searchString);
 }

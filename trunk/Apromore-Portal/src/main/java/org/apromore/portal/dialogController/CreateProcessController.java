@@ -17,6 +17,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
@@ -103,7 +104,7 @@ public class CreateProcessController extends BaseController {
         rankingR.setVisible(false);
 
         // default values
-        this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
+        this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
 
         Set<String> extensions = this.formats_ext.keySet();
         Iterator<String> it = extensions.iterator();
@@ -157,7 +158,7 @@ public class CreateProcessController extends BaseController {
             } else {
                 String domain = this.domainCB.getValue();
                 String processName = this.processNameT.getValue();
-                String owner = this.mainC.getCurrentUser().getUsername();
+                String owner = UserSessionManager.getCurrentUser().getUsername();
                 String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
                 String versionName = "0.0";
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");

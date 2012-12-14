@@ -3,37 +3,57 @@ package org.apromore.dao.model;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the process in apromore.
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * @author Cameron James
  */
 @Entity
 @Table(name = "user",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id"}),
+                @UniqueConstraint(columnNames = {"row_guid"}),
+                @UniqueConstraint(columnNames = {"username"})
+        }
+)
 @Configurable("user")
 public class User implements Serializable {
 
     private Integer id;
+    private String rowGuid = UUID.randomUUID().toString();
     private String username;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String passwd;
+    private String firstName;
+    private String lastName;
+    private Date dateCreated;
+    private Date lastActivityDate;
 
+    private Membership membership = new Membership();
+
+    private Set<Role> roles = new HashSet<Role>();
+    private Set<ProcessUser> processUsers = new HashSet<ProcessUser>(0);
+    private Set<Workspace> workspaces = new HashSet<Workspace>(0);
+    private Set<FragmentUser> fragmentUsers = new HashSet<FragmentUser>(0);
+    private Set<FolderUser> folderUsers = new HashSet<FolderUser>(0);
+    private Set<Folder> foldersForCreatorId = new HashSet<Folder>(0);
+    private Set<EditSession> editSessionMappings = new HashSet<EditSession>(0);
+    private Set<Folder> foldersForModifiedById = new HashSet<Folder>(0);
     private Set<Process> processes = new HashSet<Process>(0);
-    private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
 
 
@@ -45,144 +65,234 @@ public class User implements Serializable {
 
 
     /**
-     * returns the Id of this Object.
-     * @return the id
-     */
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Integer getId() {
-        return this.id;
-    }
-
-    /**
-     * Sets the Id of this Object
-     * @param id the new Id.
-     */
-    public void setId(final Integer id) {
-        this.id = id;
-    }
-
-
-    /**
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */
-    @Column(name = "username", unique = true, nullable = false, length = 10)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * Set the id for the Object.
+     * @param newId The role name to set.
+     */
+    public void setId(final Integer newId) {
+        this.id = newId;
+    }
+
+    /**
+     * Get the row unique identifier for the Object.
+     * @return Returns the row unique identifier.
+     */
+    @Column(name = "row_guid", unique = true)
+    public String getRowGuid() {
+        return rowGuid;
+    }
+
+    /**
+     * Set the row unique identifier for the Object.
+     * @param newRowGuid The row unique identifier to set.
+     */
+    public void setRowGuid(final String newRowGuid) {
+        this.rowGuid = newRowGuid;
+    }
+
+    /**
+     * Get the username for the Object.
+     * @return Returns the username.
+     */
+    @Column(name = "username")
     public String getUsername() {
         return username;
     }
 
     /**
-     * Set the Primary Key for the Object.
-     * @param newUsername The id to set.
+     * Set the username for the Object.
+     * @param newUsername The username to set.
      */
     public void setUsername(final String newUsername) {
         this.username = newUsername;
     }
 
-
     /**
-     * Get the firstname for the Object.
-     * @return Returns the firstname.
+     * Get the first name for the Object.
+     * @return Returns the first name.
      */
-    @Column(name = "firstname", unique = false, nullable = true, length = 40)
-    public String getFirstname() {
-        return firstname;
+    @Column(name = "first_name")
+    public String getFirstName() {
+        return firstName;
     }
 
     /**
-     * Set the firstname for the Object.
-     * @param newFirstname The firstname to set.
+     * Set the first name for the Object.
+     * @param newFirstName The first name to set.
      */
-    public void setFirstname(final String newFirstname) {
-        this.firstname = newFirstname;
+    public void setFirstName(final String newFirstName) {
+        this.firstName = newFirstName;
     }
 
     /**
-     * Get the lastname for the Object.
-     * @return Returns the lastname.
+     * Get the last name for the Object.
+     * @return Returns the last name.
      */
-    @Column(name = "lastname", unique = false, nullable = true, length = 40)
-    public String getLastname() {
-        return lastname;
+    @Column(name = "last_name")
+    public String getLastName() {
+        return lastName;
     }
 
     /**
-     * Set the lastname for the Object.
-     * @param newLastname The lastname to set.
+     * Set the last name for the Object.
+     * @param newLastName The last name to set.
      */
-    public void setLastname(final String newLastname) {
-        this.lastname = newLastname;
+    public void setLastName(final String newLastName) {
+        this.lastName = newLastName;
     }
 
     /**
-     * Get the email for the Object.
-     * @return Returns the email.
+     * Get the date created for the Object.
+     * @return Returns the date created.
      */
-    @Column(name = "email", unique = true, nullable = true, length = 80)
-    public String getEmail() {
-        return email;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_created")
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
     /**
-     * Set the Email for the Object.
-     * @param newEmail The Email to set.
+     * Set the date created for the Object.
+     * @param newDateCreated The date created to set.
      */
-    public void setEmail(final String newEmail) {
-        this.email = newEmail;
+    public void setDateCreated(final Date newDateCreated) {
+        this.dateCreated = newDateCreated;
     }
 
     /**
-     * Get the password for the Object.
-     * @return Returns the password.
+     * Get the last activity date for the Object.
+     * @return Returns the last activity date.
      */
-    @Column(name = "passwd", unique = false, nullable = false, length = 80)
-    public String getPasswd() {
-        return passwd;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "last_activity_date")
+    public Date getLastActivityDate() {
+        return lastActivityDate;
     }
 
     /**
-     * Set the password for the Object.
-     * @param newPassword The password to set.
+     * Set the last activity date for the Object.
+     * @param newLastActivityDate The last activity date to set.
      */
-    public void setPasswd(final String newPassword) {
-        this.passwd = newPassword;
+    public void setLastActivityDate(final Date newLastActivityDate) {
+        this.lastActivityDate = newLastActivityDate;
+    }
+
+    /**
+     * Get the membership for the Object.
+     * @return Returns the membership.
+     */
+    @OneToOne(mappedBy = "user")
+    public Membership getMembership() {
+        return this.membership;
+    }
+
+    /**
+     * Set the membership for the Object.
+     * @param newMembership The membership to set.
+     */
+    public void setMembership(final Membership newMembership) {
+        this.membership = newMembership;
     }
 
 
     /**
-     * Get the processes for the Object.
-     * @return Returns the processes.
+     * Getter for the role collection.
+     * @return Returns the roles.
      */
+    @ManyToMany(mappedBy = "users")
+    public Set<Role> getRoles() {
+        return this.roles;
+    }
+
+    /**
+     * Setter for the role Collection.
+     * @param newRoles The roles to set.
+     */
+    public void setRoles(final Set<Role> newRoles) {
+        this.roles = newRoles;
+    }
+
+
+    @OneToMany(mappedBy = "user")
+    public Set<ProcessUser> getProcessUsers() {
+        return this.processUsers;
+    }
+
+    public void setProcessUsers(Set<ProcessUser> processUsers) {
+        this.processUsers = processUsers;
+    }
+
+    @OneToMany(mappedBy = "createdBy")
+    public Set<Workspace> getWorkspaces() {
+        return this.workspaces;
+    }
+
+    public void setWorkspaces(Set<Workspace> workspaces) {
+        this.workspaces = workspaces;
+    }
+
+    @OneToMany(mappedBy = "user")
+    public Set<FragmentUser> getFragmentUsers() {
+        return this.fragmentUsers;
+    }
+
+    public void setFragmentUsers(Set<FragmentUser> fragmentUsers) {
+        this.fragmentUsers = fragmentUsers;
+    }
+
+    @OneToMany(mappedBy = "user")
+    public Set<FolderUser> getFolderUsers() {
+        return this.folderUsers;
+    }
+
+    public void setFolderUsers(Set<FolderUser> folderUsers) {
+        this.folderUsers = folderUsers;
+    }
+
+    @OneToMany(mappedBy = "createdBy")
+    public Set<Folder> getFoldersForCreatorId() {
+        return this.foldersForCreatorId;
+    }
+
+    public void setFoldersForCreatorId(Set<Folder> foldersForCreatorId) {
+        this.foldersForCreatorId = foldersForCreatorId;
+    }
+
+    @OneToMany(mappedBy = "user")
+    public Set<EditSession> getEditSessionMappings() {
+        return this.editSessionMappings;
+    }
+
+    public void setEditSessionMappings(Set<EditSession> editSessionMappings) {
+        this.editSessionMappings = editSessionMappings;
+    }
+
+    @OneToMany(mappedBy = "modifiedBy")
+    public Set<Folder> getFoldersForModifiedById() {
+        return this.foldersForModifiedById;
+    }
+
+    public void setFoldersForModifiedById(Set<Folder> foldersForModifiedById) {
+        this.foldersForModifiedById = foldersForModifiedById;
+    }
+
     @OneToMany(mappedBy = "user")
     public Set<Process> getProcesses() {
         return this.processes;
     }
 
-    /**
-     * Set the processes for the Object.
-     * @param newProcesses The processes to set.
-     */
-    public void setProcesses(final Set<Process> newProcesses) {
-        this.processes = newProcesses;
-    }
-
-    /**
-     * Get the editSessions for the Object.
-     * @return Returns the editSessions.
-     */
-    @OneToMany(mappedBy = "user")
-    public Set<EditSession> getEditSessions() {
-        return this.editSessions;
-    }
-
-    /**
-     * Set the editSessions for the Object.
-     * @param newEditSessions The editSessions to set.
-     */
-    public void setEditSessions(final Set<EditSession> newEditSessions) {
-        this.editSessions = newEditSessions;
+    public void setProcesses(Set<Process> processes) {
+        this.processes = processes;
     }
 
     /**

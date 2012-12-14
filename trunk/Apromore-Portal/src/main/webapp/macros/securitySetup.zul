@@ -1,0 +1,23 @@
+<?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
+<?component name="Permissions" macroURI="/macros/permissions.zul" ?>
+<?component name="Users" macroURI="/macros/users.zul" ?>
+
+<window width="900px" closable="true" title="Manage Security" position="center" id="winSecuritySetup">
+
+    <hbox spacing="0" width="100%" widths="30%,70%" height="670px">
+        <borderlayout vflex="true" width="100%">
+            <center title="My Workspace" flex="true">
+                <FolderTree id="mainTree"/>
+            </center>
+        </borderlayout>
+        <splitter id="s2" collapse="before"/>
+        <borderlayout vflex="true" width="100%">
+            <north title="Permissions" flex="true" splittable="true" height="330px">
+                <Permissions id="existingPermissions"/>
+            </north>
+            <center title="Users" flex="true">
+                <Users id="findUsers"/>
+            </center>
+        </borderlayout>
+    </hbox>
+</window>

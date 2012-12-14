@@ -8,12 +8,14 @@ import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessUser;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,8 @@ public class UIHelper implements UserInterfaceHelper {
     private ProcessRepository processRepository;
     private NativeRepository nativeRepository;
 
+    private WorkspaceService workspaceService;
+
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -44,10 +48,11 @@ public class UIHelper implements UserInterfaceHelper {
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository, final ProcessRepository processRepository,
-            final NativeRepository nativeRepository) {
+            final NativeRepository nativeRepository, final WorkspaceService workspaceService) {
         this.annotationRepository = annotationRepository;
         this.processRepository = processRepository;
         this.nativeRepository = nativeRepository;
+        this.workspaceService = workspaceService;
     }
 
 
@@ -96,38 +101,72 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /**
-     * Builds the list of process Summaries and kicks off the versions and annotations.
-     *
-     * @param conditions       the search conditions
-     * @param similarProcesses
-     * @return the list of process Summaries
+     * @see UserInterfaceHelper#buildProcessSummaryList(String, org.apromore.model.ProcessVersionsType)
+     * {@inheritDoc}
      */
     public ProcessSummariesType buildProcessSummaryList(String conditions, ProcessVersionsType similarProcesses) {
+        ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
-        ProcessSummaryType processSummary;
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<Process> processes = processRepository.findAllProcesses(conditions);
-        for (Process pro : processes) {
-            if (!proIds.isEmpty() && !proIds.contains(pro.getId())) {
-                continue;
-            }
-            processSummary = new ProcessSummaryType();
-            processSummary.setId(pro.getId());
-            processSummary.setName(pro.getName());
-            processSummary.setDomain(pro.getDomain());
-            processSummary.setRanking("");
-            if (pro.getNativeType() != null) {
-                processSummary.setOriginalNativeType(pro.getNativeType().getNatType());
-            }
-            if (pro.getUser() != null) {
-                processSummary.setOwner(pro.getUser().getUsername());
-            }
-            buildVersionSummaryTypeList(processSummary, pro);
 
-            processSummaries.getProcessSummary().add(processSummary);
+        for (Process process : processes) {
+            processSummaryType = buildProcessList(proIds, process);
+            if (processSummaryType != null) {
+                processSummaries.getProcessSummary().add(processSummaryType);
+            }
         }
+
         return processSummaries;
+    }
+
+
+    /**
+     * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.model.ProcessVersionsType)
+     * {@inheritDoc}
+     */
+    public ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses) {
+        ProcessSummaryType processSummaryType;
+        ProcessSummariesType processSummaries = new ProcessSummariesType();
+
+        List<Integer> proIds = buildProcessIdList(similarProcesses);
+        List<ProcessUser> processes = workspaceService.getUserProcesses(userId, folderId);
+
+        for (ProcessUser processUser : processes) {
+            processSummaryType = buildProcessList(proIds, processUser.getProcess());
+            if (processSummaryType != null) {
+                processSummaryType.setHasRead(processUser.isHasRead());
+                processSummaryType.setHasWrite(processUser.isHasWrite());
+                processSummaryType.setHasOwnership(processUser.isHasOwnership());
+                processSummaries.getProcessSummary().add(processSummaryType);
+            }
+        }
+
+        return processSummaries;
+    }
+
+
+    /* Builds the list from a process record. */
+    private ProcessSummaryType buildProcessList(List<Integer> proIds, Process process) {
+        ProcessSummaryType processSummary = null;
+        if (!proIds.isEmpty() && !proIds.contains(process.getId())) {
+            return processSummary;
+        }
+        processSummary = new ProcessSummaryType();
+        processSummary.setId(process.getId());
+        processSummary.setName(process.getName());
+        processSummary.setDomain(process.getDomain());
+        processSummary.setRanking("");
+        if (process.getNativeType() != null) {
+            processSummary.setOriginalNativeType(process.getNativeType().getNatType());
+        }
+        if (process.getUser() != null) {
+            processSummary.setOwner(process.getUser().getUsername());
+        }
+        buildVersionSummaryTypeList(processSummary, process);
+
+        return processSummary;
     }
 
 

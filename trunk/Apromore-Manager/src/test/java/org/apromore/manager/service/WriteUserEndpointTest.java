@@ -17,9 +17,11 @@ import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.CanonicalConverterAdapter;
@@ -32,9 +34,11 @@ import org.apromore.service.impl.FragmentServiceImpl;
 import org.apromore.service.impl.MergeServiceImpl;
 import org.apromore.service.impl.PluginServiceImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
+import org.apromore.service.impl.SecurityServiceImpl;
 import org.apromore.service.impl.SessionServiceImpl;
 import org.apromore.service.impl.SimilarityServiceImpl;
 import org.apromore.service.impl.UserServiceImpl;
+import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +46,7 @@ import org.junit.Test;
 
 import javax.xml.bind.JAXBElement;
 
+import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replayAll;
@@ -66,6 +71,8 @@ public class WriteUserEndpointTest {
     private SimilarityService simSrv;
     private MergeService merSrv;
     private SessionService sesSrv;
+    private SecurityService secSrv;
+    private WorkspaceService wrkSrv;
     private UserInterfaceHelper uiHelper;
     private CanonicalConverter convertor;
     private ManagerCanoniserClient caClient;
@@ -84,12 +91,14 @@ public class WriteUserEndpointTest {
         simSrv = createMock(SimilarityServiceImpl.class);
         merSrv = createMock(MergeServiceImpl.class);
         sesSrv = createMock(SessionServiceImpl.class);
+        secSrv = createMock(SecurityServiceImpl.class);
+        wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
         convertor = createMock(CanonicalConverterAdapter.class);
         caClient = createMock(ManagerCanoniserClient.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, uiHelper, convertor, caClient);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper, convertor, caClient);
     }
 
 
@@ -105,7 +114,7 @@ public class WriteUserEndpointTest {
         msg.setUser(userType);
         JAXBElement<WriteUserInputMsgType> request = new ObjectFactory().createWriteUserRequest(msg);
 
-        userSrv.writeUser(EasyMock.<User>anyObject());
+        expect(secSrv.createUser(EasyMock.<User>anyObject())).andReturn(user);
 
         replayAll();
 
@@ -144,9 +153,8 @@ public class WriteUserEndpointTest {
         UserType userType = new UserType();
         userType.setUsername("test");
         userType.setEmail("test@test.com");
-        userType.setFirstname("test");
-        userType.setLastname("tester");
-        userType.setPasswd("test");
+        userType.setFirstName("test");
+        userType.setLastName("tester");
         return userType;
     }
 

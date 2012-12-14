@@ -4,18 +4,15 @@ import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 
 /**
- * Search for Similar Processes Helper.
- *
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * Created by IntelliJ IDEA.
+ * User: lappie
+ * Date: 27/11/11
+ * Time: 10:08 AM
+ * To change this template use File | Settings | File Templates.
  */
-public final class SearchForSimilarProcessesHelper {
+public class SearchForSimilarProcessesHelper {
 
-    private static final String GREEDY_ALGORITHM = "Greedy";
-
-
-    /* Private Constructor */
-    private SearchForSimilarProcessesHelper() { }
-
+    public static final String GREEDY_ALGORITHM = "Greedy";
 
     /**
      * Creates the Parameter Type needed by the client.
@@ -29,8 +26,8 @@ public final class SearchForSimilarProcessesHelper {
      * @param skipeWeight the Skip E weight
      * @return the ParameterType used in the WebService object
      */
-    public static ParametersType setParams(final String method, final double modelThreshold, final double labelThreshold,
-            final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
+    public static ParametersType setParams(String method, double modelThreshold, double labelThreshold, double contextThreshold,
+            double skipnWeight, double subnWeight, double skipeWeight) {
         ParametersType params = new ParametersType();
 
         params.getParameter().add(addParam("modelthreshold", modelThreshold));
@@ -48,7 +45,7 @@ public final class SearchForSimilarProcessesHelper {
 
 
     /* Used to create a parameter object. */
-    private static ParameterType addParam(final String name, final double value) {
+    private static ParameterType addParam(String name, double value) {
         ParameterType p = new ParameterType();
         p.setName(name);
         p.setValue(value);

@@ -3,89 +3,74 @@
 	not given an id, instead, there are retrieve by their position by controller 
 	importOneProcessWindow -->
 <window position="center" title="Process model details" visible="true"
-	sizable="true" width="550px">
-	<vbox vflex="1">
-		<grid>
-			<columns sizable="true">
-				<column width="25%"></column>
-				<column width="35%"></column>
-				<column width="35%"></column>
-			</columns>
-			<rows>
-				<row spans="1,2">
-					<label value="Process name*" width="100%" />
-					<textbox width="100%" />
-				</row>
-				<row spans="1,2">
-					<label value="Initial version name*" width="100%" />
-					<textbox width="100%" />
-				</row>
-				<row spans="1,1,1">
-					<label value="Owner*" width="100%" />
-					<label width="100%" tooltiptext="default value" />
-					<!-- combobox implemented in SelectDynamicListController -->
-				</row>
-				<row spans="1,2">
-					<label value="Creation date*" width="100%" />
-					<textbox width="100%" />
-				</row>
-				<row spans="1,2">
-					<label value="Last update" width="100%"
-						tooltiptext="optional" />
-					<textbox width="100%" />
-				</row>
-				<row spans="1,2">
-					<label value="Documentation" width="100%"
-						tooltiptext="optional" />
-					<textbox width="100%" rows="4" />
-				</row>
-				<row spans="1,2">
-					<label value="Domain" width="100%"
-						tooltiptext="optional" />
-					<!-- combobox implemented in SelectDynamicListController -->
-				</row>
-				<row spans="1,2" id="canoniserSelectionRow">
-					<label value="Canoniser" width="100%"
-						tooltiptext="Canoniser used for this Process" />
-					<!-- combobox implemented in SelectDynamicListController -->
-				</row>				
-				<row spans="3">
-					<groupbox width="100%" >
-						 <attribute name="onOpen"><![CDATA[
-						    arrow.setSclass("open-" + self.isOpen());
-						]]></attribute>
-		                <caption>
-		                    <div id="arrow" class="open-true">Canoniser parameters</div>
-		                </caption>					
-						<grid id="canoniserPropertiesGrid" width="90%">
-							<columns>
-								<column width="50%"></column>
-								<column width="50%"></column>
-							</columns>
-						</grid>
-					</groupbox>
-				</row>
-				<row spans="3">
-					<label value="*: mandatory fields." />
-				</row>
-				<row spans="3">
-					<div align="center">
-						<button label="OK" image="img/ok.png"></button>
-						<button label="OK for all" image="img/ok.png"
-							tooltiptext="Default values for process and version name, and given value for domain will apply for all
-						remaining process models to import.">
-						</button>
-						<button label="Cancel"
-							image="img/cancel2.png">
-						</button>
-						<button label="Cancel all"
-							image="img/cancel2.png"
-							tooltiptext="Cancel import of all remaining process models.">
-						</button>
-						<button label="Reset" image="img/reset.png"></button>
-					</div>
-				</row>
-			</rows>
-		</grid>
-	</vbox>
+        sizable="true" width="550px">
+    <vbox vflex="1">
+        <grid>
+            <columns sizable="true">
+                <column width="25%"></column>
+                <column width="35%"></column>
+                <column width="35%"></column>
+            </columns>
+            <rows>
+                <row spans="1,2">
+                    <label value="Process name*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row spans="1,2">
+                    <label value="Initial version name*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row spans="1,1,1">
+                    <label value="Owner*" width="100%"/>
+                    <label width="100%" tooltiptext="default value"/>
+                </row>
+                <row spans="1,2">
+                    <label value="Creation date*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row spans="1,2">
+                    <label value="Last update" width="100%" tooltiptext="optional"/>
+                    <textbox width="100%"/>
+                </row>
+                <row spans="1,2">
+                    <label value="Documentation" width="100%" tooltiptext="optional"/>
+                    <textbox width="100%" rows="4"/>
+                </row>
+                <row spans="1,2">
+                    <label value="Domain" width="100%" tooltiptext="optional"/>
+                </row>
+                <row spans="1,2" id="canoniserSelectionRow">
+                    <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process" />
+                </row>
+                <row spans="3">
+                    <groupbox width="100%" >
+                        <attribute name="onOpen"><![CDATA[
+                            arrow.setSclass("open-" + self.isOpen());
+                            ]]></attribute>
+                        <caption>
+                            <div id="arrow" class="open-true">Canoniser parameters</div>
+                        </caption>
+                        <grid id="canoniserPropertiesGrid" width="90%">
+                            <columns>
+                                <column width="50%"></column>
+                                <column width="50%"></column>
+                            </columns>
+                        </grid>
+                    </groupbox>
+                </row>
+                <row spans="3">
+                    <label value="*: mandatory fields." />
+                </row>
+                <row spans="3">
+                    <div align="center">
+                        <button label="OK" image="img/ok.png"></button>
+                        <button label="OK for all" image="img/ok.png" tooltiptext="Default values for process and version name, and given value for domain will apply for all remaining process models to import."></button>
+                        <button label="Cancel" image="img/cancel2.png"></button>
+                        <button label="Cancel all" image="img/cancel2.png" tooltiptext="Cancel import of all remaining process models."></button>
+                        <button label="Reset" image="img/reset.png"></button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
 </window>

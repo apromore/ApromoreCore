@@ -1,9 +1,8 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.exception.DialogException;
 import org.apromore.model.UserType;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -12,6 +11,10 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class SigninController extends BaseController {
 
@@ -28,26 +31,18 @@ public class SigninController extends BaseController {
 
     /**
      * controller of the view defined in signin.zul
-     *
      * @param headerController
      * @param mainC
-     * @throws org.apromore.portal.exception.DialogException
-     *                                    TODO clean up exceptions
+     * @throws org.apromore.portal.exception.DialogException TODO clean up exceptions
      * @throws InterruptedException
-     * @throws SuspendNotAllowedException
+     * @throws org.zkoss.zk.ui.SuspendNotAllowedException
      */
-    public SigninController(HeaderController headerController, MainController mainC)
-            throws DialogException, SuspendNotAllowedException, InterruptedException {
+    public SigninController(HeaderController headerController, MainController mainC) throws DialogException, SuspendNotAllowedException, InterruptedException {
         this.mainC = mainC;
-        /**
-         * get components
-         */
         this.headerC = headerController;
         this.headerW = (Window) mainC.getFellow("headercomp").getFellow("header");
 
-
-        Window win = (Window) Executions.createComponents(
-                "macros/signin.zul", null, null);
+        Window win = (Window) Executions.createComponents("macros/signin.zul", null, null);
 
         this.signinWindow = (Window) win.getFellow("signinWindow");
         this.username = (Textbox) this.signinWindow.getFellow("username");
@@ -55,27 +50,23 @@ public class SigninController extends BaseController {
         this.okWindowButton = (Button) this.signinWindow.getFellow("okWindowButton");
         this.cancelWindowButton = (Button) this.signinWindow.getFellow("cancelWindowButton");
 
-        okWindowButton.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        signin();
-                    }
-                });
-        this.signinWindow.addEventListener("onOK",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        signin();
-                    }
-                });
-        cancelWindowButton.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        cancel();
-                    }
-                });
+        okWindowButton.addEventListener("onClick", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                signin();
+            }
+        });
+        this.signinWindow.addEventListener("onOK", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                signin();
+            }
+        });
+        cancelWindowButton.addEventListener("onClick", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                cancel();
+            }
+        });
 
         win.doModal();
-
     }
 
     /**
@@ -88,16 +79,36 @@ public class SigninController extends BaseController {
     private void signin() throws InterruptedException {
         try {
             String username = this.username.getValue();
-            String passwd = this.passwd.getValue();
-            UserType user = getService().readUser(username);
-            this.user = user;
-            this.headerC.userConnected(user);
-            this.mainC.updateActions();
+            String passwd = hashPassword(this.passwd.getValue());
+            UserType user = getService().login(username, passwd);
+            if (user == null) {
+                Messagebox.show("Invalid username/password", "Attention", Messagebox.OK, Messagebox.ERROR);
+                this.signinWindow.setVisible(true);
+            } else {
+                this.user = user;
+                this.headerC.userConnected(user);
+
+                UserSessionManager.setCurrentUser(user);
+                this.mainC.updateActions();
+
+                cancel();
+            }
         } catch (Exception e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
-        } finally {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
             cancel();
         }
+    }
+
+    public String hashPassword(String password) {
+        String hashword = null;
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(password.getBytes());
+            BigInteger hash = new BigInteger(1, md5.digest());
+            hashword = hash.toString(16);
+        } catch (NoSuchAlgorithmException nsae) {
+            // ignore
+        }
+        return hashword;
     }
 }

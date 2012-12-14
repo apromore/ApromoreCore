@@ -83,19 +83,17 @@ public class ImportListProcessesController extends BaseController {
                     uploadFile((UploadEvent) event);
                 }
             });
-            okButton.addEventListener("onClick",
-                    new EventListener() {
-                        public void onEvent(Event event) throws Exception {
-                            Clients.showBusy("Processing...");
-                            Events.echoEvent("onLater", importProcessesWindow, null);
-                        }
-                    });
-            cancelButton.addEventListener("onClick",
-                    new EventListener() {
-                        public void onEvent(Event event) throws Exception {
-                            cancel();
-                        }
-                    });
+            okButton.addEventListener("onClick", new EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    Clients.showBusy("Processing...");
+                    Events.echoEvent("onLater", importProcessesWindow, null);
+                }
+            });
+            cancelButton.addEventListener("onClick", new EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
             win.doModal();
         } catch (Exception e) {
             throw new DialogException("Error in importProcesses controller: " + e.getMessage());
@@ -108,12 +106,10 @@ public class ImportListProcessesController extends BaseController {
 
     /**
      * Upload file: an archive or an xml file
-     *
      * @param event
      * @throws InterruptedException
      */
     private void uploadFile(UploadEvent event) throws InterruptedException {
-
         try {
             // derive file type from its extension
             String fileType;
@@ -134,13 +130,10 @@ public class ImportListProcessesController extends BaseController {
             // now the file is uploaded, Ok button could be enabled
             this.okButton.setDisabled(false);
             this.filenameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
-
         } catch (ExceptionImport e) {
-            Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
-            Messagebox.show("Repository not available (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Repository not available (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -149,16 +142,12 @@ public class ImportListProcessesController extends BaseController {
      * in one of the supported native format.
      * zip or tar: extract files and import each if possible
      * file: import
-     *
      * @throws InterruptedException
      * @throws java.io.IOException
      */
     private void extractArchiveOrFile() throws InterruptedException {
         try {
             if (this.extension.compareTo("zip") == 0) {
-                /*
-                     *  Case of a zip archive: extract files using java.util.zip
-                     */
                 String extension = null;
                 String entryName = null;
                 String nativeType = null;
@@ -197,22 +186,14 @@ public class ImportListProcessesController extends BaseController {
             }
 
         } catch (JAXBException e) {
-            Messagebox.show("Import failed (File doesn't conform Xschema specification: "
-                    + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Import failed (File doesn't conform Xschema specification: " + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
-    private void importProcess(MainController mainC, ImportListProcessesController importC, InputStream xml_is,
-                               String processName, String nativeType, String filename)
-            throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
-
-        ImportOneProcessController oneImport =
-                new ImportOneProcessController(mainC, importC, xml_is, processName,
-                        nativeType, filename);
+    private void importProcess(MainController mainC, ImportListProcessesController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
+        ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is, processName, nativeType, filename);
         this.toImportList.add(oneImport);
     }
 
@@ -267,7 +248,9 @@ public class ImportListProcessesController extends BaseController {
         } else if (this.importedList.size() > 1) {
             report += " processes completed.";
         }
-        if (this.ignoredFiles.compareTo("") != 0) report += "\n (" + this.ignoredFiles + " ignored).";
+        if (this.ignoredFiles.compareTo("") != 0) {
+            report += "\n (" + this.ignoredFiles + " ignored).";
+        }
         this.mainC.displayMessage(report);
     }
 
@@ -286,8 +269,7 @@ public class ImportListProcessesController extends BaseController {
                 // process successfully imported
             } catch (IOException e) {
                 e.printStackTrace();
-                Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                        Messagebox.ERROR);
+                Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         }
         this.cancelAll();

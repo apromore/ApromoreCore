@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <listbox id="processVersionsListbox" vflex="true" checkmark="false" span="true"
-	emptyMessage="Select exactly one process!">
-	<listhead sizable="true" >					
-		<listheader hflex="min" label="Version" sort="auto(name)" />
-		<listheader hflex="min" label="Last Update" sort="auto(lastUpdate)" />
-		<listheader hflex="min" label="Annotation(s)" /> 
-		<listheader hflex="min" label="Ranking" sort="auto(ranking)"/>
-	</listhead>						
+         emptyMessage="Select exactly one process!">
+    <listhead sizable="true">
+        <listheader hflex="min" label="Version" sort="auto(name)"/>
+        <listheader hflex="min" label="Last Update" sort="auto(lastUpdate)"/>
+        <listheader hflex="min" label="Annotation(s)"/>
+        <listheader hflex="min" label="Ranking" sort="auto(ranking)"/>
+    </listhead>
 </listbox>

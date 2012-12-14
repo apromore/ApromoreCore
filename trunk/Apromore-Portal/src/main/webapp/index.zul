@@ -6,10 +6,13 @@
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
+<?component name="WorkspaceOptions" macroURI="macros/workspaceOptions.zul" ?>
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
+<?link rel="stylesheet" href="/apromore.css" type="text/css" ?>
+<?link rel="stylesheet" href="/site.css" type="text/css" ?>
 
-<zk>
+<zk xmlns:x="xhtml" xmlns:zk="zk">
 
 	<style dynamic="true">
 		.z-label {font-size: ${fontSizeMS}} .z-list-item {font-size:
@@ -29,11 +32,10 @@
 					</north>
 					<center id="leftCenterPanel" flex="true">
 						<borderlayout vflex="true">
-							<center id="leftInnerCenterPanel" title="Tree" flex="true">
+							<center id="leftInnerCenterPanel" title="My Workspace" flex="true">
 								<Navigation id="navigationcomp"/>
 							</center>
-							<south id="leftInnerSouthPanel" title="Refine Filter" flex="true"
-								splittable="false" collapsible="true" open="false">
+							<south id="leftInnerSouthPanel" title="Refine Filter" flex="true" splittable="true" collapsible="true" open="false">
 								<Filter id="baseFilter"/>
 							</south>
 						</borderlayout>
@@ -47,7 +49,7 @@
 			<center id="mainPanel" flex="true" vflex="true">
 				<div vflex="true">
 					<Menu id="menucomp" />
-					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="true">
+					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="false" visible="false">
 						<paging id="pg" />
 						<hbox id="buttons" align="center" height="100%">
 							<button id="revertSelectionB" label="" image="img/revertSelection.png"
@@ -59,11 +61,128 @@
 							<button id="refreshB" label="" style="background: transparent; border:none"
 								image="img/reload.png" tooltiptext="Reload data" />
 							<button id="showVisualisation" label="" style="background: transparent; border:none"
-								image="img/wizard.png" tooltiptext="Show Visualisation" />								
+								image="img/wizard.png" tooltiptext="Show Visualisation" />
+                            <button id="btnTileView" label="" style="background: transparent; border:none"
+                                    image="img/tile.png" tooltiptext="Show Tile View" />
 						</hbox>
 					</hbox>
-					
-					<BaseListbox id="baseListbox" />
+					<WorkspaceOptions id="workspaceOptionsPanel" />
+
+                    <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController">
+                        <html>
+                            <![CDATA[
+                            <script type="text/javascript">
+                                function bindBreadcrumbs() {
+                                    jq('a.breadCrumbLink').unbind("click");
+                                    jq('a.breadCrumbLink').click(function(e){
+                                        payload = jq(this).attr('id');
+                                        zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
+                                    });
+                                }
+
+                                jq(function() {
+                                    bindBreadcrumbs();
+                                });
+                            </script>
+                            ]]>
+                        </html>
+                    </window>
+
+                    <html id="breadCrumbs" vflex="true" width="100%">
+                    </html>
+
+                    <window id="folderWindow" apply="org.apromore.portal.dialogController.FolderController">
+                        <html>
+                            <![CDATA[
+                                <script type="text/javascript">
+                                    function bindTiles() {
+                                        jq('.workspace li').unbind("click");
+                                        jq('.workspace li').click(function(e){
+                                            e.preventDefault();
+                                            var currentClass = jq(this).attr("class");
+                                            if (currentClass != "selected_folder" && currentClass != "selected_process"){
+                                                if (e.ctrlKey){
+                                                    var payload = "";
+                                                    if (currentClass == "folder"){
+                                                        payload = "f~" + jq(this).attr('id') + "~" + jq(this).attr('access');
+                                                    }
+                                                    else{
+                                                        payload = "p~" + jq(this).attr('id') + "~" + jq(this).attr('access');
+                                                    }
+                                                    $('.workspace li.selected_folder').each(function(index) {
+                                                        payload = ",f~" + jq(this).attr('id') + "~" + jq(this).attr('access');
+                                                    });
+                                                    $('.workspace li.selected_process').each(function(index) {
+                                                        payload = ",p~" + jq(this).attr('id') + "~" + jq(this).attr('access');
+                                                    });
+
+                                                    jq(this).removeClass();
+                                                    jq(this).addClass("selected_" + currentClass);
+                                                    zAu.send(new zk.Event(zk.Widget.$(jq('$folderWindow')[0]), 'onFolderClick', payload));
+                                                }
+                                                else{
+                                                    var payload = "";
+                                                    var prefix = currentClass == "folder" ? "f~" : "p~";
+                                                    payload = prefix + jq(this).attr('id') + "~" + jq(this).attr('access');
+                                                    zAu.send(new zk.Event(zk.Widget.$(jq('$folderWindow')[0]), 'onFolderClick', payload));
+
+                                                    $('.workspace li').each(function(index) {
+                                                        var itemClass = jq(this).attr('class');
+                                                        jq(this).removeClass();
+                                                        jq(this).addClass(itemClass.replace("selected_", ""));
+                                                    });
+                                                    jq(this).removeClass();
+                                                    jq(this).addClass("selected_" + currentClass);
+                                                }
+                                            }
+                                            else{
+                                                if (e.ctrlKey){
+                                                    jq(this).removeClass();
+                                                    jq(this).addClass(currentClass.replace("selected_", ""));
+
+                                                    zAu.send(new zk.Event(zk.Widget.$(jq('$folderWindow')[0]), 'onFolderClick', ""));
+                                                }
+                                                else{
+                                                    var payload = "";
+                                                    //$('.workspace li.selected').each(function(index) {
+                                                    //    if (payload == ""){
+                                                    //        payload = jq(this).attr('id');
+                                                    //    }
+                                                    //    else{
+                                                    //        payload = "," + jq(this).attr('id');
+                                                    //    }
+                                                    //});
+                                                    $('.workspace li').each(function(index) {
+                                                        var itemClass = jq(this).attr('class');
+                                                        jq(this).removeClass();
+                                                        jq(this).addClass(itemClass.replace("selected_", ""));
+                                                    });
+                                                    //jq('.workspace li').removeClass();
+                                                    zAu.send(new zk.Event(zk.Widget.$(jq('$folderWindow')[0]), 'onFolderClick', payload));
+                                                }
+                                            }
+                                        });
+
+                                        jq('.workspace li').dblclick(function(e){
+                                            payload = jq(this).attr('id');
+                                            zAu.send(new zk.Event(zk.Widget.$(jq('$folderWindow')[0]), 'onFolderDblClick', payload));
+                                        });
+                                    }
+
+                                    jq(function() {
+                                        bindTiles();
+                                    });
+                                </script>
+                            ]]>
+                        </html>
+                    </window>
+
+                    <html id="folders" vflex="true" width="100%">
+                    </html>
+
+					<div visible="true" id="listView">
+                        <BaseListbox id="baseListbox" />
+                    </div>
 
 				</div>
 			</center>

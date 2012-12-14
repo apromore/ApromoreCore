@@ -112,9 +112,7 @@ public class MenuController extends Menubar {
                 mergeSelectedProcessVersions();
             }
         });
-
         deployMI.addEventListener("onClick", new EventListener() {
-
             @Override
             public void onEvent(final Event event) throws Exception {
                 deployProcessModel();

@@ -1,19 +1,17 @@
-<panel id="navigationPanel" vflex="true" hflex="true">
-	<panelchildren>
-		<hbox>
-			<listbox id="treeChoice" rows="1" mold="select">
-				<listitem label="Domain" />
-				<listitem label="Language" />
-				<listitem label="Author" />
-			</listbox>
-		</hbox>
-		<window id="treeW" sizable="true">
-			<tree id="tree" rows="5" vflex="true" width="100%"
-				zclass="z-dottree">
-				<treecols sizable="true">
-					<treecol label="" />
-				</treecols>
-			</tree>
-		</window>
-	</panelchildren>
+<panel id="navigationPanel" height="100%">
+    <panelchildren>
+        <window id="treeW" sizable="true">
+            <style>
+                .h-inline-block {
+                    display: inline-block;
+                    _display: inline;
+                }
+            </style>
+            <tree id="tree" vflex="true" width="100%" style="border-width: 0px;">
+                <treecols sizable="true">
+                    <treecol label=""/>
+                </treecols>
+            </tree>
+        </window>
+    </panelchildren>
 </panel>

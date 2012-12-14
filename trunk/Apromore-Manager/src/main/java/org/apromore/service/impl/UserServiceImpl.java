@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findUserByLogin(String username) throws UserNotFoundException {
-        User user = userRepo.findUserByLogin(username);
+        User user = userRepo.findByUsername(username);
         if (user != null) {
             return user;
         } else {
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void writeUser(User user) {
-        User dbUser = userRepo.findUserByLogin(user.getUsername());
+        User dbUser = userRepo.findByUsername(user.getUsername());
         dbUser.setSearchHistories(user.getSearchHistories());
         userRepo.save(dbUser);
     }

@@ -92,7 +92,6 @@
                                 'data': '${arg.jsonData}'},
                                 method: 'POST',
                                 onSuccess: function(transport) {
-                                    console.log("Import path "+arg.importPath);
                                     var editorConfig = Ext.decode(transport.responseText);
                                     oryxEditor.importJSON(editorConfig);
 
