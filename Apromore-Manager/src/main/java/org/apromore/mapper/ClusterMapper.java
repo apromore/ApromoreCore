@@ -139,7 +139,7 @@ public class ClusterMapper {
             p.setFragmentId1(pair.getFid1().getId());
             p.setFragmentId2(pair.getFid2().getId());
             p.setDistance(pairDistances.get(pair));
-            pdt.getPiarDistance().add(p);
+            pdt.getPairDistance().add(p);
         }
         return pdt;
     }

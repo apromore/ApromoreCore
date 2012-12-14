@@ -1,67 +1,67 @@
 <!-- Controller is  MenuController-->
 <menubar id="operationMenu" vflex="true">
-	<menu id="process" label="Process">
-		<menupopup>
-			<menuitem id="createProcess" label="Create model" disabled="true"/>
-			<menuseparator />
-			<menuitem id="fileImport" label="Import" disabled="true"/>
-			<menuseparator />
-			<menuitem id="fileExport" label="Export" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processEdit" label="Edit model" disabled="true"/>
-			<menuseparator />
-			<menuitem id="dataEdit" label="Edit meta data" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processDelete" label="Delete" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processCopy" label="Copy" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processPaste" label="Paste" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processDeploy" label="Deploy Process" disabled="true"/>
-			<menuseparator />			
-		</menupopup>
-	</menu>
-	<menu id="filtering" label="Filtering">
-		<menupopup>
-			<menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
-			<menuseparator />
-			<menuitem id="similarityClusters" label="Similarity Clusters" disabled="true"/>
-			<menuseparator />
-			<menuitem id="exactMatching" label="Exact matching" disabled="true" />
-		</menupopup>
-	</menu>
-	<menu id="design" label="Design">
-		<menupopup>
-			<menuitem id="designMerging" label="Merging" disabled="true"/>
-			<menuseparator />
-			<menuitem id="designPatternCr" label="Pattern-based composition" disabled="true"/>
-			<menuseparator />
-			<menuitem id="designReference" label="Reference-based completion" disabled="true"/>
-			<menuseparator />
-			<menuitem id="designPatternCo" label="Pattern-based completion" disabled="true"/>
-			<menuseparator />
-			<menuitem id="designConfiguration" label="Configuration" disabled="true"/>
-			<menuseparator />
-			<menuitem id="designExtension" label="Extension control" disabled="true"/>
-		</menupopup>
-	</menu>
-	<menu id="evaluation" label="Evaluation">
-		<menupopup>
-			<menuitem id="evaluationQuality" label="Quality" disabled="true"/>
-			<menuseparator />
-			<menuitem id="evaluationCorrectness" label="Correctness" disabled="true"/>
-			<menuseparator />
-			<menuitem id="evaluationPerformance" label="Performance" disabled="true"/>
-		</menupopup>
-	</menu>
-	<menu id="presentation" label="Presentation">
-		<menupopup>
-			<menuitem id="presentationAbstraction" label="Abstraction" disabled="true"/>
-			<menuseparator />
-			<menuitem id="presentationSecondary" label="Secondary notation" disabled="true"/>
-			<menuseparator />
-			<menuitem id="presentationReporting" label="Reporting" disabled="true"/>
-		</menupopup>
-	</menu>
+    <menu id="process" label="Process">
+        <menupopup>
+            <menuitem id="createProcess" label="Create model" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="fileImport" label="Import" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="fileExport" label="Export" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="processEdit" label="Edit model" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="dataEdit" label="Edit meta data" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="processDelete" label="Delete" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="processCopy" label="Copy" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="processPaste" label="Paste" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="processDeploy" label="Deploy Process" disabled="true"/>
+            <menuseparator/>
+        </menupopup>
+    </menu>
+    <menu id="filtering" label="Filtering">
+        <menupopup>
+            <menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="similarityClusters" label="Similarity Clusters" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="exactMatching" label="Exact matching" disabled="true"/>
+        </menupopup>
+    </menu>
+    <menu id="design" label="Design">
+        <menupopup>
+            <menuitem id="designMerging" label="Merging" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="designPatternCr" label="Pattern-based composition" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="designReference" label="Reference-based completion" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="designPatternCo" label="Pattern-based completion" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="designConfiguration" label="Configuration" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="designExtension" label="Extension control" disabled="true"/>
+        </menupopup>
+    </menu>
+    <menu id="evaluation" label="Evaluation">
+        <menupopup>
+            <menuitem id="evaluationQuality" label="Quality" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="evaluationCorrectness" label="Correctness" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="evaluationPerformance" label="Performance" disabled="true"/>
+        </menupopup>
+    </menu>
+    <menu id="presentation" label="Presentation">
+        <menupopup>
+            <menuitem id="presentationAbstraction" label="Abstraction" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="presentationSecondary" label="Secondary notation" disabled="true"/>
+            <menuseparator/>
+            <menuitem id="presentationReporting" label="Reporting" disabled="true"/>
+        </menupopup>
+    </menu>
 </menubar>

@@ -1,7 +1,6 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.UserRepository;
-import org.apromore.dao.model.EditSession;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.junit.Before;
@@ -10,7 +9,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
 
 import static org.easymock.EasyMock.anyObject;
@@ -57,7 +56,7 @@ public class UserServiceImplUnitTest {
         String username = "jaybob";
         User usr = new User();
 
-        expect(usrRepo.findUserByLogin(username)).andReturn(usr);
+        expect(usrRepo.findByUsername(username)).andReturn(usr);
         replay(usrRepo);
 
         User serviceUsr = usrServiceImpl.findUserByLogin(username);
@@ -69,7 +68,7 @@ public class UserServiceImplUnitTest {
     public void getUserNotFound() throws Exception {
         String username = "jaybob";
 
-        expect(usrRepo.findUserByLogin(username)).andReturn(null);
+        expect(usrRepo.findByUsername(username)).andReturn(null);
         replay(usrRepo);
 
         exception.expect(UserNotFoundException.class);
@@ -84,7 +83,7 @@ public class UserServiceImplUnitTest {
         String username = "username";
         User usr = createUser();
 
-        expect(usrRepo.findUserByLogin(username)).andReturn(usr);
+        expect(usrRepo.findByUsername(username)).andReturn(usr);
         expect(usrRepo.save((User) anyObject())).andReturn(usr);
         replay(usrRepo);
 
@@ -96,10 +95,10 @@ public class UserServiceImplUnitTest {
         User user = new User();
 
         user.setUsername("username");
-        user.setFirstname("firstname");
-        user.setLastname("lastname");
-        user.setEmail("email");
-        user.setEditSessions(new HashSet<EditSession>(1));
+        user.setFirstName("firstname");
+        user.setLastName("lastname");
+        user.setDateCreated(new Date());
+        user.setLastActivityDate(new Date());
 
         return user;
     }

@@ -1,5 +1,19 @@
 package org.apromore.manager.client;
 
+import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
+import org.apromore.manager.client.helper.MergeProcessesHelper;
+import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
+import org.apromore.manager.client.util.StreamUtil;
+import org.apromore.model.*;
+import org.apromore.plugin.property.RequestParameterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.ws.client.core.WebServiceTemplate;
+
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -8,147 +22,82 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
-
-import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
-import org.apromore.manager.client.helper.MergeProcessesHelper;
-import org.apromore.manager.client.helper.PluginHelper;
-import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
-import org.apromore.manager.client.util.StreamUtil;
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.ClusterSettingsType;
-import org.apromore.model.ClusterSummaryType;
-import org.apromore.model.ClusterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.CreateClustersInputMsgType;
-import org.apromore.model.CreateClustersOutputMsgType;
-import org.apromore.model.DeleteEditSessionInputMsgType;
-import org.apromore.model.DeleteEditSessionOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
-import org.apromore.model.DeployProcessInputMsgType;
-import org.apromore.model.DeployProcessOutputMsgType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditProcessDataInputMsgType;
-import org.apromore.model.EditProcessDataOutputMsgType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatInputMsgType;
-import org.apromore.model.ExportFormatOutputMsgType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.FragmentIdsType;
-import org.apromore.model.FragmentResponseType;
-import org.apromore.model.FragmentType;
-import org.apromore.model.GetClusterInputMsgType;
-import org.apromore.model.GetClusterOutputMsgType;
-import org.apromore.model.GetClusterSummariesInputMsgType;
-import org.apromore.model.GetClusterSummariesOutputMsgType;
-import org.apromore.model.GetClusteringSummaryInputMsgType;
-import org.apromore.model.GetClusteringSummaryOutputMsgType;
-import org.apromore.model.GetClustersRequestType;
-import org.apromore.model.GetClustersResponseType;
-import org.apromore.model.GetFragmentRequestType;
-import org.apromore.model.GetPairwiseDistancesInputMsgType;
-import org.apromore.model.GetPairwiseDistancesOutputMsgType;
-import org.apromore.model.ImportProcessInputMsgType;
-import org.apromore.model.ImportProcessOutputMsgType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.MergeProcessesInputMsgType;
-import org.apromore.model.MergeProcessesOutputMsgType;
-import org.apromore.model.NativeMetaData;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ObjectFactory;
-import org.apromore.model.PairDistanceType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
-import org.apromore.model.ReadCanoniserInfoInputMsgType;
-import org.apromore.model.ReadCanoniserInfoOutputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
-import org.apromore.model.ReadDomainsInputMsgType;
-import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadEditSessionInputMsgType;
-import org.apromore.model.ReadEditSessionOutputMsgType;
-import org.apromore.model.ReadInitialNativeFormatInputMsgType;
-import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
-import org.apromore.model.ReadInstalledPluginsInputMsgType;
-import org.apromore.model.ReadInstalledPluginsOutputMsgType;
-import org.apromore.model.ReadNativeMetaDataInputMsgType;
-import org.apromore.model.ReadNativeMetaDataOutputMsgType;
-import org.apromore.model.ReadNativeTypesInputMsgType;
-import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadPluginInfoInputMsgType;
-import org.apromore.model.ReadPluginInfoOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.model.SearchForSimilarProcessesInputMsgType;
-import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
-import org.apromore.model.UpdateProcessInputMsgType;
-import org.apromore.model.UpdateProcessOutputMsgType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.model.WriteAnnotationInputMsgType;
-import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.apromore.model.WriteEditSessionInputMsgType;
-import org.apromore.model.WriteEditSessionOutputMsgType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ws.client.core.WebServiceTemplate;
-
 /**
  * Performance Test for the Apromore Manager Client.
- *
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ManagerServiceClient implements ManagerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceClient.class);
-
     private static final ObjectFactory WS_CLIENT_FACTORY = new ObjectFactory();
 
-    private final WebServiceTemplate webServiceTemplate;
+    private WebServiceTemplate webServiceTemplate;
 
     /**
      * Default Constructor.
-     * @param newWebServiceTemplate the webservice template
+     * @param webServiceTemplate the webservice template
      */
-    public ManagerServiceClient(final WebServiceTemplate newWebServiceTemplate) {
-        this.webServiceTemplate = newWebServiceTemplate;
+    public ManagerServiceClient(WebServiceTemplate webServiceTemplate) {
+        this.webServiceTemplate = webServiceTemplate;
     }
 
-
     /**
-     * @see ManagerService#readUser(String)
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#readUser(String)
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public UserType readUser(final String username) {
+    public UserType readUser(String username) {
         LOGGER.debug("Preparing ReadUserRequest.....");
 
         ReadUserInputMsgType msg = new ReadUserInputMsgType();
         msg.setUsername(username);
 
         JAXBElement<ReadUserInputMsgType> request = WS_CLIENT_FACTORY.createReadUserRequest(msg);
+
         JAXBElement<ReadUserOutputMsgType> response = (JAXBElement<ReadUserOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getUser();
     }
 
     /**
-     * @see ManagerService#readAllUsers()
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#readUser(String)
+     *      {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<UserType> searchUsers(String searchString) {
+        LOGGER.debug("Preparing SearchUserRequest.....");
+
+        SearchUserInputMsgType msg = new SearchUserInputMsgType();
+        msg.setSearchString(searchString);
+
+        JAXBElement<SearchUserInputMsgType> request = WS_CLIENT_FACTORY.createSearchUserRequest(msg);
+
+        JAXBElement<SearchUserOutputMsgType> response = (JAXBElement<SearchUserOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getUsers();
+    }
+
+    /**
+     * @see org.apromore.manager.client.ManagerService#readUser(String)
+     *      {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public UserType login(String username, String password) {
+        LOGGER.debug("Preparing LoginRequest.....");
+
+        LoginInputMsgType msg = new LoginInputMsgType();
+        msg.setUsername(username);
+        msg.setPassword(password);
+
+        JAXBElement<LoginInputMsgType> request = WS_CLIENT_FACTORY.createLoginRequest(msg);
+
+        JAXBElement<LoginOutputMsgType> response = (JAXBElement<LoginOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getUser();
+    }
+
+    /**
+     * @see org.apromore.manager.client.ManagerService#readAllUsers()
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -159,14 +108,227 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadAllUsersInputMsgType> request = WS_CLIENT_FACTORY.createReadAllUsersRequest(msg);
+
         JAXBElement<ReadAllUsersOutputMsgType> response = (JAXBElement<ReadAllUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getUsernames();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<FolderType> getWorkspaceFolderTree(String userId) {
+        LOGGER.debug("Preparing GetUserWorkspacesRequest.....");
+
+        GetWorkspaceFolderTreeInputMsgType msg = new GetWorkspaceFolderTreeInputMsgType();
+        msg.setUserId(userId);
+
+        JAXBElement<GetWorkspaceFolderTreeInputMsgType> request = WS_CLIENT_FACTORY.createGetWorkspaceFolderTreeRequest(msg);
+
+        JAXBElement<GetWorkspaceFolderTreeOutputMsgType> response = (JAXBElement<GetWorkspaceFolderTreeOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getFolders();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<FolderType> getSubFolders(String userId, int folderId) {
+        LOGGER.debug("Preparing GetUserWorkspacesRequest.....");
+
+        GetSubFoldersInputMsgType msg = new GetSubFoldersInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+
+        JAXBElement<GetSubFoldersInputMsgType> request = WS_CLIENT_FACTORY.createGetSubFoldersRequest(msg);
+
+        JAXBElement<GetSubFoldersOutputMsgType> response = (JAXBElement<GetSubFoldersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getFolders();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<FolderType> getBreadcrumbs(String userId, int folderId) {
+        LOGGER.debug("Preparing GetBreadcrumbsRequest.....");
+
+        GetBreadcrumbsInputMsgType msg = new GetBreadcrumbsInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+
+        JAXBElement<GetBreadcrumbsInputMsgType> request = WS_CLIENT_FACTORY.createGetBreadcrumbsRequest(msg);
+
+        JAXBElement<GetBreadcrumbsOutputMsgType> response = (JAXBElement<GetBreadcrumbsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getFolders();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<UserFolderType> getFolderUsers(int folderId) {
+        LOGGER.debug("Preparing GetFolderUsersRequest.....");
+
+        GetFolderUsersInputMsgType msg = new GetFolderUsersInputMsgType();
+        msg.setFolderId(folderId);
+
+        JAXBElement<GetFolderUsersInputMsgType> request = WS_CLIENT_FACTORY.createGetFolderUsersRequest(msg);
+
+        JAXBElement<GetFolderUsersOutputMsgType> response = (JAXBElement<GetFolderUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getUsers();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.debug("Preparing SaveFolderPermissionsRequest.....");
+
+        SaveFolderPermissionsInputMsgType msg = new SaveFolderPermissionsInputMsgType();
+        msg.setFolderId(folderId);
+        msg.setUserId(userId);
+        msg.setHasRead(hasRead);
+        msg.setHasWrite(hasWrite);
+        msg.setHasOwnership(hasOwnership);
+
+        JAXBElement<SaveFolderPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createSaveFolderPermissionsRequest(msg);
+
+        JAXBElement<SaveFolderPermissionsOutputMsgType> response = (JAXBElement<SaveFolderPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String saveProcessPermissions(int processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.debug("Preparing SaveProcessPermissionsRequest.....");
+
+        SaveProcessPermissionsInputMsgType msg = new SaveProcessPermissionsInputMsgType();
+        msg.setProcessId(processId);
+        msg.setUserId(userId);
+        msg.setHasRead(hasRead);
+        msg.setHasWrite(hasWrite);
+        msg.setHasOwnership(hasOwnership);
+
+        JAXBElement<SaveProcessPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createSaveProcessPermissionsRequest(msg);
+
+        JAXBElement<SaveProcessPermissionsOutputMsgType> response = (JAXBElement<SaveProcessPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String removeFolderPermissions(int folderId, String userId) {
+        LOGGER.debug("Preparing RemoveFolderPermissionsRequest.....");
+
+        RemoveFolderPermissionsInputMsgType msg = new RemoveFolderPermissionsInputMsgType();
+        msg.setFolderId(folderId);
+        msg.setUserId(userId);
+
+        JAXBElement<RemoveFolderPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createRemoveFolderPermissionsRequest(msg);
+
+        JAXBElement<RemoveFolderPermissionsOutputMsgType> response = (JAXBElement<RemoveFolderPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String removeProcessPermissions(int processId, String userId) {
+        LOGGER.debug("Preparing RemoveProcessPermissionsRequest.....");
+
+        RemoveProcessPermissionsInputMsgType msg = new RemoveProcessPermissionsInputMsgType();
+        msg.setProcessId(processId);
+        msg.setUserId(userId);
+
+        JAXBElement<RemoveProcessPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createRemoveProcessPermissionsRequest(msg);
+
+        JAXBElement<RemoveProcessPermissionsOutputMsgType> response = (JAXBElement<RemoveProcessPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<UserFolderType> getProcessUsers(int processId) {
+        LOGGER.debug("Preparing GetProcessUsersRequest.....");
+
+        GetProcessUsersInputMsgType msg = new GetProcessUsersInputMsgType();
+        msg.setProcessId(processId);
+
+        JAXBElement<GetProcessUsersInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessUsersRequest(msg);
+
+        JAXBElement<GetProcessUsersOutputMsgType> response = (JAXBElement<GetProcessUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getUsers();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ProcessSummaryType> getProcesses(String userId, int folderId) {
+        LOGGER.debug("Preparing GetProcessesRequest.....");
+
+        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+
+        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
+
+        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcesses();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void createFolder(String userId, String folderName, int parentFolderId) {
+        LOGGER.debug("Preparing createFolderRequest.....");
+
+        CreateFolderInputMsgType msg = new CreateFolderInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderName(folderName);
+        msg.setParentFolderId(parentFolderId);
+
+        JAXBElement<CreateFolderInputMsgType> request = WS_CLIENT_FACTORY.createCreateFolderRequest(msg);
+
+        JAXBElement<CreateFolderOutputMsgType> response = (JAXBElement<CreateFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        ResultType result = response.getValue().getResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addProcessToFolder(int processId, int folderId) {
+        LOGGER.debug("Preparing addProcessToFolderRequest.....");
+
+        AddProcessToFolderInputMsgType msg = new AddProcessToFolderInputMsgType();
+        msg.setProcessId(processId);
+        msg.setFolderId(folderId);
+
+        JAXBElement<AddProcessToFolderInputMsgType> request = WS_CLIENT_FACTORY.createAddProcessToFolderRequest(msg);
+
+        JAXBElement<AddProcessToFolderOutputMsgType> response = (JAXBElement<AddProcessToFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        ResultType result = response.getValue().getResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void updateFolder(int folderId, String folderName) {
+        LOGGER.debug("Preparing createFolderRequest.....");
+
+        UpdateFolderInputMsgType msg = new UpdateFolderInputMsgType();
+        msg.setFolderId(folderId);
+        msg.setFolderName(folderName);
+
+        JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
+
+        JAXBElement<UpdateFolderOutputMsgType> response = (JAXBElement<UpdateFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        ResultType result = response.getValue().getResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void deleteFolder(int folderId) {
+        LOGGER.debug("Preparing deleteFolderRequest.....");
+
+        DeleteFolderInputMsgType msg = new DeleteFolderInputMsgType();
+        msg.setFolderId(folderId);
+
+        JAXBElement<DeleteFolderInputMsgType> request = WS_CLIENT_FACTORY.createDeleteFolderRequest(msg);
+
+        JAXBElement<DeleteFolderOutputMsgType> response = (JAXBElement<DeleteFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        ResultType result = response.getValue().getResult();
+    }
 
     /**
-     * @see ManagerService#readDomains()
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#readDomains()
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -177,13 +339,14 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadDomainsInputMsgType> request = WS_CLIENT_FACTORY.createReadDomainsRequest(msg);
+
         JAXBElement<ReadDomainsOutputMsgType> response = (JAXBElement<ReadDomainsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getDomains();
     }
 
     /**
-     * @see ManagerService#readNativeTypes()
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#readNativeTypes()
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -194,26 +357,26 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadNativeTypesInputMsgType> request = WS_CLIENT_FACTORY.createReadNativeTypesRequest(msg);
-        JAXBElement<ReadNativeTypesOutputMsgType> response = (JAXBElement<ReadNativeTypesOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<ReadNativeTypesOutputMsgType> response = (JAXBElement<ReadNativeTypesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getNativeTypes();
     }
 
     /**
-     * @see ManagerService#readEditSession(int)
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#readEditSession(int)
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public EditSessionType readEditSession(final int code) {
+    public EditSessionType readEditSession(int code) {
         LOGGER.debug("Preparing ReadEditSessionRequest.....");
 
         ReadEditSessionInputMsgType msg = new ReadEditSessionInputMsgType();
         msg.setEditSessionCode(code);
 
         JAXBElement<ReadEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createReadEditSessionRequest(msg);
-        JAXBElement<ReadEditSessionOutputMsgType> response = (JAXBElement<ReadEditSessionOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<ReadEditSessionOutputMsgType> response = (JAXBElement<ReadEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getEditSession();
     }
 
@@ -231,6 +394,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setFragmentId(fragmentId);
 
         JAXBElement<GetFragmentRequestType> request = WS_CLIENT_FACTORY.createGetFragmentRequest(msg);
+
         JAXBElement<FragmentResponseType> response = (JAXBElement<FragmentResponseType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getFragment();
     }
@@ -248,8 +412,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setClusterSettings(settings);
 
         JAXBElement<CreateClustersInputMsgType> request = WS_CLIENT_FACTORY.createCreateClustersRequest(msg);
-        JAXBElement<CreateClustersOutputMsgType> response =
-                (JAXBElement<CreateClustersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<CreateClustersOutputMsgType> response = (JAXBElement<CreateClustersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
     }
 
     /**
@@ -267,10 +431,9 @@ public class ManagerServiceClient implements ManagerService {
             msg.getFragmentIds().getFragmentId().add(fid);
         }
         JAXBElement<GetPairwiseDistancesInputMsgType> request = WS_CLIENT_FACTORY.createPairwiseDistancesRequest(msg);
-        JAXBElement<GetPairwiseDistancesOutputMsgType> response =
-                (JAXBElement<GetPairwiseDistancesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
-        return response.getValue().getPairDistances().getPiarDistance();
+        JAXBElement<GetPairwiseDistancesOutputMsgType> response = (JAXBElement<GetPairwiseDistancesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getPairDistances().getPairDistance();
     }
 
     /**
@@ -286,8 +449,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setParam1("Not required");
 
         JAXBElement<GetClusteringSummaryInputMsgType> request = WS_CLIENT_FACTORY.createGetClusteringSummaryRequest(msg);
-        JAXBElement<GetClusteringSummaryOutputMsgType> response =
-                (JAXBElement<GetClusteringSummaryOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<GetClusteringSummaryOutputMsgType> response = (JAXBElement<GetClusteringSummaryOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getClusteringSummary();
     }
 
@@ -304,8 +467,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setFilter(filter);
 
         JAXBElement<GetClusterSummariesInputMsgType> request = WS_CLIENT_FACTORY.createGetClusterSummariesRequest(msg);
-        JAXBElement<GetClusterSummariesOutputMsgType> response =
-                (JAXBElement<GetClusterSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<GetClusterSummariesOutputMsgType> response = (JAXBElement<GetClusterSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getClusterSummaries();
     }
 
@@ -322,6 +485,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setClusterId(clusterId);
 
         JAXBElement<GetClusterInputMsgType> request = WS_CLIENT_FACTORY.createGetClusterRequest(msg);
+
         JAXBElement<GetClusterOutputMsgType> response = (JAXBElement<GetClusterOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getCluster();
     }
@@ -339,6 +503,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setClusterFilter(filter);
 
         JAXBElement<GetClustersRequestType> request = WS_CLIENT_FACTORY.createGetClustersRequest(msg);
+
         JAXBElement<GetClustersResponseType> response = (JAXBElement<GetClustersResponseType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getClusters();
     }
@@ -352,12 +517,37 @@ public class ManagerServiceClient implements ManagerService {
     public ProcessSummariesType readProcessSummaries(final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
+        // temp code
+        //        ClusterFilterType filterType = new ClusterFilterType();
+        //        filterType.setMinAvgFragmentSize(10.0f);
+        //        filterType.setMinBCR(1d);
+        //        filterType.setMinClusterSize(4);
+        //        filterType.setMaxClusterSize(15);
+        //        List<ClusterType> clusters = getClusters(filterType);
+        //        for (ClusterType c : clusters) {
+        //        	int clusterSize = c.getClusterSize();
+        //        	String medoidId = c.getMedoidId();
+        //        	float avgFragSize = c.getAvgFragmentSize();
+        //        	double BCR = c.getBCR();
+        //        	System.out.println(clusterSize + ", " + medoidId + ", " + avgFragSize);
+        //
+        //        	List<FragmentData> fragments = c.getFragments();
+        //        	for (FragmentData fragment : fragments) {
+        //        		String fragmentId = fragment.getFragmentId();
+        //        		double fragmentToMedoidDistance = fragment.getDistance();
+        //        		System.out.println(fragmentId + ": " + fragmentToMedoidDistance);
+        //        	}
+        //        }
+        //
+        //        String epml = getFragment(fragmentId).getContent();
+        // temp code
+
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
         msg.setSearchExpression(searchCriteria);
 
         JAXBElement<ReadProcessSummariesInputMsgType> request = WS_CLIENT_FACTORY.createReadProcessSummariesRequest(msg);
-        JAXBElement<ReadProcessSummariesOutputMsgType> response =
-                (JAXBElement<ReadProcessSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<ReadProcessSummariesOutputMsgType> response = (JAXBElement<ReadProcessSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getProcessSummaries();
     }
 
@@ -384,8 +574,8 @@ public class ManagerServiceClient implements ManagerService {
                 skipeWeight, subnWeight));
 
         JAXBElement<SearchForSimilarProcessesInputMsgType> request = WS_CLIENT_FACTORY.createSearchForSimilarProcessesRequest(msg);
-        JAXBElement<SearchForSimilarProcessesOutputMsgType> response =
-                (JAXBElement<SearchForSimilarProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<SearchForSimilarProcessesOutputMsgType> response = (JAXBElement<SearchForSimilarProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getProcessSummaries();
     }
 
@@ -412,13 +602,13 @@ public class ManagerServiceClient implements ManagerService {
                 skipnWeight, skipeWeight, subnWeight));
 
         JAXBElement<MergeProcessesInputMsgType> request = WS_CLIENT_FACTORY.createMergeProcessesRequest(msg);
-        JAXBElement<MergeProcessesOutputMsgType> response =
-                (JAXBElement<MergeProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<MergeProcessesOutputMsgType> response = (JAXBElement<MergeProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getProcessSummary();
     }
 
     /**
-     * @see ManagerService#exportFormat(int, String, String, String, String, Boolean, String)
+     * @see ManagerService#exportFormat(int, String, String, String, String, Boolean, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
@@ -439,6 +629,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
 
         JAXBElement<ExportFormatInputMsgType> request = WS_CLIENT_FACTORY.createExportFormatRequest(msg);
+
         JAXBElement<ExportFormatOutputMsgType> response = (JAXBElement<ExportFormatOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
@@ -449,7 +640,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#importProcess(String, String, String, String, java.io.InputStream, String, String, String, String, Boolean)
+     * @see ManagerService#importProcess(String, String, String, String, java.io.InputStream, String, String, String, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
@@ -458,6 +649,16 @@ public class ManagerServiceClient implements ManagerService {
             final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
             final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
+
+        // temp code
+        //        ClusterSettingsType s = new ClusterSettingsType();
+        //        s.setAlgorithm("DBSCAN");
+        //        ClusteringParameterType p1 = new ClusteringParameterType();
+        //        p1.setParamName("MaxDistance");
+        //        p1.setParmaValue("0.4");
+        //        s.getClusteringParams().add(p1);
+        //        createClusters(s);
+        // temp code
 
         EditSessionType editSession = new EditSessionType();
         editSession.setUsername(username);
@@ -509,8 +710,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setNative(new DataHandler(new ByteArrayDataSource(native_is, "text/xml")));
 
         JAXBElement<UpdateProcessInputMsgType> request = WS_CLIENT_FACTORY.createUpdateProcessRequest(msg);
-        JAXBElement<UpdateProcessOutputMsgType> response = (JAXBElement<UpdateProcessOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<UpdateProcessOutputMsgType> response = (JAXBElement<UpdateProcessOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
@@ -539,14 +740,12 @@ public class ManagerServiceClient implements ManagerService {
         msg.setRanking(ranking);
 
         JAXBElement<EditProcessDataInputMsgType> request = WS_CLIENT_FACTORY.createEditProcessDataRequest(msg);
-        JAXBElement<EditProcessDataOutputMsgType> response =
-                (JAXBElement<EditProcessDataOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<EditProcessDataOutputMsgType> response = (JAXBElement<EditProcessDataOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
     }
-
-
 
 
     /**
@@ -555,22 +754,25 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void writeUser(final UserType user) throws Exception {
+    public UserType writeUser(UserType user) throws Exception {
         LOGGER.debug("Preparing WriteUserRequest.....");
 
         WriteUserInputMsgType msg = new WriteUserInputMsgType();
         msg.setUser(user);
 
         JAXBElement<WriteUserInputMsgType> request = WS_CLIENT_FACTORY.createWriteUserRequest(msg);
+
         JAXBElement<WriteUserOutputMsgType> response = (JAXBElement<WriteUserOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
+
+        return response.getValue().getUser();
     }
 
     /**
-     * @see ManagerService#writeAnnotation(Integer, String, boolean, Integer, String, String, java.io.InputStream)
-     * {@inheritDoc}
+     * @see org.apromore.manager.client.ManagerService#writeAnnotation(Integer, String, boolean, Integer, String, String, java.io.InputStream)
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -588,8 +790,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setNative(new DataHandler(new ByteArrayDataSource(native_is, "text/xml")));
 
         JAXBElement<WriteAnnotationInputMsgType> request = WS_CLIENT_FACTORY.createWriteAnnotationRequest(msg);
-        JAXBElement<WriteAnnotationOutputMsgType> response =
-                (JAXBElement<WriteAnnotationOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        JAXBElement<WriteAnnotationOutputMsgType> response = (JAXBElement<WriteAnnotationOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
@@ -609,9 +811,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEditSession(editSession);
 
         JAXBElement<WriteEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createWriteEditSessionRequest(msg);
-        JAXBElement<WriteEditSessionOutputMsgType> response =
-                (JAXBElement<WriteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
+        JAXBElement<WriteEditSessionOutputMsgType> response = (JAXBElement<WriteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
@@ -633,9 +834,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEditSessionCode(code);
 
         JAXBElement<DeleteEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createDeleteEditSessionRequest(msg);
-        JAXBElement<DeleteEditSessionOutputMsgType> response =
-                (JAXBElement<DeleteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
+        JAXBElement<DeleteEditSessionOutputMsgType> response = (JAXBElement<DeleteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
@@ -654,9 +854,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setProcessModels(processVersions));
 
         JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);
-        JAXBElement<DeleteProcessVersionsOutputMsgType> response =
-                (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
+        JAXBElement<DeleteProcessVersionsOutputMsgType> response = (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }

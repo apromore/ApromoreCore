@@ -1,67 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:tns="urn:qut-edu-au:schema:apromore:manager" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-    targetNamespace="urn:qut-edu-au:schema:apromore:manager"
-    elementFormDefault="qualified" attributeFormDefault="unqualified"
-    version="5.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:manager"
+           xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+           targetNamespace="urn:qut-edu-au:schema:apromore:manager"
+           elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0" >
 
     <!-- Manager -->
-    <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType" />
-    <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType" />
-    <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType" />
-    <xs:element name="ReadNativeTypesResponse" type="tns:ReadNativeTypesOutputMsgType" />
-    <xs:element name="ReadUserRequest" type="tns:ReadUserInputMsgType" />
-    <xs:element name="ReadUserResponse" type="tns:ReadUserOutputMsgType" />
-    <xs:element name="ReadAllUsersRequest" type="tns:ReadAllUsersInputMsgType" />
-    <xs:element name="ReadAllUsersResponse" type="tns:ReadAllUsersOutputMsgType" />
-    <xs:element name="ReadEditSessionRequest" type="tns:ReadEditSessionInputMsgType" />
-    <xs:element name="ReadEditSessionResponse" type="tns:ReadEditSessionOutputMsgType" />
-    <xs:element name="WriteUserRequest" type="tns:WriteUserInputMsgType" />
-    <xs:element name="WriteUserResponse" type="tns:WriteUserOutputMsgType" />
-    <xs:element name="WriteEditSessionRequest" type="tns:WriteEditSessionInputMsgType" />
-    <xs:element name="WriteEditSessionResponse" type="tns:WriteEditSessionOutputMsgType" />
-    <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType" />
-    <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType" />
-    <xs:element name="DeleteEditSessionRequest" type="tns:DeleteEditSessionInputMsgType" />
-    <xs:element name="DeleteEditSessionResponse" type="tns:DeleteEditSessionOutputMsgType" />
-    <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType" />
-    <xs:element name="DeleteProcessVersionsResponse" type="tns:DeleteProcessVersionsOutputMsgType" />
+    <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
+    <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
+    <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType"/>
+    <xs:element name="ReadNativeTypesResponse" type="tns:ReadNativeTypesOutputMsgType"/>
+    <xs:element name="ReadUserRequest" type="tns:ReadUserInputMsgType"/>
+    <xs:element name="ReadUserResponse" type="tns:ReadUserOutputMsgType"/>
+    <xs:element name="ReadAllUsersRequest" type="tns:ReadAllUsersInputMsgType"/>
+    <xs:element name="ReadAllUsersResponse" type="tns:ReadAllUsersOutputMsgType"/>
+    <xs:element name="ReadEditSessionRequest" type="tns:ReadEditSessionInputMsgType"/>
+    <xs:element name="ReadEditSessionResponse" type="tns:ReadEditSessionOutputMsgType"/>
+    <xs:element name="WriteUserRequest" type="tns:WriteUserInputMsgType"/>
+    <xs:element name="WriteUserResponse" type="tns:WriteUserOutputMsgType"/>
+    <xs:element name="WriteEditSessionRequest" type="tns:WriteEditSessionInputMsgType"/>
+    <xs:element name="WriteEditSessionResponse" type="tns:WriteEditSessionOutputMsgType"/>
+    <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType"/>
+    <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
+    <xs:element name="DeleteEditSessionRequest" type="tns:DeleteEditSessionInputMsgType"/>
+    <xs:element name="DeleteEditSessionResponse" type="tns:DeleteEditSessionOutputMsgType"/>
+    <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
+    <xs:element name="DeleteProcessVersionsResponse" type="tns:DeleteProcessVersionsOutputMsgType"/>
     <xs:element name="ImportProcessRequest" type="tns:ImportProcessInputMsgType" />
     <xs:element name="ImportProcessResponse" type="tns:ImportProcessOutputMsgType" />
     <xs:element name="ExportFormatRequest" type="tns:ExportFormatInputMsgType" />
     <xs:element name="ExportFormatResponse" type="tns:ExportFormatOutputMsgType" />
     <xs:element name="UpdateProcessRequest" type="tns:UpdateProcessInputMsgType" />
     <xs:element name="UpdateProcessResponse" type="tns:UpdateProcessOutputMsgType" />
+    <xs:element name="LoginRequest" type="tns:LoginInputMsgType"/>
+    <xs:element name="LoginResponse" type="tns:LoginOutputMsgType"/>
+    <xs:element name="GetWorkspaceFolderTreeRequest" type="tns:GetWorkspaceFolderTreeInputMsgType"/>
+    <xs:element name="GetWorkspaceFolderTreeResponse" type="tns:GetWorkspaceFolderTreeOutputMsgType"/>
+    <xs:element name="GetSubFoldersRequest" type="tns:GetSubFoldersInputMsgType"/>
+    <xs:element name="GetSubFoldersResponse" type="tns:GetSubFoldersOutputMsgType"/>
+    <xs:element name="GetBreadcrumbsRequest" type="tns:GetBreadcrumbsInputMsgType"/>
+    <xs:element name="GetBreadcrumbsResponse" type="tns:GetBreadcrumbsOutputMsgType"/>
+    <xs:element name="GetFolderUsersRequest" type="tns:GetFolderUsersInputMsgType"/>
+    <xs:element name="GetFolderUsersResponse" type="tns:GetFolderUsersOutputMsgType"/>
+    <xs:element name="GetProcessUsersRequest" type="tns:GetProcessUsersInputMsgType"/>
+    <xs:element name="GetProcessUsersResponse" type="tns:GetProcessUsersOutputMsgType"/>
+    <xs:element name="CreateUserRequest" type="tns:CreateUserInputMsgType"/>
+    <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
+    <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
+    <xs:element name="GetProcessesResponse" type="tns:GetProcessesOutputMsgType"/>
+    <xs:element name="CreateFolderRequest" type="tns:CreateFolderInputMsgType"/>
+    <xs:element name="CreateFolderResponse" type="tns:CreateFolderOutputMsgType"/>
+    <xs:element name="UpdateFolderRequest" type="tns:UpdateFolderInputMsgType"/>
+    <xs:element name="UpdateFolderResponse" type="tns:UpdateFolderOutputMsgType"/>
+    <xs:element name="DeleteFolderRequest" type="tns:DeleteFolderInputMsgType"/>
+    <xs:element name="DeleteFolderResponse" type="tns:DeleteFolderOutputMsgType"/>
+    <xs:element name="SearchUserRequest" type="tns:SearchUserInputMsgType"/>
+    <xs:element name="SearchUserResponse" type="tns:SearchUserOutputMsgType"/>
+    <xs:element name="SaveFolderPermissionsRequest" type="tns:SaveFolderPermissionsInputMsgType"/>
+    <xs:element name="SaveFolderPermissionsResponse" type="tns:SaveFolderPermissionsOutputMsgType"/>
+    <xs:element name="SaveProcessPermissionsRequest" type="tns:SaveProcessPermissionsInputMsgType"/>
+    <xs:element name="SaveProcessPermissionsResponse" type="tns:SaveProcessPermissionsOutputMsgType"/>
+    <xs:element name="RemoveFolderPermissionsRequest" type="tns:RemoveFolderPermissionsInputMsgType"/>
+    <xs:element name="RemoveFolderPermissionsResponse" type="tns:RemoveFolderPermissionsOutputMsgType"/>
+    <xs:element name="RemoveProcessPermissionsRequest" type="tns:RemoveProcessPermissionsInputMsgType"/>
+    <xs:element name="RemoveProcessPermissionsResponse" type="tns:RemoveProcessPermissionsOutputMsgType"/>
+    <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
+    <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
 
     <!-- Data Access -->
-    <xs:element name="ReadProcessSummariesRequest" type="tns:ReadProcessSummariesInputMsgType" />
-    <xs:element name="ReadProcessSummariesResponse" type="tns:ReadProcessSummariesOutputMsgType" />
+    <xs:element name="ReadProcessSummariesRequest" type="tns:ReadProcessSummariesInputMsgType"/>
+    <xs:element name="ReadProcessSummariesResponse" type="tns:ReadProcessSummariesOutputMsgType"/>
     <xs:element name="WriteAnnotationRequest" type="tns:WriteAnnotationInputMsgType" />
     <xs:element name="WriteAnnotationResponse" type="tns:WriteAnnotationOutputMsgType" />
 
     <!-- ToolBox -->
-    <xs:element name="SearchForSimilarProcessesRequest"
-        type="tns:SearchForSimilarProcessesInputMsgType" />
-    <xs:element name="SearchForSimilarProcessesResponse"
-        type="tns:SearchForSimilarProcessesOutputMsgType" />
+    <xs:element name="SearchForSimilarProcessesRequest" type="tns:SearchForSimilarProcessesInputMsgType" />
+    <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType" />
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType" />
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType" />
-
-    <!-- Clustering -->
-    <xs:element name="GetClusterRequest" type="tns:GetClusterInputMsgType" />
-    <xs:element name="GetClusterResponse" type="tns:GetClusterOutputMsgType" />
-    <xs:element name="GetClusterSummariesRequest" type="tns:GetClusterSummariesInputMsgType" />
-    <xs:element name="GetClusterSummariesResponse" type="tns:GetClusterSummariesOutputMsgType" />
-    <xs:element name="PairwiseDistancesRequest" type="tns:GetPairwiseDistancesInputMsgType" />
-    <xs:element name="PairwiseDistancesResponse" type="tns:GetPairwiseDistancesOutputMsgType" />
-    <xs:element name="CreateClustersRequest" type="tns:CreateClustersInputMsgType" />
-    <xs:element name="CreateClustersResponse" type="tns:CreateClustersOutputMsgType" />
-    <xs:element name="GetClusteringSummaryRequest" type="tns:GetClusteringSummaryInputMsgType" />
-    <xs:element name="GetClusteringSummaryResponse" type="tns:GetClusteringSummaryOutputMsgType" />
-    <xs:element name="GetClustersRequest" type="tns:GetClustersRequestType" />
-    <xs:element name="GetClustersResponse" type="tns:GetClustersResponseType" />
-    <xs:element name="FragmentResponse" type="tns:FragmentResponseType" />
-    <xs:element name="GetFragmentRequest" type="tns:GetFragmentRequestType" />
 
     <!-- Plugins -->
     <xs:element name="ReadInstalledPluginsRequest" type="tns:ReadInstalledPluginsInputMsgType" />
@@ -73,17 +88,17 @@
     <xs:element name="ReadCanoniserInfoRequest" type="tns:ReadCanoniserInfoInputMsgType" />
     <xs:element name="ReadCanoniserInfoResponse" type="tns:ReadCanoniserInfoOutputMsgType" />
     <xs:element name="ReadInitialNativeFormatRequest"
-        type="tns:ReadInitialNativeFormatInputMsgType" />
+                type="tns:ReadInitialNativeFormatInputMsgType" />
     <xs:element name="ReadInitialNativeFormatResponse"
-        type="tns:ReadInitialNativeFormatOutputMsgType" />
+                type="tns:ReadInitialNativeFormatOutputMsgType" />
     <xs:element name="ReadNativeMetaDataRequest" type="tns:ReadNativeMetaDataInputMsgType" />
     <xs:element name="ReadNativeMetaDataResponse" type="tns:ReadNativeMetaDataOutputMsgType" />
 
     <!-- Deployment Plugin -->
     <xs:element name="ReadDeploymentPluginInfoRequest"
-        type="tns:ReadDeploymentPluginInfoInputMsgType" />
+                type="tns:ReadDeploymentPluginInfoInputMsgType" />
     <xs:element name="ReadDeploymentPluginResponse"
-        type="tns:ReadDeploymentPluginInfoOutputMsgType" />
+                type="tns:ReadDeploymentPluginInfoOutputMsgType" />
     <xs:element name="DeployProcessRequest" type="tns:DeployProcessInputMsgType" />
     <xs:element name="DeployProcessResponse" type="tns:DeployProcessOutputMsgType" />
 
@@ -95,21 +110,21 @@
     <xs:complexType name="ReadPluginInfoOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="PluginInfoResult" type="tns:PluginInfoResult" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadInstalledPluginsInputMsgType">
         <xs:attribute name="typeFilter" type="xs:string"
-            use="optional" />
+                      use="optional" />
     </xs:complexType>
     <xs:complexType name="ReadInstalledPluginsOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="PluginInfo" type="tns:PluginInfo"
-                minOccurs="0" maxOccurs="unbounded" />
+                        minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -117,11 +132,11 @@
     <xs:complexType name="PluginInfoResult">
         <xs:sequence>
             <xs:element name="MandatoryParameters" type="tns:PluginParameters"
-                minOccurs="0" maxOccurs="1" />
+                        minOccurs="0" maxOccurs="1" />
             <xs:element name="OptionalParameters" type="tns:PluginParameters"
-                minOccurs="0" maxOccurs="1" />
+                        minOccurs="0" maxOccurs="1" />
             <xs:element name="PluginInfo" type="tns:PluginInfo"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -137,7 +152,7 @@
     <xs:complexType name="PluginParameters">
         <xs:sequence>
             <xs:element name="Parameter" type="tns:PluginParameter"
-                minOccurs="0" maxOccurs="unbounded" />
+                        minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -148,7 +163,7 @@
         <xs:attribute name="id" type="xs:string" />
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="description" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="class" type="xs:string" />
         <xs:attribute name="isMandatory" type="xs:boolean" />
         <xs:attribute name="category" type="xs:string" />
@@ -157,7 +172,7 @@
     <xs:complexType name="PluginMessages">
         <xs:sequence>
             <xs:element name="Message" type="tns:PluginMessage"
-                minOccurs="0" maxOccurs="unbounded" />
+                        minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="PluginMessage">
@@ -173,9 +188,9 @@
     <xs:complexType name="ReadCanoniserInfoOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="PluginInfo" type="tns:PluginInfo"
-                minOccurs="1" maxOccurs="unbounded" />
+                        minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -185,34 +200,34 @@
         </xs:sequence>
         <xs:attribute name="nativeType" type="xs:string" />
         <xs:attribute name="canoniserName" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="canoniserVersion" type="xs:string"
-            use="optional" />
+                      use="optional" />
     </xs:complexType>
     <xs:complexType name="ReadInitialNativeFormatOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="NativeFormat" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+                        xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadNativeMetaDataInputMsgType">
         <xs:sequence>
             <xs:element name="NativeFormat" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+                        xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
         <xs:attribute name="nativeType" type="xs:string" />
         <xs:attribute name="canoniserName" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="canoniserVersion" type="xs:string"
-            use="optional" />
+                      use="optional" />
     </xs:complexType>
     <xs:complexType name="ReadNativeMetaDataOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="NativeMetaData" type="tns:NativeMetaData" />
         </xs:sequence>
     </xs:complexType>
@@ -220,17 +235,17 @@
     <!-- Canoniser Data Type -->
     <xs:complexType name="NativeMetaData">
         <xs:attribute name="processName" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="processAuthor" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="processVersion" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="processDocumentation" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="processCreated" type="xs:dateTime"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="processLastUpdate" type="xs:dateTime"
-            use="optional" />
+                      use="optional" />
     </xs:complexType>
 
     <!-- Deployment Messages -->
@@ -240,49 +255,46 @@
     <xs:complexType name="ReadDeploymentPluginInfoOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="PluginInfo" type="tns:PluginInfo"
-                minOccurs="1" maxOccurs="unbounded" />
+                        minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DeployProcessInputMsgType">
         <xs:sequence>
             <xs:element name="DeploymentParameters" type="tns:PluginParameters"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="processName" type="xs:string" />
         <xs:attribute name="versionName" type="xs:string" />
         <xs:attribute name="branchName" type="xs:string" />
         <xs:attribute name="nativeType" type="xs:string" />
         <xs:attribute name="deploymentPluginName" type="xs:string"
-            use="optional" />
+                      use="optional" />
         <xs:attribute name="deploymentPluginVersion" type="xs:string"
-            use="optional" />
+                      use="optional" />
     </xs:complexType>
     <xs:complexType name="DeployProcessOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
             <xs:element name="Message" type="tns:PluginMessages"
-                minOccurs="1" maxOccurs="1" />
+                        minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
-
 
     <!-- Common Data Types -->
     <xs:complexType name="AnnotationsType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded"
-                name="AnnotationName" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="AnnotationName" type="xs:string" />
         </xs:sequence>
         <xs:attribute name="NativeType" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="CanonicalsType">
         <xs:sequence>
-            <xs:element name="Canonical" type="tns:CanonicalType"
-                minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="Canonical" type="tns:CanonicalType" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -290,8 +302,7 @@
         <xs:sequence>
             <xs:element name="ProcessId" type="xs:int" />
             <xs:element name="VersionName" type="xs:string" />
-            <xs:element name="Cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
     </xs:complexType>
 
@@ -310,8 +321,7 @@
 
     <xs:complexType name="NativeTypesType">
         <xs:sequence>
-            <xs:element name="NativeType" minOccurs="0"
-                maxOccurs="unbounded" type="tns:FormatType" />
+            <xs:element name="NativeType" minOccurs="0" maxOccurs="unbounded" type="tns:FormatType" />
         </xs:sequence>
     </xs:complexType>
 
@@ -322,27 +332,70 @@
 
     <xs:complexType name="DomainsType">
         <xs:sequence>
-            <xs:element name="Domain" type="xs:string"
-                minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Domain" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="UserType">
         <xs:sequence>
-            <xs:element name="SearchHistories" type="tns:SearchHistoriesType"
-                minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Roles" type="tns:RoleType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Permissions" type="tns:PermissionType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="firstname" type="xs:string" />
-        <xs:attribute name="lastname" type="xs:string" />
+        <xs:attribute name="firstName" type="xs:string" />
+        <xs:attribute name="lastName" type="xs:string" />
         <xs:attribute name="email" type="xs:string" />
         <xs:attribute name="username" type="xs:string" />
-        <xs:attribute name="passwd" type="xs:string" />
+        <xs:attribute name="lastActivityDate" type="xs:string" />
+        <xs:attribute name="id" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="WorkspaceType">
+        <xs:sequence>
+            <xs:element name="Folders" type="tns:FolderType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Processes" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:int" />
+        <xs:attribute name="workspaceName" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="FolderType">
+        <xs:sequence>
+            <xs:element name="Folders" type="tns:FolderType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Processes" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:int" />
+        <xs:attribute name="parent_id" type="xs:int" />
+        <xs:attribute name="folderName" type="xs:string" />
+        <xs:attribute name="hasRead" type="xs:boolean" />
+        <xs:attribute name="hasWrite" type="xs:boolean" />
+        <xs:attribute name="hasOwnership" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:complexType name="RoleType">
+        <xs:sequence>
+            <xs:element name="RolePermissions" type="tns:PermissionType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="PermissionType">
+        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="UserFolderType">
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="fullName" type="xs:string" />
+        <xs:attribute name="email" type="xs:string" />
+        <xs:attribute name="hasRead" type="xs:boolean" />
+        <xs:attribute name="hasWrite" type="xs:boolean" />
+        <xs:attribute name="hasOwnership" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="UsernamesType">
         <xs:sequence>
-            <xs:element name="Username" type="xs:string"
-                minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="Username" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -358,15 +411,14 @@
 
     <xs:complexType name="ProcessSummariesType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded"
-                name="ProcessSummary" type="tns:ProcessSummaryType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ProcessSummaryType">
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="unbounded"
-                name="VersionSummaries" type="tns:VersionSummaryType" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries" type="tns:VersionSummaryType" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Folder" type="tns:FolderType" />
         </xs:sequence>
         <xs:attribute name="original_native_type" type="xs:string" />
         <xs:attribute name="name" type="xs:string" />
@@ -375,12 +427,14 @@
         <xs:attribute name="ranking" type="xs:string" />
         <xs:attribute name="last_version" type="xs:string" />
         <xs:attribute name="owner" type="xs:string" />
+        <xs:attribute name="hasRead" type="xs:boolean" />
+        <xs:attribute name="hasWrite" type="xs:boolean" />
+        <xs:attribute name="hasOwnership" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="VersionSummaryType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded"
-                name="Annotations" type="tns:AnnotationsType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Annotations" type="tns:AnnotationsType" />
         </xs:sequence>
         <xs:attribute name="ranking" type="xs:string" />
         <xs:attribute name="name" type="xs:string" />
@@ -391,8 +445,7 @@
 
     <xs:complexType name="ParametersType">
         <xs:sequence>
-            <xs:element name="Parameter" type="tns:ParameterType"
-                minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="Parameter" type="tns:ParameterType" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -405,8 +458,7 @@
 
     <xs:complexType name="ProcessVersion_idsType">
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="unbounded"
-                name="ProcessVersion_id" type="tns:ProcessVersion_idType" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" name="ProcessVersion_id" type="tns:ProcessVersion_idType" />
         </xs:sequence>
     </xs:complexType>
 
@@ -422,6 +474,72 @@
     </xs:complexType>
 
     <!-- Manager Data Types -->
+    <xs:complexType name="SaveFolderPermissionsInputMsgType">
+        <xs:attribute name="folderId" type="xs:int" />
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="hasRead" type="xs:boolean" />
+        <xs:attribute name="hasWrite" type="xs:boolean" />
+        <xs:attribute name="hasOwnership" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:complexType name="SaveFolderPermissionsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="Message" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="SaveProcessPermissionsInputMsgType">
+        <xs:attribute name="processId" type="xs:int" />
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="hasRead" type="xs:boolean" />
+        <xs:attribute name="hasWrite" type="xs:boolean" />
+        <xs:attribute name="hasOwnership" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:complexType name="SaveProcessPermissionsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="Message" type="xs:string" />
+    </xs:complexType>
+
+    <!-- Manager Data Types -->
+    <xs:complexType name="RemoveFolderPermissionsInputMsgType">
+        <xs:attribute name="folderId" type="xs:int" />
+        <xs:attribute name="userId" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="RemoveFolderPermissionsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="Message" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="RemoveProcessPermissionsInputMsgType">
+        <xs:attribute name="processId" type="xs:int" />
+        <xs:attribute name="userId" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="RemoveProcessPermissionsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="Message" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="SearchUserInputMsgType">
+        <xs:attribute name="searchString" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="SearchUserOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Users" type="tns:UserType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ReadDomainsInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional" />
     </xs:complexType>
@@ -432,10 +550,30 @@
 
     <xs:complexType name="ReadDomainsOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="Domains" type="tns:DomainsType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Domains" type="tns:DomainsType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetFolderUsersInputMsgType">
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="GetFolderUsersOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Users" type="tns:UserFolderType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetProcessUsersInputMsgType">
+        <xs:attribute name="processId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="GetProcessUsersOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Users" type="tns:UserFolderType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -445,10 +583,8 @@
 
     <xs:complexType name="ReadAllUsersOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="Usernames" type="tns:UsernamesType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Usernames" type="tns:UsernamesType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -458,20 +594,16 @@
 
     <xs:complexType name="ReadUserOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="User" type="tns:UserType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadEditSessionOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -481,10 +613,8 @@
 
     <xs:complexType name="ReadNativeTypesOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="NativeTypes" type="tns:NativeTypesType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -500,8 +630,110 @@
 
     <xs:complexType name="EditProcessDataOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="LoginInputMsgType">
+        <xs:attribute name="username" type="xs:string" />
+        <xs:attribute name="password" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="LoginOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetWorkspaceFolderTreeInputMsgType">
+        <xs:attribute name="userId" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="GetWorkspaceFolderTreeOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Folders" type="tns:FolderType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetSubFoldersInputMsgType">
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="GetSubFoldersOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Folders" type="tns:FolderType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetBreadcrumbsInputMsgType">
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="GetBreadcrumbsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Folders" type="tns:FolderType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetProcessesInputMsgType">
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="GetProcessesOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Processes" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CreateFolderInputMsgType">
+        <xs:attribute name="userId" type="xs:string" />
+        <xs:attribute name="folderName" type="xs:string" />
+        <xs:attribute name="parentFolderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="CreateFolderOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AddProcessToFolderInputMsgType">
+        <xs:attribute name="processId" type="xs:int" />
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="AddProcessToFolderOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UpdateFolderInputMsgType">
+        <xs:attribute name="folderId" type="xs:int" />
+        <xs:attribute name="folderName" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="UpdateFolderOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DeleteFolderInputMsgType">
+        <xs:attribute name="folderId" type="xs:int" />
+    </xs:complexType>
+
+    <xs:complexType name="DeleteFolderOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -513,15 +745,27 @@
 
     <xs:complexType name="WriteUserOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CreateUserInputMsgType">
+        <xs:sequence>
+            <xs:element name="User" type="tns:UserType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CreateUserOutputMsgType">
+        <xs:sequence>
+            <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="WriteEditSessionInputMsgType">
         <xs:sequence>
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -544,9 +788,7 @@
 
     <xs:complexType name="DeleteProcessVersionsInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessVersionIdentifier"
-                type="tns:ProcessVersionIdentifierType" minOccurs="1"
-                maxOccurs="unbounded" />
+            <xs:element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -558,21 +800,17 @@
 
     <xs:complexType name="ImportProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessDescription" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="CanoniserParameters" type="tns:PluginParameters"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="CanoniserParameters" type="tns:PluginParameters" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
+        <xs:attribute name="AddFakeEvents" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="UpdateProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="EditSessionCode" type="xs:int" />
         <xs:attribute name="PreVersion" type="xs:string" />
@@ -642,19 +880,15 @@
 
     <xs:complexType name="ReadProcessSummariesOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="WriteAnnotationInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Anf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
         <xs:attribute name="EditSessionCode" type="xs:int" />
         <xs:attribute name="AnnotationName" type="xs:string" />
@@ -689,8 +923,7 @@
     <xs:complexType name="MergeProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType"
-                minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -699,7 +932,7 @@
             <xs:element name="ProcessId" type="xs:int" />
             <xs:element name="VersionName" type="xs:string" />
             <xs:element name="Algorithm" type="xs:string" />
-            <xs:element name="LatestVersions" type="xs:boolean" />
+            <xs:element name="LatestVersions" type="xs:boolean"/>
             <xs:element name="Parameters" type="tns:ParametersType" />
         </xs:sequence>
     </xs:complexType>
@@ -712,84 +945,73 @@
     </xs:complexType>
 
 
-    <!-- ************************* Stuff not really required but used at 
-        the moment ************************* -->
+    <!-- ************************* Stuff not really required but used at the moment ************************* -->
 
 
     <!-- Canoniser Stuff -->
     <xs:complexType name="GenerateAnnotationInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
         </xs:sequence>
-        <xs:attribute name="EditSessionCode" type="xs:int" />
-        <xs:attribute name="AnnotationName" type="xs:string" />
-        <xs:attribute name="IsNew" type="xs:boolean" />
-        <xs:attribute name="ProcessId" type="xs:int" />
-        <xs:attribute name="Version" type="xs:string" />
-        <xs:attribute name="NativeType" type="xs:string" />
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+        <xs:attribute name="AnnotationName" type="xs:string"/>
+        <xs:attribute name="IsNew" type="xs:boolean"/>
+        <xs:attribute name="ProcessId" type="xs:int"/>
+        <xs:attribute name="Version" type="xs:string"/>
+        <xs:attribute name="NativeType" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="GenerateAnnotationOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" />
+            <xs:element name="Result" type="tns:ResultType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CanoniseProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessDescription" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="Cpf_uri" type="xs:string" />
-        <xs:attribute name="AddFakeEvents" type="xs:boolean" />
+        <xs:attribute name="Cpf_uri" type="xs:string"/>
+        <xs:attribute name="AddFakeEvents" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="CanoniseProcessOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DeCanoniseProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="processId" type="xs:int" />
-            <xs:element name="version" type="xs:string" />
-            <xs:element name="NativeType" type="xs:string" />
-            <xs:element name="Cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Anf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream"
-                minOccurs="0" />
+            <xs:element name="processId" type="xs:int"/>
+            <xs:element name="version" type="xs:string"/>
+            <xs:element name="NativeType" type="xs:string"/>
+            <xs:element name="Cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="Anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DeCanoniseProcessOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="NativeDescription" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="NativeDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CanoniseVersionInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="EditSessionCode" type="xs:int" />
-        <xs:attribute name="Cpf_uri" type="xs:string" />
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+        <xs:attribute name="Cpf_uri" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="CanoniseVersionOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" />
+            <xs:element name="Result" type="tns:ResultType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -797,22 +1019,19 @@
     <!-- DataAccess Not needed stuff -->
     <xs:complexType name="ReadProcessSummaryInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessVersions" type="tns:ProcessVersionsType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="ProcessVersions" type="tns:ProcessVersionsType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ProcessVersionsType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded"
-                name="ProcessVersion" type="tns:ProcessVersionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion" type="tns:ProcessVersionType" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadCanonicalsInputMsgType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded"
-                name="ProcessVersion" type="tns:ProcessVersionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion" type="tns:ProcessVersionType" />
         </xs:sequence>
         <xs:attribute name="LatestVersions" type="xs:boolean" />
     </xs:complexType>
@@ -831,23 +1050,20 @@
             <xs:element name="domain" type="xs:string" />
             <xs:element name="username" type="xs:string" />
             <xs:element name="sources" type="tns:MergedSources" />
-            <xs:element name="Cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="StoreCpfOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType"
-                minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="MergedSources">
         <xs:sequence>
-            <xs:element name="mergedSource" type="tns:MergedSource"
-                minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="mergedSource" type="tns:MergedSource" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -857,37 +1073,31 @@
     </xs:complexType>
 
     <xs:complexType name="ReadCanonicalAnfInputMsgType">
-        <xs:attribute name="processId" type="xs:int" />
-        <xs:attribute name="version" type="xs:string" />
-        <xs:attribute name="withAnnotation" type="xs:boolean" />
-        <xs:attribute name="annotationName" type="xs:string" />
+        <xs:attribute name="processId" type="xs:int"/>
+        <xs:attribute name="version" type="xs:string"/>
+        <xs:attribute name="withAnnotation" type="xs:boolean"/>
+        <xs:attribute name="annotationName" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="ReadCanonicalAnfOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream"
-                minOccurs="1" maxOccurs="1" />
-            <xs:element name="anf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream"
-                minOccurs="0" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadFormatInputMsgType">
-        <xs:attribute name="processId" type="xs:int" />
-        <xs:attribute name="version" type="xs:string" />
-        <xs:attribute name="format" type="xs:string" />
+        <xs:attribute name="processId" type="xs:int"/>
+        <xs:attribute name="version" type="xs:string"/>
+        <xs:attribute name="format" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="ReadFormatOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+                        xmime:expectedContentTypes="application/octet-stream"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -900,28 +1110,23 @@
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" />
         </xs:sequence>
-        <xs:attribute name="CpfURI" type="xs:string" />
+        <xs:attribute name="CpfURI" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="StoreNativeCpfInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Anf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
-        <xs:attribute name="CpfURI" type="xs:string" />
+        <xs:attribute name="CpfURI" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="StoreNativeCpfOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" />
-            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType"
-                minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -930,8 +1135,7 @@
             <xs:element name="processId" type="xs:int" />
             <xs:element name="version" type="xs:string" />
             <xs:element name="NativeType" type="xs:string" />
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
         </xs:sequence>
     </xs:complexType>
 
@@ -943,17 +1147,13 @@
 
     <xs:complexType name="StoreVersionInputMsgType">
         <xs:sequence>
-            <xs:element name="Native" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Cpf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Anf" type="xs:base64Binary"
-                xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="EditSession" type="tns:EditSessionType"
-                minOccurs="1" maxOccurs="1" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="EditSessionCode" type="xs:int" />
-        <xs:attribute name="CpfURI" type="xs:string" />
+        <xs:attribute name="CpfURI" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="StoreVersionOutputMsgType">
@@ -963,236 +1163,297 @@
     </xs:complexType>
 
 
+    <xs:element name="GetClustersRequest"
+                type="tns:GetClustersRequestType">
+    </xs:element>
 
     <xs:complexType name="GetClustersRequestType">
         <xs:sequence>
-            <xs:element name="ClusterFilter" type="tns:ClusterFilterType" />
+            <xs:element name="ClusterFilter" type="tns:ClusterFilterType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="GetClustersResponse"
+                type="tns:GetClustersResponseType">
+    </xs:element>
+
     <xs:simpleType name="StringList">
-        <xs:list itemType="xs:string" />
+        <xs:list itemType="xs:string"/>
     </xs:simpleType>
 
     <xs:complexType name="GetClustersResponseType">
         <xs:sequence>
-            <xs:element name="Clusters" type="tns:ClusterType"
-                maxOccurs="unbounded" />
+
+            <xs:element name="Clusters" type="tns:ClusterType" maxOccurs="unbounded"></xs:element>
         </xs:sequence>
     </xs:complexType>
+
+
+
+
+
+
 
     <xs:complexType name="ClusterType">
         <xs:sequence>
-            <xs:element name="ClusterLabel" type="xs:string" />
-            <xs:element name="ClusterSize" type="xs:int" />
-            <xs:element name="MedoidId" type="xs:int" />
-            <xs:element name="AvgFragmentSize" type="xs:float" />
-            <xs:element name="BCR" type="xs:double" />
-            <xs:element name="RefactoringGain" type="xs:int" />
-            <xs:element name="StandardizationEffort" type="xs:double" />
+            <xs:element name="ClusterLabel" type="xs:string"></xs:element>
+            <xs:element name="ClusterSize" type="xs:int"></xs:element>
+            <xs:element name="MedoidId" type="xs:int"></xs:element>
+            <xs:element name="AvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="BCR" type="xs:double"></xs:element>
+            <xs:element name="RefactoringGain" type="xs:int"></xs:element>
+            <xs:element name="StandardizationEffort" type="xs:double"></xs:element>
             <xs:element name="Fragments" type="tns:FragmentData"
-                maxOccurs="unbounded">
+                        maxOccurs="unbounded">
             </xs:element>
+
+
         </xs:sequence>
-        <xs:attribute name="ClusterId" type="xs:string" />
+        <xs:attribute name="ClusterId" type="xs:string"></xs:attribute>
     </xs:complexType>
+
+
 
     <xs:complexType name="FragmentDistancesType">
         <xs:sequence>
-            <xs:element name="Distance" type="tns:DistanceType"
-                maxOccurs="unbounded" minOccurs="1" />
+            <xs:element name="Distance" type="tns:DistanceType" maxOccurs="unbounded" minOccurs="1"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DistanceType">
         <xs:sequence>
-            <xs:element name="GED" type="xs:double" />
+            <xs:element name="GED" type="xs:double"></xs:element>
         </xs:sequence>
-        <xs:attribute name="FragmentId" type="xs:string" />
+        <xs:attribute name="FragmentId" type="xs:string"></xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="FragmentData">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int" />
-            <xs:element name="FragmentLabel" type="xs:string" />
-            <xs:element name="Distance" type="xs:double" />
-            <xs:element name="FragmentSize" type="xs:int" />
-            <xs:element name="ProcessAssociations" type="tns:ProcessAssociationsType"
-                maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="FragmentId" type="xs:int"></xs:element>
+            <xs:element name="FragmentLabel" type="xs:string"></xs:element>
+            <xs:element name="Distance" type="xs:double"></xs:element>
+            <xs:element name="FragmentSize" type="xs:int"></xs:element>
+            <xs:element name="ProcessAssociations" type="tns:ProcessAssociationsType" maxOccurs="unbounded" minOccurs="0"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterFilterType">
         <xs:sequence>
-            <xs:element name="minClusterSize" type="xs:int" />
-            <xs:element name="maxClusterSize" type="xs:int" />
-            <xs:element name="minAvgFragmentSize" type="xs:float" />
-            <xs:element name="maxAvgFragmentSize" type="xs:float" />
-            <xs:element name="minBCR" type="xs:double" />
-            <xs:element name="maxBCR" type="xs:double" />
+            <xs:element name="minClusterSize" type="xs:int"></xs:element>
+            <xs:element name="maxClusterSize" type="xs:int"></xs:element>
+            <xs:element name="minAvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="maxAvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="minBCR" type="xs:double"></xs:element>
+            <xs:element name="maxBCR" type="xs:double"></xs:element>
         </xs:sequence>
     </xs:complexType>
+
+
+    <xs:element name="FragmentResponse"
+                type="tns:FragmentResponseType">
+    </xs:element>
 
     <xs:complexType name="FragmentResponseType">
         <xs:sequence>
-            <xs:element name="Fragment" type="tns:FragmentType" />
+            <xs:element name="Fragment" type="tns:FragmentType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="GetFragmentRequest"
+                type="tns:GetFragmentRequestType">
+    </xs:element>
+
     <xs:complexType name="GetFragmentRequestType">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int" />
+            <xs:element name="FragmentId" type="xs:int"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="FragmentType">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int" />
-            <xs:element name="Content" type="xs:string" />
+            <xs:element name="FragmentId" type="xs:int"></xs:element>
+            <xs:element name="Content" type="xs:string"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="CreateClustersRequest"
+                type="tns:CreateClustersInputMsgType">
+    </xs:element>
+
     <xs:complexType name="CreateClustersInputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterSettings" type="tns:ClusterSettingsType" />
+            <xs:element name="ClusterSettings" type="tns:ClusterSettingsType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterSettingsType">
         <xs:sequence>
-            <xs:element name="Algorithm" type="xs:string" />
-            <xs:element name="ClusteringParams" type="tns:ClusteringParameterType"
-                maxOccurs="unbounded" minOccurs="1" />
-            <xs:element name="ConstrainedProcessIds" type="tns:ConstrainedProcessIdsType" />
+            <xs:element name="Algorithm" type="xs:string"></xs:element>
+            <xs:element name="ClusteringParams"
+                        type="tns:ClusteringParameterType" maxOccurs="unbounded"
+                        minOccurs="1">
+            </xs:element>
+            <xs:element name="ConstrainedProcessIds" type="tns:ConstrainedProcessIdsType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="CreateClustersResponse"
+                type="tns:CreateClustersOutputMsgType">
+    </xs:element>
+
     <xs:complexType name="CreateClustersOutputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterSummaries" type="tns:ClusteringSummaryType" />
+            <xs:element name="ClusterSummaries" type="tns:ClusteringSummaryType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusteringSummaryType">
         <xs:sequence>
-            <xs:element name="NumClusters" type="xs:int" />
-            <xs:element name="minClusterSize" type="xs:int" />
-            <xs:element name="maxClusterSize" type="xs:int" />
-            <xs:element name="minAvgFragmentSize" type="xs:float" />
-            <xs:element name="maxAvgFragmentSize" type="xs:float" />
-            <xs:element name="minBCR" type="xs:double" />
-            <xs:element name="maxBCR" type="xs:double" />
+            <xs:element name="NumClusters" type="xs:int"></xs:element>
+            <xs:element name="minClusterSize" type="xs:int"></xs:element>
+            <xs:element name="maxClusterSize" type="xs:int"></xs:element>
+            <xs:element name="minAvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="maxAvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="minBCR" type="xs:double"></xs:element>
+            <xs:element name="maxBCR" type="xs:double"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusteringParameterType">
         <xs:sequence>
-            <xs:element name="ParamName" type="xs:string" />
-            <xs:element name="ParmaValue" type="xs:string" />
+            <xs:element name="ParamName" type="xs:string"></xs:element>
+            <xs:element name="ParmaValue" type="xs:string"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="GetClusteringSummaryRequest"
+                type="tns:GetClusteringSummaryInputMsgType">
+    </xs:element>
+
+    <xs:element name="GetClusteringSummaryResponse"
+                type="tns:GetClusteringSummaryOutputMsgType">
+    </xs:element>
+
     <xs:complexType name="GetClusteringSummaryInputMsgType">
         <xs:sequence>
-            <xs:element name="param1" type="xs:string" />
+            <xs:element name="param1" type="xs:string"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="GetClusteringSummaryOutputMsgType">
         <xs:sequence>
-            <xs:element name="ClusteringSummary" type="tns:ClusteringSummaryType" />
+            <xs:element name="ClusteringSummary" type="tns:ClusteringSummaryType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="NewComplexType" />
+    <xs:complexType name="NewComplexType"></xs:complexType>
+
+    <xs:element name="PairwiseDistancesRequest"
+                type="tns:GetPairwiseDistancesInputMsgType">
+    </xs:element>
 
     <xs:complexType name="GetPairwiseDistancesInputMsgType">
         <xs:sequence>
-            <xs:element name="FragmentIds" type="tns:FragmentIdsType" />
+            <xs:element name="FragmentIds" type="tns:FragmentIdsType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="FragmentIdsType">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int"
-                maxOccurs="unbounded" minOccurs="1" />
+            <xs:element name="FragmentId" type="xs:int" maxOccurs="unbounded" minOccurs="1"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="PairwiseDistancesResponse"
+                type="tns:GetPairwiseDistancesOutputMsgType">
+    </xs:element>
+
     <xs:complexType name="GetPairwiseDistancesOutputMsgType">
         <xs:sequence>
-            <xs:element name="PairDistances" type="tns:PairDistancesType" />
+            <xs:element name="PairDistances" type="tns:PairDistancesType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="PairDistancesType">
         <xs:sequence>
-            <xs:element name="PiarDistance" type="tns:PairDistanceType"
-                maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="PairDistance" type="tns:PairDistanceType" maxOccurs="unbounded" minOccurs="0"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="PairDistanceType">
         <xs:sequence>
-            <xs:element name="FragmentId1" type="xs:int" />
-            <xs:element name="FragmentId2" type="xs:int" />
-            <xs:element name="Distance" type="xs:double" />
+            <xs:element name="FragmentId1" type="xs:int"></xs:element>
+            <xs:element name="FragmentId2" type="xs:int"></xs:element>
+            <xs:element name="Distance" type="xs:double"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ProcessAssociationsType">
         <xs:sequence>
-            <xs:element name="ProcessId" type="xs:int" />
-            <xs:element name="ProcessName" type="xs:string" />
-            <xs:element name="BranchName" type="xs:string" />
-            <xs:element name="ProcessVersionId" type="xs:int" />
-            <xs:element name="ProcessVersionNumber" type="xs:string" />
+            <xs:element name="ProcessId" type="xs:int"></xs:element>
+            <xs:element name="ProcessName" type="xs:string"></xs:element>
+            <xs:element name="BranchName" type="xs:string"></xs:element>
+            <xs:element name="ProcessVersionId" type="xs:int"></xs:element>
+            <xs:element name="ProcessVersionNumber" type="xs:string"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ConstrainedProcessIdsType">
         <xs:sequence>
-            <xs:element name="ProcessId" type="xs:int"
-                maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="ProcessId" type="xs:int" maxOccurs="unbounded" minOccurs="0"></xs:element>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:element name="GetClusterSummariesRequest"
+                type="tns:GetClusterSummariesInputMsgType">
+    </xs:element>
 
     <xs:complexType name="GetClusterSummariesInputMsgType">
         <xs:sequence>
-            <xs:element name="filter" type="tns:ClusterFilterType" />
+            <xs:element name="filter" type="tns:ClusterFilterType"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="GetClusterSummariesResponse"
+                type="tns:GetClusterSummariesOutputMsgType">
+    </xs:element>
+
     <xs:complexType name="GetClusterSummariesOutputMsgType">
         <xs:sequence>
-            <xs:element name="clusterSummaries" type="tns:ClusterSummaryType"
-                maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="clusterSummaries" type="tns:ClusterSummaryType" maxOccurs="unbounded" minOccurs="0"></xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterSummaryType">
         <xs:sequence>
-            <xs:element name="ClusterLabel" type="xs:string" />
-            <xs:element name="ClusterSize" type="xs:int" />
-            <xs:element name="MedoidId" type="xs:int" />
-            <xs:element name="AvgFragmentSize" type="xs:float" />
-            <xs:element name="BCR" type="xs:double" />
-            <xs:element name="RefactoringGain" type="xs:int" />
-            <xs:element name="StandardizationEffort" type="xs:double" />
+            <xs:element name="ClusterLabel" type="xs:string"></xs:element>
+            <xs:element name="ClusterSize" type="xs:int"></xs:element>
+            <xs:element name="MedoidId" type="xs:int"></xs:element>
+            <xs:element name="AvgFragmentSize" type="xs:float"></xs:element>
+            <xs:element name="BCR" type="xs:double"></xs:element>
+            <xs:element name="RefactoringGain" type="xs:int"></xs:element>
+            <xs:element name="StandardizationEffort" type="xs:double"></xs:element>
         </xs:sequence>
-        <xs:attribute name="ClusterId" type="xs:int" />
+        <xs:attribute name="ClusterId" type="xs:int"></xs:attribute>
     </xs:complexType>
+
+    <xs:element name="GetClusterRequest"
+                type="tns:GetClusterInputMsgType">
+    </xs:element>
 
     <xs:complexType name="GetClusterInputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterId" type="xs:int" />
+            <xs:element name="ClusterId" type="xs:int"></xs:element>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:element name="GetClusterResponse"
+                type="tns:GetClusterOutputMsgType">
+    </xs:element>
 
     <xs:complexType name="GetClusterOutputMsgType">
         <xs:sequence>
-            <xs:element name="Cluster" type="tns:ClusterType" />
+            <xs:element name="Cluster" type="tns:ClusterType"></xs:element>
         </xs:sequence>
     </xs:complexType>
-
 </xs:schema>
