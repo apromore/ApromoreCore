@@ -33,11 +33,15 @@ public class Process implements Serializable {
     private String domain;
 
     private User user;
+    private Folder folder;
     private NativeType nativeType;
 
-    private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
     private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<TempVersion> tempVersions = new HashSet<TempVersion>(0);
+    private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
+    private Set<ProcessUser> processUsers = new HashSet<ProcessUser>(0);
+//    private Set<Folder> folders = new HashSet<Folder>(0);
+
 
     /**
      * Default constructor.
@@ -73,7 +77,7 @@ public class Process implements Serializable {
      * Get the Name for the Object.
      * @return Returns the name.
      */
-    @Column(name = "name", unique = false, nullable = false, length = 100)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -90,7 +94,7 @@ public class Process implements Serializable {
      * Get the User for the Object.
      * @return Returns the domain.
      */
-    @Column(name = "domain", unique = false, nullable = false, length = 40)
+    @Column(name = "domain")
     public String getDomain() {
         return domain;
     }
@@ -103,6 +107,23 @@ public class Process implements Serializable {
         this.domain = newDomain;
     }
 
+    /**
+     * Get the nativeType for the Object.
+     * @return Returns the nativeType.
+     */
+    @ManyToOne
+    @JoinColumn(name = "folderId")
+    public Folder getFolder() {
+        return this.folder;
+    }
+
+    /**
+     * Set the user for the Object.
+     * @param newFolder The user to set.
+     */
+    public void setFolder(final Folder newFolder) {
+        this.folder = newFolder;
+    }
 
     /**
      * Get the nativeType for the Object.
@@ -158,6 +179,16 @@ public class Process implements Serializable {
         this.editSessions = newEditSessions;
     }
 
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<TempVersion> getTempVersions() {
+        return this.tempVersions;
+    }
+
+    public void setTempVersions(final Set<TempVersion> tempVersions) {
+        this.tempVersions = tempVersions;
+    }
+
     /**
      * Get the process branches for the Object.
      * @return Returns the process branches.
@@ -176,11 +207,30 @@ public class Process implements Serializable {
     }
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<TempVersion> getTempVersions() {
-        return this.tempVersions;
+    public Set<ProcessUser> getProcessUsers() {
+        return this.processUsers;
     }
 
-    public void setTempVersions(final Set<TempVersion> tempVersions) {
-        this.tempVersions = tempVersions;
+    public void setProcessUsers(Set<ProcessUser> processUsers) {
+        this.processUsers = processUsers;
     }
+
+//
+//    /**
+//     * Getter for the role collection.
+//     * @return Returns the roles.
+//     */
+//    @ManyToMany(mappedBy = "processes", cascade = {CascadeType.ALL, CascadeType.ALL})
+//    public Set<Folder> getFolders() {
+//        return folders;
+//    }
+//
+//    /**
+//     * Setter for the role Collection.
+//     * @param newFolders The roles to set.
+//     */
+//    public void setFolders(final Set<Folder> newFolders) {
+//        this.folders = newFolders;
+//    }
+
 }

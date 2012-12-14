@@ -1,7 +1,5 @@
 package org.apromore.portal.dialogController.renderer;
 
-import java.util.List;
-
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
@@ -13,6 +11,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import java.util.List;
+
 public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     /* (non-Javadoc)
@@ -23,8 +23,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         renderProcessSummary(listItem, (ProcessSummaryType) obj);
     }
 
-    private void renderProcessSummary(Listitem listItem,
-                                      final ProcessSummaryType process) {
+    private void renderProcessSummary(Listitem listItem, final ProcessSummaryType process) {
         listItem.appendChild(new Listcell()); // Built-In Checkbox
         listItem.appendChild(renderProcessScore(process));
         listItem.appendChild(renderProcessId(process));
@@ -34,7 +33,6 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderProcessRankingHB(process));
         listItem.appendChild(renderProcessLastVersion(process));
         listItem.appendChild(renderProcessOwner(process));
-
     }
 
     protected Listcell renderProcessOwner(final ProcessSummaryType process) {
@@ -59,8 +57,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderProcessRankingHB(final ProcessSummaryType process) {
         Hbox processRankingHB = new Hbox();
-        if (process.getRanking() != null
-                && process.getRanking().toString().compareTo("") != 0) {
+        if (process.getRanking() != null && process.getRanking().toString().compareTo("") != 0) {
             displayRanking(processRankingHB, process.getRanking());
         }
         return wrapIntoListCell(processRankingHB);
@@ -74,26 +71,20 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     protected Listcell renderProcessScore(final ProcessSummaryType process) {
         Label processScoreLb = new Label();
 
-        List<VersionSummaryType> processVersions = process
-                .getVersionSummaries();
+        List<VersionSummaryType> processVersions = process.getVersionSummaries();
         // find the score of the latest version, if any: this a one which will
         // be displayed
         // with the process
         int i = 0;
-        while (i < processVersions.size()
-                && processVersions.get(i).getName() != null
-                && processVersions.get(i).getName()
-                .compareTo(process.getLastVersion()) != 0) {
+        while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion()) != 0) {
             i++;
         }
         // Each process should have at least one version. So it should have a
         // legal value which
         // is the index of the process latest version.
         // But some are faulty!!!
-        if (i < processVersions.size()
-                && processVersions.get(i).getScore() != null) {
-            processScoreLb.setValue(processVersions.get(i).getScore()
-                    .toString());
+        if (i < processVersions.size() && processVersions.get(i).getScore() != null) {
+            processScoreLb.setValue(processVersions.get(i).getScore().toString());
         } else {
             processScoreLb.setValue("1.0");
         }
@@ -111,7 +102,6 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
      * Display in hbox versionRanking, 5 stars according to ranking (0...5).
      * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
      * process version directly by interacting with the stars displayed.
-     *
      * @param ranking
      */
     private void displayRanking(Hbox rankingHb, String ranking) {

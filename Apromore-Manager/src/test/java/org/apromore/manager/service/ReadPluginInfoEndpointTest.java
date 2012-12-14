@@ -18,9 +18,11 @@ import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.CanonicalConverterAdapter;
@@ -33,9 +35,11 @@ import org.apromore.service.impl.FragmentServiceImpl;
 import org.apromore.service.impl.MergeServiceImpl;
 import org.apromore.service.impl.PluginServiceImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
+import org.apromore.service.impl.SecurityServiceImpl;
 import org.apromore.service.impl.SessionServiceImpl;
 import org.apromore.service.impl.SimilarityServiceImpl;
 import org.apromore.service.impl.UserServiceImpl;
+import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +67,8 @@ public class ReadPluginInfoEndpointTest {
     private SimilarityService simSrv;
     private MergeService merSrv;
     private SessionService sesSrv;
+    private SecurityService secSrv;
+    private WorkspaceService wrkSrv;
     private UserInterfaceHelper uiHelper;
     private CanonicalConverter convertor;
     private ManagerCanoniserClient caClient;
@@ -81,12 +87,14 @@ public class ReadPluginInfoEndpointTest {
         simSrv = createMock(SimilarityServiceImpl.class);
         merSrv = createMock(MergeServiceImpl.class);
         sesSrv = createMock(SessionServiceImpl.class);
+        secSrv = createMock(SecurityServiceImpl.class);
+        wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
         convertor = createMock(CanonicalConverterAdapter.class);
         caClient = createMock(ManagerCanoniserClient.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, uiHelper, convertor, caClient);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper, convertor, caClient);
     }
 
 

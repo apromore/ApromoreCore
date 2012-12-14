@@ -43,6 +43,7 @@ public class FragmentVersion implements Serializable {
 
     private Content content;
     private Cluster cluster;
+    private Fragment fragment;
 
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
     private Set<ProcessModelVersion> rootProcessModelVersions = new HashSet<ProcessModelVersion>(0);
@@ -195,6 +196,17 @@ public class FragmentVersion implements Serializable {
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "fragmentId")
+    public Fragment getFragment() {
+        return this.fragment;
+    }
+
+    public void setFragment(final Fragment newFragment) {
+        this.fragment = newFragment;
+    }
+
 
 
     @OneToMany(mappedBy = "rootFragmentVersion", cascade = CascadeType.ALL, orphanRemoval = true)

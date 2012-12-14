@@ -84,7 +84,7 @@ public class SessionServiceImpl implements SessionService {
         session.setVersionName(versionName);
         session.setNatType(editSession.getNativeType());
         session.setProcessModelVersion(pmv);
-        session.setUser(userRepo.findUserByLogin(editSession.getUsername()));
+        session.setUser(userRepo.findByUsername(editSession.getUsername()));
         if (withAnnotation) {
             session.setAnnotation(editSession.getAnnotation());
         }

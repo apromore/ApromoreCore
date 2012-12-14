@@ -7,6 +7,7 @@ import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.EditSession;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
@@ -19,13 +20,20 @@ import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.UserMapper;
+import org.apromore.mapper.WorkspaceMapper;
+import org.apromore.model.AddProcessToFolderInputMsgType;
+import org.apromore.model.AddProcessToFolderOutputMsgType;
 import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.ClusterType;
 import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.CreateClustersInputMsgType;
 import org.apromore.model.CreateClustersOutputMsgType;
+import org.apromore.model.CreateFolderInputMsgType;
+import org.apromore.model.CreateFolderOutputMsgType;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
+import org.apromore.model.DeleteFolderInputMsgType;
+import org.apromore.model.DeleteFolderOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
 import org.apromore.model.DeleteProcessVersionsOutputMsgType;
 import org.apromore.model.DeployProcessInputMsgType;
@@ -37,8 +45,11 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.FolderType;
 import org.apromore.model.FragmentResponseType;
 import org.apromore.model.FragmentType;
+import org.apromore.model.GetBreadcrumbsInputMsgType;
+import org.apromore.model.GetBreadcrumbsOutputMsgType;
 import org.apromore.model.GetClusterInputMsgType;
 import org.apromore.model.GetClusterOutputMsgType;
 import org.apromore.model.GetClusterSummariesInputMsgType;
@@ -47,12 +58,24 @@ import org.apromore.model.GetClusteringSummaryInputMsgType;
 import org.apromore.model.GetClusteringSummaryOutputMsgType;
 import org.apromore.model.GetClustersRequestType;
 import org.apromore.model.GetClustersResponseType;
+import org.apromore.model.GetFolderUsersInputMsgType;
+import org.apromore.model.GetFolderUsersOutputMsgType;
 import org.apromore.model.GetFragmentRequestType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
+import org.apromore.model.GetProcessUsersInputMsgType;
+import org.apromore.model.GetProcessUsersOutputMsgType;
+import org.apromore.model.GetProcessesInputMsgType;
+import org.apromore.model.GetProcessesOutputMsgType;
+import org.apromore.model.GetSubFoldersInputMsgType;
+import org.apromore.model.GetSubFoldersOutputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.LoginInputMsgType;
+import org.apromore.model.LoginOutputMsgType;
 import org.apromore.model.MergeProcessesInputMsgType;
 import org.apromore.model.MergeProcessesOutputMsgType;
 import org.apromore.model.NativeMetaData;
@@ -93,11 +116,24 @@ import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.RemoveFolderPermissionsInputMsgType;
+import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
+import org.apromore.model.RemoveProcessPermissionsInputMsgType;
+import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
 import org.apromore.model.ResultType;
+import org.apromore.model.SaveFolderPermissionsInputMsgType;
+import org.apromore.model.SaveFolderPermissionsOutputMsgType;
+import org.apromore.model.SaveProcessPermissionsInputMsgType;
+import org.apromore.model.SaveProcessPermissionsOutputMsgType;
 import org.apromore.model.SearchForSimilarProcessesInputMsgType;
 import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchUserInputMsgType;
+import org.apromore.model.SearchUserOutputMsgType;
+import org.apromore.model.UpdateFolderInputMsgType;
+import org.apromore.model.UpdateFolderOutputMsgType;
 import org.apromore.model.UpdateProcessInputMsgType;
 import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.WriteAnnotationInputMsgType;
@@ -122,9 +158,11 @@ import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SecurityService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
@@ -181,6 +219,8 @@ public class ManagerPortalEndpoint {
     private SimilarityService simSrv;
     private MergeService merSrv;
     private SessionService sesSrv;
+    private SecurityService secSrv;
+    private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
     private CanonicalConverter convertor;
     private ManagerCanoniserClient caClient;
@@ -201,6 +241,8 @@ public class ManagerPortalEndpoint {
      * @param simSrv Similarity Service.
      * @param merSrv Merge Service.
      * @param sesSrv Session Service.
+     * @param secSrv security Service.
+     * @param wrkSrv workspace service.
      * @param uiHelper UI Helper.
      * @param convertor Convertor
      * @param caClient Old Canoniser Service
@@ -210,7 +252,8 @@ public class ManagerPortalEndpoint {
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv, final SessionService sesSrv,
-            final UserInterfaceHelper uiHelper, final CanonicalConverter convertor, final ManagerCanoniserClient caClient) {
+            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
+            final CanonicalConverter convertor, final ManagerCanoniserClient caClient) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -223,6 +266,8 @@ public class ManagerPortalEndpoint {
         this.simSrv = simSrv;
         this.merSrv = merSrv;
         this.sesSrv = sesSrv;
+        this.secSrv = secSrv;
+        this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
         this.convertor = convertor;
         this.caClient = caClient;
@@ -757,9 +802,10 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            userSrv.writeUser(UserMapper.convertFromUserType(payload.getUser()));
+            UserType newUser = UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(payload.getUser())));
             result.setCode(0);
             result.setMessage("");
+            res.setUser(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
             result.setCode(0);
@@ -827,7 +873,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            UserType user = UserMapper.convertUserTypes(userSrv.findUserByLogin(payload.getUsername()));
+            UserType user = UserMapper.convertUserTypes(secSrv.getUserByName(payload.getUsername()));
             result.setCode(0);
             result.setMessage("");
             res.setUser(user);
@@ -838,6 +884,33 @@ public class ManagerPortalEndpoint {
         }
         return WS_OBJECT_FACTORY.createReadUserResponse(res);
     }
+
+    /* (non-Javadoc)
+    * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType  payload )
+    */
+    @PayloadRoot(localPart = "SearchUserRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<SearchUserOutputMsgType> searchUsers(@RequestPayload final JAXBElement<SearchUserInputMsgType> req) {
+        LOGGER.info("Executing operation searchUser");
+        SearchUserInputMsgType payload = req.getValue();
+        SearchUserOutputMsgType res = new SearchUserOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            List<User> users = secSrv.searchUsers(payload.getSearchString());
+            for (User user : users){
+                res.getUsers().add(UserMapper.convertUserTypes(user));
+            }
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+        return new ObjectFactory().createSearchUserResponse(res);
+    }
+
 
     /*
      * (non-Javadoc)
@@ -1110,6 +1183,238 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         return WS_OBJECT_FACTORY.createDeployProcessResponse(res);
     }
+
+    @PayloadRoot(localPart = "LoginRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<LoginOutputMsgType> login(@RequestPayload final JAXBElement<LoginInputMsgType> req) {
+        LOGGER.info("Executing operation login");
+        LoginInputMsgType payload = req.getValue();
+        LoginOutputMsgType res = new LoginOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            UserType user = UserMapper.convertUserTypes(secSrv.login(payload.getUsername(), payload.getPassword()));
+            //secSrv.login(payload.getUsername(), payload.getPassword());
+            res.setUser(user);
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(0);
+            result.setMessage(ex.getMessage());
+        }
+        return new ObjectFactory().createLoginResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetWorkspaceFolderTreeRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetWorkspaceFolderTreeOutputMsgType> getWorkspaceFolderTree(@RequestPayload final JAXBElement<GetWorkspaceFolderTreeInputMsgType> req) {
+        LOGGER.info("Executing operation getWorkspaceFolderTree");
+        GetWorkspaceFolderTreeInputMsgType payload = req.getValue();
+        GetWorkspaceFolderTreeOutputMsgType res = new GetWorkspaceFolderTreeOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        List<FolderType> folderTypes = WorkspaceMapper.convertFolderTreeNodesToFolderTypes(workspaceSrv.getWorkspaceFolderTree(payload.getUserId()));
+        for (FolderType ft : folderTypes) {
+            res.getFolders().add(ft);
+        }
+        return new ObjectFactory().createGetWorkspaceFolderTreeResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetSubFoldersRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetSubFoldersOutputMsgType> getSubFolders(@RequestPayload final JAXBElement<GetSubFoldersInputMsgType> req) {
+        LOGGER.info("Executing operation getSubFolders");
+        GetSubFoldersInputMsgType payload = req.getValue();
+        GetSubFoldersOutputMsgType res = new GetSubFoldersOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        List<FolderType> folderTypes = WorkspaceMapper.convertFoldersToFolderTypes(workspaceSrv.getSubFolders(payload.getUserId(), payload.getFolderId()));
+        for (FolderType ft : folderTypes) {
+            res.getFolders().add(ft);
+        }
+        return new ObjectFactory().createGetSubFoldersResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetBreadcrumbsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetBreadcrumbsOutputMsgType> getBreadcrumbs(@RequestPayload final JAXBElement<GetBreadcrumbsInputMsgType> req) {
+        LOGGER.info("Executing operation getBreadcrumbs");
+        GetBreadcrumbsInputMsgType payload = req.getValue();
+        GetBreadcrumbsOutputMsgType res = new GetBreadcrumbsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        List<FolderType> folderTypes = WorkspaceMapper.convertFolderListToFolderTypes(workspaceSrv.getBreadcrumbs(payload.getUserId(), payload.getFolderId()));
+        for (FolderType ft : folderTypes) {
+            res.getFolders().add(ft);
+        }
+        return new ObjectFactory().createGetBreadcrumbsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetFolderUsersRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetFolderUsersOutputMsgType> getFolderUsers(@RequestPayload final JAXBElement<GetFolderUsersInputMsgType> req) {
+        LOGGER.info("Executing operation getFolderUsers");
+        GetFolderUsersInputMsgType payload = req.getValue();
+        GetFolderUsersOutputMsgType res = new GetFolderUsersOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertFolderUsersToFolderUserTypes(workspaceSrv.getFolderUsers(payload.getFolderId()));
+        for (UserFolderType ft : userFolderTypes) {
+            res.getUsers().add(ft);
+        }
+        return new ObjectFactory().createGetFolderUsersResponse(res);
+    }
+
+    @PayloadRoot(localPart = "SaveFolderPermissionsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<SaveFolderPermissionsOutputMsgType> saveFolderPermissions(@RequestPayload final JAXBElement<SaveFolderPermissionsInputMsgType> req) {
+        LOGGER.info("Executing operation getFolderUsers");
+        SaveFolderPermissionsInputMsgType payload = req.getValue();
+        SaveFolderPermissionsOutputMsgType res = new SaveFolderPermissionsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String message = workspaceSrv.saveFolderPermissions(payload.getFolderId(), payload.getUserId(), payload.isHasRead(), payload.isHasRead(), payload.isHasOwnership());
+        res.setMessage(message);
+        return new ObjectFactory().createSaveFolderPermissionsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "SaveProcessPermissionsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<SaveProcessPermissionsOutputMsgType> saveProcessPermissions(@RequestPayload final JAXBElement<SaveProcessPermissionsInputMsgType> req) {
+        LOGGER.info("Executing operation getFolderUsers");
+        SaveProcessPermissionsInputMsgType payload = req.getValue();
+        SaveProcessPermissionsOutputMsgType res = new SaveProcessPermissionsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String message = workspaceSrv.saveProcessPermissions(payload.getProcessId(), payload.getUserId(), payload.isHasRead(), payload.isHasRead(), payload.isHasOwnership());
+        res.setMessage(message);
+        return new ObjectFactory().createSaveProcessPermissionsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "RemoveFolderPermissionsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<RemoveFolderPermissionsOutputMsgType> removeFolderPermissions(@RequestPayload final JAXBElement<RemoveFolderPermissionsInputMsgType> req) {
+        LOGGER.info("Executing operation removeFolderPermissions");
+        RemoveFolderPermissionsInputMsgType payload = req.getValue();
+        RemoveFolderPermissionsOutputMsgType res = new RemoveFolderPermissionsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String message = workspaceSrv.removeFolderPermissions(payload.getFolderId(), payload.getUserId());
+        res.setMessage(message);
+        return new ObjectFactory().createRemoveFolderPermissionsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "RemoveProcessPermissionsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<RemoveProcessPermissionsOutputMsgType> removeProcessPermissions(@RequestPayload final JAXBElement<RemoveProcessPermissionsInputMsgType> req) {
+        LOGGER.info("Executing operation removeProcessPermissions");
+        RemoveProcessPermissionsInputMsgType payload = req.getValue();
+        RemoveProcessPermissionsOutputMsgType res = new RemoveProcessPermissionsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String message = workspaceSrv.removeProcessPermissions(payload.getProcessId(), payload.getUserId());
+        res.setMessage(message);
+        return new ObjectFactory().createRemoveProcessPermissionsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetProcessUsersRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetProcessUsersOutputMsgType> getProcessUsers(@RequestPayload final JAXBElement<GetProcessUsersInputMsgType> req) {
+        LOGGER.info("Executing operation getProcessUsers");
+        GetProcessUsersInputMsgType payload = req.getValue();
+        GetProcessUsersOutputMsgType res = new GetProcessUsersOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertProcessUsersToFolderUserTypes(workspaceSrv.getProcessUsers(payload.getProcessId()));
+        for (UserFolderType ft : userFolderTypes) {
+            res.getUsers().add(ft);
+        }
+        return new ObjectFactory().createGetProcessUsersResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetProcessesOutputMsgType> getProcesses(@RequestPayload final JAXBElement<GetProcessesInputMsgType> req) {
+        LOGGER.info("Executing operation getProcesses");
+        GetProcessesInputMsgType payload = req.getValue();
+        GetProcessesOutputMsgType res = new GetProcessesOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        ProcessSummariesType processTypes = uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null); //WorkspaceMapper.convertProcessUsersToProcessSummaryTypes(workspaceSrv.getUserProcesses(payload.getUserId(), payload.getFolderId()));
+        for (ProcessSummaryType pt : processTypes.getProcessSummary()) {
+            res.getProcesses().add(pt);
+        }
+        return new ObjectFactory().createGetProcessesResponse(res);
+    }
+
+    @PayloadRoot(localPart = "CreateFolderRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<CreateFolderOutputMsgType> createFolder(@RequestPayload final JAXBElement<CreateFolderInputMsgType> req) {
+        LOGGER.info("Executing operation createFolder");
+        CreateFolderInputMsgType payload = req.getValue();
+        CreateFolderOutputMsgType res = new CreateFolderOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        workspaceSrv.createFolder(payload.getUserId(), payload.getFolderName(), payload.getParentFolderId());
+
+        return new ObjectFactory().createCreateFolderResponse(res);
+    }
+
+    @PayloadRoot(localPart = "AddProcessToFolderRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<AddProcessToFolderOutputMsgType> addProcessToFolder(@RequestPayload final JAXBElement<AddProcessToFolderInputMsgType> req) {
+        LOGGER.info("Executing operation addProcessToFolder");
+        AddProcessToFolderInputMsgType payload = req.getValue();
+        AddProcessToFolderOutputMsgType res = new AddProcessToFolderOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        workspaceSrv.addProcessToFolder(payload.getProcessId(), payload.getFolderId());
+
+        return new ObjectFactory().createAddProcessToFolderResponse(res);
+    }
+
+    @PayloadRoot(localPart = "UpdateFolderRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<UpdateFolderOutputMsgType> updateFolder(@RequestPayload final JAXBElement<UpdateFolderInputMsgType> req) {
+        LOGGER.info("Executing operation updateFolder");
+        UpdateFolderInputMsgType payload = req.getValue();
+        UpdateFolderOutputMsgType res = new UpdateFolderOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        workspaceSrv.updateFolder(payload.getFolderId(), payload.getFolderName());
+
+        return new ObjectFactory().createUpdateFolderResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DeleteFolderRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DeleteFolderOutputMsgType> deleteFolder(@RequestPayload final JAXBElement<DeleteFolderInputMsgType> req) {
+        LOGGER.info("Executing operation deleteFolder");
+        DeleteFolderInputMsgType payload = req.getValue();
+        DeleteFolderOutputMsgType res = new DeleteFolderOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        workspaceSrv.deleteFolder(payload.getFolderId());
+
+        return new ObjectFactory().createDeleteFolderResponse(res);
+    }
+
+
 
     /**
      * Generate a cpf uri for version of processId

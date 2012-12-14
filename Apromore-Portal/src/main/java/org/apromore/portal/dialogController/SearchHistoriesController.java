@@ -1,7 +1,7 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.common.Constants;
 import org.apromore.model.SearchHistoriesType;
+import org.apromore.portal.common.Constants;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * source taken from ZK Small Talk "Autocomplete with Combobox"
- *
  * @author fauvet
  */
 public class SearchHistoriesController extends Combobox {
@@ -40,8 +39,9 @@ public class SearchHistoriesController extends Combobox {
      * Listens what an user is entering.
      */
     public void onChanging(InputEvent evt) {
-        if (!evt.isChangingBySelectBack())
+        if (!evt.isChangingBySelectBack()) {
             refresh(evt.getValue());
+        }
     }
 
     /**
@@ -52,12 +52,12 @@ public class SearchHistoriesController extends Combobox {
             this.previousSearches = this.mainC.getSearchHistory();
             //	int j = this.previousSearches.indexOf(val); //Arrays.binarySearch(this.previousSearches, val);
             int j = 0;
-            while (j < this.previousSearches.size()
-                    && this.previousSearches.get(j).getSearch().compareTo(val) < 0) j++;
+            while (j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().compareTo(val) < 0) {
+                j++;
+            }
 
             Iterator<Comboitem> it = getItems().iterator();
-            for (int cnt = 10; --cnt >= 0 && j < this.previousSearches.size()
-                    && this.previousSearches.get(j).getSearch().startsWith(val); ++j) {
+            for (int cnt = 10; --cnt >= 0 && j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().startsWith(val); ++j) {
                 if (it != null && it.hasNext()) {
                     it.next().setLabel(this.previousSearches.get(j).getSearch());
                 } else {
@@ -76,7 +76,6 @@ public class SearchHistoriesController extends Combobox {
     /**
      * Inserts this query in current user's search history (maintain history sorted and
      * with elements pairwise distinct).
-     *
      * @param query
      */
     public void addSearchHist(String query) {
@@ -95,12 +94,14 @@ public class SearchHistoriesController extends Combobox {
                     indMin = i;
                 }
             }
-            this.mainC.getCurrentUser().getSearchHistories().remove(indMin);
+            //this.mainC.getCurrentUser().getSearchHistories().remove(indMin);
         }
 
         // insert the search query. Keep the list ordered, with elements pairwise distinct
         int i = 0;
-        while (i < searchHist.size() && searchHist.get(i).getSearch().compareTo(query) < 0) i++;
+        while (i < searchHist.size() && searchHist.get(i).getSearch().compareTo(query) < 0) {
+            i++;
+        }
         if (i == searchHist.size()) {
             // query is the greatest
             SearchHistoriesType h = new SearchHistoriesType();
@@ -119,8 +120,6 @@ public class SearchHistoriesController extends Combobox {
     }
 
     public String getValue() {
-        String value = super.getValue();
-        return value;
-
+        return super.getValue();
     }
 }

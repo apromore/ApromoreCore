@@ -23,6 +23,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelAttribute;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.ProcessUser;
 import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.User;
@@ -499,6 +500,16 @@ public class ProcessServiceImpl implements ProcessService {
             process.setUser(user);
             process.setDomain(domain);
             process.setNativeType(nativeType);
+
+            ProcessUser processUser = new ProcessUser();
+            processUser.setProcess(process);
+            processUser.setUser(user);
+            processUser.setHasRead(true);
+            processUser.setHasWrite(true);
+            processUser.setHasOwnership(true);
+
+            user.getProcessUsers().add(processUser);
+            process.getProcessUsers().add(processUser);
 
             return processRepo.save(process);
         } catch (Exception ex) {

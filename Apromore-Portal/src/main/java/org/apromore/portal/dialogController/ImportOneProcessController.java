@@ -13,6 +13,7 @@ import org.apromore.canoniser.Canoniser;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.PluginInfo;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -79,10 +80,9 @@ public class ImportOneProcessController extends BaseController {
 
         this.importProcessesC = importProcessesC;
         this.mainC = mainC;
-        this.username = this.mainC.getCurrentUser().getUsername();
+        this.username = UserSessionManager.getCurrentUser().getUsername();
         this.fileName = fileName;
         this.processName = processName;
-        // Buffer process in memory, we'll need it multiple times
         this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
         this.nativeType = nativeType;
         this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
@@ -286,7 +286,7 @@ public class ImportOneProcessController extends BaseController {
         this.readDocumentation = "";
         this.readCreated = Utils.getDateTime(); // default value for creationDate if not found
         this.readLastupdate = "";
-        this.readAuthor = this.mainC.getCurrentUser().getUsername();
+        this.readAuthor = UserSessionManager.getCurrentUser().getUsername();
         this.processNameTb.setValue(readProcessName);
         this.versionNameTb.setValue(readVersionName);
         this.documentationTb.setValue(readDocumentation);

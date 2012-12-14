@@ -15,6 +15,15 @@
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.TempVersion</class>
         <class>org.apromore.dao.model.User</class>
+        <class>org.apromore.dao.model.Role</class>
+        <class>org.apromore.dao.model.Permission</class>
+        <class>org.apromore.dao.model.Membership</class>
+        <class>org.apromore.dao.model.Workspace</class>
+        <class>org.apromore.dao.model.Folder</class>
+        <class>org.apromore.dao.model.Fragment</class>
+        <class>org.apromore.dao.model.FragmentUser</class>
+        <class>org.apromore.dao.model.FolderUser</class>
+        <class>org.apromore.dao.model.ProcessUser</class>
         <class>org.apromore.dao.model.Content</class>
         <class>org.apromore.dao.model.Edge</class>
         <class>org.apromore.dao.model.Expression</class>

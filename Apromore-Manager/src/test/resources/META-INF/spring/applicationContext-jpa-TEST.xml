@@ -42,10 +42,10 @@
                 <prop key="showSql">true</prop>
                 <prop key="eclipselink.logging.level">INFO</prop>
                 <prop key="eclipselink.weaving">static</prop>
-                <!--<prop key="eclipselink.query-results-cache">true</prop>-->
-                <!--<prop key="eclipselink.jdbc.cache-statements">true</prop>-->
-                <!--<prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>-->
-                <!--<prop key="eclipselink.persistence-context.persist-on-commit">true</prop>-->
+                <prop key="eclipselink.query-results-cache">true</prop>
+                <prop key="eclipselink.jdbc.cache-statements">true</prop>
+                <prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>
+                <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
             </util:properties>
         </property>
     </bean>

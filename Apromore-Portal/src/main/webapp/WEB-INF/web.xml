@@ -8,8 +8,9 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:spring/applicationContext.xml
-            classpath:spring/applicationContext-services.xml
+            WEB-INF/spring-ldap.xml,
+            classpath:spring/applicationContext.xml,
+            classpath:spring/applicationContext-services.xml,
             classpath:spring/applicationContext-managerClient.xml
         </param-value>
     </context-param>
@@ -39,6 +40,14 @@
         <servlet-name>auEngine</servlet-name>
         <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>spring-ws</servlet-name>
+        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>transformWsdlLocations</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
 
 
     <servlet-mapping>
@@ -53,6 +62,18 @@
         <servlet-name>auEngine</servlet-name>
         <url-pattern>/zkau/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring-ws</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring-ws</servlet-name>
+        <url-pattern>*.wsdl</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring-ws</servlet-name>
+        <url-pattern>*.xsd</url-pattern>
+    </servlet-mapping>
 
 
     <session-config>
@@ -60,7 +81,7 @@
     </session-config>
 
     <welcome-file-list>
-        <welcome-file>index.zul</welcome-file>
+        <welcome-file>login.zul</welcome-file>
     </welcome-file-list>
 
 </web-app>
