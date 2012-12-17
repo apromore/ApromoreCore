@@ -18,13 +18,13 @@
     </appender>
 
 
-    <logger name="org.springframework.orm" level="DEBUG">
+    <logger name="org.springframework.orm" level="WARN">
         <appender-ref ref="jpalogfile" />
     </logger>
-    <logger name="org.springframework.jdbc" level="DEBUG">
+    <logger name="org.springframework.jdbc" level="WARN">
         <appender-ref ref="jpalogfile" />
     </logger>
-    <logger name="org.springframework.transaction" level="DEBUG">
+    <logger name="org.springframework.transaction" level="WARN">
         <appender-ref ref="jpalogfile" />
     </logger>
 

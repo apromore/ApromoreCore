@@ -153,9 +153,9 @@ public class WorkspaceOptionsController extends Menubar {
         }
     }
 
-    protected void removeFolder() throws InterruptedException {
+    protected void removeFolder() throws Exception {
         Messagebox.show("Are you sure you want to delete selected item(s)?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
-            public void onEvent(Event evt) {
+            public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         MainController mainController = UserSessionManager.getMainController();
@@ -163,6 +163,7 @@ public class WorkspaceOptionsController extends Menubar {
                         for (int folderId : folderIds) {
                             mainController.getService().deleteFolder(folderId);
                         }
+                        mainController.getMenu().deleteSelectedProcessVersions();
                         mainController.loadWorkspace();
                         break;
                     case Messagebox.NO:

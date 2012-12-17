@@ -71,6 +71,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -475,7 +476,7 @@ public class ProcessServiceImpl implements ProcessService {
         for (Native n : natives) {
             String natType = n.getNativeType().getNatType();
             InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
-            CanonisedProcess cp = canoniserSrv.canonise(natType, inStr, null);
+            CanonisedProcess cp = canoniserSrv.canonise(natType, inStr, new HashSet<RequestParameterType<?>>(0));
 
             //TODO why is this done here? apromore should not know about native format outside of canonisers
             if (natType.compareTo("XPDL 2.1") == 0) {
@@ -686,9 +687,8 @@ public class ProcessServiceImpl implements ProcessService {
         Process process = processRepo.getProcessByName(processName);
         ProcessBranch pBranch = processBranchRepo.getProcessBranchByProcessBranchName(process.getId(), branchName);
 
-        if (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 && pBranch.getProcessModelVersions().size() == 0) {
+        if (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 && pBranch.getProcessModelVersions().size() == 1) {
             deleteProcess(process);
-
         } else {
             ProcessModelVersion pmv = processModelVersionRepo.getCurrentProcessModelVersion(pBranch.getId());
             pBranch.setCurrentProcessModelVersion(pmv);
