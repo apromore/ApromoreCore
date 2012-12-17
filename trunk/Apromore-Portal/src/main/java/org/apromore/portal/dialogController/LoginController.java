@@ -82,10 +82,6 @@ public class LoginController extends BaseController {
                         user.setId(existingUser.getId());
 
                         UserSessionManager.setCurrentUser(user);
-                        //                        List<UserType> existingUsers = getService().searchUsers(profile.getEmail());
-                        //                        if (existingUsers.size() == 0){
-                        //                            //UserType newUser = getService().createUser();
-                        //                        }
                         Executions.sendRedirect("/index.zul");
                     } catch (Exception e) {
                         String message = null;
@@ -164,6 +160,11 @@ public class LoginController extends BaseController {
             this.cancelWindowButton = (Button) this.signinWindow.getFellow("cancelWindowButton");
 
             okWindowButton.addEventListener("onClick", new EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    signin();
+                }
+            });
+            signinWindow.addEventListener("onOK", new EventListener() {
                 public void onEvent(Event event) throws Exception {
                     signin();
                 }

@@ -12,6 +12,7 @@ import org.apromore.model.AnnotationsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginInfo;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,7 +277,7 @@ public class ExportOneNativeController extends BaseController {
                     withAnnotation = false;
                 }
                 ExportFormatResultType exportResult = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
-                        this.mainC.getCurrentUser().getUsername(), pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
+                        UserSessionManager.getCurrentUser().getUsername(), pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
                 try (InputStream native_is = exportResult.getNative().getInputStream()) {
                     this.mainC.showPluginMessages(exportResult.getMessage());
                     Filedownload.save(native_is, "text/xml", filename);

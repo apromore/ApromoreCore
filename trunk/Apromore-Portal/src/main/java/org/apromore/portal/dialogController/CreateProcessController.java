@@ -195,7 +195,6 @@ public class CreateProcessController extends BaseController {
 
     protected void editProcess(final ProcessSummaryType process) throws Exception {
         Listitem cbi = this.nativeTypesLB.getSelectedItem();
-        // normally, only one version...
         VersionSummaryType version = process.getVersionSummaries().get(0);
         String nativeType = cbi.getLabel();
         String annotation = Constants.INITIAL_ANNOTATION;
