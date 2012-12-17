@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -17,7 +18,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.bind.JAXBException;
 
 public class ImportListProcessesController extends BaseController {
 
@@ -265,7 +266,7 @@ public class ImportListProcessesController extends BaseController {
         for (int i = 0; i < importAll.size(); i++) {
             ImportOneProcessController importOneProcess = importAll.get(i);
             try {
-                importOneProcess.importProcess(domain, this.mainC.getCurrentUser().getUsername());
+                importOneProcess.importProcess(domain, UserSessionManager.getCurrentUser().getUsername());
                 // process successfully imported
             } catch (IOException e) {
                 e.printStackTrace();

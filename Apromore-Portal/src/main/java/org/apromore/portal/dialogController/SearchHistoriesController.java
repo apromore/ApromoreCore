@@ -2,6 +2,7 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -48,27 +49,29 @@ public class SearchHistoriesController extends Combobox {
      * Refreshes comboitem based on the specified value.
      */
     public void refresh(String val) {
-        if (this.mainC.getCurrentUser() != null) {
+        if (UserSessionManager.getCurrentUser() != null) {
             this.previousSearches = this.mainC.getSearchHistory();
-            //	int j = this.previousSearches.indexOf(val); //Arrays.binarySearch(this.previousSearches, val);
-            int j = 0;
-            while (j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().compareTo(val) < 0) {
-                j++;
-            }
 
-            Iterator<Comboitem> it = getItems().iterator();
-            for (int cnt = 10; --cnt >= 0 && j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().startsWith(val); ++j) {
-                if (it != null && it.hasNext()) {
-                    it.next().setLabel(this.previousSearches.get(j).getSearch());
-                } else {
-                    it = null;
-                    new Comboitem(this.previousSearches.get(j).getSearch()).setParent(this);
+            if (previousSearches != null) {
+                int j = 0;
+                while (j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().compareTo(val) < 0) {
+                    j++;
                 }
-            }
 
-            while (it != null && it.hasNext()) {
-                it.next();
-                it.remove();
+                Iterator<Comboitem> it = getItems().iterator();
+                for (int cnt = 10; --cnt >= 0 && j < this.previousSearches.size() && this.previousSearches.get(j).getSearch().startsWith(val); ++j) {
+                    if (it != null && it.hasNext()) {
+                        it.next().setLabel(this.previousSearches.get(j).getSearch());
+                    } else {
+                        it = null;
+                        new Comboitem(this.previousSearches.get(j).getSearch()).setParent(this);
+                    }
+                }
+
+                while (it != null && it.hasNext()) {
+                    it.next();
+                    it.remove();
+                }
             }
         }
     }

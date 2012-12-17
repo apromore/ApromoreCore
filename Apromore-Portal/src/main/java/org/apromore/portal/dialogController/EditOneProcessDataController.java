@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.model.ProcessSummaryType;
@@ -95,7 +96,7 @@ public class EditOneProcessDataController extends BaseController {
         List<String> usernames = this.mainC.getUsers();
         this.ownerCB = new SelectDynamicListController(usernames);
         this.ownerCB.setReference(usernames);
-        this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
+        this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
         this.ownerCB.setAutodrop(true);
         this.ownerCB.setWidth("85%");
         this.ownerCB.setHeight("100%");
@@ -186,7 +187,7 @@ public class EditOneProcessDataController extends BaseController {
         this.processNameT.setValue(this.process.getName());
         this.versionNameT.setValue(this.preVersion.getName());
         this.domainCB.setValue(this.process.getDomain());
-        this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
+        this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
         if (this.preVersion.getRanking() != null) {
             r0.setChecked("0".compareTo(this.preVersion.getRanking()) == 0);
             r1.setChecked("1".compareTo(this.preVersion.getRanking()) == 0);

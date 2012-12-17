@@ -3,13 +3,21 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 import java.util.List;
 import java.util.Map;
@@ -45,9 +53,7 @@ public class ProcessMergeController extends BaseController {
     private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
 
-    public ProcessMergeController(MainController mainC, MenuController menuC,
-                                  Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions)
-            throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
+    public ProcessMergeController(MainController mainC, MenuController menuC, Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
         this.menuC = menuC;
 
@@ -102,42 +108,36 @@ public class ProcessMergeController extends BaseController {
 
         updateActions();
 
-        this.processNameT.addEventListener("onChange",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        updateActions();
-                    }
-                });
-        this.versionNameT.addEventListener("onChange",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        updateActions();
-                    }
-                });
-        this.algosLB.addEventListener("onSelect",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        updateActions();
-                    }
-                });
-        this.OKbutton.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        mergeProcesses();
-                    }
-                });
-        this.OKbutton.addEventListener("onOK",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        mergeProcesses();
-                    }
-                });
-        this.CancelButton.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        cancel();
-                    }
-                });
+        this.processNameT.addEventListener("onChange", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                updateActions();
+            }
+        });
+        this.versionNameT.addEventListener("onChange", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                updateActions();
+            }
+        });
+        this.algosLB.addEventListener("onSelect", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                updateActions();
+            }
+        });
+        this.OKbutton.addEventListener("onClick", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                mergeProcesses();
+            }
+        });
+        this.OKbutton.addEventListener("onOK", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                mergeProcesses();
+            }
+        });
+        this.CancelButton.addEventListener("onClick", new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                cancel();
+            }
+        });
 
         this.processMergeW.doModal();
     }
@@ -148,26 +148,17 @@ public class ProcessMergeController extends BaseController {
 
     protected void mergeProcesses() {
         String message = null;
-        if ("".compareTo(this.processNameT.getValue()) != 0 &&
-                "".compareTo(this.versionNameT.getValue()) != 0) {
+        if ("".compareTo(this.processNameT.getValue()) != 0 && "".compareTo(this.versionNameT.getValue()) != 0) {
             try {
-                ProcessSummaryType result = getService().mergeProcesses(
-                        selectedProcessVersions, this.processNameT.getValue(),
-                        this.versionNameT.getValue(), this.domainCB.getValue(),
-                        this.mainC.getCurrentUser().getUsername(), this.algosLB
-                        .getSelectedItem().getLabel(), this.removeEnt
-                        .isChecked(), ((Doublebox) this.mergethreshold
-                        .getFirstChild().getNextSibling()).getValue(),
-                        ((Doublebox) this.labelthreshold.getFirstChild()
-                                .getNextSibling()).getValue(),
-                        ((Doublebox) this.contextthreshold.getFirstChild()
-                                .getNextSibling()).getValue(),
-                        ((Doublebox) this.skipnweight.getFirstChild()
-                                .getNextSibling()).getValue(),
-                        ((Doublebox) this.subnweight.getFirstChild()
-                                .getNextSibling()).getValue(),
-                        ((Doublebox) this.skipeweight.getFirstChild()
-                                .getNextSibling()).getValue());
+                ProcessSummaryType result = getService().mergeProcesses(selectedProcessVersions, this.processNameT.getValue(),
+                        this.versionNameT.getValue(), this.domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername(),
+                        this.algosLB.getSelectedItem().getLabel(), this.removeEnt.isChecked(),
+                        ((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
+                        ((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
+                        ((Doublebox) this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
+                        ((Doublebox) this.skipnweight.getFirstChild().getNextSibling()).getValue(),
+                        ((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
+                        ((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 
                 message = "Merge built one process.";
                 mainC.displayNewProcess(result);
@@ -180,8 +171,7 @@ public class ProcessMergeController extends BaseController {
     }
 
     protected void updateActions() {
-        this.OKbutton.setDisabled("".compareTo(this.processNameT.getValue()) == 0 ||
-                "".compareTo(this.versionNameT.getValue()) == 0);
+        this.OKbutton.setDisabled("".compareTo(this.processNameT.getValue()) == 0 || "".compareTo(this.versionNameT.getValue()) == 0);
 
         String algo = this.algosLB.getSelectedItem().getLabel();
         this.mergethreshold.setVisible(algo.compareTo("Hungarian") == 0 || algo.compareTo("Greedy") == 0);

@@ -88,7 +88,6 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Transactional(readOnly = true)
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
-
         LOGGER.info("Canonising process with native type {}", nativeType);
 
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
@@ -101,7 +100,6 @@ public class CanoniserServiceImpl implements CanoniserService {
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
-
         } catch (CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }

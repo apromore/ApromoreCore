@@ -63,7 +63,6 @@ public class MainController extends BaseController {
     private HeaderController header;
     private MenuController menu;
     private SimpleSearchController simplesearch;
-    private UserType currentUser; // the connected user, if any
     private ShortMessageController shortmessageC;
     private Window shortmessageW;
     private String host;
@@ -124,7 +123,7 @@ public class MainController extends BaseController {
             this.navigation = new NavigationController(this);
             loadWorkspace();
 
-            this.currentUser = null;
+            //this.currentUser = null;
             this.searchHistory = new ArrayList<SearchHistoriesType>();
             this.msgWhenClose = null;
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
@@ -294,7 +293,7 @@ public class MainController extends BaseController {
      */
     public void resetUserInformation() throws Exception {
         eraseMessage();
-        this.currentUser = null;
+        //this.currentUser = null;
         this.simplesearch.clearSearches();
     }
 
@@ -356,7 +355,6 @@ public class MainController extends BaseController {
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation, final String readOnly) throws InterruptedException {
         String instruction = "", url = getHost();
         int offsetH = 100, offsetV = 200;
-        int editSessionCode;
         EditSessionType editSession = new EditSessionType();
         editSession.setDomain(process.getDomain());
         editSession.setNativeType(nativeType);
@@ -374,7 +372,7 @@ public class MainController extends BaseController {
         }
         try {
             // create and store an edit session
-            editSessionCode = getService().writeEditSession(editSession);
+            int editSessionCode = getService().writeEditSession(editSession);
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             url = "macros/OpenModelInSignavio.zul";
@@ -427,19 +425,6 @@ public class MainController extends BaseController {
         this.simplesearch = simplesearch;
     }
 
-    public UserType getCurrentUser() {
-        return currentUser;
-    }
-
-    public void setCurrentUser(final UserType currentUser) {
-        this.currentUser = currentUser;
-        if (currentUser == null) {
-            this.msgWhenClose = null;
-        } else {
-            this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
-            //this.searchHistory = this.currentUser.getSearchHistories();
-        }
-    }
 
     public ShortMessageController getShortmessageC() {
         return shortmessageC;

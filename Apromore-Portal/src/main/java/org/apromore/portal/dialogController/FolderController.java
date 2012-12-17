@@ -37,10 +37,8 @@ public class FolderController extends GenericForwardComposer {
     public void onFolderClick$folderWindow(Event event) {
         ForwardEvent eventx = (ForwardEvent) event;
         Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
-        //Hbox fileOptions = (Hbox)eventx.getOrigin().getTarget().getParent().getFellow("pagingandbuttons");
         Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
         Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
-        //fileOptions.setVisible(false);
 
         try {
             String idsString = eventx.getOrigin().getData().toString();
@@ -49,9 +47,7 @@ public class FolderController extends GenericForwardComposer {
             UserSessionManager.setSelectedProcessIds(new ArrayList<Integer>());
             UserSessionManager.getMainController().clearProcessVersions();
 
-            if (idsString.isEmpty()) {
-                //folderOptions.setVisible(false);                 
-            } else {
+            if (!idsString.isEmpty()) {
                 folderOptions.setVisible(true);
                 String[] ids = idsString.split(",");
                 if (ids.length == 1) {
@@ -114,15 +110,10 @@ public class FolderController extends GenericForwardComposer {
             Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
             btnRenameFolder.setVisible(false);
             btnRemoveFolder.setVisible(false);
-            //Hbox fileOptions = (Hbox)eventx.getOrigin().getTarget().getParent().getFellow("pagingandbuttons");
-            //folderOptions.setVisible(false);
-            //fileOptions.setVisible(false);
 
             if (html != null) {
                 FolderType selectedFolder = null;
-
                 List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
-
                 List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
                 if (isFolder) {
@@ -211,6 +202,6 @@ public class FolderController extends GenericForwardComposer {
 
         content += "</ul>";
         html.setContent(content);
-
     }
+
 }
