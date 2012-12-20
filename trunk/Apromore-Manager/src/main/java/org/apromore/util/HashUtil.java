@@ -5,7 +5,7 @@ import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.service.helper.OperationContext;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.service.model.FragmentNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class HashUtil {
 
     private static Logger log = LoggerFactory.getLogger(HashUtil.class);
 
-    public static String computeHash(fragmentNode fragment, TCType nodeType, OperationContext op) {
+    public static String computeHash(FragmentNode fragment, TCType nodeType, OperationContext op) {
         Canonical graph = op.getGraph();
         TreeVisitor visitor = op.getTreeVisitor();
         int fragmentSize = fragment.getVertices().size();

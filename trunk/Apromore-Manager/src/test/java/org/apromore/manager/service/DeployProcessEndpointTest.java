@@ -124,8 +124,8 @@ public class DeployProcessEndpointTest {
         request.getValue().setDeploymentParameters(pluginProperties);
 
         Canonical cpf = new Canonical();
-        expect(procSrv.getCurrentProcessModel(processName, branchName, false)).andReturn(cpf);
-        expect(convertor.convert(cpf)).andReturn(new CanonicalProcessType());
+        expect(procSrv.getCurrentProcessModel(processName, branchName, false)).andReturn(new CanonicalProcessType());
+        //expect(convertor.convert(cpf)).andReturn(new CanonicalProcessType());
         expect(deploymentService.deployProcess(eq(nativeType), anyObject(CanonicalProcessType.class), isNull(AnnotationsType.class), anyObject(HashSet.class))).andReturn(new ArrayList<PluginMessage>());
 
         replayAll();

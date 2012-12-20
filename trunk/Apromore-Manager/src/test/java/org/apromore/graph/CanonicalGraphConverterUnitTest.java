@@ -15,6 +15,8 @@ import org.apromore.graph.canonical.ICPFResourceReference;
 import org.apromore.graph.canonical.IEdge;
 import org.apromore.graph.canonical.converter.CanonicalToGraph;
 import org.apromore.graph.canonical.converter.GraphToCanonical;
+import org.jbpt.algo.tree.rpst.RPST;
+import org.jbpt.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -419,7 +421,19 @@ public class CanonicalGraphConverterUnitTest {
     }
 
 
-        /* Loads the  */
+//    @Test
+//    public void testComplexCPFToDotPNG() throws Exception {
+//        CanonicalProcessType cpt = newInstance(CANONICAL_MODELS_DIR + "orderfulfillment.cpf");
+//        Canonical graph = new CanonicalToGraph().convert(cpt);
+//        new RPST(graph);
+//        IOUtils.toFile("orderfulfillment.dot", graph.toDOT());
+//        IOUtils.invokeDOT("target/", "orderfulfillment.png", graph.toDOT());
+//    }
+
+
+
+
+    /* Loads the  */
     @SuppressWarnings("unchecked")
     private CanonicalProcessType newInstance(String fileName) throws JAXBException, SAXException, FileNotFoundException {
         InputStream stream = ClassLoader.getSystemResourceAsStream(fileName);

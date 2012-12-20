@@ -88,9 +88,9 @@ public class SimilarityServiceImpl implements SimilarityService {
     private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query) throws SerializationException {
         ToolboxData data = new ToolboxData();
 
-        data.setOrigin(converter.convert(processSrv.getCanonicalFormat(query)));
+        data.setOrigin(processSrv.getCanonicalFormat(query));
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, converter.convert(processSrv.getCanonicalFormat(pmv)));
+            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
         }
 
         return data;

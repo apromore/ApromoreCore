@@ -1159,8 +1159,7 @@ public class ManagerPortalEndpoint {
             String deploymentPluginName = req.getValue().getDeploymentPluginName();
             String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
 
-            Canonical cpf = procSrv.getCurrentProcessModel(processName, branchName, false);
-            CanonicalProcessType canonialProcess = convertor.convert(cpf);
+            CanonicalProcessType canonialProcess = procSrv.getCurrentProcessModel(processName, branchName, false);
 
             List<PluginMessage> deployProcess;
             // TODO Add ANF

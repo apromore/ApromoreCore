@@ -36,6 +36,7 @@ public class Process implements Serializable {
     private Folder folder;
     private NativeType nativeType;
 
+    private Set<Net> nets = new HashSet<Net>(0);
     private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<TempVersion> tempVersions = new HashSet<TempVersion>(0);
     private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
@@ -161,6 +162,15 @@ public class Process implements Serializable {
         this.user = newUser;
     }
 
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<Net> getNets() {
+        return this.nets;
+    }
+
+    public void setNets(Set<Net> nets) {
+        this.nets = nets;
+    }
 
     /**
      * Get the editSessions for the Object.

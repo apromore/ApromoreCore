@@ -1,10 +1,17 @@
 package org.apromore.service.helper;
 
+import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.Node;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.graph.canonical.CPFEdge;
+import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Chathura Ekanayake
@@ -15,6 +22,13 @@ public class OperationContext {
     private TreeVisitor treeVisitor;
     private Map<Integer, Integer> contentUsage;
     private Map<String, Integer> processedFragmentTypes;
+
+    private FragmentVersion currentFragment;
+    private Set<Node> nodes = new HashSet<Node>(0);
+    private Set<CPFNode> cpfNodes = new HashSet<CPFNode>(0);
+    private Set<Edge> edges = new HashSet<Edge>(0);
+    private Set<CPFEdge> cpfEdges = new HashSet<CPFEdge>(0);
+
 
     public OperationContext() {
         contentUsage = new HashMap<Integer, Integer>();
@@ -69,4 +83,43 @@ public class OperationContext {
     }
 
 
+    public FragmentVersion getCurrentFragment() {
+        return currentFragment;
+    }
+
+    public void setCurrentFragment(final FragmentVersion newCurrentFragment) {
+        this.currentFragment = newCurrentFragment;
+    }
+
+    public Set<Node> getNodes() {
+        return nodes;
+    }
+
+    public void addAllNodes(final Set<Node> newNodes) {
+        this.nodes.addAll(newNodes);
+    }
+
+    public Set<CPFNode> getCpfNodes() {
+        return cpfNodes;
+    }
+
+    public void addAllCpfNodes(final Set<CPFNode> newNodes) {
+        this.cpfNodes.addAll(newNodes);
+    }
+
+    public Set<Edge> getEdges() {
+        return edges;
+    }
+
+    public void addAllEdges(final Set<Edge> newEdges) {
+        this.edges.addAll(newEdges);
+    }
+
+    public Set<CPFEdge> getCpfEdges() {
+        return cpfEdges;
+    }
+
+    public void addAllCpfEdges(final Set<CPFEdge> newEdges) {
+        this.cpfEdges.addAll(newEdges);
+    }
 }

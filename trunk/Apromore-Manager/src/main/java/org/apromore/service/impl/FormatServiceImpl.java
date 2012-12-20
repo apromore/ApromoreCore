@@ -90,14 +90,17 @@ public class FormatServiceImpl implements FormatService {
         nat.setNativeType(nativeType);
         nat.setContent(nativeString);
         nat.setProcessModelVersion(pmv);
-        nativeRepo.save(nat);
+        nat = nativeRepo.save(nat);
 
         Annotation annotation = new Annotation();
         annotation.setContent(annString);
         annotation.setName(Constants.INITIAL_ANNOTATION);
         annotation.setNatve(nat);
         annotation.setProcessModelVersion(pmv);
-        annotationRepo.save(annotation);
+        annotation = annotationRepo.save(annotation);
+
+        pmv.getNatives().add(nat);
+        pmv.getAnnotations().add(annotation);
     }
 
 }
