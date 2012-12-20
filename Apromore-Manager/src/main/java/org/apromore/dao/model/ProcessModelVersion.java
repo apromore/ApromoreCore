@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -28,6 +29,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class ProcessModelVersion implements Serializable {
 
     private Integer id;
+    private String originalId;
     private Double versionNumber;
     private String versionName;
     private Integer changePropagation;
@@ -35,6 +37,7 @@ public class ProcessModelVersion implements Serializable {
     private Integer numVertices;
     private Integer numEdges;
 
+    private Net net;
     private ProcessBranch processBranch;
     private FragmentVersion rootFragmentVersion;
 
@@ -79,6 +82,14 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
+    @Column(name = "originalId")
+    public String getOriginalId() {
+        return this.originalId;
+    }
+
+    public void setOriginalId(final String newOriginalId) {
+        this.originalId = newOriginalId;
+    }
 
     @Column(name = "version_number")
     public Double getVersionNumber() {
@@ -139,6 +150,15 @@ public class ProcessModelVersion implements Serializable {
         this.numEdges = newNumEdges;
     }
 
+
+    @OneToOne(mappedBy = "processModelVersion", cascade = CascadeType.ALL)
+    public Net getNet() {
+        return this.net;
+    }
+
+    public void setNet(Net net) {
+        this.net = net;
+    }
 
     @ManyToOne
     @JoinColumn(name = "branchId")

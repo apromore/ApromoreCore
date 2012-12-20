@@ -2,7 +2,7 @@ package org.apromore.service.helper.extraction;
 
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.service.model.FragmentNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class Extractor {
      * @param c Child f
      * @return ID of the pocket inserted by replacing the child f
      */
-    public static CPFNode extractChildFragment(final fragmentNode f, final fragmentNode c, final Canonical g) {
+    public static CPFNode extractChildFragment(final FragmentNode f, final FragmentNode c, final Canonical g) {
         CPFNode pocket;
         if (f.getType().equals(TCType.POLYGON)) {
             if (c.getType() != TCType.POLYGON) {

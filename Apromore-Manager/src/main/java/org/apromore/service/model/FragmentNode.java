@@ -6,11 +6,11 @@ import org.jbpt.algo.tree.tctree.TCType;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class fragmentNode extends Canonical {
+public class FragmentNode extends Canonical {
 
     private TCType type = null;
-    private Collection<fragmentNode> children = new ArrayList<fragmentNode>();
-    private fragmentNode parent = null;
+    private Collection<FragmentNode> children = new ArrayList<FragmentNode>();
+    private FragmentNode parent = null;
 
     public TCType getType() {
         return type;
@@ -20,19 +20,19 @@ public class fragmentNode extends Canonical {
         this.type = type;
     }
 
-    public Collection<fragmentNode> getChildren() {
+    public Collection<FragmentNode> getChildren() {
         return children;
     }
 
-    public void setChildren(Collection<fragmentNode> children) {
+    public void setChildren(Collection<FragmentNode> children) {
         this.children = children;
     }
 
-    public fragmentNode getParent() {
+    public FragmentNode getParent() {
         return parent;
     }
 
-    public void setParent(fragmentNode parent) {
+    public void setParent(FragmentNode parent) {
         this.parent = parent;
     }
 

@@ -9,7 +9,8 @@ public enum NodeTypeEnum {
     WORK("Work"), EVENT("Event"), TASK("Task"), MESSAGE("Message"), TIMER("Timer"),
     ROUTING("Routing"), JOIN("Join"), SPLIT("Split"), STATE("State"),
     ANDSPLIT("AndSplit"), ORSPLIT("OrSplit"), XORSPLIT("XOrSplit"),
-    ANDJOIN("AndJoin"), ORJOIN("OrJoin"), XORJOIN("XOrJoin");
+    ANDJOIN("AndJoin"), ORJOIN("OrJoin"), XORJOIN("XOrJoin"),
+    POCKET("Pocket");
 
     private final String value;
 

@@ -222,6 +222,9 @@ public class GraphServiceImpl implements GraphService {
                 result = constructSpecialNode(node, NodeTypeEnum.XORJOIN);
             } else if (node.getNodeType().equals(NodeTypeEnum.ANDJOIN)) {
                 result = constructSpecialNode(node, NodeTypeEnum.ANDJOIN);
+            } else if (node.getNodeType().equals(NodeTypeEnum.POCKET)) {
+                result = new CPFNode();
+                addNodeDetails(node, result);
             } else {
                 LOGGER.warn("Unknown Node Type in parsing Node from DB: " + node.getNodeType().value());
             }
@@ -292,7 +295,7 @@ public class GraphServiceImpl implements GraphService {
             cpfNode.setConfigurable(node.getConfiguration());
         }
         if (node.getSubProcess() != null) {
-            cpfNode.setSubNetId(node.getSubProcess().getId().toString());
+            cpfNode.setSubNetId(node.getSubProcess().getOriginalId());
             cpfNode.setExternal(true);
         }
 
@@ -464,7 +467,7 @@ public class GraphServiceImpl implements GraphService {
                     cpfResource.setName(resource.getName());
                     cpfResource.setOriginalId(resource.getOriginalId());
                     if (resource.getUri() != null) {
-                        cpfResource.setId(resource.getUri().toString());
+                        cpfResource.setId(resource.getUri());
                     } else {
                         cpfResource.setId(UUID.randomUUID().toString());
                     }
@@ -499,7 +502,7 @@ public class GraphServiceImpl implements GraphService {
             for (ObjectRef objectRef : node.getObjectRefs()) {
                 objectReference = new CPFObjectReference();
                 if (objectRef.getId() != null) {
-                    objectReference.setId(objectRef.getId().toString());
+                    objectReference.setId("O_" + objectRef.getId().toString());
                 } else {
                     objectReference.setId(UUID.randomUUID().toString());
                 }
@@ -524,7 +527,7 @@ public class GraphServiceImpl implements GraphService {
             for (ResourceRef resourceRef : node.getResourceRefs()) {
                 resourceReference = new CPFResourceReference();
                 if (resourceRef.getId() != null) {
-                    resourceReference.setId(resourceRef.getId().toString());
+                    resourceReference.setId("R_" + resourceRef.getId().toString());
                 } else {
                     resourceReference.setId(UUID.randomUUID().toString());
                 }

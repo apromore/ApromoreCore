@@ -3,7 +3,9 @@ package org.apromore.service.helper.extraction;
 import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.graph.canonical.NodeTypeEnum;
+import org.apromore.service.helper.PocketLocator;
+import org.apromore.service.model.FragmentNode;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,7 @@ public class FNSCNSExtractor {
     private static final Logger log = LoggerFactory.getLogger(FNSCNSExtractor.class);
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(fragmentNode f, fragmentNode cf, Canonical g) {
+    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
         CPFNode childB1 = cf.getEntry();
         CPFNode newChildB1 = FragmentUtil.duplicateNode(childB1, g);
         FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
@@ -32,6 +34,7 @@ public class FNSCNSExtractor {
 
         CPFNode pocket = new CPFNode();
         pocket.setName("Pocket");
+        pocket.setNodeType(NodeTypeEnum.POCKET);
         g.addNode(pocket);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
         f.addNode(pocket);
