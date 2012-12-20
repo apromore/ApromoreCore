@@ -2,7 +2,7 @@ package org.apromore.service.utils;
 
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.service.model.FragmentNode;
 import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.rpst.RPST;
 
@@ -13,12 +13,12 @@ import java.util.Set;
  */
 public class MutableTreeConstructor {
 
-    public fragmentNode construct(RPST<CPFEdge, CPFNode> rpst) {
+    public FragmentNode construct(RPST<CPFEdge, CPFNode> rpst) {
         return constructTree(rpst.getRoot(), null, rpst);
     }
 
-    private fragmentNode constructTree(IRPSTNode<CPFEdge, CPFNode> root, fragmentNode parent, RPST<CPFEdge, CPFNode> rpst) {
-        fragmentNode rf = new fragmentNode();
+    private FragmentNode constructTree(IRPSTNode<CPFEdge, CPFNode> root, FragmentNode parent, RPST<CPFEdge, CPFNode> rpst) {
+        FragmentNode rf = new FragmentNode();
         rf.setType(root.getType());
 
         if (parent != null) {

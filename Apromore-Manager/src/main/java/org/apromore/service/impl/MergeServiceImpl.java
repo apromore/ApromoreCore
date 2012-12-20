@@ -4,10 +4,11 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
-import org.apromore.graph.canonical.Canonical;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
@@ -16,7 +17,9 @@ import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ToolboxData;
 import org.apromore.toolbox.similaritySearch.tools.MergeProcesses;
 import org.slf4j.Logger;
@@ -44,6 +47,7 @@ public class MergeServiceImpl implements MergeService {
     private ProcessModelVersionRepository processModelVersionRepo;
     private CanonicalConverter converter;
     private ProcessService processSrv;
+    private UserService userSrv;
     private UserInterfaceHelper ui;
 
 
@@ -56,10 +60,11 @@ public class MergeServiceImpl implements MergeService {
      */
     @Inject
     public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanonicalConverter canonicalConverter,
-            final ProcessService processService, final UserInterfaceHelper uiHelper) {
+                final ProcessService processService, final UserService userService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
         converter = canonicalConverter;
         processSrv = processService;
+        userSrv = userService;
         ui = uiHelper;
     }
 
@@ -80,16 +85,22 @@ public class MergeServiceImpl implements MergeService {
         try {
             ToolboxData data = convertModelsToCPT(models);
             data = getParametersForMerge(data, algo, parameters);
-            Canonical pg = converter.convert(performMerge(data));
+
+            CanonisedProcess cp = new CanonisedProcess();
+            cp.setCpt(performMerge(data));
 
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
-            ProcessModelVersion pmv = processSrv.addProcess(processName, version, username, null, null, domain, "", created, created, pg);
+            User usr = userSrv.findUserByLogin(username);
+
+            ProcessModelVersion pmv = processSrv.addProcess(processName, version, usr,  null, domain, "", created, created, cp);
             pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getVersionName(), version, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException ie) {
             LOGGER.error("Failed Import the newly merged model.", ie);
+        }  catch (UserNotFoundException unfe) {
+            LOGGER.error("Failed Import the newly merged model.", unfe);
         }
 
         return pst;
@@ -101,7 +112,7 @@ public class MergeServiceImpl implements MergeService {
         ToolboxData data = new ToolboxData();
 
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, converter.convert(processSrv.getCanonicalFormat(pmv)));
+            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
         }
 
         return data;

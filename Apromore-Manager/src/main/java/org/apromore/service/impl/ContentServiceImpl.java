@@ -29,6 +29,7 @@ import org.apromore.graph.canonical.ICPFObjectReference;
 import org.apromore.graph.canonical.ICPFResourceReference;
 import org.apromore.graph.canonical.INode;
 import org.apromore.service.ContentService;
+import org.apromore.service.helper.OperationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -100,19 +101,23 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addContent(org.apromore.dao.model.ProcessModelVersion, org.apromore.graph.canonical.Canonical, String, org.apromore.graph.canonical.Canonical, java.util.Map)
+     * @see org.apromore.service.ContentService#addContent(org.apromore.dao.model.ProcessModelVersion, org.apromore.graph.canonical.Canonical, String, org.apromore.service.helper.OperationContext, java.util.Map)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Content addContent(ProcessModelVersion pmv, Canonical c, String hash, Canonical g, Map<String, String> pocketIdMappings) {
+    public Content addContent(ProcessModelVersion pmv, Canonical c, String hash, OperationContext op, Map<String, String> pocketIdMappings) {
+        LOGGER.info("Adding the Fragment Content: " + hash);
+
+        op.addAllCpfNodes(c.getNodes());
+        op.addAllCpfEdges(c.getEdges());
+
         Content content = new Content();
         content.setCode(hash);
         content = cRepository.save(content);
 
-        addNodes(content, c.getNodes(), g, pocketIdMappings, pmv.getObjects(), pmv.getResources());
+        addNodes(content, c.getNodes(), op, pocketIdMappings, pmv.getObjects(), pmv.getResources());
         addEdges(content, c.getEdges());
-        updateNodes(content, c.getNodes());
 
         if (c.getEntry() != null) {
             content.setBoundaryS(findNode(content.getNodes(), c.getEntry().getId()));
@@ -131,19 +136,21 @@ public class ContentServiceImpl implements ContentService {
 
 
     /* Add the nodes to the DB. */
-    private void addNodes(final Content content, final Collection<CPFNode> nodes, final Canonical g,
+    private void addNodes(final Content content, final Collection<CPFNode> nodes, final OperationContext g,
             final Map<String, String> pocketIdMappings, Set<Object> objs, Set<Resource> ress) {
         for (CPFNode node : nodes) {
             String oldId = node.getId();
-            String type = g.getNodeProperty(node.getId(), Constants.TYPE);
+            String type = g.getGraph().getNodeProperty(node.getId(), Constants.TYPE);
 
             Node n = addNode(content, node, type, objs, ress);
-            content.getNodes().add(n);
+            if (n != null) {
+                content.getNodes().add(n);
 
-            if (!"Pocket".equals(type)) {
-                addNonPocketNode(n);
-            } else {
-                pocketIdMappings.put(oldId, n.getUri());
+                if (!"Pocket".equals(type)) {
+                    addNonPocketNode(n);
+                } else {
+                    pocketIdMappings.put(oldId, n.getUri());
+                }
             }
         }
     }
@@ -151,31 +158,37 @@ public class ContentServiceImpl implements ContentService {
     /* Add a single Node */
     private Node addNode(final Content content, final INode cpfNode, final String graphType,
              Set<org.apromore.dao.model.Object> objects, Set<Resource> resources) {
-        Node node = new Node();
+        LOGGER.info("Adding new Node: " + cpfNode.getId());
 
-        node.setContent(content);
-        node.setName(cpfNode.getName());
-        node.setUri(cpfNode.getId());
-        node.setNetId(cpfNode.getNetId());
-        node.setOriginalId(cpfNode.getOriginalId());
-        node.setGraphType(graphType);
-        node.setNodeType(cpfNode.getNodeType());
-        node.setAllocation(cpfNode.getAllocation());
-        node.setConfiguration(cpfNode.isConfigurable());
-        node.setTeamWork(cpfNode.isTeamWork());
-        if (cpfNode.getTimeDate() != null) {
-            node.setTimeDate(cpfNode.getTimeDate().getTime());
+        try {
+            Node node = new Node();
+            node.setContent(content);
+            node.setName(cpfNode.getName());
+            node.setUri(cpfNode.getId());
+            node.setNetId(cpfNode.getNetId());
+            node.setOriginalId(cpfNode.getOriginalId());
+            node.setGraphType(graphType);
+            node.setNodeType(cpfNode.getNodeType());
+            node.setAllocation(cpfNode.getAllocation());
+            node.setConfiguration(cpfNode.isConfigurable());
+            node.setTeamWork(cpfNode.isTeamWork());
+            if (cpfNode.getTimeDate() != null) {
+                node.setTimeDate(cpfNode.getTimeDate().getTime());
+            }
+            if (node.getTimeDuration() != null) {
+                node.setTimeDuration(cpfNode.getTimeDuration());
+            }
+
+            addNodeExpressions(cpfNode, node);
+            addObjectReferences(node, cpfNode, objects);
+            addResourceReferences(node, cpfNode, resources);
+            addNodeAttributes(node, cpfNode);
+
+            return nRepository.save(node);
+        } catch (Exception e) {
+            LOGGER.error("Unable to add Node(" + cpfNode.getId() + "): " + e.getMessage());
         }
-        if (node.getTimeDuration() != null) {
-            node.setTimeDuration(cpfNode.getTimeDuration());
-        }
-
-        addNodeExpressions(cpfNode, node);
-        addObjectReferences(node, cpfNode, objects);
-        addResourceReferences(node, cpfNode, resources);
-        addNodeAttributes(node, cpfNode);
-
-        return nRepository.save(node);
+        return null;
     }
 
     private void addNodeAttributes(final Node node, final INode v) {
@@ -320,37 +333,6 @@ public class ContentServiceImpl implements ContentService {
 
 
 
-    /** Used specifically for the Cancel Nodes and Edges, Also the Sub Processes. */
-    private void updateNodes(Content content, Set<CPFNode> nodes) {
-        if (nodes != null) {
-            for (CPFNode cpfNode : nodes) {
-                addCancelNodes(content, cpfNode, findNode(content.getNodes(), cpfNode.getId()));
-                addCancelEdges(content, cpfNode, findNode(content.getNodes(), cpfNode.getId()));
-            }
-        }
-    }
-
-    /* Adds the links to the Cancel Nodes for this task. */
-    private void addCancelNodes(Content content, CPFNode cpfNode, Node node) {
-        if (cpfNode.getCancelNodes() != null) {
-            for (String nodeId : cpfNode.getCancelNodes()) {
-                node.getCancelNodes().add(findNode(content.getNodes(), nodeId));
-            }
-        }
-    }
-
-    /* Adds the links to the Cancel Edges for this task.  */
-    private void addCancelEdges(Content content, CPFNode cpfNode, Node node) {
-        if (cpfNode.getCancelEdges() != null) {
-            for (String edgeId : cpfNode.getCancelEdges()) {
-                node.getCancelEdges().add(findEdge(content.getEdges(), edgeId));
-            }
-        }
-    }
-
-
-
-
     /* Adds the Edges to the DB. */
     private void addEdges(final Content content, final Set<CPFEdge> edges) {
         for (CPFEdge e : edges) {
@@ -360,28 +342,34 @@ public class ContentServiceImpl implements ContentService {
 
     /* Adding an edge to the DB. */
     private Edge addEdge(final Content content, final CPFEdge cpfEdge) {
-        Edge edge = new Edge();
+        LOGGER.info("Adding new Edge: " + cpfEdge.getId());
 
-        edge.setContent(content);
-        edge.setUri(cpfEdge.getId());
-        edge.setOriginalId(cpfEdge.getOriginalId());
-        edge.setSourceNode(findNode(content.getNodes(), cpfEdge.getSource().getId()));
-        edge.setTargetNode(findNode(content.getNodes(), cpfEdge.getTarget().getId()));
+        try {
+            Edge edge = new Edge();
+            edge.setContent(content);
+            edge.setUri(cpfEdge.getId());
+            edge.setOriginalId(cpfEdge.getOriginalId());
+            edge.setSourceNode(findNode(content.getNodes(), cpfEdge.getSource().getId()));
+            edge.setTargetNode(findNode(content.getNodes(), cpfEdge.getTarget().getId()));
 
-        if (cpfEdge.getConditionExpr() != null) {
-            Expression expr = new Expression();
-            expr.setDescription(cpfEdge.getConditionExpr().getDescription());
-            expr.setExpression(cpfEdge.getConditionExpr().getExpression());
-            expr.setLanguage(cpfEdge.getConditionExpr().getLanguage());
-            expr.setReturnType(cpfEdge.getConditionExpr().getReturnType());
-            edge.setConditionExpression(exRepository.save(expr));
+            if (cpfEdge.getConditionExpr() != null) {
+                Expression expr = new Expression();
+                expr.setDescription(cpfEdge.getConditionExpr().getDescription());
+                expr.setExpression(cpfEdge.getConditionExpr().getExpression());
+                expr.setLanguage(cpfEdge.getConditionExpr().getLanguage());
+                expr.setReturnType(cpfEdge.getConditionExpr().getReturnType());
+                edge.setConditionExpression(exRepository.save(expr));
+            }
+
+            addEdgeAttributes(edge, cpfEdge);
+
+            content.getEdges().add(edge);
+
+            return eRepository.save(edge);
+        } catch (Exception e) {
+            LOGGER.error("Unable to add Edge(" + cpfEdge.getId() + "): " + e.getMessage());
         }
-
-        addEdgeAttributes(edge, cpfEdge);
-
-        content.getEdges().add(edge);
-
-        return eRepository.save(edge);
+        return null;
     }
 
     /* Add the Attributes to an Edge. */
@@ -397,6 +385,40 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
+
+
+    /**
+     * Used specifically for the Cancel Nodes and Edges.
+     * @see ContentService#updateCancelNodes(org.apromore.service.helper.OperationContext)
+     */
+    public void updateCancelNodes(OperationContext operationContext) {
+        if (operationContext != null) {
+            if ((operationContext.getCpfNodes() != null && operationContext.getCpfEdges() != null)) {
+                for (CPFNode cpfNode : operationContext.getCpfNodes()) {
+                    addCancelNodes(operationContext, cpfNode, findNode(operationContext.getNodes(), cpfNode.getId()));
+                    addCancelEdges(operationContext, cpfNode, findNode(operationContext.getNodes(), cpfNode.getId()));
+                }
+            }
+        }
+    }
+
+    /* Adds the links to the Cancel Nodes for this task. */
+    private void addCancelNodes(OperationContext operationContext, CPFNode cpfNode, Node node) {
+        if (cpfNode.getCancelNodes() != null) {
+            for (String nodeId : cpfNode.getCancelNodes()) {
+                node.getCancelNodes().add(findNode(operationContext.getNodes(), nodeId));
+            }
+        }
+    }
+
+    /* Adds the links to the Cancel Edges for this task.  */
+    private void addCancelEdges(OperationContext operationContext, CPFNode cpfNode, Node node) {
+        if (cpfNode.getCancelEdges() != null) {
+            for (String edgeId : cpfNode.getCancelEdges()) {
+                node.getCancelEdges().add(findEdge(operationContext.getEdges(), edgeId));
+            }
+        }
+    }
 
 
 

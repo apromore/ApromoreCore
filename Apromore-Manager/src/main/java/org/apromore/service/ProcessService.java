@@ -1,7 +1,10 @@
 package org.apromore.service;
 
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
@@ -102,19 +105,18 @@ public interface ProcessService {
      * Used to import a new model into the Database.
      * @param processName the name of the process.
      * @param versionName the version name of the process
-     * @param username the user who imported the model
-     * @param CanonicalURI the uri of the Canonical model
+     * @param user the user who imported the model
      * @param nativeType the native format of the model
      * @param domain the domain for this model
      * @param documentation any documentation for this model
      * @param created the date it was created
      * @param lastUpdated the date it was updated
-     * @param pg the actual model in a process graph format
+     * @param cpf the Canonical format
      * @return the new Id of the model
      * @throws ImportException if the import failed ???
      */
-    ProcessModelVersion addProcess(String processName, String versionName, String username, String CanonicalURI, String nativeType,
-            String domain, String documentation, String created, String lastUpdated, Canonical pg) throws ImportException;
+    ProcessModelVersion addProcess(String processName, String versionName, User user, NativeType nativeType,
+            String domain, String documentation, String created, String lastUpdated, CanonisedProcess cpf) throws ImportException;
 
 //    /**
 //     * Update a process Model in the database.
@@ -137,7 +139,7 @@ public interface ProcessService {
      * @param pmv the process model version we want the Canonical for.
      * @return the built Canonical
      */
-    Canonical getCanonicalFormat(ProcessModelVersion pmv);
+    CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmv);
 
     /**
      * Using the Process Model Version passed in we can get the Canonical format.
@@ -148,16 +150,7 @@ public interface ProcessService {
      * @param lock
      * @return the built Canonical
      */
-    Canonical getCanonicalFormat(ProcessModelVersion pmv, String processName, String branchName, boolean lock);
-
-    /**
-     * Gets the Current Process Model. assuming the branchName is the Trunk.
-     * @param processName the process name.
-     * @param lock do we lock the records or not.
-     * @return the found process model graph.
-     * @throws org.apromore.exception.LockFailedException if the lock failed.
-     */
-    Canonical getCurrentProcessModel(String processName, boolean lock) throws LockFailedException;
+    CanonicalProcessType getCanonicalFormat(List<ProcessModelVersion> pmvs, String processName, String branchName, boolean lock);
 
     /**
      * Gets the Current Process Model. this on can have any branch name.
@@ -167,17 +160,7 @@ public interface ProcessService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    Canonical getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
-
-    /**
-     * Gets the process model and returns the process model graph for that model.
-     * @param processName the process name.
-     * @param branchName the branch name.
-     * @param versionName the version name.
-     * @return the process model graph.
-     */
-    Canonical getProcessModel(String processName, String branchName, String versionName);
-
+    CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
 
     /**
      * Creates new versions for all ascendant fragments of originalFragment by

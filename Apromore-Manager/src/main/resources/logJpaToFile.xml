@@ -17,7 +17,9 @@
         </encoder>
     </appender>
 
-
+    <logger name="org.apromore" level="DEBUG">
+        <appender-ref ref="jpalogfile" />
+    </logger>
     <logger name="org.springframework.orm" level="WARN">
         <appender-ref ref="jpalogfile" />
     </logger>

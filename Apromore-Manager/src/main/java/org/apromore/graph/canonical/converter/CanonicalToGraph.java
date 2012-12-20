@@ -195,8 +195,6 @@ public class CanonicalToGraph {
                         output = populateMessageDetails(output, (MessageType) node);
                     } else if (node instanceof TimerType) {
                         output = populateTimerDetails(output, (TimerType) node);
-                    } else {
-                        LOGGER.warn("Unknown Event Type in parsing CPF: " + node.getClass().toString());
                     }
                 } else if (node instanceof TaskType) {
                     output = populateTaskDetails(output, (TaskType) node);

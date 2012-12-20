@@ -4,7 +4,8 @@ import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.graph.canonical.NodeTypeEnum;
+import org.apromore.service.model.FragmentNode;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ public class FNSCSExtractor {
     private static final Logger log = LoggerFactory.getLogger(FNSCSExtractor.class);
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(fragmentNode f, fragmentNode cf, Canonical g) {
+    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
         CPFNode originalChildB1 = cf.getEntry();
         CPFNode originalChildB2 = cf.getExit();
 
@@ -45,6 +46,7 @@ public class FNSCSExtractor {
 
         CPFNode pocket = new CPFNode();
         pocket.setName("Pocket");
+        pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
         f.addNode(pocket);
 
@@ -63,14 +65,14 @@ public class FNSCSExtractor {
         if (Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
             if (g.getDirectSuccessors(childB1).size() == 1) {
                 log.debug("NEW CHILD BOUNDARY CONNECTOR B1");
-                log.debug(FragmentUtil.fragmentToString(cf, g));
+                //log.debug(FragmentUtil.fragmentToString(cf, g));
             }
         }
 
         if (Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
             if (g.getDirectPredecessors(childB2).size() == 1) {
                 log.debug("NEW CHILD BOUNDARY CONNECTOR B2");
-                log.debug(FragmentUtil.fragmentToString(cf, g));
+                //log.debug(FragmentUtil.fragmentToString(cf, g));
             }
         }
 
@@ -78,7 +80,7 @@ public class FNSCSExtractor {
     }
 
 
-    private static void preprocessFragmentV2(fragmentNode f, fragmentNode parentFragment, Canonical g) {
+    private static void preprocessFragmentV2(FragmentNode f, FragmentNode parentFragment, Canonical g) {
         CPFNode b1 =  f.getEntry();
         CPFNode b2 = f.getExit();
 

@@ -260,7 +260,7 @@ public class Membership implements Serializable {
      * @return Returns the user.
      */
     @OneToOne
-    @JoinColumn(name = "UserId", referencedColumnName = "id")
+    @JoinColumn(name = "UserId", nullable = false, insertable = false, updatable = false)
     public User getUser() {
         return this.user;
     }
@@ -272,4 +272,5 @@ public class Membership implements Serializable {
     public void setUser(final User newUser) {
         this.user = newUser;
     }
+
 }

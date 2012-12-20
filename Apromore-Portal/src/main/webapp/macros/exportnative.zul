@@ -21,28 +21,45 @@
                 </row>
                 <row>
                     <label value="Export format"/>
-                    <listbox width="100%" multiple="false" mold="select"
-                             rows="1">
+                    <listbox width="100%" multiple="false" mold="select" rows="1">
                         <!-- listbox implemented in controller -->
                     </listbox>
                 </row>
                 <row visible="false">
                     <label value="Annotation"/>
-                    <listbox width="100%" multiple="false" mold="select"
-                             rows="1">
+                    <listbox width="100%" multiple="false" mold="select" rows="1">
                         <!-- listbox implemented in controller -->
                     </listbox>
+                </row>
+                <row spans="1,2" id="canoniserSelectionRow" visible="false">
+                    <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process"/>
+                    <!-- combobox implemented in SelectDynamicListController -->
+                </row>
+                <row spans="3" id="canoniserPropertiesRow" visible="false">
+                    <groupbox width="100%">
+                        <attribute name="onOpen"><![CDATA[
+                            arrow.setSclass("open-" + self.isOpen());
+                            ]]>
+                        </attribute>
+                        <caption>
+                            <div id="arrow" class="open-true">Canoniser parameters</div>
+                        </caption>
+                        <grid id="canoniserPropertiesGrid" width="90%">
+                            <columns>
+                                <column width="50%"></column>
+                                <column width="50%"></column>
+                            </columns>
+                        </grid>
+                    </groupbox>
+                </row>
+                <row spans="3" id="canoniserMandatoryFieldsRow" visible="false">
+                    <label value="*: mandatory fields."/>
                 </row>
                 <row spans="2">
                     <div align="center">
                         <button label="OK" image="img/ok.png"></button>
-                        <button label="Cancel"
-                                image="img/cancel2.png">
-                        </button>
-                        <button label="Cancel all"
-                                image="img/cancel2.png"
-                                tooltiptext="Cancel export of all remaining process models.">
-                        </button>
+                        <button label="Cancel" image="img/cancel2.png"></button>
+                        <button label="Cancel all" image="img/cancel2.png" tooltiptext="Cancel export of all remaining process models."></button>
                     </div>
                 </row>
             </rows>

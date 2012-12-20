@@ -929,11 +929,6 @@
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>javax.persistence</artifactId>
-                <version>${eclipselink.persistence.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>javax.transaction</groupId>
                 <artifactId>jta</artifactId>
                 <version>${jta.version}</version>
@@ -1134,8 +1129,7 @@
         <json.version>20090211</json.version>
 
         <!-- Database / JPA -->
-        <eclipselink.version>2.4.0</eclipselink.version>
-        <eclipselink.persistence.version>2.1.0.v201201251030</eclipselink.persistence.version>
+        <eclipselink.version>2.4.1</eclipselink.version>
         <jta.version>1.1</jta.version>
         <bonecp.version>0.7.1.RELEASE</bonecp.version>
         <mysql.connector.version>5.1.18</mysql.connector.version>

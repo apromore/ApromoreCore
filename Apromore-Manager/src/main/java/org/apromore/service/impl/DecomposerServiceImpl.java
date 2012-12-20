@@ -5,15 +5,15 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.extraction.Extractor;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.service.model.FragmentNode;
 import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
 import org.jbpt.algo.tree.rpst.RPST;
@@ -60,7 +60,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentVersion decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
+    public OperationContext decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
         try {
             TreeVisitor visitor = new TreeVisitor();
             OperationContext op = new OperationContext();
@@ -68,8 +68,12 @@ public class DecomposerServiceImpl implements DecomposerService {
             op.setTreeVisitor(visitor);
 
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
-            fragmentNode rf = new MutableTreeConstructor().construct(rpst);
-            return decompose(modelVersion, rf, op);
+            FragmentNode rf = new MutableTreeConstructor().construct(rpst);
+            op = decompose(modelVersion, rf, op);
+
+            cService.updateCancelNodes(op);
+
+            return op;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
             LOGGER.error(msg, e);
@@ -79,13 +83,13 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Doing all the work of decomposing into the DB structure. */
     @SuppressWarnings("unchecked")
-    private FragmentVersion decompose(ProcessModelVersion modelVersion, final fragmentNode f, final OperationContext op)
+    private OperationContext decompose(ProcessModelVersion modelVersion, final FragmentNode f, OperationContext op)
             throws RepositoryException {
         String keywords = "";
         int fragmentSize = f.getNodes().size();
         String nodeType = FragmentUtil.getFragmentType(f);
 
-        Collection<fragmentNode> cs = f.getChildren();
+        Collection<FragmentNode> cs = f.getChildren();
         Map<String, String> childMappings = mapPocketChildId(modelVersion, f, op, cs);
 
         String hash = UUID.randomUUID().toString();
@@ -93,30 +97,31 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final fragmentNode f, final OperationContext op, final Collection<fragmentNode> cs)
-            throws RepositoryException {
+    private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode f, OperationContext op,
+            final Collection<FragmentNode> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>();
-        for (fragmentNode c : cs) {
+        for (FragmentNode c : cs) {
             if (TCType.TRIVIAL.equals(c.getType())) {
                 continue;
             }
 
             CPFNode pocket = Extractor.extractChildFragment(f, c, op.getGraph());
             FragmentUtil.cleanFragment(f);
-            FragmentVersion child = decompose(modelVersion, c, op);
-            childMappings.put(pocket.getId(), child.getUri());
+            OperationContext child = decompose(modelVersion, c, op);
+            childMappings.put(pocket.getId(), child.getCurrentFragment().getUri());
         }
         return childMappings;
     }
 
     /* Adds the decomposed fragment to the process model version. */
-    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, final Canonical f, final String hash,
+    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode f, final String hash,
             final Map<String, String> childMappings, final int fragmentSize, final String fragmentType, final String keywords,
-            final OperationContext op) throws RepositoryException {
+            OperationContext op) throws RepositoryException {
+        LOGGER.info("Adding Fragment Version: " + modelVersion.getVersionName());
 
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
-        Content content = cService.addContent(modelVersion, f, hash, op.getGraph(), pocketIdMappings);
+        Content content = cService.addContent(modelVersion, f, hash, op, pocketIdMappings);
 
         // rewrite child mapping with new pocket Ids
         Map<String, String> refinedChildMappings = new HashMap<String, String>();
@@ -130,11 +135,16 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, Content content, final Map<String, String> childMappings,
+    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, Content content, final Map<String, String> childMappings,
             final String derivedFrom, final int lockStatus, final int lockCount, final int originalSize, final String fragmentType,
-            final String keywords, final OperationContext op) throws RepositoryException {
+            final String keywords, OperationContext op) throws RepositoryException {
+        FragmentVersion fragmentVersion = fService.addFragmentVersion(modelVersion, content, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
+
         op.addProcessedFragmentType(fragmentType);
-        return fService.addFragmentVersion(modelVersion, content, childMappings, derivedFrom, lockStatus, lockCount, originalSize,
-                fragmentType);
+        op.setCurrentFragment(fragmentVersion);
+        op.addAllNodes(content.getNodes());
+        op.addAllEdges(content.getEdges());
+
+        return op;
     }
 }

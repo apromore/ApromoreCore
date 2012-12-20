@@ -4,7 +4,8 @@ import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.model.fragmentNode;
+import org.apromore.graph.canonical.NodeTypeEnum;
+import org.apromore.service.model.FragmentNode;
 import org.apromore.util.FragmentUtil;
 
 import java.util.Collection;
@@ -19,7 +20,7 @@ import java.util.Collection;
 public class FSCNSExtractor {
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(fragmentNode f, fragmentNode cf, Canonical g) {
+    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
         FragmentUtil.removeEdges(f, cf.getEdges());
 
         CPFNode childB1 = cf.getEntry();
@@ -36,6 +37,7 @@ public class FSCNSExtractor {
 
         CPFNode pocket = new CPFNode();
         pocket.setName("Pocket");
+        pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
         f.addNode(pocket);
         if (!fragmentLink1.isEmpty()) {
