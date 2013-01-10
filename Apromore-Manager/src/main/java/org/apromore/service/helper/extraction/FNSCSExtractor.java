@@ -28,13 +28,13 @@ public class FNSCSExtractor {
         preprocessFragmentV2(cf, f, g);
 
         CPFNode childB1 = cf.getEntry();
-        if (childB1.getId().equals(originalChildB1.getId())) {
+        if (childB1 != null && childB1.getId().equals(originalChildB1.getId())) {
             CPFNode newChildB1 = FragmentUtil.duplicateNode(childB1, g);
             FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
         }
 
         CPFNode childB2 = cf.getExit();
-        if (childB2.getId().equals(originalChildB2.getId())) {
+        if (childB2 != null && childB2.getId().equals(originalChildB2.getId())) {
             CPFNode newChildB2 = FragmentUtil.duplicateNode(childB2, g);
             FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
         }
@@ -62,14 +62,14 @@ public class FNSCSExtractor {
             f.addEdge(pocket, fragmentB2);
         }
 
-        if (Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
+        if (childB1 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
             if (g.getDirectSuccessors(childB1).size() == 1) {
                 log.debug("NEW CHILD BOUNDARY CONNECTOR B1");
                 //log.debug(FragmentUtil.fragmentToString(cf, g));
             }
         }
 
-        if (Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
+        if (childB2 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
             if (g.getDirectPredecessors(childB2).size() == 1) {
                 log.debug("NEW CHILD BOUNDARY CONNECTOR B2");
                 //log.debug(FragmentUtil.fragmentToString(cf, g));

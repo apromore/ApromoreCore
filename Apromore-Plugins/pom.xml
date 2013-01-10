@@ -19,12 +19,12 @@
     <description>Apromore Plugin API's and core Plugins</description>
     <inceptionYear>2012</inceptionYear>
 
-    <distributionManagement>
-        <site>
-            <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Plugins</url>
-        </site>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<site>-->
+            <!--<id>Apromore-site</id>-->
+            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Plugins</url>-->
+        <!--</site>-->
+    <!--</distributionManagement>-->
 
     <ciManagement>
         <system>Bamboo</system>
