@@ -38,12 +38,12 @@
         <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
     </issueManagement>
 
-    <distributionManagement>
-        <site>
-            <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Editor</url>
-        </site>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<site>-->
+            <!--<id>Apromore-site</id>-->
+            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Editor</url>-->
+        <!--</site>-->
+    <!--</distributionManagement>-->
 
     <licenses>
         <license>
