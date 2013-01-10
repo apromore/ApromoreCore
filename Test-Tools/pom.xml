@@ -34,12 +34,12 @@
         <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
     </issueManagement>
 
-    <distributionManagement>
-        <site>
-            <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Test-Tools</url>
-        </site>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<site>-->
+            <!--<id>Apromore-site</id>-->
+            <!--<url>dav:http://apromore.qut.edu.au/projects/Test-Tools</url>-->
+        <!--</site>-->
+    <!--</distributionManagement>-->
 
     <dependencies>
         <!-- Logging -->

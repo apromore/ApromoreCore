@@ -29,14 +29,16 @@ public class FragmentUtil {
 
     public static String getFragmentType(final FragmentNode f) {
         String nodeType = "UNKNOWN";
-        if (TCType.POLYGON.equals(f.getType())) {
-            nodeType = "P";
-        } else if (TCType.BOND.equals(f.getType())) {
-            nodeType = "B";
-        } else if (TCType.RIGID.equals(f.getType())) {
-            nodeType = "R";
-        } else if (TCType.TRIVIAL.equals(f.getType())) {
-            nodeType = "T";
+        if (f != null) {
+            if (TCType.POLYGON.equals(f.getType())) {
+                nodeType = "P";
+            } else if (TCType.BOND.equals(f.getType())) {
+                nodeType = "B";
+            } else if (TCType.RIGID.equals(f.getType())) {
+                nodeType = "R";
+            } else if (TCType.TRIVIAL.equals(f.getType())) {
+                nodeType = "T";
+            }
         }
         return nodeType;
     }
@@ -68,9 +70,11 @@ public class FragmentUtil {
 
     public static Collection<CPFEdge> getIncomingEdges(final CPFNode v, final Collection<CPFEdge> es) {
         Collection<CPFEdge> incomingEdges = new ArrayList<CPFEdge>();
-        for (CPFEdge e : es) {
-            if (e.getTarget().getId().equals(v.getId())) {
-                incomingEdges.add(e);
+        if (v != null) {
+            for (CPFEdge e : es) {
+                if (e.getTarget().getId().equals(v.getId())) {
+                    incomingEdges.add(e);
+                }
             }
         }
         return incomingEdges;
@@ -78,9 +82,11 @@ public class FragmentUtil {
 
     public static Collection<CPFEdge> getOutgoingEdges(final CPFNode v, final Collection<CPFEdge> es) {
         Collection<CPFEdge> outgoingEdges = new ArrayList<CPFEdge>();
-        for (CPFEdge e : es) {
-            if (e.getSource().getId().equals(v.getId())) {
-                outgoingEdges.add(e);
+        if (v != null) {
+            for (CPFEdge e : es) {
+                if (e.getSource().getId().equals(v.getId())) {
+                    outgoingEdges.add(e);
+                }
             }
         }
         return outgoingEdges;
@@ -160,7 +166,7 @@ public class FragmentUtil {
         CPFNode b1 = f.getEntry();
         CPFNode b2 = f.getExit();
 
-        if (b1.equals(oldB1)) {
+        if (b1 != null && b1.equals(oldB1)) {
             f.setEntry(newB1);
             reconnectNodes(b1, newB1, f);
             f.addNode(newB1);
@@ -174,7 +180,7 @@ public class FragmentUtil {
             }
         }
 
-        if (b2.equals(oldB1)) {
+        if (b2 != null && b2.equals(oldB1)) {
             LOGGER.debug("b2 = oldB1 in fragment: " + fragmentToString(f));
         }
     }
@@ -183,7 +189,7 @@ public class FragmentUtil {
     public static void reconnectBoundary2(final FragmentNode f, final CPFNode oldB2, final CPFNode newB2) {
         CPFNode b2 = f.getExit();
 
-        if (b2.equals(oldB2)) {
+        if (b2 != null && b2.equals(oldB2)) {
             f.setExit(newB2);
             reconnectNodes(b2, newB2, f);
             f.addNode(newB2);
@@ -255,18 +261,18 @@ public class FragmentUtil {
         return type;
     }
 
-    @SuppressWarnings("unchecked")
-    public static String fragmentToString(final FragmentNode f, final Canonical g) {
-        StringBuilder fs = new StringBuilder(0);
-        Collection<CPFNode> vs = f.getNodes();
-        for (CPFNode v : vs) {
-            String label = v.getName();
-            fs.append('\n').append(v).append(" : ").append(label);
-        }
-        fs.append("\nBoundary 1: ").append(f.getEntry().getId());
-        fs.append("\nBoundary 2: ").append(f.getExit().getId());
-        return fs.toString();
-    }
+//    @SuppressWarnings("unchecked")
+//    public static String fragmentToString(final FragmentNode f, final Canonical g) {
+//        StringBuilder fs = new StringBuilder(0);
+//        Collection<CPFNode> vs = f.getNodes();
+//        for (CPFNode v : vs) {
+//            String label = v.getName();
+//            fs.append('\n').append(v).append(" : ").append(label);
+//        }
+//        fs.append("\nBoundary 1: ").append(f.getEntry().getId());
+//        fs.append("\nBoundary 2: ").append(f.getExit().getId());
+//        return fs.toString();
+//    }
 
     @SuppressWarnings("unchecked")
     public static String fragmentToString(final FragmentNode f) {

@@ -36,8 +36,8 @@
 
     <distributionManagement>
         <site>
-            <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Build-Tools</url>
+            <id>${project.artifactId}-site</id>
+            <url>${project.basedir}/target/staging/</url>
         </site>
     </distributionManagement>
 
@@ -81,20 +81,5 @@
             <timezone>+10</timezone>
         </developer>
     </developers>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changes-plugin</artifactId>
-                <version>${maven-change-plugin.version}</version>
-                <inherited>true</inherited>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <properties>
-        <maven-change-plugin.version>2.6</maven-change-plugin.version>
-    </properties>
 
 </project>

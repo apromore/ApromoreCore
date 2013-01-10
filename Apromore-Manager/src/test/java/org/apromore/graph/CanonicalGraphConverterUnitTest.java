@@ -1,33 +1,20 @@
 package org.apromore.graph;
 
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TaskType;
-import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.ICPFResource;
-import org.apromore.graph.canonical.ICPFResourceReference;
-import org.apromore.graph.canonical.IEdge;
+import org.apromore.cpf.*;
+import org.apromore.graph.canonical.*;
 import org.apromore.graph.canonical.converter.CanonicalToGraph;
 import org.apromore.graph.canonical.converter.GraphToCanonical;
-import org.jbpt.algo.tree.rpst.RPST;
-import org.jbpt.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Iterator;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -429,7 +416,6 @@ public class CanonicalGraphConverterUnitTest {
 //        IOUtils.toFile("orderfulfillment.dot", graph.toDOT());
 //        IOUtils.invokeDOT("target/", "orderfulfillment.png", graph.toDOT());
 //    }
-
 
 
 

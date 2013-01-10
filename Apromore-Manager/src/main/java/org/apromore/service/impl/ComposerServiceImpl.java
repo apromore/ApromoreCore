@@ -86,12 +86,14 @@ public class ComposerServiceImpl implements ComposerService {
 
 
     private void composeFragment(final OperationContext op, final FragmentVersion fragVersion, final String pocketId) throws ExceptionDao {
-        Content content = cRepository.getContentByFragmentVersion(fragVersion.getId());
+        if (fragVersion != null) {
+            Content content = cRepository.getContentByFragmentVersion(fragVersion.getId());
 
-        if (op.getContentUsage(content.getId()) == 0) {
-            composeNewContent(op, fragVersion.getUri(), pocketId, content);
-        } else {
-            composeDuplicateContent(op, fragVersion.getUri(), pocketId, content);
+            if (op.getContentUsage(content.getId()) == 0) {
+                composeNewContent(op, fragVersion.getUri(), pocketId, content);
+            } else {
+                composeDuplicateContent(op, fragVersion.getUri(), pocketId, content);
+            }
         }
     }
 
