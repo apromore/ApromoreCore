@@ -64,7 +64,7 @@ public class ObjectRef implements java.io.Serializable {
     }
 
 
-    @Column(name = "type")
+    @Column(name = "type", length = 30)
     @Enumerated(EnumType.STRING)
     public ObjectRefTypeEnum getType() {
         return this.type;

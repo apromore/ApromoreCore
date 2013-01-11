@@ -604,7 +604,7 @@ CREATE TABLE `object` (
     `netId` varchar(40),
     `name` varchar(255),
     `configurable` boolean not null default 0,
-    `type` ENUM('hard', 'soft'),
+    `type` varchar(4),
     `softType` varchar(255),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_obj_pmv` FOREIGN KEY (`processModelVersionId`)
@@ -629,7 +629,7 @@ CREATE TABLE `object_ref` (
     `nodeId` int(11) DEFAULT NULL,
     `optional` boolean not null default 0,
     `consumed` boolean not null default 0,
-    `type` ENUM('input', 'output'),
+    `type` varchar(6),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_objrefobj_pmv` FOREIGN KEY (`objectId`)
         REFERENCES `object` (`id`)
@@ -657,7 +657,7 @@ CREATE TABLE `resource` (
     `originalId` varchar(40),
     `name` varchar(255),
     `configurable` boolean not null default 0,
-    `type` ENUM('human', 'nonHuman'),
+    `type` varchar(8),
     `typeName` varchar(255) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_res_pmv` FOREIGN KEY (`processModelVersionId`)

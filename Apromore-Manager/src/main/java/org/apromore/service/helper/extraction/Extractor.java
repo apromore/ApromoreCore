@@ -28,24 +28,24 @@ public class Extractor {
         CPFNode pocket;
         if (f.getType().equals(TCType.POLYGON)) {
             if (c.getType() != TCType.POLYGON) {
-                LOGGER.debug("Processing FS CNS");
+                LOGGER.info("Processing FS CNS");
                 pocket = FSCNSExtractor.extract(f, c, g);
-                LOGGER.debug("Pocket Id: " + pocket.getId());
+                LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
                 // TODO what if both are of type POLYGON??? potential NPE, This is a hack
-                LOGGER.debug("Processing FNS CS - POLYGON");
+                LOGGER.info("Processing FNS CS - POLYGON");
                 pocket = FNSCSExtractor.extract(f, c, g);
-                LOGGER.debug("Pocket Id: " + pocket.getId());
+                LOGGER.info("Pocket Id: " + pocket.getId());
             }
         } else {
             if (c.getType().equals(TCType.POLYGON)) {
-                LOGGER.debug("Processing FNS CS");
+                LOGGER.info("Processing FNS CS");
                 pocket = FNSCSExtractor.extract(f, c, g);
-                LOGGER.debug("Pocket Id: " + pocket.getId());
+                LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
-                LOGGER.debug("Processing FNS CNS");
+                LOGGER.info("Processing FNS CNS");
                 pocket = FNSCNSExtractor.extract(f, c, g);
-                LOGGER.debug("Pocket Id: " + pocket.getId());
+                LOGGER.info("Pocket Id: " + pocket.getId());
             }
         }
         return pocket;

@@ -16,23 +16,7 @@ import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.ResourceRef;
 import org.apromore.dao.model.ResourceRefAttribute;
-import org.apromore.graph.canonical.CPFExpression;
-import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.CPFObject;
-import org.apromore.graph.canonical.CPFObjectReference;
-import org.apromore.graph.canonical.CPFResource;
-import org.apromore.graph.canonical.CPFResourceReference;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.HumanTypeEnum;
-import org.apromore.graph.canonical.ICPFObject;
-import org.apromore.graph.canonical.ICPFObjectReference;
-import org.apromore.graph.canonical.ICPFResource;
-import org.apromore.graph.canonical.ICPFResourceReference;
-import org.apromore.graph.canonical.INode;
-import org.apromore.graph.canonical.NodeTypeEnum;
-import org.apromore.graph.canonical.NonHumanTypeEnum;
-import org.apromore.graph.canonical.ObjectTypeEnum;
-import org.apromore.graph.canonical.ResourceTypeEnum;
+import org.apromore.graph.canonical.*;
 import org.apromore.service.GraphService;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
@@ -477,9 +461,13 @@ public class GraphServiceImpl implements GraphService {
                     if (resource.getType() != null) {
                         cpfResource.setResourceType(resource.getType());
                         if (resource.getType().equals(ResourceTypeEnum.HUMAN)) {
-                            cpfResource.setHumanType(HumanTypeEnum.fromValue(resource.getTypeName()));
+                            if (resource.getTypeName() != null) {
+                                cpfResource.setHumanType(HumanTypeEnum.fromValue(resource.getTypeName()));
+                            }
                         } if (resource.getType().equals(ResourceTypeEnum.NONHUMAN)) {
-                            cpfResource.setNonHumanType(NonHumanTypeEnum.fromValue(resource.getTypeName()));
+                            if (resource.getTypeName() != null) {
+                                cpfResource.setNonHumanType(NonHumanTypeEnum.fromValue(resource.getTypeName()));
+                            }
                         }
                     }
                     for (Resource specialRes : resource.getSpecialisations()) {
