@@ -109,7 +109,7 @@ public class Resource implements java.io.Serializable {
         this.configurable = configurable;
     }
 
-    @Column(name = "type")
+    @Column(name = "type", length = 30)
     @Enumerated(EnumType.STRING)
     public ResourceTypeEnum getType() {
         return this.type;

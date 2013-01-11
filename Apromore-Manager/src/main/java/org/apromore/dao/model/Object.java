@@ -86,9 +86,9 @@ public class Object implements java.io.Serializable {
         this.name = newName;
     }
 
-    @Column(name = "type")
+    @Column(name = "type", length = 30)
     @Enumerated(EnumType.STRING)
-    public ObjectTypeEnum getType() {
+        public ObjectTypeEnum getType() {
         return this.type;
     }
 

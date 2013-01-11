@@ -64,14 +64,14 @@ public class FNSCSExtractor {
 
         if (childB1 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
             if (g.getDirectSuccessors(childB1).size() == 1) {
-                log.debug("NEW CHILD BOUNDARY CONNECTOR B1");
+                log.info("NEW CHILD BOUNDARY CONNECTOR B1");
                 //log.debug(FragmentUtil.fragmentToString(cf, g));
             }
         }
 
         if (childB2 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
             if (g.getDirectPredecessors(childB2).size() == 1) {
-                log.debug("NEW CHILD BOUNDARY CONNECTOR B2");
+                log.info("NEW CHILD BOUNDARY CONNECTOR B2");
                 //log.debug(FragmentUtil.fragmentToString(cf, g));
             }
         }
