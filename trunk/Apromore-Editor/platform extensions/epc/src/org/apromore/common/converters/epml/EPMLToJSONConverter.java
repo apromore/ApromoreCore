@@ -25,6 +25,8 @@
 package org.apromore.common.converters.epml;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -70,8 +72,11 @@ public class EPMLToJSONConverter {
             JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(epmlStream);
             convertEPML(nativeElement.getValue(), jsonStream);
         } catch (JAXBException e) {
+            e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -149,4 +154,13 @@ public class EPMLToJSONConverter {
         outWriter.flush();
     }
 
+    /**
+     * Command line filter converting a EPML-formatted standard input stream into a Signavio JSON-formatted standard output stream.
+     *
+     * @param args  first argument names the input file
+     * @throw FileNotFoundException  if <code>args[0]</code> isn't the name of a file
+     */
+    public static void main(String args[]) throws FileNotFoundException {
+        new EPMLToJSONConverter().convert(new FileInputStream(args[0]), System.out);
+    }
 }

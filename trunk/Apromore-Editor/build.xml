@@ -181,10 +181,9 @@
             depends="build-and-deploy-editor-to-tomcat, build-and-deploy-explorer-to-tomcat, build-and-deploy-libs-to-tomcat, build-and-deploy-platform-to-tomcat, build-and-deploy-api-to-tomcat">
     </target>
 
-    <!-- Test targets for converting BPMN to Signavio JSON -->
+    <!-- Test targets for converting BPMN or EPML to Signavio JSON -->
     
     <path id="executable.path">
-        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-bpmn2_0.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/jaxb-impl.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/org.json.jar"/>
@@ -194,17 +193,39 @@
     <!-- Read test.bpmn.xml and generate test.json from it -->
     <target name="bpmn2json">
         <echo message="Executing from ${basedir}"/>
-        <java classname="de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter" classpathref="executable.path" fork="yes" output="test.json" logError="yes">
+        <java classname="de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter" fork="yes" output="test.json" logError="yes">
+            <classpath>
+                <path refid="executable.path"/>
+            </classpath>
             <jvmarg value="-enableassertions"/>
             <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
             <arg value="test.bpmn"/>
         </java>
     </target>
 
+    <!-- Read test.epml and generate test.json from it -->
+    <target name="epml2json">
+        <echo message="Executing from ${basedir}"/>
+        <java classname="org.apromore.common.converters.epml.EPMLToJSONConverter" fork="yes" output="test.json" logError="yes">
+            <classpath>
+                <path refid="executable.path"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/epml-schema.jar"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-epc.jar"/>
+            </classpath>
+            <jvmarg value="-enableassertions"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
+            <arg value="test.epml"/>
+        </java>
+    </target>
+
     <!-- Read test2.json and generate test2.bpmn.xml from it -->
     <target name="json2bpmn">
         <echo message="Executing from ${basedir}"/>
-        <java classname="de.hpi.bpmn2_0.BPMNSerializationTest" classpathref="executable.path" fork="yes" output="test2.bpmn.xml" logError="yes">
+        <java classname="de.hpi.bpmn2_0.BPMNSerializationTest" fork="yes" output="test2.bpmn.xml" logError="yes">
+            <classpath>
+                <path refid="executable.path"/>
+            </classpath>
             <jvmarg value="-enableassertions"/>
             <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
             <arg value="test2.json"/>
