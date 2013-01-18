@@ -690,7 +690,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitDataObject(DataObject that) {
 		super.visitAbstractDataObject(that);
 
-		SignavioType type = that.getExtensionElements().getFirstExtensionElementOfType(SignavioType.class);
+		SignavioType type = that.getExtensionElements() == null ? null : that.getExtensionElements().getFirstExtensionElementOfType(SignavioType.class);
 		switch (type == null ? SignavioDataObjectType.DEFAULT : type.getDataObjectType()) {
 		case PROCESSPARTICIPANT:
 			shape.setStencilId("processparticipant");
