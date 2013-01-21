@@ -611,6 +611,15 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
+     * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch9_PurchaseOrder4Complete.bpmn">chapter 9 purchase order example</a>.
+     */
+    @Ignore("BPMN contains subprocesses empty of any events or tasks")
+    @Test
+    public void testCh9PurchaseOrder4Complete() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("ch9_PurchaseOrder4Complete.bpmn");
+    }
+
+    /**
      * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">a model with default flows</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.svg"/></div>
