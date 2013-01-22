@@ -31,6 +31,7 @@ import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,11 +88,44 @@ public class TypeArcHandler extends EPMLHandlerImpl {
         List<Point> points = new ArrayList<Point>();
 
         for (TypeMove move : graphics) {
-            if (move.getPosition().size() > 2) {
-                // Just use for bends, so skip 1st and last
-                for (int i = 1; i < move.getPosition().size() - 1; i++) {
+            final int positionCount = move.getPosition().size();
+            if (positionCount > 0) {
+                for (int i = 0; i < positionCount; i++) {
                     TypeMove2 position = move.getPosition().get(i);
-                    points.add(new Point(position.getX(), position.getY()));
+                    BigDecimal x = position.getX();
+                    BigDecimal y = position.getY();
+
+                    // Locate the source of this arc
+                    BigInteger sourceId = null;
+                    if (arc.getFlow() != null) {
+                         sourceId = arc.getFlow().getSource();
+                    } else if (arc.getRelation() != null) {
+                         sourceId = arc.getRelation().getSource();
+                    }
+
+                    // If the arc has a source, the first waypoint generates a docker attached to the source shape's coordinate system
+                    if (i == 0 && sourceId != null) {
+                        Bounds bounds = getContext().getShape(sourceId).getBounds();
+                        x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
+                        y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                    }
+
+                    // Locate the target of this arc
+                    BigInteger targetId = null;
+                    if (arc.getFlow() != null) {
+                         targetId = arc.getFlow().getTarget();
+                    } else if (arc.getRelation() != null) {
+                         targetId = arc.getRelation().getTarget();
+                    }
+
+                    // If the arc has a target, the last waypoint generates a docker attached to the target shape's coordinate system
+                    if (i == positionCount - 1 && targetId != null) {
+                        Bounds bounds = getContext().getShape(targetId).getBounds();
+                        x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
+                        y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                    }
+
+                    points.add(new Point(x, y));
                 }
             }
         }
