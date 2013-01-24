@@ -2,12 +2,12 @@ package org.apromore.manager.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +19,13 @@ import javax.xml.bind.JAXBElement;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
+import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.EditSession;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
-import org.apromore.exception.ExceptionCanoniseVersion;
-import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
@@ -371,38 +370,32 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            DataHandler handler = payload.getNative();
-            InputStream native_is = handler.getInputStream();
-            int editSessionCode = payload.getEditSessionCode();
+
             EditSessionType editSessionP = payload.getEditSession();
-            EditSessionType editSessionC = new EditSessionType();
-            editSessionC.setProcessId(editSessionP.getProcessId());
-            editSessionC.setNativeType(editSessionP.getNativeType());
-            editSessionC.setAnnotation(editSessionP.getAnnotation());
-            editSessionC.setCreationDate(editSessionP.getCreationDate());
-            editSessionC.setLastUpdate(editSessionP.getLastUpdate());
-            editSessionC.setProcessName(editSessionP.getProcessName());
-            editSessionC.setUsername(editSessionP.getUsername());
-            editSessionC.setVersionName(editSessionP.getVersionName());
-            caClient.CanoniseVersion(editSessionCode, editSessionC, newCpfURI(), native_is);
+            InputStream native_is = payload.getNative().getInputStream();
+//            int editSessionCode = payload.getEditSessionCode();
+//            EditSessionType editSessionC = new EditSessionType();
+//            editSessionC.setProcessId(editSessionP.getProcessId());
+//            editSessionC.setNativeType(editSessionP.getNativeType());
+//            editSessionC.setAnnotation(editSessionP.getAnnotation());
+//            editSessionC.setCreationDate(editSessionP.getCreationDate());
+//            editSessionC.setLastUpdate(editSessionP.getLastUpdate());
+//            editSessionC.setProcessName(editSessionP.getProcessName());
+//            editSessionC.setUsername(editSessionP.getUsername());
+//            editSessionC.setVersionName(editSessionP.getVersionName());
+//            caClient.CanoniseVersion(editSessionCode, editSessionC, newCpfURI(), native_is);
 
-            //Set<RequestParameterType<?>> canoniserProperties = new HashSet<RequestParameterType<?>>(0)
-            //CanonisedProcess canonisedProcess = canoniserService.canonise(editSessionP.getNativeType(), native_is, canoniserProperties);
+            // TODO: Update process needs to work with the existing data, but we need to
+            // TODO: update the EditSessionType to have version number.
+            Set<RequestParameterType<?>> canoniserProperties = new HashSet<RequestParameterType<?>>(0);
+            CanonisedProcess canonisedProcess = canoniserService.canonise(editSessionP.getNativeType(), native_is, canoniserProperties);
 
-            //procSrv.updateProcess(editSessionP.getProcessName(), editSessionP.getVersionName(), ??, secSrv.getUserByName(editSessionP.getUsername()),
-            //     Constants.LOCKED, canonisedProcess);
+            procSrv.updateProcess(editSessionP.getProcessName(), editSessionP.getVersionName(), "1.0", secSrv.getUserByName(editSessionP.getUsername()),
+                 Constants.LOCKED, canonisedProcess);
 
             result.setCode(0);
             result.setMessage("");
-        } catch (ExceptionVersion ex) {
-            LOGGER.error("", ex);
-            result.setCode(-3);
-            result.setMessage(ex.getMessage());
-        } catch (IOException ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        } catch (ExceptionCanoniseVersion ex) {
+        } catch (Exception ex) {
             LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());

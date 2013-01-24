@@ -378,12 +378,6 @@
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
 
-        <!-- performance monitoring -->
-        <dependency>
-            <groupId>org.jamon</groupId>
-            <artifactId>jamon-runtime</artifactId>
-        </dependency>
-
         <!-- Test Scope Dependencies -->
         <dependency>
             <groupId>junit</groupId>

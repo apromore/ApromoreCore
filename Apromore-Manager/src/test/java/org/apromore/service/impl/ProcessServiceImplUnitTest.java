@@ -5,6 +5,7 @@ import org.apromore.dao.ContentRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NativeRepository;
+import org.apromore.dao.NetRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
@@ -44,6 +45,7 @@ public class ProcessServiceImplUnitTest {
     private AnnotationRepository annDao;
     private ContentRepository contDao;
     private NativeRepository natDao;
+    private NetRepository netDao;
     private ProcessBranchRepository branchDao;
     private ProcessRepository proDao;
     private FragmentVersionRepository fvDao;
@@ -64,6 +66,7 @@ public class ProcessServiceImplUnitTest {
         annDao = createMock(AnnotationRepository.class);
         contDao = createMock(ContentRepository.class);
         natDao = createMock(NativeRepository.class);
+        netDao = createMock(NetRepository.class);
         branchDao = createMock(ProcessBranchRepository.class);
         proDao = createMock(ProcessRepository.class);
         fvDao = createMock(FragmentVersionRepository.class);
@@ -79,7 +82,7 @@ public class ProcessServiceImplUnitTest {
         ui = createMock(UserInterfaceHelper.class);
         fSrv = createMock(FragmentService.class);
 
-        service = new ProcessServiceImpl(annDao, contDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui);
+        service = new ProcessServiceImpl(annDao, contDao, netDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui);
     }
 
 
