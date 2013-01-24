@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 
 /**
@@ -37,8 +38,7 @@ public class LockServiceImpl implements LockService {
      */
     @Inject
     public LockServiceImpl(final FragmentVersionRepository fragmentVersionRepository,
-            final FragmentVersionDagRepository fragmentVersionDagRepository,
-            final ProcessModelVersionRepository processModelVersionRepository) {
+            final FragmentVersionDagRepository fragmentVersionDagRepository, final ProcessModelVersionRepository processModelVersionRepository) {
         fragmentVersionRepo = fragmentVersionRepository;
         fragmentVersionDagRepo = fragmentVersionDagRepository;
         processModelVersionRepo = processModelVersionRepository;
@@ -65,20 +65,19 @@ public class LockServiceImpl implements LockService {
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockProcessModelVersion(Integer)
-     *      {@inheritDoc}
+     * @see org.apromore.service.LockService#unlockProcessModelVersion(ProcessModelVersion)
+     * {@inheritDoc}
      */
     @Override
-    public void unlockProcessModelVersion(Integer processModelVersionId) {
-        ProcessModelVersion prsModelVersion = processModelVersionRepo.findOne(processModelVersionId);
-        prsModelVersion.setLockStatus(Constants.NO_LOCK);
-        processModelVersionRepo.save(prsModelVersion);
+    public void unlockProcessModelVersion(ProcessModelVersion processModelVersion) {
+        processModelVersion.setLockStatus(Constants.NO_LOCK);
+        processModelVersionRepo.save(processModelVersion);
     }
 
 
     /**
      * @see org.apromore.service.LockService#lockFragment(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean lockFragment(Integer fragmentVersionId) {
@@ -125,19 +124,18 @@ public class LockServiceImpl implements LockService {
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockFragment(Integer)
-     *      {@inheritDoc}
+     * @see org.apromore.service.LockService#unlockFragment(FragmentVersion)
+     * {@inheritDoc}
      */
     @Override
-    public void unlockFragment(final Integer fragmentId) {
-        FragmentVersion fragVersion = fragmentVersionRepo.findOne(fragmentId);
-        fragVersion.setLockStatus(Constants.NO_LOCK);
-        fragmentVersionRepo.save(fragVersion);
+    public void unlockFragment(final FragmentVersion fragmentVersion) {
+        fragmentVersion.setLockStatus(Constants.NO_LOCK);
+        fragmentVersionRepo.save(fragmentVersion);
     }
 
     /**
      * @see org.apromore.service.LockService#unlockFragmentByURI(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void unlockFragmentByURI(final String uri){
@@ -147,26 +145,18 @@ public class LockServiceImpl implements LockService {
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockAscendantFragments(Integer)
+     * @see org.apromore.service.LockService#unlockAscendantFragments(FragmentVersion)
      * {@inheritDoc}
      */
     @Override
-    public void unlockAscendantFragments(Integer fragmentId) {
-        List<FragmentVersion> parents = fragmentVersionRepo.getLockedParentFragments(fragmentId);
+    public void unlockAscendantFragments(FragmentVersion fragmentVersion) {
+        List<FragmentVersion> parents = fragmentVersionRepo.getLockedParentFragments(fragmentVersion);
         for (FragmentVersion parent : parents) {
             decrementParentLocks(parent.getId());
-            unlockAscendantFragments(parent.getId());
+            unlockAscendantFragments(parent);
         }
     }
 
-    /**
-     * @see org.apromore.service.LockService#unlockDescendantFragments(Integer)
-     *      {@inheritDoc}
-     */
-    @Override
-    public void unlockDescendantFragments(final Integer fragmentId) {
-        unlockDescendantFragments(fragmentVersionDagRepo.findOne(fragmentId));
-    }
 
     /**
      * @see org.apromore.service.LockService#unlockDescendantFragmentsByURI(String)
@@ -174,19 +164,19 @@ public class LockServiceImpl implements LockService {
      */
     @Override
     public void unlockDescendantFragmentsByURI(final String uri) {
-        unlockDescendantFragments(fragmentVersionDagRepo.findFragmentVersionDagByURI(uri));
+        unlockDescendantFragments(fragmentVersionRepo.findFragmentVersionByUri(uri));
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockDescendantFragments(FragmentVersionDag)
+     * @see org.apromore.service.LockService#unlockDescendantFragments(FragmentVersion)
      *      {@inheritDoc}
      */
     @Override
-    public void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag) {
-        unlockChildFragments(fragmentVersionDag.getFragmentVersion());
-        List<FragmentVersionDag> childIds = fragmentVersionDagRepo.getChildMappings(fragmentVersionDag.getId());
+    public void unlockDescendantFragments(FragmentVersion fragmentVersion) {
+        unlockChildFragments(fragmentVersion);
+        Set<FragmentVersionDag> childIds = fragmentVersion.getChildFragmentVersionDags(); //fragmentVersionDagRepo.getChildMappings(fragmentVersionDag.getId());
         for (FragmentVersionDag childId : childIds) {
-            unlockDescendantFragments(childId);
+            unlockDescendantFragments(childId.getChildFragmentVersion());
         }
     }
 
@@ -269,8 +259,8 @@ public class LockServiceImpl implements LockService {
 
     private int lockChildren(Integer fragmentId) {
         int updated = 0;
-        FragmentVersion fd = fragmentVersionRepo.findOne(fragmentId);
-        List<FragmentVersion> frags = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fd.getId());
+        FragmentVersion fragmentVersion = fragmentVersionRepo.findOne(fragmentId);
+        List<FragmentVersion> frags = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
         for (FragmentVersion frag : frags) {
             if (frag.getLockStatus().equals(Constants.NO_LOCK) || frag.getLockStatus().equals(Constants.DIRECT_LOCK)) {
                 updated++;
@@ -282,7 +272,7 @@ public class LockServiceImpl implements LockService {
     }
 
     private void unlockChildFragments(FragmentVersion fragmentVersion) {
-        List<FragmentVersion> frags = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion.getId());
+        List<FragmentVersion> frags = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
         for (FragmentVersion frag : frags) {
             frag.setLockStatus(Constants.NO_LOCK);
             fragmentVersionRepo.save(frag);

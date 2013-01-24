@@ -15,7 +15,7 @@
 
     <include resource="logJpaToFile.xml" />
 
-    <logger name="org.apromore" level="DEBUG" />
+    <logger name="org.apromore" level="TRACE" />
     <logger name="org.springframework" level="WARN" />
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />

@@ -193,27 +193,29 @@ public class GraphServiceImpl implements GraphService {
             } else if (node.getNodeType().equals(NodeTypeEnum.EVENT)) {
                 result = constructEventNode(node, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.STATE)) {
-                result = constructSpecialNode(node, NodeTypeEnum.STATE);
+                result = constructSpecialNode(node, NodeTypeEnum.STATE, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.ORSPLIT)) {
-                result = constructSpecialNode(node, NodeTypeEnum.ORSPLIT);
+                result = constructSpecialNode(node, NodeTypeEnum.ORSPLIT, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.XORSPLIT)) {
-                result = constructSpecialNode(node, NodeTypeEnum.XORSPLIT);
+                result = constructSpecialNode(node, NodeTypeEnum.XORSPLIT, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.ANDSPLIT)) {
-                result = constructSpecialNode(node, NodeTypeEnum.ANDSPLIT);
+                result = constructSpecialNode(node, NodeTypeEnum.ANDSPLIT, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.ORJOIN)) {
-                result = constructSpecialNode(node, NodeTypeEnum.ORJOIN);
+                result = constructSpecialNode(node, NodeTypeEnum.ORJOIN, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.XORJOIN)) {
-                result = constructSpecialNode(node, NodeTypeEnum.XORJOIN);
+                result = constructSpecialNode(node, NodeTypeEnum.XORJOIN, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.ANDJOIN)) {
-                result = constructSpecialNode(node, NodeTypeEnum.ANDJOIN);
+                result = constructSpecialNode(node, NodeTypeEnum.ANDJOIN, canonical);
             } else if (node.getNodeType().equals(NodeTypeEnum.POCKET)) {
                 result = new CPFNode();
+                result.setGraph(canonical);
                 addNodeDetails(node, result);
             } else {
                 LOGGER.warn("Unknown Node Type in parsing Node from DB: " + node.getNodeType().value());
             }
         } else {
             result = new CPFNode();
+            result.setGraph(canonical);
             addNodeDetails(node, result);
         }
         return result;
@@ -222,6 +224,7 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the Message Node details. */
     private INode constructMessageNode(final Node node, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.MESSAGE);
 
         addNodeDetails(node, cpfNode);
@@ -233,6 +236,7 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the Event Node details. */
     private INode constructEventNode(final Node node, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.EVENT);
 
         addNodeDetails(node, cpfNode);
@@ -244,6 +248,7 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the Timer Node details. */
     private INode constructTimerNode(final Node node, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.TIMER);
 
         addNodeDetails(node, cpfNode);
@@ -270,6 +275,7 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the Task Node details. */
     private INode constructTaskNode(final Node node, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.TASK);
 
         addNodeDetails(node, cpfNode);
@@ -287,8 +293,9 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /* Populate the Node with the State Node details. */
-    private INode constructSpecialNode(final Node node, final NodeTypeEnum type) {
+    private INode constructSpecialNode(final Node node, final NodeTypeEnum type, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        cpfNode.setGraph(canonical);
         cpfNode.setNodeType(type);
 
         addNodeDetails(node, cpfNode);

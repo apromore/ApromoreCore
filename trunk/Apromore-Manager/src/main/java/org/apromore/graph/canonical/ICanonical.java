@@ -111,6 +111,12 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
     void addObject(ICPFObject object);
 
     /**
+     * Add a collection of {@link ICPFObject} to this {@link INode}
+     * @param newObjects to add to this {@link INode}
+     */
+    void setObjects(Set<ICPFObject> newObjects);
+
+    /**
      * @return a {@link java.util.Collection} of all {@link ICPFResource}s of this {@link INode}.
      */
     Set<ICPFResource> getResources();
@@ -133,6 +139,13 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * @return the edge we added.
      */
     public E addEdge(E edge);
+
+    /**
+     * Adds a collection of edges to the the Graph, we need specific details that the edge holds.
+     * @param edges the collection of edges to add.
+     * @return the collection of edges we added.
+     */
+    public Collection<E> addEdges(Collection<E> edges);
 
     /**
      * Finds and updates the edge with the extra details in the new edge.
@@ -341,4 +354,10 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * Clear this net.
      */
     public void clear();
+
+    /**
+     * Get the Node Map.
+     * @return the map of Nodes.
+     */
+    public Map<String, CPFNode> getNodeMap();
 }

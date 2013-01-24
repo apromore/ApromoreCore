@@ -69,9 +69,10 @@ public class DecomposerServiceImpl implements DecomposerService {
 
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
-            op = decompose(modelVersion, rf, op);
-
-            cService.updateCancelNodes(op);
+            if (rf != null) {
+                op = decompose(modelVersion, rf, op);
+                cService.updateCancelNodes(op);
+            }
 
             return op;
         } catch (Exception e) {
@@ -144,6 +145,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         op.setCurrentFragment(fragmentVersion);
         op.addAllNodes(content.getNodes());
         op.addAllEdges(content.getEdges());
+        op.addFragmentVersion(fragmentVersion);
 
         return op;
     }

@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class Graph {
+
     private List<Edge> edges = new LinkedList<Edge>();
     private List<Vertex> vertices = new LinkedList<Vertex>();
 

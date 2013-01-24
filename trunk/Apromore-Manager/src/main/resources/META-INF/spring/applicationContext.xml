@@ -13,4 +13,25 @@
     <import resource="applicationContext-jpa.xml" />
     <import resource="applicationContext-services.xml" />
 
+
+    <bean id="jamonPerformanceMonitorInterceptor" class="org.springframework.aop.interceptor.JamonPerformanceMonitorInterceptor" >
+        <property name="trackAllInvocations" value="true"></property>
+        <property name="useDynamicLogger" value="true"></property>
+    </bean>
+
+    <bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="interceptorNames">
+            <list>
+                <idref bean="jamonPerformanceMonitorInterceptor"/>
+            </list>
+        </property>
+        <property name="beanNames">
+            <list>
+                <value>SimilarityServiceImpl</value>
+            </list>
+        </property>
+    </bean>
+
+
+
 </beans>

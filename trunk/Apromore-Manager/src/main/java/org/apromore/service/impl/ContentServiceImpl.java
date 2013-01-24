@@ -469,9 +469,9 @@ public class ContentServiceImpl implements ContentService {
                 break;
             }
         }
-        if (found == null) {
-            LOGGER.warn("Could not find Node with Id: " + nodeId);
-        }
+        //if (found == null) {
+        //    LOGGER.warn("Could not find Node with Id: " + nodeId);
+        //}
         return found;
     }
 
@@ -484,9 +484,9 @@ public class ContentServiceImpl implements ContentService {
                 break;
             }
         }
-        if (found == null) {
-            LOGGER.warn("Could not find Edge with Id: " + edgeId);
-        }
+        //if (found == null) {
+        //    LOGGER.warn("Could not find Edge with Id: " + edgeId);
+        //}
         return found;
     }
 }

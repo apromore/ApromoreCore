@@ -45,6 +45,7 @@ public class FNSCSExtractor {
         CPFNode fragmentB2 = f.getExit();
 
         CPFNode pocket = new CPFNode();
+        pocket.setGraph(g);
         pocket.setName("Pocket");
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);

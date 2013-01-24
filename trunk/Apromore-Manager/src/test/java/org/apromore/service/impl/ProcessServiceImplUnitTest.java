@@ -1,6 +1,5 @@
 package org.apromore.service.impl;
 
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.ContentRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
@@ -9,25 +8,12 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Native;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanonicalConverter;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.ComposerService;
-import org.apromore.service.DecomposerService;
-import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
-import org.apromore.service.LockService;
-import org.apromore.service.UserService;
+import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.DecanonisedProcess;
-import org.easymock.EasyMock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -35,10 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
@@ -46,8 +29,6 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 /**
  * Unit test the UserService Implementation.
@@ -91,14 +72,14 @@ public class ProcessServiceImplUnitTest {
         usrSrv = createMock(UserService.class);
         fmtSrv = createMock(FormatService.class);
         canSrv = createMock(CanoniserService.class);
-        fSrv = createMock(FragmentService.class);
         lSrv = createMock(LockService.class);
         convertor = createMock(CanonicalConverter.class);
         composerSrv = createMock(ComposerService.class);
         decomposerSrv = createMock(DecomposerService.class);
         ui = createMock(UserInterfaceHelper.class);
+        fSrv = createMock(FragmentService.class);
 
-        service = new ProcessServiceImpl(annDao, contDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, fSrv, lSrv, usrSrv, fmtSrv, composerSrv, decomposerSrv, ui);
+        service = new ProcessServiceImpl(annDao, contDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui);
     }
 
 

@@ -38,6 +38,8 @@ public class CPFNode extends Vertex implements INode {
     private Set<CPFExpression> outputExpr = new HashSet<CPFExpression>(0);
     private Map<String, IAttribute> attributes = new HashMap<String, IAttribute>(0);
 
+    private Canonical graph;
+
 
     /**
      * Empty constructor.
@@ -376,4 +378,13 @@ public class CPFNode extends Vertex implements INode {
         this.allocation = allocation;
     }
 
+    @Override
+    public Canonical getGraph() {
+        return graph;
+    }
+
+    @Override
+    public void setGraph(Canonical canonicalGraph) {
+        graph = canonicalGraph;
+    }
 }

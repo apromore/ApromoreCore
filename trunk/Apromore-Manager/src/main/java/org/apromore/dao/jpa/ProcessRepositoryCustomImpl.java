@@ -2,7 +2,6 @@ package org.apromore.dao.jpa;
 
 import org.apromore.dao.model.Process;
 import org.apromore.dao.ProcessRepositoryCustom;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -32,7 +31,6 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcesses(final String conditions) {
         StringBuilder strQry = new StringBuilder(0);

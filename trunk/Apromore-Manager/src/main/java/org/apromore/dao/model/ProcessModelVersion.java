@@ -1,10 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -151,7 +152,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @OneToOne(mappedBy = "processModelVersion", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "processModelVersion")
     public Net getNet() {
         return this.net;
     }
@@ -159,6 +160,7 @@ public class ProcessModelVersion implements Serializable {
     public void setNet(Net net) {
         this.net = net;
     }
+
 
     @ManyToOne
     @JoinColumn(name = "branchId")
@@ -278,6 +280,25 @@ public class ProcessModelVersion implements Serializable {
         this.resources = resourceTypes;
     }
 
+
+    @Override
+    public boolean equals(java.lang.Object obj) {
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        ProcessModelVersion rhs = (ProcessModelVersion) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(id, rhs.id)
+                .append(originalId, rhs.originalId)
+                .append(versionName, rhs.versionName)
+                .append(versionNumber, rhs.versionNumber)
+                .append(numVertices, rhs.numVertices)
+                .append(numEdges, rhs.numEdges)
+                .isEquals();
+    }
 }
 
 

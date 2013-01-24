@@ -1,8 +1,9 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
-
-import org.apromore.toolbox.similaritySearch.graph.Graph;
-import org.apromore.toolbox.similaritySearch.graph.Vertex;
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.Canonical;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,12 +11,14 @@ import java.util.Set;
 
 public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
-    public final static int EPSILON = -1; //means: 'no mapping'
+    private static final Logger LOGGER = LoggerFactory.getLogger(DistanceAlgoAbstr.class);
+
+    //public final static int EPSILON = -1; //means: 'no mapping'
     public final static double VERTEX_INSERTION_COST = 0.1; //Only for reproducing Luciano's results
     public final static double VERTEX_DELETION_COST = 0.9; //Only for reproducing Luciano's results
 
-    protected Graph sg1;
-    protected Graph sg2;
+    protected Canonical sg1;
+    protected Canonical sg2;
     protected int totalNrVertices;
     protected int totalNrEdges;
 
@@ -30,6 +33,15 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
     int pruneto;
     boolean useepsilon;
     boolean dogrouping;
+
+    protected void init(Canonical sg1, Canonical sg2) {
+        LOGGER.debug("DistanceAlgoAbstr.init(sg1, sg2)");
+
+        this.sg1 = sg1;
+        this.sg2 = sg2;
+        totalNrVertices = sg1.getVertices().size() + sg2.getVertices().size();
+        totalNrEdges = sg1.getEdges().size() + sg2.getEdges().size();
+    }
 
     /**
      * Sets the weights for:
@@ -53,6 +65,8 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
      *                all other weights are set to 0.0
      */
     public void setWeight(Object weights[]) {
+        LOGGER.debug("DistanceAlgoAbstr.setWeight(weights[])");
+
         this.weightGroupedVertex = 0.0;
         this.weightSkippedVertex = 0.0;
         this.weightSubstitutedVertex = 0.0;
@@ -68,54 +82,51 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
         for (int i = 0; i < weights.length; i = i + 2) {
             String wname = (String) weights[i];
             Double wvalue = (Double) weights[i + 1];
-            if (wname.equals("vweight")) {
-                this.weightSkippedVertex = wvalue;
-            } else if (wname.equals("sweight")) {
-                this.weightSubstitutedVertex = wvalue;
-            } else if (wname.equals("gweight")) {
-                this.weightGroupedVertex = wvalue;
-            } else if (wname.equals("eweight")) {
-                this.weightSkippedEdge = wvalue;
-            } else if (wname.equals("ledcutoff")) {
-                this.ledcutoff = wvalue;
-            } else if (wname.equals("cedcutoff")) {
-                this.cedcutoff = wvalue;
-            } else if (wname.equals("usepuredistance")) {
-                if (wvalue == 0.0) {
-                    this.usepuredistance = false;
-                } else {
-                    this.usepuredistance = true;
-                }
-            } else if (wname.equals("useepsilon")) {
-                if (wvalue == 0.0) {
-                    this.useepsilon = false;
-                } else {
-                    this.useepsilon = true;
-                }
-            } else if (wname.equals("dogrouping")) {
-                if (wvalue == 0.0) {
-                    this.dogrouping = false;
-                } else {
-                    this.dogrouping = true;
-                }
-            } else if (wname.equals("prunewhen")) {
-                this.prunewhen = wvalue.intValue();
-            } else if (wname.equals("pruneto")) {
-                this.pruneto = wvalue.intValue();
-            } else {
-                System.err.println("ERROR: Invalid weight identifier: " + wname);
+            switch (wname) {
+                case "vweight":
+                    this.weightSkippedVertex = wvalue;
+                    break;
+                case "sweight":
+                    this.weightSubstitutedVertex = wvalue;
+                    break;
+                case "gweight":
+                    this.weightGroupedVertex = wvalue;
+                    break;
+                case "eweight":
+                    this.weightSkippedEdge = wvalue;
+                    break;
+                case "ledcutoff":
+                    this.ledcutoff = wvalue;
+                    break;
+                case "cedcutoff":
+                    this.cedcutoff = wvalue;
+                    break;
+                case "usepuredistance":
+                    this.usepuredistance = wvalue != 0.0;
+                    break;
+                case "useepsilon":
+                    this.useepsilon = wvalue != 0.0;
+                    break;
+                case "dogrouping":
+                    this.dogrouping = wvalue != 0.0;
+                    break;
+                case "prunewhen":
+                    this.prunewhen = wvalue.intValue();
+                    break;
+                case "pruneto":
+                    this.pruneto = wvalue.intValue();
+                    break;
+                default:
+                    System.err.println("ERROR: Invalid weight identifier: " + wname);
+                    break;
             }
         }
     }
 
-    protected void init(Graph sg1, Graph sg2) {
-        this.sg1 = sg1;
-        this.sg2 = sg2;
-        totalNrVertices = sg1.getVertices().size() + sg2.getVertices().size();
-        totalNrEdges = sg1.getEdges().size() + sg2.getEdges().size();
-    }
 
     protected double computeScore(double skippedEdges, double skippedVertices, double substitutedVertices, double insertedVertices, double deletedVertices) {
+        LOGGER.debug("DistanceAlgoAbstr.computeScore(skippedEdges, skippedVertices, substitutedVertices, insertedVertices, deletedVertices)");
+
         if (usepuredistance) {
             if (useepsilon) {
                 return weightSkippedVertex * (VERTEX_DELETION_COST * deletedVertices + VERTEX_INSERTION_COST * insertedVertices) + weightSkippedEdge * skippedEdges + weightSubstitutedVertex * 2.0 * substitutedVertices;
@@ -138,8 +149,10 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
     }
 
     protected double editDistance(BestMapping bestMapping, TwoVertices addedPair) {
-        //Substituted vertices are vertices that >are< mapped.
-        //Their distance is 1.0 - string-edit similarity of their labels.
+        LOGGER.debug("DistanceAlgoAbstr.editDistance(bestMatch, addedPair)");
+
+        // Substituted vertices are vertices that >are< mapped.
+        // Their distance is 1.0 - string-edit similarity of their labels.
         double substitutedVertices = bestMapping.substitutedVerticesCost + addedPair.weight;
 
         int addedbyMapping = bestMapping.nrMappedEdges + findNrVerticesByPair(bestMapping, addedPair);
@@ -150,33 +163,33 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
         return computeScore(skippedEdges, skippedVertices, substitutedVertices, 0.0, 0.0);
     }
 
-    private int findNrVerticesByPair(BestMapping bestMapping,
-                                     TwoVertices addedPair) {
+
+    private int findNrVerticesByPair(BestMapping bestMapping, TwoVertices addedPair) {
+        LOGGER.debug("DistanceAlgoAbstr.findNrVerticesByPair(bestMatch, addedPair)");
 
         int addedbyMapping = 0;
-        // find how many matched edges the new mapping will add
-        Vertex left = sg1.getVertexMap().get(addedPair.v1);
-        Vertex right = sg2.getVertexMap().get(addedPair.v2);
+        CPFNode left = sg1.getNodeMap().get(addedPair.v1);
+        CPFNode right = sg2.getNodeMap().get(addedPair.v2);
         if (bestMapping.size() > 0) { // best mapping contains some vertices already
-            for (Vertex p : left.getParents()) {
-                String mappingRight = bestMapping.mappingRight.get(p.getID());
+            for (CPFNode p : sg1.getAllSuccessors(left)) {
+                String mappingRight = bestMapping.mappingRight.get(p.getId());
                 // the parent is also mapped and is parent of mapped node
-                if (mappingRight != null
-                        && right.getParents().contains(sg2.getVertexMap().get(mappingRight))) {
+                if (mappingRight != null && sg2.getAllSuccessors(right).contains(sg2.getNodeMap().get(mappingRight))) {
                     addedbyMapping++;
                 }
             }
-            for (Vertex ch : left.getChildren()) {
-                String mappingRight = bestMapping.mappingRight.get(ch.getID());
+            for (CPFNode ch : sg1.getAllSuccessors(left)) {
+                String mappingRight = bestMapping.mappingRight.get(ch.getId());
                 // the parent is also mapped and is parent of mapped node
-                if (mappingRight != null
-                        && right.getChildren().contains(sg2.getVertexMap().get(mappingRight))) {
+                if (mappingRight != null && sg2.getAllPredecessors(right).contains(sg2.getNodeMap().get(mappingRight))) {
                     addedbyMapping++;
                 }
             }
         }
         return addedbyMapping;
     }
+
+
 
     public class BestMapping {
         public Set<TwoVertices> mapping = new HashSet<TwoVertices>();

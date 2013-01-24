@@ -13,10 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.HashSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -40,6 +42,8 @@ public class ImportProcessServiceImplIntgTest {
     private CanoniserService cSrv;
     @Inject
     private ProcessService pSrv;
+    @PersistenceContext
+    private EntityManager em;
 
     private String username = "james";
     private String version = "1.0";
@@ -88,27 +92,26 @@ public class ImportProcessServiceImplIntgTest {
         ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
-
-//        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
-//        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
-//        IOUtils.toFile("graph.dot", graph.toDOT());
-//        IOUtils.invokeDOT("target/", "graph.png", graph.toDOT());
     }
 
     @Test
     @Rollback(true)
     public void testImportProcessWithSubProcessesInYAWL() throws Exception {
-        String natType = "YAWL 2.2";
-        String name = "Test YAWL 1";
+        String natType = "BPMN 2.0";
+        String name = "Test BPMN 4";
         String cpfURI = "4";
 
-        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/orderfulfillment.yawl"), "text/xml"));
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("BPMN_models/ch9_PurchaseOrder4Complete.bpmn"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
+
+//        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
+//        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
+//        IOUtils.toFile("output.dot", graph.toDOT());
+//        IOUtils.invokeDOT("target/", "output.png", graph.toDOT());
+
         ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
-
-        // TODO: Make sure you do the Sub Processes.
+        assertThat(pst, notNullValue());
     }
-
 
 
 //    @Test

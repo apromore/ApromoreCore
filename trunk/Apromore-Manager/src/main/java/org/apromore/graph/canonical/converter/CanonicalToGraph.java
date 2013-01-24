@@ -173,18 +173,19 @@ public class CanonicalToGraph {
     private void constructNodeAndEdges(final CanonicalProcessType cpf, final Canonical g) {
         Map<String, CPFNode> flow = new HashMap<String, CPFNode>(0);
         for (NetType net : cpf.getNet()) {
-            flow.putAll(buildNodeListFromNet(net.getId(), net.getNode()));
+            flow.putAll(buildNodeListFromNet(net.getId(), net.getNode(), g));
             buildEdges(net.getEdge(), g, flow);
         }
     }
 
 
     /* Build the Node list for a single Net */
-    private Map<String, CPFNode> buildNodeListFromNet(final String netId, final List<NodeType> nodes) {
+    private Map<String, CPFNode> buildNodeListFromNet(final String netId, final List<NodeType> nodes, final Canonical g) {
         CPFNode output;
         Map<String, CPFNode> flow = new HashMap<String, CPFNode>(0);
         for (NodeType node : nodes) {
             output = new CPFNode();
+            output.setGraph(g);
             populateNodeDetails(output, node, netId);
 
             if (node instanceof WorkType) {

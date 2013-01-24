@@ -1,10 +1,11 @@
 package org.apromore.toolbox.similaritySearch.common;
 
-import org.apromore.toolbox.similaritySearch.graph.Vertex;
+import org.apromore.graph.canonical.CPFNode;
 
-public class VertexPair {
-    Vertex left;
-    Vertex right;
+public class NodePair {
+
+    CPFNode left;
+    CPFNode right;
     boolean visited = false;
     double weight;
     public double ed;
@@ -14,18 +15,18 @@ public class VertexPair {
     public double parent;
 
 
-    public VertexPair(Vertex left, Vertex right) {
+    public NodePair(CPFNode left, CPFNode right) {
         this.left = left;
         this.right = right;
     }
 
-    public VertexPair(Vertex left, Vertex right, double weight) {
+    public NodePair(CPFNode left, CPFNode right, double weight) {
         this.left = left;
         this.right = right;
         this.weight = weight;
     }
 
-    public VertexPair(Vertex first, Vertex second, double weight, double ed, double sem, double syn, double struct, double parent) {
+    public NodePair(CPFNode first, CPFNode second, double weight, double ed, double sem, double syn, double struct, double parent) {
         left = first;
         right = second;
         this.weight = weight;
@@ -37,11 +38,11 @@ public class VertexPair {
     }
 
 
-    public Vertex getLeft() {
+    public CPFNode getLeft() {
         return left;
     }
 
-    public Vertex getRight() {
+    public CPFNode getRight() {
         return right;
     }
 

@@ -186,7 +186,7 @@ CREATE TABLE `process_model_version` (
     `lock_status` int,
     `num_nodes` int,
     `num_edges` int,
-    CONSTRAINT `pk_process_model_version` primary key (`id`),
+    PRIMARY KEY (`id`) USING BTREE,
     CONSTRAINT `fk_process_branch_model_version` FOREIGN KEY (`branchId`)
         REFERENCES `process_branch` (`id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -196,14 +196,14 @@ CREATE TABLE `process_model_version` (
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `net` (
-    `processModelVersionId` int(11) NOT NULL AUTO_INCREMENT,
-    `processId` int(11) DEFAULT NULL,
-    `netId` varchar(200),
-    PRIMARY KEY (`processModelVersionId`) USING BTREE,
+    `id` varchar(200),
+    `processModelVersionId` int(11) NOT NULL,
+    `processId` int(11) NOT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
     KEY (`processId`) USING BTREE,
+    KEY (`processModelVersionId`) USING BTREE,
     CONSTRAINT `FK_processModelVersions` FOREIGN KEY (`processModelVersionId`)
-        REFERENCES `process_model_version` (`id`)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+        REFERENCES `process_model_version` (`id`),
     CONSTRAINT `fk_process_net` FOREIGN KEY (`processId`)
         REFERENCES `process` (`id`)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -604,7 +604,7 @@ CREATE TABLE `object` (
     `netId` varchar(40),
     `name` varchar(255),
     `configurable` boolean not null default 0,
-    `type` varchar(4),
+    `type` varchar(30),
     `softType` varchar(255),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_obj_pmv` FOREIGN KEY (`processModelVersionId`)
@@ -629,7 +629,7 @@ CREATE TABLE `object_ref` (
     `nodeId` int(11) DEFAULT NULL,
     `optional` boolean not null default 0,
     `consumed` boolean not null default 0,
-    `type` varchar(6),
+    `type` varchar(30),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_objrefobj_pmv` FOREIGN KEY (`objectId`)
         REFERENCES `object` (`id`)
@@ -657,7 +657,7 @@ CREATE TABLE `resource` (
     `originalId` varchar(40),
     `name` varchar(255),
     `configurable` boolean not null default 0,
-    `type` varchar(8),
+    `type` varchar(30),
     `typeName` varchar(255) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_res_pmv` FOREIGN KEY (`processModelVersionId`)

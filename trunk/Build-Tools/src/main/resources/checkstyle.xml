@@ -45,6 +45,14 @@
         <property name="cacheFile" value="target/checkstyle-cachefile"/>
         <property name="tabWidth" value="4"/>
 
+        <!-- Checks for header comments.                              -->
+        <!-- See http://checkstyle.sourceforge.net/config_header.html -->
+        <!--<module name="Header">-->
+            <!--<property name="headerFile" value="header.txt"/>-->
+            <!--<property name="ignoreLines" value="2, 3, 4"/>-->
+            <!--<property name="fileExtensions" value="java"/>-->
+        <!--</module>-->
+
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocMethod">
@@ -54,7 +62,6 @@
         </module>
         <module name="JavadocType" >
             <property name="scope" value="protected" />
-            <property name="authorFormat" value="&lt;a href=&quot;mailto:.*@.*&quot;&gt;.*&lt;/a&gt;" />
         </module>
         <module name="JavadocVariable">
             <property name="scope" value="protected" />
@@ -223,16 +230,14 @@
         <module name="NPathComplexity"/>
         <module name="JavaNCSS">
             <!-- Identical to MethodLength. -->
-            <property name="methodMaximum" value="40"/>
+            <property name="methodMaximum" value="50"/>
             <!--
               We assume a file length (FileLength) of 1500. Assuming that at
               least 500 lines are for comments and we allow only one top-level
               class per file, this number for NCSS seams reasonable.
             -->
             <property name="classMaximum" value="1000"/>
-            <!--
-              We assume a file length (FileLength) of 1500.
-            -->
+            <!-- We assume a file length (FileLength) of 1500. -->
             <property name="fileMaximum" value="1500"/>
         </module>
 

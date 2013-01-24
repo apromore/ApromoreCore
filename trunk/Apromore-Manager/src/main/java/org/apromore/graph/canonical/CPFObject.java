@@ -124,4 +124,10 @@ public class CPFObject extends CPFNonFlowNode implements ICPFObject, Cloneable {
         return clone;
     }
 
+    @Override
+    public boolean canMerge(final ICPFObject toMergeObject) {
+        return (toMergeObject.getName() != null && getName().equals(toMergeObject.getName()) &&
+                toMergeObject.getObjectType() != null && getObjectType().equals(toMergeObject.getObjectType()));
+    }
+
 }
