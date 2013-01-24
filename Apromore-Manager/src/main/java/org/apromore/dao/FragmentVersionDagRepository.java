@@ -1,7 +1,9 @@
 package org.apromore.dao;
 
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -48,4 +50,12 @@ public interface FragmentVersionDagRepository extends JpaRepository<FragmentVers
     @Query("SELECT fvd FROM FragmentVersionDag fvd, FragmentVersion f WHERE fvd.childFragmentVersion.id = f.id AND f.fragmentSize > ?1")
     List<FragmentVersionDag> getAllDAGEntriesBySize(int minimumChildFragmentSize);
 
+
+    /**
+     * Delete all the Child relationships for this Fragment Version.
+     * @param fragmentVersion the fragment version we want to remove all the children
+     */
+    @Modifying
+    @Query("DELETE FROM FragmentVersionDag fvd WHERE fvd.fragmentVersion = ?1")
+    void deleteChildRelationships(FragmentVersion fragmentVersion);
 }

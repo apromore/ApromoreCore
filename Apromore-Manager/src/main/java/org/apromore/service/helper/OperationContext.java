@@ -8,10 +8,7 @@ import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Chathura Ekanayake
@@ -28,6 +25,7 @@ public class OperationContext {
     private Set<CPFNode> cpfNodes = new HashSet<CPFNode>(0);
     private Set<Edge> edges = new HashSet<Edge>(0);
     private Set<CPFEdge> cpfEdges = new HashSet<CPFEdge>(0);
+    private Set<FragmentVersion> fragmentVersions = new HashSet<FragmentVersion>(0);
 
 
     public OperationContext() {
@@ -121,5 +119,13 @@ public class OperationContext {
 
     public void addAllCpfEdges(final Set<CPFEdge> newEdges) {
         this.cpfEdges.addAll(newEdges);
+    }
+
+    public void addFragmentVersion(final FragmentVersion fragmentVersion) {
+        this.fragmentVersions.add(fragmentVersion);
+    }
+
+    public Set<FragmentVersion> getFragmentVersions() {
+        return this.fragmentVersions;
     }
 }

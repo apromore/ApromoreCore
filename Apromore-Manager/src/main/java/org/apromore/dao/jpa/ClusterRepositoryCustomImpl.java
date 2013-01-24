@@ -12,7 +12,6 @@ import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.FragmentDistance;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +39,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<Object[]> getClusteringSummary() {
         Query query = em.createQuery("SELECT count(c.id), min(c.size), max(c.size), min(c.avgFragmentSize), max(c.avgFragmentSize), min(c.BCR), max(c.BCR) FROM Cluster c");
@@ -52,7 +50,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<Integer> getFragmentIds(Integer clusterId) {
         Query query = em.createQuery("SELECT ca.fragment.id FROM ClusterAssignment ca WHERE ca.cluster.id = :clusterId");
@@ -65,7 +62,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<Cluster> getFilteredClusters(final ClusterFilter filter) {
         Query query = em.createQuery("SELECT c FROM Cluster c WHERE (c.size > :minClusterSize OR c.size = :minClusterSize) " +
@@ -87,7 +83,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public double getDistance(final Integer fragmentId1, final Integer fragmentId2) {
         double distance = getOrderedDistance(fragmentId1, fragmentId2);
         if (distance < 0) {
@@ -101,7 +96,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public Map<FragmentPair, Double> getDistances(final double threshold) {
         Query query = em.createQuery("SELECT fd FROM FragmentDistance fd WHERE fd.distance < :threshold");
@@ -143,7 +137,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
 
 
 
-    @Transactional(readOnly = true)
     private double getOrderedDistance(final Integer fragmentId1, final Integer fragmentId2) {
         Query query = em.createQuery("SELECT fd.distance FROM FragmentDistance fd WHERE fd.fragmentVersionId1.id = :fragmentId1 " +
                 "AND fd.fragmentVersionId1.id = :fragmentId2");

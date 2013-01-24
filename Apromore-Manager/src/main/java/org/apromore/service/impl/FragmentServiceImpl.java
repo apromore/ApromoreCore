@@ -72,22 +72,6 @@ public class FragmentServiceImpl implements FragmentService {
 
 
 
-//    /**
-//     * @see org.apromore.service.FragmentService#addProcessFragmentMappings(Integer, java.util.List)
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void addProcessFragmentMappings(Integer pmvid, List<String> composingFragmentIds) throws ExceptionDao {
-//        ProcessFragmentMap pfm;
-//        ProcessModelVersion pmv = pmvRepository.findOne(pmvid);
-//        for (String composingFragmentId : composingFragmentIds) {
-//            pfm = new ProcessFragmentMap();
-//            pfm.setProcessModelVersion(pmv);
-//            pfm.setFragmentVersion(fvRepository.findFragmentVersionByUri(composingFragmentId));
-//        }
-//    }
-
-
     /**
      * @see FragmentService#getFragmentAsEPML(Integer)
      * {@inheritDoc}

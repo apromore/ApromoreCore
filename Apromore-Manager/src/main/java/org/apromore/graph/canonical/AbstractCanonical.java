@@ -30,12 +30,6 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
     }
 
     @Override
-    public Collection<N> addNodes(Collection<N> nodes) {
-        Collection<N> result = this.addVertices(nodes);
-        return result == null ? new ArrayList<N>() : result;
-    }
-
-    @Override
     public N removeNode(final N node) {
         return this.removeVertex(node);
     }

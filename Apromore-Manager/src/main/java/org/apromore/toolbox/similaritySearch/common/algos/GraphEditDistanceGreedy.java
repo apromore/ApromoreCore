@@ -1,13 +1,15 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
 
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
 import org.apromore.toolbox.similaritySearch.common.similarity.NodeSimilarity;
-import org.apromore.toolbox.similaritySearch.graph.Graph;
-import org.apromore.toolbox.similaritySearch.graph.Vertex;
+import org.apromore.util.GraphUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
@@ -20,44 +22,30 @@ import java.util.Vector;
  */
 public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements DistanceAlgo {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphEditDistanceGreedy.class);
+
     public int nrSubstitudedVertices = 0;
 
-    private Set<TwoVertices> times(List<Vertex> a, List<Vertex> b, double labelTreshold) {
-        Set<TwoVertices> result = new HashSet<TwoVertices>();
-        for (Vertex ea : a) {
-            for (Vertex eb : b) {
-                double similarity = NodeSimilarity.findNodeSimilarity(ea, eb, labelTreshold);
-                if (ea.getType().equals(Vertex.Type.gateway) && eb.getType().equals(Vertex.Type.gateway)
-                        && similarity >= cedcutoff) {
-                    result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
-                } else if ((ea.getType().equals(Vertex.Type.event) && eb.getType().equals(Vertex.Type.event)
-                        || ea.getType().equals(Vertex.Type.function) && eb.getType().equals(Vertex.Type.function)) &&
-                        AssingmentProblem.canMap(ea, eb) && similarity >= ledcutoff) {
-                    result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
-                }
-            }
-        }
-        return result;
-    }
 
-    public Set<TwoVertices> compute(Graph sg1, Graph sg2) {
+    public Set<TwoVertices> compute(Canonical sg1, Canonical sg2) {
+        LOGGER.debug("GraphEditDistanceGreedy.compute(sg1, sg2");
+
         init(sg1, sg2);
 
-        //INIT
+        // INIT
         BestMapping mapping = new BestMapping();
-        Set<TwoVertices> openCouples = times(sg1.getVertices(), sg2.getVertices(), ledcutoff);
+        Set<TwoVertices> openCouples = times(sg1, sg2, ledcutoff);
         double shortestEditDistance = Double.MAX_VALUE;
         Random randomized = new Random();
-        int stepn = 0;
-        //STEP
+
+        // STEP
         boolean doStep = true;
         while (doStep) {
             doStep = false;
-            stepn++;
             Vector<TwoVertices> bestCandidates = new Vector<TwoVertices>();
             double newShortestEditDistance = shortestEditDistance;
             for (TwoVertices couple : openCouples) {
-                double newEditDistance = this.editDistance(mapping, couple);
+                double newEditDistance = editDistance(mapping, couple);
                 if (newEditDistance < newShortestEditDistance) {
                     bestCandidates = new Vector<TwoVertices>();
                     bestCandidates.add(couple);
@@ -68,7 +56,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
             }
 
             if (bestCandidates.size() > 0) {
-                //Choose a random candidate
+                // Choose a random candidate
                 TwoVertices couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
 
                 Set<TwoVertices> newOpenCouples = new HashSet<TwoVertices>();
@@ -89,24 +77,21 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
         return mapping.mapping;
     }
 
-    public double computeGED(Graph sg1, Graph sg2) {
-        return computeGED(sg1, sg2, false);
-    }
+    public double computeGED(Canonical sg1, Canonical sg2) {
+        LOGGER.debug("GraphEditDistanceGreedy.computeGED(sg1, sg2");
 
-    public double computeGED(Graph sg1, Graph sg2, boolean print) {
         init(sg1, sg2);
 
         //INIT
         BestMapping mapping = new BestMapping();
-        Set<TwoVertices> openCouples = times(sg1.getVertices(), sg2.getVertices(), ledcutoff);
+        Set<TwoVertices> openCouples = times(sg1, sg2, ledcutoff);
         double shortestEditDistance = Double.MAX_VALUE;
         Random randomized = new Random();
-        int stepn = 0;
+
         //STEP
         boolean doStep = true;
         while (doStep) {
             doStep = false;
-            stepn++;
             Vector<TwoVertices> bestCandidates = new Vector<TwoVertices>();
             double newShortestEditDistance = shortestEditDistance;
             for (TwoVertices couple : openCouples) {
@@ -132,7 +117,6 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                     }
                 }
                 openCouples = newOpenCouples;
-
                 mapping.addPair(couple);
                 shortestEditDistance = newShortestEditDistance;
                 doStep = true;
@@ -141,14 +125,29 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
         nrSubstitudedVertices = mapping.size();
 
-        if (print) {
-            for (TwoVertices pair : mapping.getMapping()) {
-                Vertex v1 = sg1.getVertexMap().get(pair.v1);
-                Vertex v2 = sg2.getVertexMap().get(pair.v2);
-            }
-        }
-        //Return the smallest edit distance
+        // Return the smallest edit distance
         return shortestEditDistance;
     }
+
+
+    private Set<TwoVertices> times(Canonical a, Canonical b, double labelTreshold) {
+        LOGGER.debug("GraphEditDistanceGreedy.times(a, b, labelThreshold)");
+
+        NodeSimilarity nodeSimilarity = new NodeSimilarity();
+        Set<TwoVertices> result = new HashSet<TwoVertices>();
+        for (CPFNode ea : a.getNodes()) {
+            for (CPFNode eb : b.getNodes()) {
+                double similarity = nodeSimilarity.findNodeSimilarity(ea, eb, labelTreshold);
+
+                if (GraphUtil.isGatewayNode(ea) && GraphUtil.isGatewayNode(eb)) {
+                    result.add(new TwoVertices(ea.getId(), eb.getId(), 1 - similarity));
+                } else if (GraphUtil.isWorkNode(ea) && GraphUtil.isWorkNode(eb) && AssingmentProblem.canMap(ea, eb) && similarity >= ledcutoff) {
+                    result.add(new TwoVertices(ea.getId(), eb.getId(), 1 - similarity));
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

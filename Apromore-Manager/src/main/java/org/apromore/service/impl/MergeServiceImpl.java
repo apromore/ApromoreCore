@@ -93,12 +93,12 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
             User usr = userSrv.findUserByLogin(username);
 
-            ProcessModelVersion pmv = processSrv.addProcess(processName, version, usr,  null, domain, "", created, created, cp);
-            pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getVersionName(), version, null, domain, created, created, username);
+            //ProcessModelVersion pmv = processSrv.addProcess(processName, version, usr,  null, domain, "", created, created, cp);
+            //pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getVersionName(), version, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
-        } catch (ImportException ie) {
-            LOGGER.error("Failed Import the newly merged model.", ie);
+        //} catch (ImportException ie) {
+        //    LOGGER.error("Failed Import the newly merged model.", ie);
         }  catch (UserNotFoundException unfe) {
             LOGGER.error("Failed Import the newly merged model.", unfe);
         }

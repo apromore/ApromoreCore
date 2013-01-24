@@ -5,17 +5,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -47,6 +37,8 @@ public class FragmentVersion implements Serializable {
 
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
     private Set<ProcessModelVersion> rootProcessModelVersions = new HashSet<ProcessModelVersion>(0);
+    private Set<FragmentVersionDag> childFragmentVersionDags = new HashSet<FragmentVersionDag>(0);
+
 
 
     /**
@@ -167,6 +159,10 @@ public class FragmentVersion implements Serializable {
 
 
     @ManyToMany(mappedBy = "fragmentVersions")
+    @JoinTable(name = "process_fragment_map",
+            joinColumns = { @JoinColumn(name =" fragmentVersionId", nullable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "processModelVersionId", nullable=  false) }
+    )
     public Set<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }
@@ -216,6 +212,15 @@ public class FragmentVersion implements Serializable {
 
     public void setRootProcessModelVersions(Set<ProcessModelVersion> processModelVersions) {
         this.rootProcessModelVersions = processModelVersions;
+    }
+
+    @OneToMany(mappedBy = "childFragmentVersion", cascade = CascadeType.ALL, targetEntity = FragmentVersionDag.class)
+    public Set<FragmentVersionDag> getChildFragmentVersionDags() {
+        return this.childFragmentVersionDags;
+    }
+
+    public void setChildFragmentVersionDags(Set<FragmentVersionDag> childFragmentVersionDags) {
+        this.childFragmentVersionDags = childFragmentVersionDags;
     }
 
 }

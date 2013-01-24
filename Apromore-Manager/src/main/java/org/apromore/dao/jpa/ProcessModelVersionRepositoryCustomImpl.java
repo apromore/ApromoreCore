@@ -1,7 +1,6 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.ProcessModelVersionRepositoryCustom;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ public class ProcessModelVersionRepositoryCustomImpl implements ProcessModelVers
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public Map<String, Integer> getMaxModelVersions(Integer fragmentVersionId) {
         Map<String, Integer> maxModels = new HashMap<String, Integer>();
@@ -51,7 +49,6 @@ public class ProcessModelVersionRepositoryCustomImpl implements ProcessModelVers
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public Map<String, Integer> getCurrentModelVersions(Integer fragmentVersionId) {
         Map<String, Integer> currentModels = new HashMap<String, Integer>();

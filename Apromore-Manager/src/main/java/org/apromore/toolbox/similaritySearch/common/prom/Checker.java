@@ -40,12 +40,9 @@ public class Checker {
 
     @SuppressWarnings("unchecked")
     private void loadDictionary() {
-        word2id = (Map<String, Long>) loadMapFromObject(mapdir +
-                "word2id.map");
-        morph2wordid = (Map<String, Long>) loadMapFromObject(mapdir +
-                "morph2wordid.map");
-        wordid2synidset = (Map<Long, Set<Long>>) loadMapFromObject(
-                mapdir + "wordid2synidset.map");
+        word2id = (Map<String, Long>) loadMapFromObject(mapdir + "word2id.map");
+        morph2wordid = (Map<String, Long>) loadMapFromObject(mapdir + "morph2wordid.map");
+        wordid2synidset = (Map<Long, Set<Long>>) loadMapFromObject(mapdir + "wordid2synidset.map");
         stopWords = loadStringSetFromText(mapdir + "englishST.txt");
         dictionaryLoaded = true;
     }
@@ -127,8 +124,7 @@ public class Checker {
      * @return trimmmed word
      */
     private String normalizeWord(String word) {
-        return word.trim().toLowerCase().replaceAll(",|:|/|\\[|\\]|\\(|\\)", "").replaceAll("-",
-                " ");
+        return word.trim().toLowerCase().replaceAll(",|:|/|\\[|\\]|\\(|\\)", "").replaceAll("-", " ");
     }
 
     /**
@@ -143,8 +139,6 @@ public class Checker {
         if (word.length() == 0) {
             return 0;
         }
-        ;
-
         Long result = word2id(word);
 
         if (result == null) {

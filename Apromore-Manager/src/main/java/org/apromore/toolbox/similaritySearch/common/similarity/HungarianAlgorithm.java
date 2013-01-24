@@ -13,13 +13,9 @@ import java.util.Set;
  */
 public class HungarianAlgorithm {
 
-
     public static int[][] computeAssignments(double[][] matrix) {
-
-
         // subtract minumum value from rows and columns to create lots of zeroes
         reduceMatrix(matrix);
-
 
         // non negative values are the index of the starred or primed zero in the row or column
         int[] starsByRow = new int[matrix.length];
@@ -49,7 +45,6 @@ public class HungarianAlgorithm {
             // check if there is a starred zero in the primed zero's row
             int columnIndex = starsByRow[primedZero[0]];
             if (-1 == columnIndex) {
-
                 // if not, then we need to increment the zeroes and start over
                 incrementSetOfStarredZeroes(primedZero, starsByRow, starsByCol, primesByRow);
                 Arrays.fill(primesByRow, -1);
@@ -57,17 +52,14 @@ public class HungarianAlgorithm {
                 Arrays.fill(coveredCols, 0);
                 coverColumnsOfStarredZeroes(starsByCol, coveredCols);
             } else {
-
                 // cover the row of the primed zero and uncover the column of the starred zero in the same row
                 coveredRows[primedZero[0]] = 1;
                 coveredCols[columnIndex] = 0;
             }
-//            nrTimes++;
         }
 
         // ok now we should have assigned everything
         // take the starred zeroes in each column as the correct assignments
-
         int[][] retval = new int[matrix.length][];
         for (int i = 0; i < starsByCol.length; i++) {
             retval[i] = new int[]{starsByCol[i], i};
@@ -89,14 +81,12 @@ public class HungarianAlgorithm {
      * the first step of the hungarian algorithm
      * is to find the smallest element in each row
      * and subtract it's values from all elements
-     * in that row
+     * in that row.
      *
      * @return the next step to perform
      */
     private static void reduceMatrix(double[][] matrix) {
-
         for (int i = 0; i < matrix.length; i++) {
-
             // find the min value in the row
             double minValInRow = Float.MAX_VALUE;
             for (int j = 0; j < matrix[i].length; j++) {
@@ -113,9 +103,9 @@ public class HungarianAlgorithm {
 
         for (int i = 0; i < matrix[0].length; i++) {
             double minValInCol = Float.MAX_VALUE;
-            for (int j = 0; j < matrix.length; j++) {
-                if (minValInCol > matrix[j][i]) {
-                    minValInCol = matrix[j][i];
+            for (double[] aMatrix : matrix) {
+                if (minValInCol > aMatrix[i]) {
+                    minValInCol = aMatrix[i];
                 }
             }
 
@@ -136,14 +126,11 @@ public class HungarianAlgorithm {
      * go onto the next column
      *
      * @param costMatrix
-     * @param starredZeroes
-     * @param coveredRows
-     * @param coveredCols
+     * @param starsByRow
+     * @param starsByCol
      * @return the next step to perform
      */
     private static void initStars(double costMatrix[][], int[] starsByRow, int[] starsByCol) {
-
-
         int[] rowHasStarredZero = new int[costMatrix.length];
         int[] colHasStarredZero = new int[costMatrix[0].length];
 
@@ -183,10 +170,7 @@ public class HungarianAlgorithm {
      * @param coveredCols
      * @return
      */
-    private static int[] primeSomeUncoveredZero(double matrix[][], int[] primesByRow,
-                                                int[] coveredRows, int[] coveredCols) {
-
-
+    private static int[] primeSomeUncoveredZero(double matrix[][], int[] primesByRow, int[] coveredRows, int[] coveredCols) {
         // find an uncovered zero and prime it
         for (int i = 0; i < matrix.length; i++) {
             if (1 == coveredRows[i]) continue;
@@ -212,7 +196,6 @@ public class HungarianAlgorithm {
      * @param primesByRow
      */
     private static void incrementSetOfStarredZeroes(int[] unpairedZeroPrime, int[] starsByRow, int[] starsByCol, int[] primesByRow) {
-
         // build the alternating zero sequence (prime, star, prime, star, etc)
         int i, j = unpairedZeroPrime[1];
 
@@ -228,7 +211,6 @@ public class HungarianAlgorithm {
             paired = -1 != j && zeroSequence.add(new int[]{i, j});
 
         } while (paired);
-
 
         // unstar each starred zero of the sequence
         // and star each primed zero of the sequence
@@ -247,7 +229,6 @@ public class HungarianAlgorithm {
 
 
     private static void makeMoreZeroes(double[][] matrix, int[] coveredRows, int[] coveredCols) {
-
         // find the minimum uncovered value
         double minUncoveredValue = Float.MAX_VALUE;
         for (int i = 0; i < matrix.length; i++) {

@@ -3,12 +3,7 @@ package org.apromore.graph.canonical;
 import org.apromore.cpf.EdgeType;
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An implementation of ICanonical interface.
@@ -113,8 +108,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     }
 
     @Override
-    public void setResources(final Set<ICPFResource> resources) {
-        this.resources = resources;
+    public void setResources(final Set<ICPFResource> newResources) {
+        this.resources = newResources;
     }
 
     @Override
@@ -132,7 +127,19 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
         objects.add(object);
     }
 
+    @Override
+    public void setObjects(final Set<ICPFObject> newObjects) {
+        this.objects = newObjects;
+    }
 
+    @Override
+    public Collection<CPFNode> addNodes(Collection<CPFNode> nodes) {
+        for (CPFNode node : nodes) {
+            node.setGraph(this);
+        }
+        Collection<CPFNode> result = this.addVertices(nodes);
+        return result == null ? new ArrayList<CPFNode>() : result;
+    }
 
     @Override
     public CPFEdge addEdge(CPFEdge newEdge) {
@@ -166,6 +173,19 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
         }
 
         return new CPFEdge(this, from, to);
+    }
+
+    @Override
+    public Collection<CPFEdge> addEdges(Collection<CPFEdge> edges) {
+        if (edges == null || edges.isEmpty()) {
+            return null;
+        }
+
+        for (CPFEdge edge : edges) {
+            addEdge(edge);
+        }
+
+        return getEdges();
     }
 
     @Override
@@ -326,6 +346,16 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     public void setProperty(final String name, final String value) {
         setProperty(name, value, null);
     }
+
+    @Override
+    public Map<String, CPFNode> getNodeMap() {
+        Map<String, CPFNode> map = new HashMap<String, CPFNode>(0);
+        for (CPFNode node : getNodes()) {
+            map.put(node.getId(), node);
+        }
+        return map;
+    }
+
 
 
     public Map<String, String> getOriginalNodeMapping() {

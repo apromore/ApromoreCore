@@ -1,16 +1,8 @@
 package org.apromore.service;
 
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.exception.ExceptionDao;
-import org.apromore.exception.ExportFormatException;
-import org.apromore.exception.ImportException;
-import org.apromore.exception.LockFailedException;
-import org.apromore.exception.UpdateProcessException;
-import org.apromore.graph.canonical.Canonical;
+import org.apromore.dao.model.*;
+import org.apromore.exception.*;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -90,7 +82,7 @@ public interface ProcessService {
     /**
      * Add a new ProcessModelVersion record into the DB.
      * @param branch the process branch
-     * @param rootFragmentVersionUri the root fragment uri
+     * @param rootFragmentVersion the root fragment uri
      * @param versionNumber the version number
      * @param versionName the version name
      * @param numVertices the number of nodes
@@ -98,39 +90,20 @@ public interface ProcessService {
      * @return the found Process Model Version
      * @throws ExceptionDao if the DAO found an issue.
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, Double versionNumber, String versionName,
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Double versionNumber, String versionName,
             int numVertices, int numEdges) throws ExceptionDao;
 
     /**
-     * Used to import a new model into the Database.
-     * @param processName the name of the process.
-     * @param versionName the version name of the process
-     * @param user the user who imported the model
-     * @param nativeType the native format of the model
-     * @param domain the domain for this model
-     * @param documentation any documentation for this model
-     * @param created the date it was created
-     * @param lastUpdated the date it was updated
-     * @param cpf the Canonical format
-     * @return the new Id of the model
-     * @throws ImportException if the import failed ???
+     * Update a process Model in the database.
+     * @param processName of this update.
+     * @param branchName of this update.
+     * @param versionNumber of this update.
+     * @param user User who updated the process model.
+     * @param lockStatus is this model now going to be locked?
+     * @param cpf the process model graph.
      */
-    ProcessModelVersion addProcess(String processName, String versionName, User user, NativeType nativeType,
-            String domain, String documentation, String created, String lastUpdated, CanonisedProcess cpf) throws ImportException;
-
-//    /**
-//     * Update a process Model in the database.
-//     * @param g the process model graph
-//     */
-//    void updateProcessModel(Canonical g);
-//
-//    /**
-//     * Update a process Model in the database.
-//     * @param versionId The version Id of the model
-//     * @param branchId the branch id of the model
-//     * @param g the process model graph
-//     */
-//    void updateProcessModel(String versionId, String branchId, Canonical g);
+    ProcessModelVersion updateProcess(String processName, String branchName, String versionNumber, User user, String lockStatus,
+            CanonisedProcess cpf) throws RepositoryException;
 
 
     /**
@@ -144,10 +117,10 @@ public interface ProcessService {
     /**
      * Using the Process Model Version passed in we can get the Canonical format.
      * Used by a lot of methods in repoService and external.
-     * @param pmv the process model version we want the Canonical for.
-     * @param processName
-     * @param branchName
-     * @param lock
+     * @param pmvs the process model version we want the Canonical for.
+     * @param processName the process name
+     * @param branchName the branch name
+     * @param lock is it locked?
      * @return the built Canonical
      */
     CanonicalProcessType getCanonicalFormat(List<ProcessModelVersion> pmvs, String processName, String branchName, boolean lock);
@@ -162,18 +135,19 @@ public interface ProcessService {
      */
     CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
 
+
     /**
      * Creates new versions for all ascendant fragments of originalFragment by
      * replacing originalFragment with updatedFragment. New versions will be
      * created for all process models which use any of the updated fragments as
      * its root fragment. This method also releases locks of all ascendant
      * fragments.
-     * @param originalFragmentId the original Fragment Id
-     * @param updatedFragmentId  the updated fragment Id
+     * @param originalFragment the original fragment id
+     * @param updatedFragment the updated fragment id
+     * @param composingFragments the composing fragment
      */
-    void propagateChangesWithLockRelease(String originalFragmentId, String updatedFragmentId, List<String> composingFragmentIds)
-            throws ExceptionDao;
-
+    void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
+        Set<FragmentVersion> composingFragments) throws RepositoryException;
 
 
     /**

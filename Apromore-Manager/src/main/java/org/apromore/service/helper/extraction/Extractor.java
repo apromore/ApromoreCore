@@ -1,5 +1,6 @@
 package org.apromore.service.helper.extraction;
 
+import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.model.FragmentNode;
@@ -24,7 +25,7 @@ public class Extractor {
      * @param c Child f
      * @return ID of the pocket inserted by replacing the child f
      */
-    public static CPFNode extractChildFragment(final FragmentNode f, final FragmentNode c, final Canonical g) {
+    public static CPFNode extractChildFragment(final FragmentNode f, final FragmentNode c, final Canonical g) throws RepositoryException {
         CPFNode pocket;
         if (f.getType().equals(TCType.POLYGON)) {
             if (c.getType() != TCType.POLYGON) {
@@ -33,9 +34,8 @@ public class Extractor {
                 LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
                 // TODO what if both are of type POLYGON??? potential NPE, This is a hack
-                LOGGER.info("Processing FNS CS - POLYGON");
-                pocket = FNSCSExtractor.extract(f, c, g);
-                LOGGER.info("Pocket Id: " + pocket.getId());
+                LOGGER.info("Processing FNS CS - SUB - POLYGON");
+                throw new RepositoryException("Trying to process a model that contains SUB-POLYGONS. This isn't supported right now.");
             }
         } else {
             if (c.getType().equals(TCType.POLYGON)) {

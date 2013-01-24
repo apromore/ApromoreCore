@@ -13,12 +13,13 @@
 
     <include resource="logJpaToFile-test.xml" />
 
+    <logger name="org.apromore" level="debug" />
     <logger name="com.jolbox.bonecp" level="ERROR" />
     <logger name="org.eclipse.persistence" level="ERROR" />
     <logger name="org.springframework" level="ERROR"/>
     <logger name="org.springframework.beans.factory" level="ERROR" />
 
-    <root level="ERROR">
+    <root level="DEBUG">
         <appender-ref ref="console"/>
     </root>
 
