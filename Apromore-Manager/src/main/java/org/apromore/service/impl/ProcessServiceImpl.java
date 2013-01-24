@@ -59,6 +59,7 @@ public class ProcessServiceImpl implements ProcessService {
     private AnnotationRepository annotationRepo;
     private ContentRepository contentRepo;
     private NativeRepository nativeRepo;
+    private NetRepository netRepo;
     private ProcessBranchRepository processBranchRepo;
     private ProcessRepository processRepo;
     private FragmentVersionRepository fragmentVersionRepo;
@@ -79,6 +80,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param annotationRepo Annotations repository.
      * @param contentRepo Content Repository
      * @param nativeRepo Native Repository.
+     * @param netRepo Net Repository.
      * @param processBranchRepo Process Branch Map Repository.
      * @param processRepo Process Repository
      * @param fragmentVersionRepo Fragment Version Repository.
@@ -95,7 +97,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public ProcessServiceImpl(final AnnotationRepository annotationRepo, final ContentRepository contentRepo,
+    public ProcessServiceImpl(final AnnotationRepository annotationRepo, final ContentRepository contentRepo, final NetRepository netRepo,
             final NativeRepository nativeRepo, final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
@@ -105,6 +107,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.annotationRepo = annotationRepo;
         this.contentRepo = contentRepo;
         this.nativeRepo = nativeRepo;
+        this.netRepo = netRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
         this.fragmentVersionRepo = fragmentVersionRepo;
@@ -355,7 +358,7 @@ public class ProcessServiceImpl implements ProcessService {
                     result.setCreationDate(pmv.getProcessBranch().getCreationDate());
                     result.setModificationDate(pmv.getProcessBranch().getLastUpdate());
                     result.setVersion(Double.toString(pmv.getVersionNumber()));
-                    result.getRootIds().add(pmv.getNet().getId());
+                    result.getRootIds().add(pmv.getNet().getNetUri());
                 }
             }
         } catch (ExceptionDao e) {
@@ -835,14 +838,14 @@ public class ProcessServiceImpl implements ProcessService {
 
         if (pmv != null) {
             Net net = new Net();
-            net.setId(netType.getId());
+            net.setNetUri(netType.getId());
             net.setProcess(process);
             net.setProcessModelVersion(pmv);
 
             pmv.setNet(net);
             process.getNets().add(net);
 
-            processModelVersionRepo.save(pmv);
+            netRepo.save(net);
         }
     }
 
