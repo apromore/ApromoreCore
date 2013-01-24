@@ -125,6 +125,14 @@ public interface ICPFResource extends INonFlowNode {
      * @return the Non human type
      */
     NonHumanTypeEnum getNonHumanType();
+
+
+    /**
+     * Can we merge this resource? needs to be of same type and have same name.
+     * @param toMergeResource the resource to merge with.
+     * @return true or false
+     */
+    boolean canMerge(ICPFResource toMergeResource);
 }
 
 

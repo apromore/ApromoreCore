@@ -23,12 +23,6 @@
           p:maxConnectionsPerPartition="30" p:minConnectionsPerPartition="10" p:partitionCount="5" p:acquireIncrement="5"
           p:statementsCacheSize="100" p:releaseHelperThreads="3" />
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
-
-    <tx:annotation-driven proxy-target-class="false" />
-
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceUnitName" value="TESTApromore" />
@@ -47,10 +41,16 @@
                 <prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>
                 <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
                 <prop key="eclipselink.logging.level">OFF</prop>
-                <prop key="eclipselink.logging.level.sql">OFF</prop>
-                <prop key="eclipselink.logging.parameters">FALSE</prop>
+                <prop key="eclipselink.logging.level.sql">FINE</prop>
+                <prop key="eclipselink.logging.parameters">TRUE</prop>
             </util:properties>
         </property>
     </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <tx:annotation-driven proxy-target-class="false" />
 
 </beans>

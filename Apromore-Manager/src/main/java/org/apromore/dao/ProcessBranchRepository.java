@@ -1,9 +1,12 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Interface domain model Data access object Branch.
@@ -22,5 +25,13 @@ public interface ProcessBranchRepository extends JpaRepository<ProcessBranch, In
      */
     @Query("SELECT b FROM ProcessBranch b WHERE b.process.id = ?1 AND b.branchName = ?2")
     ProcessBranch getProcessBranchByProcessBranchName(Integer processId, String branchName);
+
+    /**
+     * Returns the count of process branches that has used a particular process model version as it's source.
+     * @param processModelVersion the process model version we are looking at
+     * @return the count of branches, 0 or more
+     */
+    @Query("SELECT count(b) FROM ProcessBranch b WHERE b.sourceProcessModelVersion = ?1")
+    long countProcessModelBeenForked(ProcessModelVersion processModelVersion);
 
 }

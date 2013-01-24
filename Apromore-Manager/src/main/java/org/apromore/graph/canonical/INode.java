@@ -237,4 +237,7 @@ public interface INode extends IVertex {
 
     void setAllocation(AllocationStrategyEnum allocation);
 
+    Canonical getGraph();
+
+    void setGraph(Canonical canonicalGraph);
 }

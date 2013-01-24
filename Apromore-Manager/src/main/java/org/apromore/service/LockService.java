@@ -2,6 +2,7 @@ package org.apromore.service;
 
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.ProcessModelVersion;
 
 /**
  * Lock Service, This service is used to to control the Locks that are held on the database tables and records.
@@ -35,7 +36,6 @@ public interface LockService {
 
     /**
      * Locks a single fragment.
-     *
      * @param fragVersion the fragment
      * @return the fragment
      */
@@ -45,16 +45,15 @@ public interface LockService {
 
     /**
      * unLock a previously locked process Model.
-     *
-     * @param processModelVersionId the process model
+     * @param processModelVersion the process model
      */
-    void unlockProcessModelVersion(Integer processModelVersionId);
+    void unlockProcessModelVersion(ProcessModelVersion processModelVersion);
 
     /**
      * unLock a previously locked fragment.
-     * @param fragmentId the fragment to unlock
+     * @param fragmentVersion the fragment to unlock
      */
-    void unlockFragment(Integer fragmentId);
+    void unlockFragment(FragmentVersion fragmentVersion);
 
     /**
      * unLock a previously locked fragment.
@@ -64,15 +63,9 @@ public interface LockService {
 
     /**
      * Unlocks the ascendant fragments ????
-     * @param fragmentId the fragment id.
+     * @param fragmentVersion the fragment id.
      */
-    void unlockAscendantFragments(Integer fragmentId);
-
-    /**
-     * Unlocks the descendant Fragments ????
-     * @param fragmentId the fragmentId.
-     */
-    void unlockDescendantFragments(Integer fragmentId);
+    void unlockAscendantFragments(FragmentVersion fragmentVersion);
 
     /**
      * Unlocks the descendant Fragments ????
@@ -82,17 +75,15 @@ public interface LockService {
 
     /**
      * Unlocks the descendant Fragments ????
-     *
-     * @param fragmentVersionDag the fragmentVersionDag.
+     * @param fragmentVersion the fragmentVersionDag.
      */
-    void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag);
+    void unlockDescendantFragments(FragmentVersion fragmentVersion);
 
 
 
 
     /**
      * Is a model used in the current ProcessModel
-     *
      * @param fragVersion the fragment
      * @return true or false
      */

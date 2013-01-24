@@ -43,21 +43,13 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
 
     /**
      * find all the parent fragments that are locked.
-     * @param childFragmentVersionId the fragment we are searching for parents
-     * @return the list of fragments Id's we are looking for.
+     * @param childFragmentVersion the fragment we are searching for parents
+     * @return the list of fragments Version's we are looking for.
      */
     @Query("SELECT fv FROM FragmentVersion fv, FragmentVersionDag fvd WHERE fv.id = fvd.fragmentVersion.id " +
-            "AND fv.lockStatus = 1 AND fvd.childFragmentVersion.id = ?1")
-    List<FragmentVersion> getLockedParentFragments(Integer childFragmentVersionId);
+            "AND fv.lockStatus = 1 AND fvd.childFragmentVersion = ?1")
+    List<FragmentVersion> getLockedParentFragments(FragmentVersion childFragmentVersion);
 
-    /**
-     * find all the parent fragments that are locked.
-     * @param uri the fragment we are searching for parents
-     * @return the list of fragments Id's we are looking for.
-     */
-    @Query("SELECT fv FROM FragmentVersion fv, FragmentVersionDag fvd WHERE fv.id = fvd.fragmentVersion.id " +
-            "AND fv.lockStatus = 1 AND fvd.childFragmentVersion.uri = ?1")
-    List<FragmentVersion> getLockedParentFragmentIdsByUri(String uri);
 
     /**
      * Find all the fragments that have been used by a particular fragment.
@@ -78,11 +70,11 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
 
     /**
      * the child Fragments from the fragment Version.
-     * @param fragmentVersionId the fragment version id
+     * @param fragmentVersion the fragment version we are using to find it's children
      * @return the list of child fragments.
      */
-    @Query("SELECT fv FROM FragmentVersionDag fvd, FragmentVersion fv WHERE fvd.childFragmentVersion.id = fv.id AND fv.id = ?1")
-    List<FragmentVersion> getChildFragmentsByFragmentVersion(Integer fragmentVersionId);
+    @Query("SELECT cfv FROM FragmentVersionDag fvd JOIN fvd.childFragmentVersion cfv JOIN fvd.fragmentVersion fv WHERE fv = ?1")
+    List<FragmentVersion> getChildFragmentsByFragmentVersion(FragmentVersion fragmentVersion);
 
     /**
      * find a fragments of a cluster.
@@ -99,4 +91,12 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
      */
     @Query("SELECT f FROM FragmentVersion f JOIN f.processModelVersions pmv JOIN pmv.processBranch b JOIN b.process p WHERE p.id IN (?1)")
     List<FragmentVersion> getFragmentsByProcessIds(List<Integer> clusterId);
+
+    /**
+     * Count the number of times this fragment version is used by other Fragment Versions.
+     * @param fragmentVersion the fragment version we are checking to see if has been used multiple times.
+     * @return the count of times used, 0 or more
+     */
+    @Query("SELECT count(fvd) from FragmentVersionDag fvd WHERE fvd.childFragmentVersion = ?1")
+    long countFragmentUsesInFragmentVersions(FragmentVersion fragmentVersion);
 }

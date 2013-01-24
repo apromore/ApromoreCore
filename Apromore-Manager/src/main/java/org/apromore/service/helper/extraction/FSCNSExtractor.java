@@ -36,6 +36,7 @@ public class FSCNSExtractor {
         FragmentUtil.removeNodes(f, cf);
 
         CPFNode pocket = new CPFNode();
+        pocket.setGraph(g);
         pocket.setName("Pocket");
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);

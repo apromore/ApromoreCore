@@ -151,4 +151,11 @@ public class CPFResource extends CPFNonFlowNode implements ICPFResource, Cloneab
         clone.setAttributes(this.attributes);
 
         return clone;
-    }}
+    }
+
+    @Override
+    public boolean canMerge(final ICPFResource toMergeResource) {
+        return (toMergeResource.getName() != null && getName().equals(toMergeResource.getName()) &&
+                toMergeResource.getResourceType() != null && getResourceType().equals(toMergeResource.getResourceType()));
+    }
+}

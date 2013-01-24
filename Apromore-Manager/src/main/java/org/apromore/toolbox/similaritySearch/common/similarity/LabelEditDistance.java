@@ -2,6 +2,8 @@ package org.apromore.toolbox.similaritySearch.common.similarity;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.Set;
@@ -10,7 +12,10 @@ import java.util.StringTokenizer;
 
 public class LabelEditDistance {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LabelEditDistance.class);
+
     public static double edTokensWithStemming(String a, String b, String delimeter, SnowballStemmer stemmer, boolean stem) {
+        LOGGER.debug("LabelEditDistance.edTokensWithStemming(a, b, delimeter, stemmer, stem)");
 
         LinkedList<String> aTokensInit = new LinkedList<String>();
         LinkedList<String> bTokensInit = new LinkedList<String>();
@@ -59,7 +64,7 @@ public class LabelEditDistance {
 
                 int ed = ed(aTokens.get(i), bTokens.get(j));
                 edScore = ed == 0 ? 1 :
-                        (1 - ed / (Double.valueOf(Math.max(aTokens.get(i).length(), bTokens.get(j).length()))));
+                        (1 - ed / ((double) Math.max(aTokens.get(i).length(), bTokens.get(j).length())));
                 costFunc[i][j] = edScore > 0 ? (-1) * edScore : edScore;
             }
         }
@@ -75,8 +80,8 @@ public class LabelEditDistance {
 
         int[][] result = HungarianAlgorithm.computeAssignments(costFuncCopy);
 
-        for (int i = 0; i < result.length; i++) {
-            mappedWeightFunc += (-1) * costFunc[result[i][0]][result[i][1]];
+        for (int[] aResult : result) {
+            mappedWeightFunc += (-1) * costFunc[aResult[0]][aResult[1]];
         }
 
         // TOTAL mappingscore
@@ -94,6 +99,7 @@ public class LabelEditDistance {
 
 
     private static LinkedList<String> removeStopWordsAndStem(LinkedList<String> toRemove, SnowballStemmer stemmer) {
+        LOGGER.debug("LabelEditDistance.removeStopWordsAndStem(atoRemove, stemmer)");
 
         LinkedList<String> result = new LinkedList<String>();
         Set<String> stopWords = stemmer.getStopWords();
@@ -114,6 +120,7 @@ public class LabelEditDistance {
     }
 
     private static LinkedList<String> removeStopWordsAndStem1(LinkedList<String> toRemove, SnowballStemmer stemmer) {
+        LOGGER.debug("LabelEditDistance.removeStopWordsAndStem1(atoRemove, stemmer)");
 
         LinkedList<String> result = new LinkedList<String>();
         int repeat = 1;
@@ -133,6 +140,7 @@ public class LabelEditDistance {
     }
 
     public static int ed(String a, String b) {
+        LOGGER.debug("LabelEditDistance.ed(a, b)");
         int[][] ed = new int[a.length() + 1][b.length() + 1];
 
         for (int i = 0; i < a.length() + 1; i++) {

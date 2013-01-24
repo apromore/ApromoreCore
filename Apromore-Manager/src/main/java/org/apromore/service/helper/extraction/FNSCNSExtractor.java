@@ -33,6 +33,7 @@ public class FNSCNSExtractor {
         CPFNode fragmentB2 = f.getExit();
 
         CPFNode pocket = new CPFNode();
+        pocket.setGraph(g);
         pocket.setName("Pocket");
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.addNode(pocket);

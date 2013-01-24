@@ -109,6 +109,13 @@ public interface ICPFObject extends org.jbpt.hypergraph.abs.IGObject {
     ObjectTypeEnum getObjectType();
 
 
+    /**
+     * Can we merge this object? needs to be of same type and have same name.
+     * @param toMergeObject the object to merge with.
+     * @return true or false
+     */
+    boolean canMerge(ICPFObject toMergeObject);
+
 }
 
 
