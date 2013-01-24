@@ -196,9 +196,10 @@ CREATE TABLE `process_model_version` (
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `net` (
-    `id` varchar(200),
+    `id` int(11) NOT NULL AUTO_INCREMENT,
     `processModelVersionId` int(11) NOT NULL,
     `processId` int(11) NOT NULL,
+    `netUri` varchar(200) NOT NULL,
     PRIMARY KEY (`id`) USING BTREE,
     KEY (`processId`) USING BTREE,
     KEY (`processModelVersionId`) USING BTREE,
