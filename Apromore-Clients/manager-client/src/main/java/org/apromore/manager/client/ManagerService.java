@@ -208,7 +208,7 @@ public interface ManagerService {
      * Export the process model in a particular format.
      * @param processId the process to export
      * @param processName the process name
-     * @param versionName the process version name
+     * @param branch the process branch name
      * @param nativeType the native type of the process model
      * @param annotationName the annotations name
      * @param withAnnotations with ot without annotations
@@ -216,8 +216,9 @@ public interface ManagerService {
      * @return the request process model as a Stream
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ExportFormatResultType exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
-            Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties) throws Exception;
+    ExportFormatResultType exportFormat(int processId, String processName, String branch, Double versionNumber, String nativeType,
+            String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
+            throws Exception;
 
     /**
      * Import a process into the Apromore Repository.
@@ -315,20 +316,24 @@ public interface ManagerService {
 
     /**
      * Update a process in the Apromore repository.
-     * @param sessionCode The Session Code
-     * @param username the Username
-     * @param nativeType the process Native type
-     * @param processId the process Identifier
-     * @param domain the process domain
-     * @param processName the process name
-     * @param new_versionName the process new version number
-     * @param preVersion the process current version
-     * @param native_is the actual input stream of the model
+     * @param sessionCode The Session Code.
+     * @param username the Username.
+     * @param nativeType the process Native type.
+     * @param processId the process Identifier.
+     * @param domain the process domain.
+     * @param processName the process name.
+     * @param originalBranchName the originalBranchName.
+     * @param newBranchName the originalBranchName.
+     * @param versionNumber the versionNumber.
+     * @param createNewBranch are we forcing a new branch.
+     * @param preVersion the process current version.
+     * @param native_is the actual input stream of the model.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void updateProcess(int sessionCode, String username, String nativeType, int processId, String domain, String processName, String new_versionName,
-            String preVersion, InputStream native_is) throws IOException, Exception;
+    void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
+            String originalBranchName, String newBranchName, Double versionNumber, Boolean createNewBranch, String preVersion, InputStream native_is)
+            throws IOException, Exception;
 
     /**
      * Write the modified processes which are in processVersions. For each of which, preNewVersion gives the mapping between its previous and new
@@ -342,7 +347,7 @@ public interface ManagerService {
      * @param ranking the ranking of the new model
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion, String ranking)
+    void editProcessData(Integer processId, String processName, String domain, String username, Double preVersion, Double newVersion, String ranking)
             throws Exception;
 
     /**

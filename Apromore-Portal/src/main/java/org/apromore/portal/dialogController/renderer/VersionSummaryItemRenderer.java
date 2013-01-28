@@ -24,9 +24,9 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         renderVersionSummary(listItem, (VersionSummaryType) obj);
     }
 
-    private void renderVersionSummary(Listitem listItem,
-                                      VersionSummaryType version) {
+    private void renderVersionSummary(Listitem listItem, VersionSummaryType version) {
         listItem.appendChild(renderVersionName(version));
+        listItem.appendChild(renderVersionVersion(version));
         listItem.appendChild(renderVersionLastUpdate(version));
         listItem.appendChild(renderVersionAnnotations(version));
         listItem.appendChild(renderVersionRanking(version));
@@ -34,13 +34,16 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
 
     private Component renderVersionRanking(VersionSummaryType version) {
         Hbox versionRanking = new Hbox();
-        if (version.getRanking() != null
-                && version.getRanking().toString().compareTo("") != 0) {
+        if (version.getRanking() != null && version.getRanking().compareTo("") != 0) {
             displayRanking(versionRanking, version.getRanking());
         } else {
             displayRanking(versionRanking, "0");
         }
         return wrapIntoListCell(versionRanking);
+    }
+
+    private Component renderVersionVersion(VersionSummaryType version) {
+        return wrapIntoListCell(new Label(version.getVersionNumber().toString()));
     }
 
     private Component renderVersionAnnotations(VersionSummaryType version) {
@@ -50,12 +53,10 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         annotationLB.setStyle(Constants.UNSELECTED_VERSION);
         for (int i = 0; i < version.getAnnotations().size(); i++) {
             String language = version.getAnnotations().get(i).getNativeType();
-            for (int k = 0; k < version.getAnnotations().get(i)
-                    .getAnnotationName().size(); k++) {
+            for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
                 Listitem annotationsI = new Listitem();
                 annotationLB.appendChild(annotationsI);
-                String annotationName = version.getAnnotations().get(i)
-                        .getAnnotationName().get(k);
+                String annotationName = version.getAnnotations().get(i).getAnnotationName().get(k);
                 annotationsI.setLabel(annotationName + " (" + language + ")");
             }
         }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
@@ -44,11 +45,11 @@ public class SessionServiceImpl implements SessionService {
 
 
     /**
-     * @see SessionService#readSession(int)
+     * @see SessionService#readSession(Integer)
      * {@inheritDoc}
      */
     @Override
-    public EditSession readSession(final int sessionCode) {
+    public EditSession readSession(final Integer sessionCode) {
         EditSession session = sessionRepo.findOne(sessionCode);
         session.getProcess();
         session.getUser();
@@ -56,11 +57,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     /**
-     * @see SessionService#deleteSession(int)
+     * @see SessionService#deleteSession(Integer)
      * {@inheritDoc}
      */
     @Override
-    public void deleteSession(final int sessionCode) {
+    public void deleteSession(final Integer sessionCode) {
         sessionRepo.delete(sessionRepo.findOne(sessionCode));
     }
 
@@ -71,19 +72,23 @@ public class SessionServiceImpl implements SessionService {
      */
     @Override
     public EditSession createSession(final EditSessionType editSession) {
-        int processId = editSession.getProcessId();
-        String versionName = editSession.getVersionName();
+        Integer processId = editSession.getProcessId();
+        String branchName = editSession.getOriginalBranchName();
+        Double versionNumber = editSession.getVersionNumber();
         Boolean withAnnotation = editSession.isWithAnnotation();
 
-        ProcessModelVersion pmv = processModelVersionRepo.getCurrentVersion(processId, versionName);
+        List<ProcessModelVersion> pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
 
         EditSession session = new EditSession();
         session.setCreationDate(editSession.getCreationDate());
         session.setLastUpdate(editSession.getLastUpdate());
         session.setRecordTime(new Date());
-        session.setVersionName(versionName);
+        session.setVersionNumber(editSession.getVersionNumber());
+        session.setOriginalBranchName(editSession.getOriginalBranchName());
+        session.setNewBranchName(editSession.getNewBranchName());
+        session.setCreateNewBranch(editSession.isCreateNewBranch());
         session.setNatType(editSession.getNativeType());
-        session.setProcessModelVersion(pmv);
+        session.setProcessModelVersion(pmv.get(0));
         session.setUser(userRepo.findByUsername(editSession.getUsername()));
         if (withAnnotation) {
             session.setAnnotation(editSession.getAnnotation());

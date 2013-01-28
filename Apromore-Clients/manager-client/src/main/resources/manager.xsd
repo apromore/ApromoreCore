@@ -311,7 +311,10 @@
         <xs:attribute name="nativeType" type="xs:string" />
         <xs:attribute name="processId" type="xs:int" />
         <xs:attribute name="processName" type="xs:string" />
-        <xs:attribute name="versionName" type="xs:string" />
+        <xs:attribute name="versionNumber" type="xs:double" />
+        <xs:attribute name="originalBranchName" type="xs:string" />
+        <xs:attribute name="newBranchName" type="xs:string" />
+        <xs:attribute name="createNewBranch" type="xs:boolean" />
         <xs:attribute name="domain" type="xs:string" />
         <xs:attribute name="creationDate" type="xs:string" />
         <xs:attribute name="lastUpdate" type="xs:string" />
@@ -441,6 +444,7 @@
         <xs:attribute name="last_update" type="xs:string" />
         <xs:attribute name="creation_date" type="xs:string" />
         <xs:attribute name="score" type="xs:double" />
+        <xs:attribute name="versionNumber" type="xs:double" />
     </xs:complexType>
 
     <xs:complexType name="ParametersType">
@@ -624,8 +628,8 @@
         <xs:attribute name="domain" type="xs:string" />
         <xs:attribute name="owner" type="xs:string" />
         <xs:attribute name="ranking" type="xs:string" />
-        <xs:attribute name="newName" type="xs:string" />
-        <xs:attribute name="preName" type="xs:string" />
+        <xs:attribute name="newVersion" type="xs:double" />
+        <xs:attribute name="preVersion" type="xs:double" />
     </xs:complexType>
 
     <xs:complexType name="EditProcessDataOutputMsgType">
@@ -840,7 +844,8 @@
         <xs:attribute name="Format" type="xs:string" />
         <xs:attribute name="ProcessId" type="xs:int" />
         <xs:attribute name="ProcessName" type="xs:string" />
-        <xs:attribute name="VersionName" type="xs:string" />
+        <xs:attribute name="BranchName" type="xs:string" />
+        <xs:attribute name="versionNumber" type="xs:double" />
         <xs:attribute name="AnnotationName" type="xs:string" />
         <xs:attribute name="withAnnotations" type="xs:boolean" />
         <xs:attribute name="Owner" type="xs:string" />

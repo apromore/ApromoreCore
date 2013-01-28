@@ -1,12 +1,12 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
+import java.util.List;
+
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -20,8 +20,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-
-import java.util.List;
 
 public class EditOneProcessDataController extends BaseController {
 
@@ -150,17 +148,14 @@ public class EditOneProcessDataController extends BaseController {
         String processName = this.processNameT.getValue();
         String domain = this.domainCB.getValue();
         String username = this.ownerCB.getValue();
-        String preVersion = this.preVersion.getName();
-        String newVersion = this.versionNameT.getValue();
+        Double preVersion = Double.valueOf(this.preVersion.getName());
+        Double newVersion = Double.valueOf(this.versionNameT.getValue());
         String ranking = null;
-        if (this.rankingRG.getSelectedItem() != null
-                && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
+        if (this.rankingRG.getSelectedItem() != null && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
             ranking = this.rankingRG.getSelectedItem().getLabel();
         }
-        if (this.processNameT.getValue().compareTo("") == 0
-                || this.versionNameT.getValue().compareTo("") == 0) {
-            Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+        if (this.processNameT.getValue().compareTo("") == 0 || this.versionNameT.getValue().compareTo("") == 0) {
+            Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
         } else {
             getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking);
             this.editDataListProcessesC.getEditedList().add(this);

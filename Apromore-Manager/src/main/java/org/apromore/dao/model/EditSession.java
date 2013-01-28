@@ -28,7 +28,10 @@ public class EditSession implements Serializable {
 
     private Integer id;
     private Date recordTime;
-    private String versionName;
+    private String originalBranchName;
+    private String newBranchName;
+    private Double versionNumber;
+    private Boolean createNewBranch;
     private String natType;
     private String annotation;
     private Boolean removeFakeEvents;
@@ -86,13 +89,40 @@ public class EditSession implements Serializable {
         this.recordTime = newRecordTime;
     }
 
-    @Column(name = "version_name", length = 40)
-    public String getVersionName() {
-        return this.versionName;
+    @Column(name = "original_branch_name", length = 200)
+    public String getOriginalBranchName() {
+        return this.originalBranchName;
     }
 
-    public void setVersionName(final String newVersionName) {
-        this.versionName = newVersionName;
+    public void setOriginalBranchName(final String newOriginalBranchName) {
+        this.originalBranchName = newOriginalBranchName;
+    }
+
+    @Column(name = "new_branch_name", length = 200)
+    public String getNewBranchName() {
+        return this.originalBranchName;
+    }
+
+    public void setNewBranchName(final String newNewBranchName) {
+        this.originalBranchName = newNewBranchName;
+    }
+
+    @Column(name = "version_number")
+    public Double getVersionNumber() {
+        return this.versionNumber;
+    }
+
+    public void setVersionNumber(final Double newVersionNumber) {
+        this.versionNumber = newVersionNumber;
+    }
+
+    @Column(name = "create_new_branch")
+    public Boolean getCreateNewBranch() {
+        return this.createNewBranch;
+    }
+
+    public void setCreateNewBranch(final Boolean newCreateNewBranch) {
+        this.createNewBranch = newCreateNewBranch;
     }
 
     @Column(name = "nat_type", length = 20)

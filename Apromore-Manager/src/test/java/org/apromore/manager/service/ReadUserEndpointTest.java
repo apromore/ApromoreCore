@@ -1,12 +1,13 @@
 package org.apromore.manager.service;
 
+import java.util.Date;
+import javax.xml.bind.JAXBElement;
+
 import org.apromore.dao.model.User;
-import org.apromore.exception.UserNotFoundException;
-import org.apromore.manager.canoniser.ManagerCanoniserClient;
+import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -23,7 +24,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.impl.CanonicalConverterAdapter;
 import org.apromore.service.impl.CanoniserServiceImpl;
 import org.apromore.service.impl.ClusterServiceImpl;
 import org.apromore.service.impl.DeploymentServiceImpl;
@@ -41,9 +41,6 @@ import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
-import javax.xml.bind.JAXBElement;
 
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.createMock;
@@ -72,8 +69,6 @@ public class ReadUserEndpointTest {
     private SecurityService secSrv;
     private WorkspaceService wrkSrv;
     private UserInterfaceHelper uiHelper;
-    private CanonicalConverter convertor;
-    private ManagerCanoniserClient caClient;
 
     @Before
     public void setUp() throws Exception {
@@ -92,11 +87,9 @@ public class ReadUserEndpointTest {
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
-        convertor = createMock(CanonicalConverterAdapter.class);
-        caClient = createMock(ManagerCanoniserClient.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper, convertor, caClient);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper);
     }
 
 

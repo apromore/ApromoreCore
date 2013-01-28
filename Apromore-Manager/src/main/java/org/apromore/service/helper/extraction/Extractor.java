@@ -3,7 +3,6 @@ package org.apromore.service.helper.extraction;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.impl.util.TestUtil;
 import org.apromore.service.model.FragmentNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -34,7 +33,6 @@ public class Extractor {
                 pocket = FSCNSExtractor.extract(f, c, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
-                // TODO what if both are of type POLYGON??? Fixed. have to test more.
                 LOGGER.info("Processing FS CS - SUB - POLYGON");
                 pocket = FSCSExtractor.extract(f, c, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());

@@ -34,8 +34,7 @@ public interface ProcessService {
      *
      * @param username      The user doing the importing.
      * @param processName   the name of the process being imported.
-     * @param cpfURI        the Canonical URI
-     * @param versionName   the version of the Process
+     * @param versionNumber the version of the Process
      * @param nativeType    the native process format type
      * @param cpf           the canonised process
      * @param nativeXml     the original native process XML
@@ -47,7 +46,7 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessModelVersion importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
+    ProcessModelVersion importProcess(String username, String processName, Double versionNumber, String nativeType,
             CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
@@ -55,7 +54,8 @@ public interface ProcessService {
      *
      * @param name       the process model name
      * @param processId  the processId
-     * @param version    the version of the process model
+     * @param branch     the branch name
+     * @param version    the version of the process model.
      * @param nativeType the format of the model
      * @param annName    the annotation format
      * @param withAnn    do we export annotations as well.
@@ -63,8 +63,9 @@ public interface ProcessService {
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
-    ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String nativeType,
-        final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties) throws ExportFormatException;
+    ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Double version,
+        final String nativeType, final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
+            throws ExportFormatException;
 
     /**
      * Updates a processes meta data, this is the Name, Version, domain, rating and then updated the Native xml with these details.
@@ -76,34 +77,36 @@ public interface ProcessService {
      * @param newVersion the old version.
      * @param ranking the ranking of this model.
      */
-    void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username, final String preVersion,
-                               final String newVersion, final String ranking) throws UpdateProcessException;
+    void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
+        final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException;
 
     /**
      * Add a new ProcessModelVersion record into the DB.
      * @param branch the process branch
      * @param rootFragmentVersion the root fragment uri
      * @param versionNumber the version number
-     * @param versionName the version name
      * @param numVertices the number of nodes
      * @param numEdges the number of edges
      * @return the found Process Model Version
      * @throws ExceptionDao if the DAO found an issue.
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Double versionNumber, String versionName,
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Double versionNumber,
             int numVertices, int numEdges) throws ExceptionDao;
 
     /**
      * Update a process Model in the database.
+     * @param processId of this update.
      * @param processName of this update.
-     * @param branchName of this update.
+     * @param originalBranchName of this update.
+     * @param newBranchName of this update.
      * @param versionNumber of this update.
+     * @param createNewBranch of this update.
      * @param user User who updated the process model.
      * @param lockStatus is this model now going to be locked?
      * @param cpf the process model graph.
      */
-    ProcessModelVersion updateProcess(String processName, String branchName, String versionNumber, User user, String lockStatus,
-            CanonisedProcess cpf) throws RepositoryException;
+    ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName, Double versionNumber,
+            Boolean createNewBranch, User user, String lockStatus, CanonisedProcess cpf) throws RepositoryException;
 
 
     /**

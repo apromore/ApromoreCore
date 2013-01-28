@@ -94,7 +94,7 @@ public class UIHelperImplIntgTest {
         String created = "01/01/2011";
         String lastUpdate = "01/01/2011";
 
-        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, nativeType, cp, input, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, nativeType, cp, input, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }
