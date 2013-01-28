@@ -1,5 +1,17 @@
 package org.apromore.portal.dialogController;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.DomainsType;
@@ -37,18 +49,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Window;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Logger;
-
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
@@ -58,8 +58,6 @@ public class MainController extends BaseController {
     private static final long serialVersionUID = 5147685906484044300L;
 
     private Window mainW;
-    private Window chooseNativeW;
-    private Window OpenModelInSignavioW;
     private HeaderController header;
     private MenuController menu;
     private SimpleSearchController simplesearch;
@@ -74,7 +72,6 @@ public class MainController extends BaseController {
     private Hbox pagingandbuttons;
     private Component workspaceOptionsPanel;
     private Html folders;
-    public Html breadCrumbs;
     private Div listView;
     private Button btnTileView;
 
@@ -84,6 +81,7 @@ public class MainController extends BaseController {
     private BaseFilterController baseFilterController;
     private NavigationController navigation;
 
+    public Html breadCrumbs;
 
     // uncomment when ready
     // private NavigationController navigation;
@@ -118,12 +116,10 @@ public class MainController extends BaseController {
             this.menu = new MenuController(this);
             this.workspaceOptionsController = new WorkspaceOptionsController(this);
 
-            // this.navigation = new NavigationController (this);
             switchToProcessSummaryView();
             this.navigation = new NavigationController(this);
             loadWorkspace();
 
-            //this.currentUser = null;
             this.searchHistory = new ArrayList<SearchHistoriesType>();
             this.msgWhenClose = null;
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
@@ -143,7 +139,7 @@ public class MainController extends BaseController {
             });
 
         } catch (Exception e) {
-            String message = null;
+            String message;
             if (e.getMessage() == null) {
                 message = "Please contact Apromore's administrator";
             } else {
@@ -222,8 +218,7 @@ public class MainController extends BaseController {
     }
 
     /**
-     * register an event listener for the clientInfo event (to prevent user to
-     * close the browser window)
+     * register an event listener for the clientInfo event (to prevent user to close the browser window)
      */
     public void onClientInfo(final ClientInfoEvent event) {
         Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
@@ -253,7 +248,7 @@ public class MainController extends BaseController {
         Boolean connected = UserSessionManager.getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
-        Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
+        Iterator<Component> itC = (Iterator<Component>) this.menu.getMenuB().getFellows().iterator();
         while (itC.hasNext()) {
             Component C = itC.next();
             if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
@@ -293,7 +288,6 @@ public class MainController extends BaseController {
      */
     public void resetUserInformation() throws Exception {
         eraseMessage();
-        //this.currentUser = null;
         this.simplesearch.clearSearches();
     }
 
@@ -352,24 +346,35 @@ public class MainController extends BaseController {
      * @throws InterruptedException
      * @throws Exception
      */
-    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation, final String readOnly) throws InterruptedException {
-        String instruction = "", url = getHost();
+    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
+            final String readOnly) throws InterruptedException {
+        String instruction = "";
+        String url = getHost();
         int offsetH = 100, offsetV = 200;
+
         EditSessionType editSession = new EditSessionType();
         editSession.setDomain(process.getDomain());
         editSession.setNativeType(nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-        editSession.setVersionName(version.getName());
+        editSession.setOriginalBranchName(version.getName());
+        editSession.setVersionNumber(Double.valueOf(process.getLastVersion()));
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
+        // todo: Work out is new are forcing a new branch or not.
+        if (true) {
+            editSession.setCreateNewBranch(false);
+        } else {
+            editSession.setCreateNewBranch(true);
+        }
         if (annotation == null) {
             editSession.setWithAnnotation(false);
         } else {
             editSession.setWithAnnotation(true);
             editSession.setAnnotation(annotation);
         }
+
         try {
             // create and store an edit session
             int editSessionCode = getService().writeEditSession(editSession);
@@ -502,7 +507,7 @@ public class MainController extends BaseController {
 
     public void clearProcessVersions() {
         switchToProcessSummaryView();
-        ((ProcessVersionDetailController) this.baseDetailController).clearProcesVersions();
+        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
     }
 
     public void displaySimilarityClusters(final ClusterFilterType filter) {

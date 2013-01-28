@@ -608,18 +608,19 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#exportFormat(int, String, String, String, String, Boolean, String, java.util.Set)
+     * @see ManagerService#exportFormat(int, String, String, Double, String, String, Boolean, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ExportFormatResultType exportFormat(final int processId, final String processName, final String versionName, final String nativeType,
-            final String annotationName, final Boolean withAnnotations, final String owner, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+    public ExportFormatResultType exportFormat(final int processId, final String processName, final String branchName, final Double versionNumber,
+            final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
+            final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
         msg.setProcessId(processId);
-        msg.setVersionName(versionName);
+        msg.setBranchName(branchName);
         msg.setFormat(nativeType);
         msg.setAnnotationName(annotationName);
         msg.setWithAnnotations(withAnnotations);
@@ -650,21 +651,11 @@ public class ManagerServiceClient implements ManagerService {
             final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
-        // temp code
-        //        ClusterSettingsType s = new ClusterSettingsType();
-        //        s.setAlgorithm("DBSCAN");
-        //        ClusteringParameterType p1 = new ClusteringParameterType();
-        //        p1.setParamName("MaxDistance");
-        //        p1.setParmaValue("0.4");
-        //        s.getClusteringParams().add(p1);
-        //        createClusters(s);
-        // temp code
-
         EditSessionType editSession = new EditSessionType();
         editSession.setUsername(username);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
-        editSession.setVersionName(versionName);
+        editSession.setVersionNumber(Double.valueOf(versionName));
         editSession.setDomain(domain);
         editSession.setCreationDate(created);
         editSession.setLastUpdate(lastUpdate);
@@ -685,13 +676,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#updateProcess(int, String, String, int, String, String, String, String, java.io.InputStream)
+     * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Boolean, String, java.io.InputStream)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void updateProcess(final int sessionCode, final String username, final String nativeType, final int processId, final String domain,
-            final String processName, final String new_versionName, final String preVersion, final InputStream native_is)
+    public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final  Integer processId,
+            final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
+            final Boolean createNewBranch, final String preVersion, final InputStream native_is)
             throws IOException, Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
@@ -699,7 +691,10 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setUsername(username);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
-        editSession.setVersionName(new_versionName);
+        editSession.setOriginalBranchName(originalBranchName);
+        editSession.setNewBranchName(newBranchName);
+        editSession.setVersionNumber(versionNumber);
+        editSession.setCreateNewBranch(createNewBranch);
         editSession.setDomain(domain);
         editSession.setProcessId(processId);
 
@@ -721,13 +716,13 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#editProcessData(Integer, String, String, String, String, String, String)
+     * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
-            final String preVersion, final String newVersion, final String ranking) throws Exception {
+            final Double preVersion, final Double newVersion, final String ranking) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -735,8 +730,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setProcessName(processName);
         msg.setOwner(username);
         msg.setId(processId);
-        msg.setNewName(newVersion);
-        msg.setPreName(preVersion);
+        msg.setNewVersion(newVersion);
+        msg.setPreVersion(preVersion);
         msg.setRanking(ranking);
 
         JAXBElement<EditProcessDataInputMsgType> request = WS_CLIENT_FACTORY.createEditProcessDataRequest(msg);

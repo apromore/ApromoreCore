@@ -1,11 +1,17 @@
 package org.apromore.service.impl;
 
-import org.apromore.cpf.CanonicalProcessType;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.model.*;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessVersionType;
+import org.apromore.model.ProcessVersionsType;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SimilarityService;
@@ -16,9 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Implementation of the SimilarityService Contract.
@@ -71,7 +74,7 @@ public class SimilarityServiceImpl implements SimilarityService {
             similarProcesses = performSearch(data, models, query);
             if (similarProcesses.getProcessVersion().size() == 0) {
                 LOGGER.error("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
-                        query.getVersionName() + " probably faulty");
+                        query.getVersionNumber() + " probably faulty");
             }
         } catch (Exception se) {
             LOGGER.error("Failed to perform the similarity search.", se);
@@ -125,7 +128,7 @@ public class SimilarityServiceImpl implements SimilarityService {
                 if (similarity >= data.getModelthreshold()) {
                     processVersion = new ProcessVersionType();
                     processVersion.setProcessId(pmv.getProcessBranch().getProcess().getId());
-                    processVersion.setVersionName(pmv.getVersionName());
+                    processVersion.setVersionName(pmv.getProcessBranch().getBranchName());
                     processVersion.setScore(similarity);
                     similarProcesses.getProcessVersion().add(processVersion);
                 }

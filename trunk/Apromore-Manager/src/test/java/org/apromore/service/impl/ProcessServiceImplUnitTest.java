@@ -134,6 +134,7 @@ public class ProcessServiceImplUnitTest {
         String name = "processName";
         String format = "Annotations-BPMN";
         String subStr = "MN";
+        Double versionNumber = 1.0;
 
         Canonical cpf = new Canonical();
 
@@ -142,13 +143,13 @@ public class ProcessServiceImplUnitTest {
 
         DataSource result = new ByteArrayDataSource("<xml/>", "text/xml");
 
-        expect(natDao.getNative(processId, version, format)).andReturn(nat);
+        expect(natDao.getNative(processId, versionNumber, format)).andReturn(nat);
         //expect(rSrv.getCurrentProcessModel(name, version, false)).andReturn(cpf);
         //expect(annDao.getAnnotation(processId, version, subStr)).andReturn(annotation);
 
         replay(natDao);
 
-        ExportFormatResultType data = service.exportProcess(name, processId, version, format, subStr, true, new HashSet<RequestParameterType<?>>());
+        ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format, subStr, true, new HashSet<RequestParameterType<?>>());
 
         verify(natDao);
 

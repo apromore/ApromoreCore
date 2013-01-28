@@ -32,7 +32,6 @@ public class ProcessModelVersion implements Serializable {
     private Integer id;
     private String originalId;
     private Double versionNumber;
-    private String versionName;
     private Integer changePropagation;
     private Integer lockStatus;
     private Integer numVertices;
@@ -99,16 +98,6 @@ public class ProcessModelVersion implements Serializable {
 
     public void setVersionNumber(final Double newVersionNumber) {
         this.versionNumber = newVersionNumber;
-    }
-
-
-    @Column(name = "version_name", length = 200)
-    public String getVersionName() {
-        return this.versionName;
-    }
-
-    public void setVersionName(final String newVersionName) {
-        this.versionName = newVersionName;
     }
 
 
@@ -293,7 +282,6 @@ public class ProcessModelVersion implements Serializable {
                 .appendSuper(super.equals(obj))
                 .append(id, rhs.id)
                 .append(originalId, rhs.originalId)
-                .append(versionName, rhs.versionName)
                 .append(versionNumber, rhs.versionNumber)
                 .append(numVertices, rhs.numVertices)
                 .append(numEdges, rhs.numEdges)

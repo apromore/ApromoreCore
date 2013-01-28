@@ -27,12 +27,13 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Integer>
     /**
      * Get the Canonical format. this is just a string but contains the xml Canonical Format.
      * @param processId the processId of the Canonical format.
-     * @param versionName the version of the canonical format
-     * @param name the name of the annotation to get
+     * @param branchName the version of the canonical format
+     * @param versionNumber the process model version number
+     * @param annName the name of the annotation to get
      * @return the XML as a string
      */
-    @Query("SELECT a FROM Annotation a, ProcessModelVersion p WHERE a.processModelVersion.id = p.id " +
-            "AND p.processBranch.id = ?1 AND p.versionName = ?2 AND a.name = ?3")
-    Annotation getAnnotation(Integer processId, String versionName, String name);
+    @Query("SELECT a FROM Annotation a JOIN a.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3 AND a.name = ?4")
+    Annotation getAnnotation(Integer processId, String branchName, Double versionNumber, String annName);
 
 }

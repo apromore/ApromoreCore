@@ -11,52 +11,51 @@ import org.zkoss.zul.Listbox;
 
 public class ProcessVersionDetailController extends BaseDetailController {
 
-	private static final long serialVersionUID = 3661234712204860492L;
+    private static final long serialVersionUID = 3661234712204860492L;
 
-	private final Listbox listBox;
+    private final Listbox listBox;
 
-	public ProcessVersionDetailController(MainController mainController) {
-		super(mainController);
+    public ProcessVersionDetailController(MainController mainController) {
+        super(mainController);
 
-		this.listBox = ((Listbox) Executions.createComponents(
-				"macros/detail/processVersionsDetail.zul", getMainController(),
-				null));
+        this.listBox = ((Listbox) Executions.createComponents(
+                "macros/detail/processVersionsDetail.zul", getMainController(),
+                null));
 
-		getListBox().setItemRenderer(new VersionSummaryItemRenderer());
-		getListBox().setModel(new ListModelList());
+        getListBox().setItemRenderer(new VersionSummaryItemRenderer());
+        getListBox().setModel(new ListModelList());
 
-		appendChild(getListBox());
-	}
+        appendChild(getListBox());
+    }
 
-	public void displayProcessVersions(ProcessSummaryType data) {
-		getListModel().clearSelection();
-		getListModel().clear();
-		List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
-		getListModel().addAll(versionSummaries);
-		if (versionSummaries.size() > 0) {
-			getListModel().addSelection(
-					versionSummaries.get(versionSummaries.size() - 1));	
-		}
-	}
+    public void displayProcessVersions(ProcessSummaryType data) {
+        getListModel().clearSelection();
+        getListModel().clear();
+        List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
+        getListModel().addAll(versionSummaries);
+        if (versionSummaries.size() > 0) {
+            getListModel().addSelection(versionSummaries.get(versionSummaries.size() - 1));
+        }
+    }
 
-	protected ListModelList getListModel() {
-		return (ListModelList) listBox.getListModel();
-	}
+    protected ListModelList getListModel() {
+        return (ListModelList) listBox.getListModel();
+    }
 
-	protected Listbox getListBox() {
-		return listBox;
-	}
+    protected Listbox getListBox() {
+        return listBox;
+    }
 
-	public void clearProcesVersions() {
-		getListModel().clear();
-	}
-	
-	public VersionSummaryType getSelectedVersion() {
-		if (getListModel().getSelection().size() == 1) {
-			return (VersionSummaryType) getListModel().getSelection().iterator().next();	
-		} else {
-			return null;
-		}
-	}
+    public void clearProcessVersions() {
+        getListModel().clear();
+    }
+
+    public VersionSummaryType getSelectedVersion() {
+        if (getListModel().getSelection().size() == 1) {
+            return (VersionSummaryType) getListModel().getSelection().iterator().next();
+        } else {
+            return null;
+        }
+    }
 
 }

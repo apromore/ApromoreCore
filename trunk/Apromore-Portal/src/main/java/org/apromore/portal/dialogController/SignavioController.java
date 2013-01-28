@@ -5,19 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.sun.xml.bind.IDResolver;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.util.StreamUtil;
-import org.json.JSONException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Messagebox;
 
 
 /**
@@ -52,19 +46,18 @@ public class SignavioController extends BaseController {
             }
         });
 
-
         Map<String, String> param = new HashMap<String, String>();
         try {
             ExportFormatResultType exportResult =
                     getService().exportFormat(editSession.getProcessId(),
                             editSession.getProcessName(),
-                            editSession.getVersionName(),
+                            editSession.getOriginalBranchName(),
+                            editSession.getVersionNumber(),
                             editSession.getNativeType(),
                             editSession.getAnnotation(),
                             editSession.isWithAnnotation(),
                             editSession.getUsername(), new HashSet<RequestParameterType<?>>());
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-
 
             this.mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());

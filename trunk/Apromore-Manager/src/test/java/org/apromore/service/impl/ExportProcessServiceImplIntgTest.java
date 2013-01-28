@@ -1,5 +1,10 @@
 package org.apromore.service.impl;
 
+import java.util.HashSet;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ExportFormatResultType;
@@ -13,16 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -59,14 +58,13 @@ public class ExportProcessServiceImplIntgTest {
 
     @Test
     public void testExportProcessWithSingleEdgeInEPML() throws Exception {
-        String cpfURI = "1";
         String name = "Test EPML 1";
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(epmlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(), epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), 1.0, epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
         CanonisedProcess endCP = cSrv.canonise(epmlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
@@ -88,10 +86,9 @@ public class ExportProcessServiceImplIntgTest {
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(epmlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, epmlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(),
-                epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), 1.0, epmlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
         CanonisedProcess endCP = cSrv.canonise(epmlNativeType, endStream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
@@ -113,10 +110,9 @@ public class ExportProcessServiceImplIntgTest {
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
         CanonisedProcess startCP = cSrv.canonise(xpdlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, xpdlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, xpdlNativeType, startCP, startStream.getInputStream(), domain, "", created, lastUpdate);
 
-        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getVersionName(),
-                xpdlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
+        ExportFormatResultType result = pSrv.exportProcess(name, pst.getId(), pst.getProcessBranch().getBranchName(), 1.0, xpdlNativeType, "Initial", false, new HashSet<RequestParameterType<?>>(0));
         DataHandler endStream = result.getNative();
 
         // TODO: De-canonisations doesn't produce the same as input.

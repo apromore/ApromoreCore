@@ -109,7 +109,10 @@ CREATE TABLE `edit_session` (
     `userId` int(11) DEFAULT NULL,
     `processModelVersionId` int(11) NOT NULL,
     `processId` int(11) DEFAULT NULL,
-    `version_name` varchar(40) DEFAULT NULL,
+    `original_branch_name` varchar(40) DEFAULT NULL,
+    `new_branch_name` varchar(40) DEFAULT NULL,
+    `version_number` double DEFAULT NULL,
+    `create_new_branch` boolean DEFAULT NULL,
     `nat_type` varchar(20) DEFAULT NULL,
     `annotation` varchar(40) DEFAULT NULL,
     `remove_fake_events` tinyint(1) DEFAULT NULL,
@@ -181,7 +184,6 @@ CREATE TABLE `process_model_version` (
     `rootFragmentVersionId` int(11) DEFAULT NULL,
     `originalId` varchar(200),
     `version_number` double,
-    `version_name` varchar(200),
     `change_propagation` int,
     `lock_status` int,
     `num_nodes` int,
@@ -804,7 +806,6 @@ CREATE INDEX `id_user_username` ON `user` (`username`) USING BTREE;
 CREATE INDEX `id_process_name` ON `process` (`name`) USING BTREE;
 CREATE INDEX `id_branch_name` ON `process_branch` (`branch_name`) USING BTREE;
 CREATE INDEX `id_pmv_version` ON `process_model_version` (`version_number`) USING BTREE;
-CREATE INDEX `id_pmv_name` ON `process_model_version` (`version_name`) USING BTREE;
 CREATE INDEX `id_pmv_lock` ON `process_model_version` (`lock_status`) USING BTREE;
 CREATE INDEX `id_annotation_name` ON `annotation` (`name`) USING BTREE;
 CREATE INDEX `id_fv_lock` ON `fragment_version` (`lock_status`) USING BTREE;

@@ -63,7 +63,7 @@ public class SessionServiceImplIntgTest {
         session.setAnnotation("");
         session.setNatType("XPDL 1.2");
         session.setRemoveFakeEvents(Boolean.TRUE);
-        session.setVersionName("Test");
+        session.setVersionNumber(1.0);
         return sRepo.save(session);
     }
 

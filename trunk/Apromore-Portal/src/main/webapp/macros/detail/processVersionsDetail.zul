@@ -3,6 +3,7 @@
          emptyMessage="Select exactly one process!">
     <listhead sizable="true">
         <listheader hflex="min" label="Version" sort="auto(name)"/>
+        <listheader hflex="min" label="VersionNumber" sort="auto(name)"/>
         <listheader hflex="min" label="Last Update" sort="auto(lastUpdate)"/>
         <listheader hflex="min" label="Annotation(s)"/>
         <listheader hflex="min" label="Ranking" sort="auto(ranking)"/>

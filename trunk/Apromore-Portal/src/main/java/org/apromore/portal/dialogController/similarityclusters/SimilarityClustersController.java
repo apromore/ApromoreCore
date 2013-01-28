@@ -45,7 +45,6 @@ public class SimilarityClustersController extends BaseController {
      * Creates the dialog to create and show similarity clusters.
      *
      * @param mainC
-     * @param menuC
      * @throws org.zkoss.zk.ui.SuspendNotAllowedException
      *
      * @throws InterruptedException

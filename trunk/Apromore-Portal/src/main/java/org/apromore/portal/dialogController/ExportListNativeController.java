@@ -26,7 +26,7 @@ public class ExportListNativeController extends BaseController {
             for (final VersionSummaryType version : processVersions.get(process)) {
                 ExportOneNativeController exportNativeC =
                         new ExportOneNativeController(this, this.mainC, process.getId(), process.getName(), process.getOriginalNativeType(),
-                                version.getName(), version.getAnnotations(), this.mainC.getNativeTypes());
+                                version.getName(), version.getVersionNumber(), version.getAnnotations(), this.mainC.getNativeTypes());
                 this.toExportList.add(exportNativeC);
             }
         }

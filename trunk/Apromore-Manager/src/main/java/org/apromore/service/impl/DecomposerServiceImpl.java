@@ -118,7 +118,7 @@ public class DecomposerServiceImpl implements DecomposerService {
     private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode f, final String hash,
             final Map<String, String> childMappings, final int fragmentSize, final String fragmentType, final String keywords,
             OperationContext op) throws RepositoryException {
-        LOGGER.info("Adding Fragment Version: " + modelVersion.getVersionName());
+        LOGGER.info("Adding Fragment Version: " + modelVersion.getProcessBranch().getBranchName() + " - " + modelVersion.getVersionNumber());
 
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
