@@ -16,7 +16,7 @@ public interface SessionService {
      * @param sessionCode the session id.
      * @return the found session.
      */
-    EditSession readSession(int sessionCode);
+    EditSession readSession(Integer sessionCode);
 
 
     /**
@@ -30,5 +30,5 @@ public interface SessionService {
      * Removes a session from the Repository.
      * @param sessionCode the session id
      */
-    void deleteSession(int sessionCode);
+    void deleteSession(Integer sessionCode);
 }

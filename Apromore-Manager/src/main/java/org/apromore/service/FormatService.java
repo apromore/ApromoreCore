@@ -46,6 +46,6 @@ public interface FormatService {
      * @param cp
      * @throws JAXBException if it fails....
      */
-    void storeNative(String procName, String version, ProcessModelVersion processId, InputStream cpf, String created, String lastUpdate, User user, NativeType nativeType, CanonisedProcess cp)
-            throws JAXBException;
+    void storeNative(String procName, Double version, ProcessModelVersion processId, InputStream cpf, String created, String lastUpdate, User user,
+        NativeType nativeType, CanonisedProcess cp)  throws JAXBException;
 }

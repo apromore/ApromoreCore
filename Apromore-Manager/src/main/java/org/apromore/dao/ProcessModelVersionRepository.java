@@ -27,36 +27,38 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
     ProcessModelVersion findProcessModelVersionByBranch(Integer branchId, String branchName);
 
     /**
-     * Gets the list of Used Fragment Models for a fragment version Id.
-     * @param uri the fragment version uri if we are searching for used models
-     * @return the list of found fragment model versions
+     * For a process Model and Branch what is the max version number we have, this query gets that version number.
+     * @param processId the process Identifier.
+     * @param branchName the branch Name.
+     * @return the found version number.
      */
-    @Query("SELECT pm FROM ProcessModelVersion pm WHERE pm.rootFragmentVersion.uri = ?1")
-    List<ProcessModelVersion> getUsedProcessModelVersionsByURI(String uri);
+    @Query("SELECT max(pmv.versionNumber) FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pb.branchName = ?2")
+    Double findMaxVersionNumberByProcessIdAndBranchName(Integer processId, String branchName);
 
     /**
-     * Find the current process model for the process id and name combination.
+     * Find the process model version for the process id branch and version.
      * @param processId the process id.
-     * @param processName the process name.
+     * @param branchName the branch name.
+     * @param versionNumber the pmv version number.
      * @return processModelVersion we found or null.
      */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv, Process p, ProcessBranch pb WHERE p.id = pb.process.id " +
-            "AND pb.id = pmv.processBranch.id AND p.id = ?1 AND pmv.versionName = ?2")
-    ProcessModelVersion getCurrentVersion(Integer processId, String processName);
-
+    @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3")
+    List<ProcessModelVersion> getProcessModelVersion(Integer processId, String branchName, Double versionNumber);
 
     /**
-     * find the current process model version for the branch provided.
+     * find the current process model version for the process and version details provided.
      * @param processId the branch name
-     * @param versionName the version Name
+     * @param versionNumber the version Number
      * @return the process model version.
      */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv, Process p, ProcessBranch pb WHERE p.id = pb.process.id " +
-            "AND pb.id = pmv.processBranch.id AND p.id = ?1 AND pmv.versionName = ?2")
-    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String versionName);
+    @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pmv.versionNumber = ?2")
+    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, double versionNumber);
 
     /**
-     * find the current process model version for the processname and branch provided.
+     * find the current process model version for the process name and branch provided.
      * @param processName the process name
      * @param branchName the branch name
      * @return the process model version.
@@ -71,7 +73,6 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             "                    AND p1.name = ?1 AND pb1.branchName = ?2))")
     List<ProcessModelVersion> getCurrentProcessModelVersion(String processName, String branchName);
 
-
     /**
      * Returns all the ProcessModels for all version or the latest versions.
      * @return returns the list of processModelVersions
@@ -82,7 +83,11 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             "ORDER by pb.id, pb.creationDate")
     List<ProcessModelVersion> getLatestProcessModelVersions();
 
-
+    /**
+     * Find all process model version that use the fragment version.
+     * @param originalFragmentVersion the fragment version we are looking for that has been used.
+     * @return the found list of process model versions.
+     */
     @Query("SELECT pmv FROM ProcessModelVersion pmv WHERE pmv.rootFragmentVersion = ?1")
     List<ProcessModelVersion> getUsedProcessModelVersions(final FragmentVersion originalFragmentVersion);
 
@@ -95,7 +100,6 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             "WHERE f.id = pmv.rootFragmentVersion.id AND f.fragmentSize > ?1")
     List<Integer> getRootFragments(int minSize);
 
-
     /**
      * Count the number of times this fragment version has been the root fragment for a process.
      * @param fragmentVersion the fragment version we are checking to see if has been used multiple times.
@@ -103,4 +107,5 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      */
     @Query("SELECT count(pmv) from ProcessModelVersion pmv WHERE pmv.rootFragmentVersion = ?1")
     long countFragmentUsesInProcessModels(FragmentVersion fragmentVersion);
+
 }

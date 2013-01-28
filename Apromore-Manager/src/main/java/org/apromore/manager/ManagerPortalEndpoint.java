@@ -1,4 +1,4 @@
-package org.apromore.manager.service;
+package org.apromore.manager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,7 +28,6 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.client.helper.CanoniserHelper;
 import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.mapper.ClusterMapper;
@@ -36,14 +35,133 @@ import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
-import org.apromore.model.*;
+import org.apromore.model.AddProcessToFolderInputMsgType;
+import org.apromore.model.AddProcessToFolderOutputMsgType;
+import org.apromore.model.ClusterSummaryType;
+import org.apromore.model.ClusterType;
+import org.apromore.model.ClusteringSummaryType;
+import org.apromore.model.CreateClustersInputMsgType;
+import org.apromore.model.CreateClustersOutputMsgType;
+import org.apromore.model.CreateFolderInputMsgType;
+import org.apromore.model.CreateFolderOutputMsgType;
+import org.apromore.model.DeleteEditSessionInputMsgType;
+import org.apromore.model.DeleteEditSessionOutputMsgType;
+import org.apromore.model.DeleteFolderInputMsgType;
+import org.apromore.model.DeleteFolderOutputMsgType;
+import org.apromore.model.DeleteProcessVersionsInputMsgType;
+import org.apromore.model.DeleteProcessVersionsOutputMsgType;
+import org.apromore.model.DeployProcessInputMsgType;
+import org.apromore.model.DeployProcessOutputMsgType;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditProcessDataInputMsgType;
+import org.apromore.model.EditProcessDataOutputMsgType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatInputMsgType;
+import org.apromore.model.ExportFormatOutputMsgType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.FolderType;
+import org.apromore.model.FragmentResponseType;
+import org.apromore.model.FragmentType;
+import org.apromore.model.GetBreadcrumbsInputMsgType;
+import org.apromore.model.GetBreadcrumbsOutputMsgType;
+import org.apromore.model.GetClusterInputMsgType;
+import org.apromore.model.GetClusterOutputMsgType;
+import org.apromore.model.GetClusterSummariesInputMsgType;
+import org.apromore.model.GetClusterSummariesOutputMsgType;
+import org.apromore.model.GetClusteringSummaryInputMsgType;
+import org.apromore.model.GetClusteringSummaryOutputMsgType;
+import org.apromore.model.GetClustersRequestType;
+import org.apromore.model.GetClustersResponseType;
+import org.apromore.model.GetFolderUsersInputMsgType;
+import org.apromore.model.GetFolderUsersOutputMsgType;
+import org.apromore.model.GetFragmentRequestType;
+import org.apromore.model.GetPairwiseDistancesInputMsgType;
+import org.apromore.model.GetPairwiseDistancesOutputMsgType;
+import org.apromore.model.GetProcessUsersInputMsgType;
+import org.apromore.model.GetProcessUsersOutputMsgType;
+import org.apromore.model.GetProcessesInputMsgType;
+import org.apromore.model.GetProcessesOutputMsgType;
+import org.apromore.model.GetSubFoldersInputMsgType;
+import org.apromore.model.GetSubFoldersOutputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.ImportProcessInputMsgType;
+import org.apromore.model.ImportProcessOutputMsgType;
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.LoginInputMsgType;
+import org.apromore.model.LoginOutputMsgType;
+import org.apromore.model.MergeProcessesInputMsgType;
+import org.apromore.model.MergeProcessesOutputMsgType;
+import org.apromore.model.NativeMetaData;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.ObjectFactory;
+import org.apromore.model.PairDistancesType;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginParameters;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionIdType;
+import org.apromore.model.ProcessVersionIdentifierType;
+import org.apromore.model.ProcessVersionIdsType;
+import org.apromore.model.ReadAllUsersInputMsgType;
+import org.apromore.model.ReadAllUsersOutputMsgType;
+import org.apromore.model.ReadCanoniserInfoInputMsgType;
+import org.apromore.model.ReadCanoniserInfoOutputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
+import org.apromore.model.ReadDomainsInputMsgType;
+import org.apromore.model.ReadDomainsOutputMsgType;
+import org.apromore.model.ReadEditSessionInputMsgType;
+import org.apromore.model.ReadEditSessionOutputMsgType;
+import org.apromore.model.ReadInitialNativeFormatInputMsgType;
+import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
+import org.apromore.model.ReadInstalledPluginsInputMsgType;
+import org.apromore.model.ReadInstalledPluginsOutputMsgType;
+import org.apromore.model.ReadNativeMetaDataInputMsgType;
+import org.apromore.model.ReadNativeMetaDataOutputMsgType;
+import org.apromore.model.ReadNativeTypesInputMsgType;
+import org.apromore.model.ReadNativeTypesOutputMsgType;
+import org.apromore.model.ReadPluginInfoInputMsgType;
+import org.apromore.model.ReadPluginInfoOutputMsgType;
+import org.apromore.model.ReadProcessSummariesInputMsgType;
+import org.apromore.model.ReadProcessSummariesOutputMsgType;
+import org.apromore.model.ReadUserInputMsgType;
+import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.RemoveFolderPermissionsInputMsgType;
+import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
+import org.apromore.model.RemoveProcessPermissionsInputMsgType;
+import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
+import org.apromore.model.ResultType;
+import org.apromore.model.SaveFolderPermissionsInputMsgType;
+import org.apromore.model.SaveFolderPermissionsOutputMsgType;
+import org.apromore.model.SaveProcessPermissionsInputMsgType;
+import org.apromore.model.SaveProcessPermissionsOutputMsgType;
+import org.apromore.model.SearchForSimilarProcessesInputMsgType;
+import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchUserInputMsgType;
+import org.apromore.model.SearchUserOutputMsgType;
+import org.apromore.model.UpdateFolderInputMsgType;
+import org.apromore.model.UpdateFolderOutputMsgType;
+import org.apromore.model.UpdateProcessInputMsgType;
+import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UserFolderType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.WriteAnnotationInputMsgType;
+import org.apromore.model.WriteAnnotationOutputMsgType;
+import org.apromore.model.WriteEditSessionInputMsgType;
+import org.apromore.model.WriteEditSessionOutputMsgType;
+import org.apromore.model.WriteUserInputMsgType;
+import org.apromore.model.WriteUserOutputMsgType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -100,8 +218,6 @@ public class ManagerPortalEndpoint {
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
-    private CanonicalConverter convertor;
-    private ManagerCanoniserClient caClient;
 
 
 
@@ -122,16 +238,13 @@ public class ManagerPortalEndpoint {
      * @param secSrv security Service.
      * @param wrkSrv workspace service.
      * @param uiHelper UI Helper.
-     * @param convertor Convertor
-     * @param caClient Old Canoniser Service
      */
     @Inject
     public ManagerPortalEndpoint(final DeploymentService deploymentService, final PluginService pluginService,
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv, final SessionService sesSrv,
-            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
-            final CanonicalConverter convertor, final ManagerCanoniserClient caClient) {
+            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -147,8 +260,6 @@ public class ManagerPortalEndpoint {
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
-        this.convertor = convertor;
-        this.caClient = caClient;
     }
 
 
@@ -166,8 +277,8 @@ public class ManagerPortalEndpoint {
             String processName = payload.getProcessName();
             String domain = payload.getDomain();
             String username = payload.getOwner();
-            String preVersion = payload.getPreName();
-            String newVersion = payload.getNewName();
+            Double preVersion = payload.getPreVersion();
+            Double newVersion = payload.getNewVersion();
             String ranking = payload.getRanking();
 
             procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking);
@@ -272,16 +383,16 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            Integer editSessionCode = payload.getEditSessionCode();
-            String annotName = payload.getAnnotationName();
-            Integer processId = payload.getProcessId();
-            String version = payload.getVersion();
-            String nat_type = payload.getNativeType();
-            Boolean isNew = payload.isIsNew();
-            DataHandler handler = payload.getNative();
-            InputStream native_is = handler.getInputStream();
-            // TODO use CanoniserService instead
-            caClient.GenerateAnnotation(annotName, editSessionCode, isNew, processId, version, nat_type, native_is);
+//            Integer editSessionCode = payload.getEditSessionCode();
+//            String annotName = payload.getAnnotationName();
+//            Integer processId = payload.getProcessId();
+//            String version = payload.getVersion();
+//            String nat_type = payload.getNativeType();
+//            Boolean isNew = payload.isIsNew();
+//            DataHandler handler = payload.getNative();
+//            InputStream native_is = handler.getInputStream();
+//            // TODO use CanoniserService instead
+//            caClient.GenerateAnnotation(annotName, editSessionCode, isNew, processId, version, nat_type, native_is);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
@@ -371,27 +482,15 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         try {
 
-            EditSessionType editSessionP = payload.getEditSession();
+            EditSessionType editType = payload.getEditSession();
             InputStream native_is = payload.getNative().getInputStream();
-//            int editSessionCode = payload.getEditSessionCode();
-//            EditSessionType editSessionC = new EditSessionType();
-//            editSessionC.setProcessId(editSessionP.getProcessId());
-//            editSessionC.setNativeType(editSessionP.getNativeType());
-//            editSessionC.setAnnotation(editSessionP.getAnnotation());
-//            editSessionC.setCreationDate(editSessionP.getCreationDate());
-//            editSessionC.setLastUpdate(editSessionP.getLastUpdate());
-//            editSessionC.setProcessName(editSessionP.getProcessName());
-//            editSessionC.setUsername(editSessionP.getUsername());
-//            editSessionC.setVersionName(editSessionP.getVersionName());
-//            caClient.CanoniseVersion(editSessionCode, editSessionC, newCpfURI(), native_is);
 
-            // TODO: Update process needs to work with the existing data, but we need to
-            // TODO: update the EditSessionType to have version number.
             Set<RequestParameterType<?>> canoniserProperties = new HashSet<RequestParameterType<?>>(0);
-            CanonisedProcess canonisedProcess = canoniserService.canonise(editSessionP.getNativeType(), native_is, canoniserProperties);
+            CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
-            procSrv.updateProcess(editSessionP.getProcessName(), editSessionP.getVersionName(), "1.0", secSrv.getUserByName(editSessionP.getUsername()),
-                 Constants.LOCKED, canonisedProcess);
+            procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
+                    editType.getVersionNumber(), editType.isCreateNewBranch(), secSrv.getUserByName(editType.getUsername()), Constants.LOCKED,
+                    canonisedProcess);
 
             result.setCode(0);
             result.setMessage("");
@@ -419,8 +518,11 @@ public class ManagerPortalEndpoint {
             editSessionP.setNativeType(session.getNatType());
             editSessionP.setProcessId(session.getProcess().getId());
             editSessionP.setUsername(session.getUser().getUsername());
-            editSessionP.setVersionName(session.getVersionName());
+            editSessionP.setVersionNumber(session.getVersionNumber());
             editSessionP.setProcessName(session.getProcess().getName());
+            editSessionP.setOriginalBranchName(session.getOriginalBranchName());
+            editSessionP.setNewBranchName(session.getNewBranchName());
+            editSessionP.setCreateNewBranch(session.getCreateNewBranch());
             editSessionP.setDomain(session.getProcess().getDomain());
             editSessionP.setCreationDate(session.getCreationDate());
             editSessionP.setLastUpdate(session.getLastUpdate());
@@ -498,13 +600,14 @@ public class ManagerPortalEndpoint {
         try {
             Integer processId = payload.getProcessId();
             String name = payload.getProcessName();
-            String version = payload.getVersionName();
+            String branch = payload.getBranchName();
+            Double version = payload.getVersionNumber();
             String format = payload.getFormat();
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
 
             Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(payload.getCanoniserParameters());
-            ExportFormatResultType exportResult = procSrv.exportProcess(name, processId, version, format, annName, withAnn, requestProperties);
+            ExportFormatResultType exportResult = procSrv.exportProcess(name, processId, branch, version, format, annName, withAnn, requestProperties);
             res.setExportResult(exportResult);
 
             result.setCode(0);
@@ -532,7 +635,8 @@ public class ManagerPortalEndpoint {
             EditSessionType editSession = payload.getEditSession();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
-            String versionName = editSession.getVersionName();
+            String branchName = editSession.getOriginalBranchName();
+            Double versionNumber = editSession.getVersionNumber();
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
@@ -543,12 +647,10 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-
-            ProcessModelVersion pmv = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType,
+            ProcessModelVersion pmv = procSrv.importProcess(username, processName, versionNumber, nativeType,
                     canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
-
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
-                    pmv.getVersionName(), versionName, nativeType, domain, creationDate, lastUpdate, username);
+                    branchName, versionNumber, nativeType, domain, creationDate, lastUpdate, username);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {

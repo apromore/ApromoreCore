@@ -71,7 +71,7 @@ public class UpdateProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
         assertThat(pst, notNullValue());
         em.flush();
 
@@ -79,7 +79,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(name, branch, "1.0", user, Constants.LOCKED, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.0, Boolean.FALSE, user, Constants.LOCKED, cp);
         em.flush();
 
         // Delete Process

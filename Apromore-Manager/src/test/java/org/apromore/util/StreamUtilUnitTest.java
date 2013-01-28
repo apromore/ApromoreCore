@@ -140,7 +140,7 @@ public class StreamUtilUnitTest {
 
         String nativeType = "XPDL 2.1";
         String name = "bob43";
-        String version = "999.9";
+        double version = 99.9;
         String username = "Osama";
         String created = "12/12/2012";
         String updated = "12/12/2012";
@@ -150,7 +150,6 @@ public class StreamUtilUnitTest {
         String result = StreamUtil.convertStreamToString(stream2);
 
         assertThat(result, containsString(name));
-        assertThat(result, containsString(version));
         assertThat(result, containsString(username));
         assertThat(result, containsString(created));
         assertThat(result, containsString(updated));
@@ -160,7 +159,7 @@ public class StreamUtilUnitTest {
     public void testCopyParam2NPFEPML() throws Exception {
         String nativeType = "EPML 2.0";
         String name = "bob43";
-        String version = "999.9";
+        double version = 99.9;
         String username = "Osama";
         String created = "12/12/2012";
         String updated = "12/12/2012";
@@ -222,7 +221,7 @@ public class StreamUtilUnitTest {
     public void testCopyParam2NPFPMNL() throws Exception {
         String nativeType = "PMNL 2.0";
         String name = "bob43";
-        String version = "999.9";
+        double version = 99.9;
         String username = "Osama";
         String created = "12/12/2012";
         String updated = "12/12/2012";

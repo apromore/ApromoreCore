@@ -46,6 +46,7 @@ public class ExportOneNativeController extends BaseController {
     private final Listbox formatsLB;
     private final int processId;
     private final String versionName;
+    private final Double versionNumber;
     private final HashMap<String, String> formats_ext;
     // <k, v> belongs to nativeTypes: the file extension k
     // is associated with the native type v (<xpdl,XPDL 1.2>)
@@ -54,9 +55,9 @@ public class ExportOneNativeController extends BaseController {
 
     private SelectDynamicListController canoniserCB;
 
-    public ExportOneNativeController(final ExportListNativeController exportListControllerC, final MainController mainC, final int processId, final String processName,
-            final String originalType, final String versionName, final List<AnnotationsType> annotations, final HashMap<String, String> formats_ext)
-            throws SuspendNotAllowedException, InterruptedException {
+    public ExportOneNativeController(final ExportListNativeController exportListControllerC, final MainController mainC, final int processId,
+            final String processName, final String originalType, final String versionName, Double versionNumber,
+            final List<AnnotationsType> annotations, final HashMap<String, String> formats_ext) throws SuspendNotAllowedException, InterruptedException {
 
         this.mainC = mainC;
         this.exportListControllerC = exportListControllerC;
@@ -64,6 +65,7 @@ public class ExportOneNativeController extends BaseController {
         this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
         this.processId = processId;
         this.versionName = versionName;
+        this.versionNumber = versionNumber;
         this.formats_ext = formats_ext;
         String id = this.processId + " " + this.versionName;
         this.exportNativeW.setId(id);
@@ -262,12 +264,9 @@ public class ExportOneNativeController extends BaseController {
                 if (ext == null) {
                     throw new ExceptionExport("Format type " + format + " not supported.");
                 }
-                String processname = this.processNameL.getValue().replaceAll(" ", "_");
-                processname = this.processNameL.getValue().replaceAll(".", "_");
-                processname = this.processNameL.getValue().replaceAll(",", "_");
-                processname = this.processNameL.getValue().replaceAll(":", "_");
-                processname = this.processNameL.getValue().replaceAll(";", "_");
-                String filename = processname + "." + ext;
+                String processName = this.processNameL.getValue().replaceAll(" ", "_").replaceAll(".", "_").replaceAll(",", "_").replaceAll(":", "_")
+                        .replaceAll(";", "_");
+                String filename = processName + "." + ext;
                 String annotation = null;
                 Boolean withAnnotation;
                 if (this.annotationsLB.getSelectedItem() != null) {
@@ -276,8 +275,9 @@ public class ExportOneNativeController extends BaseController {
                 } else {
                     withAnnotation = false;
                 }
-                ExportFormatResultType exportResult = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
-                        UserSessionManager.getCurrentUser().getUsername(), pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
+                ExportFormatResultType exportResult = getService().exportFormat(this.processId, processName, this.versionName, this.versionNumber,
+                        format, annotation, withAnnotation, UserSessionManager.getCurrentUser().getUsername(),
+                        pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
                 try (InputStream native_is = exportResult.getNative().getInputStream()) {
                     this.mainC.showPluginMessages(exportResult.getMessage());
                     Filedownload.save(native_is, "text/xml", filename);

@@ -61,48 +61,8 @@
 
     <!-- ************************** Non WebServices ************************** -->
 
-    <bean id="dataAccessCanoniserManager" class="org.apromore.dao.service.DataAccessCanoniserManagerImpl" />
-    <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
-    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient" p:manager-ref="dataAccessCanoniserManager" />
-    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient" p:manager-ref="canoniserManager" />
-
     <bean id="canonicalToGraph" class="org.apromore.graph.canonical.converter.CanonicalToGraph" />
     <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
-
-    <!--<bean id="ClusterService" class="org.apromore.service.impl.ClusterServiceImpl" />-->
-    <!--<bean id="CanoniserService" class="org.apromore.service.impl.CanoniserServiceImpl" />-->
-    <!--<bean id="ContentService" class="org.apromore.service.impl.ContentServiceImpl" />-->
-    <!--<bean id="DomainService" class="org.apromore.service.impl.DomainServiceImpl" />-->
-    <!--<bean id="FormatService" class="org.apromore.service.impl.FormatServiceImpl" />-->
-    <!--<bean id="FragmentService" class="org.apromore.service.impl.FragmentServiceImpl" />-->
-    <!--<bean id="GraphService" class="org.apromore.service.impl.GraphServiceImpl" />-->
-    <!--<bean id="LockService" class="org.apromore.service.impl.LockServiceImpl" />-->
-    <!--<bean id="ProcessService" class="org.apromore.service.impl.ProcessServiceImpl" />-->
-    <!--<bean id="RepositoryService" class="org.apromore.service.impl.RepositoryServiceImpl" />-->
-    <!--<bean id="SimilarityService" class="org.apromore.service.impl.SimilarityServiceImpl" />-->
-    <!--<bean id="MergeService" class="org.apromore.service.impl.MergeServiceImpl" />-->
-    <!--<bean id="SessionService" class="org.apromore.service.impl.SessionServiceImpl" />-->
-    <!--<bean id="UserService" class="org.apromore.service.impl.UserServiceImpl" />-->
-    <!--<bean id="DeploymentService" class="org.apromore.service.impl.DeploymentServiceImpl" />-->
-    <!--<bean id="PluginService" class="org.apromore.service.impl.PluginServiceImpl" />    -->
-
-    <!--<bean id="ComposerService" class="org.apromore.service.impl.ComposerServiceImpl" />-->
-    <!--<bean id="DecomposerService" class="org.apromore.service.impl.DecomposerServiceImpl" />-->
-
-    <!--<bean id="CanonicalConverter" class="org.apromore.service.impl.CanonicalConverterAdapter" />-->
-    <!--<bean id="UIHelper" class="org.apromore.service.helper.UIHelper" />-->
-    <!--<bean id="BondContentHandler" class="org.apromore.service.helper.BondContentHandler" />-->
-    <!--<bean id="ChangePropagator" class="org.apromore.service.helper.ChangePropagator" />-->
-    <!--<bean id="PocketMapper" class="org.apromore.service.helper.PocketMapper" />-->
-
-    <!--<bean id="GEDMatrix" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryGEDMatrix" />-->
-    <!--<bean id="ClusterAnalyzer" class="org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer" />-->
-    <!--<bean id="DBscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer" />-->
-    <!--<bean id="ExcludedObjectDbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryExcludedObjectClusterer" />-->
-    <!--<bean id="DBscanHierarchyFilter" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryHierarchyBasedFilter" />-->
-    <!--<bean id="DistanceMatrix" class="org.apromore.service.impl.DistanceMatrix" />-->
-    <!--<bean id="ContainmentRelation" class="org.apromore.clustering.containment.ContainmentRelationImpl" />-->
-    <!--<bean id="DissimilarityMatrix" class="org.apromore.clustering.hierarchy.HierarchyAwareDissimMatrixGenerator" />-->
 
     <!-- Plugin Beans (Workaround until OSGi is here) -->
     <bean id="springPluginProvider" class="org.apromore.plugin.provider.impl.SimpleSpringPluginProvider"/>

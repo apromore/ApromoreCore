@@ -152,8 +152,8 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2NPF(final InputStream process_xml, final String nativeType, final String processName, final String version, final String username,
-            final String creationDate, final String lastUpdate) throws JAXBException {
+    public static InputStream copyParam2NPF(final InputStream process_xml, final String nativeType, final String processName, final Double version,
+            final String username, final String creationDate, final String lastUpdate) throws JAXBException {
         InputStream res = process_xml;
 
         //TODO why should that be done? was the native format changed? if yes then it was result of decanonisation so the canoniser should care about this

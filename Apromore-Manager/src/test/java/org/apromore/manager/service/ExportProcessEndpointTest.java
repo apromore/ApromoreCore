@@ -1,10 +1,16 @@
 package org.apromore.manager.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
+import javax.activation.DataHandler;
+import javax.xml.bind.JAXBElement;
+
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
-import org.apromore.manager.canoniser.ManagerCanoniserClient;
+import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
@@ -14,7 +20,6 @@ import org.apromore.model.PluginParameter;
 import org.apromore.model.PluginParameters;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.message.PluginMessageImpl;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -31,7 +36,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.impl.CanonicalConverterAdapter;
 import org.apromore.service.impl.CanoniserServiceImpl;
 import org.apromore.service.impl.ClusterServiceImpl;
 import org.apromore.service.impl.DeploymentServiceImpl;
@@ -51,12 +55,6 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXBElement;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
@@ -84,8 +82,6 @@ public class ExportProcessEndpointTest {
     private SecurityService secSrv;
     private WorkspaceService wrkSrv;
     private UserInterfaceHelper uiHelper;
-    private CanonicalConverter convertor;
-    private ManagerCanoniserClient caClient;
 
     @Before
     public void setUp() throws Exception {
@@ -104,11 +100,9 @@ public class ExportProcessEndpointTest {
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
-        convertor = createMock(CanonicalConverterAdapter.class);
-        caClient = createMock(ManagerCanoniserClient.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper, convertor, caClient);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper);
     }
 
 
@@ -122,7 +116,8 @@ public class ExportProcessEndpointTest {
         msg.setOwner("test");
         msg.setProcessId(123);
         msg.setProcessName("test");
-        msg.setVersionName("1.0");
+        msg.setBranchName("1.0");
+        msg.setVersionNumber(1.0);
         msg.setWithAnnotations(true);
 
         PluginParameters properties = new PluginParameters();
@@ -146,8 +141,8 @@ public class ExportProcessEndpointTest {
         ExportFormatResultType exportFormatResultType = new ExportFormatResultType();
         exportFormatResultType.setMessage(new PluginMessages());
         exportFormatResultType.setNative(new DataHandler(TestData.EPML, "text/xml"));
-        expect(procSrv.exportProcess(eq(msg.getProcessName()), eq(msg.getProcessId()), eq(msg.getVersionName()), eq(msg.getFormat()),
-                        eq(msg.getAnnotationName()), EasyMock.anyBoolean(), anyObject(Set.class))).andReturn(exportFormatResultType);
+        expect(procSrv.exportProcess(eq(msg.getProcessName()), eq(msg.getProcessId()), eq(msg.getBranchName()), eq(msg.getVersionNumber()),
+                eq(msg.getFormat()), eq(msg.getAnnotationName()), EasyMock.anyBoolean(), anyObject(Set.class))).andReturn(exportFormatResultType);
         replayAll();
 
         JAXBElement<ExportFormatOutputMsgType> response = endpoint.exportFormat(request);
