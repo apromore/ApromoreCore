@@ -106,7 +106,7 @@ public interface ProcessService {
      * @param cpf the process model graph.
      */
     ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName, Double versionNumber,
-            Boolean createNewBranch, User user, String lockStatus, CanonisedProcess cpf) throws RepositoryException;
+            Boolean createNewBranch, User user, String lockStatus, CanonisedProcess cpf) throws ImportException, RepositoryException;
 
 
     /**

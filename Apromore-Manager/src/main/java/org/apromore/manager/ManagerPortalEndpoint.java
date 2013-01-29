@@ -635,7 +635,6 @@ public class ManagerPortalEndpoint {
             EditSessionType editSession = payload.getEditSession();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
-            String branchName = editSession.getOriginalBranchName();
             Double versionNumber = editSession.getVersionNumber();
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
@@ -650,7 +649,7 @@ public class ManagerPortalEndpoint {
             ProcessModelVersion pmv = procSrv.importProcess(username, processName, versionNumber, nativeType,
                     canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
-                    branchName, versionNumber, nativeType, domain, creationDate, lastUpdate, username);
+                    pmv.getProcessBranch().getBranchName(), versionNumber, nativeType, domain, creationDate, lastUpdate, username);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {

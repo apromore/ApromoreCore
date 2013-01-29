@@ -264,8 +264,11 @@ public class ExportOneNativeController extends BaseController {
                 if (ext == null) {
                     throw new ExceptionExport("Format type " + format + " not supported.");
                 }
-                String processName = this.processNameL.getValue().replaceAll(" ", "_").replaceAll(".", "_").replaceAll(",", "_").replaceAll(":", "_")
-                        .replaceAll(";", "_");
+                String processName = this.processNameL.getValue().replaceAll(" ", "_");
+                processName = this.processNameL.getValue().replaceAll(".", "_");
+                processName = this.processNameL.getValue().replaceAll(",", "_");
+                processName = this.processNameL.getValue().replaceAll(":", "_");
+                processName = this.processNameL.getValue().replaceAll(";", "_");
                 String filename = processName + "." + ext;
                 String annotation = null;
                 Boolean withAnnotation;

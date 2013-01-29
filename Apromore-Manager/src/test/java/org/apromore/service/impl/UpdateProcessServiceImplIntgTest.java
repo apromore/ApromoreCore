@@ -53,7 +53,7 @@ public class UpdateProcessServiceImplIntgTest {
     private EntityManager em;
 
     private String username = "james";
-    private String version = "1.0";
+    private Double version = 1d;
     private String domain = "Tests";
     private String created = "12/12/2011";
     private String lastUpdate = "12/12/2011";
@@ -64,14 +64,13 @@ public class UpdateProcessServiceImplIntgTest {
     @Rollback(true)
     public void testImportUpdateThenDeleteModel() throws Exception {
         String natType = "EPML 2.0";
-        String name = "AudioTest1";
+        String name = "AudioTest2";
         String branch = "MAIN";
-        String cpfURI = "1";
 
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
         assertThat(pst, notNullValue());
         em.flush();
 
@@ -79,7 +78,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.0, Boolean.FALSE, user, Constants.LOCKED, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", version, Boolean.FALSE, user, Constants.LOCKED, cp);
         em.flush();
 
         // Delete Process
