@@ -625,6 +625,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setAnnotationName(annotationName);
         msg.setWithAnnotations(withAnnotations);
         msg.setProcessName(processName);
+        msg.setVersionNumber(versionNumber);
         msg.setOwner(owner);
 
         msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));

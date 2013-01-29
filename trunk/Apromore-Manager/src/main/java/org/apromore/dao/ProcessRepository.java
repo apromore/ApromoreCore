@@ -24,11 +24,12 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
     List<String> getAllDomains();
 
     /**
-     * Returns the process object for the record that contains the passed in process name.
-     * @param processName the identifier of the process
-     * @return the process
+     * Returns the process object the has this name and joins to a branch with a certain name.
+     * @param processName the processName;
+     * @param branchName the branchName;
+     * @return the process if found or null if nothing found
      */
-    @Query("SELECT p FROM Process p WHERE p.name = ?1")
-    Process getProcessByName(String processName);
+    @Query("SELECT p FROM ProcessBranch pb JOIN pb.process p WHERE p.name = ?1 AND pb.branchName = ?2")
+    Process getProcessByNameAndBranchName(String processName, String branchName);
 
 }

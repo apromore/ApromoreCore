@@ -13,7 +13,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 public class ExportListNativeController extends BaseController {
     private MainController mainC;        // the main controller
     private List<ExportOneNativeController> toExportList; // list of exports to do
-    private List<ExportOneNativeController> exportedList; //list of exports done
+    private List<ExportOneNativeController> exportedList; // list of exports done
 
     public ExportListNativeController(MainController mainC, MenuController menuC,
             HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions)
