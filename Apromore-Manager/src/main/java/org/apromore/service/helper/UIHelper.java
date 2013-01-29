@@ -83,6 +83,7 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setName(branchName);
         verType.setCreationDate(created);
         verType.setLastUpdate(lastUpdate);
+        verType.setVersionNumber(versionNumber);
         verType.setRanking("");
 
         annType.setNativeType(nativeType);

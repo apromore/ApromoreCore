@@ -206,10 +206,11 @@ CREATE TABLE `net` (
     KEY (`processId`) USING BTREE,
     KEY (`processModelVersionId`) USING BTREE,
     CONSTRAINT `FK_processModelVersions` FOREIGN KEY (`processModelVersionId`)
-        REFERENCES `process_model_version` (`id`),
+        REFERENCES `process_model_version` (`id`)
+        ON UPDATE CASCADE,
     CONSTRAINT `fk_process_net` FOREIGN KEY (`processId`)
         REFERENCES `process` (`id`)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON UPDATE CASCADE
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `process_branch` ADD CONSTRAINT `fk_source_version` FOREIGN KEY (`sourceProcessModelVersion`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
