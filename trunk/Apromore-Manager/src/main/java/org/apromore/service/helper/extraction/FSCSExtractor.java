@@ -21,23 +21,23 @@ import org.apromore.util.FragmentUtil;
 public class FSCSExtractor {
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
-        FragmentUtil.removeEdges(f, cf.getEdges());
+    public static CPFNode extract(FragmentNode parent, FragmentNode child, Canonical g) {
+        FragmentUtil.removeEdges(parent, child.getEdges());
 
         // We have to identify the edges in the parent fragment (f) that connect to the boundary nodes of the child
         // fragment (cf). In this special case, child fragment has only one boundary node (i.e. childB1 = childB2).
 
-        CPFNode childB1 = cf.getEntry();
-        Collection<CPFEdge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, f.getEdges());
-        FragmentUtil.removeEdges(fragmentLink1, cf.getEdges());
-        FragmentUtil.removeEdges(f, fragmentLink1);
+        CPFNode childB1 = child.getEntry();
+        Collection<CPFEdge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, parent.getEdges());
+        FragmentUtil.removeEdges(fragmentLink1, child.getEdges());
+        FragmentUtil.removeEdges(parent, fragmentLink1);
 
-        CPFNode childB2 = cf.getExit();
-        Collection<CPFEdge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, f.getEdges());
-        FragmentUtil.removeEdges(fragmentLink2, cf.getEdges());
-        FragmentUtil.removeEdges(f, fragmentLink2);
+        CPFNode childB2 = child.getExit();
+        Collection<CPFEdge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, parent.getEdges());
+        FragmentUtil.removeEdges(fragmentLink2, child.getEdges());
+        FragmentUtil.removeEdges(parent, fragmentLink2);
 
-        FragmentUtil.removeNodes(f, cf);
+        FragmentUtil.removeNodes(parent, child);
 
         // fragmentLink1 is the incoming edge from f to cf. fragmentLink2 is the outgoing edge from cf to f.
         // We have replace cf with a pocket and use fragmentLink1 as the incoming edge to pocket and fragmentLink2
@@ -50,17 +50,17 @@ public class FSCSExtractor {
         pocket.setName("Pocket");
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
-        f.addNode(pocket);
+        parent.addNode(pocket);
         if (!fragmentLink1.isEmpty()) {
-            f.addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
+            parent.addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
         } else {
-            f.setEntry(pocket);
+            parent.setEntry(pocket);
         }
 
         if (!fragmentLink2.isEmpty()) {
-            f.addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
+            parent.addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
         } else {
-            f.setExit(pocket);
+            parent.setExit(pocket);
         }
 
         return pocket;

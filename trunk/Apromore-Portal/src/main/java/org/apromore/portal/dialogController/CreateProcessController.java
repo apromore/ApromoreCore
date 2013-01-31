@@ -46,7 +46,6 @@ public class CreateProcessController extends BaseController {
     private final Button cancelB;
     private final Button resetB;
     private final Textbox processNameT;
-    private final Textbox versionNameT;
     private final Radiogroup rankingRG;
     private final Row domainR;
     private final Row ownerR;
@@ -69,7 +68,6 @@ public class CreateProcessController extends BaseController {
         Row processNameR = (Row) rows.getFirstChild();
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
         Row versionNameR = (Row) processNameR.getNextSibling();
-        this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
         this.domainR = (Row) versionNameR.getNextSibling();
         this.ownerR = (Row) this.domainR.getNextSibling();
         this.nativeTypesR = (Row) this.ownerR.getNextSibling();
@@ -168,7 +166,7 @@ public class CreateProcessController extends BaseController {
 
                 // Documentation and Last Update are set to NULL & No Canoniser properties are used
                 //TODO show canoniser properties
-                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionName, initialNativeFormat.getInputStream(), domain,
+                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, initialNativeFormat.getInputStream(), domain,
                         null, creationDate, null, new HashSet<RequestParameterType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
@@ -214,7 +212,6 @@ public class CreateProcessController extends BaseController {
     protected void reset() {
         String empty = "";
         this.processNameT.setValue(empty);
-        this.versionNameT.setValue(empty);
         this.domainCB.setValue(empty);
     }
 }

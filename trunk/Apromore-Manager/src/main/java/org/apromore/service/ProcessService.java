@@ -34,7 +34,6 @@ public interface ProcessService {
      *
      * @param username      The user doing the importing.
      * @param processName   the name of the process being imported.
-     * @param versionNumber the version of the Process
      * @param nativeType    the native process format type
      * @param cpf           the canonised process
      * @param nativeXml     the original native process XML
@@ -46,8 +45,8 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessModelVersion importProcess(String username, String processName, Double versionNumber, String nativeType,
-            CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
+    ProcessModelVersion importProcess(String username, String processName, String nativeType, CanonisedProcess cpf, InputStream nativeXml,
+            String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.
@@ -64,7 +63,7 @@ public interface ProcessService {
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
     ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Double version,
-        final String nativeType, final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
+            final String nativeType, final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
             throws ExportFormatException;
 
     /**

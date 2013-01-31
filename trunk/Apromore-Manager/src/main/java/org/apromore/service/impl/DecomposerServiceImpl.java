@@ -84,45 +84,45 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Doing all the work of decomposing into the DB structure. */
     @SuppressWarnings("unchecked")
-    private OperationContext decompose(ProcessModelVersion modelVersion, final FragmentNode f, OperationContext op)
+    private OperationContext decompose(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op)
             throws RepositoryException {
         String keywords = "";
-        int fragmentSize = f.getNodes().size();
-        String nodeType = FragmentUtil.getFragmentType(f);
+        int fragmentSize = parent.getNodes().size();
+        String nodeType = FragmentUtil.getFragmentType(parent);
 
-        Collection<FragmentNode> cs = f.getChildren();
-        Map<String, String> childMappings = mapPocketChildId(modelVersion, f, op, cs);
+        Collection<FragmentNode> childFragments = parent.getChildren();
+        Map<String, String> childMappings = mapPocketChildId(modelVersion, parent, op, childFragments);
 
         String hash = UUID.randomUUID().toString();
-        return addFragmentVersion(modelVersion, f, hash, childMappings, fragmentSize, nodeType, keywords, op);
+        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
     }
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode f, OperationContext op,
-            final Collection<FragmentNode> cs) throws RepositoryException {
+    private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op,
+            final Collection<FragmentNode> childFragments) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>();
-        for (FragmentNode c : cs) {
-            if (TCType.TRIVIAL.equals(c.getType())) {
+        for (FragmentNode child : childFragments) {
+            if (TCType.TRIVIAL.equals(child.getType())) {
                 continue;
             }
 
-            CPFNode pocket = Extractor.extractChildFragment(f, c, op.getGraph());
-            FragmentUtil.cleanFragment(f);
-            OperationContext child = decompose(modelVersion, c, op);
-            childMappings.put(pocket.getId(), child.getCurrentFragment().getUri());
+            CPFNode pocket = Extractor.extractChildFragment(parent, child, op.getGraph());
+            FragmentUtil.cleanFragment(parent);
+            OperationContext fragment = decompose(modelVersion, child, op);
+            childMappings.put(pocket.getId(), fragment.getCurrentFragment().getUri());
         }
         return childMappings;
     }
 
     /* Adds the decomposed fragment to the process model version. */
-    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode f, final String hash,
+    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode parent, final String hash,
             final Map<String, String> childMappings, final int fragmentSize, final String fragmentType, final String keywords,
             OperationContext op) throws RepositoryException {
         LOGGER.info("Adding Fragment Version: " + modelVersion.getProcessBranch().getBranchName() + " - " + modelVersion.getVersionNumber());
 
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
-        Content content = cService.addContent(modelVersion, f, hash, op, pocketIdMappings);
+        Content content = cService.addContent(modelVersion, parent, hash, op, pocketIdMappings);
 
         // rewrite child mapping with new pocket Ids
         Map<String, String> refinedChildMappings = new HashMap<String, String>();

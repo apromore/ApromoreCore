@@ -51,7 +51,6 @@ public class ImportOneProcessController extends BaseController {
     private final Textbox lastUpdateTb;
     private final Textbox creationDateTb;
     private final Textbox processNameTb;
-    private final Textbox versionNameTb;
     private final SelectDynamicListController domainCB;
     private final SelectDynamicListController ownerCB;
     private final InputStream nativeProcess; // the input stream read from uploaded file
@@ -64,7 +63,6 @@ public class ImportOneProcessController extends BaseController {
 
     private final String username;
     private final String processName;
-    private String readVersionName;
     private String readProcessName;
     private String readDocumentation;
     private String readCreated;
@@ -89,15 +87,13 @@ public class ImportOneProcessController extends BaseController {
         this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
         Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getChildren().get(0);
-        Row versionNameR = (Row) rows.getChildren().get(1);
-        Row ownerR = (Row) rows.getChildren().get(2);
-        Row creationDateR = (Row) rows.getChildren().get(3);
-        Row lastUpdateR = (Row) rows.getChildren().get(4);
-        Row documentationR = (Row) rows.getChildren().get(5);
-        Row domainR = (Row) rows.getChildren().get(6);
+        Row ownerR = (Row) rows.getChildren().get(1);
+        Row creationDateR = (Row) rows.getChildren().get(2);
+        Row lastUpdateR = (Row) rows.getChildren().get(3);
+        Row documentationR = (Row) rows.getChildren().get(4);
+        Row domainR = (Row) rows.getChildren().get(5);
 
         this.processNameTb = (Textbox) processNameR.getChildren().get(1);
-        this.versionNameTb = (Textbox) versionNameR.getChildren().get(1);
         this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
         this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
         this.documentationTb = (Textbox) documentationR.getChildren().get(1);
@@ -170,7 +166,7 @@ public class ImportOneProcessController extends BaseController {
             this.importOneProcessWindow.addEventListener("onOK", new EventListener() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
-                    if (processNameTb.getValue().compareTo("") == 0 || versionNameTb.getValue().compareTo("") == 0) {
+                    if (processNameTb.getValue().compareTo("") == 0) {
                         Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
                     } else {
                         importProcess(domainCB.getValue(), username);
@@ -257,7 +253,6 @@ public class ImportOneProcessController extends BaseController {
             // Reset Input Stream because, we'll need it later for the "real" conversion!
             this.nativeProcess.reset();
             this.processNameTb.setValue(readNativeMetaData.getProcessName());
-            this.versionNameTb.setValue(readNativeMetaData.getProcessVersion());
             this.documentationTb.setValue(readNativeMetaData.getProcessDocumentation());
             if (readNativeMetaData.getProcessCreated() != null) {
                 this.creationDateTb.setValue(readNativeMetaData.getProcessCreated().toString());
@@ -281,14 +276,12 @@ public class ImportOneProcessController extends BaseController {
     }
 
     private void reset() {
-        this.readVersionName = "0.1"; // default value for versionName if not found
         this.readProcessName = this.processName; // default value if not found
         this.readDocumentation = "";
         this.readCreated = Utils.getDateTime(); // default value for creationDate if not found
         this.readLastupdate = "";
         this.readAuthor = UserSessionManager.getCurrentUser().getUsername();
         this.processNameTb.setValue(readProcessName);
-        this.versionNameTb.setValue(readVersionName);
         this.documentationTb.setValue(readDocumentation);
         this.creationDateTb.setValue(readCreated);
         this.lastUpdateTb.setValue(readLastupdate);
@@ -315,8 +308,8 @@ public class ImportOneProcessController extends BaseController {
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
             ImportProcessResultType importResult = getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
-                    this.versionNameTb.getValue(), getNativeProcess(), domain, this.documentationTb.getValue(),
-                    this.creationDateTb.getValue().toString(), this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue().toString(),
+                    this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
             // process successfully imported
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);
@@ -346,10 +339,10 @@ public class ImportOneProcessController extends BaseController {
      * @throws WrongValueException
      */
     protected void importAllProcess() throws ExceptionImport, InterruptedException, IOException {
-        if (this.processNameTb.getValue().compareTo("") == 0 || this.versionNameTb.getValue().compareTo("") == 0) {
+        if (this.processNameTb.getValue().compareTo("") == 0) {
             Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
         } else {
-            this.importProcessesC.importAllProcess(this.versionNameTb.getValue(), this.domainCB.getValue());
+            this.importProcessesC.importAllProcess(this.domainCB.getValue());
         }
     }
 

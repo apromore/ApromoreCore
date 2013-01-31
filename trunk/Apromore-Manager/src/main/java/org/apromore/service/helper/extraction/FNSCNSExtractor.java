@@ -4,7 +4,6 @@ import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.NodeTypeEnum;
-import org.apromore.service.helper.PocketLocator;
 import org.apromore.service.model.FragmentNode;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
@@ -18,19 +17,19 @@ public class FNSCNSExtractor {
     private static final Logger log = LoggerFactory.getLogger(FNSCNSExtractor.class);
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
-        CPFNode childB1 = cf.getEntry();
+    public static CPFNode extract(FragmentNode parent, FragmentNode child, Canonical g) {
+        CPFNode childB1 = child.getEntry();
         CPFNode newChildB1 = FragmentUtil.duplicateNode(childB1, g);
-        FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
+        FragmentUtil.reconnectBoundary1(child, childB1, newChildB1);
 
-        CPFNode childB2 = cf.getExit();
+        CPFNode childB2 = child.getExit();
         CPFNode newChildB2 = FragmentUtil.duplicateNode(childB2, g);
-        FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
+        FragmentUtil.reconnectBoundary2(child, childB2, newChildB2);
 
-        f.removeNodes(cf.getNodes());
+        parent.removeNodes(child.getNodes());
 
-        CPFNode fragmentB1 = f.getEntry();
-        CPFNode fragmentB2 = f.getExit();
+        CPFNode fragmentB1 = parent.getEntry();
+        CPFNode fragmentB2 = parent.getExit();
 
         CPFNode pocket = new CPFNode();
         pocket.setGraph(g);
@@ -38,20 +37,22 @@ public class FNSCNSExtractor {
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.addNode(pocket);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
-        f.addNode(pocket);
+        parent.addNode(pocket);
 
-        if (f.getNodes().contains(childB1)) {
-            f.addEdge(childB1, pocket);
+        if (parent.getNodes().contains(childB1)) {
+            parent.addEdge(childB1, pocket);
         } else {
-            f.addEdge(fragmentB1, pocket);
-            log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
+            parent.addEdge(fragmentB1, pocket);
+            log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
+                    FragmentUtil.getFragmentType(child));
         }
 
-        if (f.getNodes().contains(childB2)) {
-            f.addEdge(pocket, childB2);
+        if (parent.getNodes().contains(childB2)) {
+            parent.addEdge(pocket, childB2);
         } else {
-            f.addEdge(pocket, fragmentB2);
-            log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
+            parent.addEdge(pocket, fragmentB2);
+            log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
+                    FragmentUtil.getFragmentType(child));
         }
 
         return pocket;

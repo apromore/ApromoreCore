@@ -635,7 +635,6 @@ public class ManagerPortalEndpoint {
             EditSessionType editSession = payload.getEditSession();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
-            Double versionNumber = editSession.getVersionNumber();
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
@@ -646,10 +645,10 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-            ProcessModelVersion pmv = procSrv.importProcess(username, processName, versionNumber, nativeType,
-                    canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
+            ProcessModelVersion pmv = procSrv.importProcess(username, processName, nativeType, canonisedProcess, handler.getInputStream(),
+                    domain, "", creationDate, lastUpdate);
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
-                    pmv.getProcessBranch().getBranchName(), versionNumber, nativeType, domain, creationDate, lastUpdate, username);
+                    pmv.getProcessBranch().getBranchName(), pmv.getVersionNumber(), nativeType, domain, creationDate, lastUpdate, username);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {
