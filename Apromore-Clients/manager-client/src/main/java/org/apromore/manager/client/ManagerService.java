@@ -225,7 +225,6 @@ public interface ManagerService {
      * @param username The username of the user importing the process
      * @param nativeType the native type of the process
      * @param processName the processes name
-     * @param versionName the version name of the process
      * @param xml_process the process as an XML Stream. The Actual Data
      * @param domain the domain this process model belongs
      * @param documentation any documentation that is needed with this process
@@ -236,7 +235,7 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ImportProcessResultType importProcess(String username, String nativeType, String processName, String versionName, InputStream xml_process,
+    ImportProcessResultType importProcess(String username, String nativeType, String processName, InputStream xml_process,
             String domain, String documentation, String created, String lastUpdate, Set<RequestParameterType<?>> canoniserProperties)
             throws IOException, Exception;
 

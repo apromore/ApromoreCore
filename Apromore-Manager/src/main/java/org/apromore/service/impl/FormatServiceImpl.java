@@ -76,13 +76,13 @@ public class FormatServiceImpl implements FormatService {
     }
 
     /**
-     * @see org.apromore.service.FormatService#storeNative(String, Double, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
+     * @see org.apromore.service.FormatService#storeNative(String, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
      *      {@inheritDoc}
      */
     @Override
-    public void storeNative(String procName, Double version, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
+    public void storeNative(String procName, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
             NativeType nativeType, CanonisedProcess cp) throws JAXBException {
-        InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, version, user.getUsername(), created, lastUpdate);
+        InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
         String nativeString = StreamUtil.inputStream2String(sync_npf).trim();
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
 

@@ -1,5 +1,14 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -18,17 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Unit test the ProcessService Implementation.
@@ -53,7 +55,6 @@ public class UpdateProcessServiceImplIntgTest {
     private EntityManager em;
 
     private String username = "james";
-    private Double version = 1d;
     private String domain = "Tests";
     private String created = "12/12/2011";
     private String lastUpdate = "12/12/2011";
@@ -70,7 +71,7 @@ public class UpdateProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, name, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
         assertThat(pst, notNullValue());
         em.flush();
 
@@ -78,7 +79,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", version, Boolean.FALSE, user, Constants.LOCKED, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, cp);
         em.flush();
 
         // Delete Process

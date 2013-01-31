@@ -49,7 +49,6 @@ public class ImportListProcessesController extends BaseController {
     private List<ImportOneProcessController> importedList; // List of imports successfully completed
 
     public ImportListProcessesController(MenuController menuC, MainController mainC) throws DialogException {
-
         this.ignoredFiles = "";
         this.mainC = mainC;
         this.menuC = menuC;
@@ -67,9 +66,8 @@ public class ImportListProcessesController extends BaseController {
             // build the list of supported extensions to display
             String supportedExtS = "zip";
             Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
-            Iterator<String> it = supportedExt.iterator();
-            while (it.hasNext()) {
-                supportedExtS += ", " + it.next();
+            for (String aSupportedExt : supportedExt) {
+                supportedExtS += ", " + aSupportedExt;
             }
             this.supportedExtL.setValue(supportedExtS);
             // event listeners
@@ -202,10 +200,10 @@ public class ImportListProcessesController extends BaseController {
       * cancel all remaining imports
       */
     public void cancelAll() throws InterruptedException, IOException {
-        for (int i = 0; i < this.toImportList.size(); i++) {
-            if (this.toImportList.get(i).getImportOneProcessWindow() != null) {
-                this.ignoredFiles += ", " + this.toImportList.get(i).getFileName();
-                this.toImportList.get(i).getImportOneProcessWindow().detach();
+        for (ImportOneProcessController aToImportList : this.toImportList) {
+            if (aToImportList.getImportOneProcessWindow() != null) {
+                this.ignoredFiles += ", " + aToImportList.getFileName();
+                aToImportList.getImportOneProcessWindow().detach();
             }
         }
         this.toImportList.clear();
@@ -234,7 +232,6 @@ public class ImportListProcessesController extends BaseController {
 
         if (this.toImportList.size() == 0) {
             reportImport();
-            // clean folder and close window
             cancel();
         }
     }
@@ -260,14 +257,12 @@ public class ImportListProcessesController extends BaseController {
       * - version name
       * - domain
       */
-    public void importAllProcess(String version, String domain) throws InterruptedException, IOException {
+    public void importAllProcess(String domain) throws InterruptedException, IOException {
         List<ImportOneProcessController> importAll = new ArrayList<ImportOneProcessController>();
         importAll.addAll(this.toImportList);
-        for (int i = 0; i < importAll.size(); i++) {
-            ImportOneProcessController importOneProcess = importAll.get(i);
+        for (ImportOneProcessController importOneProcess : importAll) {
             try {
                 importOneProcess.importProcess(domain, UserSessionManager.getCurrentUser().getUsername());
-                // process successfully imported
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);

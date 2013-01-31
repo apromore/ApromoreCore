@@ -1,20 +1,32 @@
 package org.apromore.graph;
 
-import org.apromore.cpf.*;
-import org.apromore.graph.canonical.*;
-import org.apromore.graph.canonical.converter.CanonicalToGraph;
-import org.apromore.graph.canonical.converter.GraphToCanonical;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Iterator;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Iterator;
+
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.TaskType;
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.ICPFResource;
+import org.apromore.graph.canonical.ICPFResourceReference;
+import org.apromore.graph.canonical.IEdge;
+import org.apromore.graph.canonical.converter.CanonicalToGraph;
+import org.apromore.graph.canonical.converter.GraphToCanonical;
+import org.jbpt.utils.IOUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -408,14 +420,13 @@ public class CanonicalGraphConverterUnitTest {
     }
 
 
-//    @Test
-//    public void testComplexCPFToDotPNG() throws Exception {
-//        CanonicalProcessType cpt = newInstance(CANONICAL_MODELS_DIR + "orderfulfillment.cpf");
-//        Canonical graph = new CanonicalToGraph().convert(cpt);
-//        new RPST(graph);
-//        IOUtils.toFile("orderfulfillment.dot", graph.toDOT());
-//        IOUtils.invokeDOT("target/", "orderfulfillment.png", graph.toDOT());
-//    }
+    @Test
+    public void testComplexCPFToDotPNG() throws Exception {
+        CanonicalProcessType cpt = newInstance(CANONICAL_MODELS_DIR + "PaymentSubnet.cpf");
+        Canonical graph = new CanonicalToGraph().convert(cpt);
+        IOUtils.toFile("PaymentSubnet.dot", graph.toDOT());
+        IOUtils.invokeDOT("target/", "PaymentSubnet.png", graph.toDOT());
+    }
 
 
 

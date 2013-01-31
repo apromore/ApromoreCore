@@ -642,12 +642,12 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#importProcess(String, String, String, String, java.io.InputStream, String, String, String, String, java.util.Set)
+     * @see ManagerService#importProcess(String, String, String, java.io.InputStream, String, String, String, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName, final String versionName,
+    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName,
             final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
             final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
@@ -656,7 +656,6 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setUsername(username);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
-        editSession.setVersionNumber(Double.valueOf(versionName));
         editSession.setDomain(domain);
         editSession.setCreationDate(created);
         editSession.setLastUpdate(lastUpdate);
