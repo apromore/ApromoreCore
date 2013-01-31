@@ -1,0 +1,2008 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="1" version="1.0" name="orderfulfillment" author="james" creationDate="2013/01/30 09:25:32" modificationDate="" rootIds="N-Overall">
+    <Net id="N-Freight-Delivered">
+        <Node xsi:type="cpf:XORSplitType" id="idbda53de8-8299-44e2-bfbf-e4c8c405f0a9">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TimerType" id="idb0dc2c5d-878e-4456-84c1-128c84d11414">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="idf866e175-38cf-45da-be0c-cfa1e4a2df6d" originalID="Lodge_a_request_for_Return_Merchandise_253">
+            <name>Lodge a request for Return Merchandise</name>
+            <configurable>false</configurable>
+            <objectRef id="O_27" objectId="idce6de366-2c04-4c87-b2f5-e331d5c69943" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_161" objectId="D-N-Freight-Delivered-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_138" objectId="D-N-Freight-Delivered-ReturnMerchandise" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_19" objectId="id618eb65a-f5d1-4a3f-ac59-aaa711da0d9c" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ReturnMerchandise = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;AcceptanceDate&gt;{cpf:getObjectValue('AcceptanceCertificate')/AcceptanceDate/text()}&lt;/AcceptanceDate&gt; &lt;CheckedOrderLines&gt;{cpf:getObjectValue('POrder')/Order/OrderLines/*} &lt;Selected&gt;false&lt;/Selected&gt;&lt;/CheckedOrderLines&gt; &lt;ReasonForReturn/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ReturnMerchandise = {cpf:getTaskObjectValue('ReturnMerchandise')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Claims-Timeout-254" originalID="Claims_Timeout_254">
+            <name>Claims Timeout</name>
+            <configurable>false</configurable>
+            <resourceTypeRef id="R_2" resourceTypeId="id67316d68-1df2-4afd-a4d0-8040c30f7993"/>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Return-Management" id="C-Return-Management-4045" originalID="Return_Management_4045">
+            <name>Return Management</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-49" originalID="OutputCondition_49">
+            <name>Order fulfillment process ends</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="5ff05bfe-386c-4c57-99b0-d8029f31bf3e">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="67663ebc-83cd-4074-bc90-128d5363f699">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-48" originalID="InputCondition_48">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Loss-Or-Damage-Management" id="C-Loss-or-Damage-Management-4046" originalID="Loss_or_Damage_Management_4046">
+            <name>Loss or Damage Management</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="b2bcb9bc-12b2-490f-b59e-5372a0a76c2b">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="fce60069-878e-4cb4-b96b-03189ad1e21c">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="cc7f0e06-5970-4125-bd4b-56613ce88a15">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Authorize-Return-Merchandise-256" originalID="Authorize_Return_Merchandise_256">
+            <name>Authorize Return Merchandise</name>
+            <configurable>false</configurable>
+            <objectRef id="O_70" objectId="idb358d13e-b3dd-4311-a507-f734cca5ff92" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_127" objectId="D-N-Freight-Delivered-ReturnMerchandise" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ReturnMerchandiseApproval = &lt;ReturnMerchandise&gt;{cpf:getObjectValue('ReturnMerchandise')/*}&lt;/ReturnMerchandise&gt; &lt;Approved&gt;false&lt;/Approved&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ReturnMerchandiseApproval = {cpf:getTaskObjectValue('ReturnMerchandiseApproval')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="idd3008ef0-fd32-4747-a130-b39ab11884fc">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Authorize-Loss-or-Damage-Claim-257" originalID="Authorize_Loss_or_Damage_Claim_257">
+            <name>Authorize Loss or Damage Claim</name>
+            <configurable>false</configurable>
+            <objectRef id="O_74" objectId="id8f86db6b-68e2-4b11-ad7a-7c45a9b2517f" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_24" objectId="D-N-Freight-Delivered-LossOrDamageClaim" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>LossOrDamageClaimApproval = &lt;LossOrDamageClaim&gt;{cpf:getObjectValue('LossOrDamageClaim')/*}&lt;/LossOrDamageClaim&gt; &lt;Approved&gt;false&lt;/Approved&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>LossOrDamageClaimApproval = {cpf:getTaskObjectValue('LossOrDamageClaimApproval')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Lodge-Loss-or-Damage-Claim-Report-255" originalID="Lodge_Loss_or_Damage_Claim_Report_255">
+            <name>Lodge Loss or Damage Claim Report</name>
+            <configurable>false</configurable>
+            <objectRef id="O_137" objectId="D-N-Freight-Delivered-LossOrDamageClaim" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_53" objectId="D-N-Freight-Delivered-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_151" objectId="idce6de366-2c04-4c87-b2f5-e331d5c69943" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_64" objectId="id618eb65a-f5d1-4a3f-ac59-aaa711da0d9c" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>LossOrDamageClaim = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;AcceptanceDate&gt;{cpf:getObjectValue('AcceptanceCertificate')/AcceptanceDate/text()}&lt;/AcceptanceDate&gt; &lt;ReasonForClaim/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>LossOrDamageClaim = {cpf:getTaskObjectValue('LossOrDamageClaim')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Edge id="a0e2d8b1-92a1-4414-be55-cc711d8e19c8" default="false" sourceId="C-Claims-Timeout-254" targetId="5ff05bfe-386c-4c57-99b0-d8029f31bf3e"/>
+        <Edge id="430b395f-2bc4-4d6f-a58f-9cad3714cb81" default="false" sourceId="b2bcb9bc-12b2-490f-b59e-5372a0a76c2b" targetId="cc7f0e06-5970-4125-bd4b-56613ce88a15"/>
+        <Edge id="7ee13962-3a20-4f3e-9f98-61ce27aaebf4" default="false" sourceId="idd3008ef0-fd32-4747-a130-b39ab11884fc" targetId="C-Lodge-Loss-or-Damage-Claim-Report-255"/>
+        <Edge id="1a2b41be-b5a2-491b-80f6-3a703d81df60" default="false" sourceId="idbda53de8-8299-44e2-bfbf-e4c8c405f0a9" targetId="67663ebc-83cd-4074-bc90-128d5363f699"/>
+        <Edge id="64bf1b5a-5303-429e-bfe7-b966c1176f9d" default="false" sourceId="C-Authorize-Loss-or-Damage-Claim-257" targetId="fce60069-878e-4cb4-b96b-03189ad1e21c"/>
+        <Edge id="eacc7628-46e6-4e87-b0dd-f3cf7c0a777d" default="false" sourceId="idb0dc2c5d-878e-4456-84c1-128c84d11414" targetId="C-Claims-Timeout-254"/>
+        <Edge id="3ae87730-4ad8-4f8e-a3d3-59bf2e596260" default="false" sourceId="idd3008ef0-fd32-4747-a130-b39ab11884fc" targetId="idb0dc2c5d-878e-4456-84c1-128c84d11414"/>
+        <Edge id="9989ed61-b5f4-49c6-8859-977c6367c558" default="false" sourceId="fce60069-878e-4cb4-b96b-03189ad1e21c" targetId="C-Loss-or-Damage-Management-4046"/>
+        <Edge id="6f166fe6-f990-4e04-95f5-eddde90b6196" default="false" sourceId="C-Loss-or-Damage-Management-4046" targetId="b2bcb9bc-12b2-490f-b59e-5372a0a76c2b"/>
+        <Edge id="631f4840-3776-48ba-a491-353846bd629a" default="false" sourceId="fce60069-878e-4cb4-b96b-03189ad1e21c" targetId="b2bcb9bc-12b2-490f-b59e-5372a0a76c2b"/>
+        <Edge id="55ad2255-6b88-4025-8585-658a1e48b194" default="false" sourceId="5ff05bfe-386c-4c57-99b0-d8029f31bf3e" targetId="cc7f0e06-5970-4125-bd4b-56613ce88a15"/>
+        <Edge id="fb565da7-54ef-4bf8-a6a2-5bec67b9d99c" default="false" sourceId="idf866e175-38cf-45da-be0c-cfa1e4a2df6d" targetId="C-Authorize-Return-Merchandise-256"/>
+        <Edge id="d59564c6-f56b-4f3b-9ff9-134a5542c202" default="false" sourceId="cc7f0e06-5970-4125-bd4b-56613ce88a15" targetId="C-OutputCondition-49"/>
+        <Edge id="c3113fa7-61be-45a0-bd70-ace8798fcf64" default="false" sourceId="C-InputCondition-48" targetId="idd3008ef0-fd32-4747-a130-b39ab11884fc"/>
+        <Edge id="b772606e-97b1-4cab-b289-89db15248bd8" default="false" sourceId="C-Authorize-Return-Merchandise-256" targetId="idbda53de8-8299-44e2-bfbf-e4c8c405f0a9"/>
+        <Edge id="4a192a4d-b0a4-4496-bbf7-3b2fa90bda38" default="false" sourceId="idd3008ef0-fd32-4747-a130-b39ab11884fc" targetId="idf866e175-38cf-45da-be0c-cfa1e4a2df6d"/>
+        <Edge id="bcfeb9c6-7ad9-4d39-a141-a0b73974a412" default="false" sourceId="67663ebc-83cd-4074-bc90-128d5363f699" targetId="cc7f0e06-5970-4125-bd4b-56613ce88a15"/>
+        <Edge id="00af490f-72df-4478-9e73-cc6f88b2958f" default="false" sourceId="C-Return-Management-4045" targetId="67663ebc-83cd-4074-bc90-128d5363f699"/>
+        <Edge id="d8e7c62e-593c-4f0f-b451-db50b4e2a1eb" default="false" sourceId="C-Lodge-Loss-or-Damage-Claim-Report-255" targetId="C-Authorize-Loss-or-Damage-Claim-257"/>
+        <Edge id="88267c2c-56d2-4665-9aa9-33aaf919630a" default="false" sourceId="idbda53de8-8299-44e2-bfbf-e4c8c405f0a9" targetId="C-Return-Management-4045"/>
+        <Object xsi:type="cpf:SoftType" id="idce6de366-2c04-4c87-b2f5-e331d5c69943" originalID="idce6de366-2c04-4c87-b2f5-e331d5c69943">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Freight-Delivered-POrder" originalID="D-N-Freight-Delivered-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Freight-Delivered-ReturnMerchandise" originalID="D-N-Freight-Delivered-ReturnMerchandise">
+            <name>ReturnMerchandise</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ReturnMerchandiseType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id618eb65a-f5d1-4a3f-ac59-aaa711da0d9c" originalID="id618eb65a-f5d1-4a3f-ac59-aaa711da0d9c">
+            <name>AcceptanceCertificate</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>AcceptanceCertificateType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="idb358d13e-b3dd-4311-a507-f734cca5ff92" originalID="idb358d13e-b3dd-4311-a507-f734cca5ff92">
+            <name>ReturnMerchandiseApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ReturnMerchandiseApprovalType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id8f86db6b-68e2-4b11-ad7a-7c45a9b2517f" originalID="id8f86db6b-68e2-4b11-ad7a-7c45a9b2517f">
+            <name>LossOrDamageClaimApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>LossOrDamageClaimApprovalType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Freight-Delivered-LossOrDamageClaim" originalID="D-N-Freight-Delivered-LossOrDamageClaim">
+            <name>LossOrDamageClaim</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>LossOrDamageClaimType</type>
+        </Object>
+    </Net>
+    <Net id="N-Ordering">
+        <Node xsi:type="cpf:XORJoinType" id="id302826a3-857d-40df-a444-a30868fa8d03">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Create-Purchase-Order-104" originalID="Create_Purchase_Order_104">
+            <name>Create Purchase Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_154" objectId="D-N-Ordering-PO-Manager" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_77" objectId="D-N-Ordering-POrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_11" objectId="D-N-Ordering-PO-Manager" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_Manager = {cpf:getObjectValue('PO_Manager')/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = &lt;Company&gt; &lt;Name/&gt; &lt;Address/&gt; &lt;City/&gt; &lt;State/&gt; &lt;PostCode/&gt; &lt;Phone/&gt; &lt;Fax/&gt; &lt;BusinessNumber/&gt; &lt;/Company&gt; &lt;Order&gt; &lt;OrderNumber/&gt; &lt;OrderDate&gt;{fn:current-date()}&lt;/OrderDate&gt; &lt;Currency&gt;AUD&lt;/Currency&gt; &lt;OrderTerms/&gt; &lt;RevisionNumber&gt;0&lt;/RevisionNumber&gt; &lt;Remarks/&gt; &lt;OrderLines&gt; &lt;Line&gt; &lt;LineNumber&gt;1&lt;/LineNumber&gt; &lt;UnitCode/&gt; &lt;UnitDescription/&gt; &lt;UnitQuantity&gt;1&lt;/UnitQuantity&gt; &lt;Action&gt;Added&lt;/Action&gt; &lt;/Line&gt; &lt;/OrderLines&gt; &lt;/Order&gt; &lt;FreightCost&gt;0.00&lt;/FreightCost&gt; &lt;DeliveryLocation/&gt; &lt;InvoiceRequired&gt;false&lt;/InvoiceRequired&gt; &lt;PrePaid&gt;false&lt;/PrePaid&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getTaskObjectValue('POrder')/*}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_Manager = {cpf:getTaskObjectValue('PO_Manager')/text()}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression>piledExecution</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:TimerType" id="id633c0aa2-ead2-4167-b055-23212c194bc2">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Modify-Purchase-Order-2768" originalID="Modify_Purchase_Order_2768">
+            <name>Modify Purchase Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_20" objectId="D-N-Ordering-POrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_89" objectId="D-N-Ordering-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = &lt;Company&gt; {cpf:getObjectValue('POrder')/Company/*} &lt;/Company&gt; &lt;Order&gt; &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;OrderDate&gt;{cpf:getObjectValue('POrder')/Order/OrderDate/text()}&lt;/OrderDate&gt; &lt;Currency&gt;{cpf:getObjectValue('POrder')/Order/Currency/text()}&lt;/Currency&gt; &lt;OrderTerms&gt;{cpf:getObjectValue('POrder')/Order/OrderTerms/text()}&lt;/OrderTerms&gt; &lt;RevisionNumber&gt;{cpf:getObjectValue('POrder')/Order/RevisionNumber/text()+1}&lt;/RevisionNumber&gt; &lt;Remarks&gt;{cpf:getObjectValue('POrder')/Order/Remarks/text()}&lt;/Remarks&gt; &lt;OrderLines&gt; {cpf:getObjectValue('POrder')/Order/OrderLines/*} &lt;/OrderLines&gt; &lt;/Order&gt; &lt;FreightCost&gt;{cpf:getObjectValue('POrder')/FreightCost/text()}&lt;/FreightCost&gt; &lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt; &lt;InvoiceRequired&gt;{cpf:getObjectValue('POrder')/InvoiceRequired/text()}&lt;/InvoiceRequired&gt; &lt;PrePaid&gt;{cpf:getObjectValue('POrder')/PrePaid/text()}&lt;/PrePaid&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getTaskObjectValue('POrder')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <description>of type PARTICIPANT choose by value of Object PO_Manager</description>
+                <language>http://www.w3.org/1999/XPath</language>
+                <expression>//ResourceType[type/text()='Participant' AND name/text()='cpf:getObjectValue(PO_Manager)']</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="777f7c88-1eca-4495-bce5-00e134c287a5">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-156" originalID="null_156">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="080d1378-494e-49b5-85a9-2bafd065a2e4" originalID="null_156">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Confirm-Purchase-Order-2013" originalID="Confirm_Purchase_Order_2013">
+            <name>Confirm Puchase Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_128" objectId="D-N-Ordering-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Approve-Purchase-Order-1901" originalID="Approve_Purchase_Order_1901">
+            <name>Approve Purchase Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_106" objectId="D-N-Ordering-PO-timedout" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_73" objectId="D-N-Ordering-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_163" objectId="D-N-Ordering-POApproval" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POApproval = {cpf:getTaskObjectValue('POApproval')/text()}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_timedout = false</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-16" originalID="InputCondition_16">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-17" originalID="OutputCondition_17">
+            <name>end_Ordering</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="idbbb9712c-bf15-42e9-8a6e-0f59af39fa56">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="7d4e244e-79ee-4ef8-a4b5-37dada12681d">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="id5712aa98-1a67-4395-9113-ade567c199d0">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Order-Timeout-1791" originalID="Order_Timeout_1791">
+            <name>Order Timeout</name>
+            <configurable>false</configurable>
+            <resourceTypeRef id="R_3" resourceTypeId="e016eea4-1b7d-4b92-87bc-55769a655f39"/>
+            <objectRef id="O_82" objectId="D-N-Ordering-PO-timedout" type="output" optional="false" consumed="true"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_timedout = true</expression>
+            </outputExpr>
+        </Node>
+        <Edge id="b906124f-8e94-4306-a75b-9a09ac76b54e" default="false" sourceId="idbbb9712c-bf15-42e9-8a6e-0f59af39fa56" targetId="C-OutputCondition-17"/>
+        <Edge id="461dd063-069b-4146-a900-3fbeb37e4358" default="false" sourceId="id5712aa98-1a67-4395-9113-ade567c199d0" targetId="idbbb9712c-bf15-42e9-8a6e-0f59af39fa56"/>
+        <Edge id="4b1979c4-b1b8-41af-afe7-6d21285844fe" default="false" sourceId="C-Order-Timeout-1791" targetId="777f7c88-1eca-4495-bce5-00e134c287a5"/>
+        <Edge id="82315c83-90e5-43d0-9c38-023b862c16e3" default="false" sourceId="id633c0aa2-ead2-4167-b055-23212c194bc2" targetId="C-Order-Timeout-1791"/>
+        <Edge id="5de8da01-caee-4bcf-bee8-ce46aebbf225" default="false" sourceId="080d1378-494e-49b5-85a9-2bafd065a2e4" targetId="id633c0aa2-ead2-4167-b055-23212c194bc2"/>
+        <Edge id="2ecb104a-5480-4c1e-9477-d7da54fa5336" default="false" sourceId="C-Confirm-Purchase-Order-2013" targetId="777f7c88-1eca-4495-bce5-00e134c287a5"/>
+        <Edge id="481fe0fc-cf26-495e-8149-5c35c4fc8283" default="false" sourceId="C-Approve-Purchase-Order-1901" targetId="id5712aa98-1a67-4395-9113-ade567c199d0"/>
+        <Edge id="0be37fd9-99ea-42dd-a565-aafa3a7cea1f" default="false" sourceId="C-null-156" targetId="080d1378-494e-49b5-85a9-2bafd065a2e4"/>
+        <Edge id="39447b86-07ae-43bd-bf06-ae8e1cbf5116" default="false" sourceId="C-Create-Purchase-Order-104" targetId="id302826a3-857d-40df-a444-a30868fa8d03"/>
+        <Edge id="2853b24c-02c7-43a1-b6c8-e698a6ac31be" default="false" sourceId="7d4e244e-79ee-4ef8-a4b5-37dada12681d" targetId="C-Approve-Purchase-Order-1901"/>
+        <Edge id="59464b95-157b-4435-b47a-438e19229f19" default="false" sourceId="id302826a3-857d-40df-a444-a30868fa8d03" targetId="7d4e244e-79ee-4ef8-a4b5-37dada12681d"/>
+        <Edge id="a7370be3-b620-4f81-a074-f7d695e4f5b1" default="false" sourceId="id5712aa98-1a67-4395-9113-ade567c199d0" targetId="C-null-156"/>
+        <Edge id="dfd18ba9-8540-4415-bc43-14b7ae470844" default="false" sourceId="080d1378-494e-49b5-85a9-2bafd065a2e4" targetId="C-Confirm-Purchase-Order-2013"/>
+        <Edge id="283405a7-205c-444b-957d-ca43d499edf0" default="false" sourceId="C-Modify-Purchase-Order-2768" targetId="id302826a3-857d-40df-a444-a30868fa8d03"/>
+        <Edge id="bfbf0384-3521-4d37-9d3f-d3c8f950c1cb" default="false" sourceId="C-InputCondition-16" targetId="C-Create-Purchase-Order-104"/>
+        <Edge id="26bc619e-a0f3-469d-9585-aa88aad89022" default="false" sourceId="C-null-156" targetId="C-Modify-Purchase-Order-2768"/>
+        <Edge id="91c48b1d-3259-44d5-8e83-b1fb81c521ae" default="false" sourceId="777f7c88-1eca-4495-bce5-00e134c287a5" targetId="idbbb9712c-bf15-42e9-8a6e-0f59af39fa56"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Ordering-PO-Manager" originalID="D-N-Ordering-PO-Manager">
+            <name>PO_Manager</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>string</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Ordering-POrder" originalID="D-N-Ordering-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Ordering-PO-timedout" originalID="D-N-Ordering-PO-timedout">
+            <name>PO_timedout</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>boolean</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Ordering-POApproval" originalID="D-N-Ordering-POApproval">
+            <name>POApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>boolean</type>
+        </Object>
+    </Net>
+    <Net id="N-Freight-in-Transit">
+        <Node xsi:type="cpf:TaskType" id="C-Create-Acceptance-Certificate-814" originalID="Create_Acceptance_Certificate_814">
+            <name>Create Acceptance Certificate</name>
+            <configurable>false</configurable>
+            <objectRef id="O_99" objectId="idc5c3072d-8309-4a6a-99b5-f693bde09bac" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_103" objectId="D-N-Freight-in-Transit-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_21" objectId="id5140c3b1-8c37-4a32-9634-2bfe26a1b49a" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>AcceptanceCertificate = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;AcceptanceDate&gt;{fn:current-date()}&lt;/AcceptanceDate&gt; &lt;DeliveryNotes/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>AcceptanceCertificate = {cpf:getTaskObjectValue('AcceptanceCertificate')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-4366" originalID="null_4366">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="a3f816ee-afd0-471f-951c-a1b1de526763">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Initiate-Shipment-Status-Inquiry-929" originalID="Initiate_Shipment_Status_Inquiry_929">
+            <name>Initiate Shipment Status Inquiry</name>
+            <configurable>false</configurable>
+            <objectRef id="O_65" objectId="id957e65a0-c4a3-402f-8e55-fed95c7d214b" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_118" objectId="D-N-Freight-in-Transit-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_3" objectId="idc5c3072d-8309-4a6a-99b5-f693bde09bac" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentStatusInquiry = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;Inquiry/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentStatusInquiry = {cpf:getTaskObjectValue('ShipmentStatusInquiry')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Trackpoint-Notice-813" originalID="Issue_Trackpoint_Notice_813">
+            <name>Issue Trackpoint Notice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_132" objectId="D-N-Freight-in-Transit-TrackpointNotices" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_166" objectId="D-N-Freight-in-Transit-TrackpointNotices" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_37" objectId="idc5c3072d-8309-4a6a-99b5-f693bde09bac" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_1" objectId="D-N-Freight-in-Transit-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TrackpointNotice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;&lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;Trackpoint/&gt;&lt;ArrivalTime&gt;{fn:current-time()}&lt;/ArrivalTime&gt;&lt;DepartureTime&gt;{fn:current-time()}&lt;/DepartureTime&gt;&lt;Notes/&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TrackpointNotices = {if(count(cpf:getObjectValue('TrackpointNotices')/*)=0)then &lt;TrackpointNotice&gt;   &lt;OrderNumber&gt;placeholder   &lt;/OrderNumber&gt;   &lt;ShipmentNumber&gt;placeholder   &lt;/ShipmentNumber&gt;   &lt;Trackpoint&gt;placeholder   &lt;/Trackpoint&gt;   &lt;ArrivalTime&gt;     {fn:current-time()}   &lt;/ArrivalTime&gt;   &lt;DepartureTime&gt;     {fn:current-time()}   &lt;/DepartureTime&gt;   &lt;Notes&gt;placeholder   &lt;/Notes&gt; &lt;/TrackpointNotice&gt; else cpf:getObjectValue('TrackpointNotices')/* }</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TrackpointNotices = {cpf:getTaskObjectValue('TrackpointNotice')} {if (cpf:getTaskObjectValue('TrackpointNotices')/TrackpointNotice/ShipmentNumber/text()!='placeholder') then( cpf:getTaskObjectValue('TrackpointNotices')/* ) else()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="id05b66fc3-f2a3-4b11-bc6c-804f43cc6474">
+            <name>AndSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-46" originalID="InputCondition_46">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-47" originalID="OutputCondition_47">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-812" originalID="null_812">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-815" originalID="null_815">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Log-Trackpoint-Order-Entry-4514" originalID="Log_Trackpoint_Order_Entry_4514">
+            <name>Log Trackpoint Order Entry</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:ANDJoinType" id="e5660f39-4a2d-4850-86cc-05e4f6fed3cc">
+            <name>AndJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="1ca230f5-3cac-4324-8f85-3dd86b6bf628">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="45a33645-528b-4089-b3a7-d4a2f7a8c31d" default="false" sourceId="C-null-4366" targetId="a3f816ee-afd0-471f-951c-a1b1de526763"/>
+        <Edge id="3081d3ac-131f-4677-9210-b948420543b2" default="false" sourceId="1ca230f5-3cac-4324-8f85-3dd86b6bf628" targetId="C-Issue-Trackpoint-Notice-813"/>
+        <Edge id="f55ad17b-822e-41a8-a79b-87fefdf86faa" default="false" sourceId="id05b66fc3-f2a3-4b11-bc6c-804f43cc6474" targetId="C-null-812"/>
+        <Edge id="5c33bfae-195f-4d5b-ab6f-2602544b733c" default="false" sourceId="C-Create-Acceptance-Certificate-814" targetId="C-OutputCondition-47"/>
+        <Edge id="b290162f-11e2-410f-a26f-f6dce52f5a0c" default="false" sourceId="C-InputCondition-46" targetId="C-null-815"/>
+        <Edge id="c59e37d2-e956-42e7-8a35-326558bba511" default="false" sourceId="C-Initiate-Shipment-Status-Inquiry-929" targetId="C-null-812"/>
+        <Edge id="804913fc-b761-4ca6-ad12-295b83ca3dbb" default="false" sourceId="C-null-4366" targetId="C-Log-Trackpoint-Order-Entry-4514"/>
+        <Edge id="6a73252e-b578-48b6-abda-9d4588f4d95f" default="false" sourceId="C-Issue-Trackpoint-Notice-813" targetId="C-null-4366"/>
+        <Edge id="acc0aa74-4bf3-49bd-b4a8-461fda595519" default="false" sourceId="a3f816ee-afd0-471f-951c-a1b1de526763" targetId="1ca230f5-3cac-4324-8f85-3dd86b6bf628"/>
+        <Edge id="4f268222-c5ba-46b4-9c8f-8fd15a96e68b" default="false" sourceId="C-Log-Trackpoint-Order-Entry-4514" targetId="e5660f39-4a2d-4850-86cc-05e4f6fed3cc"/>
+        <Edge id="12316f9b-8132-413f-95a9-b9a0013e7951" default="false" sourceId="C-null-815" targetId="id05b66fc3-f2a3-4b11-bc6c-804f43cc6474"/>
+        <Edge id="c736eea3-d9aa-4bd8-b85e-dca246ca1afa" default="false" sourceId="e5660f39-4a2d-4850-86cc-05e4f6fed3cc" targetId="C-Create-Acceptance-Certificate-814"/>
+        <Edge id="5857034f-adf6-4204-933d-b25246989cce" default="false" sourceId="C-null-812" targetId="C-Initiate-Shipment-Status-Inquiry-929"/>
+        <Edge id="9571b36f-d643-4302-9151-4ea3df7c932d" default="false" sourceId="id05b66fc3-f2a3-4b11-bc6c-804f43cc6474" targetId="a3f816ee-afd0-471f-951c-a1b1de526763"/>
+        <Edge id="949c4888-98dd-4cfe-afa2-1673704aa75b" default="false" sourceId="C-null-812" targetId="e5660f39-4a2d-4850-86cc-05e4f6fed3cc"/>
+        <Object xsi:type="cpf:SoftType" id="idc5c3072d-8309-4a6a-99b5-f693bde09bac" originalID="idc5c3072d-8309-4a6a-99b5-f693bde09bac">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Freight-in-Transit-POrder" originalID="D-N-Freight-in-Transit-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id5140c3b1-8c37-4a32-9634-2bfe26a1b49a" originalID="id5140c3b1-8c37-4a32-9634-2bfe26a1b49a">
+            <name>AcceptanceCertificate</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>AcceptanceCertificateType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id957e65a0-c4a3-402f-8e55-fed95c7d214b" originalID="id957e65a0-c4a3-402f-8e55-fed95c7d214b">
+            <name>ShipmentStatusInquiry</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentStatusInquiryType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Freight-in-Transit-TrackpointNotices" originalID="D-N-Freight-in-Transit-TrackpointNotices">
+            <name>TrackpointNotices</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>TrackpointNoticesType</type>
+        </Object>
+    </Net>
+    <Net id="N-Payment">
+        <Node xsi:type="cpf:XORJoinType" id="aa65c035-18d6-4c23-8ebe-15adc630ff87">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="id369d80b0-eb26-4d50-8e8e-874aee939d51">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="c05cd421-1d9a-4361-b496-0d093a97aa84">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="ee85a8f2-167a-4c1e-b8d4-06abf4e141cb">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-45" originalID="OutputCondition_45">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Payment-Order-602" originalID="Issue_Shipment_Payment_Order_602">
+            <name>Issue Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_6" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_152" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_7" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = &lt;ShipmentPaymentOrderNumber/&gt; &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt; &lt;Beneficiary&gt; &lt;Beneficiary&gt; &lt;Name/&gt; &lt;Address/&gt; &lt;City/&gt; &lt;State/&gt; &lt;PostCode/&gt; &lt;Phone/&gt; &lt;Fax/&gt; &lt;BusinessNumber/&gt; &lt;/Beneficiary&gt; &lt;Bank/&gt; &lt;BankCode/&gt; &lt;AccountName/&gt; &lt;AccountNumber/&gt; &lt;/Beneficiary&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getTaskObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-599" originalID="null_599">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-597" originalID="null_597">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Process-Shipment-Payment-603" originalID="Process_Shipment_Payment_603">
+            <name>Process Shipment Payment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_108" objectId="D-N-Payment-ShipmentPayment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_114" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPayment = {cpf:getTaskObjectValue('ShipmentPayment')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-596" originalID="null_596">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Process-Freight-Payment" id="C-Process-Freight-Payment-3882" originalID="Process_Freight_Payment_3882">
+            <name>Process Freight Payment</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="c4e21074-335c-4c4e-912d-b42e446af257">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Approve-Shipment-Payment-Order-593" originalID="Approve_Shipment_Payment_Order_593">
+            <name>Approve Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_38" objectId="D-N-Payment-ShipmentPaymentOrderApproval" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_51" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrderApproval = {cpf:getTaskObjectValue('ShipmentPaymentOrderApproval')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-592" originalID="null_592">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="id526bf68e-7d87-4fea-865d-2f0107447e57">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="51d7f022-3d62-4a93-882f-97dff801baab">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="ide32c1e7c-184c-4a3f-a8b9-8511a9e2a24b">
+            <name>AndSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Update-Shipment-Payment-Order-604" originalID="Update_Shipment_Payment_Order_604">
+            <name>Update Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_111" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_120" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getTaskObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression></expression>
+            </filterByDataExpr>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:ANDJoinType" id="idb32a1e55-d770-4e41-a96f-b5f999ed764e">
+            <name>AndJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-607" originalID="null_607">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-44" originalID="InputCondition_44">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Invoice-594" originalID="Issue_Shipment_Invoice_594">
+            <name>Issue Shipment Invoice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_117" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_43" objectId="D-N-Payment-ShipmentInvoice" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_10" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt;&lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInvoice = {cpf:getTaskObjectValue('ShipmentInvoice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="idf67c0be1-862a-4548-97da-cea15de2d0c7">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="d718a637-d842-4419-b0fa-dd2de5bbec3f">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Remittance-Advice-601" originalID="Issue_Shipment_Remittance_Advice_601">
+            <name>Issue Shipment Remittance Advice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_59" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_140" objectId="D-N-Payment-ShipmentRemittanceAdvice" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentRemittanceAdvice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;AmountDebited&gt;0.00&lt;/AmountDebited&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentRemittanceAdvice = {cpf:getTaskObjectValue('ShipmentRemittanceAdvice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="f0f4e4d9-7e1d-4f65-b149-907da0b185dc">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Credit-Adjustment-606" originalID="Issue_Credit_Adjustment_606">
+            <name>Issue Credit Adjustment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_84" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_32" objectId="D-N-Payment-CreditAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_164" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_98" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CreditAdjustment = &lt;Reimbursement&gt;{cpf:getObjectValue('ShipmentPayment')/Balance/text()}&lt;/Reimbursement&gt; &lt;Beneficiary&gt;{cpf:getObjectValue('ShipmentPaymentOrder')/Beneficiary/*}&lt;/Beneficiary&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CreditAdjustment = {cpf:getTaskObjectValue('CreditAdjustment')/*}</expression>
+            </outputExpr>
+            <allocationStrategy>ShortestQueue</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Produce-Freight-Invoice-595" originalID="Produce_Freight_Invoice_595">
+            <name>Produce Freight Invoice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_124" objectId="D-N-Payment-FreightInvoice" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_39" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>FreightInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt; &lt;FreightCost&gt;{cpf:getObjectValue('POrder')/FreightCost/text()}&lt;/FreightCost&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>FreightInvoice = {cpf:getTaskObjectValue('FreightInvoice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="c2107552-6c4d-4ab1-ae5c-3b33c78604c5">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Debit-Adjustment-605" originalID="Issue_Debit_Adjustment_605">
+            <name>Issue Debit Adjustment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_96" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_165" objectId="D-N-Payment-DebitAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_112" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DebitAdjustment = &lt;StillDue&gt;{abs(cpf:getObjectValue('ShipmentPayment')/Balance/text())}&lt;/StillDue&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DebitAdjustment = {cpf:getTaskObjectValue('DebitAdjustment')/*}</expression>
+            </outputExpr>
+            <allocationStrategy>ShortestQueue</allocationStrategy>
+        </Node>
+        <Edge id="46e366ed-4f19-434e-9f6a-2058fbad9da2" default="false" sourceId="C-null-592" targetId="ide32c1e7c-184c-4a3f-a8b9-8511a9e2a24b"/>
+        <Edge id="54fec0ad-43dc-426c-9e3d-b8653a624a4f" default="false" sourceId="C-Process-Shipment-Payment-603" targetId="c4e21074-335c-4c4e-912d-b42e446af257"/>
+        <Edge id="ebb67a73-36ee-4500-b0cf-37fb19a09986" default="false" sourceId="id526bf68e-7d87-4fea-865d-2f0107447e57" targetId="51d7f022-3d62-4a93-882f-97dff801baab"/>
+        <Edge id="35a19f55-e2fc-42a3-ab0e-85e8b5f7f76f" default="false" sourceId="d718a637-d842-4419-b0fa-dd2de5bbec3f" targetId="C-Issue-Shipment-Remittance-Advice-601"/>
+        <Edge id="e9c74beb-2e21-4909-94e2-de801ed0f558" default="false" sourceId="ide32c1e7c-184c-4a3f-a8b9-8511a9e2a24b" targetId="C-Issue-Shipment-Invoice-594"/>
+        <Edge id="874d4beb-27b6-44b5-a6cf-a48d72619b0a" default="false" sourceId="c4e21074-335c-4c4e-912d-b42e446af257" targetId="idf67c0be1-862a-4548-97da-cea15de2d0c7"/>
+        <Edge id="4f0ceaee-8e6b-459d-a7c5-f3d116a07984" default="false" sourceId="f0f4e4d9-7e1d-4f65-b149-907da0b185dc" targetId="c05cd421-1d9a-4361-b496-0d093a97aa84"/>
+        <Edge id="f5e65f50-7657-42a2-8d5e-6c8d36e33298" default="false" sourceId="c2107552-6c4d-4ab1-ae5c-3b33c78604c5" targetId="aa65c035-18d6-4c23-8ebe-15adc630ff87"/>
+        <Edge id="b8717e68-453d-4b46-9dde-dfb6a135aa06" default="false" sourceId="C-Issue-Shipment-Invoice-594" targetId="d718a637-d842-4419-b0fa-dd2de5bbec3f"/>
+        <Edge id="fe3ae99b-1626-47bf-8792-78cbb6d33bd9" default="false" sourceId="C-Produce-Freight-Invoice-595" targetId="c05cd421-1d9a-4361-b496-0d093a97aa84"/>
+        <Edge id="bf776fbf-006d-4a32-adca-55cb415273aa" default="false" sourceId="C-null-596" targetId="f0f4e4d9-7e1d-4f65-b149-907da0b185dc"/>
+        <Edge id="c809faa6-411f-4133-b012-be0fbc08cf00" default="false" sourceId="d718a637-d842-4419-b0fa-dd2de5bbec3f" targetId="C-Issue-Shipment-Payment-Order-602"/>
+        <Edge id="e6215a78-4eb9-41ac-b08c-0b6587369d8d" default="false" sourceId="c4e21074-335c-4c4e-912d-b42e446af257" targetId="C-Issue-Debit-Adjustment-605"/>
+        <Edge id="ec24ee83-85c6-4159-b716-f609abb011c0" default="false" sourceId="C-Issue-Shipment-Payment-Order-602" targetId="id526bf68e-7d87-4fea-865d-2f0107447e57"/>
+        <Edge id="25fd3e14-9cf7-46f9-8375-578775afcb43" default="false" sourceId="C-Issue-Shipment-Remittance-Advice-601" targetId="idf67c0be1-862a-4548-97da-cea15de2d0c7"/>
+        <Edge id="858ef53f-9eeb-48c2-8daa-eaae1807dfc1" default="false" sourceId="C-InputCondition-44" targetId="C-null-592"/>
+        <Edge id="1718c0fd-ebd6-42cc-8eae-db88d3962598" default="false" sourceId="c4e21074-335c-4c4e-912d-b42e446af257" targetId="C-Issue-Credit-Adjustment-606"/>
+        <Edge id="536ae4a2-7cab-499d-8b4a-3d4dc4b7a9c6" default="false" sourceId="C-null-597" targetId="C-Process-Freight-Payment-3882"/>
+        <Edge id="eb30d0d1-750c-4336-be3b-741e55112f65" default="false" sourceId="idf67c0be1-862a-4548-97da-cea15de2d0c7" targetId="C-null-607"/>
+        <Edge id="1ca35449-cf8b-4c15-95a5-9eab865144b4" default="false" sourceId="C-Update-Shipment-Payment-Order-604" targetId="id526bf68e-7d87-4fea-865d-2f0107447e57"/>
+        <Edge id="82cb0e63-6989-4d6f-bd6b-dcfb3db3d4a3" default="false" sourceId="c4e21074-335c-4c4e-912d-b42e446af257" targetId="ee85a8f2-167a-4c1e-b8d4-06abf4e141cb"/>
+        <Edge id="0aeb5923-b851-4f47-b6a6-661c6718e189" default="false" sourceId="C-Approve-Shipment-Payment-Order-593" targetId="id369d80b0-eb26-4d50-8e8e-874aee939d51"/>
+        <Edge id="b7d39517-bcaa-4d11-9ddd-52b4e0647c23" default="false" sourceId="51d7f022-3d62-4a93-882f-97dff801baab" targetId="C-Approve-Shipment-Payment-Order-593"/>
+        <Edge id="d7e1fd56-d8c1-46ee-a270-d3ebc155a49b" default="false" sourceId="C-Process-Freight-Payment-3882" targetId="idb32a1e55-d770-4e41-a96f-b5f999ed764e"/>
+        <Edge id="b931ee21-4bde-4a48-91fc-e89196483063" default="false" sourceId="C-null-599" targetId="C-OutputCondition-45"/>
+        <Edge id="a41e040e-2106-4609-a2f3-2e95e7918aee" default="false" sourceId="C-null-607" targetId="idb32a1e55-d770-4e41-a96f-b5f999ed764e"/>
+        <Edge id="47b66188-89a0-4471-b546-b4819d2f03bb" default="false" sourceId="C-Issue-Debit-Adjustment-605" targetId="c2107552-6c4d-4ab1-ae5c-3b33c78604c5"/>
+        <Edge id="a6e16aa4-a9b1-49eb-8358-d61e64164b11" default="false" sourceId="aa65c035-18d6-4c23-8ebe-15adc630ff87" targetId="C-Process-Shipment-Payment-603"/>
+        <Edge id="e71d22af-9451-438e-94e9-f8d63ef47210" default="false" sourceId="idb32a1e55-d770-4e41-a96f-b5f999ed764e" targetId="C-null-599"/>
+        <Edge id="dee9e9c1-0ed3-4583-ae7c-b0c6a00b2704" default="false" sourceId="c05cd421-1d9a-4361-b496-0d093a97aa84" targetId="C-null-597"/>
+        <Edge id="3d7e68b2-04f7-403a-8d4d-cf9d126e2338" default="false" sourceId="id369d80b0-eb26-4d50-8e8e-874aee939d51" targetId="c2107552-6c4d-4ab1-ae5c-3b33c78604c5"/>
+        <Edge id="9b58be66-7736-44d2-8a6f-e0b32c34176f" default="false" sourceId="C-Issue-Credit-Adjustment-606" targetId="ee85a8f2-167a-4c1e-b8d4-06abf4e141cb"/>
+        <Edge id="cfa7c879-d8aa-4960-84ca-00c7d2fa80ad" default="false" sourceId="ide32c1e7c-184c-4a3f-a8b9-8511a9e2a24b" targetId="C-null-596"/>
+        <Edge id="3d5d5ee0-96ff-4634-a788-61517aff7738" default="false" sourceId="id369d80b0-eb26-4d50-8e8e-874aee939d51" targetId="C-Update-Shipment-Payment-Order-604"/>
+        <Edge id="c67f5258-af63-4a97-9332-898230cf6879" default="false" sourceId="f0f4e4d9-7e1d-4f65-b149-907da0b185dc" targetId="C-Produce-Freight-Invoice-595"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-TransportationQuote" originalID="D-N-Payment-TransportationQuote">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPaymentOrder" originalID="D-N-Payment-ShipmentPaymentOrder">
+            <name>ShipmentPaymentOrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-POrder" originalID="D-N-Payment-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPayment" originalID="D-N-Payment-ShipmentPayment">
+            <name>ShipmentPayment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPaymentOrderApproval" originalID="D-N-Payment-ShipmentPaymentOrderApproval">
+            <name>ShipmentPaymentOrderApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentOrderApprovalType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentInvoice" originalID="D-N-Payment-ShipmentInvoice">
+            <name>ShipmentInvoice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentInvoiceType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentRemittanceAdvice" originalID="D-N-Payment-ShipmentRemittanceAdvice">
+            <name>ShipmentRemittanceAdvice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentRemittanceAdviceType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-CreditAdjustment" originalID="D-N-Payment-CreditAdjustment">
+            <name>CreditAdjustment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>CreditAdjustmentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-FreightInvoice" originalID="D-N-Payment-FreightInvoice">
+            <name>FreightInvoice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>FreightInvoiceType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-DebitAdjustment" originalID="D-N-Payment-DebitAdjustment">
+            <name>DebitAdjustment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>DebitAdjustmentType</type>
+        </Object>
+    </Net>
+    <Net id="N-Carrier-Appointment">
+        <Node xsi:type="cpf:EventType" id="C-null-515" originalID="null_515">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="id4cd0c733-cc7b-43b0-a042-86e75d5227ee" originalID="Create_Shipment_Information_Document_817">
+            <name>Create Shipment Information Document</name>
+            <configurable>false</configurable>
+            <objectRef id="O_81" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_2" objectId="idfab56aaa-20cf-4654-a907-079a668c8127" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_58" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_131" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInformationDocument = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;&lt;NumberOfPackages&gt;{cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}&lt;/NumberOfPackages&gt;&lt;Truckload&gt;{fn:boolean(cpf:getObjectValue('Truckload')/text())}&lt;/Truckload&gt;&lt;AuthorizationCode/&gt;&lt;ConsigneeNumber&gt;1&lt;/ConsigneeNumber&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInformationDocument = {cpf:getTaskObjectValue('ShipmentInformationDocument')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <description>with capability 'Master's in SCLM'</description>
+                <language>http://www.w3.org/1999/XPath</language>
+                <expression>//ResourceType[attribute[@name='Capability' AND @value='Master's in SCLM']]</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="bfc36524-744b-446f-babc-bbfb18338eb9">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-null-514" originalID="null_514">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="3ae0c88a-4919-4f8e-b171-b869282f5055" originalID="null_521">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-516" originalID="null_516">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="dcee5b66-6324-4837-bd95-59e89347f915">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-null-513" originalID="null_513">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-null-512" originalID="null_512">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TimerType" id="ed695281-fa20-4889-b25d-d01491d19e06">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Pickup-Appointment-819" originalID="Arrange_Pickup_Appointment_819">
+            <name>Arrange Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_115" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_71" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_16" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_78" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_69" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;PickupDate&gt;{fn:current-date()}&lt;/PickupDate&gt;&lt;PickupInstructions/&gt;&lt;PickupSpot/&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-456" originalID="null_456">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-391" originalID="null_391">
+            <name>LTL</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-null-591" originalID="null_591">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="id29ad224c-d1c4-4728-aead-232a3b733664">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="be4e4f73-2175-4df6-86bf-ae574c2ea26c">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Produce-Shipment-Notice-401" originalID="Produce_Shipment_Notice_401">
+            <name>Produce Shipment Notice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_36" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_97" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_13" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_155" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_22" objectId="D-N-Carrier-Appointment-ShipmentNotice" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_68" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentNotice = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;&lt;NumberOfPackages&gt;{cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}&lt;/NumberOfPackages&gt;&lt;Truckload&gt;{fn:boolean(cpf:getObjectValue('Truckload')/text())}&lt;/Truckload&gt;&lt;PickupInstructions&gt;{cpf:getObjectValue('PickupInstructions')/*}&lt;/PickupInstructions&gt;&lt;StartLoad&gt;{fn:current-time()}&lt;/StartLoad&gt; &lt;EndLoad&gt;{fn:current-time()}&lt;/EndLoad&gt;&lt;DeliveryInstructions&gt;{cpf:getObjectValue('DeliveryInstructions')/*}&lt;/DeliveryInstructions&gt;&lt;ClaimsDeadline&gt;P10D&lt;/ClaimsDeadline&gt;&lt;DriverNumber/&gt; &lt;DriverName/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentNotice = {cpf:getTaskObjectValue('ShipmentNotice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="idd7a32146-2b60-4e08-8356-c8f6c41e398c">
+            <name>AndSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="id5739ed88-2451-45e1-b420-991a3dfa10c7">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Pickup-Appointment-393" originalID="Arrange_Pickup_Appointment_393">
+            <name>Arrange Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_18" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_91" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_145" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_25" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_157" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;PickupDate&gt;{fn:current-date()}&lt;/PickupDate&gt;&lt;PickupInstructions/&gt;&lt;PickupSpot/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="id29dc3f43-a7f2-4b1d-92d2-1f9a8d62722c">
+            <name>AndSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-523" originalID="null_523">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-522" originalID="null_522">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-521" originalID="null_521">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-520" originalID="null_520">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="865eb71c-6583-458c-8b3a-960d1b6254aa" originalID="null_521">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="6c628edf-9004-4ede-8477-15fb9e7f5e24" originalID="null_521">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-820" originalID="Arrange_Delivery_Appointment_820">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_88" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_44" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_116" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_50" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_76" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_86" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression></expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-518" originalID="null_518">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="C-null-519" originalID="null_519">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:ORJoinType" id="id8350b6c6-5a19-470d-aad7-fc6624ba2c7e">
+            <name>OrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Modify-Pickup-Appointment-400" originalID="Modify_Pickup_Appointment_400">
+            <name>Modify Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_54" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_87" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getObjectValue('PickupInstructions')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="54e8a947-468f-4970-88b7-1c6b38c4b5cc">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="c7ae37f5-6f86-4ab2-b10f-b2f084179bef" originalID="null_521">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Modify-Pickup-Appointment-397" originalID="Modify_Pickup_Appointment_397">
+            <name>Modify Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_95" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_135" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getObjectValue('PickupInstructions')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Pickup-Appointment-449" originalID="Arrange_Pickup_Appointment_449">
+            <name>Arrange Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_72" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_149" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_104" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_130" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_160" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;PickupDate&gt;{fn:current-date()}&lt;/PickupDate&gt;&lt;PickupInstructions/&gt;&lt;PickupSpot/&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-392" originalID="Arrange_Delivery_Appointment_392">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_102" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_41" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_173" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_169" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_12" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_9" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-19" originalID="OutputCondition_19">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-451" originalID="Arrange_Delivery_Appointment_451">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_133" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_80" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_28" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_46" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_139" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_42" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression></expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-450" originalID="Arrange_Delivery_Appointment_450">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_153" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_122" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_4" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_34" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_14" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_174" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Pickup-Appointment-452" originalID="Arrange_Pickup_Appointment_452">
+            <name>Arrange Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_63" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_134" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_49" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_75" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_172" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;PickupDate&gt;{fn:current-date()}&lt;/PickupDate&gt;&lt;PickupInstructions/&gt;&lt;PickupSpot/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression></expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-396" originalID="Arrange_Delivery_Appointment_396">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_26" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_40" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_66" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_85" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_110" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_67" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Pickup-Appointment-454" originalID="Arrange_Pickup_Appointment_454">
+            <name>Arrange Pickup Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_158" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_101" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_52" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_129" objectId="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_144" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;PickupDate&gt;{fn:current-date()}&lt;/PickupDate&gt;&lt;PickupInstructions/&gt;&lt;PickupSpot/&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PickupInstructions = {cpf:getTaskObjectValue('PickupInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="a96bf340-475d-4867-9e5a-bcb16a947073">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Arrange-Delivery-Appointment-455" originalID="Arrange_Delivery_Appointment_455">
+            <name>Arrange Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_45" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_62" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_47" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_121" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_109" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_92" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {fn:boolean(cpf:getObjectValue('Truckload')/text())}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>NumberOfPackages = {cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;DeliveryDate&gt;{fn:current-date()}&lt;/DeliveryDate&gt;&lt;DeliveryInstructions/&gt;&lt;DeliveryLocation&gt;{cpf:getObjectValue('POrder')/DeliveryLocation/text()}&lt;/DeliveryLocation&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-null-389" originalID="null_389">
+            <name>Calculate Carrier Timeout</name>
+            <configurable>false</configurable>
+            <resourceTypeRef id="R_4" resourceTypeId="iddee9d3ba-51d5-45c5-8e73-decb4bf91e76"/>
+            <objectRef id="O_79" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_170" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_55" objectId="D-N-Carrier-Appointment-CarrierTimeout" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>a = 4</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>b = {count(cpf:getObjectValue('POrder')/Order/OrderLines/*)}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CarrierTimeout = &lt;trigger&gt;OnEnabled&lt;/trigger&gt;&lt;expiry&gt;P{/Calculate_Carrier_Timeout/c/text()}D&lt;/expiry&gt;</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Modify-Delivery-Appointment-398" originalID="Modify_Delivery_Appointment_398">
+            <name>Modify Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_126" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_159" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getObjectValue('DeliveryInstructions')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Modify-Delivery-Appointment-399" originalID="Modify_Delivery_Appointment_399">
+            <name>Modify Delivery Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_100" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_105" objectId="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getObjectValue('DeliveryInstructions')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryInstructions = {cpf:getTaskObjectValue('DeliveryInstructions')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Prepare-Transportation-Quote-390" originalID="Prepare_Transportation_Quote_390">
+            <name>Prepare Transportation Quote</name>
+            <configurable>false</configurable>
+            <objectRef id="O_171" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_168" objectId="D-N-Carrier-Appointment-Truckload" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_61" objectId="D-N-Carrier-Appointment-TrailerUsage" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_148" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="output" optional="false" consumed="true"/>
+            <cancelNodeId refId="C-null-591"/>
+            <cancelNodeId refId="C-Carrier-Timeout-388"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;&lt;NumberOfPackages&gt;{/cpf:getObjectValue('TrailerUsage')/Packages/count(Package)}&lt;/NumberOfPackages&gt;&lt;TotalVolume&gt;{/cpf:getObjectValue('TrailerUsage')/Packages/sum(Package/Volume)}&lt;/TotalVolume&gt;&lt;ShipmentNumber/&gt;&lt;ShipmentCost&gt;{cpf:getObjectValue('POrder')/FreightCost/text()}&lt;/ShipmentCost&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Truckload = {if (cpf:getTaskObjectValue('TransportationQuote')/NumberOfPackages&gt;1) then 'true' else 'false'}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = {cpf:getTaskObjectValue('TransportationQuote')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Estimate-Trailer-Usage-386" originalID="Estimate_Trailer_Usage_386">
+            <name>Estimate Trailer Usage</name>
+            <configurable>false</configurable>
+            <objectRef id="O_93" objectId="D-N-Carrier-Appointment-TrailerUsage" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_5" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_90" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderLines = {cpf:getObjectValue('POrder')/Order/OrderLines/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TrailerUsage = &lt;OrderNumber&gt;{/Prepare_Route_Guide/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;Packages&gt;{cpf:getTaskObjectValue('Packages')/*}&lt;/Packages&gt;</expression>
+            </outputExpr>
+            <allocationStrategy>RoundRobinByTime</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:ORJoinType" id="id4475bc72-7675-42c0-8b6f-a86cdda8168f">
+            <name>OrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:ANDJoinType" id="aef07520-f586-4597-8598-8971f9982fe2">
+            <name>AndJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Create-Carrier-Manifest-1790" originalID="Create_Carrier_Manifest_1790">
+            <name>Create Carrier Manifest</name>
+            <configurable>false</configurable>
+            <objectRef id="O_119" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_146" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_142" objectId="D-N-Carrier-Appointment-CarrierManifest" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CarrierManifest = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CarrierManifest = {cpf:getTaskObjectValue('CarrierManifest')/*}</expression>
+            </outputExpr>
+            <allocationStrategy>RoundRobinByExperience</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Carrier-Timeout-388" originalID="Carrier_Timeout_388">
+            <name>Carrier Timeout</name>
+            <configurable>false</configurable>
+            <resourceTypeRef id="R_1" resourceTypeId="fd40ae4b-ec99-4976-ae0e-23854bb19b70"/>
+            <objectRef id="O_150" objectId="D-N-Carrier-Appointment-SP-timedout" type="output" optional="false" consumed="true"/>
+            <cancelNodeId refId="C-null-515"/>
+            <cancelNodeId refId="C-null-514"/>
+            <cancelNodeId refId="C-Prepare-Transportation-Quote-390"/>
+            <cancelNodeId refId="C-null-513"/>
+            <cancelNodeId refId="C-null-512"/>
+            <cancelNodeId refId="C-Prepare-Route-Guide-387"/>
+            <cancelNodeId refId="C-Estimate-Trailer-Usage-386"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>SP_timedout = true</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Create-Bill-of-Lading-818" originalID="Create_Bill_of_Lading_818">
+            <name>Create Bill of Lading</name>
+            <configurable>false</configurable>
+            <objectRef id="O_57" objectId="D-N-Carrier-Appointment-BillOfLading" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_31" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_136" objectId="D-N-Carrier-Appointment-Truckload" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_33" objectId="idd42a2387-0514-4cab-9a34-3cb6201d7a88" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>BillOfLading = &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt;&lt;NumberOfPackages&gt;{cpf:getObjectValue('TransportationQuote')/NumberOfPackages/text()}&lt;/NumberOfPackages&gt;&lt;Truckload&gt;{fn:boolean(cpf:getObjectValue('Truckload')/text())}&lt;/Truckload&gt;&lt;AuthorizationCode/&gt; &lt;ConsigneeNumber&gt;1&lt;/ConsigneeNumber&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>BillOfLading = {cpf:getTaskObjectValue('BillOfLading')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <description>with capability 'Bachelor's in SCLM'</description>
+                <language>http://www.w3.org/1999/XPath</language>
+                <expression>//ResourceType[attribute[@name='Capability' AND @value='Bachelor's in SCLM']]</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Prepare-Route-Guide-387" originalID="Prepare_Route_Guide_387">
+            <name>Prepare Route Guide</name>
+            <configurable>false</configurable>
+            <objectRef id="O_83" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_141" objectId="D-N-Carrier-Appointment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_56" objectId="D-N-Carrier-Appointment-RouteGuide" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>OrderNumber = {cpf:getObjectValue('POrder')/Order/OrderNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DeliveryLocation = {cpf:getObjectValue('POrder')/DeliveryLocation/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>RouteGuide = &lt;OrderNumber&gt;{cpf:getTaskObjectValue('OrderNumber')/text()}&lt;/OrderNumber&gt; &lt;DeliveryLocation&gt;{cpf:getTaskObjectValue('DeliveryLocation')/text()}&lt;/DeliveryLocation&gt; &lt;Trackpoints&gt;{cpf:getTaskObjectValue('Trackpoints')/*}&lt;/Trackpoints&gt;</expression>
+            </outputExpr>
+            <allocationStrategy>ShortestQueue</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="65a4bf90-cc19-4fbb-bab8-d018826cc706">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-18" originalID="InputCondition_18">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:ORSplitType" id="d9e82aab-6e87-4f6d-bb82-299730feb4c5">
+            <name>OrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="c26def97-cb08-4ab6-9d73-10864b73341c" default="false" sourceId="C-null-389" targetId="idd7a32146-2b60-4e08-8356-c8f6c41e398c"/>
+        <Edge id="6b1d3516-d249-4cd2-a591-0b5feee58718" default="false" sourceId="d9e82aab-6e87-4f6d-bb82-299730feb4c5" targetId="C-Arrange-Delivery-Appointment-455"/>
+        <Edge id="40abe738-2e88-49f0-adf3-1597621c38c4" default="false" sourceId="C-Arrange-Delivery-Appointment-396" targetId="3ae0c88a-4919-4f8e-b171-b869282f5055"/>
+        <Edge id="865b0284-d409-493b-aeab-9695f995b435" default="false" sourceId="C-null-519" targetId="dcee5b66-6324-4837-bd95-59e89347f915"/>
+        <Edge id="b981f36e-3ff4-482f-86f7-9e9584e7a43d" default="false" sourceId="C-null-521" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="85c2e531-72a1-4501-ae0d-38584cb47e6c" default="false" sourceId="C-Arrange-Pickup-Appointment-454" targetId="id4475bc72-7675-42c0-8b6f-a86cdda8168f"/>
+        <Edge id="02762cf1-e257-47d9-a293-6633ce0ff6cf" default="false" sourceId="C-Arrange-Delivery-Appointment-451" targetId="dcee5b66-6324-4837-bd95-59e89347f915"/>
+        <Edge id="21781636-ad11-4d08-a31f-2d9b620bd96e" default="false" sourceId="C-null-520" targetId="dcee5b66-6324-4837-bd95-59e89347f915"/>
+        <Edge id="2331bbad-c7a0-4c58-b48d-cf1cd69f4a9b" default="false" sourceId="id5739ed88-2451-45e1-b420-991a3dfa10c7" targetId="C-Arrange-Pickup-Appointment-819"/>
+        <Edge id="eb541e82-76e6-4c1b-8294-3ae72e784b34" default="false" sourceId="c7ae37f5-6f86-4ab2-b10f-b2f084179bef" targetId="C-Modify-Pickup-Appointment-397"/>
+        <Edge id="c8d3c8f7-4886-4fae-a04e-38ef2c5ba07d" default="false" sourceId="C-Produce-Shipment-Notice-401" targetId="54e8a947-468f-4970-88b7-1c6b38c4b5cc"/>
+        <Edge id="2ae46b92-f1d3-4dc0-9679-fd554d7baaa5" default="false" sourceId="C-null-522" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="70dee26d-5912-4b8d-a898-f3cab813209d" default="false" sourceId="bfc36524-744b-446f-babc-bbfb18338eb9" targetId="be4e4f73-2175-4df6-86bf-ae574c2ea26c"/>
+        <Edge id="2846ce6a-4ac1-4b7e-9e03-e02e64539d79" default="false" sourceId="d9e82aab-6e87-4f6d-bb82-299730feb4c5" targetId="C-Arrange-Pickup-Appointment-454"/>
+        <Edge id="6a968a00-5cb5-4cea-81a8-a246704223ba" default="false" sourceId="id29ad224c-d1c4-4728-aead-232a3b733664" targetId="C-Arrange-Delivery-Appointment-396"/>
+        <Edge id="fdf1cbc0-d9ae-4dd2-84ae-a5b78b73f1f6" default="false" sourceId="C-null-456" targetId="6c628edf-9004-4ede-8477-15fb9e7f5e24"/>
+        <Edge id="847238bf-79b9-4f8c-8f7f-70d69615fba1" default="false" sourceId="C-Arrange-Delivery-Appointment-455" targetId="id4475bc72-7675-42c0-8b6f-a86cdda8168f"/>
+        <Edge id="e138c0ec-26c6-4905-bee9-74aab19b438d" default="false" sourceId="C-Modify-Pickup-Appointment-397" targetId="C-null-522"/>
+        <Edge id="7010e44a-f9ae-425c-ae16-4a3431f62a67" default="false" sourceId="C-Arrange-Delivery-Appointment-450" targetId="C-null-520"/>
+        <Edge id="68aa6575-23c8-4cf4-895d-a64c4a2dc310" default="false" sourceId="id4cd0c733-cc7b-43b0-a042-86e75d5227ee" targetId="d9e82aab-6e87-4f6d-bb82-299730feb4c5"/>
+        <Edge id="00e4aa12-adef-491c-beb1-08c89420ad6e" default="false" sourceId="C-Arrange-Delivery-Appointment-820" targetId="C-Create-Carrier-Manifest-1790"/>
+        <Edge id="d8b02748-e1ca-4b3a-933a-bc8b50c7bdc6" default="false" sourceId="idd7a32146-2b60-4e08-8356-c8f6c41e398c" targetId="C-null-512"/>
+        <Edge id="4089e4c7-7250-4c88-adf2-fc12bf447e43" default="false" sourceId="C-null-518" targetId="dcee5b66-6324-4837-bd95-59e89347f915"/>
+        <Edge id="18fa8570-6275-42b0-80f3-c9d4f6f99940" default="false" sourceId="C-Arrange-Pickup-Appointment-819" targetId="C-Arrange-Delivery-Appointment-820"/>
+        <Edge id="b27e3e4c-4855-4d11-abb3-4debf1768ce1" default="false" sourceId="65a4bf90-cc19-4fbb-bab8-d018826cc706" targetId="C-null-518"/>
+        <Edge id="98cde180-2eff-4ec2-8f7d-4a879096e3b7" default="false" sourceId="id29dc3f43-a7f2-4b1d-92d2-1f9a8d62722c" targetId="C-Arrange-Pickup-Appointment-393"/>
+        <Edge id="c1508df6-64b7-4cbd-81d5-db03c00a221e" default="false" sourceId="C-null-523" targetId="C-Modify-Pickup-Appointment-400"/>
+        <Edge id="1a4819ae-b983-4aa6-b2c5-b3f19c7313df" default="false" sourceId="C-null-518" targetId="C-Arrange-Delivery-Appointment-450"/>
+        <Edge id="94084331-3606-4e42-8b24-a1276dc24d97" default="false" sourceId="6c628edf-9004-4ede-8477-15fb9e7f5e24" targetId="C-null-521"/>
+        <Edge id="cbfcc5b1-c7bb-4c42-9c9e-c066c88959c8" default="false" sourceId="C-null-516" targetId="C-Arrange-Delivery-Appointment-392"/>
+        <Edge id="d322f433-03ca-4a83-88bf-ee5a2606e083" default="false" sourceId="C-null-518" targetId="C-Arrange-Pickup-Appointment-449"/>
+        <Edge id="89afa832-de1f-4d61-9f01-4b5c6fb4938f" default="false" sourceId="be4e4f73-2175-4df6-86bf-ae574c2ea26c" targetId="C-OutputCondition-19"/>
+        <Edge id="5b8b9fcf-9d5b-4021-bc10-ed3dd848d575" default="false" sourceId="id4475bc72-7675-42c0-8b6f-a86cdda8168f" targetId="C-null-456"/>
+        <Edge id="26e78575-5dcc-475a-ac89-d78e523b9ec8" default="false" sourceId="C-Carrier-Timeout-388" targetId="bfc36524-744b-446f-babc-bbfb18338eb9"/>
+        <Edge id="411a244f-7a9c-4706-b7a6-a6a994dc1326" default="false" sourceId="C-Estimate-Trailer-Usage-386" targetId="C-null-514"/>
+        <Edge id="59e1c991-4ada-4920-b0e2-d8ee2ec74939" default="false" sourceId="a96bf340-475d-4867-9e5a-bcb16a947073" targetId="C-Produce-Shipment-Notice-401"/>
+        <Edge id="a4c8ad0d-c037-4b7a-8b58-29222bde0d74" default="false" sourceId="C-null-514" targetId="aef07520-f586-4597-8598-8971f9982fe2"/>
+        <Edge id="2b2b3343-5628-4b23-8d3c-abefc68c9f00" default="false" sourceId="C-Modify-Pickup-Appointment-400" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="89adcd72-d570-401b-ab72-658e21233642" default="false" sourceId="dcee5b66-6324-4837-bd95-59e89347f915" targetId="id4cd0c733-cc7b-43b0-a042-86e75d5227ee"/>
+        <Edge id="a2691caa-48ba-4c3c-ac0d-b847befd4f21" default="false" sourceId="idd7a32146-2b60-4e08-8356-c8f6c41e398c" targetId="C-null-513"/>
+        <Edge id="18e14858-c242-4d8d-8337-95bf3ffd70bc" default="false" sourceId="C-null-513" targetId="C-Estimate-Trailer-Usage-386"/>
+        <Edge id="42825358-f2cb-4aa0-9ef7-2bec21c06ee2" default="false" sourceId="865eb71c-6583-458c-8b3a-960d1b6254aa" targetId="C-Modify-Delivery-Appointment-398"/>
+        <Edge id="af42972a-28fd-458f-8626-f419dfed1ed7" default="false" sourceId="ed695281-fa20-4889-b25d-d01491d19e06" targetId="C-Carrier-Timeout-388"/>
+        <Edge id="b5a8ea34-00f6-44e0-8e4f-481915bc05c2" default="false" sourceId="C-Arrange-Pickup-Appointment-449" targetId="C-null-519"/>
+        <Edge id="8c8b446d-7bd2-4726-b3a6-2dddd5982ea0" default="false" sourceId="C-Create-Carrier-Manifest-1790" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="4bbe0819-ce33-42d0-b55c-9d04fd363669" default="false" sourceId="C-null-516" targetId="id8350b6c6-5a19-470d-aad7-fc6624ba2c7e"/>
+        <Edge id="2e9798cf-9f32-4007-a85b-020f559a3764" default="false" sourceId="C-Arrange-Pickup-Appointment-393" targetId="id8350b6c6-5a19-470d-aad7-fc6624ba2c7e"/>
+        <Edge id="a6e81727-80b7-41b0-b0ad-6ac9395d529f" default="false" sourceId="id29ad224c-d1c4-4728-aead-232a3b733664" targetId="3ae0c88a-4919-4f8e-b171-b869282f5055"/>
+        <Edge id="459e5de5-7deb-4c55-acd4-60e1471824fb" default="false" sourceId="C-null-391" targetId="id29dc3f43-a7f2-4b1d-92d2-1f9a8d62722c"/>
+        <Edge id="093ab164-b602-45d2-9b34-75a08d7e1746" default="false" sourceId="idd7a32146-2b60-4e08-8356-c8f6c41e398c" targetId="C-null-591"/>
+        <Edge id="799b8084-3f6f-4ab8-bf64-0438ab9f3f21" default="false" sourceId="C-null-522" targetId="C-Modify-Delivery-Appointment-399"/>
+        <Edge id="addfd494-5bd3-4dbf-a3ec-9430d85773c9" default="false" sourceId="54e8a947-468f-4970-88b7-1c6b38c4b5cc" targetId="be4e4f73-2175-4df6-86bf-ae574c2ea26c"/>
+        <Edge id="6371a5ac-0f38-4d86-9bb6-b959e70ee15b" default="false" sourceId="C-InputCondition-18" targetId="C-null-389"/>
+        <Edge id="44a2d340-0058-489c-821f-9d82e415302d" default="false" sourceId="id8350b6c6-5a19-470d-aad7-fc6624ba2c7e" targetId="C-Create-Bill-of-Lading-818"/>
+        <Edge id="d1c33446-0b68-483e-8679-1fd700a8b878" default="false" sourceId="C-Arrange-Delivery-Appointment-392" targetId="id8350b6c6-5a19-470d-aad7-fc6624ba2c7e"/>
+        <Edge id="cc161002-4c6f-41fd-8684-83e4af354b13" default="false" sourceId="aef07520-f586-4597-8598-8971f9982fe2" targetId="C-Prepare-Transportation-Quote-390"/>
+        <Edge id="282ddfb2-f748-4287-b7ec-783967051851" default="false" sourceId="C-null-519" targetId="C-Arrange-Delivery-Appointment-451"/>
+        <Edge id="445ec697-18ff-4dba-af1b-20cd06ad39b2" default="false" sourceId="d9e82aab-6e87-4f6d-bb82-299730feb4c5" targetId="6c628edf-9004-4ede-8477-15fb9e7f5e24"/>
+        <Edge id="1ebe4872-7ee1-4e17-a917-8585e7ca46a1" default="false" sourceId="C-null-512" targetId="C-Prepare-Route-Guide-387"/>
+        <Edge id="0678b01b-40c8-468c-a853-ec4457f819c3" default="false" sourceId="C-Prepare-Route-Guide-387" targetId="C-null-515"/>
+        <Edge id="05e0c89b-ec9a-473d-929f-5a0e885abecf" default="false" sourceId="C-null-521" targetId="c7ae37f5-6f86-4ab2-b10f-b2f084179bef"/>
+        <Edge id="eb68298c-9d50-45ca-90e9-0a7537456045" default="false" sourceId="C-null-521" targetId="865eb71c-6583-458c-8b3a-960d1b6254aa"/>
+        <Edge id="f2611b41-01a1-4d2a-b9a0-149d9b48e9cf" default="false" sourceId="C-Create-Bill-of-Lading-818" targetId="id29ad224c-d1c4-4728-aead-232a3b733664"/>
+        <Edge id="9122ebba-bb3c-4e16-a60f-644eabe85e3b" default="false" sourceId="id5739ed88-2451-45e1-b420-991a3dfa10c7" targetId="C-null-521"/>
+        <Edge id="8ed5fcb0-32b6-4fc4-a56f-6ff1c2c513b7" default="false" sourceId="C-null-591" targetId="ed695281-fa20-4889-b25d-d01491d19e06"/>
+        <Edge id="e89deded-cb29-4b1d-9b71-d5d659cf9e56" default="false" sourceId="C-Arrange-Pickup-Appointment-452" targetId="dcee5b66-6324-4837-bd95-59e89347f915"/>
+        <Edge id="2582d915-38fd-46f8-8d72-15b638adbaf8" default="false" sourceId="C-Modify-Delivery-Appointment-399" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="5cb3d2ab-925e-4796-b4a2-0653179a04f3" default="false" sourceId="C-null-515" targetId="aef07520-f586-4597-8598-8971f9982fe2"/>
+        <Edge id="5f3397dd-5379-45c8-854e-d508ac63ad6f" default="false" sourceId="3ae0c88a-4919-4f8e-b171-b869282f5055" targetId="C-null-521"/>
+        <Edge id="16b12e76-7880-4413-8a99-39c077812cb0" default="false" sourceId="id29dc3f43-a7f2-4b1d-92d2-1f9a8d62722c" targetId="C-null-516"/>
+        <Edge id="79020db5-bbbe-4a0f-adea-b0c83fff82a5" default="false" sourceId="C-Prepare-Transportation-Quote-390" targetId="id5739ed88-2451-45e1-b420-991a3dfa10c7"/>
+        <Edge id="ed38100b-5c2d-4cb5-be2d-790fe838f7ea" default="false" sourceId="65a4bf90-cc19-4fbb-bab8-d018826cc706" targetId="C-null-391"/>
+        <Edge id="4051c3b0-b44f-439a-aee9-8ce37d669dc1" default="false" sourceId="C-null-523" targetId="a96bf340-475d-4867-9e5a-bcb16a947073"/>
+        <Edge id="e99b8018-7aec-42d7-87a2-acb0f1042918" default="false" sourceId="C-Modify-Delivery-Appointment-398" targetId="C-null-523"/>
+        <Edge id="d8f6b3ba-5af0-434a-b61e-e26624d83540" default="false" sourceId="C-null-520" targetId="C-Arrange-Pickup-Appointment-452"/>
+        <Object xsi:type="cpf:SoftType" id="idd42a2387-0514-4cab-9a34-3cb6201d7a88" originalID="idd42a2387-0514-4cab-9a34-3cb6201d7a88">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="idfab56aaa-20cf-4654-a907-079a668c8127" originalID="idfab56aaa-20cf-4654-a907-079a668c8127">
+            <name>ShipmentInformationDocument</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentInformationDocumentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-POrder" originalID="D-N-Carrier-Appointment-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-Truckload" originalID="D-N-Carrier-Appointment-Truckload">
+            <name>Truckload</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>boolean</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9" originalID="id84e0d304-d8ea-40f5-b719-98bbfa5ce7a9">
+            <name>PickupInstructions</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>PickupInstructionsType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd" originalID="id3b5c6c41-85c8-4e8f-adf6-f7573f8eafdd">
+            <name>DeliveryInstructions</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>DeliveryInstructionsType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-ShipmentNotice" originalID="D-N-Carrier-Appointment-ShipmentNotice">
+            <name>ShipmentNotice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <type>ShipmentNoticeType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-CarrierTimeout" originalID="D-N-Carrier-Appointment-CarrierTimeout">
+            <name>CarrierTimeout</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>YTimerType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-TrailerUsage" originalID="D-N-Carrier-Appointment-TrailerUsage">
+            <name>TrailerUsage</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>TrailerUsageType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-CarrierManifest" originalID="D-N-Carrier-Appointment-CarrierManifest">
+            <name>CarrierManifest</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>CarrierManifestType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-SP-timedout" originalID="D-N-Carrier-Appointment-SP-timedout">
+            <name>SP_timedout</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>boolean</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-BillOfLading" originalID="D-N-Carrier-Appointment-BillOfLading">
+            <name>BillOfLading</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>BillOfLadingType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Carrier-Appointment-RouteGuide" originalID="D-N-Carrier-Appointment-RouteGuide">
+            <name>RouteGuide</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>RouteGuideType</type>
+        </Object>
+    </Net>
+    <Net id="N-Process-Freight-Payment">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-3885" originalID="InputCondition_3885">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-3886" originalID="OutputCondition_3886">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-To-Be-Done-ProcessFreightPayment-30" originalID="To_Be_Done_ProcessFreightPayment_30">
+            <name>Process Freight Payment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_113" objectId="ide191fe43-211b-4845-8690-a2f367db9d6b" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>FreightPayment = {cpf:getObjectValue('FreightPayment')/text()}</expression>
+            </inputExpr>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Edge id="f9781462-2384-4d07-89ea-5ea434414889" default="false" sourceId="C-InputCondition-3885" targetId="C-To-Be-Done-ProcessFreightPayment-30"/>
+        <Edge id="8bc2949f-1084-4539-8ad1-98c0c9c06ba4" default="false" sourceId="C-To-Be-Done-ProcessFreightPayment-30" targetId="C-OutputCondition-3886"/>
+        <Object xsi:type="cpf:SoftType" id="ide191fe43-211b-4845-8690-a2f367db9d6b" originalID="ide191fe43-211b-4845-8690-a2f367db9d6b">
+            <name>FreightPayment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>string</type>
+        </Object>
+    </Net>
+    <Net id="N-Loss-Or-Damage-Management">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-4051" originalID="OutputCondition_4051">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Loss-Or-Damage-Management-4052" originalID="Loss_Or_Damage_Management_4052">
+            <name>Loss Or Damage Management</name>
+            <configurable>false</configurable>
+            <objectRef id="O_23" objectId="id287184f4-8ad5-4467-8ad8-a7dfaef5dee3" type="output" optional="false" consumed="true"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>LossOrDamageNotice = {/To_Be_Done_LossOrDamageManagement/LossOrDamageNotice/text()}</expression>
+            </outputExpr>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-4050" originalID="InputCondition_4050">
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="82131303-744d-4659-b3f7-900b137ba8bd" default="false" sourceId="C-Loss-Or-Damage-Management-4052" targetId="C-OutputCondition-4051"/>
+        <Edge id="babafb52-72d6-401c-9f31-bce37d5ea495" default="false" sourceId="C-InputCondition-4050" targetId="C-Loss-Or-Damage-Management-4052"/>
+        <Object xsi:type="cpf:SoftType" id="id287184f4-8ad5-4467-8ad8-a7dfaef5dee3" originalID="id287184f4-8ad5-4467-8ad8-a7dfaef5dee3">
+            <name>LossOrDamageNotice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>string</type>
+        </Object>
+    </Net>
+    <Net id="N-Return-Management">
+        <Node xsi:type="cpf:TaskType" id="C-Return-Management-4049" originalID="Return_Management_4049">
+            <name>Return Management</name>
+            <configurable>false</configurable>
+            <objectRef id="O_8" objectId="D-N-Return-Management-ReturnNotice" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ReturnNotice = {cpf:getObjectValue('ReturnNotice')/text()}</expression>
+            </inputExpr>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-4048" originalID="OutputCondition_4048">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-4047" originalID="InputCondition_4047">
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="212e9c8a-8260-4b60-860c-1d1fe7b4515e" default="false" sourceId="C-InputCondition-4047" targetId="C-Return-Management-4049"/>
+        <Edge id="347b8c26-1a51-4087-a934-e78acfa25d70" default="false" sourceId="C-Return-Management-4049" targetId="C-OutputCondition-4048"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Return-Management-ReturnNotice" originalID="D-N-Return-Management-ReturnNotice">
+            <name>ReturnNotice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>string</type>
+        </Object>
+    </Net>
+    <Net id="N-Overall">
+        <Node xsi:type="cpf:XORSplitType" id="idaf3b60a8-aeac-4b49-a2cc-27705b4f1228">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Freight-Delivered" id="C-Freight-Delivered-7" originalID="Freight_Delivered_7">
+            <name>Freight Delivered</name>
+            <configurable>false</configurable>
+            <objectRef id="O_29" objectId="D-N-Overall-AcceptanceCertificate" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_15" objectId="D-N-Overall-ShipmentNotice" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_156" objectId="D-N-Overall-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_60" objectId="D-N-Overall-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>AcceptanceCertificate = {cpf:getObjectValue('AcceptanceCertificate')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ClaimsDeadlineTimer = &lt;trigger&gt;OnEnabled&lt;/trigger&gt; &lt;expiry&gt;{cpf:getObjectValue('ShipmentNotice')/ClaimsDeadline/text()}&lt;/expiry&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = {cpf:getObjectValue('TransportationQuote')/*}</expression>
+            </inputExpr>
+        </Node>
+        <Node xsi:type="cpf:ORSplitType" id="iddbb86fbb-4e19-49a0-bb80-c66218a74056">
+            <name>OrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Payment" id="C-Payment-5" originalID="Payment_5">
+            <name>Payment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_125" objectId="D-N-Overall-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_94" objectId="D-N-Overall-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = {cpf:getObjectValue('TransportationQuote')/*}</expression>
+            </inputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Carrier-Appointment" id="C-Carrier-Appointment-4" originalID="Carrier_Appointment_4">
+            <name>Carrier Appointment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_17" objectId="D-N-Overall-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_35" objectId="D-N-Overall-SP-timedout" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_123" objectId="D-N-Overall-ShipmentNotice" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_30" objectId="D-N-Overall-TransportationQuote" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>SP_timedout = false</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = {cpf:getTaskObjectValue('TransportationQuote')/*}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentNotice = {cpf:getTaskObjectValue('ShipmentNotice')/*}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>SP_timedout = {cpf:getTaskObjectValue('SP_timedout')/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDJoinType" id="id9d6da261-915e-4389-993c-75b781fb095e">
+            <name>AndJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="id17cbbfa5-c6f1-47cd-8023-10bc40006dee">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:StateType" id="52026f6f-c937-434c-9f6f-f0419c825f22">
+            <name>State</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Freight-in-Transit" id="C-Freight-in-Transit-6" originalID="Freight_in_Transit_6">
+            <name>Freight in Transit</name>
+            <configurable>false</configurable>
+            <objectRef id="O_167" objectId="D-N-Overall-AcceptanceCertificate" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_107" objectId="D-N-Overall-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_48" objectId="D-N-Overall-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getObjectValue('POrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>TransportationQuote = {cpf:getObjectValue('TransportationQuote')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>AcceptanceCertificate = {cpf:getTaskObjectValue('AcceptanceCertificate')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
+            <name>end_Overall</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" subnetId="N-Ordering" id="C-Ordering-3" originalID="Ordering_3">
+            <name>Ordering</name>
+            <configurable>false</configurable>
+            <objectRef id="O_162" objectId="D-N-Overall-POrder" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_143" objectId="D-N-Overall-PO-timedout" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_147" objectId="D-N-Overall-POApproval" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_Manager = cm</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POrder = {cpf:getTaskObjectValue('POrder')/*}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>POApproval = {cpf:getTaskObjectValue('POApproval')/text()}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>PO_timedout = {cpf:getTaskObjectValue('PO_timedout')/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition-1" originalID="InputCondition_1">
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="7972546e-ed02-4615-9785-d4a8ea6f7cd5" default="false" sourceId="C-Freight-Delivered-7" targetId="52026f6f-c937-434c-9f6f-f0419c825f22"/>
+        <Edge id="80cb0d9d-373f-43aa-b19a-eaf83e8a1beb" default="false" sourceId="iddbb86fbb-4e19-49a0-bb80-c66218a74056" targetId="C-Freight-in-Transit-6"/>
+        <Edge id="38def474-de23-49e3-b235-03bae8887f5b" default="false" sourceId="C-InputCondition-1" targetId="C-Ordering-3"/>
+        <Edge id="c1a24017-0fb7-42ec-aade-48aae9d36740" default="false" sourceId="C-Payment-5" targetId="id9d6da261-915e-4389-993c-75b781fb095e"/>
+        <Edge id="7531f2ab-d319-4c79-8805-e2bb036c979f" default="false" sourceId="C-Freight-in-Transit-6" targetId="id9d6da261-915e-4389-993c-75b781fb095e"/>
+        <Edge id="b510f803-3bd8-4f05-9695-0053f485ff64" default="false" sourceId="id9d6da261-915e-4389-993c-75b781fb095e" targetId="C-Freight-Delivered-7"/>
+        <Edge id="e24b0d1f-2d63-4fd4-8521-21533e5520ae" default="false" sourceId="iddbb86fbb-4e19-49a0-bb80-c66218a74056" targetId="C-Payment-5"/>
+        <Edge id="02665fad-6965-4211-bc70-3b0cf85882cc" default="false" sourceId="C-Carrier-Appointment-4" targetId="iddbb86fbb-4e19-49a0-bb80-c66218a74056"/>
+        <Edge id="1c9eb507-b965-4b24-91f9-bd5cba22d488" default="false" sourceId="idaf3b60a8-aeac-4b49-a2cc-27705b4f1228" targetId="C-Carrier-Appointment-4"/>
+        <Edge id="8839e2c7-c7e7-487b-ba63-9598f487d55e" default="false" sourceId="iddbb86fbb-4e19-49a0-bb80-c66218a74056" targetId="52026f6f-c937-434c-9f6f-f0419c825f22"/>
+        <Edge id="bdbd6b04-4aa0-49fa-a22e-60ff3427db15" default="false" sourceId="id17cbbfa5-c6f1-47cd-8023-10bc40006dee" targetId="C-OutputCondition-2"/>
+        <Edge id="8682b47d-574a-4e77-9af0-b18c47076fd8" default="false" sourceId="C-Ordering-3" targetId="idaf3b60a8-aeac-4b49-a2cc-27705b4f1228"/>
+        <Edge id="1471c7f3-4acd-4875-9916-ee6c106907ec" default="false" sourceId="idaf3b60a8-aeac-4b49-a2cc-27705b4f1228" targetId="id17cbbfa5-c6f1-47cd-8023-10bc40006dee"/>
+        <Edge id="ebc1a440-7593-4afc-aeee-25ee75affdd4" default="false" sourceId="52026f6f-c937-434c-9f6f-f0419c825f22" targetId="id17cbbfa5-c6f1-47cd-8023-10bc40006dee"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-AcceptanceCertificate" originalID="D-N-Overall-AcceptanceCertificate">
+            <name>AcceptanceCertificate</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>AcceptanceCertificateType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-ShipmentNotice" originalID="D-N-Overall-ShipmentNotice">
+            <name>ShipmentNotice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentNoticeType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-TransportationQuote" originalID="D-N-Overall-TransportationQuote">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-POrder" originalID="D-N-Overall-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-SP-timedout" originalID="D-N-Overall-SP-timedout">
+            <name>SP_timedout</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>boolean</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-PO-timedout" originalID="D-N-Overall-PO-timedout">
+            <name>PO_timedout</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>boolean</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Overall-POApproval" originalID="D-N-Overall-POApproval">
+            <name>POApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>boolean</type>
+        </Object>
+    </Net>
+    <ResourceType xsi:type="cpf:NonhumanType" id="id67316d68-1df2-4afd-a4d0-8040c30f7993">
+        <name>Unkown Service or Codelet</name>
+        <configurable>false</configurable>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="e016eea4-1b7d-4b92-87bc-55769a655f39">
+        <name>Unkown Service or Codelet</name>
+        <configurable>false</configurable>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="fd40ae4b-ec99-4976-ae0e-23854bb19b70">
+        <name>Unkown Service or Codelet</name>
+        <configurable>false</configurable>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="iddee9d3ba-51d5-45c5-8e73-decb4bf91e76">
+        <name>ExampleCodelet</name>
+        <configurable>false</configurable>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <attribute name="RootFragmentId" value="1"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="1"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="2"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="2"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="3"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="3"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="4"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="4"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="5"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="5"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="6"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="6"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="7"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="7"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="8"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="8"/>
+    <attribute name="BranchID" value="1"/>
+    <attribute name="RootFragmentId" value="23"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="9"/>
+    <attribute name="BranchID" value="1"/>
+</cpf:CanonicalProcess>
