@@ -90,7 +90,6 @@ public class CanoniserServiceImplIntgTest {
     public void integrationWithProcessService() throws IOException, CanoniserException, JAXBException, SAXException, ImportException {
         String nativeType = "EPML 2.0";
         String name = "_____test";
-        String version = "0.1";
 
         InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
@@ -104,7 +103,7 @@ public class CanoniserServiceImplIntgTest {
         String created = "12/12/2011";
         String lastUpdate = "12/12/2011";
 
-        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, nativeType, cp, data, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, nativeType, cp, data, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }

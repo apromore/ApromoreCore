@@ -23,7 +23,8 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      * @param branchName the branch Name
      * @return the found process model version
      */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv WHERE pmv.processBranch.id = ?1 AND pmv.processBranch.branchName = ?2")
+    @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pb.branchName = ?2")
     ProcessModelVersion findProcessModelVersionByBranch(Integer branchId, String branchName);
 
     /**

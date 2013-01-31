@@ -36,7 +36,6 @@ public interface FormatService {
      * Store the Native XML in the DB.
      *
      * @param procName   the name of the process being imported.
-     * @param version    the version of the Process
      * @param processId  the id of the process we are importing
      * @param cpf        the inputStream of the Process to import (the actual process model)
      * @param created    the time created
@@ -46,6 +45,6 @@ public interface FormatService {
      * @param cp
      * @throws JAXBException if it fails....
      */
-    void storeNative(String procName, Double version, ProcessModelVersion processId, InputStream cpf, String created, String lastUpdate, User user,
+    void storeNative(String procName, ProcessModelVersion processId, InputStream cpf, String created, String lastUpdate, User user,
         NativeType nativeType, CanonisedProcess cp)  throws JAXBException;
 }

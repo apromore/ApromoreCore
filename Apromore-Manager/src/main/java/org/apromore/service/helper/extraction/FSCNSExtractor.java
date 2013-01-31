@@ -20,37 +20,37 @@ import java.util.Collection;
 public class FSCNSExtractor {
 
     @SuppressWarnings("unchecked")
-    public static CPFNode extract(FragmentNode f, FragmentNode cf, Canonical g) {
-        FragmentUtil.removeEdges(f, cf.getEdges());
+    public static CPFNode extract(FragmentNode parent, FragmentNode child, Canonical g) {
+        FragmentUtil.removeEdges(parent, child.getEdges());
 
-        CPFNode childB1 = cf.getEntry();
-        Collection<CPFEdge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, f.getEdges());
-        FragmentUtil.removeEdges(fragmentLink1, cf.getEdges());
-        FragmentUtil.removeEdges(f, fragmentLink1);
+        CPFNode childB1 = child.getEntry();
+        Collection<CPFEdge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, parent.getEdges());
+        FragmentUtil.removeEdges(fragmentLink1, child.getEdges());
+        FragmentUtil.removeEdges(parent, fragmentLink1);
 
-        CPFNode childB2 = cf.getExit();
-        Collection<CPFEdge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, f.getEdges());
-        FragmentUtil.removeEdges(fragmentLink2, cf.getEdges());
-        FragmentUtil.removeEdges(f, fragmentLink2);
+        CPFNode childB2 = child.getExit();
+        Collection<CPFEdge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, parent.getEdges());
+        FragmentUtil.removeEdges(fragmentLink2, child.getEdges());
+        FragmentUtil.removeEdges(parent, fragmentLink2);
 
-        FragmentUtil.removeNodes(f, cf);
+        FragmentUtil.removeNodes(parent, child);
 
         CPFNode pocket = new CPFNode();
         pocket.setGraph(g);
         pocket.setName("Pocket");
         pocket.setNodeType(NodeTypeEnum.POCKET);
         g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
-        f.addNode(pocket);
+        parent.addNode(pocket);
         if (!fragmentLink1.isEmpty()) {
-            f.addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
+            parent.addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
         } else {
-            f.setEntry(pocket);
+            parent.setEntry(pocket);
         }
 
         if (!fragmentLink2.isEmpty()) {
-            f.addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
+            parent.addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
         } else {
-            f.setExit(pocket);
+            parent.setExit(pocket);
         }
 
         return pocket;

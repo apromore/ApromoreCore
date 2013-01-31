@@ -1,5 +1,12 @@
 package org.apromore.service.impl;
 
+import java.util.HashSet;
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
@@ -12,13 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.HashSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -61,7 +61,7 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }
@@ -75,7 +75,7 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }
@@ -89,7 +89,7 @@ public class ImportProcessServiceImplIntgTest {
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/SAP_1_2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }
@@ -97,20 +97,24 @@ public class ImportProcessServiceImplIntgTest {
 //    @Test
 //    @Rollback(true)
 //    public void testImportProcessWithSubProcessesInYAWL() throws Exception {
-//        String natType = "BPMN 2.0";
-//        String name = "Test BPMN 4";
-//        String cpfURI = "4";
+//        String natType = "YAWL 2.2";
+//        String name = "Test YAWL 4";
 //
-//        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("BPMN_models/ch9_PurchaseOrder4Complete.bpmn"), "text/xml"));
+//        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("YAWL_models/PaymentSubnet.yawl"), "text/xml"));
 //        CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
 //
-////        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
-////        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
-////        IOUtils.toFile("output.dot", graph.toDOT());
-////        IOUtils.invokeDOT("target/", "output.png", graph.toDOT());
+//        Canonical graph = new CanonicalToGraph().convert(cp.getCpt());
+//        RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
+//        FragmentNode rf = new MutableTreeConstructor().construct(rpst);
+//        IOUtils.toFile("output.dot", graph.toDOT());
+//        IOUtils.toFile("outputRpst.dot", rpst.toDOT());
+//        IOUtils.toFile("outputRF.dot", rf.toDOT());
+//        IOUtils.invokeDOT("target/", "output.png", graph.toDOT());
+//        IOUtils.invokeDOT("target/", "outputRpst.png", rpst.toDOT());
+//        IOUtils.invokeDOT("target/", "outputRF.png", rf.toDOT());
 //
-//        ProcessModelVersion pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
-//        assertThat(pst, notNullValue());
+//        ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
+//        //assertThat(pst, notNullValue());
 //    }
 
 

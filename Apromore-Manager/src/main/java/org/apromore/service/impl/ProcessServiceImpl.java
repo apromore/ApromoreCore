@@ -198,12 +198,12 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, String, Double, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
+     * @see org.apromore.service.ProcessService#importProcess(String, String, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
      * {@inheritDoc}
      */
     @Override
     @Transactional
-    public ProcessModelVersion importProcess(final String username, final String processName, final Double version, final String natType,
+    public ProcessModelVersion importProcess(final String username, final String processName, final String natType,
             final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
@@ -213,9 +213,8 @@ public class ProcessServiceImpl implements ProcessService {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain);
-
             pmv = addProcess(process, processName, Constants.TRUNK_NAME, created, lastUpdate, cpf);
-            formatSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
+            formatSrv.storeNative(processName, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
         } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
