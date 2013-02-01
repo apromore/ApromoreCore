@@ -108,7 +108,7 @@
                                             });
                                         }
 
-                                        if (layouter) {
+                                        if (layouter && ${arg.doAutoLayout}) {
                                             layouter.functionality();                                            
                                         } else {
                                             // Could be already layouted model (for example YAWL)
