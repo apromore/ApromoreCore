@@ -64,7 +64,7 @@ public class SignavioController extends BaseController {
             param.put(JSON_DATA, data.replace("\n", "").trim());
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
-			param.put("doAutoLayout", editSession.isWithAnnotation());
+			param.put("doAutoLayout", (!editSession.isWithAnnotation()).toString());
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
             e.printStackTrace();
