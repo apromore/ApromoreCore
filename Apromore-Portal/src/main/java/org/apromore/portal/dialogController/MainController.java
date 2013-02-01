@@ -171,7 +171,7 @@ public class MainController extends BaseController {
         this.loadTree();
 
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
-        List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
+        List<ProcessSummaryType> availableProcesses = getService().getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
 
         Html html = (Html) (this.getFellow("folders"));
         if (UserSessionManager.getCurrentFolder() != null) {

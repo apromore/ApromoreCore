@@ -1,13 +1,13 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
@@ -35,8 +35,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
     boolean dogrouping;
 
     protected void init(Canonical sg1, Canonical sg2) {
-        LOGGER.debug("DistanceAlgoAbstr.init(sg1, sg2)");
-
         this.sg1 = sg1;
         this.sg2 = sg2;
         totalNrVertices = sg1.getVertices().size() + sg2.getVertices().size();
@@ -65,8 +63,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
      *                all other weights are set to 0.0
      */
     public void setWeight(Object weights[]) {
-        LOGGER.debug("DistanceAlgoAbstr.setWeight(weights[])");
-
         this.weightGroupedVertex = 0.0;
         this.weightSkippedVertex = 0.0;
         this.weightSubstitutedVertex = 0.0;
@@ -125,8 +121,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
 
     protected double computeScore(double skippedEdges, double skippedVertices, double substitutedVertices, double insertedVertices, double deletedVertices) {
-        LOGGER.debug("DistanceAlgoAbstr.computeScore(skippedEdges, skippedVertices, substitutedVertices, insertedVertices, deletedVertices)");
-
         if (usepuredistance) {
             if (useepsilon) {
                 return weightSkippedVertex * (VERTEX_DELETION_COST * deletedVertices + VERTEX_INSERTION_COST * insertedVertices) + weightSkippedEdge * skippedEdges + weightSubstitutedVertex * 2.0 * substitutedVertices;
@@ -149,8 +143,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
     }
 
     protected double editDistance(BestMapping bestMapping, TwoVertices addedPair) {
-        LOGGER.debug("DistanceAlgoAbstr.editDistance(bestMatch, addedPair)");
-
         // Substituted vertices are vertices that >are< mapped.
         // Their distance is 1.0 - string-edit similarity of their labels.
         double substitutedVertices = bestMapping.substitutedVerticesCost + addedPair.weight;
@@ -165,8 +157,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
 
     private int findNrVerticesByPair(BestMapping bestMapping, TwoVertices addedPair) {
-        LOGGER.debug("DistanceAlgoAbstr.findNrVerticesByPair(bestMatch, addedPair)");
-
         int addedbyMapping = 0;
         CPFNode left = sg1.getNodeMap().get(addedPair.v1);
         CPFNode right = sg2.getNodeMap().get(addedPair.v2);

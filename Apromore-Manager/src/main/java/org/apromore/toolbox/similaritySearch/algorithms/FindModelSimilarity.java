@@ -15,8 +15,6 @@ public class FindModelSimilarity {
     private static final Logger LOGGER = LoggerFactory.getLogger(FindModelSimilarity.class);
 
     public double findProcessSimilarity(Canonical g1, Canonical g2, String algortithm, double... param) {
-        LOGGER.debug("FindModelSimilarity.findProcessSimilarity(g1, g2, algortithm, param...)");
-
         double weight = 0.0;
         AssingmentProblem assingmentProblem = new AssingmentProblem();
 
