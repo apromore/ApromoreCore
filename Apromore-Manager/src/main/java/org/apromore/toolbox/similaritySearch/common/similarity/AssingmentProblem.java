@@ -32,20 +32,6 @@ public class AssingmentProblem {
         return getMappingsNodes(g1Vertices, g2Vertices, threshold, stemmer, 0);
     }
 
-//    /**
-//     * Finds the vertex mapping
-//     *
-//     * @param g1Vertices - graph g1 vertices that need to be matched with graph g1 vertices
-//     * @param g2Vertices - graph g2 vertices
-//     * @param threshold  - if node similarity is >= than threshold then these nodes are considered to be matched.
-//     * @param stemmer    - stemmer for wrord stemming, if == null, then english stemmer is used
-//     * @return matching vertex pairs
-//     */
-//    public static LinkedList<NodePair> getMappingsVetrex(
-//            LinkedList<Vertex> g1Vertices, LinkedList<Vertex> g2Vertices,
-//            double threshold, SnowballStemmer stemmer) {
-//        return getMappingsVetrex(g1Vertices, g2Vertices, threshold, stemmer, 0);
-//    }
 
     public static boolean canMap(CPFNode v1, CPFNode v2) {
         return !(v1.getGraph().getAllPredecessors(v1).size() == 0 && v2.getGraph().getAllPredecessors(v2).size() != 0
@@ -196,34 +182,6 @@ public class AssingmentProblem {
     }
 
 
-
-//    public static boolean listContains(LinkedList<Vertex> list, Vertex v) {
-//        for (Vertex lv : list) {
-//            if (v.getID().equals(lv.getID())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public static boolean mappingContainsVertexRight(LinkedList<NodePair> mapping, Vertex v) {
-//        for (NodePair vp : mapping) {
-//            if (vp.getRight().getID().equals(v.getID())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public static boolean mappingContainsVertexLeft(LinkedList<NodePair> mapping, Vertex v) {
-//        for (NodePair vp : mapping) {
-//            if (vp.getLeft().getID().equals(v.getID())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     /**
      * Finds the match between gateways, the decision is made based on the match of gateway parents/children
      * match, if the parent/child is also a gateway, then the decision is done recursively
@@ -327,109 +285,4 @@ public class AssingmentProblem {
         return result;
     }
 
-//    private static LinkedList<Vertex> getParentGWs(Vertex gw) {
-//
-//        LinkedList<Vertex> parentGws = new LinkedList<Vertex>();
-//        parentGws.add(gw);
-//        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
-//
-//        for (Vertex v : gw.getParents()) {
-//            if (v.getType().equals(Type.gateway)) {
-//                parentGws.add(v);
-//                toProcess.add(v);
-//            }
-//        }
-//
-//
-//        while (toProcess.size() > 0) {
-//
-//            Vertex currGw = toProcess.removeFirst();
-//
-//            for (Vertex v : currGw.getParents()) {
-//                if (v.getType().equals(Type.gateway)) {
-//                    parentGws.add(v);
-//                    toProcess.add(v);
-//                }
-//            }
-//        }
-//
-//        return parentGws;
-//    }
-//
-//    private static LinkedList<Vertex> getChildGWs(Vertex gw) {
-//
-//        LinkedList<Vertex> childGws = new LinkedList<Vertex>();
-//        childGws.add(gw);
-//
-//        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
-//
-//        for (Vertex v : gw.getChildren()) {
-//            if (v.getType().equals(Type.gateway)) {
-//                childGws.add(v);
-//                toProcess.add(v);
-//            }
-//        }
-//
-//
-//        while (toProcess.size() > 0) {
-//
-//            Vertex currGw = toProcess.removeFirst();
-//
-//            for (Vertex v : currGw.getChildren()) {
-//                if (v.getType().equals(Type.gateway)) {
-//                    childGws.add(v);
-//                    toProcess.add(v);
-//                }
-//            }
-//        }
-//
-//        return childGws;
-//    }
-//
-//    static LinkedList<StringPair> getMappingsLabels(
-//            LinkedList<String> g1Labels, LinkedList<String> g2Labels,
-//            double threshold) {
-//
-//        SnowballStemmer englishStemmer = Settings.getStemmer("english");
-//        int dimFunc = g1Labels.size() > g2Labels.size() ? g1Labels.size()
-//                : g2Labels.size();
-//        double costs[][] = new double[dimFunc][dimFunc];
-//        double costsCopy[][] = new double[dimFunc][dimFunc];
-//        LinkedList<StringPair> solutionMappings = new LinkedList<StringPair>();
-//
-//        if (g1Labels.size() == 0 || g2Labels.size() == 0) {
-//            return solutionMappings;
-//        }
-//
-//        // function mapping score
-//        for (int i = 0; i < g1Labels.size(); i++) {
-//            for (int j = 0; j < g2Labels.size(); j++) {
-//                double edScore;
-//
-//                edScore = LabelEditDistance.edTokensWithStemming(g1Labels
-//                        .get(i), g2Labels.get(j), Settings.STRING_DELIMETER,
-//                        englishStemmer, true);
-//
-//                if (edScore < threshold)
-//                    edScore = 1;
-//
-//                costs[i][j] = edScore;
-//            }
-//        }
-//
-//        for (int i = 0; i < costs.length; i++) {
-//            for (int j = 0; j < costs[0].length; j++) {
-//                costsCopy[i][j] = costs[i][j];
-//            }
-//        }
-//
-//        int[][] result = HungarianAlgorithm.computeAssignments(costsCopy);
-//
-//        for (int i = 0; i < result.length; i++) {
-//            solutionMappings.add(new StringPair(g1Labels.get(result[i][0]),
-//                    g2Labels.get(result[i][1])));
-//        }
-//
-//        return solutionMappings;
-//    }
 }

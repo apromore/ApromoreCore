@@ -15,8 +15,6 @@ public class LabelEditDistance {
     private static final Logger LOGGER = LoggerFactory.getLogger(LabelEditDistance.class);
 
     public static double edTokensWithStemming(String a, String b, String delimeter, SnowballStemmer stemmer, boolean stem) {
-        LOGGER.debug("LabelEditDistance.edTokensWithStemming(a, b, delimeter, stemmer, stem)");
-
         LinkedList<String> aTokensInit = new LinkedList<String>();
         LinkedList<String> bTokensInit = new LinkedList<String>();
 
@@ -99,8 +97,6 @@ public class LabelEditDistance {
 
 
     private static LinkedList<String> removeStopWordsAndStem(LinkedList<String> toRemove, SnowballStemmer stemmer) {
-        LOGGER.debug("LabelEditDistance.removeStopWordsAndStem(atoRemove, stemmer)");
-
         LinkedList<String> result = new LinkedList<String>();
         Set<String> stopWords = stemmer.getStopWords();
         int repeat = 1;
@@ -120,27 +116,22 @@ public class LabelEditDistance {
     }
 
     private static LinkedList<String> removeStopWordsAndStem1(LinkedList<String> toRemove, SnowballStemmer stemmer) {
-        LOGGER.debug("LabelEditDistance.removeStopWordsAndStem1(atoRemove, stemmer)");
-
         LinkedList<String> result = new LinkedList<String>();
         int repeat = 1;
 
         for (String s : toRemove) {
             s = s.toLowerCase();
-//			if ( s.length() > 2) {
             stemmer.setCurrent(s);
             for (int i = repeat; i != 0; i--) {
                 stemmer.stem();
             }
             String stemmedString = stemmer.getCurrent();
             result.add(stemmedString);
-//			}
         }
         return result;
     }
 
     public static int ed(String a, String b) {
-        LOGGER.debug("LabelEditDistance.ed(a, b)");
         int[][] ed = new int[a.length() + 1][b.length() + 1];
 
         for (int i = 0; i < a.length() + 1; i++) {
@@ -161,10 +152,10 @@ public class LabelEditDistance {
         return ed[a.length()][b.length()];
     }
 
-    public static void main(String[] a) {
-        LabelEditDistance.edTokensWithStemming("Determine caller s relationship to policy",
-                "Determine if customer wants to continue with claim",
-                Settings.STRING_DELIMETER,
-                Settings.getEnglishStemmer(), true);
-    }
+//    public static void main(String[] a) {
+//        LabelEditDistance.edTokensWithStemming("Determine caller s relationship to policy",
+//                "Determine if customer wants to continue with claim",
+//                Settings.STRING_DELIMETER,
+//                Settings.getEnglishStemmer(), true);
+//    }
 }
