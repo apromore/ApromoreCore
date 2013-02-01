@@ -1,6 +1,11 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
 
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.Vector;
+
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
@@ -8,11 +13,6 @@ import org.apromore.toolbox.similaritySearch.common.similarity.NodeSimilarity;
 import org.apromore.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * Class that implements the algorithm to compute the edit distance between two
@@ -28,8 +28,6 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
 
     public Set<TwoVertices> compute(Canonical sg1, Canonical sg2) {
-        LOGGER.debug("GraphEditDistanceGreedy.compute(sg1, sg2");
-
         init(sg1, sg2);
 
         // INIT
@@ -78,8 +76,6 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
     }
 
     public double computeGED(Canonical sg1, Canonical sg2) {
-        LOGGER.debug("GraphEditDistanceGreedy.computeGED(sg1, sg2");
-
         init(sg1, sg2);
 
         //INIT
@@ -131,8 +127,6 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
 
     private Set<TwoVertices> times(Canonical a, Canonical b, double labelTreshold) {
-        LOGGER.debug("GraphEditDistanceGreedy.times(a, b, labelThreshold)");
-
         NodeSimilarity nodeSimilarity = new NodeSimilarity();
         Set<TwoVertices> result = new HashSet<TwoVertices>();
         for (CPFNode ea : a.getNodes()) {

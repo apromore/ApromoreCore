@@ -11,8 +11,6 @@ public class NodeSimilarity {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeSimilarity.class);
 
     public double findNodeSimilarity(CPFNode n, CPFNode m, double labelTreshold) {
-        LOGGER.debug("NodeSimilarity.findNodeSimilarity(n, m, labelThreshold)");
-
         SemanticSimilarity semanticSimilarity = new SemanticSimilarity();
         // functions or events -
         // compare the labels of these nodes

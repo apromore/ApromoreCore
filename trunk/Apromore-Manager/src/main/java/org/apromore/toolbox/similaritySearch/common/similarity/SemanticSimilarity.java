@@ -22,7 +22,6 @@ public class SemanticSimilarity {
      * @return the similarity
      */
     public double getSemanticSimilarity(CPFNode v1, CPFNode v2, double labelThreshold) {
-        LOGGER.debug("SemanticSimilarity.getSemanticSimilarity(v1, v2, labelThreshold)");
         AssingmentProblem assingmentProblem = new AssingmentProblem();
 
         Set<CPFNode> v1NonGWParents = GraphUtil.getNonGatewayParentNodes(v1);

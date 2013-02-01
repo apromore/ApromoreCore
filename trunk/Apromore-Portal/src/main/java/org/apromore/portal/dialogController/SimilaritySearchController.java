@@ -1,10 +1,11 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -17,9 +18,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimilaritySearchController extends BaseController {
 
@@ -114,8 +112,9 @@ public class SimilaritySearchController extends BaseController {
     }
 
     protected void searchSimilarProcesses() throws InterruptedException {
-        String message = null;
+        String message;
         try {
+            ProcessSummariesType resultToDisplay;
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
             ProcessSummariesType result = getService().searchForSimilarProcesses(
                     process.getId(), version.getName(),
@@ -134,20 +133,19 @@ public class SimilaritySearchController extends BaseController {
             } else {
                 message += " process.";
             }
-            // Sort result
-            ProcessSummariesType resultToDisplay = sort(process, result);
-            // add query, so it is displayed
-//			process.getVersionSummaries().clear();
-//			process.getVersionSummaries().add(version);
-//			version.setScore(1.0);
-//			resultToDisplay.getProcessSummary().add(0, process); 
+
+            if (result.getProcessSummary()!= null && result.getProcessSummary().size() > 1) {
+                resultToDisplay = sort(process, result);
+            } else {
+                resultToDisplay = result;
+            }
+
+            mainC.toggleView(false);
             mainC.displayProcessSummaries(resultToDisplay, true, process, version);
             mainC.displayMessage(message);
-
         } catch (Exception e) {
             message = "Search failed (" + e.getMessage() + ")";
-            Messagebox.show(message, "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
         } finally {
             this.similaritySearchW.detach();
         }
@@ -157,13 +155,12 @@ public class SimilaritySearchController extends BaseController {
      * Sort processes given in listToBeSorted: let p1 and p2 being 2 processes. p1 < p2 iff
      * the p1 latest version got a score less the score got by the p2 latest version.
      * The query (process) is put at rank 1
-
-     * @param toBeSorted
-     * @return sortedList
+     *
+     * @param process the process we were using as the search criteria.
+     * @param toBeSorted the list of processes to be sorted.
+     * @return sortedList the sorted list of processes.
      */
-    private ProcessSummariesType sort(
-            ProcessSummaryType process,
-            ProcessSummariesType toBeSorted) {
+    private ProcessSummariesType sort(ProcessSummaryType process, ProcessSummariesType toBeSorted) {
         ProcessSummariesType res = new ProcessSummariesType();
         ProcessSummaryType query = null;
         for (int i = 0; i < toBeSorted.getProcessSummary().size(); i++) {
@@ -177,8 +174,7 @@ public class SimilaritySearchController extends BaseController {
         return res;
     }
 
-    private ProcessSummaryType SortVersions(
-            ProcessSummaryType process) {
+    private ProcessSummaryType SortVersions(ProcessSummaryType process) {
         ProcessSummaryType res = new ProcessSummaryType();
         res.setDomain(process.getDomain());
         res.setId(process.getId());
@@ -191,9 +187,7 @@ public class SimilaritySearchController extends BaseController {
 
         for (int j = 0; j < process.getVersionSummaries().size(); j++) {
             int i = 0;
-            while (i < versions.size() &&
-                    versions.get(i).getScore().doubleValue()
-                            > process.getVersionSummaries().get(j).getScore().doubleValue()) {
+            while (i < versions.size() && versions.get(i).getScore() > process.getVersionSummaries().get(j).getScore()) {
                 i++;
             }
             versions.add(process.getVersionSummaries().get(j));
@@ -211,10 +205,7 @@ public class SimilaritySearchController extends BaseController {
     private void sortInsertion(ProcessSummaryType process, ProcessSummariesType sortedList) {
         int i = 0;
         while (i < sortedList.getProcessSummary().size()
-                &&
-                sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore().doubleValue()
-                        >
-                        process.getVersionSummaries().get(0).getScore().doubleValue()) {
+                && sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore()) {
             i++;
         }
         sortedList.getProcessSummary().add(i, process);
