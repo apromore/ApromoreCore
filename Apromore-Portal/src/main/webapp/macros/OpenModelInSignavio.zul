@@ -107,8 +107,10 @@
                                                 return pluginData.name === "Layout-BPMN";
                                             });
                                         }
+										
+										var doAutoLayout = '${arg.doAutoLayout}' === 'true';
 
-                                        if (layouter && ${arg.doAutoLayout}) {
+                                        if (layouter && doAutoLayout) {
                                             layouter.functionality();                                            
                                         } else {
                                             // Could be already layouted model (for example YAWL)
