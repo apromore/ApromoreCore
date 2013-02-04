@@ -420,13 +420,13 @@ public class CanonicalGraphConverterUnitTest {
     }
 
 
-    @Test
-    public void testComplexCPFToDotPNG() throws Exception {
-        CanonicalProcessType cpt = newInstance(CANONICAL_MODELS_DIR + "PaymentSubnet.cpf");
-        Canonical graph = new CanonicalToGraph().convert(cpt);
-        IOUtils.toFile("PaymentSubnet.dot", graph.toDOT());
-        IOUtils.invokeDOT("target/", "PaymentSubnet.png", graph.toDOT());
-    }
+//    @Test
+//    public void testComplexCPFToDotPNG() throws Exception {
+//        CanonicalProcessType cpt = newInstance(CANONICAL_MODELS_DIR + "GP2.cpf");
+//        Canonical graph = new CanonicalToGraph().convert(cpt);
+//        IOUtils.toFile("GP2.dot", graph.toDOT());
+//        IOUtils.invokeDOT("target/", "GP2.png", graph.toDOT());
+//    }
 
 
 
