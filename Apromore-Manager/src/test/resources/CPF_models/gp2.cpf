@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="dummy" version="1.0" name="Dummy">
+    <Net id="Model.gp2---10----u--">
+        <name>01.00. GEN. First Value Function - lvl 3</name>
+        <Node xsi:type="cpf:XORJoinType" id="ObjOcc.h52---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4w---10----x--">
+            <name>Report only claim is to be lodged</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4z---10----x--">
+            <name>Risk / vehicle selected from policy</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h58---10----x--">
+            <name>Create report only claim - loss outside risk currency</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h5b---10----x--">
+            <name>Potential duplicate claimidentified  - repeat call</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h56---10----x--">
+            <name>Greet caller and determine reason for call</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h5g---10----x--">
+            <name>Create report only claim - caller not authorised to lodge</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h5j---10----x--">
+            <name>Create report only claim - incident not covered</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h5p---10----x--">
+            <name>Create report only claim</name>
+            <resourceTypeRef id="CxnOcc.h7e---10----y--" resourceTypeId="ObjOcc.h75---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h3v---10----x--">
+            <name>Capture incident details</name>
+            <resourceTypeRef id="CxnOcc.h8p---10----y--" resourceTypeId="ObjOcc.h8l---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h5q---10----x--">
+            <name>Report only claim lodged - end call</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h6v---10----x--">
+            <name>Report only claim lodged - end call</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h3w---10----x--">
+            <name>Scenario and situational details captured</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h6t---10----x--">
+            <name>Report only claim lodged - end call</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h5n---10----x--">
+            <name>Create report only claim</name>
+            <resourceTypeRef id="CxnOcc.h7d---10----y--" resourceTypeId="ObjOcc.h6r---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h3z---10----x--">
+            <name>Validate Policy Details</name>
+            <resourceTypeRef id="CxnOcc.h8t---10----y--" resourceTypeId="ObjOcc.h8q---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h3y---10----x--">
+            <name>Caller validated and is authorised to lodge</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h89---10----x--">
+            <name>Repeat calls</name>
+            <attribute name="processInterface"/>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h41---10----x--">
+            <name>Validate incident coverage</name>
+            <resourceTypeRef id="CxnOcc.h8k---10----y--" resourceTypeId="ObjOcc.h8i---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h46---10----x--">
+            <name>Insured at CSC, claim not yet lodged</name>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="ObjOcc.h47---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h44---10----x--">
+            <name>Create report only claim</name>
+            <resourceTypeRef id="CxnOcc.h45---10----y--" resourceTypeId="ObjOcc.h43---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h5t---10----x--">
+            <name>Call received by Customer Committment</name>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="ObjOcc.h4a---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4b---10----x--">
+            <name>Misdirected call transferred</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4e---10----x--">
+            <name>New claim to be lodged by customer</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="ObjOcc.h4f---10----x--">
+            <name>Obtain policy details and validate caller (authorised to lodge)</name>
+            <resourceTypeRef id="CxnOcc.h4r---10----y--" resourceTypeId="ObjOcc.h4q---10----x--"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h6e---10----x--">
+            <name>Incident coverage validated</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4i---10----x--">
+            <name>Customer requests to continue with lodgement (outside coverage)</name>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="ObjOcc.h4h---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h6b---10----x--">
+            <name>Report only claim activated</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h4m---10----x--">
+            <name>End call - risk / vehicle not included in policy</name>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="ObjOcc.h4l---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="ObjOcc.h6g---10----x--">
+            <name>Call is for existing claim</name>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="ObjOcc.h4s---10----x--">
+            <name>XOR rule</name>
+        </Node>
+        <Edge id="CxnOcc.h5m---10----y--" sourceId="ObjOcc.h52---10----x--" targetId="ObjOcc.h3v---10----x--"/>
+        <Edge id="CxnOcc.h5o---10----y--" sourceId="ObjOcc.h4w---10----x--" targetId="ObjOcc.h5n---10----x--"/>
+        <Edge id="CxnOcc.h53---10----y--" sourceId="ObjOcc.h4z---10----x--" targetId="ObjOcc.h52---10----x--"/>
+        <Edge id="CxnOcc.h7n---10----y--" sourceId="ObjOcc.h58---10----x--" targetId="ObjOcc.h44---10----x--"/>
+        <Edge id="CxnOcc.h5x---10----y--" sourceId="ObjOcc.h56---10----x--" targetId="ObjOcc.h4a---10----x--"/>
+        <Edge id="CxnOcc.h5w---10----y--" sourceId="ObjOcc.h5g---10----x--" targetId="ObjOcc.h5p---10----x--"/>
+        <Edge id="CxnOcc.h5r---10----y--" sourceId="ObjOcc.h5p---10----x--" targetId="ObjOcc.h5q---10----x--"/>
+        <Edge id="CxnOcc.h3x---10----y--" sourceId="ObjOcc.h3v---10----x--" targetId="ObjOcc.h3w---10----x--"/>
+        <Edge id="CxnOcc.h42---10----y--" sourceId="ObjOcc.h3w---10----x--" targetId="ObjOcc.h41---10----x--"/>
+        <Edge id="CxnOcc.h7j---10----y--" sourceId="ObjOcc.h5n---10----x--" targetId="ObjOcc.h6t---10----x--"/>
+        <Edge id="CxnOcc.h4p---10----y--" sourceId="ObjOcc.h3z---10----x--" targetId="ObjOcc.h4l---10----x--"/>
+        <Edge id="CxnOcc.h40---10----y--" sourceId="ObjOcc.h3y---10----x--" targetId="ObjOcc.h3z---10----x--"/>
+        <Edge id="CxnOcc.h7b---10----y--" sourceId="ObjOcc.h41---10----x--" targetId="ObjOcc.h4h---10----x--"/>
+        <Edge id="CxnOcc.h48---10----y--" sourceId="ObjOcc.h46---10----x--" targetId="ObjOcc.h47---10----x--"/>
+        <Edge id="CxnOcc.h5s---10----y--" sourceId="ObjOcc.h47---10----x--" targetId="ObjOcc.h56---10----x--"/>
+        <Edge id="CxnOcc.h7m---10----y--" sourceId="ObjOcc.h44---10----x--" targetId="ObjOcc.h6v---10----x--"/>
+        <Edge id="CxnOcc.h5u---10----y--" sourceId="ObjOcc.h5t---10----x--" targetId="ObjOcc.h47---10----x--"/>
+        <Edge id="CxnOcc.h5e---10----y--" sourceId="ObjOcc.h4a---10----x--" targetId="ObjOcc.h4e---10----x--"/>
+        <Edge id="CxnOcc.h7o---10----y--" sourceId="ObjOcc.h4a---10----x--" targetId="ObjOcc.h6g---10----x--"/>
+        <Edge id="CxnOcc.h4c---10----y--" sourceId="ObjOcc.h4a---10----x--" targetId="ObjOcc.h4b---10----x--"/>
+        <Edge id="CxnOcc.h4g---10----y--" sourceId="ObjOcc.h4e---10----x--" targetId="ObjOcc.h4f---10----x--"/>
+        <Edge id="CxnOcc.h4v---10----y--" sourceId="ObjOcc.h4f---10----x--" targetId="ObjOcc.h4s---10----x--"/>
+        <Edge id="CxnOcc.h4j---10----y--" sourceId="ObjOcc.h4h---10----x--" targetId="ObjOcc.h4i---10----x--"/>
+        <Edge id="CxnOcc.h7f---10----y--" sourceId="ObjOcc.h4h---10----x--" targetId="ObjOcc.h6e---10----x--"/>
+        <Edge id="CxnOcc.h5k---10----y--" sourceId="ObjOcc.h4h---10----x--" targetId="ObjOcc.h5j---10----x--"/>
+        <Edge id="CxnOcc.h7c---10----y--" sourceId="ObjOcc.h6b---10----x--" targetId="ObjOcc.h52---10----x--"/>
+        <Edge id="CxnOcc.h50---10----y--" sourceId="ObjOcc.h4l---10----x--" targetId="ObjOcc.h4z---10----x--"/>
+        <Edge id="CxnOcc.h4n---10----y--" sourceId="ObjOcc.h4l---10----x--" targetId="ObjOcc.h4m---10----x--"/>
+        <Edge id="CxnOcc.h5c---10----y--" sourceId="ObjOcc.h4l---10----x--" targetId="ObjOcc.h5b---10----x--"/>
+        <Edge id="CxnOcc.h59---10----y--" sourceId="ObjOcc.h4l---10----x--" targetId="ObjOcc.h58---10----x--"/>
+        <Edge id="CxnOcc.h8d---10----y--" sourceId="ObjOcc.h6g---10----x--" targetId="ObjOcc.h89---10----x--"/>
+        <Edge id="CxnOcc.h5h---10----y--" sourceId="ObjOcc.h4s---10----x--" targetId="ObjOcc.h5g---10----x--"/>
+        <Edge id="CxnOcc.h4x---10----y--" sourceId="ObjOcc.h4s---10----x--" targetId="ObjOcc.h4w---10----x--"/>
+        <Edge id="CxnOcc.h4t---10----y--" sourceId="ObjOcc.h4s---10----x--" targetId="ObjOcc.h3y---10----x--"/>
+    </Net>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h75---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h8q---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h6r---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h8l---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h8i---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h43---10----x--">
+        <name>ClaimCenter</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+    <ResourceType xsi:type="cpf:NonhumanType" id="ObjOcc.h4q---10----x--">
+        <name>QuickAssist</name>
+        <type>SoftwareSystem</type>
+    </ResourceType>
+</cpf:CanonicalProcess>
