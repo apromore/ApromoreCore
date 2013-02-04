@@ -1,19 +1,29 @@
 package org.apromore.canoniser.aris;
 
 // Java 2 Standard packages
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 
 // Local packages
+import generated.*;
+import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
-import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.*;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.impl.PluginResultImpl;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +45,36 @@ public class ArisCanoniser extends DefaultAbstractCanoniser {
                                  final PluginRequest request) throws CanoniserException {
 
         try {
-            throw new Exception("Not implemented");
+            // Convert AML fragment into a CPF with the ANF annotations embedded as extension elements
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer(
+                new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/aml2cpf.xsl"))
+            );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new StreamSource(arisInput), new StreamResult(baos));
+
+            // Strip out the embedded ANF to obtain clean CPF
+            transformer = transformerFactory.newTransformer(
+                new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/cpf2cpf.xsl"))
+            );
+            ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+            transformer.transform(new StreamSource(new ByteArrayInputStream(baos.toByteArray())), new StreamResult(baos2));
+            final CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(new ByteArrayInputStream(baos2.toByteArray()), true /* is validating */).getValue();
+            
+            // Extract the embedded ANF to obtain clean ANF
+            transformer = transformerFactory.newTransformer(
+                new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/cpf2anf.xsl"))
+            );
+            baos2.reset();
+            transformer.transform(new StreamSource(new ByteArrayInputStream(baos.toByteArray())), new StreamResult(baos2));
+            final AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayInputStream(baos2.toByteArray()), true /* is validating */).getValue();
+
+            // Package and return the result
+            canonicalFormat.add(cpf);
+            annotationFormat.add(anf);
+            PluginResult result = new PluginResultImpl();
+            return result;
+
         } catch (Exception e) {
             throw new CanoniserException("Could not canonise to ARIS stream", e);
         }

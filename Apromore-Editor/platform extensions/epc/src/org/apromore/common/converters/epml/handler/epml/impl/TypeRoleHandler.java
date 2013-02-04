@@ -9,6 +9,7 @@ import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.oryxeditor.server.diagram.basic.BasicNode;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
+import de.epml.TypeAttribute;
 import de.epml.TypePosition;
 import de.epml.TypeRole;
 
@@ -45,6 +46,12 @@ public class TypeRoleHandler extends NodeHandler {
 
     @Override
     protected BasicShape createShape() {
+        for (TypeAttribute attribute : role.getAttribute()) {
+            if ("IT system".equals(attribute.getValue())) {
+                return new BasicNode(getShapeId().toString(), "System");
+            }
+        }
+
         return new BasicNode(getShapeId().toString(), "Position");
     }
 

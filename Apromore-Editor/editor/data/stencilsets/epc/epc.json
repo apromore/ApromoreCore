@@ -793,15 +793,15 @@
 					"items": [
 						{
 							"id":"c1",
-							"title":"Yes",
-							"title_de":"Ja",
+							"title":"No",
+							"title_de":"Nein",
 							"value":"False",
 							"refToView":"none"
 						},
 						{
 							"id":"c2",
-							"title":"No",
-							"title_de":"Nein",
+							"title":"Yes",
+							"title_de":"Ja",
 							"value":"True",
 							"refToView":"infFlow"
 						}
