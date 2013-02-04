@@ -31,6 +31,7 @@ import org.apromore.common.converters.epml.handler.epml.impl.TypeEventHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeFunctionHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeORHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeObjectHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.TypeProcessInterfaceHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeRoleHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeXORHandler;
 
@@ -40,6 +41,7 @@ import de.epml.TypeEvent;
 import de.epml.TypeFunction;
 import de.epml.TypeOR;
 import de.epml.TypeObject;
+import de.epml.TypeProcessInterface;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
 
@@ -64,6 +66,8 @@ public class EPMLHandlerFactory {
             return new TypeXORHandler(context, (TypeXOR) obj);
         } else if (obj instanceof TypeObject) {
             return new TypeObjectHandler(context, (TypeObject) obj);
+        } else if (obj instanceof TypeProcessInterface) {
+            return new TypeProcessInterfaceHandler(context, (TypeProcessInterface) obj);
         } else if (obj instanceof TypeRole) {
             return new TypeRoleHandler(context, (TypeRole) obj);
         }

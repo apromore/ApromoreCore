@@ -104,10 +104,14 @@ public class TypeArcHandler extends EPMLHandlerImpl {
                     }
 
                     // If the arc has a source, the first waypoint generates a docker attached to the source shape's coordinate system
-                    if (i == 0 && sourceId != null) {
-                        Bounds bounds = getContext().getShape(sourceId).getBounds();
-                        x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
-                        y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                    if (i == 0 && sourceId != null && getContext().getShape(sourceId) != null) {
+                        if (getContext().getShape(sourceId) == null) {
+                            java.util.logging.Logger.getAnonymousLogger().info("Source shape " + sourceId + " of arc " + arc.getId() + " missing");
+                        } else {
+                            Bounds bounds = getContext().getShape(sourceId).getBounds();
+                            x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
+                            y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                        }
                     }
 
                     // Locate the target of this arc
@@ -119,10 +123,14 @@ public class TypeArcHandler extends EPMLHandlerImpl {
                     }
 
                     // If the arc has a target, the last waypoint generates a docker attached to the target shape's coordinate system
-                    if (i == positionCount - 1 && targetId != null) {
-                        Bounds bounds = getContext().getShape(targetId).getBounds();
-                        x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
-                        y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                    if (i == positionCount - 1 && targetId != null && getContext().getShape(targetId) != null) {
+                        if (getContext().getShape(targetId) == null) {
+                            java.util.logging.Logger.getAnonymousLogger().info("Target shape " + targetId + " of arc " + arc.getId() + " missing");
+                        } else {
+                            Bounds bounds = getContext().getShape(targetId).getBounds();
+                            x = x.subtract(new BigDecimal(bounds.getUpperLeft().getX()));
+                            y = y.subtract(new BigDecimal(bounds.getUpperLeft().getY()));
+                        }
                     }
 
                     points.add(new Point(x, y));
@@ -136,6 +144,9 @@ public class TypeArcHandler extends EPMLHandlerImpl {
     private BasicEdge createRelationShape(TypeRelation typeRelation) {
         BasicEdge basicEdge = new BasicEdge(arc.getId().toString(), "Relation");
         connectEdge(basicEdge, typeRelation.getSource(), typeRelation.getTarget());
+        if (!"role".equals(typeRelation.getType())) {
+            basicEdge.setProperty("informationflow", "True");
+        }
         return basicEdge;
     }
 
