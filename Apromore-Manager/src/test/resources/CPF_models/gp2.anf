@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="dummy">
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h52---10----x--" cpfId="ObjOcc.h52---10----x--">
+        <position x="300" y="1500"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4w---10----x--" cpfId="ObjOcc.h4w---10----x--">
+        <position x="625" y="928.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4z---10----x--" cpfId="ObjOcc.h4z---10----x--">
+        <position x="250" y="1378.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h58---10----x--" cpfId="ObjOcc.h58---10----x--">
+        <position x="850" y="1378.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5b---10----x--" cpfId="ObjOcc.h5b---10----x--">
+        <position x="650" y="1378.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h56---10----x--" cpfId="ObjOcc.h56---10----x--">
+        <position x="250.5" y="428.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5g---10----x--" cpfId="ObjOcc.h5g---10----x--">
+        <position x="950" y="928.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5j---10----x--" cpfId="ObjOcc.h5j---10----x--">
+        <position x="650" y="2028.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7e---10----y--" cpfId="CxnOcc.h7e---10----y--">
+        <position x="1175" y="1116.5"/>
+        <position x="1175" y="1075"/>
+        <position x="1099.5" y="1075"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5p---10----x--" cpfId="ObjOcc.h5p---10----x--">
+        <position x="950.5" y="1053.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h8p---10----y--" cpfId="CxnOcc.h8p---10----y--">
+        <position x="475" y="1641.5"/>
+        <position x="475" y="1625"/>
+        <position x="399.5" y="1625"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h3v---10----x--" cpfId="ObjOcc.h3v---10----x--">
+        <position x="250.5" y="1578.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5q---10----x--" cpfId="ObjOcc.h5q---10----x--">
+        <position x="950" y="1178.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6v---10----x--" cpfId="ObjOcc.h6v---10----x--">
+        <position x="850" y="1628.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h3w---10----x--" cpfId="ObjOcc.h3w---10----x--">
+        <position x="250" y="1703.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6t---10----x--" cpfId="ObjOcc.h6t---10----x--">
+        <position x="625" y="1178.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7d---10----y--" cpfId="CxnOcc.h7d---10----y--">
+        <position x="850" y="1116.5"/>
+        <position x="850" y="1075"/>
+        <position x="774.5" y="1075"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5n---10----x--" cpfId="ObjOcc.h5n---10----x--">
+        <position x="625.5" y="1053.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h8t---10----y--" cpfId="CxnOcc.h8t---10----y--">
+        <position x="475" y="1141.5"/>
+        <position x="475" y="1125"/>
+        <position x="399.5" y="1125"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h3z---10----x--" cpfId="ObjOcc.h3z---10----x--">
+        <position x="250.5" y="1078.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h3y---10----x--" cpfId="ObjOcc.h3y---10----x--">
+        <position x="250" y="953.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h89---10----x--" cpfId="ObjOcc.h89---10----x--">
+        <position x="617" y="741.5"/>
+        <size width="166.5" height="117"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h8k---10----y--" cpfId="CxnOcc.h8k---10----y--">
+        <position x="475" y="1891.5"/>
+        <position x="475" y="1875"/>
+        <position x="399.5" y="1875"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h41---10----x--" cpfId="ObjOcc.h41---10----x--">
+        <position x="250.5" y="1828.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h46---10----x--" cpfId="ObjOcc.h46---10----x--">
+        <position x="450" y="228.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h47---10----x--" cpfId="ObjOcc.h47---10----x--">
+        <position x="300" y="350"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h45---10----y--" cpfId="CxnOcc.h45---10----y--">
+        <position x="1075" y="1566.5"/>
+        <position x="1075" y="1550"/>
+        <position x="999.5" y="1550"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h44---10----x--" cpfId="ObjOcc.h44---10----x--">
+        <position x="850.5" y="1503.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h5t---10----x--" cpfId="ObjOcc.h5t---10----x--">
+        <position x="250" y="228.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4a---10----x--" cpfId="ObjOcc.h4a---10----x--">
+        <position x="300" y="550"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4b---10----x--" cpfId="ObjOcc.h4b---10----x--">
+        <position x="450" y="628.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4e---10----x--" cpfId="ObjOcc.h4e---10----x--">
+        <position x="250" y="628.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4r---10----y--" cpfId="CxnOcc.h4r---10----y--">
+        <position x="475" y="791.5"/>
+        <position x="475" y="775"/>
+        <position x="399.5" y="775"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4f---10----x--" cpfId="ObjOcc.h4f---10----x--">
+        <position x="250.5" y="753.5"/>
+        <size width="149" height="93"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6e---10----x--" cpfId="ObjOcc.h6e---10----x--">
+        <position x="250" y="2028.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4i---10----x--" cpfId="ObjOcc.h4i---10----x--">
+        <position x="450" y="2028.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4h---10----x--" cpfId="ObjOcc.h4h---10----x--">
+        <position x="300" y="1950"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6b---10----x--" cpfId="ObjOcc.h6b---10----x--">
+        <position x="50" y="1378.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4m---10----x--" cpfId="ObjOcc.h4m---10----x--">
+        <position x="450" y="1378.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4l---10----x--" cpfId="ObjOcc.h4l---10----x--">
+        <position x="300" y="1300"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6g---10----x--" cpfId="ObjOcc.h6g---10----x--">
+        <position x="625" y="628.5"/>
+        <size width="150" height="93.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4s---10----x--" cpfId="ObjOcc.h4s---10----x--">
+        <position x="300" y="875"/>
+        <size width="50" height="50"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5m---10----y--" cpfId="CxnOcc.h5m---10----y--">
+        <position x="325" y="1550"/>
+        <position x="325" y="1578.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5o---10----y--" cpfId="CxnOcc.h5o---10----y--">
+        <position x="700" y="1022"/>
+        <position x="700" y="1053.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h53---10----y--" cpfId="CxnOcc.h53---10----y--">
+        <position x="325" y="1472"/>
+        <position x="325" y="1500"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7n---10----y--" cpfId="CxnOcc.h7n---10----y--">
+        <position x="925" y="1472"/>
+        <position x="925" y="1503.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5x---10----y--" cpfId="CxnOcc.h5x---10----y--">
+        <position x="325" y="521.5"/>
+        <position x="325" y="550"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5w---10----y--" cpfId="CxnOcc.h5w---10----y--">
+        <position x="1025" y="1022"/>
+        <position x="1025" y="1053.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5r---10----y--" cpfId="CxnOcc.h5r---10----y--">
+        <position x="1025" y="1146.5"/>
+        <position x="1025" y="1178.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h3x---10----y--" cpfId="CxnOcc.h3x---10----y--">
+        <position x="325" y="1671.5"/>
+        <position x="325" y="1703.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h42---10----y--" cpfId="CxnOcc.h42---10----y--">
+        <position x="325" y="1797"/>
+        <position x="325" y="1828.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7j---10----y--" cpfId="CxnOcc.h7j---10----y--">
+        <position x="700" y="1146.5"/>
+        <position x="700" y="1178.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4p---10----y--" cpfId="CxnOcc.h4p---10----y--">
+        <position x="325" y="1171.5"/>
+        <position x="325" y="1300"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h40---10----y--" cpfId="CxnOcc.h40---10----y--">
+        <position x="325" y="1047"/>
+        <position x="325" y="1078.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7b---10----y--" cpfId="CxnOcc.h7b---10----y--">
+        <position x="325" y="1921.5"/>
+        <position x="325" y="1950"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h48---10----y--" cpfId="CxnOcc.h48---10----y--">
+        <position x="525" y="322"/>
+        <position x="525" y="375"/>
+        <position x="350" y="375"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5s---10----y--" cpfId="CxnOcc.h5s---10----y--">
+        <position x="325" y="400"/>
+        <position x="325" y="428.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7m---10----y--" cpfId="CxnOcc.h7m---10----y--">
+        <position x="925" y="1596.5"/>
+        <position x="925" y="1628.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5u---10----y--" cpfId="CxnOcc.h5u---10----y--">
+        <position x="325" y="322"/>
+        <position x="325" y="350"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5e---10----y--" cpfId="CxnOcc.h5e---10----y--">
+        <position x="325" y="600"/>
+        <position x="325" y="628.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7o---10----y--" cpfId="CxnOcc.h7o---10----y--">
+        <position x="350" y="575"/>
+        <position x="700" y="575"/>
+        <position x="700" y="628.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4c---10----y--" cpfId="CxnOcc.h4c---10----y--">
+        <position x="350" y="575"/>
+        <position x="525" y="575"/>
+        <position x="525" y="628.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4g---10----y--" cpfId="CxnOcc.h4g---10----y--">
+        <position x="325" y="722"/>
+        <position x="325" y="753.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4v---10----y--" cpfId="CxnOcc.h4v---10----y--">
+        <position x="325" y="846.5"/>
+        <position x="325" y="875"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4j---10----y--" cpfId="CxnOcc.h4j---10----y--">
+        <position x="350" y="1975"/>
+        <position x="525" y="1975"/>
+        <position x="525" y="2028.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7f---10----y--" cpfId="CxnOcc.h7f---10----y--">
+        <position x="325" y="2000"/>
+        <position x="325" y="2028.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5k---10----y--" cpfId="CxnOcc.h5k---10----y--">
+        <position x="350" y="1975"/>
+        <position x="725" y="1975"/>
+        <position x="725" y="2028.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h7c---10----y--" cpfId="CxnOcc.h7c---10----y--">
+        <position x="125" y="1472"/>
+        <position x="125" y="1525"/>
+        <position x="300" y="1525"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h50---10----y--" cpfId="CxnOcc.h50---10----y--">
+        <position x="325" y="1350"/>
+        <position x="325" y="1378.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4n---10----y--" cpfId="CxnOcc.h4n---10----y--">
+        <position x="350" y="1325"/>
+        <position x="525" y="1325"/>
+        <position x="525" y="1378.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5c---10----y--" cpfId="CxnOcc.h5c---10----y--">
+        <position x="350" y="1325"/>
+        <position x="725" y="1325"/>
+        <position x="725" y="1378.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h59---10----y--" cpfId="CxnOcc.h59---10----y--">
+        <position x="350" y="1325"/>
+        <position x="925" y="1325"/>
+        <position x="925" y="1378.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h8d---10----y--" cpfId="CxnOcc.h8d---10----y--">
+        <position x="700" y="722"/>
+        <position x="700" y="741.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h5h---10----y--" cpfId="CxnOcc.h5h---10----y--">
+        <position x="350" y="900"/>
+        <position x="1025" y="900"/>
+        <position x="1025" y="928.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4x---10----y--" cpfId="CxnOcc.h4x---10----y--">
+        <position x="350" y="900"/>
+        <position x="700" y="900"/>
+        <position x="700" y="928.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="CxnOcc.h4t---10----y--" cpfId="CxnOcc.h4t---10----y--">
+        <position x="325" y="925"/>
+        <position x="325" y="953.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h75---10----x--" cpfId="ObjOcc.h75---10----x--">
+        <position x="1112.5" y="1116.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h8q---10----x--" cpfId="ObjOcc.h8q---10----x--">
+        <position x="412.5" y="1141.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h6r---10----x--" cpfId="ObjOcc.h6r---10----x--">
+        <position x="787.5" y="1116.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h8l---10----x--" cpfId="ObjOcc.h8l---10----x--">
+        <position x="412.5" y="1641.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h8i---10----x--" cpfId="ObjOcc.h8i---10----x--">
+        <position x="412.5" y="1891.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h43---10----x--" cpfId="ObjOcc.h43---10----x--">
+        <position x="1012.5" y="1566.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+    <Annotation xsi:type="anf:GraphicsType" id="ObjOcc.h4q---10----x--" cpfId="ObjOcc.h4q---10----x--">
+        <position x="412.5" y="791.5"/>
+        <size width="125" height="67.5"/>
+    </Annotation>
+</anf:Annotations>
