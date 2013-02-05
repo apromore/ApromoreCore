@@ -8,6 +8,7 @@ import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.Documentation;
 import org.wfmc._2008.xpdl2.ModificationDate;
+import org.wfmc._2008.xpdl2.ObjectFactory;
 import org.wfmc._2008.xpdl2.PackageHeader;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
@@ -83,7 +84,7 @@ public class StreamUtil {
     public static InputStream copyParam2ANF(final InputStream anf_xml, final String name) throws JAXBException {
         InputStream res;
 
-        JAXBContext jc = JAXBContext.newInstance(ANF_URI);
+        JAXBContext jc = JAXBContext.newInstance(ANF_URI, org.apromore.anf.ObjectFactory.class.getClassLoader());
         Unmarshaller u = jc.createUnmarshaller();
 
         JAXBElement<AnnotationsType> rootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_xml);
@@ -117,7 +118,7 @@ public class StreamUtil {
             final String creationDate, final String lastUpdate) throws JAXBException {
         InputStream res;
 
-        JAXBContext jc = JAXBContext.newInstance(CPF_URI);
+        JAXBContext jc = JAXBContext.newInstance(CPF_URI, org.apromore.cpf.ObjectFactory.class.getClassLoader());
         Unmarshaller u = jc.createUnmarshaller();
 
         JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_xml);
@@ -253,7 +254,7 @@ public class StreamUtil {
      */
     @SuppressWarnings("unchecked")
     public static PackageType unmarshallXPDL(final InputStream xpdl) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
+        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
         Unmarshaller u = jc.createUnmarshaller();
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xpdl);
         return rootElement.getValue();
@@ -266,7 +267,7 @@ public class StreamUtil {
      */
     public static String marshallXPDL(final PackageType xpdl) throws JAXBException {
         ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
-        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
+        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(xpdl);

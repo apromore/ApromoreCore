@@ -1,31 +1,31 @@
 package org.apromore.canoniser.aris;
 
 // Java 2 Standard packages
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-// Local packages
-import generated.*;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
-import org.apromore.cpf.*;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 import org.springframework.stereotype.Component;
+
+// Local packages
 
 /**
  * Canoniser for ARIS Markup Language (AML).

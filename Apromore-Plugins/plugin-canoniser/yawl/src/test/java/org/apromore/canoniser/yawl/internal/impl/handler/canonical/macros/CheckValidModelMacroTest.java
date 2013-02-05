@@ -19,7 +19,7 @@ import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionCont
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;

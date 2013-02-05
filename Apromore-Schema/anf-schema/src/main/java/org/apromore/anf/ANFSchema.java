@@ -59,7 +59,7 @@ public class ANFSchema {
      */
     public static void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(ANF_CONTEXT);
+        final JAXBContext context = JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -81,7 +81,7 @@ public class ANFSchema {
     @SuppressWarnings("unchecked")
     public static JAXBElement<AnnotationsType> unmarshalAnnotationFormat(final InputStream annotationsFormat, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(ANF_CONTEXT);
+        final JAXBContext jc = JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getANFSchema());

@@ -10,6 +10,7 @@
     <context:annotation-config />
     <context:spring-configured />
 
+	<import resource="osgi-context.xml" />
     <import resource="applicationContext-jpa.xml" />
     <import resource="applicationContext-services.xml" />
 

@@ -2,13 +2,13 @@ package org.apromore.service.impl;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.DeploymentService;
@@ -36,7 +36,7 @@ public class DeploymentServiceImpl implements DeploymentService {
      * @param deploymentPluginProvider Annotation Repository.
      */
     @Inject
-    public DeploymentServiceImpl(final @Qualifier("springDeploymentProvider") DeploymentPluginProvider deploymentPluginProvider) {
+    public DeploymentServiceImpl(final @Qualifier("deploymentProvider") DeploymentPluginProvider deploymentPluginProvider) {
         pluginProvider = deploymentPluginProvider;
     }
 

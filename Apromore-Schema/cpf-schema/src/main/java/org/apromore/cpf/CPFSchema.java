@@ -99,7 +99,7 @@ public class CPFSchema {
      * @throws SAXException
      */
     public static void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(CPF_CONTEXT);
+        final JAXBContext context = JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -120,7 +120,7 @@ public class CPFSchema {
      */
     @SuppressWarnings("unchecked")
     public static JAXBElement<CanonicalProcessType> unmarshalCanonicalFormat(final InputStream canonicalFormat, final boolean isValidating) throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(CPF_CONTEXT);
+        final JAXBContext jc = JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getCPFSchema());

@@ -1,11 +1,9 @@
-package org.apromore.plugin.impl;
+package org.apromore.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apromore.plugin.PluginRequest;
-import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;

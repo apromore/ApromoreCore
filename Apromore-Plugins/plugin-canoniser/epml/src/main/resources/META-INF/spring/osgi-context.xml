@@ -12,6 +12,6 @@
     <!-- enable classpath scanning -->
 	<context:component-scan base-package="org.apromore.canoniser.epml" />   
        
-    <service ref="epmlCanoniser" interface="org.apromore.canoniser.Canoniser" />
+    <service ref="epmlCanoniser" interface="org.apromore.canoniser.Canoniser" auto-export="interfaces" />
       
 </beans:beans>

@@ -59,7 +59,7 @@ public class YAWLOrgDataSchema {
      * @throws SAXException
      */
     public static void marshalYAWLOrgDataFormat(final OutputStream yawlOrgDataFormat, final OrgDataType yawlOrgData, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT);
+        final JAXBContext context = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -80,7 +80,8 @@ public class YAWLOrgDataSchema {
      */
     @SuppressWarnings("unchecked")
     public static JAXBElement<OrgDataType> unmarshalYAWLOrgDataFormat(final InputStream yawlOrgDataFormat, final boolean isValidating) throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT);
+    	// For JAXB to work with OSGi we have to specify a ClassLoader that 'sees' all classes in YAWL_ORGDATA_CONTEXT
+        final JAXBContext jc = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getYAWLOrgDataSchema());   
@@ -98,7 +99,8 @@ public class YAWLOrgDataSchema {
      */
     @SuppressWarnings("unchecked")
     public static JAXBElement<OrgDataType> unmarshalYAWLOrgDataFormat(final Source yawlOrgDataFormat, final boolean isValidating) throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT);
+    	// For JAXB to work with OSGi we have to specify a ClassLoader that 'sees' all classes in YAWL_ORGDATA_CONTEXT
+        final JAXBContext jc = JAXBContext.newInstance(YAWL_ORGDATA_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getYAWLOrgDataSchema());   

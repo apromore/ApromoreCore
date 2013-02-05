@@ -29,7 +29,7 @@ public class PluginServiceImpl implements PluginService {
      * @param pluginProvider Plugin Provider.
      */
     @Inject
-    public PluginServiceImpl(final @Qualifier("springPluginProvider") PluginProvider pluginProvider) {
+    public PluginServiceImpl(final @Qualifier("pluginProvider") PluginProvider pluginProvider) {
         provider = pluginProvider;
     }
 

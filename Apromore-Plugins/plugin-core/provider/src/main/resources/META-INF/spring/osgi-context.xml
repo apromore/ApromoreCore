@@ -12,7 +12,7 @@
     <!-- enable classpath scanning -->
 	<context:component-scan base-package="org.apromore.plugin.provider" />   
        
-    <service ref="osgiPluginProviderImpl" interface="org.apromore.plugin.provider.PluginProvider" />
-    <set id="pluginSet" interface="org.apromore.plugin.Plugin" availability="optional" />
+    <service ref="pluginProviderImpl" interface="org.apromore.plugin.provider.PluginProvider" />
+    <set id="pluginSet" interface="org.apromore.plugin.Plugin" availability="optional" greedy-proxying="true" />
       
 </beans:beans>

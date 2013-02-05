@@ -63,9 +63,9 @@
     <bean id="canonicalToGraph" class="org.apromore.graph.canonical.converter.CanonicalToGraph" />
     <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
 
-    <!-- Plugin Beans (Workaround until OSGi is here) -->
-    <bean id="springPluginProvider" class="org.apromore.plugin.provider.impl.SimpleSpringPluginProvider"/>
-    <bean id="springCanoniserProvider" class="org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider"/>
-    <bean id="springDeploymentProvider" class="org.apromore.plugin.deployment.provider.impl.SimpleSpringDeploymentPluginProvider"/>
+    <!-- Just test the provider outside of OSGi (TODO: Integration test with OSGi framework) -->
+    <bean id="pluginProvider" class="org.apromore.plugin.provider.impl.PluginProviderImpl"/>
+    <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl"/>
+    <bean id="deploymentProvider" class="org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl"/>
 
 </beans>

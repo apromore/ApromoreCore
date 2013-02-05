@@ -29,16 +29,12 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
             <version>1.1</version>
-            <scope>compile</scope>
-            <!-- Change to Provided -->
         </dependency>
 
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
             <version>1.1</version>
-            <scope>compile</scope>
-            <!-- Change to Provided -->
         </dependency>
 
         <!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
@@ -46,13 +42,11 @@
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
             <version>1.1</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
             <version>1.1</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Provided dependencies -->

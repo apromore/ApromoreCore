@@ -59,7 +59,8 @@ public class YAWLSchema {
          * @throws SAXException
          */
         public static void marshalYAWLFormat(final OutputStream yawlFormat, final SpecificationSetFactsType yawlSpec, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
-            final JAXBContext context = JAXBContext.newInstance(YAWL_CONTEXT);
+        	// For JAXB to work with OSGi we have to specify a ClassLoader that 'sees' all classes in YAWL_CONTEXT
+            final JAXBContext context = JAXBContext.newInstance(YAWL_CONTEXT, ObjectFactory.class.getClassLoader());
             final Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, EXPORTED_SCHEMA_LOCATION);
@@ -69,7 +70,6 @@ public class YAWLSchema {
             final JAXBElement<SpecificationSetFactsType> yawlSpecElement = new ObjectFactory().createSpecificationSet(yawlSpec);
             marshaller.marshal(yawlSpecElement, yawlFormat);
         }
-
 
         /**
          * Un-marshal the YAWL format from the provided InputStream.
@@ -81,13 +81,13 @@ public class YAWLSchema {
          */
         @SuppressWarnings("unchecked")
         public static JAXBElement<SpecificationSetFactsType> unmarshalYAWLFormat(final InputStream yawlFormat, final boolean isValidating) throws JAXBException, SAXException {
-            final JAXBContext jc = JAXBContext.newInstance(YAWL_CONTEXT);
+        	// For JAXB to work with OSGi we have to specify a ClassLoader that 'sees' all classes in YAWL_CONTEXT 
+            final JAXBContext jc = JAXBContext.newInstance(YAWL_CONTEXT, ObjectFactory.class.getClassLoader());
             final Unmarshaller u = jc.createUnmarshaller();
             if (isValidating) {
                 u.setSchema(getYAWLSchema());   
             }            
             return (JAXBElement<SpecificationSetFactsType>) u.unmarshal(yawlFormat);
         }    
-
 
 }

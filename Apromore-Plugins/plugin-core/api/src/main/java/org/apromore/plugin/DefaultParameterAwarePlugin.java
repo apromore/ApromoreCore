@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apromore.plugin.impl;
+package org.apromore.plugin;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.PluginParameterType;
 

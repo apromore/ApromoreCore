@@ -21,10 +21,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProvider;
 import org.apromore.plugin.provider.PluginProviderHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,20 +35,21 @@ import org.springframework.stereotype.Service;
  *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
  */
-@Service
+@Component
 public class PluginProviderImpl implements PluginProvider {
 
     /**
      * Will be injected by Eclipse Blueprint OSGi Framework at runtime
      */
+	@Resource
     private Set<Plugin> pluginSet;
 
     // Getter and Setter need to be public for DI
-    public Set<Plugin> getInternalPluginSet() {
+    public Set<Plugin> getPluginSet() {
         return pluginSet;
     }
 
-    public void setInternalPluginList(final Set<Plugin> pluginSet) {
+    public void setPluginList(final Set<Plugin> pluginSet) {
         this.pluginSet = pluginSet;
     }
 
@@ -56,7 +60,7 @@ public class PluginProviderImpl implements PluginProvider {
      */
     @Override
     public Set<Plugin> listAll() {
-        return Collections.unmodifiableSet(getInternalPluginSet());
+        return Collections.unmodifiableSet(getPluginSet());
     }
 
     /*
@@ -108,7 +112,7 @@ public class PluginProviderImpl implements PluginProvider {
 
         final Set<Plugin> resultList = new HashSet<Plugin>();
 
-        for (final Plugin c : getInternalPluginSet()) {
+        for (final Plugin c : getPluginSet()) {
             if (PluginProviderHelper.compareNullable(type, c.getType()) && PluginProviderHelper.compareNullable(name, c.getName())
                     && PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 resultList.add(c);

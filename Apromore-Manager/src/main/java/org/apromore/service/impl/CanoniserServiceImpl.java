@@ -7,10 +7,10 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.model.CanonisedProcess;
@@ -50,7 +50,7 @@ public class CanoniserServiceImpl implements CanoniserService {
      * @param canoniserProvider Canoniser Provider.
      */
     @Inject
-    public CanoniserServiceImpl(final @Qualifier("springCanoniserProvider") CanoniserProvider canoniserProvider) {
+    public CanoniserServiceImpl(final @Qualifier("canoniserProvider") CanoniserProvider canoniserProvider) {
         canProvider = canoniserProvider;
     }
 

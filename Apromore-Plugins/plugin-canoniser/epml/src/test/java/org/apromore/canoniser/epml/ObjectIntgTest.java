@@ -18,7 +18,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.PluginRequestImpl;
+import org.apromore.plugin.PluginRequestImpl;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

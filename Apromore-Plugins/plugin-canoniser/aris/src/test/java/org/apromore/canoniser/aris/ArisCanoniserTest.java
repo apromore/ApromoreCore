@@ -1,30 +1,28 @@
 package org.apromore.canoniser.aris;
 
 // Java 2 Standard packages
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
-// Third party packages
 import org.apache.commons.io.output.NullOutputStream;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
+import org.apromore.anf.ANFSchema;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginRequestImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
+// Third party packages
 // Local classes
-import org.apromore.anf.ANFSchema;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.plugin.PluginRequest;
-import org.apromore.plugin.impl.PluginRequestImpl;
 
 /**
  * Test suite for {@link ArisCanoniser}.

@@ -1,10 +1,11 @@
-package org.apromore.plugin.impl;
+package org.apromore.plugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.property.PluginParameterType;
 import org.junit.Before;
 import org.junit.Test;

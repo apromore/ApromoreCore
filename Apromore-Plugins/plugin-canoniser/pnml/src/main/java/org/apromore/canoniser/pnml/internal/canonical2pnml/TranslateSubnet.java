@@ -38,13 +38,13 @@ public class TranslateSubnet {
         File anf_file = new File("PNML_models/woped_cases_mapped_cpf_anf/"
                 + filename + ".anf");
         try {
-            JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+            JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf", org.apromore.cpf.ObjectFactory.class.getClassLoader());
             Unmarshaller u = jc.createUnmarshaller();
             JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u
                     .unmarshal(cpf_file);
             CanonicalProcessType cpf = rootElement.getValue();
 
-            jc = JAXBContext.newInstance("org.apromore.anf");
+            jc = JAXBContext.newInstance("org.apromore.anf", org.apromore.anf.ObjectFactory.class.getClassLoader());
             u = jc.createUnmarshaller();
             JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u
                     .unmarshal(anf_file);
