@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.ObjectFactory;
 import org.wfmc._2008.xpdl2.PackageHeader;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
@@ -87,13 +88,13 @@ public class XPDL21Canoniser extends DefaultAbstractCanoniser {
 
     @SuppressWarnings("unchecked")
     private JAXBElement<PackageType> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
-        JAXBContext jc1 = JAXBContext.newInstance(XPDL2_CONTEXT);
+        JAXBContext jc1 = JAXBContext.newInstance(XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
         Unmarshaller u = jc1.createUnmarshaller();
         return (JAXBElement<PackageType>) u.unmarshal(nativeFormat);
     }
 
     private void marshalXPDLFormat(final PackageType xpdl, final OutputStream nativeFormat) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(XPDL2_CONTEXT);
+        JAXBContext jc = JAXBContext.newInstance(XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         JAXBElement<PackageType> rootepml = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(xpdl);

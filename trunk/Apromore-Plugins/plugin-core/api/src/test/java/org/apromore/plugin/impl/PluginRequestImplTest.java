@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 
+import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;

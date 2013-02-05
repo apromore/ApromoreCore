@@ -158,8 +158,8 @@ import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
+import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.deployment.DeploymentPlugin;
-import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
@@ -1118,7 +1118,7 @@ public class ManagerPortalEndpoint {
         }
 
         res.setResult(result);
-        return WS_OBJECT_FACTORY.createReadDeploymentPluginResponse(res);
+        return WS_OBJECT_FACTORY.createReadDeploymentPluginInfoResponse(res);
     }
 
     @PayloadRoot(localPart = "DeployProcessRequest", namespace = NAMESPACE)

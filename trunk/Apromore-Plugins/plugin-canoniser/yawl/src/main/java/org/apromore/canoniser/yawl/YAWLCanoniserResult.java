@@ -2,7 +2,7 @@ package org.apromore.canoniser.yawl;
 
 import java.io.OutputStream;
 
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 
 public class YAWLCanoniserResult extends PluginResultImpl {
 

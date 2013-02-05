@@ -16,27 +16,31 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProviderHelper;
+import org.springframework.stereotype.Component;
 
 /**
  * Providing the default Provider implementation
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
- *
  */
+@Component
 public class DeploymentPluginProviderImpl implements DeploymentPluginProvider {
 
-    private Set<DeploymentPlugin> internalDeploymentPluginSet;
+    @Resource
+    private Set<DeploymentPlugin> deploymentPluginSet;
 
-    protected Set<DeploymentPlugin> getInternalDeploymentPluginSet() {
-        return internalDeploymentPluginSet;
+    public Set<DeploymentPlugin> getDeploymentPluginSet() {
+        return deploymentPluginSet;
     }
 
-    protected void setInternalDeploymentPluginSet(final Set<DeploymentPlugin> internalDeploymentPluginSet) {
-        this.internalDeploymentPluginSet = internalDeploymentPluginSet;
+    public void setDeploymentPluginSet(final Set<DeploymentPlugin> deploymentPluginSet) {
+        this.deploymentPluginSet = deploymentPluginSet;
     }
 
     /*
@@ -95,19 +99,16 @@ public class DeploymentPluginProviderImpl implements DeploymentPluginProvider {
     /**
      * Returns a List of DeploymentPlugin with matching parameters.
      *
-     * @param nativeType
-     *            can be NULL
-     * @param name
-     *            can be NULL
-     * @param version
-     *            can be NULL
+     * @param nativeType can be NULL
+     * @param name       can be NULL
+     * @param version    can be NULL
      * @return Set of DeploymentPlugin or empty Set
      */
     private Set<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name, final String version) {
 
         final Set<DeploymentPlugin> deploymentSet = new HashSet<DeploymentPlugin>();
 
-        for (final DeploymentPlugin d : getInternalDeploymentPluginSet()) {
+        for (final DeploymentPlugin d : getDeploymentPluginSet()) {
             if (PluginProviderHelper.compareNullable(nativeType, d.getNativeType()) && PluginProviderHelper.compareNullable(name, d.getName())
                     && PluginProviderHelper.compareNullable(version, d.getVersion())) {
                 deploymentSet.add(d);

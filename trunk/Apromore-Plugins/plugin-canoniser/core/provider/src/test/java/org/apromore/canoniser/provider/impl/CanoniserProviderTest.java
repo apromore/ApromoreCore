@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -41,9 +40,9 @@ import org.junit.rules.ExpectedException;
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  *
  */
-public class OSGiCanoniserProviderTest {
+public class CanoniserProviderTest {
 
-	private CanoniserProvider provider;
+	private CanoniserProviderImpl provider;
 
 	private Canoniser c1;
 	private Canoniser c2;
@@ -52,7 +51,7 @@ public class OSGiCanoniserProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		final OSGiCanoniserProvider cp = new OSGiCanoniserProvider();
+		final CanoniserProviderImpl cp = new CanoniserProviderImpl();
 		final Set<Canoniser> canoniserSet = new HashSet<Canoniser>();
 		c1 = createMock(Canoniser.class);
 		expect(c1.getName()).andReturn("XPDL 2.0 - Canoniser XY");

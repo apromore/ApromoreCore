@@ -97,7 +97,7 @@
     <!-- Deployment Plugin -->
     <xs:element name="ReadDeploymentPluginInfoRequest"
                 type="tns:ReadDeploymentPluginInfoInputMsgType" />
-    <xs:element name="ReadDeploymentPluginResponse"
+    <xs:element name="ReadDeploymentPluginInfoResponse"
                 type="tns:ReadDeploymentPluginInfoOutputMsgType" />
     <xs:element name="DeployProcessRequest" type="tns:DeployProcessInputMsgType" />
     <xs:element name="DeployProcessResponse" type="tns:DeployProcessOutputMsgType" />

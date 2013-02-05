@@ -51,7 +51,7 @@ public class CheckForSubnet {
                 TranslateSubnet ts = new TranslateSubnet(pnml, net, id,
                         subfilename);
 
-                JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+                JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf", org.apromore.cpf.ObjectFactory.class.getClassLoader());
                 Marshaller m = jc.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
                         Boolean.TRUE);
@@ -59,7 +59,7 @@ public class CheckForSubnet {
                         .createCanonicalProcess(ts.getCPF());
                 m.marshal(cprocRootElem, new File(folder, subfilename + ".cpf"));
 
-                jc = JAXBContext.newInstance("org.apromore.anf");
+                jc = JAXBContext.newInstance("org.apromore.anf", org.apromore.anf.ObjectFactory.class.getClassLoader());
                 m = jc.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
                         Boolean.TRUE);

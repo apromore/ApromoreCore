@@ -11,7 +11,7 @@
        
     <!-- enable classpath scanning -->
 	<context:component-scan base-package="org.apromore.plugin.deployment.yawl" />   
-       
-    <service ref="YAWLDeploymentPlugin" interface="org.apromore.plugin.deployment.DeploymentPlugin" />
+
+    <service ref="yawlDeploymentPlugin" interface="org.apromore.plugin.deployment.DeploymentPlugin" auto-export="interfaces" />
       
 </beans:beans>

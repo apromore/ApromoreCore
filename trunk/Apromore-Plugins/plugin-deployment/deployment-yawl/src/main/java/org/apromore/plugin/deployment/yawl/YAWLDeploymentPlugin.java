@@ -22,14 +22,15 @@ import org.apromore.canoniser.yawl.YAWL22Canoniser;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.PluginResultImpl;
+import org.apromore.plugin.deployment.DefaultDeploymentPlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.deployment.impl.DefaultDeploymentPlugin;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
-import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 
 /**
@@ -39,6 +40,7 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
+@Component("yawlDeploymentPlugin")
 public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(YAWLDeploymentPlugin.class);

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
+
+    <description>
+        Supports deployment of Apromore to Eclipse Virgo.
+    </description>
+
+    <property name="virgo-url" value="http://www.eclipse.org/downloads/download.php?file=/virgo/release/VP/3.6.0.RELEASE/virgo-tomcat-server-3.6.0.RELEASE.zip&amp;protocol=http&amp;r=1"/>
+    <property name="dir-deployment" location="${basedir}/Apromore-Deploy"/>
+    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
+    <property name="dir-target" location="${dir-deployment}/apromore-release"/>
+
+
+    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
+
+    <target name="check-virgo">
+        <condition property="virgo.installed">
+            <available file="${dir-virgo}" type="dir"/>
+        </condition>
+    </target>
+
+    <target name="download-virgo" depends="check-virgo" unless="virgo.installed">
+        <mkdir dir="${dir-deployment}"/>
+        <get src="${virgo-url}" dest="${dir-deployment}/virgo.zip"/>
+        <unzip src="${dir-deployment}/virgo.zip" dest="${dir-deployment}"/>
+        <delete file="${dir-deployment}/virgo.zip"/>
+    </target>
+
+    <target name="configure-virgo" depends="check-virgo" unless="virgo.installed">
+        <copy todir="${dir-virgo}/repository/ext" flatten="true" overwrite="true">
+            <fileset dir="Extras/Virgo">
+                <!--
+                        We need a compatibility mode for Apromore Editor vanilla WAR.
+                        See: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/html/ch13s08.html
+                     -->
+                <filename name="org.eclipse.virgo.web.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/configuration" flatten="true" overwrite="true">
+            <fileset dir="Extras/Virgo">
+                <!--
+                        Change default port to 9000 in Eclipse Virgo
+                     -->
+                <filename name="tomcat-server.xml"/>
+            </fileset>
+        </copy>
+        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
+    </target>
+
+    <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
+        <delete dir="${dir-target}"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="repository/usr/*.jar"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="pickup/*.jar"/>
+                <include name="pickup/*.war"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.0.RELEASE.par"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.0.RELEASE.jar"/>
+                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.0.RELEASE.jar"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="dist-virgo" depends="clean-virgo, setup-virgo, build-war, copy-virgo, deploy-virgo">
+        <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
+    </target>
+
+    <target name="deploy-virgo" depends="clean-virgo, setup-virgo, build-war, copy-virgo"/>
+
+    <target name="start-virgo" depends=""> <!-- deploy-virgo, -->
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
+    <target name="debug-virgo" depends="deploy-virgo">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean -debug"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean -debug"/>
+        </exec>
+    </target>
+
+    <target name="stop-virgo" depends="setup-virgo">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="shutdown.bat"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
+        </exec>
+    </target>
+
+    <target name="copy-virgo" depends="clean-virgo,
+        copy-3rd-party-dependencies,
+        copy-apromore-core-dependencies,
+        copy-apromore-core-webapps,
+        copy-apromore-plugin-provider,
+        copy-apromore-plugins">
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="3rdparty" />
+            <fileset refid="coreBundles" />
+            <fileset refid="database-plugins" />
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="pluginProvider" />
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="coreWebapps" />
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="plugins" />
+        </copy>
+    </target>
+
+    <fileset id="3rdparty" dir=".">
+        <include name="Apromore-Manager/**/dependency/provided/*.jar"/>
+        <!-- <include name="Apromore-Portal/**/dependency/provided/*.jar"/> -->
+        <include name="Apromore-Clients/**/dependency/provided/*.jar"/>
+        <include name="Apromore-Schema/**/dependency/provided/*.jar"/>
+        <include name="Apromore-Plugins/**/dependency/provided/*.jar"/>
+        <!-- Do not include Apromore-Editor as they will be self contained -->
+        <exclude name="**/*-sources.jar" />
+    </fileset>
+
+    <target name="copy-3rd-party-dependencies">
+        <copy todir="${dir-target}/3rdpartyBundles" flatten="true">
+            <fileset refid="3rdparty" />
+        </copy>
+    </target>
+
+    <fileset id="coreBundles" dir=".">
+        <include name="Apromore-Clients/**/target/*.jar"/>
+        <include name="Apromore-Manager/**/target/*.jar"/>
+        <include name="Apromore-Portal/**/target/*.jar"/>
+        <include name="Apromore-Schema/**/target/*.jar"/>
+        <!-- Just the Plugin APIs no implementation -->
+        <include name="Apromore-Plugins/**/*api/target/*.jar" />
+        <!-- Ignore sources -->
+        <exclude name="**/*-sources.jar" />
+        <!-- Ignore Maven Archetypes -->
+        <exclude name="**/*archetype*.jar" />
+    </fileset>
+
+    <target name="copy-apromore-core-dependencies">
+        <copy todir="${dir-target}/coreBundles" flatten="true">
+            <fileset refid="coreBundles" />
+        </copy>
+    </target>
+
+    <fileset id="coreWebapps" dir=".">
+        <include name="**/target/*.war"/>
+    </fileset>
+
+    <target name="copy-apromore-core-webapps">
+        <copy todir="${dir-target}/webApps" flatten="true">
+            <fileset refid="coreWebapps" />
+        </copy>
+    </target>
+
+    <fileset id="pluginProvider" dir=".">
+        <include name="Apromore-Plugins/**/*-provider/target/*.jar" />
+        <!-- Ignore sources -->
+        <exclude name="**/*-sources.jar" />
+        <!-- Ignore Maven Archetypes -->
+        <exclude name="**/*archetype*.jar" />
+    </fileset>
+
+    <target name="copy-apromore-plugin-provider">
+        <copy todir="${dir-target}/pluginProviderBundles" flatten="true">
+            <fileset refid="pluginProvider"/>
+        </copy>
+    </target>
+
+    <fileset id="plugins" dir=".">
+        <include name="Apromore-Plugins/**/target/*.jar" />
+        <exclude name="Apromore-Plugins/**/*-provider/target/*.jar"/>
+        <exclude name="Apromore-Plugins/**/api/target/*.jar"/>
+        <!--
+            Database Plugins are Fragment Bundles that have to be deployed to /usr instead of /pickup
+            See here: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/htmlsingle/virgo-user-guide.html#deployment-deploying
+        -->
+        <exclude name="Apromore-Plugins/plugin-database/**/target/*.jar"/>
+        <!-- Ignore sources -->
+        <exclude name="**/*-sources.jar" />
+        <!-- Ignore Maven Archetypes -->
+        <exclude name="**/*archetype*.jar" />
+    </fileset>
+
+    <fileset id="database-plugins" dir=".">
+        <include name="Apromore-Plugins/plugin-database/**/target/*.jar"/>
+        <!-- Ignore sources -->
+        <exclude name="**/*-sources.jar" />
+    </fileset>
+
+    <target name="copy-apromore-plugins">
+        <copy todir="${dir-target}/pluginBundles" flatten="true">
+            <fileset refid="plugins" />
+        </copy>
+    </target>
+</project>

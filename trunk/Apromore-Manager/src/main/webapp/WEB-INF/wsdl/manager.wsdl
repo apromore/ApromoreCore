@@ -2,7 +2,7 @@
 <definitions targetNamespace="http://www.apromore.org/manager/service_portal"
              xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:mgr="urn:qut-edu-au:schema:apromore:manager"
              xmlns:tns="http://www.apromore.org/manager/service_portal"
-             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
 
     <import namespace="urn:qut-edu-au:schema:apromore:manager" location="manager.xsd"/>
 
@@ -146,28 +146,56 @@
         <part name="payload" element="mgr:ReadInstalledPluginsRequest">
         </part>
     </message>    
+    <message name="ReadInstalledPluginsResponse">
+        <part name="payload" element="mgr:ReadInstalledPluginsResponse">
+        </part>
+    </message>    
     <message name="ReadPluginInfoRequest">
         <part name="payload" element="mgr:ReadPluginInfoRequest">
+        </part>
+    </message>
+    <message name="ReadPluginInfoResponse">
+        <part name="payload" element="mgr:ReadPluginInfoResponse">
         </part>
     </message>
     <message name="ReadCanoniserInfoRequest">
         <part name="payload" element="mgr:ReadCanoniserInfoRequest">
         </part>
     </message>
+    <message name="ReadCanoniserInfoResponse">
+        <part name="payload" element="mgr:ReadCanoniserInfoResponse">
+        </part>
+    </message>
     <message name="ReadInitialNativeFormatRequest">
         <part name="payload" element="mgr:ReadInitialNativeFormatRequest">
+        </part>
+    </message>
+    <message name="ReadInitialNativeFormatResponse">
+        <part name="payload" element="mgr:ReadInitialNativeFormatResponse">
         </part>
     </message>
     <message name="ReadNativeMetaDataRequest">
         <part name="payload" element="mgr:ReadNativeMetaDataRequest">
         </part>
     </message>
+    <message name="ReadNativeMetaDataResponse">
+        <part name="payload" element="mgr:ReadNativeMetaDataResponse">
+        </part>
+    </message>
     <message name="ReadDeploymentPluginInfoRequest">
         <part name="payload" element="mgr:ReadDeploymentPluginInfoRequest">
         </part>
     </message>
+    <message name="ReadDeploymentPluginInfoResponse">
+        <part name="payload" element="mgr:ReadDeploymentPluginInfoResponse">
+        </part>
+    </message>
     <message name="DeployProcessRequest">
-        <part name="payload" element="mgr:DeployProcessRequestRequest">
+        <part name="payload" element="mgr:DeployProcessRequest">
+        </part>
+    </message>
+    <message name="DeployProcessResponse">
+        <part name="payload" element="mgr:DeployProcessResponse">
         </part>
     </message>
 

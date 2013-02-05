@@ -53,7 +53,7 @@ public class PluginProviderImplTest {
             }
 
         });
-		mockProvider.setInternalPluginList(pluginList);
+		mockProvider.setPluginList(pluginList);
 	}
 
 	@Test

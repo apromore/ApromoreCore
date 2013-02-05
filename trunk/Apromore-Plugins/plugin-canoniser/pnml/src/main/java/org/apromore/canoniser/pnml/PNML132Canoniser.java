@@ -97,13 +97,13 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
 	@SuppressWarnings("unchecked")
 	private JAXBElement<PnmlType> unmarshalNativeFormat(final SAXSource nativeFormat) throws JAXBException {
-		JAXBContext jc1 = JAXBContext.newInstance(PNML_CONTEXT);
+		JAXBContext jc1 = JAXBContext.newInstance(PNML_CONTEXT, org.apromore.pnml.ObjectFactory.class.getClassLoader());
 		Unmarshaller u = jc1.createUnmarshaller();
 		return (JAXBElement<PnmlType>) u.unmarshal(nativeFormat);
 	}
 
 	private void marshalNativeFormat(final PnmlType pnml, final OutputStream nativeFormat) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance(PNML_CONTEXT);
+		JAXBContext jc = JAXBContext.newInstance(PNML_CONTEXT, org.apromore.pnml.ObjectFactory.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		JAXBElement<PnmlType> rootepml = new org.apromore.pnml.ObjectFactory().createPnml(pnml);

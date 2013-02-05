@@ -18,6 +18,7 @@ import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Provides various helper methods to work with the TypeAttribute extension of CPF.
@@ -81,7 +82,7 @@ public final class ExtensionUtils {
 
     private static JAXBContext initYAWLContext() {
         try {
-            return JAXBContext.newInstance("org.yawlfoundation.yawlschema");
+            return JAXBContext.newInstance("org.yawlfoundation.yawlschema", ObjectFactory.class.getClassLoader());
         } catch (final JAXBException e) {
             LOGGER.error("Could not create JAXBContext for YAWL Schema. This should never happen!", e);
             return null;

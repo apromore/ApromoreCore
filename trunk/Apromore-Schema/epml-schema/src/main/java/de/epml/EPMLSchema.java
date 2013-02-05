@@ -60,7 +60,7 @@ public class EPMLSchema {
      */
     public static void marshalEPMLFormat(final OutputStream epmlFormat, final TypeEPML epmlSpec, final boolean isValidating)
             throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(EPML_CONTEXT);
+        final JAXBContext context = JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, EXPORTED_SCHEMA_LOCATION);
@@ -82,7 +82,7 @@ public class EPMLSchema {
     @SuppressWarnings("unchecked")
     public static JAXBElement<TypeEPML> unmarshalEPMLFormat(final InputStream epmlFormat, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(EPML_CONTEXT);
+        final JAXBContext jc = JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getEPMLSchema());

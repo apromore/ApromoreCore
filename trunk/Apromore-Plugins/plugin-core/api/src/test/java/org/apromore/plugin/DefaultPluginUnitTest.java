@@ -1,9 +1,10 @@
-package org.apromore.plugin.impl;
+package org.apromore.plugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import org.apromore.plugin.DefaultPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
