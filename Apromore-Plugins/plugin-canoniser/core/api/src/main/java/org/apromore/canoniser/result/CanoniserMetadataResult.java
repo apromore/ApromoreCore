@@ -2,7 +2,7 @@ package org.apromore.canoniser.result;
 
 import java.util.Date;
 
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 
 public class CanoniserMetadataResult extends PluginResultImpl {
 

@@ -12,7 +12,7 @@
 package org.apromore.canoniser.yawl.internal.impl;
 
 import org.apromore.canoniser.yawl.internal.MessageManager;
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

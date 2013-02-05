@@ -9,28 +9,26 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apromore.plugin.deployment.provider.impl;
+package org.apromore.plugin.deployment;
 
-import java.util.Set;
-
-import org.apromore.plugin.deployment.DeploymentPlugin;
-import org.springframework.stereotype.Service;
+import org.apromore.plugin.DefaultParameterAwarePlugin;
 
 /**
- * Using OSGi to find all installed Deployment Plugins
+ * Default implementation of the Deployment Plugin.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-@Service("osgiDeploymentPluginProviderImpl")
-public class OSGiDeploymentPluginProvider extends DeploymentPluginProviderImpl {
+public abstract class DefaultDeploymentPlugin extends DefaultParameterAwarePlugin implements DeploymentPlugin {
 
-    public Set<DeploymentPlugin> getDeploymentPluginSet() {
-        return getInternalDeploymentPluginSet();
-    }
-
-    public void setDeploymentPluginSet(final Set<DeploymentPlugin> newDeploymentPluginSet) {
-        setInternalDeploymentPluginSet(newDeploymentPluginSet);
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.deployment.DeploymentPlugin#getNativeType()
+     */
+    @Override
+    public String getNativeType() {
+        return getConfigurationByName("deployment.nativeType");
     }
 
 }

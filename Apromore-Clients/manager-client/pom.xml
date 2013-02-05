@@ -110,6 +110,11 @@
             <artifactId>mail</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -121,21 +126,21 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
+            <artifactId>com.springsource.ch.qos.logback.core</artifactId>
         </dependency>
 
         <!-- JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
+            <artifactId>com.springsource.javax.xml.bind</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -145,16 +150,15 @@
         <!-- Spring-WS dependencies -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-xml</artifactId>
+            <artifactId>org.springframework.xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-core</artifactId>
+            <artifactId>org.springframework.ws</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-support</artifactId>
-            <scope>runtime</scope>
+            <artifactId>org.springframework.ws.support</artifactId>
         </dependency>
         
         <dependency>
@@ -214,6 +218,25 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <unpackBundle>true</unpackBundle>
+                    <instructions>
+                        <!-- All compile and runtime dependencies are directly embedded as JAR files, therefore not loaded trough OSGi -->
+                        <Embed-Dependency>*;scope=compile;artifactId=!jaxb-xjc</Embed-Dependency>
+                        <!-- Also embed all transitive dependencies -->
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <!-- Mark all Import-Packages as optional -->
+                        <Import-Package>
+                        	org.springframework.ws.soap,
+                        	*
+                        </Import-Package>
+                    </instructions>
+                </configuration>                
+            </plugin>            
         </plugins>
     </build>
 

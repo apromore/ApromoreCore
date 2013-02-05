@@ -49,11 +49,11 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
+            <artifactId>com.springsource.ch.qos.logback.core</artifactId>
         </dependency>
 
         <dependency>

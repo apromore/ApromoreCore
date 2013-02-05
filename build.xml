@@ -6,15 +6,17 @@
 	Added by Felix Mannhardt 
 -->
 <project name="Apromore - Copy and Build all WAR" default="deploy-war">
-    
-	<!-- 
-		Local properties for your developer machine. This will override whatever is defined in build.properties!
-		You should never check this into SVN.  
-	-->	
-	<property file="local.properties" />
-		
-	<!-- Standard properties for the build enviroment -->
-    <property file="deploy/build.properties" />
+
+    <import file="build-virgo.xml"/>
+
+    <!--
+        Local properties for your developer machine. This will override whatever is defined in build.properties!
+        You should never check this into SVN.
+    -->
+    <property file="apromore-deploy/local.properties"/>
+
+    <!-- Standard properties for the build enviroment -->
+    <property file="apromore-deploy/build.properties"/>
 
     <!-- Delete all deployed WAR files -->
     <target name="clean-war">
@@ -29,15 +31,19 @@
     <!-- Build all WAR files using ANT and Maven -->
     <target name="build-war" depends="clean-war">
         <!-- Prepare Signavio Editor -->
-        <ant antfile="build.xml" target="build-all-in-one-war" dir="Apromore-Editor/" inheritall="false" />
+        <ant antfile="build.xml" target="build-all-in-one-war" dir="Apromore-Editor/" inheritall="false"/>
 
         <!--  Run Apromore Maven -->
-        <exec dir="." executable="cmd">
+        <exec dir="." executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="mvn"/>
             <arg line="clean install cobertura:cobertura"/>
         </exec>
-
+        <exec executable="mvn" osfamily="unix">
+            <arg value="clean"/>
+            <arg value="install"/>
+            <arg value="cobertura:cobertura"/>
+        </exec>
     </target>
 
     <!-- Copy all WAR files to Tomcat -->
@@ -47,12 +53,12 @@
         <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
 
-    <target name="deploy-war" depends="copy-war" />
+    <target name="deploy-war" depends="copy-war"/>
 
     <target name="copy-war-nodep">
         <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
-    
+
 </project>

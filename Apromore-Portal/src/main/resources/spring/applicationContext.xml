@@ -10,5 +10,6 @@
     <context:annotation-config/>
 
     <import resource="applicationContext-services.xml" />
+	<import resource="applicationContext-ldap.xml" />
 
 </beans>

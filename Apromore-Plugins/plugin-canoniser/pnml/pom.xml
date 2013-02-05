@@ -20,11 +20,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <!-- Export nothing as we're a pure implementation bundle -->
-                    </instructions>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -48,29 +43,24 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Schema -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>pnml-schema</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Test dependencies -->

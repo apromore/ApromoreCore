@@ -12,7 +12,7 @@
     <!-- enable classpath scanning -->
 	<context:component-scan base-package="org.apromore.plugin.deployment" />   
        
-    <service ref="osgiDeploymentPluginProviderImpl" interface="org.apromore.plugin.deployment.DeploymentPluginProvider" />
-    <list id="DeploymentPluginList" interface="org.apromore.plugin.deployment.DeploymentPlugin" availability="optional" />
+    <service ref="deploymentPluginProviderImpl" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider" />
+    <list id="deploymentPluginSet" interface="org.apromore.plugin.deployment.DeploymentPlugin" availability="optional" />
 	
 </beans:beans>

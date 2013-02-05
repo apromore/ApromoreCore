@@ -14,6 +14,7 @@ import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.CanonicalConverter;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,6 +40,7 @@ import static org.hamcrest.Matchers.notNullValue;
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"
 })
+@Ignore
 public class GraphHelperUnitTest {
 
     @Inject

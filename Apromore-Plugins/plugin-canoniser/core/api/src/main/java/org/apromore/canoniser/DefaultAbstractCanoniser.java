@@ -26,7 +26,7 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.DefaultParameterAwarePlugin;
+import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.xml.sax.SAXException;
 
 /**

@@ -1,11 +1,10 @@
-package org.apromore.plugin.impl;
+package org.apromore.plugin;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.message.PluginMessageImpl;
 import org.slf4j.Logger;

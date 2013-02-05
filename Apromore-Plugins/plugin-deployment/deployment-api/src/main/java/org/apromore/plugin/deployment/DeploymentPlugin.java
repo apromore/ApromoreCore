@@ -13,9 +13,9 @@ package org.apromore.plugin.deployment;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 
@@ -23,7 +23,6 @@ import org.apromore.plugin.exception.PluginPropertyNotFoundException;
  * Interface for Deployment Plugins, that support deploying processes to a process/work-flow engine.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
- *
  */
 public interface DeploymentPlugin extends ParameterAwarePlugin {
 
@@ -34,23 +33,25 @@ public interface DeploymentPlugin extends ParameterAwarePlugin {
      */
     String getNativeType();
 
-	/**
-	 * Deploys the process in canonical process format to a process/work-flow engine.
-	 *
-	 * @param canonicalProcess the process to be deployed
-     * @throws DeploymentException in case of an error during deployment
-	 * @throws PluginPropertyNotFoundException in case a mandatory property was not found
-	 */
-	PluginResult deployProcess(CanonicalProcessType canonicalProcess, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
-
-	/**
+    /**
      * Deploys the process in canonical process format to a process/work-flow engine.
      *
      * @param canonicalProcess the process to be deployed
-     * @param annotation to be used during deployment
      * @throws DeploymentException in case of an error during deployment
-	 * @throws PluginPropertyNotFoundException in case a mandatory property was not found
+     * @throws PluginPropertyNotFoundException
+     *                             in case a mandatory property was not found
      */
-	PluginResult deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
+    PluginResult deployProcess(CanonicalProcessType canonicalProcess, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
+
+    /**
+     * Deploys the process in canonical process format to a process/work-flow engine.
+     *
+     * @param canonicalProcess the process to be deployed
+     * @param annotation       to be used during deployment
+     * @throws DeploymentException in case of an error during deployment
+     * @throws PluginPropertyNotFoundException
+     *                             in case a mandatory property was not found
+     */
+    PluginResult deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
 
 }

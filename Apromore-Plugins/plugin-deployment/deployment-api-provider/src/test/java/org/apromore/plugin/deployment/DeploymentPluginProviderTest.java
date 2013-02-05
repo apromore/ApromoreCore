@@ -5,19 +5,27 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
-import org.apromore.plugin.deployment.provider.impl.SimpleSpringDeploymentPluginProvider;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SimpleSpringDeploymentPluginProviderTest {
+public class DeploymentPluginProviderTest {
 
-    private DeploymentPluginProvider provider;
+    private DeploymentPluginProviderImpl provider;
+    private MockDeploymentPlugin mockPlugin;
 
     @Before
     public void setUp() {
-        this.provider = new SimpleSpringDeploymentPluginProvider();
+        final DeploymentPluginProviderImpl dp = new DeploymentPluginProviderImpl();
+        final Set<DeploymentPlugin> deploymentPluginSet = new HashSet<DeploymentPlugin>();
+        mockPlugin = new MockDeploymentPlugin();
+        deploymentPluginSet.add(mockPlugin);
+        dp.setDeploymentPluginSet(deploymentPluginSet);
+        this.provider = dp;
     }
 
     @Test
@@ -50,8 +58,10 @@ public class SimpleSpringDeploymentPluginProviderTest {
     public void testListByNativeType() {
         assertNotNull(provider.listByNativeType("YAWL 2.2"));
         assertNotNull(provider.listAll());
-        assertTrue(provider.listByNativeType("YAWL 2.2").size() >= 1);
-        assertTrue(provider.listAll().size() >= 1);
+        assertTrue(provider.listByNativeType("YAWL 2.2").size() == 1);
+        assertTrue(provider.listAll().size() == 1);
     }
+
+
 
 }

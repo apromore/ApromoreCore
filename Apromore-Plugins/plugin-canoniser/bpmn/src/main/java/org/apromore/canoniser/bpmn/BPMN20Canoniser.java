@@ -18,7 +18,7 @@ import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.impl.PluginResultImpl;
+import org.apromore.plugin.PluginResultImpl;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.springframework.stereotype.Component;
 

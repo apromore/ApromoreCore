@@ -16,10 +16,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProviderHelper;
+import org.springframework.stereotype.Service;
 
 /**
  * Providing the default CanoniserProvider implementation
@@ -27,16 +30,18 @@ import org.apromore.plugin.provider.PluginProviderHelper;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public abstract class CanoniserProviderImpl implements CanoniserProvider {
+@Service
+public class CanoniserProviderImpl implements CanoniserProvider {
 
-    private Set<Canoniser> internalCanoniserSet;
+	@Resource
+    private Set<Canoniser> canoniserSet;
 
-    protected Set<Canoniser> getInternalCanoniserSet() {
-        return internalCanoniserSet;
+    public Set<Canoniser> getCanoniserSet() {
+        return canoniserSet;
     }
 
-    protected void setInternalCanoniserSet(final Set<Canoniser> canoniserSet) {
-        this.internalCanoniserSet = canoniserSet;
+    public void setCanoniserSet(final Set<Canoniser> canoniserSet) {
+        this.canoniserSet = canoniserSet;
     }
 
     /*
@@ -46,7 +51,7 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
      */
     @Override
     public final Set<Canoniser> listAll() {
-        return Collections.unmodifiableSet(getInternalCanoniserSet());
+        return Collections.unmodifiableSet(getCanoniserSet());
     }
 
     /*
@@ -119,7 +124,7 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
 
         final Set<Canoniser> cList = new HashSet<Canoniser>();
 
-        for (final Canoniser c : getInternalCanoniserSet()) {
+        for (final Canoniser c : getCanoniserSet()) {
             if (PluginProviderHelper.compareNullable(nativeType, c.getNativeType()) && PluginProviderHelper.compareNullable(name, c.getName()) && PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 cList.add(c);
             }

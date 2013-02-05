@@ -10,9 +10,9 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
        
     <!-- enable classpath scanning -->
-	<context:component-scan base-package="org.apromore.canoniser.provider" />   
+	<context:component-scan base-package="org.apromore.canoniser" />   
        
-    <service ref="osgiCanoniserProviderImpl" interface="org.apromore.canoniser.provider.CanoniserProvider" />
+    <service ref="canoniserProviderImpl" interface="org.apromore.canoniser.provider.CanoniserProvider" />
     <set id="canoniserSet" interface="org.apromore.canoniser.Canoniser" availability="optional" />
 	
 </beans:beans>
