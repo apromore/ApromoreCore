@@ -54,15 +54,15 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-yawl</artifactId>
-        </dependency>        
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-        </dependency>		
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
@@ -70,22 +70,22 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>yawl-schema</artifactId>
-        </dependency>        
-        
+        </dependency>
+
         <!-- Embedded no OSGi bundle available -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>fluent-hc</artifactId>
             <version>${httpcomponents.version}</version>
-			<scope>compile</scope>
+            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>        
-        
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.easymock</groupId>
@@ -101,9 +101,9 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <properties>
-        <httpcomponents.version>4.2.1</httpcomponents.version>    
+        <httpcomponents.version>4.2.1</httpcomponents.version>
     </properties>
 
 </project>

@@ -6,7 +6,6 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.deployment.DefaultDeploymentPlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.junit.Test;
