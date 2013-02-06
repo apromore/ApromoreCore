@@ -14,7 +14,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
 import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.deployment.yawl.YAWLEngineClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
