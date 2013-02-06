@@ -43,6 +43,10 @@
                         Change default port to 9000 in Eclipse Virgo
                      -->
                 <filename name="tomcat-server.xml"/>
+                <!--
+                    Export Java standard classes according to our needs
+                -->
+                <filename name="java6-server.profile"/>
             </fileset>
         </copy>
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
