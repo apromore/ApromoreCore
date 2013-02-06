@@ -56,9 +56,13 @@
         <module>plugin-canoniser/core/api</module>
         <module>plugin-canoniser/core/provider</module>
 
+        <!-- Toolkit Interface -->
+        <module>plugin-toolbox/core/api</module>
+        <module>plugin-toolbox/core/provider</module>
+
         <!-- Deployment Interface -->
-        <module>plugin-deployment/deployment-api</module>
-        <module>plugin-deployment/deployment-api-provider</module>
+        <module>plugin-deployment/core/api</module>
+        <module>plugin-deployment/core/provider</module>
 
         <!-- Plugin Implementations -->
         <module>plugin-canoniser/aris</module>
@@ -70,7 +74,6 @@
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
-
   </modules>
 
     <repositories>
