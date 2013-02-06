@@ -47,6 +47,8 @@
         
         <!-- Database Support Plugins -->
         <module>plugin-database/database-mysql</module>
+		<module>plugin-database/database-postgresql</module>
+		<module>plugin-database/database-oracle</module>
 
         <!-- Plugin Interfaces -->
         <module>plugin-core/api</module>
