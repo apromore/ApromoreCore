@@ -28,25 +28,25 @@
     </target>
 
     <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
-        <copy todir="${dir-virgo}/repository/ext" flatten="true" overwrite="true">
+        <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Extras/Virgo">
                 <!--
                         We need a compatibility mode for Apromore Editor vanilla WAR.
                         See: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/html/ch13s08.html
-                     -->
+                -->
                 <filename name="org.eclipse.virgo.web.properties"/>
             </fileset>
         </copy>
-        <copy todir="${dir-virgo}/configuration" flatten="true" overwrite="true">
+        <copy todir="${dir-virgo}/configuration" overwrite="true">
             <fileset dir="Extras/Virgo">
                 <!--
                         Change default port to 9000 in Eclipse Virgo
-                     -->
-                <filename name="tomcat-server.xml"/>
+                -->
+                <include name="tomcat-server.xml"/>
                 <!--
                     Export Java standard classes according to our needs
                 -->
-                <filename name="java6-server.profile"/>
+                <include name="java6-server.profile"/>
             </fileset>
         </copy>
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
