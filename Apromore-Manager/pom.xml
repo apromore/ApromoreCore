@@ -439,30 +439,22 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>test-tools</artifactId>
-            <version>${test-tools.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- Plugin API Provider -->
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-api-provider</artifactId>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-test</artifactId>
+            <version>1.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Canoniser API Provider -->
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api-provider</artifactId>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-mock</artifactId>
+            <version>1.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Deployment API Provider -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
+        
     </dependencies>
 
 </project>
