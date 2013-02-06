@@ -27,7 +27,7 @@
         <delete file="${dir-deployment}/virgo.zip"/>
     </target>
 
-    <target name="configure-virgo" depends="check-virgo" unless="virgo.installed">
+    <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
         <copy todir="${dir-virgo}/repository/ext" flatten="true" overwrite="true">
             <fileset dir="Extras/Virgo">
                 <!--
