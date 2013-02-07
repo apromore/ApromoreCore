@@ -47,11 +47,11 @@ public final class PluginHelper {
      * @param xmlProperties from web service
      * @return Set of RequestPropertyType
      */
-    public static Set<RequestParameterType<?>> convertToRequestProperties(final PluginParameters xmlProperties) {
+    public static Set<RequestParameterType<?>> convertToRequestParameters(final PluginParameters xmlProperties) {
         Set<RequestParameterType<?>> properties = new HashSet<RequestParameterType<?>>();
         if (xmlProperties != null) {
             for (PluginParameter xmlProp : xmlProperties.getParameter()) {
-                RequestParameterType<?> requestParam = convertToRequestProperty(xmlProp);
+                RequestParameterType<?> requestParam = convertToRequestParameter(xmlProp);
                 if (requestParam != null) {
                     properties.add(requestParam);
                 }
@@ -66,7 +66,7 @@ public final class PluginHelper {
      * @param xmlProp single property from web service
      * @return null if conversion failed
      */
-    public static RequestParameterType<?> convertToRequestProperty(final PluginParameter xmlProp) {
+    public static RequestParameterType<?> convertToRequestParameter(final PluginParameter xmlProp) {
         String clazz = xmlProp.getClazz();
         if (clazz != null && xmlProp.getId() != null && xmlProp.getValue() != null) {
             try {
