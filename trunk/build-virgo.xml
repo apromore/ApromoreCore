@@ -160,7 +160,9 @@
         <include name="Apromore-Schema/**/target/*.jar"/>
         <!-- Just the Plugin APIs no implementation -->
         <include name="Apromore-Plugins/**/*api/target/*.jar" />
-        <!-- Ignore sources -->
+        <!-- Include the Plugins without Services -->
+		<include name="Apromore-Plugins/**/plugin-graph/target/*.jar"/>
+		<!-- Ignore sources -->
         <exclude name="**/*-sources.jar" />
         <!-- Ignore Maven Archetypes -->
         <exclude name="**/*archetype*.jar" />
@@ -205,6 +207,11 @@
             See here: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/htmlsingle/virgo-user-guide.html#deployment-deploying
         -->
         <exclude name="Apromore-Plugins/plugin-database/**/target/*.jar"/>
+		<!--
+			All Plugins that do not provide OSGi Services.
+			TODO: Find a better way to separate these without listing them here!
+		-->
+		<exclude name="Apromore-Plugins/**/plugin-graph/target/*.jar"/>
         <!-- Ignore sources -->
         <exclude name="**/*-sources.jar" />
         <!-- Ignore Maven Archetypes -->

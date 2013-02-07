@@ -667,9 +667,9 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
 						
 						new Ajax.Request(subnetJsonUrl, {
 							asynchronous: true,
-							method : 'GET',							
-							onSuccess : function(request) {						
-								
+							method : 'GET',
+							onSuccess : function(request) {
+
 			                    var subnetDiagram = Ext.decode(request.responseText);
 			                    var subnetID = this._extractNetID(subnetDiagram);
 			                    shape.properties.decompositionid = subnetID;
@@ -678,40 +678,40 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
 			                    if (onSubnetRetrieved && typeof(onSubnetRetrieved) === "function") {
 			                    	onSubnetRetrieved(subnetID, subnetDiagram); 
 			                    }
-			                   			                   
-			                    this._exportAjaxRequestCounter--;                
-			                    if (this._exportAjaxRequestCounter === 0) {			                    	
+
+			                    this._exportAjaxRequestCounter--;
+			                    if (this._exportAjaxRequestCounter === 0) {
 			                    	if (onCompleted && typeof(onCompleted) === "function") {
 			                    		onCompleted();	
-			                    	};			                    			                    		                    
+			                    	};
 			                    }
-			                    
+
 							}.bind(this),
 							onFailure : function() {
 								// Do not go on with processing
 								Ext.Msg.alert(ORYX.I18N.YAWL.exportFailed);
 								this._exportAjaxRequestCounter--;
-							}.bind(this)																				
+							}.bind(this)
 						});	
 					} else {
 						//TODO add warning that subnet could not be retrieved	
 						this._exportAjaxRequestCounter--;
-					}									
-										
+					}
+
 				} else {
 					// Generate a empty subnet
-					var subnetID = ORYX.Editor.provideId();					
+					var subnetID = ORYX.Editor.provideId();
 					var emptySubnetDiagram = Ext.decode(this._dummySubnetData);
 					var emptySubnet = this._extractNet(emptySubnetDiagram);
-					emptySubnet.properties.yawlid = subnetID;					
+					emptySubnet.properties.yawlid = subnetID;
 					shape.properties.decompositionid = subnetID;
 					
-					//TODO add warning about empty subnet					
+					//TODO add warning about empty subnet
 					onSubnetRetrieved(subnetID, emptySubnetDiagram);
-				} 			
+				}
 				
-			}		
-		}.bind(this));		
+			}
+		}.bind(this));
 	},
 	
 	_processSubnet: function(exportData, subnetID, subnetDiagram) {
@@ -725,11 +725,11 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
     	
 		var yawlExportJson = Ext.encode(exportData);
 		
-    	// There are no more AJAX requests waiting -> Call Export Servlet			                    				                    
+    	// There are no more AJAX requests waiting -> Call Export Servlet
 		Ext.Ajax.request({
 			url : ORYX.CONFIG.YAWLEXPORTURL,
 			method : 'POST',
-			success : function(request) {						
+			success : function(request) {
 				var exportResult = Ext.decode(request.responseText);
 				if (exportResult.hasFailed) {
 					Ext.Msg.alert(ORYX.I18N.YAWL.messageConversionFailed +exportResult.warnings);
@@ -926,12 +926,12 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
 		    	            		this._createNewSubnet(shape, decompositionLink);
 		    	            	}.bind(this)
 							}),
-	    	            	{		   
+	    	            	{
 		    					id: shape.node.id+'_menu_existing',
 	    	                    text: ORYX.I18N.YAWL.unfoldMenuExistingSubnet,
-	    	                    menu: {	    	                    	
+	    	                    menu: {
 		    	        			xtype: 'menu',
-	    	                    	items: [	    	                    
+	    	                    	items: [
 	    	                            ORYX.I18N.YAWL.unfoldMenuChooseSubnet,
 	    	                            "-"
 	    	                            ]

@@ -225,42 +225,6 @@ public class FragmentUtil {
         return newV;
     }
 
-    public static String getType(final INode node) {
-        String type = null;
-        if (node != null) {
-            if (node.getNodeType() != null) {
-                if (node.getNodeType().equals(NodeTypeEnum.TASK)) {
-                    type = Constants.FUNCTION;
-                } else if (node.getNodeType().equals(NodeTypeEnum.EVENT)) {
-                    type = Constants.EVENT;
-                } else if (node.getNodeType().equals(NodeTypeEnum.MESSAGE)) {
-                    type = Constants.EVENT;
-                } else if (node.getNodeType().equals(NodeTypeEnum.TIMER)) {
-                    type = Constants.EVENT;
-                } else {
-                    if (node.getNodeType().equals(NodeTypeEnum.ORJOIN) || node.getNodeType().equals(NodeTypeEnum.XORJOIN) ||
-                            node.getNodeType().equals(NodeTypeEnum.ANDJOIN) || node.getNodeType().equals(NodeTypeEnum.ORSPLIT) ||
-                            node.getNodeType().equals(NodeTypeEnum.XORSPLIT) || node.getNodeType().equals(NodeTypeEnum.ANDSPLIT) ||
-                            node.getNodeType().equals(NodeTypeEnum.STATE)) {
-                        type = Constants.CONNECTOR;
-                    } else {
-                        String nodeName = node.getName();
-                        if (nodeName != null && (nodeName.equals("OrJoin") || nodeName.equals("XOrJoin") ||
-                                nodeName.equals("AndJoin") || nodeName.equals("OrSplit") || nodeName.equals("XOrSplit") ||
-                                nodeName.equals("AndSplit") || nodeName.equals("State"))) {
-                            type = Constants.CONNECTOR;
-                        }
-                    }
-                }
-            } else {
-                LOGGER.warn("Unable to determine Node Type, Type is NULL (Could be a Pocket). " + node.getId());
-            }
-        } else {
-            LOGGER.warn("Unable to determine Node Type, Node is NULL. ");
-        }
-        return type;
-    }
-
 //    @SuppressWarnings("unchecked")
 //    public static String fragmentToString(final FragmentNode f, final Canonical g) {
 //        StringBuilder fs = new StringBuilder(0);

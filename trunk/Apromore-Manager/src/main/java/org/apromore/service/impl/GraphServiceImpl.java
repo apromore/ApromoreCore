@@ -17,6 +17,7 @@ import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.ResourceRef;
 import org.apromore.dao.model.ResourceRefAttribute;
 import org.apromore.graph.canonical.*;
+import org.apromore.graph.util.GraphUtil;
 import org.apromore.service.GraphService;
 import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
@@ -105,7 +106,7 @@ public class GraphServiceImpl implements GraphService {
         for (Node node : nodes) {
             v = buildNodeByType(node, procModelGraph);
             procModelGraph.addNode((CPFNode) v);
-            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, FragmentUtil.getType(v));
+            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, GraphUtil.getType(v));
         }
     }
 
@@ -148,7 +149,7 @@ public class GraphServiceImpl implements GraphService {
         for (Node node : nodes) {
             v = buildNodeByType(node, procModelGraph);
             procModelGraph.addNode((CPFNode) v);
-            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, FragmentUtil.getType(v));
+            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, GraphUtil.getType(v));
         }
     }
 

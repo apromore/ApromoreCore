@@ -606,7 +606,7 @@ public class ManagerPortalEndpoint {
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
 
-            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(payload.getCanoniserParameters());
+            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(payload.getCanoniserParameters());
             ExportFormatResultType exportResult = procSrv.exportProcess(name, processId, branch, version, format, annName, withAnn, requestProperties);
             res.setExportResult(exportResult);
 
@@ -643,7 +643,7 @@ public class ManagerPortalEndpoint {
             DataHandler handler = payload.getProcessDescription();
             PluginParameters xmlCanoniserProperties = payload.getCanoniserParameters();
 
-            Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
+            Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
             ProcessModelVersion pmv = procSrv.importProcess(username, processName, nativeType, canonisedProcess, handler.getInputStream(),
                     domain, "", creationDate, lastUpdate);
@@ -1133,7 +1133,7 @@ public class ManagerPortalEndpoint {
             String versionName = req.getValue().getVersionName();
             String branchName = req.getValue().getBranchName();
             PluginParameters deploymentProperties = req.getValue().getDeploymentParameters();
-            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(deploymentProperties);
+            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(deploymentProperties);
             String deploymentPluginName = req.getValue().getDeploymentPluginName();
             String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
 

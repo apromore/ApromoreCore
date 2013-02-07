@@ -41,32 +41,36 @@
 
     <modules>
         <!-- Archetypes for new Plugin projects -->
-        <module>plugin-core/plugin-archetype</module>
-        <module>plugin-core/plugin-api-archetype</module>
-        <module>plugin-core/plugin-api-provider-archetype</module>
+        <module>plugin-core/archetype/plugin-archetype</module>
+        <module>plugin-core/archetype/plugin-api-archetype</module>
+        <module>plugin-core/archetype/plugin-api-provider-archetype</module>
         
         <!-- Database Support Plugins -->
         <module>plugin-database/database-mysql</module>
-		<module>plugin-database/database-postgresql</module>
-		<module>plugin-database/database-oracle</module>
+        <module>plugin-database/database-postgresql</module>
+        <module>plugin-database/database-oracle</module>
 
         <!-- Plugin Interfaces -->
-        <module>plugin-core/api</module>
-        <module>plugin-core/provider</module>
+        <module>plugin-core/core/api</module>
+        <module>plugin-core/core/provider</module>
 
         <!-- Canoniser Interface -->
         <module>plugin-canoniser/core/api</module>
         <module>plugin-canoniser/core/provider</module>
 
-        <!-- Toolkit Interface -->
-        <module>plugin-toolbox/core/api</module>
-        <module>plugin-toolbox/core/provider</module>
-
         <!-- Deployment Interface -->
         <module>plugin-deployment/core/api</module>
         <module>plugin-deployment/core/provider</module>
 
+        <!-- Search Interface -->
+        <module>plugin-toolbox/plugin-search/core/api</module>
+        <module>plugin-toolbox/plugin-search/core/provider</module>
+
         <!-- Plugin Implementations -->
+        <!-- Common Plugins -->
+        <module>plugin-core/plugin-graph</module>
+        
+        <!-- Canoniser Plugins -->
         <module>plugin-canoniser/aris</module>
         <module>plugin-canoniser/bpmn</module>
         <module>plugin-canoniser/epml</module>
@@ -102,6 +106,12 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>search-api</artifactId>
                 <version>${apromore.plugin.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -147,6 +157,14 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <!--  Core Plugins -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>plugin-graph</artifactId>
+                <version>${apromore.plugin.version}</version>
                 <scope>provided</scope>
             </dependency>
 
