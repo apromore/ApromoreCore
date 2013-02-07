@@ -642,6 +642,14 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--  Core Plugins -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>plugin-graph</artifactId>
+                <version>${apromore.plugin.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!-- Plugin API -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>

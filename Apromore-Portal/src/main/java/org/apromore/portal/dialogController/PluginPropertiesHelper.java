@@ -227,12 +227,29 @@ public class PluginPropertiesHelper {
             return fileButton;
         } else {
             Messagebox.show("Unkown property type: " + prop.getClazz() + ", name: " + prop.getName(), "Attention", Messagebox.OK, Messagebox.ERROR);
-            return new Textbox();
+            Textbox textBox = new Textbox();
+            if (prop.getValue() != null) {
+                textBox.setValue(prop.getValue().toString());
+            }
+            if (isRequired) {
+                textBox.setConstraint("no empty");
+            }
+            textBox.addEventListener("onChange", new EventListener() {
+
+                @Override
+                public void onEvent(final Event event) {
+                    if (event instanceof InputEvent) {
+                        InputEvent inputEvent = (InputEvent) event;
+                        prop.setValue(inputEvent.getValue());
+                    }
+                }
+            });
+            return textBox;
         }
     }
 
     /**
-     * Return the user selection as parameter for inclusing into a request to the back-end.
+     * Return the user selection as parameter for including into a request to the back-end.
      *
      * @param parameterCategory filter the parameter for just this category
      * @return Set of RequestParameterType
@@ -246,7 +263,7 @@ public class PluginPropertiesHelper {
 
             for (PluginParameter prop: mandatoryParameters.getParameter()) {
                 if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
-                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestParameter(prop);
                     if (requestProp != null) {
                         requestProperties.add(requestProp);
                     }
@@ -255,7 +272,7 @@ public class PluginPropertiesHelper {
 
             for (PluginParameter prop: optionalParameters.getParameter()) {
                 if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
-                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                    RequestParameterType<?> requestProp = PluginHelper.convertToRequestParameter(prop);
                     if (requestProp != null) {
                         requestProperties.add(requestProp);
                     }

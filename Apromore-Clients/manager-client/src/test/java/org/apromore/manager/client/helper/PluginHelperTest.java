@@ -47,7 +47,7 @@ public class PluginHelperTest {
         xmlProperties.getParameter().add(prop1);
         xmlProperties.getParameter().add(prop2);
 
-        Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(xmlProperties);
+        Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(xmlProperties);
         assertNotNull(requestProperties);
         assertTrue(requestProperties.size() == 2);
 
@@ -73,19 +73,19 @@ public class PluginHelperTest {
     @Test
     public void testConvertToRequestProperty() {
         PluginParameter xmlProp = new PluginParameter();
-        assertNull(PluginHelper.convertToRequestProperty(xmlProp));
+        assertNull(PluginHelper.convertToRequestParameter(xmlProp));
         xmlProp.setClazz(String.class.getCanonicalName());
-        assertNull(PluginHelper.convertToRequestProperty(xmlProp));
+        assertNull(PluginHelper.convertToRequestParameter(xmlProp));
 
         PluginParameter xmlProp2 = new PluginParameter();
         xmlProp2.setId("test");
-        assertNull(PluginHelper.convertToRequestProperty(xmlProp2));
+        assertNull(PluginHelper.convertToRequestParameter(xmlProp2));
 
         PluginParameter xmlProp3 = new PluginParameter();
         xmlProp3.setId("test");
         xmlProp3.setClazz(String.class.getCanonicalName());
         xmlProp3.setValue("test");
-        assertNotNull(PluginHelper.convertToRequestProperty(xmlProp3));
+        assertNotNull(PluginHelper.convertToRequestParameter(xmlProp3));
     }
 
     @Test

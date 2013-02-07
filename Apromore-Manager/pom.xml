@@ -151,6 +151,12 @@
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
         </dependency>
+        
+        <!-- Core Plugins -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-graph</artifactId>
+        </dependency>
 
         <!-- Plugin API -->
         <dependency>
@@ -187,10 +193,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>xpdl-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
         </dependency>
 
         <!-- Blueprint OSGi -->
