@@ -56,6 +56,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.HumanType;
 import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -450,10 +451,13 @@ public class Canonical2EPML {
         coord.setYOrigin("topToBottom");
         epml.setCoordinates(coord);
 
-        // Register the "roletype" attribute for distinguishing CPF Human and Nonhuman resource types
-        TypeAttrType attrType = new TypeAttrType();
-        attrType.setTypeId("roletype");
+        // Register the "nodetype" and "roletype" attributes
         TypeAttrTypes attrTypes = new TypeAttrTypes();
+        TypeAttrType attrType = new TypeAttrType();
+        attrType.setTypeId("nodetype");
+        attrTypes.getAttributeType().add(attrType);
+        attrType = new TypeAttrType();
+        attrType.setTypeId("roletype");
         attrTypes.getAttributeType().add(attrType);
         epml.getAttributeTypes().add(attrTypes);
 
@@ -635,6 +639,14 @@ public class Canonical2EPML {
                 }
                 subnet_list.add(func);
             }
+            for (TypeAttribute cpfAttribute : task.getAttribute()) {
+                if ("systemAction".equals(cpfAttribute.getName())) {
+                    de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
+                    attribute.setTypeRef("nodetype");
+                    attribute.setValue("System Function");
+                    func.getAttribute().add(attribute);
+                }
+            }
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCFunction(func));
             epcRefMap.put(func.getId(), func);
         }
@@ -685,7 +697,16 @@ public class Canonical2EPML {
         role.setName(resT.getName());
         // TODO getName could be NULL, will not work as lookup key!
         role.setDefRef(find_def_id("role", role.getName()));
-        if (resT instanceof NonhumanType) {
+        if (resT instanceof HumanType && ((HumanType) resT).getType() != null) {
+            switch (((HumanType) resT).getType()) {
+            case UNIT:
+                de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
+                attribute.setTypeRef("roletype");
+                attribute.setValue("Organizational Unit");
+                role.getAttribute().add(attribute);
+                break;
+            }
+        } else if (resT instanceof NonhumanType) {
             de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
             attribute.setTypeRef("roletype");
             attribute.setValue("IT system");

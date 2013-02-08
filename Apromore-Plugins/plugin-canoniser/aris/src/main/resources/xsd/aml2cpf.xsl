@@ -3,7 +3,7 @@
 <!DOCTYPE transform [
   <!ENTITY STnodes         "ST_EV ST_FUNC ST_OPR_AND_1 ST_OPR_OR_1 ST_OPR_XOR_1 ST_OPR_XOR_1 ST_PRCS_IF ST_SYS_FUNC_ACT">
   <!ENTITY STobjects       "ST_DOC ST_DOC_KNWLDG_1 ST_INFO_CARR ST_INFO_CARR_NOTE ST_LIST">
-  <!ENTITY STresourceTypes "ST_APPL_SYS ST_EMPL_TYPE ST_ORG_UNIT_1 ST_PERS_EXT ST_POSE">
+  <!ENTITY STresourceTypes "ST_APPL_SYS ST_EMPL_TYPE ST_ORG_UNIT_1 ST_PERS_EXT ST_POS">
 ]>
 
 <!--
@@ -179,7 +179,8 @@ ST_TECH_TERM
 <xsl:template match="CxnOcc"/>
 
 <!-- CPF Object -->
-<xsl:template match="ObjOcc[@SymbolNum='ST_DOC'] |
+<xsl:template match="ObjOcc[@SymbolNum='ST_DOC']          |
+                     ObjOcc[@SymbolNum='ST_DOC_KNWLDG_1'] |
                      ObjOcc[@SymbolNum='ST_INFO_CARR_NOTE']">
   <xsl:variable name="ObjDef.IdRef" select="@ObjDef.IdRef"/>
   <xsl:variable name="ObjDef" select="//ObjDef[@ObjDef.ID=$ObjDef.IdRef]"/>
@@ -197,7 +198,9 @@ ST_TECH_TERM
 <!-- CPF ResourceType -->
 <xsl:template match="ObjOcc[@SymbolNum='ST_APPL_SYS']  |
                      ObjOcc[@SymbolNum='ST_EMPL_TYPE'] |
-                     ObjOcc[@SymbolNum='ST_PERS_EXT']">
+                     ObjOcc[@SymbolNum='ST_ORG_UNIT_1']  |
+                     ObjOcc[@SymbolNum='ST_PERS_EXT']  |
+                     ObjOcc[@SymbolNum='ST_POS']">
   <xsl:variable name="ObjDef.IdRef" select="@ObjDef.IdRef"/>
   <xsl:variable name="ObjDef" select="//ObjDef[@ObjDef.ID=$ObjDef.IdRef]"/>
   <ResourceType id="{@ObjOcc.ID}">
