@@ -24,6 +24,7 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
+import de.epml.TypeAttribute;
 import de.epml.TypeFunction;
 import de.epml.TypePosition;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
@@ -52,6 +53,11 @@ public class TypeFunctionHandler extends NodeHandler {
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("title", function.getName());
         hashMap.put("description", function.getDescription());
+        for (TypeAttribute attribute : function.getAttribute()) {
+            if ("nodetype".equals(attribute.getTypeRef()) && "System Function".equals(attribute.getValue())) {
+                hashMap.put("isSystemFunction", "true");
+            }
+        }
         return hashMap;
     }
 
