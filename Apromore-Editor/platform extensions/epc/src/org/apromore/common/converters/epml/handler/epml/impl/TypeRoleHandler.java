@@ -50,6 +50,9 @@ public class TypeRoleHandler extends NodeHandler {
             if ("IT system".equals(attribute.getValue())) {
                 return new BasicNode(getShapeId().toString(), "System");
             }
+            if ("Organizational Unit".equals(attribute.getValue())) {
+                return new BasicNode(getShapeId().toString(), "Organization");
+            }
         }
 
         return new BasicNode(getShapeId().toString(), "Position");
