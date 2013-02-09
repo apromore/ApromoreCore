@@ -107,14 +107,14 @@
                                                 return pluginData.name === "Layout-BPMN";
                                             });
                                         }
-										
-										var doAutoLayout = '${arg.doAutoLayout}' === 'true';
+
+                                        var doAutoLayout = '${arg.doAutoLayout}' === 'true';
 
                                         if (layouter && doAutoLayout) {
                                             layouter.functionality();                                            
                                         } else {
                                             // Could be already layouted model (for example YAWL)
-                                            // alert("Did not find Layouter");
+                                            //alert("Did not find Layouter");
                                         }
 
                                         Ext.select('svg').setVisible(true);

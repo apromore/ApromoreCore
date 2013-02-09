@@ -3,10 +3,7 @@ package org.apromore.service.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +54,7 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.IAttribute;
@@ -100,7 +98,7 @@ import org.wfmc._2008.xpdl2.PackageType;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
@@ -198,12 +196,12 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, String, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
+     * @see org.apromore.service.ProcessService#importProcess(String, String, Double, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
      * {@inheritDoc}
      */
     @Override
     @Transactional
-    public ProcessModelVersion importProcess(final String username, final String processName, final String natType,
+    public ProcessModelVersion importProcess(final String username, final String processName, final Double versionNumber, final String natType,
             final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
@@ -213,9 +211,9 @@ public class ProcessServiceImpl implements ProcessService {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain);
-            pmv = addProcess(process, processName, Constants.TRUNK_NAME, created, lastUpdate, cpf);
+            pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf);
             formatSrv.storeNative(processName, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
-        } catch (Exception e) {
+        } catch (UserNotFoundException | JAXBException| ImportException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
@@ -331,10 +329,24 @@ public class ProcessServiceImpl implements ProcessService {
 
         List<ProcessModelVersion> pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
         if (pmVersion != null && !pmVersion.isEmpty()) {
-            if (newBranchName != null && !originalBranchName.equals(newBranchName)) {
-                processModelVersion = saveAs(pmVersion, newBranchName, cpf);
-            } else {
-                processModelVersion = save(pmVersion, processName, originalBranchName, versionNumber, cpf);
+            processModelVersion = pmVersion.get(0);
+            if (versionNumber.equals(processModelVersion.getVersionNumber())) {
+                LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
+                        "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
+                        processModelVersion.getVersionNumber());
+            }
+
+            Canonical graph;
+            OperationContext netRoot;
+            for (NetType net : cpf.getCpt().getNet()) {
+                if (net.getNode() != null || net.getNode().size() > 0) {
+                    graph = converter.convert(createNet(cpf, net));
+                    netRoot = decomposerSrv.decompose(graph, processModelVersion);
+                    if (netRoot != null) {
+                        propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
+                                netRoot.getFragmentVersions());
+                    }
+                }
             }
         } else {
             LOGGER.error("unable to find the Process Model to update.");
@@ -511,8 +523,8 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Does the processing of ImportProcess. */
-    private ProcessModelVersion addProcess(final Process process, final String processName, final String branchName, final String created,
-            final String lastUpdated, final CanonisedProcess cpf) throws ImportException {
+    private ProcessModelVersion addProcess(final Process process, final String processName, final Double versionNumber, final String branchName,
+            final String created, final String lastUpdated, final CanonisedProcess cpf) throws ImportException {
         if (cpf == null) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
@@ -533,7 +545,7 @@ public class ProcessServiceImpl implements ProcessService {
                     LOGGER.info("Starting to process Net: " + net.getId() + " - " + net.getName());
 
                     can = converter.convert(createNet(cpf, net));
-                    pmv = createProcessModelVersion(process, branch, can, net.getId());
+                    pmv = createProcessModelVersion(process, branch, versionNumber, can, net.getId());
                     netRoot = decomposerSrv.decompose(can, pmv);
                     if (netRoot != null) {
                         pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
@@ -543,7 +555,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
             createSubProcessReferences(cpf, models);
             createRootProcessReferences(process, cpf, models);
-        } catch (Exception re) {
+        } catch (RepositoryException re) {
             throw new ImportException("Failed to add the process model " + processName, re);
         }
         return pmv;
@@ -657,13 +669,13 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final Process process, final ProcessBranch branch, final Canonical proModGrap,
-            final String netId) {
+    private ProcessModelVersion createProcessModelVersion(final Process process, final ProcessBranch branch, final Double versionNumber,
+            final Canonical proModGrap, final String netId) {
         ProcessModelVersion processModel = new ProcessModelVersion();
 
         processModel.setProcessBranch(branch);
         processModel.setOriginalId(netId);
-        processModel.setVersionNumber(1.0D);
+        processModel.setVersionNumber(versionNumber);
         processModel.setNumEdges(proModGrap.countEdges());
         processModel.setNumVertices(proModGrap.countVertices());
         processModel.setLockStatus(Constants.NO_LOCK);
@@ -676,45 +688,6 @@ public class ProcessServiceImpl implements ProcessService {
         updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
 
         return processModelVersionRepo.save(processModel);
-    }
-
-
-    /* SaveAs. This will save a new branch of the process model. */
-    private ProcessModelVersion saveAs(final List<ProcessModelVersion> pmVersion, final String branchName, final CanonisedProcess cpf)
-            throws ImportException {
-        ProcessModelVersion pmv = pmVersion.get(0);
-        Process process = pmv.getProcessBranch().getProcess();
-
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss z");
-        String date = df.format(new Date());
-
-        return addProcess(process, process.getName(), branchName, date, date, cpf);
-    }
-
-    /* Save. This will save a new Version of the process. */
-    private ProcessModelVersion save(final List<ProcessModelVersion> pmVersion, final String processName, final String originalBranchName,
-                                     final Double versionNumber, final CanonisedProcess cpf) throws RepositoryException {
-        ProcessModelVersion processModelVersion = pmVersion.get(0);
-        assert versionNumber != null;
-        if (versionNumber.equals(processModelVersion.getVersionNumber())) {
-            LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-                    "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
-                    processModelVersion.getVersionNumber());
-        }
-
-        Canonical graph;
-        OperationContext netRoot;
-        for (NetType net : cpf.getCpt().getNet()) {
-            if (net.getNode() != null || net.getNode().size() > 0) {
-                graph = converter.convert(createNet(cpf, net));
-                netRoot = decomposerSrv.decompose(graph, processModelVersion);
-                if (netRoot != null) {
-                    propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
-                            netRoot.getFragmentVersions());
-                }
-            }
-        }
-        return processModelVersion;
     }
 
 

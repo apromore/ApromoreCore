@@ -39,7 +39,7 @@ public interface CanoniserService {
     Canoniser findByNativeType(String nativeType) throws PluginNotFoundException;
 
     /**
-     * Finds first Canoniser with given native type with given namen and specified version.
+     * Finds first Canoniser with given native type with given name and specified version.
      *
      * @param nativeType that the Canoniser supports
      * @param name

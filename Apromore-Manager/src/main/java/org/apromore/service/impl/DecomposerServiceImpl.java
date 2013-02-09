@@ -18,9 +18,12 @@ import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
+import org.jbpt.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -33,7 +36,7 @@ import javax.inject.Inject;
  * @author Chathura Ekanayake
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class DecomposerServiceImpl implements DecomposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecomposerServiceImpl.class);
@@ -60,6 +63,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      */
     @Override
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly = false)
     public OperationContext decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
         try {
             TreeVisitor visitor = new TreeVisitor();
@@ -69,6 +73,12 @@ public class DecomposerServiceImpl implements DecomposerService {
 
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
+
+            IOUtils.toFile("outputCPF.dot", graph.toDOT());
+            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
+            IOUtils.toFile("outputRPST.dot", rpst.toDOT());
+            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
+
             if (rf != null) {
                 op = decompose(modelVersion, rf, op);
                 cService.updateCancelNodes(op);

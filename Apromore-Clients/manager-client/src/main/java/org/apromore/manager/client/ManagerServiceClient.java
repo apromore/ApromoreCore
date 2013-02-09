@@ -1,19 +1,5 @@
 package org.apromore.manager.client;
 
-import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
-import org.apromore.manager.client.helper.MergeProcessesHelper;
-import org.apromore.manager.client.helper.PluginHelper;
-import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
-import org.apromore.manager.client.util.StreamUtil;
-import org.apromore.model.*;
-import org.apromore.plugin.property.RequestParameterType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ws.client.core.WebServiceTemplate;
-
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -21,6 +7,141 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
+
+import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
+import org.apromore.manager.client.helper.MergeProcessesHelper;
+import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
+import org.apromore.manager.client.util.StreamUtil;
+import org.apromore.model.AddProcessToFolderInputMsgType;
+import org.apromore.model.AddProcessToFolderOutputMsgType;
+import org.apromore.model.ClusterFilterType;
+import org.apromore.model.ClusterSettingsType;
+import org.apromore.model.ClusterSummaryType;
+import org.apromore.model.ClusterType;
+import org.apromore.model.ClusteringSummaryType;
+import org.apromore.model.CreateClustersInputMsgType;
+import org.apromore.model.CreateClustersOutputMsgType;
+import org.apromore.model.CreateFolderInputMsgType;
+import org.apromore.model.CreateFolderOutputMsgType;
+import org.apromore.model.DeleteEditSessionInputMsgType;
+import org.apromore.model.DeleteEditSessionOutputMsgType;
+import org.apromore.model.DeleteFolderInputMsgType;
+import org.apromore.model.DeleteFolderOutputMsgType;
+import org.apromore.model.DeleteProcessVersionsInputMsgType;
+import org.apromore.model.DeleteProcessVersionsOutputMsgType;
+import org.apromore.model.DeployProcessInputMsgType;
+import org.apromore.model.DeployProcessOutputMsgType;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditProcessDataInputMsgType;
+import org.apromore.model.EditProcessDataOutputMsgType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatInputMsgType;
+import org.apromore.model.ExportFormatOutputMsgType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.FolderType;
+import org.apromore.model.FragmentIdsType;
+import org.apromore.model.FragmentResponseType;
+import org.apromore.model.FragmentType;
+import org.apromore.model.GetBreadcrumbsInputMsgType;
+import org.apromore.model.GetBreadcrumbsOutputMsgType;
+import org.apromore.model.GetClusterInputMsgType;
+import org.apromore.model.GetClusterOutputMsgType;
+import org.apromore.model.GetClusterSummariesInputMsgType;
+import org.apromore.model.GetClusterSummariesOutputMsgType;
+import org.apromore.model.GetClusteringSummaryInputMsgType;
+import org.apromore.model.GetClusteringSummaryOutputMsgType;
+import org.apromore.model.GetClustersRequestType;
+import org.apromore.model.GetClustersResponseType;
+import org.apromore.model.GetFolderUsersInputMsgType;
+import org.apromore.model.GetFolderUsersOutputMsgType;
+import org.apromore.model.GetFragmentRequestType;
+import org.apromore.model.GetPairwiseDistancesInputMsgType;
+import org.apromore.model.GetPairwiseDistancesOutputMsgType;
+import org.apromore.model.GetProcessUsersInputMsgType;
+import org.apromore.model.GetProcessUsersOutputMsgType;
+import org.apromore.model.GetProcessesInputMsgType;
+import org.apromore.model.GetProcessesOutputMsgType;
+import org.apromore.model.GetSubFoldersInputMsgType;
+import org.apromore.model.GetSubFoldersOutputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
+import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.ImportCanonicalProcessInputMsgType;
+import org.apromore.model.ImportCanonicalProcessOutputMsgType;
+import org.apromore.model.ImportProcessInputMsgType;
+import org.apromore.model.ImportProcessOutputMsgType;
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.LoginInputMsgType;
+import org.apromore.model.LoginOutputMsgType;
+import org.apromore.model.MergeProcessesInputMsgType;
+import org.apromore.model.MergeProcessesOutputMsgType;
+import org.apromore.model.NativeMetaData;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.ObjectFactory;
+import org.apromore.model.PairDistanceType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginMessages;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ReadAllUsersInputMsgType;
+import org.apromore.model.ReadAllUsersOutputMsgType;
+import org.apromore.model.ReadCanoniserInfoInputMsgType;
+import org.apromore.model.ReadCanoniserInfoOutputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
+import org.apromore.model.ReadDomainsInputMsgType;
+import org.apromore.model.ReadDomainsOutputMsgType;
+import org.apromore.model.ReadEditSessionInputMsgType;
+import org.apromore.model.ReadEditSessionOutputMsgType;
+import org.apromore.model.ReadInitialNativeFormatInputMsgType;
+import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
+import org.apromore.model.ReadInstalledPluginsInputMsgType;
+import org.apromore.model.ReadInstalledPluginsOutputMsgType;
+import org.apromore.model.ReadNativeMetaDataInputMsgType;
+import org.apromore.model.ReadNativeMetaDataOutputMsgType;
+import org.apromore.model.ReadNativeTypesInputMsgType;
+import org.apromore.model.ReadNativeTypesOutputMsgType;
+import org.apromore.model.ReadPluginInfoInputMsgType;
+import org.apromore.model.ReadPluginInfoOutputMsgType;
+import org.apromore.model.ReadProcessSummariesInputMsgType;
+import org.apromore.model.ReadProcessSummariesOutputMsgType;
+import org.apromore.model.ReadUserInputMsgType;
+import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.RemoveFolderPermissionsInputMsgType;
+import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
+import org.apromore.model.RemoveProcessPermissionsInputMsgType;
+import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
+import org.apromore.model.ResultType;
+import org.apromore.model.SaveFolderPermissionsInputMsgType;
+import org.apromore.model.SaveFolderPermissionsOutputMsgType;
+import org.apromore.model.SaveProcessPermissionsInputMsgType;
+import org.apromore.model.SaveProcessPermissionsOutputMsgType;
+import org.apromore.model.SearchForSimilarProcessesInputMsgType;
+import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchUserInputMsgType;
+import org.apromore.model.SearchUserOutputMsgType;
+import org.apromore.model.UpdateFolderInputMsgType;
+import org.apromore.model.UpdateFolderOutputMsgType;
+import org.apromore.model.UpdateProcessInputMsgType;
+import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UserFolderType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.model.WriteAnnotationInputMsgType;
+import org.apromore.model.WriteAnnotationOutputMsgType;
+import org.apromore.model.WriteEditSessionInputMsgType;
+import org.apromore.model.WriteEditSessionOutputMsgType;
+import org.apromore.model.WriteUserInputMsgType;
+import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.plugin.property.RequestParameterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.ws.client.core.WebServiceTemplate;
 
 /**
  * Performance Test for the Apromore Manager Client.
@@ -642,12 +763,12 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#importProcess(String, String, String, java.io.InputStream, String, String, String, String, java.util.Set)
+     * @see ManagerService#importProcess(String, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName,
+    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName, final Double versionNumber,
             final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
             final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
@@ -656,6 +777,7 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setUsername(username);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
+        editSession.setVersionNumber(versionNumber);
         editSession.setDomain(domain);
         editSession.setCreationDate(created);
         editSession.setLastUpdate(lastUpdate);
@@ -953,7 +1075,8 @@ public class ManagerServiceClient implements ManagerService {
      * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner, final String processName, final String versionName, final String creationDate) throws Exception {
+    public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner,
+            final String processName, final String versionName, final String creationDate) throws Exception {
 
         ReadInitialNativeFormatInputMsgType msg = new ReadInitialNativeFormatInputMsgType();
         msg.setCanoniserName(canoniserName);
@@ -1005,7 +1128,9 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     @Override
-    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType, final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
+    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType,
+            final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties)
+            throws Exception {
         LOGGER.debug("Preparing deployProcess ...");
 
         DeployProcessInputMsgType msg = new DeployProcessInputMsgType();
@@ -1030,5 +1155,29 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+
+
+    @Override
+    public boolean importCanonicalProcess(String processName, InputStream cpfStream, InputStream anfStream, InputStream nativeStream,
+            List<String> folders) throws Exception {
+        LOGGER.debug("Preparing importCanonicalProcess ...");
+
+        ImportCanonicalProcessInputMsgType msg = new ImportCanonicalProcessInputMsgType();
+        msg.setProcessName(processName);
+        msg.setCPFFile(new DataHandler(new ByteArrayDataSource(cpfStream, "text/xml")));
+        msg.setANFFile(new DataHandler(new ByteArrayDataSource(anfStream, "text/xml")));
+        msg.setNative(new DataHandler(new ByteArrayDataSource(nativeStream, "text/xml")));
+        msg.getFolderName().addAll(folders);
+
+        JAXBElement<ImportCanonicalProcessInputMsgType> request = WS_CLIENT_FACTORY.createImportCanonicalProcessRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ImportCanonicalProcessOutputMsgType> response = (JAXBElement<ImportCanonicalProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return true;
+        }
+    }
 
 }

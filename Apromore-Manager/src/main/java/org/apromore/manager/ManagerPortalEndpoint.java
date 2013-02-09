@@ -3,7 +3,6 @@ package org.apromore.manager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,9 +16,11 @@ import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 
+import org.apromore.anf.ANFSchema;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
@@ -85,6 +86,8 @@ import org.apromore.model.GetSubFoldersInputMsgType;
 import org.apromore.model.GetSubFoldersOutputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.ImportCanonicalProcessInputMsgType;
+import org.apromore.model.ImportCanonicalProcessOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
@@ -635,6 +638,7 @@ public class ManagerPortalEndpoint {
             EditSessionType editSession = payload.getEditSession();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
+            Double versionNumber = editSession.getVersionNumber();
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
@@ -645,7 +649,7 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-            ProcessModelVersion pmv = procSrv.importProcess(username, processName, nativeType, canonisedProcess, handler.getInputStream(),
+            ProcessModelVersion pmv = procSrv.importProcess(username, processName, versionNumber, nativeType, canonisedProcess, handler.getInputStream(),
                     domain, "", creationDate, lastUpdate);
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
                     pmv.getProcessBranch().getBranchName(), pmv.getVersionNumber(), nativeType, domain, creationDate, lastUpdate, username);
@@ -1393,17 +1397,35 @@ public class ManagerPortalEndpoint {
 
 
 
-    /**
-     * Generate a cpf uri for version of processId
-     *
-     * @return the new cpf uri
-     */
-    @Deprecated
-    // TODO should CPF uri really be determined by date???
-    private static String newCpfURI() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
 
+    /* ********************************************************************** */
+    /* This is to be removed                                                  */
+    /* ********************************************************************** */
+    @PayloadRoot(localPart = "ImportCanonicalProcessRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    @SuppressWarnings("unchecked")
+    public JAXBElement<ImportCanonicalProcessOutputMsgType> importCanonicalProcess(
+            @RequestPayload final JAXBElement<ImportCanonicalProcessInputMsgType> req) throws Exception {
+        LOGGER.info("Executing Operation Import CPF ANF Format ** Should you be using this??");
+        ImportCanonicalProcessInputMsgType payload = req.getValue();
+        ImportCanonicalProcessOutputMsgType resMesg = new ImportCanonicalProcessOutputMsgType();
+        ResultType result = new ResultType();
+        resMesg.setResult(result);
+
+        String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+
+        InputStream anf = payload.getANFFile().getInputStream();
+        InputStream cpf = payload.getCPFFile().getInputStream();
+        InputStream nativeXML = payload.getNative().getInputStream();
+
+        CanonisedProcess cp = new CanonisedProcess();
+        cp.setAnf(anf);
+        cp.setAnt(ANFSchema.unmarshalAnnotationFormat(anf, false).getValue());
+        cp.setCpf(cpf);
+        cp.setCpt(CPFSchema.unmarshalCanonicalFormat(cpf, false).getValue());
+
+        procSrv.importProcess("admin", payload.getProcessName(), 0.1d, "AML fragment", cp, nativeXML, "Suncorp", "", now, now);
+
+        return new ObjectFactory().createImportCanonicalProcessResponse(resMesg);
+    }
 }

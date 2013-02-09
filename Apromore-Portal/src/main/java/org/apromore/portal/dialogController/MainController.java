@@ -358,8 +358,10 @@ public class MainController extends BaseController {
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+
         editSession.setOriginalBranchName(version.getName());
         editSession.setVersionNumber(Double.valueOf(process.getLastVersion()));
+
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
         // todo: Work out is new are forcing a new branch or not.
@@ -377,10 +379,14 @@ public class MainController extends BaseController {
 
         try {
             // create and store an edit session
-            int editSessionCode = getService().writeEditSession(editSession);
+            int editSessionCode = getService().writeEditSession(editSession);            
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
+            SignavioController.process = process;
+            SignavioController.version = version;            
+
             url = "macros/OpenModelInSignavio.zul";
+            
             instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'); ";
 
             // Send http post to Oryx
@@ -644,3 +650,4 @@ public class MainController extends BaseController {
     }
 
 }
+

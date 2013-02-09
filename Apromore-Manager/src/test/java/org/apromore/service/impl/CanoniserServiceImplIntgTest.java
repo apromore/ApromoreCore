@@ -103,7 +103,7 @@ public class CanoniserServiceImplIntgTest {
         String created = "12/12/2011";
         String lastUpdate = "12/12/2011";
 
-        ProcessModelVersion pst = pSrv.importProcess(username, name, nativeType, cp, data, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, name, 1.0d, nativeType, cp, data, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }
