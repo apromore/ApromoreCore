@@ -19,12 +19,18 @@ public class FNSCNSExtractor {
     @SuppressWarnings("unchecked")
     public static CPFNode extract(FragmentNode parent, FragmentNode child, Canonical g) {
         CPFNode childB1 = child.getEntry();
-        CPFNode newChildB1 = FragmentUtil.duplicateNode(childB1, g);
-        FragmentUtil.reconnectBoundary1(child, childB1, newChildB1);
+        // child (and parent) may not have a boundary if this is MEME fragment
+        if (childB1 != null) {
+	        CPFNode newChildB1 = FragmentUtil.duplicateNode(childB1, g);
+	        FragmentUtil.reconnectBoundary1(child, childB1, newChildB1);
+        }
 
         CPFNode childB2 = child.getExit();
-        CPFNode newChildB2 = FragmentUtil.duplicateNode(childB2, g);
-        FragmentUtil.reconnectBoundary2(child, childB2, newChildB2);
+        // child (and parent) may not have a boundary if this is MEME fragment
+        if (childB2 != null) {
+	        CPFNode newChildB2 = FragmentUtil.duplicateNode(childB2, g);
+	        FragmentUtil.reconnectBoundary2(child, childB2, newChildB2);
+        }
 
         parent.removeNodes(child.getNodes());
 
@@ -42,17 +48,23 @@ public class FNSCNSExtractor {
         if (parent.getNodes().contains(childB1)) {
             parent.addEdge(childB1, pocket);
         } else {
-            parent.addEdge(fragmentB1, pocket);
-            log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
-                    FragmentUtil.getFragmentType(child));
+        	// parent (and child) may not have a boundary if this is MEME fragment
+        	if (fragmentB1 != null) {
+	            parent.addEdge(fragmentB1, pocket);
+	            log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
+	                    FragmentUtil.getFragmentType(child));
+        	}
         }
 
         if (parent.getNodes().contains(childB2)) {
             parent.addEdge(pocket, childB2);
         } else {
-            parent.addEdge(pocket, fragmentB2);
-            log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
-                    FragmentUtil.getFragmentType(child));
+        	// parent (and child) may not have a boundary if this is MEME fragment
+        	if (fragmentB2 != null) {
+	            parent.addEdge(pocket, fragmentB2);
+	            log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(parent) + " Child fragment: " +
+	                    FragmentUtil.getFragmentType(child));
+        	}
         }
 
         return pocket;

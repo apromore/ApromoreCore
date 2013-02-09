@@ -33,6 +33,8 @@ import org.apromore.service.helper.OperationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -48,7 +50,7 @@ import static java.util.Map.Entry;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ContentServiceImpl implements ContentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentServiceImpl.class);
@@ -96,6 +98,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void deleteContent(final Integer contentId) {
         cRepository.delete(contentId);
     }
@@ -106,6 +109,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly = false)
     public Content addContent(ProcessModelVersion pmv, Canonical c, String hash, OperationContext op, Map<String, String> pocketIdMappings) {
         LOGGER.info("Adding the Fragment Content: " + hash);
 

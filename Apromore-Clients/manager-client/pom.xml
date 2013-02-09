@@ -109,7 +109,6 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
         </dependency>
-
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>

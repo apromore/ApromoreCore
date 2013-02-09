@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de epml_12.xsd">
+    <coordinates xOrigin="leftToRight" yOrigin="topToBottom"/>
+    <directory>
+        <epc epcId="1" name="Test MEME">
+            <event id="1">
+                <name>Event 1</name>
+            </event>
+            <function id="2">
+                <name>Function 2</name>
+            </function>
+            <arc id="10">
+                <flow source="1" target="2"/>
+            </arc>
+                        
+            <event id="3">
+                <name>Event 3</name>
+            </event>
+            <function id="4">
+                <name>Function 4</name>
+            </function>
+            <arc id="11">
+                <flow source="3" target="4"/>
+            </arc>
+                        
+            <xor id='5'></xor>
+            <arc id="12">
+                <flow source="2" target="5"/>
+            </arc>
+            <arc id="13">
+                <flow source="4" target="5"/>
+            </arc>
+            
+            <event id="6">
+                <name>Event 6</name>
+            </event>
+            <arc id="14">
+                <flow source="5" target="6"/>
+            </arc>
+            
+            <function id="7">
+                <name>Function 7</name>
+            </function>
+             <function id="8">
+                <name>Function 8</name>
+            </function>
+            <function id="9">
+                <name>Function 9</name>
+            </function>
+            
+            <arc id="15">
+                <flow source="6" target="7"/>
+            </arc>
+            <arc id="16">
+                <flow source="6" target="8"/>
+            </arc>
+            <arc id="17">
+                <flow source="6" target="9"/>
+            </arc>
+
+            <function id="18">
+                <name>Function 18</name>
+            </function>
+
+            <xor id='19'></xor>
+            <arc id="20">
+                <flow source="7" target="19"/>
+            </arc>
+            <arc id="21">
+                <flow source="18" target="19"/>
+            </arc>
+
+            <function id="22">
+                <name>Function 22</name>
+            </function>
+            <arc id="23">
+                <flow source="19" target="22"/>
+            </arc>
+        </epc>
+    </directory>
+</epml:epml>

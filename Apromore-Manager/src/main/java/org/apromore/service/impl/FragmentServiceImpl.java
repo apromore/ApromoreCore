@@ -20,6 +20,8 @@ import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentDataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import javax.xml.bind.JAXBException;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class FragmentServiceImpl implements FragmentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FragmentServiceImpl.class);
@@ -82,9 +84,7 @@ public class FragmentServiceImpl implements FragmentService {
         try {
             Canonical g = getFragment(fragmentId, false);
             xml = canService.CPFtoString(converter.convert(g));
-        } catch (LockFailedException e) {
-            throw new RepositoryException(e);
-        } catch (JAXBException e) {
+        } catch (LockFailedException | JAXBException e) {
             throw new RepositoryException(e);
         }
         return xml;
@@ -136,6 +136,7 @@ public class FragmentServiceImpl implements FragmentService {
      * @see FragmentService#addFragmentVersion(org.apromore.dao.model.ProcessModelVersion, org.apromore.dao.model.Content, java.util.Map, String, int, int, int, String)
      */
     @Override
+    @Transactional(readOnly = false)
     public FragmentVersion addFragmentVersion(ProcessModelVersion processModel, Content content, Map<String, String> childMappings,
             String derivedFrom, int lockStatus, int lockCount, int originalSize, String fragmentType) {
         String childMappingCode = calculateChildMappingCode(childMappings);
@@ -163,6 +164,7 @@ public class FragmentServiceImpl implements FragmentService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public Canonical getFragment(final String fragmentUri, final boolean lock) throws LockFailedException {
         if (lock) {
             boolean locked = lService.lockFragmentByUri(fragmentUri);

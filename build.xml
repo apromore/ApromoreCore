@@ -42,7 +42,7 @@
         <exec executable="mvn" osfamily="unix">
             <arg value="clean"/>
             <arg value="install"/>
-            <arg value="cobertura:cobertura"/>
+            <!--<arg value="cobertura:cobertura"/>-->
         </exec>
     </target>
 

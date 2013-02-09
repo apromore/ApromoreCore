@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,18 +90,20 @@ public class CanoniserServiceImpl implements CanoniserService {
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
         LOGGER.info("Canonising process with native type {}", nativeType);
+        LOGGER.info(StreamUtil.convertStreamToString(processXml));
 
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
         List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
         CanonisedProcess cp = new CanonisedProcess();
 
         try {
+            processXml.reset();
             Canoniser c = canProvider.findByNativeType(nativeType);
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
-        } catch (CanoniserException | PluginNotFoundException e) {
+        } catch (IOException | CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 

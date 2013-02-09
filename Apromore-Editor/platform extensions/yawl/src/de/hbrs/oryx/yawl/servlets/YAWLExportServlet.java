@@ -76,8 +76,7 @@ public class YAWLExportServlet extends HttpServlet {
                 res.setStatus(200);
                 res.getWriter().write(yawlXml);
             }
-
-        } catch (Exception e) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          } catch (Exception e) {
             try {
                 e.printStackTrace();
                 res.setStatus(500);

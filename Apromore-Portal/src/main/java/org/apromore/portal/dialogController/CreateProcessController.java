@@ -46,6 +46,7 @@ public class CreateProcessController extends BaseController {
     private final Button cancelB;
     private final Button resetB;
     private final Textbox processNameT;
+    private final Textbox versionNumberT;
     private final Radiogroup rankingRG;
     private final Row domainR;
     private final Row ownerR;
@@ -68,6 +69,7 @@ public class CreateProcessController extends BaseController {
         Row processNameR = (Row) rows.getFirstChild();
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
         Row versionNameR = (Row) processNameR.getNextSibling();
+        this.versionNumberT = (Textbox) versionNameR.getFirstChild().getNextSibling();
         this.domainR = (Row) versionNameR.getNextSibling();
         this.ownerR = (Row) this.domainR.getNextSibling();
         this.nativeTypesR = (Row) this.ownerR.getNextSibling();
@@ -158,16 +160,17 @@ public class CreateProcessController extends BaseController {
                 String processName = this.processNameT.getValue();
                 String owner = UserSessionManager.getCurrentUser().getUsername();
                 String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-                String versionName = "0.0";
+                Double versionNumber = Double.valueOf(this.versionNumberT.getValue());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
                 String creationDate = dateFormat.format(new Date());
 
-                DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName, versionName, creationDate);
+                DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName,
+                        "0.0", creationDate);
 
                 // Documentation and Last Update are set to NULL & No Canoniser properties are used
                 //TODO show canoniser properties
-                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, initialNativeFormat.getInputStream(), domain,
-                        null, creationDate, null, new HashSet<RequestParameterType<?>>());
+                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionNumber,
+                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, new HashSet<RequestParameterType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
                 this.mainC.showPluginMessages(importResult.getMessage());
@@ -213,5 +216,6 @@ public class CreateProcessController extends BaseController {
         String empty = "";
         this.processNameT.setValue(empty);
         this.domainCB.setValue(empty);
+        this.versionNumberT.setValue(empty);
     }
 }

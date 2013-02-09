@@ -10,6 +10,8 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.FragmentType;
+import org.apromore.model.ImportCanonicalProcessInputMsgType;
+import org.apromore.model.ImportCanonicalProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
@@ -225,6 +227,7 @@ public interface ManagerService {
      * @param username The username of the user importing the process
      * @param nativeType the native type of the process
      * @param processName the processes name
+     * @param versionNumber the version number of this model.
      * @param xml_process the process as an XML Stream. The Actual Data
      * @param domain the domain this process model belongs
      * @param documentation any documentation that is needed with this process
@@ -235,7 +238,7 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ImportProcessResultType importProcess(String username, String nativeType, String processName, InputStream xml_process,
+    ImportProcessResultType importProcess(String username, String nativeType, String processName, Double versionNumber, InputStream xml_process,
             String domain, String documentation, String created, String lastUpdate, Set<RequestParameterType<?>> canoniserProperties)
             throws IOException, Exception;
 
@@ -397,4 +400,14 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
+
+
+
+
+    /* ********************************************************************** */
+    /* This is to be removed                                                  */
+    /* ********************************************************************** */
+    boolean importCanonicalProcess(String processName, InputStream cpfStream, InputStream anfStream, InputStream nativeStream, List<String> folders)
+            throws Exception;
+
 }

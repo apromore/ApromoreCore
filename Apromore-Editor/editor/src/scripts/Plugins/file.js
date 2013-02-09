@@ -34,7 +34,7 @@ ORYX.Plugins.Save = Clazz.extend({
     construct: function(facade){
 		this.facade = facade;
 
-		this.facade.offer({
+/*		this.facade.offer({
 			'name': ORYX.I18N.Save.save,
 			'functionality': this.save.bind(this,false),
 			'group': ORYX.I18N.Save.group,
@@ -79,7 +79,7 @@ ORYX.Plugins.Save = Clazz.extend({
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function(){ this.changeDifference++; this.updateTitle(); }.bind(this) );
 		// --> Rollback
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function(){ this.changeDifference--; this.updateTitle(); }.bind(this) );
-
+*/
 		//TODO very critical for load time performance!!!
 		//this.serializedDOM = DataManager.__persistDOM(this.facade);
 	},
