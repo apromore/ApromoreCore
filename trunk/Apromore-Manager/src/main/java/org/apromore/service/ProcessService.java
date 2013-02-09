@@ -34,6 +34,7 @@ public interface ProcessService {
      *
      * @param username      The user doing the importing.
      * @param processName   the name of the process being imported.
+     * @param versionNumber the process version number.
      * @param nativeType    the native process format type
      * @param cpf           the canonised process
      * @param nativeXml     the original native process XML
@@ -45,7 +46,7 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessModelVersion importProcess(String username, String processName, String nativeType, CanonisedProcess cpf, InputStream nativeXml,
+    ProcessModelVersion importProcess(String username, String processName, Double versionNumber, String nativeType, CanonisedProcess cpf, InputStream nativeXml,
             String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**

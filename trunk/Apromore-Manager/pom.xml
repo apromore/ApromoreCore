@@ -444,19 +444,19 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.gemini.blueprint</groupId>
-            <artifactId>gemini-blueprint-test</artifactId>
-            <version>1.0.2.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini.blueprint</groupId>
-            <artifactId>gemini-blueprint-mock</artifactId>
-            <version>1.0.2.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
+            <!--<artifactId>gemini-blueprint-test</artifactId>-->
+            <!--<version>1.0.2.RELEASE</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
+            <!--<artifactId>gemini-blueprint-mock</artifactId>-->
+            <!--<version>1.0.2.RELEASE</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+
     </dependencies>
 
 </project>

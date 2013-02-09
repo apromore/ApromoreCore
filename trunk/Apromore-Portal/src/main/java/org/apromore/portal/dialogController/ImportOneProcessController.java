@@ -51,6 +51,7 @@ public class ImportOneProcessController extends BaseController {
     private final Textbox lastUpdateTb;
     private final Textbox creationDateTb;
     private final Textbox processNameTb;
+    private final Textbox versionNumberTb;
     private final SelectDynamicListController domainCB;
     private final SelectDynamicListController ownerCB;
     private final InputStream nativeProcess; // the input stream read from uploaded file
@@ -87,13 +88,15 @@ public class ImportOneProcessController extends BaseController {
         this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
         Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getChildren().get(0);
-        Row ownerR = (Row) rows.getChildren().get(1);
-        Row creationDateR = (Row) rows.getChildren().get(2);
-        Row lastUpdateR = (Row) rows.getChildren().get(3);
-        Row documentationR = (Row) rows.getChildren().get(4);
-        Row domainR = (Row) rows.getChildren().get(5);
+        Row versionNumberR = (Row) rows.getChildren().get(1);
+        Row ownerR = (Row) rows.getChildren().get(2);
+        Row creationDateR = (Row) rows.getChildren().get(3);
+        Row lastUpdateR = (Row) rows.getChildren().get(4);
+        Row documentationR = (Row) rows.getChildren().get(5);
+        Row domainR = (Row) rows.getChildren().get(6);
 
         this.processNameTb = (Textbox) processNameR.getChildren().get(1);
+        this.versionNumberTb = (Textbox) versionNumberR.getChildren().get(1);
         this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
         this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
         this.documentationTb = (Textbox) documentationR.getChildren().get(1);
@@ -307,8 +310,9 @@ public class ImportOneProcessController extends BaseController {
 
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
+            Double version = Double.valueOf(this.versionNumberTb.getValue());
             ImportProcessResultType importResult = getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
-                    getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue().toString(),
+                    version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue().toString(),
                     this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
             // process successfully imported
             this.mainC.showPluginMessages(importResult.getMessage());

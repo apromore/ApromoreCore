@@ -87,20 +87,45 @@
     <!-- Canoniser -->
     <xs:element name="ReadCanoniserInfoRequest" type="tns:ReadCanoniserInfoInputMsgType" />
     <xs:element name="ReadCanoniserInfoResponse" type="tns:ReadCanoniserInfoOutputMsgType" />
-    <xs:element name="ReadInitialNativeFormatRequest"
-                type="tns:ReadInitialNativeFormatInputMsgType" />
-    <xs:element name="ReadInitialNativeFormatResponse"
-                type="tns:ReadInitialNativeFormatOutputMsgType" />
+    <xs:element name="ReadInitialNativeFormatRequest" type="tns:ReadInitialNativeFormatInputMsgType" />
+    <xs:element name="ReadInitialNativeFormatResponse" type="tns:ReadInitialNativeFormatOutputMsgType" />
     <xs:element name="ReadNativeMetaDataRequest" type="tns:ReadNativeMetaDataInputMsgType" />
     <xs:element name="ReadNativeMetaDataResponse" type="tns:ReadNativeMetaDataOutputMsgType" />
 
     <!-- Deployment Plugin -->
-    <xs:element name="ReadDeploymentPluginInfoRequest"
-                type="tns:ReadDeploymentPluginInfoInputMsgType" />
-    <xs:element name="ReadDeploymentPluginInfoResponse"
-                type="tns:ReadDeploymentPluginInfoOutputMsgType" />
+    <xs:element name="ReadDeploymentPluginInfoRequest" type="tns:ReadDeploymentPluginInfoInputMsgType" />
+    <xs:element name="ReadDeploymentPluginInfoResponse" type="tns:ReadDeploymentPluginInfoOutputMsgType" />
     <xs:element name="DeployProcessRequest" type="tns:DeployProcessInputMsgType" />
     <xs:element name="DeployProcessResponse" type="tns:DeployProcessOutputMsgType" />
+
+
+
+
+    <!-- *************************** -->
+    <!-- SPECIAL *** Don not use *** -->
+    <xs:element name="ImportCanonicalProcessRequest" type="tns:ImportCanonicalProcessInputMsgType" />
+    <xs:element name="ImportCanonicalProcessResponse" type="tns:ImportCanonicalProcessOutputMsgType" />
+
+    <xs:complexType name="ImportCanonicalProcessInputMsgType">
+        <xs:sequence>
+            <xs:element name="processName" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="CPFFile" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="ANFFile" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+            <xs:element name="FolderName" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ImportCanonicalProcessOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- *************************** -->
+
+
+
 
     <!-- Plugin Messages -->
     <xs:complexType name="ReadPluginInfoInputMsgType">
@@ -109,22 +134,18 @@
     </xs:complexType>
     <xs:complexType name="ReadPluginInfoOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
             <xs:element name="PluginInfoResult" type="tns:PluginInfoResult" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadInstalledPluginsInputMsgType">
-        <xs:attribute name="typeFilter" type="xs:string"
-                      use="optional" />
+        <xs:attribute name="typeFilter" type="xs:string" use="optional" />
     </xs:complexType>
     <xs:complexType name="ReadInstalledPluginsOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1" />
-            <xs:element name="PluginInfo" type="tns:PluginInfo"
-                        minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 

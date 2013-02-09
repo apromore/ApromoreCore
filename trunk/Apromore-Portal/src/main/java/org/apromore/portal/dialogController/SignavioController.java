@@ -7,7 +7,10 @@ import java.util.logging.Logger;
 
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -21,9 +24,13 @@ import org.zkoss.zk.ui.event.EventListener;
  */
 public class SignavioController extends BaseController {
 
-    private static final String JSON_DATA = "jsonData";
+    private final String JSON_DATA = "jsonData";
     public static EditSessionType editSession;
     public static MainController mainC;
+    public static ProcessSummaryType process;
+    public static VersionSummaryType version;
+    private boolean isNormalSave;
+
 
     private static final Logger logger = Logger.getLogger(SignavioController.class.getCanonicalName());
 
@@ -34,15 +41,26 @@ public class SignavioController extends BaseController {
 
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                event.getData();
+                try {
+                    String[] data = (String[]) event.getData();
+                    isNormalSave = true;
+                    new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
+                } catch (ExceptionFormats exceptionFormats) {
+                    exceptionFormats.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         });
 
         this.addEventListener("onSaveAs", new EventListener() {
-
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                event.getData();
+                try {
+                    String[] data = (String[]) event.getData();
+                    isNormalSave = false;
+                    new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
+                } catch (ExceptionFormats exceptionFormats) {
+                    exceptionFormats.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         });
 
@@ -64,18 +82,19 @@ public class SignavioController extends BaseController {
             param.put(JSON_DATA, data.replace("\n", "").trim());
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
+            param.put("exportPath", getExportPath(editSession.getNativeType()));
 			if (editSession.isWithAnnotation()) {
 				param.put("doAutoLayout", "false");
 			} else {
 				param.put("doAutoLayout", "true");
-			}			
+			}
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
+
     private String getURL(final String nativeType) {
         String url = "";
         switch (nativeType) {
@@ -121,4 +140,22 @@ public class SignavioController extends BaseController {
         return importPath;
     }
 
+    private String getExportPath(final String nativeType) {
+        String exportPath = "";
+        switch (nativeType) {
+            case "XPDL 2.1":
+                exportPath = "/editor/editor/xpdlexport";
+                break;
+            case "BPMN 2.0":
+                exportPath = "/editor/editor/bpmnexport";
+                break;
+            case "YAWL 2.2":
+                exportPath = "/editor/editor/yawlexport";
+                break;
+            case "EPML 2.0":
+                exportPath = "/editor/editor/epmlexport";
+                break;
+        }
+        return exportPath;
+    }
 }

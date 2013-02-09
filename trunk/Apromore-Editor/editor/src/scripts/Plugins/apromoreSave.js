@@ -154,13 +154,13 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
 		    if (ORYX.Plugins.ApromoreSave.apromoreSaveAs) {
 		        ORYX.Plugins.ApromoreSave.apromoreSaveAs(json, svg);
 		    } else {
-                console.warn("Apromore Save As method is missing!");
+                alert("Apromore Save As method is missing!");
 		    }
 		} else {
 		    if (ORYX.Plugins.ApromoreSave.apromoreSave) {
 		        ORYX.Plugins.ApromoreSave.apromoreSave(json, svg);
 		    } else {
-                console.warn("Apromore Save method is missing!");
+                alert("Apromore Save method is missing!");
 		    }
 		}
 
