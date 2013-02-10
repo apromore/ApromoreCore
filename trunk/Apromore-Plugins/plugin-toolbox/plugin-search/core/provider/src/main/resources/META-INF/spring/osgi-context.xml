@@ -12,8 +12,8 @@
     <!-- enable classpath scanning -->
     <context:component-scan base-package="org.apromore.plugin.search"/>
 
-    <service ref="searchByModelProviderImpl" interface="org.apromore.plugin.search.provider.SearchByModelPluginProvider"/>
-    <service ref="searchByTextProviderImpl" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>
+    <service ref="searchByModelPluginProviderImpl" interface="org.apromore.plugin.search.provider.SearchByModelPluginProvider"/>
+    <service ref="searchByTextPluginProviderImpl" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>
     <set id="searchByModelPluginSet" interface="org.apromore.plugin.search.SearchByModelPlugin" availability="optional"/>
     <set id="searchByTextPluginSet" interface="org.apromore.plugin.search.SearchByTextPlugin" availability="optional"/>
 
