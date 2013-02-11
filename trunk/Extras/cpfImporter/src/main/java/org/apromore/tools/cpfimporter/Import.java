@@ -70,7 +70,7 @@ public final class Import {
 
     private void UploadProcess(final File file) throws Exception {
         final ManagerService manager = (ManagerService) getBean("managerClient");
-        final String user = "raboczi";
+        final String user = "admin";
         final Set<RequestParameterType<?>> noCanoniserParameters = Collections.<RequestParameterType<?>>emptySet();
 
         ImportProcessResultType result = manager.importProcess(
