@@ -131,25 +131,30 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
-            <version>0.9.28</version>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.9</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.core</artifactId>
-            <version>0.9.28</version>
+            <artifactId>logback-core</artifactId>
+            <version>1.0.9</version>
         </dependency>
 
         <!-- JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
-            <artifactId>com.springsource.javax.xml.bind</artifactId>
-            <version>2.2.0</version>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-            <version>2.2.0</version>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.0EA3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.0EA3</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -164,9 +169,7 @@
             <version>2.1.0.RELEASE</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>
-                        com.springsource.org.apache.commons.logging
-                    </artifactId>
+                    <artifactId>org.apache.commons.logging</artifactId>
                     <groupId>org.apache.commons</groupId>
                 </exclusion>
             </exclusions>
@@ -177,9 +180,7 @@
             <version>2.1.0.RELEASE</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>
-                        com.springsource.org.apache.commons.logging
-                    </artifactId>
+                    <artifactId>org.apache.commons.logging</artifactId>
                     <groupId>org.apache.commons</groupId>
                 </exclusion>
             </exclusions>
