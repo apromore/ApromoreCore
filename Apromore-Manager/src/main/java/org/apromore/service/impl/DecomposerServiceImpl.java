@@ -74,10 +74,10 @@ public class DecomposerServiceImpl implements DecomposerService {
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
 
-            IOUtils.toFile("outputCPF.dot", graph.toDOT());
-            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
-            IOUtils.toFile("outputRPST.dot", rpst.toDOT());
-            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
+            //IOUtils.toFile("outputCPF.dot", graph.toDOT());
+            //IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
+            //IOUtils.toFile("outputRPST.dot", rpst.toDOT());
+            //IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
 
             if (rf != null) {
                 op = decompose(modelVersion, rf, op);
