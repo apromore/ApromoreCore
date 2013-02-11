@@ -847,7 +847,7 @@ INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri','201
 INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa','2012-05-23 20:24:37','Marcello','La Rosa','2012-05-23 20:24:37');
 INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix','2012-05-23 20:37:44','Felix','Mannhardt','2012-05-23 20:37:44');
 INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi','2012-05-23 20:40:26','Simon','Raboczi','2012-05-23 20:40:26');
-INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','test3348@test.com','2012-05-28 16:51:05','Test','User','2012-05-28 16:51:05');
+INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin','2012-05-28 16:51:05','Test','User','2012-05-28 16:51:05');
 INSERT INTO `user` VALUES (9,'98cd118b-cda8-4920-9f9c-82441e4c0739','test5268@test.com','2012-06-16 11:43:16','Test','User','2012-06-16 11:43:16');
 INSERT INTO `user` VALUES (10,'88d530d9-ce90-4d20-95a1-84fc7e98cc30','test3636@test.com','2012-06-16 11:56:00','Test','User','2012-06-16 11:56:00');
 INSERT INTO `user` VALUES (11,'490281f5-c85c-4cfe-a31c-738da759ce1d','test1804@test.com','2012-06-16 12:01:35','Test','User','2012-06-16 12:01:35');
@@ -865,7 +865,7 @@ INSERT INTO `membership` VALUES (4,4,'5f4dcc3b5aa765d61d8327deb882cf99','usernam
 INSERT INTO `membership` VALUES (5,5,'5f4dcc3b5aa765d61d8327deb882cf99','username','','m.larosa@qut.edu.au','Test question','test',1,0,'2012-06-16 12:01:35',0,0);
 INSERT INTO `membership` VALUES (6,6,'5f4dcc3b5aa765d61d8327deb882cf99','username','','felix.mannhardt@smail.wir.h-brs.de','Test question','test',1,0,'2012-06-16 12:08:50',0,0);
 INSERT INTO `membership` VALUES (7,7,'5f4dcc3b5aa765d61d8327deb882cf99','username','','raboczi@gmail.com','Test question','test',1,0,'2012-06-16 12:35:25',0,0);
-INSERT INTO `membership` VALUES (8,8,'98f6bcd4621d373cade4e832627b4f6','username','','test3348@test.com','Test question','test',1,0,'2012-06-16 14:10:14',0,0);
+INSERT INTO `membership` VALUES (8,8,'98f6bcd4621d373cade4e832627b4f6','username','','admin','Test question','test',1,0,'2012-06-16 14:10:14',0,0);
 INSERT INTO `membership` VALUES (9,9,'98f6bcd4621d373cade4e832627b4f6','username','','test5268@test.com','Test question','test',1,0,'2012-06-16 15:25:09',0,0);
 INSERT INTO `membership` VALUES (10,10,'98f6bcd4621d373cade4e832627b4f6','username','','test3636@test.com','Test question','test',1,0,'2012-06-16 15:47:03',0,0);
 INSERT INTO `membership` VALUES (11,11,'98f6bcd4621d373cade4e832627b4f6','username','','test1804@test.com','Test question','test',1,0,'2012-06-16 15:55:41',0,0);
