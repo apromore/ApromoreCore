@@ -181,6 +181,7 @@ ST_TECH_TERM
 <!-- CPF Object -->
 <xsl:template match="ObjOcc[@SymbolNum='ST_DOC']          |
                      ObjOcc[@SymbolNum='ST_DOC_KNWLDG_1'] |
+                     ObjOcc[@SymbolNum='ST_INFO_CARR']    |
                      ObjOcc[@SymbolNum='ST_INFO_CARR_NOTE']">
   <xsl:variable name="ObjDef.IdRef" select="@ObjDef.IdRef"/>
   <xsl:variable name="ObjDef" select="//ObjDef[@ObjDef.ID=$ObjDef.IdRef]"/>
