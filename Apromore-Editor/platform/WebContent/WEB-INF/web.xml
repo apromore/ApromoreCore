@@ -297,6 +297,17 @@
     </servlet-mapping>
 
     <servlet>
+        <display-name>EPCExport</display-name>
+        <servlet-name>EPMLExportServlet</servlet-name>
+        <servlet-class>org.apromore.common.converters.epml.servlet.EPCExportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EPMLExportServlet</servlet-name>
+        <url-pattern>/editor/epmlexport</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <display-name>EPCLayout</display-name>
         <servlet-name>EPCLayoutServlet</servlet-name>
         <servlet-class>org.apromore.common.converters.epml.servlet.EPCLayoutServlet</servlet-class>
