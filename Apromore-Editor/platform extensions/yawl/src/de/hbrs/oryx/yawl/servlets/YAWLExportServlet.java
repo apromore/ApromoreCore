@@ -60,7 +60,6 @@ public class YAWLExportServlet extends HttpServlet {
 
         /* Transform and return as YAWL XML */
         try {
-
             if (jsonData == null || jsonData.isEmpty()) {
                 res.setStatus(500);
                 res.setContentType("text/plain; charset=UTF-8");

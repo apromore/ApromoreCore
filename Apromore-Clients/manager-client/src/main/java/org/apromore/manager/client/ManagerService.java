@@ -1,5 +1,13 @@
 package org.apromore.manager.client;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.activation.DataHandler;
+
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSettingsType;
 import org.apromore.model.ClusterSummaryType;
@@ -10,8 +18,6 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.FragmentType;
-import org.apromore.model.ImportCanonicalProcessInputMsgType;
-import org.apromore.model.ImportCanonicalProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
@@ -26,14 +32,6 @@ import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.activation.DataHandler;
 
 /**
  * Manager interface.
@@ -401,13 +399,5 @@ public interface ManagerService {
      */
     void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
 
-
-
-
-    /* ********************************************************************** */
-    /* This is to be removed                                                  */
-    /* ********************************************************************** */
-    boolean importCanonicalProcess(String processName, InputStream cpfStream, InputStream anfStream, InputStream nativeStream, List<String> folders)
-            throws Exception;
 
 }

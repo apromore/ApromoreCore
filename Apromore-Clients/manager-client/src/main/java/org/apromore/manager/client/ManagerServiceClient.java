@@ -69,8 +69,6 @@ import org.apromore.model.GetSubFoldersInputMsgType;
 import org.apromore.model.GetSubFoldersOutputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
-import org.apromore.model.ImportCanonicalProcessInputMsgType;
-import org.apromore.model.ImportCanonicalProcessOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
@@ -1152,31 +1150,6 @@ public class ManagerServiceClient implements ManagerService {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
             return response.getValue().getMessage();
-        }
-    }
-
-
-
-    @Override
-    public boolean importCanonicalProcess(String processName, InputStream cpfStream, InputStream anfStream, InputStream nativeStream,
-            List<String> folders) throws Exception {
-        LOGGER.debug("Preparing importCanonicalProcess ...");
-
-        ImportCanonicalProcessInputMsgType msg = new ImportCanonicalProcessInputMsgType();
-        msg.setProcessName(processName);
-        msg.setCPFFile(new DataHandler(new ByteArrayDataSource(cpfStream, "text/xml")));
-        msg.setANFFile(new DataHandler(new ByteArrayDataSource(anfStream, "text/xml")));
-        msg.setNative(new DataHandler(new ByteArrayDataSource(nativeStream, "text/xml")));
-        msg.getFolderName().addAll(folders);
-
-        JAXBElement<ImportCanonicalProcessInputMsgType> request = WS_CLIENT_FACTORY.createImportCanonicalProcessRequest(msg);
-        @SuppressWarnings("unchecked")
-        JAXBElement<ImportCanonicalProcessOutputMsgType> response = (JAXBElement<ImportCanonicalProcessOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            return true;
         }
     }
 
