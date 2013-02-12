@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
@@ -12,6 +11,8 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -25,14 +26,14 @@ import org.zkoss.zk.ui.event.EventListener;
 public class SignavioController extends BaseController {
 
     private final String JSON_DATA = "jsonData";
-    public static EditSessionType editSession;
-    public static MainController mainC;
+    public  static EditSessionType editSession;
+    public  static MainController mainC;
     public static ProcessSummaryType process;
     public static VersionSummaryType version;
     private boolean isNormalSave;
 
 
-    private static final Logger logger = Logger.getLogger(SignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
 
     public SignavioController() {
         super();
@@ -43,10 +44,11 @@ public class SignavioController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     String[] data = (String[]) event.getData();
+                    LOGGER.debug(data[0]);
                     isNormalSave = true;
                     new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
                 } catch (ExceptionFormats exceptionFormats) {
-                    exceptionFormats.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    exceptionFormats.printStackTrace();
                 }
             }
         });
@@ -56,10 +58,11 @@ public class SignavioController extends BaseController {
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     String[] data = (String[]) event.getData();
+                    LOGGER.debug(data[0]);
                     isNormalSave = false;
                     new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
                 } catch (ExceptionFormats exceptionFormats) {
-                    exceptionFormats.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    exceptionFormats.printStackTrace();
                 }
             }
         });
@@ -83,11 +86,11 @@ public class SignavioController extends BaseController {
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
             param.put("exportPath", getExportPath(editSession.getNativeType()));
-			if (editSession.isWithAnnotation()) {
-				param.put("doAutoLayout", "false");
-			} else {
-				param.put("doAutoLayout", "true");
-			}
+            //if (editSession.isWithAnnotation()) {
+            //    param.put("doAutoLayout", "false");
+            //} else {
+                param.put("doAutoLayout", "true");
+            //}
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
             e.printStackTrace();

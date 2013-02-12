@@ -1,6 +1,10 @@
 package org.apromore.service.impl;
 
-import org.apromore.common.Constants;
+import java.io.InputStream;
+import java.util.List;
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
@@ -14,11 +18,6 @@ import org.apromore.service.model.CanonisedProcess;
 import org.apromore.util.StreamUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.InputStream;
-import java.util.List;
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 /**
  * Implementation of the FormatService Contract.
@@ -76,12 +75,12 @@ public class FormatServiceImpl implements FormatService {
     }
 
     /**
-     * @see org.apromore.service.FormatService#storeNative(String, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
+     * @see org.apromore.service.FormatService#storeNative(String, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, String, org.apromore.service.model.CanonisedProcess)
      *      {@inheritDoc}
      */
     @Override
     public void storeNative(String procName, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
-            NativeType nativeType, CanonisedProcess cp) throws JAXBException {
+            NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException {
         InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
         String nativeString = StreamUtil.inputStream2String(sync_npf).trim();
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
@@ -94,7 +93,7 @@ public class FormatServiceImpl implements FormatService {
 
         Annotation annotation = new Annotation();
         annotation.setContent(annString);
-        annotation.setName(Constants.INITIAL_ANNOTATION);
+        annotation.setName(annVersion);
         annotation.setNatve(nat);
         annotation.setProcessModelVersion(pmv);
         annotation = annotationRepo.save(annotation);

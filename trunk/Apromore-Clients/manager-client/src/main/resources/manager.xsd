@@ -100,33 +100,6 @@
 
 
 
-
-    <!-- *************************** -->
-    <!-- SPECIAL *** Don not use *** -->
-    <xs:element name="ImportCanonicalProcessRequest" type="tns:ImportCanonicalProcessInputMsgType" />
-    <xs:element name="ImportCanonicalProcessResponse" type="tns:ImportCanonicalProcessOutputMsgType" />
-
-    <xs:complexType name="ImportCanonicalProcessInputMsgType">
-        <xs:sequence>
-            <xs:element name="processName" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="CPFFile" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="ANFFile" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
-            <xs:element name="FolderName" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ImportCanonicalProcessOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
-        </xs:sequence>
-    </xs:complexType>
-
-    <!-- *************************** -->
-
-
-
-
     <!-- Plugin Messages -->
     <xs:complexType name="ReadPluginInfoInputMsgType">
         <xs:attribute name="pluginName" type="xs:string" />

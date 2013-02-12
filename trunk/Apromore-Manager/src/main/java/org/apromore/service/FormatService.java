@@ -42,9 +42,10 @@ public interface FormatService {
      * @param lastUpdate the time last updated
      * @param user       the user doing the updates
      * @param nativeType the native Type
-     * @param cp
+     * @param AnnotationVerion the Annotations identifier name
+     * @param cp the canonical process format, cpf and anf.
      * @throws JAXBException if it fails....
      */
     void storeNative(String procName, ProcessModelVersion processId, InputStream cpf, String created, String lastUpdate, User user,
-        NativeType nativeType, CanonisedProcess cp)  throws JAXBException;
+        NativeType nativeType, String AnnotationVerion, CanonisedProcess cp)  throws JAXBException;
 }

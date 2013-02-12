@@ -89,6 +89,31 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>/platform extensions/bpmn20xmlbasic/src</source>
+                                <source>/platform extensions/diagram core/src</source>
+                                <source>/platform extensions/epc/src</source>
+                                <source>/platform extensions/jpdl/src</source>
+                                <source>/platform extensions/syntaxchecker/src</source>
+                                <source>/platform extensions/xpdl/src</source>
+                                <source>/platform extensions/yawl/src</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <dependencies>
