@@ -2,10 +2,16 @@ package org.apromore.tools.cpfimporter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apromore.manager.client.ManagerService;
+import org.apromore.model.FolderType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.UsernamesType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -17,6 +23,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Simple application to import CPF and ANF files into Apromore so testing can be performed.
  */
 public final class Import {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Import.class.getName());
 
     private ApplicationContext ctx;
     private AutowireCapableBeanFactory fac;
@@ -34,8 +42,6 @@ public final class Import {
         ctx = new ClassPathXmlApplicationContext("classpath*:spring/applicationContext-managerClient.xml");
         fac = ctx.getAutowireCapableBeanFactory();
 
-        //ShowAllUsers();
-        //CreateFolder(arg0);
         UploadProcess(new File(arg0));
     }
 
@@ -61,20 +67,60 @@ public final class Import {
     }
     */
 
-    private void CreateFolder(final String name) throws Exception {
+    private void CreateFolder(final File file) throws Exception {
         final ManagerService manager = (ManagerService) getBean("managerClient");
-        final String user = "raboczi";
+        final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
-        manager.createFolder(user, name, 0);
+        File parentFile = file.getParentFile();
+        int parentId = 0;
+        if (parentFile != null) {
+            CreateFolder(parentFile);
+            parentId = getFolderId(parentFile);
+        }
+        if (getFolderId(file) == -1) {
+            manager.createFolder(user, file.getName(), parentId);
+            LOGGER.info(file + " created");
+        } else {
+            LOGGER.info(file + " already exists");
+        }
+    }
+
+    private int getFolderId(final File file) {
+        final ManagerService manager = (ManagerService) getBean("managerClient");
+        final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
+
+        List<FolderType> tree = manager.getWorkspaceFolderTree(user);
+        Path path = file.toPath();
+
+        FolderType folder = null;
+        int id = 0;
+        for (int i=0; i < path.getNameCount(); i++) {
+            folder = findFolderByName(path.getName(i).toString(), tree);
+            if (folder == null) {
+                return -1;  // folder has a nonexistent parent
+            }
+            tree = folder.getFolders();
+            id = folder.getId();
+        }
+        return id;
+    }
+
+    private static FolderType findFolderByName(String name, List<FolderType> folders) {
+        for (FolderType folder : folders) {
+            if (folder.getFolderName().equals(name)) {
+                return folder;
+            }
+        }
+        return null;
     }
 
     private void UploadProcess(final File file) throws Exception {
         final ManagerService manager = (ManagerService) getBean("managerClient");
-        final String user = "admin";
+        final String userName = "admin";
         final Set<RequestParameterType<?>> noCanoniserParameters = Collections.<RequestParameterType<?>>emptySet();
 
         ImportProcessResultType result = manager.importProcess(
-            user,
+            userName,
             "AML fragment",
             file.getName(),
             Double.valueOf("1.0"),  // versionNumber,
@@ -85,5 +131,15 @@ public final class Import {
             "lastUpdate",
             noCanoniserParameters
         );
+
+        // If the process was in a directory on the filesystem, move it to a corresponding one in Apromore
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            CreateFolder(parentFile);
+            int parentId = getFolderId(parentFile);
+            assert parentId != -1;
+            manager.addProcessToFolder(result.getProcessSummary().getId(), parentId);
+        }
     }
+
 }
