@@ -1,5 +1,8 @@
 package org.oryxeditor.server.diagram.generic;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,9 +12,6 @@ import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.label.Anchors.Anchor;
 import org.oryxeditor.server.diagram.label.LabelSettings;
 import org.oryxeditor.server.diagram.label.LabelStyle;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Parses a given GenericDiagram into a JSONObject
@@ -39,9 +39,6 @@ public class GenericJSONBuilder {
 
     protected <S extends GenericShape<S, D>, D extends GenericDiagram<S, D>> JSONObject parseModelInternal(GenericDiagram<S, D> diagram) throws JSONException {//<S,D,?,?>
         JSONObject json = new JSONObject();
-
-//		try {
-
         json.put("resourceId", diagram.getResourceId().toString());
         json.put("properties", parseProperties(diagram));
         json.put("stencil", parseStencil(diagram.getStencilId()));
@@ -49,9 +46,6 @@ public class GenericJSONBuilder {
         json.put("bounds", parseBounds(diagram.getBounds()));
         json.put("stencilset", parseStencilSet(diagram.getStencilsetRef()));
         json.put("ssextensions", parseStencilSetExtensions(diagram.getSsextensions()));
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
 
         return json;
     }
@@ -319,10 +313,6 @@ public class GenericJSONBuilder {
     protected JSONObject parseStencilSet(StencilSetReference stencilSetRef) throws JSONException {
         if (stencilSetRef != null) {
             JSONObject stencilSetObject = new JSONObject();
-
-//			stencilSetObject.put("uri", stencilSetRef.getUri().toString());
-//			stencilSetObject.put("namespace", stencilSetRef.getNamespace().toString());
-
             stencilSetObject.put("url", stencilSetRef.getUrl() != null ? stencilSetRef.getUrl().toString() : null);
             stencilSetObject.put("namespace", stencilSetRef.getNamespace() != null ? stencilSetRef.getNamespace().toString() : null);
             return stencilSetObject;

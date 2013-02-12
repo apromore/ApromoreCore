@@ -147,7 +147,7 @@ public class UIHelper implements UserInterfaceHelper {
     /* Builds the list from a process record. */
     private ProcessSummaryType buildProcessList(List<Integer> proIds, Process process) {
         ProcessSummaryType processSummary = null;
-        if (!proIds.isEmpty() && !proIds.contains(process.getId())) {
+        if (proIds != null && (proIds.isEmpty() || !proIds.contains(process.getId()))) {
             return processSummary;
         }
         processSummary = new ProcessSummaryType();
@@ -218,6 +218,10 @@ public class UIHelper implements UserInterfaceHelper {
 
     /* From a list of ProcessVersionTypes build a list of the id's of each */
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {
+        if (similarProcesses == null) {
+            return null;
+        }
+
         List<Integer> proIds = new ArrayList<Integer>(0);
         if (similarProcesses != null) {
             for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {

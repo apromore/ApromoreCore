@@ -11,10 +11,12 @@ import javax.persistence.PersistenceContext;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
+import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
@@ -50,6 +52,8 @@ public class UpdateProcessServiceImplIntgTest {
     @Inject
     private ProcessService pSrv;
     @Inject
+    private FormatService fSrv;
+    @Inject
     private SecurityService sSrv;
     @PersistenceContext
     private EntityManager em;
@@ -68,6 +72,8 @@ public class UpdateProcessServiceImplIntgTest {
         String name = "AudioTest2";
         String branch = "MAIN";
 
+        NativeType nativeType = fSrv.findNativeType(natType);
+
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
@@ -79,7 +85,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp, stream.getInputStream());
         em.flush();
 
         // Delete Process
