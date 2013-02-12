@@ -396,7 +396,7 @@ CREATE TABLE `folder` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `parentId` int(11) DEFAULT NULL,
     `workspaceId` int(11) NULL DEFAULT '1',
-    `folder_name` varchar(40) DEFAULT NULL,
+    `folder_name` varchar(100) DEFAULT NULL,
     `folder_description` varchar(1000) DEFAULT NULL,
     `creatorId` int(11) DEFAULT NULL,
     `date_created` datetime DEFAULT NULL,
