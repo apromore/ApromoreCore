@@ -2,7 +2,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-    <persistence-unit name="Apromore" transaction-type="JTA">
+    <persistence-unit name="Apromore" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <class>org.apromore.dao.model.Annotation</class>
