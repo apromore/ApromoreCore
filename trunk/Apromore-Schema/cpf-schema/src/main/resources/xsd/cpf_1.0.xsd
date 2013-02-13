@@ -132,11 +132,12 @@ A Canonical Process is the container for a set of Nets, ResourceTypes and Object
                     <selector xpath="./Edge" />
                     <field xpath="@targetId" />
                 </keyref>
-                <!-- Object name should be unique in Net -->
+                <!-- Object name should be unique in Net
                 <unique name="objectNameUnInNet">
                     <selector xpath="./Object" />
                     <field xpath="name" />
                 </unique>
+                -->
             </element>
             <element name="ResourceType" minOccurs="0"
                 maxOccurs="unbounded" type="cpf:ResourceTypeType" />
