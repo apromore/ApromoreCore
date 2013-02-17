@@ -202,7 +202,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public ProcessModelVersion importProcess(final String username, final String processName, final Double versionNumber, final String natType,
             final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
@@ -229,7 +229,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
             final String newBranchName, final Double versionNumber, final Boolean createNewBranch, final User user, final String lockStatus,
             final NativeType nativeType, final CanonisedProcess cpf, final InputStream nativeXML) throws ImportException, RepositoryException {
@@ -345,7 +345,7 @@ public class ProcessServiceImpl implements ProcessService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
             final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException {
         LOGGER.info("Executing operation update process meta data.");
@@ -375,7 +375,7 @@ public class ProcessServiceImpl implements ProcessService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final FragmentVersion rootFragmentVersion,
                 final Double versionNumber, final int numVertices, final int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
@@ -397,7 +397,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv) {
         String processName = pmv.getProcessBranch().getProcess().getName();
         String branchName = pmv.getProcessBranch().getBranchName();
@@ -414,7 +414,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public CanonicalProcessType getCanonicalFormat(final List<ProcessModelVersion> pmvs, final String processName, final String branchName, final boolean lock) {
         Canonical canonical;
         CanonicalProcessType tmp;
@@ -460,7 +460,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public CanonicalProcessType getCurrentProcessModel(final String processName, final String branchName, final boolean lock)
             throws LockFailedException {
         List<ProcessModelVersion> pmvs = processModelVersionRepo.getCurrentProcessModelVersion(processName, branchName);
@@ -492,7 +492,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param composingFragments the composing fragments
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void propagateChangesWithLockRelease(final FragmentVersion originalFragment, final FragmentVersion updatedFragment,
             final Set<FragmentVersion> composingFragments) throws RepositoryException {
         // create new versions for all process models, which use this fragment as the root fragment, and unlock those process models.
@@ -525,7 +525,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void deleteProcess(final Process process) {
         processRepo.delete(process);
     }
@@ -535,7 +535,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void deleteProcessModel(final List<NameValuePair> models) {
         List<ProcessModelVersion> pvids;
         for (NameValuePair entry : models) {

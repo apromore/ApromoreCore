@@ -5,10 +5,14 @@ import org.apromore.clustering.dissimilarity.DissimilarityMatrix;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.clustering.dissimilarity.measure.SizeBasedDissimCalc;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class DistanceMatrix {
 
     @Inject

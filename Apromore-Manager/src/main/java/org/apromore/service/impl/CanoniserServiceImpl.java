@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
@@ -39,7 +41,7 @@ import javax.xml.bind.JAXBException;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class CanoniserServiceImpl implements CanoniserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserServiceImpl.class);
@@ -86,7 +88,6 @@ public class CanoniserServiceImpl implements CanoniserService {
      * @see org.apromore.service.CanoniserService#canonise(java.lang.String, java.lang.String, java.io.InputStream, java.util.Set)
      */
     @Override
-    @Transactional(readOnly = true)
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
         LOGGER.info("Canonising process with native type {}", nativeType);
@@ -139,7 +140,6 @@ public class CanoniserServiceImpl implements CanoniserService {
      * org.apromore.cpf.CanonicalProcessType, javax.activation.DataSource, java.util.Set)
      */
     @Override
-    @Transactional(readOnly = true)
     public DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType,
             final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
             final Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException {

@@ -3,16 +3,6 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.apache.commons.collections.map.MultiKeyMap;
-import org.apromore.dao.ClusterRepositoryCustom;
-import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.model.Cluster;
-import org.apromore.dao.model.FragmentDistance;
-import org.apromore.service.model.ClusterFilter;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +10,13 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.apromore.dao.ClusterRepositoryCustom;
+import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.model.Cluster;
+import org.apromore.dao.model.FragmentDistance;
+import org.apromore.service.model.ClusterFilter;
+import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
 
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.
@@ -109,32 +106,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
         }
         return fragmentDistances;
     }
-
-    /**
-     * @see org.apromore.dao.ClusterRepositoryCustom#insertDistances(org.apache.commons.collections.map.MultiKeyMap)
-     * {@inheritDoc}
-     */
-    @Override
-    public void insertDistances(MultiKeyMap dissimmap) {
-        MapIterator mi = dissimmap.mapIterator();
-        while (mi.hasNext()) {
-            java.lang.Object k = mi.next();
-            java.lang.Object v = mi.getValue();
-
-            MultiKey fids = (MultiKey) k;
-            Integer fid1 = (Integer) fids.getKey(0);
-            Integer fid2 = (Integer) fids.getKey(1);
-            Double gedValue = (Double) v;
-
-            FragmentDistance ged = new FragmentDistance();
-            ged.setFragmentVersionId1(fragmentVersionRepository.findOne(fid1));
-            ged.setFragmentVersionId2(fragmentVersionRepository.findOne(fid2));
-            ged.setDistance(gedValue);
-
-            em.persist(ged);
-        }
-    }
-
 
 
     private double getOrderedDistance(final Integer fragmentId1, final Integer fragmentId2) {

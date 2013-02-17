@@ -47,18 +47,18 @@ public class GraphUtil {
         for (CPFEdge e : edges) {
             CPFNode newSource = ng.getNode(vMap.get(e.getSource().getId()));
             CPFNode newTarget = ng.getNode(vMap.get(e.getTarget().getId()));
-            ng.addEdge(newSource, newTarget);
+            ng.addEdge(e.getId(), newSource, newTarget);
         }
 
         return vMap;
     }
 
     public static void fillGraph(Canonical g, Canonical sg) {
-        fillVertices(g, sg);
+        fillNodes(g, sg);
         fillEdges(g, sg);
     }
 
-    public static void fillVertices(Canonical g, Canonical sg) {
+    public static void fillNodes(Canonical g, Canonical sg) {
         Collection<CPFNode> vs = sg.getVertices();
         for (CPFNode v : vs) {
             String type = sg.getNodeProperty(v.getId(), Constants.TYPE);
@@ -70,7 +70,7 @@ public class GraphUtil {
     public static void fillEdges(Canonical g, Canonical sg) {
         Collection<CPFEdge> edges = sg.getEdges();
         for (CPFEdge edge : edges) {
-            g.addEdge(edge.getSource(), edge.getTarget());
+            g.addEdge(edge);
         }
     }
 
@@ -168,104 +168,6 @@ public class GraphUtil {
         srcs.removeAll(isolatedVertices);
         tgts.removeAll(isolatedVertices);
         graph.removeVertices(isolatedVertices);
-
-//        for (CPFNode node : graph.getNodes()) {
-//            if ((node.getNodeType().equals(NodeTypeEnum.TASK)) || (node.getNodeType().equals(NodeTypeEnum.EVENT))
-//                    && (node.getLabel() == null || node.getLabel().length() == 0)) {
-//
-//                if (graph.getAllSuccessors(node).size() == 0) {
-//                    graph.getFirstDirectPredecessor(node).removeParent(v.getID());
-//                    graph.removeEdge(v.getID(), v.getChildren().get(0).getID());
-//                    graph.removeVertex(node);
-//                }
-//
-//            }
-//        }
-
     }
-
-//    public static RPST<CPFEdge, CPFNode> normalizeGraph(Canonical graph) {
-//        log.debug("Normalizing graph with size " + graph.getVertices().size());
-//
-//        Set<CPFNode> srcs = graph.getSourceNodes();
-//        Set<CPFNode> tgts = graph.getSinkNodes();
-//
-//        // remove isolated vertices
-//        List<CPFNode> isolatedVertices = new ArrayList<CPFNode>(0);
-//        for (CPFNode isrc : srcs) {
-//            if (tgts.contains(isrc)) {
-//                isolatedVertices.add(isrc);
-//            }
-//        }
-//        srcs.removeAll(isolatedVertices);
-//        tgts.removeAll(isolatedVertices);
-//        graph.removeVertices(isolatedVertices);
-//
-//        CPFNode entry = null;
-//        CPFNode exit;
-//
-//        for (CPFNode src : srcs) {
-//            String srcLabel = src.getName();
-//            if ("_entry_".equals(srcLabel)) {
-//                entry = src;
-//            }
-//        }
-//
-//        for (CPFNode tgt : tgts) {
-//            String tgtLabel = tgt.getName();
-//            if ("_exit_".equals(tgtLabel)) {
-//                exit = tgt;
-//            }
-//        }
-//
-//        if (entry == null) {
-//            srcs.retainAll(tgts);
-//            // remove nodes that have no input and output edges
-//            for (CPFNode v : srcs) {
-//                graph.removeVertex(v);
-//            }
-//
-//            srcs = graph.getSourceNodes();
-//            tgts = graph.getSinkNodes();
-//
-//            entry = new CPFNode();
-//            entry.setName("__entry__");
-//            graph.addVertex(entry);
-//
-//            exit = new CPFNode();
-//            exit.setName("_exit_");
-//            graph.addVertex(exit);
-//
-//            if (srcs.size() == 1) {
-//                for (CPFNode tgt : srcs) {
-//                    graph.addEdge(entry, tgt);
-//                }
-//            } else {
-////                Node sourceAggregator = new OrSplit("OR");
-////                graph.addNode(sourceAggregator);
-////                graph.setNodeProperty(sourceAggregator.getId(), Constants.TYPE, Constants.CONNECTOR);
-////                graph.addEdge(entry, sourceAggregator);
-////                for (Node tgt : srcs) {
-////                    graph.addEdge(sourceAggregator, tgt);
-////                }
-//            }
-//
-//            if (tgts.size() == 1) {
-//                for (CPFNode src : tgts) {
-//                    graph.addEdge(src, exit);
-//                }
-//            } else {
-////                Node sinkAggregator = new OrJoin("OR");
-////                graph.addNode(sinkAggregator);
-////                graph.setNodeProperty(sinkAggregator.getId(), Constants.TYPE, Constants.CONNECTOR);
-////                graph.addEdge(sinkAggregator, exit);
-////                for (Node src : tgts) {
-////                    graph.addEdge(src, sinkAggregator);
-////                }
-//            }
-//        }
-//
-//        return new RPST<CPFEdge, CPFNode>(graph);
-//    }
 
 }

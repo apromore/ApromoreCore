@@ -17,6 +17,8 @@ import org.apromore.service.FormatService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.util.StreamUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class FormatServiceImpl implements FormatService {
 
     private AnnotationRepository annotationRepo;
@@ -56,7 +58,6 @@ public class FormatServiceImpl implements FormatService {
      *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    @Transactional(readOnly = true)
     public List<NativeType> findAllFormats() {
         return nativeTypeRepo.findAll();
     }
@@ -69,7 +70,6 @@ public class FormatServiceImpl implements FormatService {
      *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    @Transactional(readOnly = true)
     public NativeType findNativeType(String nativeType) {
         return nativeTypeRepo.findNativeType(nativeType);
     }
@@ -79,6 +79,7 @@ public class FormatServiceImpl implements FormatService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void storeNative(String procName, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
             NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException {
         InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);

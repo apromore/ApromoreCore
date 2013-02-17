@@ -6,6 +6,8 @@ import org.apromore.graph.canonical.converter.CanonicalToGraph;
 import org.apromore.graph.canonical.converter.GraphToCanonical;
 import org.apromore.service.CanonicalConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class CanonicalConverterAdapter implements CanonicalConverter {
 
     @Inject

@@ -34,13 +34,13 @@
                 <prop key="eclipselink.weaving">static</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
-                <prop key="eclipselink.persistence-context.persist-on-commit">false</prop>
+                <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
                 <prop key="eclipselink.persistence-context.close-on-commit">true</prop>
-                <prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>
+                <prop key="eclipselink.persistence-context.flush-mode">AUTO</prop>
                 <prop key="eclipselink.logging.file">output.log</prop>
-                <prop key="eclipselink.logging.level">OFF</prop>
-                <prop key="eclipselink.logging.level.sql">OFF</prop>
-                <prop key="eclipselink.logging.parameters">FALSE</prop>
+                <prop key="eclipselink.logging.level">FINE</prop>
+                <prop key="eclipselink.logging.level.sql">FINE</prop>
+                <prop key="eclipselink.logging.parameters">TRUE</prop>
             </util:properties>
         </property>
     </bean>

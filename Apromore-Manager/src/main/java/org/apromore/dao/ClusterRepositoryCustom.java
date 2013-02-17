@@ -3,13 +3,12 @@
  */
 package org.apromore.dao;
 
-import org.apache.commons.collections.map.MultiKeyMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.dao.model.Cluster;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.
@@ -51,11 +50,5 @@ public interface ClusterRepositoryCustom {
      * @return
      */
     Map<FragmentPair, Double> getDistances(final double threshold);
-
-    /**
-     *
-     * @param dissimmap
-     */
-    void insertDistances(MultiKeyMap dissimmap);
 
 }

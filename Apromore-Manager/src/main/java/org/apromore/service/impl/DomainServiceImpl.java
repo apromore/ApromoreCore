@@ -3,6 +3,8 @@ package org.apromore.service.impl;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.service.DomainService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class DomainServiceImpl implements DomainService {
 
     private ProcessRepository pRepository;
@@ -37,7 +39,6 @@ public class DomainServiceImpl implements DomainService {
      *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    @Transactional(readOnly = true)
     public List<String> findAllDomains() {
         return pRepository.getAllDomains();
     }

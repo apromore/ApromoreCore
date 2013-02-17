@@ -1,22 +1,7 @@
 package org.apromore.toolbox.similaritySearch.algorithms;
 
-
-import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.ICPFObject;
-import org.apromore.graph.canonical.ICPFResource;
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
-import org.apromore.toolbox.similaritySearch.common.NodePair;
-import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
-import org.apromore.toolbox.similaritySearch.common.algos.TwoVertices;
-import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
-import org.apromore.toolbox.similaritySearch.graph.*;
-import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
-import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
-import org.apromore.toolbox.similaritySearch.planarGraphMathing.PlanarGraphMathing.MappingRegions;
-
-import java.util.*;
-
 
 public class MergeModels {
 
@@ -35,7 +20,6 @@ public class MergeModels {
 //
 //        // add all resources from the first models
 //        merged.setResources(g1.getResources());
-//        // and then look if something represent the same thing do not try to merge objects in one modeless
 //        mergeResources(g2.getResources(), objectresourceIDMap, merged);
 //        merged.setObjects(g1.getObjects());
 //        mergeObjects(g2.getObjects(), objectresourceIDMap, merged);
@@ -44,17 +28,13 @@ public class MergeModels {
 //
 //        if (algortithm.equals("Greedy")) {
 //            GraphEditDistanceGreedy gedepc = new GraphEditDistanceGreedy();
-//            Object weights[] = {"ledcutoff", param[0],
-//                    "cedcutoff", param[1],
-//                    "vweight", param[2],
-//                    "sweight", param[3],
-//                    "eweight", param[4]};
+//            Object weights[] = {"ledcutoff", param[0], "cedcutoff", param[1], "vweight", param[2], "sweight", param[3], "eweight", param[4]};
 //
 //            gedepc.setWeight(weights);
 //
 //            for (TwoVertices pair : gedepc.compute(g1, g2)) {
-//                CPFNode v1 = g1.getVertexMap().get(pair.v1);
-//                CPFNode v2 = g2.getVertexMap().get(pair.v2);
+//                CPFNode v1 = g1.getNodeMap().get(pair.v1);
+//                CPFNode v2 = g2.getNodeMap().get(pair.v2);
 //                if (v1.getNodeType().equals(v2.getNodeType())) {
 //                    mapping.add(new NodePair(v1, v2, pair.weight));
 //                }
@@ -65,33 +45,32 @@ public class MergeModels {
 //
 //        // clean mappings from mappings that conflict
 //        // TODO uncomment
-////		removeNonDominanceMappings(mapping);
+////      removeNonDominanceMappings(mapping);
 //
 //        if (removeEnt) {
-//            g1.fillDominanceRelations();
-//            g2.fillDominanceRelations();
+//            g1.populateDominanceRelations();
+//            g2.populateDominanceRelations();
 //            removeNonDominanceMappings2(mapping);
 //        }
 //
 //        MappingRegions mappingRegions = findMaximumCommonRegions(g1, g2, mapping);
 //        for (LinkedList<NodePair> region : mappingRegions.getRegions()) {
 //            for (NodePair vp : region) {
-//                LinkedList<Vertex> nodesToProcess = new LinkedList<Vertex>();
-//                for (Vertex c : vp.getRight().getChildren()) {
-//                    // the child is also part of the mapping
-//                    // remove the edge from the merged modelass
-//                    if (containsVertex(region, c)) {
+//                LinkedList<CPFNode> nodesToProcess = new LinkedList<CPFNode>();
+//                for (CPFNode c : vp.getRight().getGraph().getAllSuccessors(vp.getRight())) {
+//                    // the child is also part of the mapping remove the edge from the merged modelass
+//                    if (containsNode(region, c)) {
 //                        nodesToProcess.add(c);
 //                    }
 //                }
-//                for (Vertex c : nodesToProcess) {
-//                    HashSet<String> labels = merged.removeEdge(vp.getRight().getID(), c.getID());
+//                for (CPFNode c : nodesToProcess) {
+//                    HashSet<String> labels = merged.removeEdge(vp.getRight().getId(), c.getId());
 //
-//                    vp.getRight().removeChild(c.getID());
-//                    c.removeParent(vp.getRight().getID());
+//                    vp.getRight().removeChild(c.getId());
+//                    c.removeParent(vp.getRight().getId());
 //
-//                    Vertex cLeft = getMappingPair(mapping, c);
-//                    Edge e = merged.containsEdge(vp.getLeft().getID(), cLeft.getID());
+//                    CPFNode cLeft = getMappingPair(mapping, c);
+//                    Edge e = merged.containsEdge(vp.getLeft().getId(), cLeft.getId());
 //                    if (e != null) {
 //                        e.addLabels(labels);
 //                    }
@@ -99,13 +78,13 @@ public class MergeModels {
 //            }
 //            // add annotations for the labels
 //            for (NodePair vp : region) {
-//                Vertex mappingRight = vp.getRight();
+//                CPFNode mappingRight = vp.getRight();
 //                vp.getLeft().addAnnotations(mappingRight.getAnnotationMap());
 //
 //                // merge object references
-//                for (VertexObjectRef o : mappingRight.objectRefs) {
+//                for (CPFNodeObjectRef o : mappingRight.objectRefs) {
 //                    boolean mergedO = false;
-//                    for (VertexObjectRef vo : vp.getLeft().objectRefs) {
+//                    for (CPFNodeObjectRef vo : vp.getLeft().objectRefs) {
 //                        if ((vo.getObjectID().equals(o.getObjectID()) ||
 //                                objectresourceIDMap.get(o.getObjectID()) != null &&
 //                                        objectresourceIDMap.get(o.getObjectID()).equals(vo.getObjectID())) &&
@@ -121,9 +100,9 @@ public class MergeModels {
 //                }
 //
 //                // merge resource references
-//                for (VertexResourceRef o : mappingRight.resourceRefs) {
+//                for (CPFNodeResourceRef o : mappingRight.resourceRefs) {
 //                    boolean mergedO = false;
-//                    for (VertexResourceRef vo : vp.getLeft().resourceRefs) {
+//                    for (CPFNodeResourceRef vo : vp.getLeft().resourceRefs) {
 //                        if ((vo.getresourceID().equals(o.getresourceID()) ||
 //                                objectresourceIDMap.get(o.getresourceID()) != null &&
 //                                        objectresourceIDMap.get(o.getresourceID()).equals(vo.getresourceID())) &&
@@ -140,16 +119,16 @@ public class MergeModels {
 //            }
 //        }
 //
-//        LinkedList<Vertex> toRemove = new LinkedList<Vertex>();
+//        LinkedList<CPFNode> toRemove = new LinkedList<CPFNode>();
 //        // check if some vertices must be removed
-//        for (Vertex v : merged.getVertices()) {
-//            if (v.getParents().size() == 0 && v.getChildren().size() == 0) {
+//        for (CPFNode v : merged.getVertices()) {
+//            if (v.getGraph().getAllSuccessors(v).size() == 0 && v.getGraph().getAllPredecessors(v).size() == 0) {
 //                toRemove.add(v);
 //            }
 //        }
 //
-//        for (Vertex v : toRemove) {
-//            merged.removeVertex(v.getID());
+//        for (CPFNode v : toRemove) {
+//            merged.removeNode(v);
 //        }
 //
 //        for (LinkedList<NodePair> region : mappingRegions.getRegions()) {
@@ -157,53 +136,53 @@ public class MergeModels {
 //                boolean addgw = true;
 //                boolean addgwr = true;
 //
-//                for (Vertex p : vp.getLeft().getParents()) {
-//                    if (containsVertex(region, p)) {
+//                for (CPFNode p : vp.getLeft().getGraph().getAllSuccessors(vp.getLeft())) {
+//                    if (containsNode(region, p)) {
 //                        addgw = false;
 //                        break;
 //                    }
 //                }
 //                // check parents from second modelass
 //                // maybe the nodes are concurrent in one modelass but not in the other
-//                for (Vertex p : vp.getRight().getParents()) {
-//                    if (containsVertex(region, p)) {
+//                for (CPFNode p : vp.getRight().getGraph().getAllSuccessors(vp.getRight())) {
+//                    if (containsNode(region, p)) {
 //                        addgwr = false;
 //                        break;
 //                    }
 //                }
-//                if ((addgw || addgwr) && vp.getLeft().getParents().size() == 1 &&
-//                        vp.getRight().getParents().size() == 1) {
-//
-//                    Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
+//                if ((addgw || addgwr) && vp.getLeft().getGraph().getAllSuccessors(vp.getLeft()).size() == 1 &&
+//                        vp.getRight().getGraph().getAllSuccessors(vp.getRight()).size() == 1) {
+//                    CPFNode newGw = new CPFNode();
+//                    newGw.setNodeType(NodeTypeEnum.ORJOIN);
 //                    newGw.setConfigurable(true);
-//                    merged.addVertex(newGw);
+//                    merged.addNode(newGw);
 //
-//                    Vertex v1 = vp.getLeft().getParents().get(0);
-//                    HashSet<String> s1 = merged.removeEdge(v1.getID(), vp.getLeft().getID());
-//                    v1.removeChild(vp.getLeft().getID());
-//                    vp.getLeft().removeParent(v1.getID());
+//                    CPFNode v1 = vp.getLeft().getParents().get(0);
+//                    HashSet<String> s1 = merged.removeEdge(v1.getId(), vp.getLeft().getId());
+//                    v1.removeChild(vp.getLeft().getId());
+//                    vp.getLeft().removeParent(v1.getId());
 //                    merged.connectVertices(v1, newGw, s1);
 //
-//                    Vertex v2 = vp.getRight().getParents().get(0);
-//                    HashSet<String> s2 = merged.removeEdge(v2.getID(), vp.getRight().getID());
-//                    v2.removeChild(vp.getRight().getID());
-//                    vp.getRight().removeParent(v2.getID());
+//                    CPFNode v2 = vp.getRight().getParents().get(0);
+//                    HashSet<String> s2 = merged.removeEdge(v2.getId(), vp.getRight().getId());
+//                    v2.removeChild(vp.getRight().getId());
+//                    vp.getRight().removeParent(v2.getId());
 //                    merged.connectVertices(v2, newGw, s2);
 //
 //                    HashSet<String> s3 = new HashSet<String>(s1);
 //                    s3.addAll(s2);
 //                    merged.connectVertices(newGw, vp.getLeft(), s3);
 //                    newGw.addAnnotationsForGw(s3);
-//
 //                }
 //            }
 //        }
+//
 //        for (LinkedList<NodePair> region : mappingRegions.getRegions()) {
 //            for (NodePair vp : region) {
 //                boolean addgw = true;
 //                boolean addgwr = true;
-//                for (Vertex ch : vp.getLeft().getChildren()) {
-//                    if (containsVertex(region, ch)) {
+//                for (CPFNode ch : vp.getLeft().getChildren()) {
+//                    if (containsNode(region, ch)) {
 //                        addgw = false;
 //                        break;
 //                    }
@@ -211,29 +190,28 @@ public class MergeModels {
 //
 //                // check parents from second modelass
 //                // maybe the nodes are concurrent in one modelass but not in the other
-//                for (Vertex ch : vp.getRight().getChildren()) {
-//                    if (containsVertex(region, ch)) {
+//                for (CPFNode ch : vp.getRight().getChildren()) {
+//                    if (containsNode(region, ch)) {
 //                        addgwr = false;
 //                        break;
 //                    }
 //                }
 //                if ((addgw || addgwr) && vp.getLeft().getChildren().size() == 1 &&
 //                        vp.getRight().getChildren().size() == 1) {
-//
-//                    Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
+//                    CPFNode newGw = new CPFNode(GWType.xor, idGenerator.getNextId());
 //                    newGw.setConfigurable(true);
-//                    merged.addVertex(newGw);
+//                    merged.addNode(newGw);
 //
-//                    Vertex v1 = vp.getLeft().getChildren().get(0);
-//                    HashSet<String> s1 = merged.removeEdge(vp.getLeft().getID(), v1.getID());
-//                    vp.getLeft().removeChild(v1.getID());
-//                    v1.removeParent(vp.getLeft().getID());
+//                    CPFNode v1 = vp.getLeft().getChildren().get(0);
+//                    HashSet<String> s1 = merged.removeEdge(vp.getLeft().getId(), v1.getId());
+//                    vp.getLeft().removeChild(v1.getId());
+//                    v1.removeParent(vp.getLeft().getId());
 //                    merged.connectVertices(newGw, v1, s1);
 //
-//                    Vertex v2 = vp.getRight().getChildren().get(0);
-//                    HashSet<String> s2 = merged.removeEdge(vp.getRight().getID(), v2.getID());
-//                    vp.getRight().removeChild(v2.getID());
-//                    v2.removeParent(vp.getRight().getID());
+//                    CPFNode v2 = vp.getRight().getChildren().get(0);
+//                    HashSet<String> s2 = merged.removeEdge(vp.getRight().getId(), v2.getId());
+//                    vp.getRight().removeChild(v2.getId());
+//                    v2.removeParent(vp.getRight().getId());
 //                    merged.connectVertices(newGw, v2, s2);
 //
 //                    HashSet<String> s3 = new HashSet<String>(s1);
@@ -246,27 +224,26 @@ public class MergeModels {
 //
 //        mergeConnectors(mappingRegions, merged, mapping);
 //
-//        toRemove = new LinkedList<Vertex>();
+//        toRemove = new LinkedList<CPFNode>();
 //        // check if some vertices must be removed
-//        for (Vertex v : merged.getVertices()) {
+//        for (CPFNode v : merged.getVertices()) {
 //            if (v.getParents().size() == 0 && v.getChildren().size() == 0) {
 //                toRemove.add(v);
 //            }
 //        }
-//
-//        for (Vertex v : toRemove) {
-//            merged.removeVertex(v.getID());
+//        for (CPFNode v : toRemove) {
+//            merged.removeNode(v);
 //        }
 //
-//        int[] gwInf = merged.getNrOfConfigGWs();
+//        //int[] gwInf = merged.getNrOfConfigGWs();
 //
 //        long mergeTime = System.currentTimeMillis();
 //        merged.cleanGraph();
 //
-//        gwInf = merged.getNrOfConfigGWs();
+//        //gwInf = merged.getNrOfConfigGWs();
 //
 //        // labels for all edges should be added to the modelass
-//        for (Edge e : merged.getEdges()) {
+//        for (CPFEdge e : merged.getEdges()) {
 //            e.addLabelToModel();
 //        }
 //
@@ -280,8 +257,7 @@ public class MergeModels {
 //            merged.name += l + ",";
 //        }
 //        merged.name = merged.name.substring(0, merged.name.length() - 1);
-//        merged.ID = String.valueOf(idGenerator.getNextId());
-
+//
 //        return merged;
         return null;
     }
@@ -390,10 +366,10 @@ public class MergeModels {
 //                }
 //
 //                // dominance rule is broken
-//                if (vp.getLeft().dominance.contains(vp1.getLeft().getID())
-//                        && vp1.getRight().dominance.contains(vp.getRight().getID())
-//                        || vp1.getLeft().dominance.contains(vp.getLeft().getID())
-//                        && vp.getRight().dominance.contains(vp1.getRight().getID())) {
+//                if (vp.getLeft().dominance.contains(vp1.getLeft().getId())
+//                        && vp1.getRight().dominance.contains(vp.getRight().getId())
+//                        || vp1.getLeft().dominance.contains(vp.getLeft().getId())
+//                        && vp.getRight().dominance.contains(vp1.getRight().getId())) {
 //                    // remove 2 pairs from the pairs list and start with the new pair
 //                    removeList.add(vp);
 //                    removeList.add(vp1);
@@ -439,14 +415,14 @@ public class MergeModels {
 //                }
 //
 //                // dominance rule is broken
-//                if ((vp.getLeft().dominance.contains(vp1.getLeft().getID())
-//                        && vp1.getRight().dominance.contains(vp.getRight().getID())
-//                        && !(vp1.getLeft().dominance.contains(vp.getLeft().getID())
-//                        || vp.getRight().dominance.contains(vp1.getRight().getID())))
-//                        || (vp1.getLeft().dominance.contains(vp.getLeft().getID())
-//                        && vp.getRight().dominance.contains(vp1.getRight().getID())
-//                        && !(vp.getLeft().dominance.contains(vp1.getLeft().getID())
-//                        || vp1.getRight().dominance.contains(vp.getRight().getID())))) {
+//                if ((vp.getLeft().dominance.contains(vp1.getLeft().getId())
+//                        && vp1.getRight().dominance.contains(vp.getRight().getId())
+//                        && !(vp1.getLeft().dominance.contains(vp.getLeft().getId())
+//                        || vp.getRight().dominance.contains(vp1.getRight().getId())))
+//                        || (vp1.getLeft().dominance.contains(vp.getLeft().getId())
+//                        && vp.getRight().dominance.contains(vp1.getRight().getId())
+//                        && !(vp.getLeft().dominance.contains(vp1.getLeft().getId())
+//                        || vp1.getRight().dominance.contains(vp.getRight().getId())))) {
 //                    // remove 2 pairs from the pairs list and start with the new pair
 //                    removeList.add(vp);
 //                    removeList.add(vp1);
@@ -461,14 +437,14 @@ public class MergeModels {
 //        }
 //    }
 //
-//    private boolean containsInDownwardsPath(Vertex v1, Vertex v2) {
+//    private boolean containsInDownwardsPath(CPFNode v1, CPFNode v2) {
 //
-//        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+//        LinkedList<CPFNode> toProcess = new LinkedList<CPFNode>();
 //        toProcess.addAll(v1.getChildren());
 //
 //        while (toProcess.size() > 0) {
-//            Vertex process = toProcess.removeFirst();
-//            if (process.getID() == v2.getID()) {
+//            CPFNode process = toProcess.removeFirst();
+//            if (process.getId() == v2.getId()) {
 //                return true;
 //            }
 //            toProcess.addAll(process.getChildren());
@@ -479,42 +455,42 @@ public class MergeModels {
 //    private static void mergeConnectors(MappingRegions mappingRegions, Graph merged, LinkedList<NodePair> mapping) {
 //        for (LinkedList<NodePair> region : mappingRegions.getRegions()) {
 //            for (NodePair vp : region) {
-//                if (vp.getLeft().getType().equals(Type.gateway)) {
+//                if (vp.getLeft().getNodeType().equals(NodeTypeEnum.ROUTING)) {
 //                    boolean makeConf = false;
-//                    LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
-//                    for (Vertex p : vp.getRight().getParents()) {
-//                        if (!containsVertex(region, p)) {
+//                    LinkedList<CPFNode> toProcess = new LinkedList<CPFNode>();
+//                    for (CPFNode p : vp.getRight().getParents()) {
+//                        if (!containsNode(region, p)) {
 //                            toProcess.add(p);
 //                        }
 //                    }
 //
-//                    for (Vertex p : toProcess) {
+//                    for (CPFNode p : toProcess) {
 //                        makeConf = true;
-//                        HashSet<String> l = merged.removeEdge(p.getID(), vp.getRight().getID());
-//                        p.removeChild(vp.getRight().getID());
-//                        vp.getRight().removeParent(p.getID());
+//                        HashSet<String> l = merged.removeEdge(p.getId(), vp.getRight().getId());
+//                        p.removeChild(vp.getRight().getId());
+//                        vp.getRight().removeParent(p.getId());
 //                        merged.connectVertices(p, vp.getLeft(), l);
 //                    }
-//                    toProcess = new LinkedList<Vertex>();
+//                    toProcess = new LinkedList<CPFNode>();
 //
-//                    for (Vertex p : vp.getRight().getChildren()) {
-//                        if (!containsVertex(region, p)) {
+//                    for (CPFNode p : vp.getRight().getChildren()) {
+//                        if (!containsNode(region, p)) {
 //                            toProcess.add(p);
 //                        }
 //                    }
 //
-//                    for (Vertex p : toProcess) {
+//                    for (CPFNode p : toProcess) {
 //                        makeConf = true;
-//                        HashSet<String> l = merged.removeEdge(vp.getRight().getID(), p.getID());
-//                        p.removeParent(vp.getRight().getID());
-//                        vp.getRight().removeChild(p.getID());
+//                        HashSet<String> l = merged.removeEdge(vp.getRight().getId(), p.getId());
+//                        p.removeParent(vp.getRight().getId());
+//                        vp.getRight().removeChild(p.getId());
 //                        merged.connectVertices(vp.getLeft(), p, l);
 //                    }
 //                    if (makeConf) {
 //                        vp.getLeft().setConfigurable(true);
 //                    }
-//                    if (!vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
-//                        vp.getLeft().setGWType(GWType.or);
+//                    if (!vp.getLeft().getNodeType().equals(vp.getRight().getNodeType())) {
+//                        vp.getLeft().setNodeType(NodeTypeEnum.ORJOIN);
 //                    }
 //                }
 //            }
@@ -522,7 +498,7 @@ public class MergeModels {
 //    }
 //
 //
-//    private static NodePair findNextVertexToProcess(LinkedList<NodePair> mapping, LinkedList<NodePair> visited) {
+//    private static NodePair findNextNodeToProcess(LinkedList<NodePair> mapping, LinkedList<NodePair> visited) {
 //        for (NodePair vp : mapping) {
 //            NodePair process = containsMapping(visited, vp.getLeft(), vp.getRight());
 //            if (process == null) {
@@ -532,10 +508,9 @@ public class MergeModels {
 //        return null;
 //    }
 //
-//    private static NodePair containsMapping(LinkedList<NodePair> mapping, Vertex left, Vertex right) {
+//    private static NodePair containsMapping(LinkedList<NodePair> mapping, CPFNode left, CPFNode right) {
 //        for (NodePair vp : mapping) {
-//            if (vp.getLeft().getID() == left.getID() &&
-//                    vp.getRight().getID() == right.getID()) {
+//            if (vp.getLeft().getId().equals(left.getId()) && vp.getRight().getId().equals(right.getId())) {
 //                return vp;
 //            }
 //        }
@@ -545,20 +520,19 @@ public class MergeModels {
 //    @SuppressWarnings("unused")
 //    private static boolean containsMapping(LinkedList<NodePair> mapping, NodePair v) {
 //        for (NodePair vp : mapping) {
-//            if (vp.getLeft().getID() == v.getLeft().getID() &&
-//                    vp.getRight().getID() == v.getRight().getID()) {
+//            if (vp.getLeft().getId().equals(v.getLeft().getId()) && vp.getRight().getId().equals(v.getRight().getId())) {
 //                return true;
 //            }
 //        }
 //        return false;
 //    }
 //
-//    public static MappingRegions findMaximumCommonRegions(Graph g1, Graph g2, LinkedList<NodePair> mapping) {
+//    public static MappingRegions findMaximumCommonRegions(Canonical g1, Canonical g2, LinkedList<NodePair> mapping) {
 //        MappingRegions map = new MappingRegions();
 //        LinkedList<NodePair> visited = new LinkedList<NodePair>();
 //
 //        while (true) {
-//            NodePair c = findNextVertexToProcess(mapping, visited);
+//            NodePair c = findNextNodeToProcess(mapping, visited);
 //            if (c == null) {
 //                break;
 //            }
@@ -571,8 +545,8 @@ public class MergeModels {
 //                mapRegion.add(c);
 //
 //                visited.add(c);
-//                for (Vertex pLeft : c.getLeft().getParents()) {
-//                    for (Vertex pRight : c.getRight().getParents()) {
+//                for (CPFNode pLeft : c.getLeft().getGraph().getAllPredecessors(c.getLeft())) {
+//                    for (CPFNode pRight : c.getRight().getGraph().getAllPredecessors(c.getRight())) {
 //                        NodePair pairMap = containsMapping(mapping, pLeft, pRight);
 //                        NodePair containsMap = containsMapping(visited, pLeft, pRight);
 //                        NodePair containsMap1 = containsMapping(toVisit, pLeft, pRight);
@@ -582,8 +556,8 @@ public class MergeModels {
 //                    }
 //                }
 //
-//                for (Vertex pLeft : c.getLeft().getChildren()) {
-//                    for (Vertex pRight : c.getRight().getChildren()) {
+//                for (CPFNode pLeft : c.getLeft().getGraph().getAllSuccessors(c.getLeft())) {
+//                    for (CPFNode pRight : c.getRight().getGraph().getAllSuccessors(c.getRight())) {
 //                        NodePair pairMap = containsMapping(mapping, pLeft, pRight);
 //                        NodePair containsMap = containsMapping(visited, pLeft, pRight);
 //                        NodePair containsMap1 = containsMapping(toVisit, pLeft, pRight);
@@ -602,21 +576,20 @@ public class MergeModels {
 //        return map;
 //    }
 //
-//    public static boolean containsVertex(LinkedList<NodePair> mapping, Vertex v) {
+//    public static boolean containsNode(LinkedList<NodePair> mapping, CPFNode v) {
 //        for (NodePair vp : mapping) {
-//            if (vp.getLeft().getID() == v.getID() || vp.getRight().getID() == v.getID()) {
-//
+//            if (vp.getLeft().getId().equals(v.getId()) || vp.getRight().getId().equals(v.getId())) {
 //                return true;
 //            }
 //        }
 //        return false;
 //    }
 //
-//    public static Vertex getMappingPair(LinkedList<NodePair> mapping, Vertex v) {
+//    public static CPFNode getMappingPair(LinkedList<NodePair> mapping, CPFNode v) {
 //        for (NodePair vp : mapping) {
-//            if (vp.getLeft().getID() == v.getID()) {
+//            if (vp.getLeft().getId().equals(v.getId())) {
 //                return vp.getRight();
-//            } else if (vp.getRight().getID() == v.getID()) {
+//            } else if (vp.getRight().getId().equals(v.getId())) {
 //                return vp.getLeft();
 //            }
 //        }

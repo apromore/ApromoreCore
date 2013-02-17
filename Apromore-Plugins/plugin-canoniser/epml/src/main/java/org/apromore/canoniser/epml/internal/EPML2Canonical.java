@@ -77,8 +77,6 @@ import de.epml.TypeRANGE;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
 
-;
-
 public class EPML2Canonical {
 
     Map<BigInteger, String> id_map = new HashMap<BigInteger, String>();
@@ -159,18 +157,18 @@ public class EPML2Canonical {
             }
         } else {
             // The EPML element doesn't have any directory
-            throw new CanoniserException("EPML file is missing a 'directory' invalid!");
-            // for (TypeEPC epc : epml.getEpcs()) {
-            // NetType net = new NetType();
-            // translateEpc(net, epc);
-            // id_map.put(epc.getEpcId(), String.valueOf(ids));
-            // net.setId(String.valueOf(ids++));
-            // cproc.getNet().add(net);
-            // }
-            // for (TaskType task : subnet_list) {
-            // task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
-            // }
-            // subnet_list.clear();
+            //throw new CanoniserException("EPML file is missing a 'directory' invalid!");
+            for (TypeEPC epc : epml.getEpcs()) {
+                NetType net = new NetType();
+                translateEpc(net, epc);
+                id_map.put(epc.getEpcId(), String.valueOf(ids));
+                net.setId(String.valueOf(ids++));
+                cproc.getNet().add(net);
+            }
+            for (TaskType task : subnet_list) {
+                task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
+            }
+            subnet_list.clear();
         }
     }
 
@@ -226,39 +224,39 @@ public class EPML2Canonical {
                 }
             }
         } else {
-            throw new CanoniserException("Invalid EPC no 'directory'!");
-            // for (TypeEPC epc : epml.getEpcs()) {
-            // for (Object element : epc.getEventAndFunctionAndRole()) {
-            // if (element instanceof TypeFunction || element instanceof TypeEvent) {
-            // QName typeRef = new QName("typeRef");
-            // if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
-            // remove_list.add((TEpcElement) element);
-            // }
-            // }
-            // }
-            // for (TEpcElement element : remove_list) {
-            // for (Object arc : epc.getEventAndFunctionAndRole()) {
-            // if (arc instanceof TypeArc) {
-            // if (((TypeArc) arc).getFlow() != null) {
-            // if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
-            // for (Object arc2 : epc.getEventAndFunctionAndRole()) {
-            // if (arc2 instanceof TypeArc) {
-            // if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
-            // ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
-            // }
-            // }
-            // }
-            // arc_remove_list.add((TypeArc) arc);
-            // }
-            // }
-            // }
-            // }
-            // for (TypeArc arc : arc_remove_list) {
-            // epc.getEventAndFunctionAndRole().remove(arc);
-            // }
-            // epc.getEventAndFunctionAndRole().remove(element);
-            // }
-            // }
+            //throw new CanoniserException("Invalid EPC no 'directory'!");
+            for (TypeEPC epc : epml.getEpcs()) {
+                for (Object element : epc.getEventAndFunctionAndRole()) {
+                    if (element instanceof TypeFunction || element instanceof TypeEvent) {
+                        QName typeRef = new QName("typeRef");
+                        if (((TEpcElement) element).getOtherAttributes().get(typeRef).equals("fake")) {
+                            remove_list.add((TEpcElement) element);
+                        }
+                    }
+                }
+                for (TEpcElement element : remove_list) {
+                    for (Object arc : epc.getEventAndFunctionAndRole()) {
+                        if (arc instanceof TypeArc) {
+                            if (((TypeArc) arc).getFlow() != null) {
+                                if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
+                                    for (Object arc2 : epc.getEventAndFunctionAndRole()) {
+                                        if (arc2 instanceof TypeArc) {
+                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
+                                                ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
+                                            }
+                                        }
+                                    }
+                                    arc_remove_list.add((TypeArc) arc);
+                                }
+                            }
+                        }
+                    }
+                    for (TypeArc arc : arc_remove_list) {
+                        epc.getEventAndFunctionAndRole().remove(arc);
+                    }
+                    epc.getEventAndFunctionAndRole().remove(element);
+                }
+            }
         }
 
         return epml;

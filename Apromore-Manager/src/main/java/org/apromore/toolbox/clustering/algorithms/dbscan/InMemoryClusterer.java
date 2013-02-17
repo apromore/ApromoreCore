@@ -12,6 +12,8 @@ import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import javax.inject.Inject;
  * @author Chathura Ekanayake
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class InMemoryClusterer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
@@ -65,6 +67,7 @@ public class InMemoryClusterer {
     public InMemoryClusterer() { }
 
 
+    @Transactional(readOnly = false)
     public void clusterRepository(ClusterSettings settings) throws RepositoryException {
         log.debug("Initializing the in memory clusterer...");
         initializeForClustering(settings);
@@ -77,7 +80,6 @@ public class InMemoryClusterer {
                 if (2 < unclassifiedFragment.getSize()
                         && unclassifiedFragment.getSize() < settings.getMaxClusteringFragmentSize()) {
                     expandFromCoreObject(unclassifiedFragment);
-
                 } else {
                     unclassifiedFragment.setClusterStatus(FragmentDataObject.IGNORED_STATUS);
                     ignoredFragments.add(unclassifiedFragment);
@@ -124,8 +126,6 @@ public class InMemoryClusterer {
         }
 
         buildClusters(cds, clusters.values());
-        //clusteringDao.persistClusters(buildClusters(cds, clusters.values()));
-        //clusteringDao.persistClusterAssignments(clusters.values());
         long pt2 = System.currentTimeMillis();
         long pduration = pt2 - pt1;
         log.debug("Time for persisting clusters: " + pduration);
@@ -142,24 +142,25 @@ public class InMemoryClusterer {
             for (InMemoryCluster imc : values) {
                 if (cluster.getId().equals(imc.getClusterId())) {
                     newCluster = new Cluster();
-
                     newCluster.setAvgFragmentSize(cluster.getAvgFragmentSize());
                     newCluster.setBCR(cluster.getBCR());
                     newCluster.setMedoidId(cluster.getMedoidId());
                     newCluster.setRefactoringGain(cluster.getRefactoringGain());
                     newCluster.setSize(cluster.getSize());
                     newCluster.setStandardizingEffort(cluster.getStandardizingEffort());
-
-                    clusterRepository.save(newCluster);
+                    //newCluster = clusterRepository.save(newCluster);
 
                     for (FragmentDataObject f : imc.getFragments()) {
                         newClusterAssignment = new ClusterAssignment();
                         newClusterAssignment.setCluster(newCluster);
                         newClusterAssignment.setFragment(f.getFragment());
-                        newCluster.addClusterAssignment(newClusterAssignment);
+                        newClusterAssignment.setCoreObjectNb(f.getCoreObjectNB());
+                        //newClusterAssignment = clusterAssignmentRepository.save(newClusterAssignment);
 
-                        clusterAssignmentRepository.save(newClusterAssignment);
+                        newCluster.addClusterAssignment(newClusterAssignment);
                     }
+
+                    clusterRepository.save(newCluster);
                 }
             }
         }

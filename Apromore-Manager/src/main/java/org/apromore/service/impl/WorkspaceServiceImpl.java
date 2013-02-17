@@ -15,6 +15,7 @@ import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.service.WorkspaceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private WorkspaceRepository workspaceRepo;
@@ -61,19 +62,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
 
     @Override
-    @Transactional(readOnly = true)
     public List<FolderUser> getFolderUsers(Integer folderId) {
         return folderUserRepo.findByFolder(folderRepo.findOne(folderId));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ProcessUser> getProcessUsers(Integer processId) {
         return processUserRepo.findByProcess(processRepo.findOne(processId));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ProcessUser> getUserProcesses(String userId, Integer folderId) {
         if (folderId == 0) {
             return processUserRepo.findRootProcessesByUser(userId);
@@ -116,7 +114,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    @Transactional(readOnly = false)
     public void updateFolder(Integer folderId, String folderName) {
         Folder folder = folderRepo.findOne(folderId);
         folder.setName(folderName);
@@ -132,13 +129,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<FolderTreeNode> getWorkspaceFolderTree(String userId) {
         return folderRepo.getFolderTreeByUser(0, userId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Folder> getBreadcrumbs(String userId, Integer folderId) {
         List<Folder> folders = new ArrayList<Folder>();
 
@@ -155,7 +150,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<FolderUser> getSubFolders(String userId, Integer folderId) {
         return folderUserRepo.findByParentFolderAndUser(folderId, userId);
     }

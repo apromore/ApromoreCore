@@ -23,7 +23,6 @@ import org.apromore.graph.canonical.ICPFResourceReference;
 import org.apromore.graph.canonical.IEdge;
 import org.apromore.graph.canonical.converter.CanonicalToGraph;
 import org.apromore.graph.canonical.converter.GraphToCanonical;
-import org.jbpt.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Ignore;

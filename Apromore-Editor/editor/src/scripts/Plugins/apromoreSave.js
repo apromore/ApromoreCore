@@ -151,10 +151,9 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             type:ORYX.CONFIG.EVENT_ABOUT_TO_SAVE
         });
 
-        var epc = ORYX.Plugins.EPCSupport.exportEPC();
-        alert(epc);
+//        var epc = ORYX.Plugins.EPCSupport.exportEPC();
+//        alert(epc);
         var json = Ext.encode(this.facade.getJSON());
-
         var svg = this.getSVG();
 
         if (forceNew) {

@@ -7,14 +7,16 @@ import org.apromore.clustering.containment.ContainmentRelation;
 import org.apromore.clustering.dissimilarity.DissimilarityCalc;
 import org.apromore.clustering.dissimilarity.DissimilarityMatrix;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
-import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.service.ClusterService;
 import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -25,13 +27,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
 
     @Inject
-    private ClusterRepository clusterRepository;
+    private ClusterService cService;
     @Inject
     private FragmentVersionRepository fragmentVersionRepository;
     @Inject
@@ -67,6 +69,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
         List<Integer> roots = containmentRelation.getRoots();
         for (int p = 0; p < roots.size(); p++) {
+            LOGGER.info("Processing Contaiment Relation #" + p);
             List<Integer> h1 = containmentRelation.getHierarchy(roots.get(p));
             h1.removeAll(processedFragmentIds);
 
@@ -84,7 +87,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         // GED values are written to the database periodically after reporting period.
         // If there are left over geds we have to write them here.
         if (!dissimmap.isEmpty()) {
-            clusterRepository.insertDistances(dissimmap);
+            cService.saveDistances(dissimmap);
             dissimmap.clear();
         }
     }
@@ -179,9 +182,9 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             reportingInterval = 0;
             double percentage = (double) processedPairs * 100 / totalPairs;
             percentage = (double) Math.round((percentage * 1000)) / 1000d;
-            //System.out.println(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s");
+            LOGGER.info(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s");
 
-            clusterRepository.insertDistances(dissimmap);
+            cService.saveDistances(dissimmap);
             dissimmap.clear();
         }
     }
