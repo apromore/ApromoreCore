@@ -18,13 +18,23 @@ public class CPFEdge extends AbstractEdge<CPFNode> implements IEdge<CPFNode> {
     private Map<String, IAttribute> attributes = new HashMap<String, IAttribute>(0);
 
 
+    /* Standard constructor based on jBPT implementation. */
     public CPFEdge(AbstractMultiDirectedGraph<?, CPFNode> g, CPFNode source, CPFNode target) {
         super(g, source, target);
     }
 
+    /* We Need to set the id sometimes. */
+    public CPFEdge(AbstractMultiDirectedGraph<?, CPFNode> g, String id, CPFNode source, CPFNode target) {
+        super(g, source, target);
+
+        this.setOriginalId(id);
+    }
+
+    /* We need to set the whole object data sometimes... */
     public CPFEdge(AbstractMultiDirectedGraph<?, CPFNode> g, CPFEdge edge) {
         super(g, edge.getSource(), edge.getTarget());
 
+        this.setOriginalId(edge.getId());
         originalId = edge.getOriginalId();
         isDefault = edge.isDefault();
         conditionExpr = edge.getConditionExpr();

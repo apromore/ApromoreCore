@@ -9,6 +9,8 @@ import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.service.LockService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class LockServiceImpl implements LockService {
 
     private FragmentVersionRepository fragmentVersionRepo;
@@ -51,6 +53,7 @@ public class LockServiceImpl implements LockService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean lockProcessModelVersion(Integer processModelVersionId) {
         ProcessModelVersion result = null;
         ProcessModelVersion prsModelVersion = processModelVersionRepo.findOne(processModelVersionId);
@@ -69,6 +72,7 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockProcessModelVersion(ProcessModelVersion processModelVersion) {
         processModelVersion.setLockStatus(Constants.NO_LOCK);
         processModelVersionRepo.save(processModelVersion);
@@ -80,14 +84,11 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean lockFragment(Integer fragmentVersionId) {
         FragmentVersion fragVersion = fragmentVersionRepo.findOne(fragmentVersionId);
         boolean locked = lockSingleFragment(fragVersion);
-        if (!locked) {
-            return false;
-        }
-
-        return lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
+        return locked && lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
     }
 
     /**
@@ -95,14 +96,11 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean lockFragmentByUri(String fragmentUri) {
         FragmentVersion fragVersion = fragmentVersionRepo.findFragmentVersionByUri(fragmentUri);
         boolean locked = lockSingleFragment(fragVersion);
-        if (!locked) {
-            return false;
-        }
-
-        return lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
+        return locked && lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
     }
 
 
@@ -111,6 +109,7 @@ public class LockServiceImpl implements LockService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean lockSingleFragment(FragmentVersion fragVersion) {
         FragmentVersion result = null;
 
@@ -128,6 +127,7 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockFragment(final FragmentVersion fragmentVersion) {
         fragmentVersion.setLockStatus(Constants.NO_LOCK);
         fragmentVersionRepo.save(fragmentVersion);
@@ -138,6 +138,7 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockFragmentByURI(final String uri){
         FragmentVersion fragVersion = fragmentVersionRepo.findFragmentVersionByUri(uri);
         fragVersion.setLockStatus(Constants.NO_LOCK);
@@ -149,6 +150,7 @@ public class LockServiceImpl implements LockService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockAscendantFragments(FragmentVersion fragmentVersion) {
         List<FragmentVersion> parents = fragmentVersionRepo.getLockedParentFragments(fragmentVersion);
         for (FragmentVersion parent : parents) {
@@ -163,6 +165,7 @@ public class LockServiceImpl implements LockService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockDescendantFragmentsByURI(final String uri) {
         unlockDescendantFragments(fragmentVersionRepo.findFragmentVersionByUri(uri));
     }
@@ -172,6 +175,7 @@ public class LockServiceImpl implements LockService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void unlockDescendantFragments(FragmentVersion fragmentVersion) {
         unlockChildFragments(fragmentVersion);
         Set<FragmentVersionDag> childIds = fragmentVersion.getChildFragmentVersionDags(); //fragmentVersionDagRepo.getChildMappings(fragmentVersionDag.getId());
@@ -185,6 +189,7 @@ public class LockServiceImpl implements LockService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public boolean isUsedInCurrentProcessModel(FragmentVersion fragVersion) {
         int maxVersion;
         int currentVersion;

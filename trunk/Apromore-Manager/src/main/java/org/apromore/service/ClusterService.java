@@ -1,5 +1,6 @@
 package org.apromore.service;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.exception.RepositoryException;
@@ -86,6 +87,12 @@ public interface ClusterService {
      * @throws RepositoryException if the repository had issues
      */
     Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException;
+
+    /**
+     * Persist fragment distances.
+     * @param distanceMap the distance map, contains two fragments and the distance.
+     */
+    void saveDistances(MultiKeyMap distanceMap);
 
     /**
      * Remove the cluster information.

@@ -68,7 +68,6 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
 
     @Override
     public Set<N> getNodes() {
-        // TODO this.getVertices() must return set.
         return new HashSet<N>(super.getVertices());
     }
 
@@ -130,11 +129,17 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
         for (E f : this.getEdges()) {
             E cf = clone.addEdge(nodeMapping.get(f.getSource()), nodeMapping.get(f.getTarget()));
 
+            if (f.getId() != null) {
+                cf.setId(f.getId());
+            }
             if (f.getName() != null) {
                 cf.setName(f.getName());
             }
             if (f.getDescription() != null) {
                 cf.setDescription(f.getDescription());
+            }
+            if (f.getOriginalId() != null) {
+                cf.setOriginalId(f.getOriginalId());
             }
         }
 

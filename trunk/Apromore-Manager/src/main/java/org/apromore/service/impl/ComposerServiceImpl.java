@@ -22,6 +22,8 @@ import org.apromore.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -35,7 +37,7 @@ import javax.inject.Inject;
  * @author Chathura Ekanayake
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ComposerServiceImpl implements ComposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComposerServiceImpl.class);
@@ -75,6 +77,7 @@ public class ComposerServiceImpl implements ComposerService {
      * @throws ExceptionDao if something fails.
      */
     @Override
+    @Transactional(readOnly = false)
     public Canonical compose(final FragmentVersion rootFragment) throws ExceptionDao {
         OperationContext op = new OperationContext();
         Canonical g = new Canonical();
@@ -115,7 +118,7 @@ public class ComposerServiceImpl implements ComposerService {
                     if (canCombineSplit(parentT1, boundaryS)) {
                         Collection<CPFNode> childTs = g.getDirectSuccessors(boundaryS);
                         for (CPFNode ct : childTs) {
-                            g.addEdge(parentT1, ct);
+                            g.addEdge(edge.getOriginalId(), parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
                     } else {
@@ -129,7 +132,7 @@ public class ComposerServiceImpl implements ComposerService {
                     if (canCombineJoin(parentT2, boundaryE)) {
                         Collection<CPFNode> childTs = g.getDirectPredecessors(boundaryE);
                         for (CPFNode ct : childTs) {
-                            g.addEdge(ct, parentT2);
+                            g.addEdge(edge.getOriginalId(), ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
                     } else {
@@ -210,7 +213,7 @@ public class ComposerServiceImpl implements ComposerService {
                     if (canCombineSplit(parentT1, boundaryS)) {
                         Collection<CPFNode> childTs = g.getDirectSuccessors(boundaryS);
                         for (CPFNode ct : childTs) {
-                            g.addEdge(parentT1, ct);
+                            g.addEdge(edge.getOriginalId(), parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
                     } else {
@@ -223,7 +226,7 @@ public class ComposerServiceImpl implements ComposerService {
                     if (canCombineJoin(parentT2, boundaryE)) {
                         Collection<CPFNode> childTs = g.getDirectPredecessors(boundaryE);
                         for (CPFNode ct : childTs) {
-                            g.addEdge(ct, parentT2);
+                            g.addEdge(edge.getOriginalId(), ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
                     } else {
@@ -243,6 +246,7 @@ public class ComposerServiceImpl implements ComposerService {
             String msg = "Failed a pocked mapping of fragment " + fragmentVersionUri;
             LOGGER.error(msg, e);
         }
+        assert newChildMapping != null;
         Set<String> pids = newChildMapping.keySet();
         for (String pid: pids) {
             FragmentVersion childId = fvRepository.findFragmentVersionByUri(newChildMapping.get(pid));

@@ -138,14 +138,23 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * @param edge the edge to add.
      * @return the edge we added.
      */
-    public E addEdge(E edge);
+    E addEdge(E edge);
+
+    /**
+     * Adds an edge but makes sure we set the id of the edge.
+     * @param id the id of the edge.
+     * @param from the from node for this edge.
+     * @param to the to node for this edge.
+     * @return the edge we added.
+     */
+    CPFEdge addEdge(String id, CPFNode from, CPFNode to);
 
     /**
      * Adds a collection of edges to the the Graph, we need specific details that the edge holds.
      * @param edges the collection of edges to add.
      * @return the collection of edges we added.
      */
-    public Collection<E> addEdges(Collection<E> edges);
+    Collection<E> addEdges(Collection<E> edges);
 
     /**
      * Finds and updates the edge with the extra details in the new edge.
@@ -153,21 +162,21 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * @param edgeType
      * @param expr
      */
-    E updateEdge(CPFEdge edge, EdgeType edgeType, CPFExpression expr);
+    void updateEdge(CPFEdge edge, EdgeType edgeType, CPFExpression expr);
 
     /**
      * Return all {@link CPFNode} which precede the given {@link CPFNode} in the {@link CPFEdge}.
      * @param fn {@link CPFNode} to start from
      * @return {@link Collection} containing all predecessors of the given {@link CPFNode}
      */
-    public Collection<CPFNode> getAllPredecessors(CPFNode fn);
+    Collection<CPFNode> getAllPredecessors(CPFNode fn);
 
     /**
      * Return all {@link CPFNode} which succeed the given {@link CPFNode} in the {@link CPFEdge}.
      * @param fn {@link CPFNode} to start from
      * @return {@link Collection} containing all successors of the given {@link CPFNode}
      */
-    public Collection<CPFNode> getAllSuccessors(CPFNode fn);
+    Collection<CPFNode> getAllSuccessors(CPFNode fn);
 
 
 

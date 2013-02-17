@@ -1,5 +1,10 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.inject.Inject;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentRepository;
 import org.apromore.dao.EdgeRepository;
@@ -16,19 +21,31 @@ import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.ResourceRef;
 import org.apromore.dao.model.ResourceRefAttribute;
-import org.apromore.graph.canonical.*;
+import org.apromore.graph.canonical.CPFExpression;
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.CPFObject;
+import org.apromore.graph.canonical.CPFObjectReference;
+import org.apromore.graph.canonical.CPFResource;
+import org.apromore.graph.canonical.CPFResourceReference;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.HumanTypeEnum;
+import org.apromore.graph.canonical.ICPFObject;
+import org.apromore.graph.canonical.ICPFObjectReference;
+import org.apromore.graph.canonical.ICPFResource;
+import org.apromore.graph.canonical.ICPFResourceReference;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.NodeTypeEnum;
+import org.apromore.graph.canonical.NonHumanTypeEnum;
+import org.apromore.graph.canonical.ObjectTypeEnum;
+import org.apromore.graph.canonical.ResourceTypeEnum;
 import org.apromore.graph.util.GraphUtil;
 import org.apromore.service.GraphService;
-import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import javax.inject.Inject;
 
 /**
  * Implementation of the GraphService Contract.
@@ -36,7 +53,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class GraphServiceImpl implements GraphService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphServiceImpl.class);
@@ -66,7 +83,6 @@ public class GraphServiceImpl implements GraphService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public Content getContent(final Integer fragmentVersionId) {
         return contentRepo.getContentByFragmentVersion(fragmentVersionId);
     }
@@ -76,7 +92,6 @@ public class GraphServiceImpl implements GraphService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public List<String> getContentIds() {
         return nodeRepo.getContentIDs();
     }
@@ -86,7 +101,6 @@ public class GraphServiceImpl implements GraphService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public Canonical getGraph(final Integer contentID) {
         Canonical g = new Canonical();
         fillNodes(g, contentID);
@@ -99,7 +113,6 @@ public class GraphServiceImpl implements GraphService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public void fillNodes(final Canonical procModelGraph, final Integer contentID) {
         INode v;
         List<Node> nodes = nodeRepo.getNodesByContent(contentID);
@@ -116,14 +129,17 @@ public class GraphServiceImpl implements GraphService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public void fillEdges(final Canonical procModelGraph, final Integer contentID) {
         List<Edge> edges = edgeRepo.getEdgesByContent(contentID);
         for (Edge edge : edges) {
             CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
             CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
             if (v1 != null && v2 != null) {
-                procModelGraph.addEdge(v1, v2);
+                if (edge.getOriginalId() != null) {
+                    procModelGraph.addEdge(edge.getOriginalId(), v1, v2);
+                } else {
+                    procModelGraph.addEdge(v1, v2);
+                }
             } else {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in content " + contentID);
@@ -164,7 +180,11 @@ public class GraphServiceImpl implements GraphService {
             CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
             CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
             if (v1 != null && v2 != null) {
-                procModelGraph.addEdge(v1, v2);
+                if (edge.getOriginalId() != null) {
+                    procModelGraph.addEdge(edge.getOriginalId(), v1, v2);
+                } else {
+                    procModelGraph.addEdge(v1, v2);
+                }
             } else {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentID);

@@ -8,6 +8,8 @@ import nl.tue.tm.is.graph.TwoVertices;
 import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +23,7 @@ import java.util.Set;
  */
 public class SimpleGraphWrapper extends SimpleGraph {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(SimpleGraphWrapper.class);
     /**
      * Constructor for the Simple Graph Wrapper.
      * @param pg the canonical Graph.
@@ -44,9 +47,13 @@ public class SimpleGraphWrapper extends SimpleGraph {
         edges = new HashSet<TwoVertices>(0);
 
         int vertexId = 0;
-        for (CPFNode n : pg.getVertices()) {
+        for (CPFNode n : pg.getNodes()) {
             vertices.add(vertexId);
-            labels.put(vertexId, n.getName().replace('\n', ' ').replace("\\n", " "));
+            if (n.getName() != null) {
+                labels.put(vertexId, n.getName().replace('\n', ' ').replace("\\n", " "));
+            } else {
+                LOGGER.warn("Node name is null,  Node id: " + n.getId() + ", " + n.getNodeType());
+            }
 
             nodeId2vertex.put(n.getId(), vertexId);
             vertex2nodeId.put(vertexId, n.getId());

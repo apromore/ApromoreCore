@@ -2,6 +2,7 @@ package org.apromore.graph.canonical;
 
 import org.jbpt.hypergraph.abs.Vertex;
 
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,9 @@ public class CPFNode extends Vertex implements INode {
     private Set<CPFExpression> outputExpr = new HashSet<CPFExpression>(0);
     private Map<String, IAttribute> attributes = new HashMap<String, IAttribute>(0);
 
+    // Used in the Merge, find something else to use.
+    public HashSet<String> dominance;
+
     private Canonical graph;
 
 
@@ -48,6 +52,19 @@ public class CPFNode extends Vertex implements INode {
         super();
     }
 
+
+    /**  ************************************ Processing Methods  ***********************************  */
+
+    public Collection<CPFNode> getChildren() {
+        return graph.getAllSuccessors(this) ;
+    }
+
+    public Collection<CPFNode> getParents() {
+        return graph.getAllPredecessors(this) ;
+    }
+
+
+    /**  ************************************ Standard Methods ***********************************  */
 
     /**
      * Returns the type of Node this is.
