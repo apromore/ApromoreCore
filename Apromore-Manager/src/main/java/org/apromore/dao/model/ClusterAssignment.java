@@ -63,7 +63,7 @@ public class ClusterAssignment implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "fragmentVersionId", insertable = false, updatable = false)
+    @JoinColumn(name = "fragmentVersionId")
     public FragmentVersion getFragment() {
         return this.fragment;
     }
@@ -73,7 +73,7 @@ public class ClusterAssignment implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "clusterId", insertable = false, updatable = false)
+    @JoinColumn(name = "clusterId")
     public Cluster getCluster() {
         return this.cluster;
     }

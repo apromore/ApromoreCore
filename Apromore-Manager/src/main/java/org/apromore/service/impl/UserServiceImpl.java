@@ -5,6 +5,8 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepo;
@@ -40,7 +42,6 @@ public class UserServiceImpl implements UserService {
      *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return userRepo.findAll();
     }
@@ -50,7 +51,6 @@ public class UserServiceImpl implements UserService {
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public User findUserByLogin(String username) throws UserNotFoundException {
         User user = userRepo.findByUsername(username);
         if (user != null) {
@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
      *      {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void writeUser(User user) {
         User dbUser = userRepo.findByUsername(user.getUsername());
         dbUser.setSearchHistories(user.getSearchHistories());

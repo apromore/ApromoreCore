@@ -25,6 +25,8 @@ import org.apromore.toolbox.similaritySearch.tools.MergeProcesses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +41,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class MergeServiceImpl implements MergeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);
@@ -49,6 +51,7 @@ public class MergeServiceImpl implements MergeService {
     private ProcessService processSrv;
     private UserService userSrv;
     private UserInterfaceHelper ui;
+    private MergeProcesses merge = new MergeProcesses();
 
 
     /**
@@ -74,6 +77,7 @@ public class MergeServiceImpl implements MergeService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<ProcessModelVersion>(0);
@@ -148,7 +152,7 @@ public class MergeServiceImpl implements MergeService {
     /* Does the merge. */
     private CanonicalProcessType performMerge(ToolboxData data) {
         ArrayList<CanonicalProcessType> models = new ArrayList<CanonicalProcessType>(data.getModel().values());
-        return MergeProcesses.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
+        return merge.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
                 data.getModelthreshold(), data.getLabelthreshold(), data.getContextthreshold(), data.getSkipnweight(),
                 data.getSubnweight(), data.getSkipeweight());
     }

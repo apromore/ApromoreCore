@@ -16,6 +16,8 @@ import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryGEDMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -27,7 +29,7 @@ import javax.inject.Inject;
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ClusterAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);

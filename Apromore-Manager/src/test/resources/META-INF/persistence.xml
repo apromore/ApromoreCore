@@ -21,6 +21,7 @@
         <class>org.apromore.dao.model.Workspace</class>
         <class>org.apromore.dao.model.Folder</class>
         <class>org.apromore.dao.model.Fragment</class>
+        <class>org.apromore.dao.model.FragmentDistance</class>
         <class>org.apromore.dao.model.FragmentUser</class>
         <class>org.apromore.dao.model.FolderUser</class>
         <class>org.apromore.dao.model.ProcessUser</class>

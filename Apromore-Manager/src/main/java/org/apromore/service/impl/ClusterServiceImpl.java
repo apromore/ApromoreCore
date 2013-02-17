@@ -1,12 +1,17 @@
 package org.apromore.service.impl;
 
 import nl.tue.tm.is.graph.SimpleGraph;
+import org.apache.commons.collections.MapIterator;
+import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
+import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.FragmentDistance;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
@@ -22,6 +27,8 @@ import org.apromore.service.model.ProcessAssociation;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
 import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -37,15 +44,16 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ClusterServiceImpl implements ClusterService {
 
     private ClusterRepository cRepository;
     private ClusterAssignmentRepository caRepository;
     private FragmentVersionRepository fvRepository;
-    private FragmentService fService;
+    private FragmentDistanceRepository fdRepository;
     private DistanceMatrix matrix;
     private InMemoryClusterer clusterer;
+    private FragmentService fService;
 
 
     /**
@@ -53,20 +61,23 @@ public class ClusterServiceImpl implements ClusterService {
      * @param clusterRepository Cluster Repository.
      * @param clusterAssignmentRepository Cluster Assignment Repository.
      * @param fragmentVersionRepository Fragment Version Repository.
+     * @param fragmentDistanceRepository Fragment Distance Repository.
      * @param fragmentService Fragment Repository.
      * @param distanceMatrix Distance Matrix.
      * @param inMemoryClusterer in Memory Clusterer.
      */
     @Inject
-    public ClusterServiceImpl(final ClusterRepository clusterRepository, final ClusterAssignmentRepository clusterAssignmentRepository,
-                              final FragmentVersionRepository fragmentVersionRepository, final FragmentService fragmentService,
-                              final DistanceMatrix distanceMatrix, final InMemoryClusterer inMemoryClusterer) {
+    public ClusterServiceImpl(final ClusterRepository clusterRepository,
+            final ClusterAssignmentRepository clusterAssignmentRepository, final FragmentVersionRepository fragmentVersionRepository,
+            final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService, final DistanceMatrix distanceMatrix,
+            final InMemoryClusterer inMemoryClusterer) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
         fvRepository = fragmentVersionRepository;
-        fService = fragmentService;
+        fdRepository = fragmentDistanceRepository;
         matrix = distanceMatrix;
         clusterer = inMemoryClusterer;
+        fService = fragmentService;
     }
 
 
@@ -75,6 +86,7 @@ public class ClusterServiceImpl implements ClusterService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void assignFragments(List<Integer> fragmentIds, Integer clusterId) {
         for (Integer frag : fragmentIds) {
             assignFragment(frag, clusterId);
@@ -86,6 +98,7 @@ public class ClusterServiceImpl implements ClusterService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void assignFragment(Integer fragmentId, Integer clusterId) {
         FragmentVersion fragVersion = fvRepository.findOne(fragmentId);
         fragVersion.setCluster(cRepository.findOne(clusterId));
@@ -97,6 +110,7 @@ public class ClusterServiceImpl implements ClusterService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void cluster(ClusterSettings settings) throws RepositoryException {
         computeDistanceMatrix();
         clearClusters();
@@ -112,13 +126,27 @@ public class ClusterServiceImpl implements ClusterService {
         ClusteringSummary summary = new ClusteringSummary();
         List<Object[]> summaryObj = cRepository.getClusteringSummary();
         for (Object[] objects : summaryObj) {
-            summary.setNumClusters((Integer) objects[0]);
-            summary.setMinClusterSize((Integer) objects[1]);
-            summary.setMaxClusterSize((Integer) objects[2]);
-            summary.setMinAvgFragmentSize((Integer) objects[3]);
-            summary.setMaxAvgFragmentSize((Integer) objects[4]);
-            summary.setMinBCR((Integer) objects[5]);
-            summary.setMaxBCR((Integer) objects[6]);
+            if (objects[0] != null) {
+                summary.setNumClusters(((Long) objects[0]).intValue());
+            }
+            if (objects[1] != null) {
+                summary.setMinClusterSize((Integer) objects[1]);
+            }
+            if (objects[2] != null) {
+                summary.setMaxClusterSize((Integer) objects[2]);
+            }
+            if (objects[3] != null) {
+                summary.setMinAvgFragmentSize((Float) objects[3]);
+            }
+            if (objects[4] != null) {
+                summary.setMaxAvgFragmentSize((Float) objects[4]);
+            }
+            if (objects[5] != null) {
+                summary.setMinBCR((Double) objects[5]);
+            }
+            if (objects[6] != null) {
+                summary.setMaxBCR((Double) objects[6]);
+            }
         }
         return summary;
     }
@@ -267,10 +295,39 @@ public class ClusterServiceImpl implements ClusterService {
 
 
     /**
+     * @see org.apromore.service.ClusterService#saveDistances(org.apache.commons.collections.map.MultiKeyMap)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void saveDistances(final MultiKeyMap distanceMap) {
+        FragmentDistance distance;
+        List<FragmentDistance> distances = new ArrayList<FragmentDistance>();
+
+        MapIterator mi = distanceMap.mapIterator();
+        while (mi.hasNext()) {
+            MultiKey fragmentIds = (MultiKey) mi.next();
+            Double ged = (Double) mi.getValue();
+
+            if (fdRepository.findByFragmentVersionId1AndFragmentVersionId2((Integer) fragmentIds.getKey(0), (Integer) fragmentIds.getKey(1)) == null) {
+                distance = new FragmentDistance();
+                distance.setFragmentVersionId1(fvRepository.findOne((Integer) fragmentIds.getKey(0)));
+                distance.setFragmentVersionId2(fvRepository.findOne((Integer) fragmentIds.getKey(1)));
+                distance.setDistance(ged);
+
+                distances.add(distance);
+            }
+        }
+        fdRepository.save(distances);
+    }
+
+
+    /**
      * @see org.apromore.service.ClusterService#clearClusters()
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void clearClusters() {
         cRepository.deleteAll();
         caRepository.deleteAll();
@@ -279,6 +336,7 @@ public class ClusterServiceImpl implements ClusterService {
 
 
     /* Computers the fragment distances. */
+    @Transactional(readOnly = false)
     private void computeDistanceMatrix() {
         try {
             matrix.compute();

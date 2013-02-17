@@ -291,7 +291,11 @@ public class GraphToCanonical {
     /* Builds an Edge for this Net. */
     private void buildEdge(NetType net, final CPFEdge edge) {
         EdgeType edgeType = new EdgeType();
-        edgeType.setId(edge.getId());
+        if (edge.getOriginalId() == null) {
+            edgeType.setId(edge.getId());
+        } else {
+            edgeType.setId(edge.getOriginalId());
+        }
         edgeType.setOriginalID(edge.getOriginalId());
         edgeType.setDefault(edge.isDefault());
         if (edge.getConditionExpr() != null) {

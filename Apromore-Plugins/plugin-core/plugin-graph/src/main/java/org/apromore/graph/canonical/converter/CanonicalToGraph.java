@@ -432,7 +432,14 @@ public class CanonicalToGraph {
             source = nodes.get(edge.getSourceId());
             target = nodes.get(edge.getTargetId());
             if (source != null && target != null) {
-                newEdge = graph.addEdge(source, target);
+                newEdge = graph.addEdge(edge.getId(), source, target);
+
+//                newEdge.setId(edge.getId());
+//                if (edge.getOriginalID() != null) {
+//                    newEdge.setOriginalId(edge.getOriginalID());
+//                } else {
+//                    newEdge.setOriginalId(edge.getId());
+//                }
 
                 if (edge.getConditionExpr() != null) {
                     expr = new CPFExpression();
@@ -442,7 +449,7 @@ public class CanonicalToGraph {
                     expr.setReturnType(edge.getConditionExpr().getReturnType());
                 }
 
-                graph.updateEdge(newEdge, edge, expr);
+                //graph.updateEdge(newEdge, edge, expr);
                 graph.setNodeProperty(source.getId(), GraphConstants.TYPE, GraphUtil.getType(source));
                 graph.setNodeProperty(target.getId(), GraphConstants.TYPE, GraphUtil.getType(target));
             } else {

@@ -8,6 +8,8 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.EditSessionType;
 import org.apromore.service.SessionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -20,7 +22,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class SessionServiceImpl implements SessionService {
 
     private ProcessModelVersionRepository processModelVersionRepo;
@@ -61,6 +63,7 @@ public class SessionServiceImpl implements SessionService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public void deleteSession(final Integer sessionCode) {
         sessionRepo.delete(sessionRepo.findOne(sessionCode));
     }
@@ -71,6 +74,7 @@ public class SessionServiceImpl implements SessionService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
     public EditSession createSession(final EditSessionType editSession) {
         Integer processId = editSession.getProcessId();
         String branchName = editSession.getOriginalBranchName();

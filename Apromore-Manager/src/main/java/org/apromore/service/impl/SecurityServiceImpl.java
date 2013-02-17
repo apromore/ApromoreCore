@@ -9,6 +9,8 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.SecurityService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
@@ -23,7 +25,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class SecurityServiceImpl implements SecurityService {
 
     private UserRepository userRepo;
@@ -52,7 +54,6 @@ public class SecurityServiceImpl implements SecurityService {
      * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
@@ -62,7 +63,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public User getUserByName(String username) {
         return userRepo.findByUsername(username);
     }
@@ -72,7 +72,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public List<User> searchUsers(String searchString) {
         return userRepo.findByUsernameLike(searchString);
     }
@@ -82,7 +81,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public User login(String username, String password){
         return userRepo.login(username, password);
     }
@@ -92,7 +90,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public User getUserById(String guid) throws UserNotFoundException{
         User user = userRepo.findByRowGuid(guid);
         if (user != null) {
@@ -107,7 +104,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public List<Permission> getUserPermissions(String userGuid){
         return permissionRepo.findByUser(userGuid);
     }
@@ -117,7 +113,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public boolean hasAccess(String userId, String permissionId){
         return userRepo.hasAccess(userId, permissionId);
     }
@@ -127,7 +122,6 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
     public User createUser(User user) {
         user.setDateCreated(Calendar.getInstance().getTime());
         user.setLastActivityDate(Calendar.getInstance().getTime());

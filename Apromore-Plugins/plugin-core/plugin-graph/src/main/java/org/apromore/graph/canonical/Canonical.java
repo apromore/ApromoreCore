@@ -176,6 +176,25 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     }
 
     @Override
+    public CPFEdge addEdge(String id, CPFNode from, CPFNode to) {
+        if (from == null || to == null) {
+            return null;
+        }
+
+        Collection<CPFNode> ss = new ArrayList<CPFNode>();
+        Collection<CPFNode> ts = new ArrayList<CPFNode>();
+
+        ss.add(from);
+        ts.add(to);
+
+        if (!this.checkEdge(ss, ts)) {
+            return null;
+        }
+
+        return new CPFEdge(this, id, from, to);
+    }
+
+    @Override
     public Collection<CPFEdge> addEdges(Collection<CPFEdge> edges) {
         if (edges == null || edges.isEmpty()) {
             return null;
@@ -189,9 +208,9 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     }
 
     @Override
-    public CPFEdge updateEdge(CPFEdge edge, EdgeType edgeType, CPFExpression expr) {
+    public void updateEdge(CPFEdge edge, EdgeType edgeType, CPFExpression expr) {
         if (edge == null) {
-            return null;
+            return;
         }
 
         for (CPFEdge e : this.getEdges()) {
@@ -200,11 +219,10 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
                 e.setOriginalId(edgeType.getOriginalID());
                 e.setDefault(edgeType.isDefault());
                 e.setConditionExpr(expr);
-                return e;
+                this.getEdges().remove(e);
+                this.addEdge(e);
             }
         }
-
-        return null;
     }
 
 
@@ -354,6 +372,33 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
             map.put(node.getId(), node);
         }
         return map;
+    }
+
+
+
+    public void populateDominanceRelations() {
+        for (CPFNode v : getNodes()) {
+            v.dominance = performFullDominanceSearch(v);
+        }
+    }
+
+    private HashSet<String> performFullDominanceSearch(CPFNode nodes) {
+        LinkedList<CPFNode> toProcess = new LinkedList<CPFNode>(nodes.getChildren());
+        HashSet<String> domList = new HashSet<String>();
+
+        while (toProcess.size() > 0) {
+            CPFNode node = toProcess.removeFirst();
+            if (domList.contains(node.getId())) {
+                continue;
+            }
+            domList.add(node.getId());
+            for (CPFNode ch : node.getChildren()) {
+                if (!domList.contains(ch.getId()) && !toProcess.contains(ch)) {
+                    toProcess.add(ch);
+                }
+            }
+        }
+        return domList;
     }
 
 
