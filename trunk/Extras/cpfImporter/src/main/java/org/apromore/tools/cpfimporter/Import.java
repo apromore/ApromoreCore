@@ -69,7 +69,7 @@ public final class Import {
 
     private void CreateFolder(final File file) throws Exception {
         final ManagerService manager = (ManagerService) getBean("managerClient");
-        final String user = "75f4a46a-bd32-4fbb-ba7a-c50d06414fac";
+        final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
         File parentFile = file.getParentFile();
         int parentId = 0;
