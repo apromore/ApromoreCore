@@ -1,20 +1,26 @@
 package org.apromore.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
-import org.apromore.service.CanonicalConverter;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
@@ -29,12 +35,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.inject.Inject;
-
 /**
  * Implementation of the MergeService Contract.
  *
@@ -47,34 +47,35 @@ public class MergeServiceImpl implements MergeService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
-    private CanonicalConverter converter;
+    private CanoniserService canoniserSrv;
     private ProcessService processSrv;
-    private UserService userSrv;
     private UserInterfaceHelper ui;
-    private MergeProcesses merge = new MergeProcesses();
+    private MergeProcesses merge;
 
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
+     *
      * @param processModelVersionRepository Annotation Repository.
-     * @param canonicalConverter Native Repository.
-     * @param processService Native Type repository.
-     * @param uiHelper the User Interface Helper.
+     * @param canoniserService              Canoniser Service.
+     * @param processService                Native Type repository.
+     * @param uiHelper                      the User Interface Helper.
+     * @param mergeProcesses                the m
      */
     @Inject
-    public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanonicalConverter canonicalConverter,
-                final ProcessService processService, final UserService userService, final UserInterfaceHelper uiHelper) {
+    public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
+            final ProcessService processService, final UserInterfaceHelper uiHelper, final MergeProcesses mergeProcesses) {
         processModelVersionRepo = processModelVersionRepository;
-        converter = canonicalConverter;
+        canoniserSrv = canoniserService;
         processSrv = processService;
-        userSrv = userService;
         ui = uiHelper;
+        merge = mergeProcesses;
     }
 
 
     /**
      * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
@@ -92,19 +93,17 @@ public class MergeServiceImpl implements MergeService {
 
             CanonisedProcess cp = new CanonisedProcess();
             cp.setCpt(performMerge(data));
+            cp.setCpf(new ByteArrayInputStream(canoniserSrv.CPFtoString(cp.getCpt()).getBytes()));
 
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
-            User usr = userSrv.findUserByLogin(username);
 
-            //ProcessModelVersion pmv = processSrv.addProcess(processName, version, usr,  null, domain, "", created, created, cp);
-            //pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getVersionName(), version, null, domain, created, created, username);
+            ProcessModelVersion pmv = processSrv.importProcess(username, processName, 0.1d, null, null, null, domain, "", created, created);
+            pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getProcessBranch().getBranchName(), 0.1d, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
-        //} catch (ImportException ie) {
-        //    LOGGER.error("Failed Import the newly merged model.", ie);
-        }  catch (UserNotFoundException unfe) {
-            LOGGER.error("Failed Import the newly merged model.", unfe);
+        } catch (ImportException | JAXBException ie) {
+            LOGGER.error("Failed Import the newly merged model.", ie);
         }
 
         return pst;

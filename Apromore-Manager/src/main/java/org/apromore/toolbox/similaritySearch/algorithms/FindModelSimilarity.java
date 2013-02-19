@@ -1,14 +1,13 @@
 package org.apromore.toolbox.similaritySearch.algorithms;
 
+import java.util.LinkedList;
+
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.toolbox.similaritySearch.common.NodePair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
 import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.Set;
 
 public class FindModelSimilarity {
 
@@ -26,7 +25,7 @@ public class FindModelSimilarity {
             return (1 - (weight < 0.0000001 ? 0 : (weight > 1 ? 1 : weight)));
 
         } else if (algortithm.equals("Hungarian")) {
-            Set<NodePair> mapping = assingmentProblem.getMappingsNodesUsingNodeMapping(g1, g2, param[0], param[1]);
+            LinkedList<NodePair> mapping = assingmentProblem.getMappingsNodesUsingNodeMapping(g1, g2, param[0], param[1]);
             weight = 0.0;
             for (NodePair vp : mapping) {
                 weight += vp.getWeight();
