@@ -115,12 +115,10 @@ public class CanoniserServiceImpl implements CanoniserService {
             throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
         } else {
             try {
-                // TODO turn validation on as schema is stable
                 ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
                 cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
                 cp.setAnt(anfList.get(0));
 
-                // TODO turn validation on as schema is stable
                 CPFSchema.marshalCanoncialFormat(cpfXml, cpfList.get(0), false);
                 cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
                 cp.setCpt(cpfList.get(0));

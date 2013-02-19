@@ -1,13 +1,18 @@
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.toolbox.similaritySearch.common.NodePair;
 import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
 import org.apromore.util.GraphUtil;
-
-import java.util.*;
 
 
 public class AssingmentProblem {
@@ -121,11 +126,10 @@ public class AssingmentProblem {
         return solutionMappings;
     }
 
-    public Set<NodePair> getMappingsNodesUsingNodeMapping(Canonical g1, Canonical g2, double threshold,
-            double semanticThreshold) {
+    public LinkedList<NodePair> getMappingsNodesUsingNodeMapping(Canonical g1, Canonical g2, double threshold, double semanticThreshold) {
         Set<CPFNode> g1Vertices = g1.getNodes();
         Set<CPFNode> g2Vertices = g2.getNodes();
-        Set<NodePair> solutionMappings = new HashSet<NodePair>();
+        LinkedList<NodePair> solutionMappings = new LinkedList<NodePair>();
 
         NodeSimilarity nodeSimilarity = new NodeSimilarity();
 

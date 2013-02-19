@@ -63,6 +63,20 @@ public class CPFNode extends Vertex implements INode {
         return graph.getAllPredecessors(this) ;
     }
 
+    public void removeChild(CPFNode toBeRemoved) {
+        removeNode(toBeRemoved);
+    }
+
+    public void removeParent(CPFNode toBeRemoved) {
+        removeNode(toBeRemoved);
+    }
+
+    private void removeNode(CPFNode toBeRemoved) {
+        if (toBeRemoved != null) {
+            graph.removeNode(toBeRemoved);
+        }
+    }
+
 
     /**  ************************************ Standard Methods ***********************************  */
 

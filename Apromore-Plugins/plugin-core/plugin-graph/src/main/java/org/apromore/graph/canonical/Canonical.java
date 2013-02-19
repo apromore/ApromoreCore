@@ -376,12 +376,30 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
 
 
-    public void populateDominanceRelations() {
+    public void populateDominantRelationships() {
         for (CPFNode v : getNodes()) {
             v.dominance = performFullDominanceSearch(v);
         }
     }
 
+    public Map<String, String> getOriginalNodeMapping() {
+        return originalNodeMapping;
+    }
+
+    public void addOriginalNodeMapping(final String duplicateNode, final String originalNode) {
+        originalNodeMapping.put(duplicateNode, originalNode);
+    }
+
+    public boolean isDuplicateNode(final String node) {
+        return originalNodeMapping.keySet().contains(node);
+    }
+
+    public String getOriginalNode(final String duplicateNode) {
+        return originalNodeMapping.get(duplicateNode);
+    }
+
+
+    /* Used to find the dominant relationships. */
     private HashSet<String> performFullDominanceSearch(CPFNode nodes) {
         LinkedList<CPFNode> toProcess = new LinkedList<CPFNode>(nodes.getChildren());
         HashSet<String> domList = new HashSet<String>();
@@ -399,24 +417,6 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
             }
         }
         return domList;
-    }
-
-
-
-    public Map<String, String> getOriginalNodeMapping() {
-        return originalNodeMapping;
-    }
-
-    public void addOriginalNodeMapping(final String duplicateNode, final String originalNode) {
-        originalNodeMapping.put(duplicateNode, originalNode);
-    }
-
-    public boolean isDuplicateNode(final String node) {
-        return originalNodeMapping.keySet().contains(node);
-    }
-
-    public String getOriginalNode(final String duplicateNode) {
-        return originalNodeMapping.get(duplicateNode);
     }
 
 }
