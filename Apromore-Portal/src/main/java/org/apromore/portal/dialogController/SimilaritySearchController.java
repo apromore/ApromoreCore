@@ -40,8 +40,7 @@ public class SimilaritySearchController extends BaseController {
     private ProcessSummaryType process;
     private VersionSummaryType version;
 
-    public SimilaritySearchController(MainController mainC, MenuController menuC,
-                                      ProcessSummaryType process, VersionSummaryType version)
+    public SimilaritySearchController(MainController mainC, MenuController menuC, ProcessSummaryType process, VersionSummaryType version)
             throws SuspendNotAllowedException, InterruptedException {
         this.mainC = mainC;
         this.menuC = menuC;
@@ -165,7 +164,7 @@ public class SimilaritySearchController extends BaseController {
         ProcessSummaryType query = null;
         for (int i = 0; i < toBeSorted.getProcessSummary().size(); i++) {
             if (toBeSorted.getProcessSummary().get(i).getId().equals(process.getId())) {
-                query = toBeSorted.getProcessSummary().get(i);
+                 query = toBeSorted.getProcessSummary().get(i);
             } else {
                 sortInsertion(SortVersions(toBeSorted.getProcessSummary().get(i)), res);
             }

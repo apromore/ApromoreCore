@@ -6,7 +6,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentDataObject;
+import org.apromore.clustering.algorithm.dbscan.FragmentDataObject;
 
 import java.util.List;
 import java.util.Map;
@@ -17,14 +17,6 @@ import java.util.Map;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public interface FragmentService {
-
-//    /**
-//     * Add a process Fragment Mapping record to the DB.
-//     * @param pmvid                the process Model Version
-//     * @param composingFragmentIds the composing fragment id's
-//     * @throws ExceptionDao if the DB throws an exception
-//     */
-//    void addProcessFragmentMappings(Integer pmvid, List<String> composingFragmentIds) throws ExceptionDao;
 
     /**
      * Gets the Fragment as Epml.

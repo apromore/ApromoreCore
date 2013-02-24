@@ -18,6 +18,7 @@ import static javax.persistence.GenerationType.IDENTITY;
                 @UniqueConstraint(columnNames = {"uri"})
         }
 )
+@Cacheable(true)
 @Configurable("fragmentVersion")
 public class FragmentVersion implements Serializable {
 

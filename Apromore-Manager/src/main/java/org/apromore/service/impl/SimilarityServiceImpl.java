@@ -1,18 +1,19 @@
 package org.apromore.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
-import org.apromore.graph.canonical.Canonical;
+import org.apromore.exception.SerializationException;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
-import org.apromore.service.CanonicalConverter;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -37,7 +38,6 @@ public class SimilarityServiceImpl implements SimilarityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
-    private CanonicalConverter converter;
     private ProcessService processSrv;
     private UserInterfaceHelper ui;
 
@@ -46,15 +46,13 @@ public class SimilarityServiceImpl implements SimilarityService {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      *
      * @param processModelVersionRepository Process Model Version Repository.
-     * @param canonicalConverter Canonical Converter.
      * @param processService Repository Service.
      * @param uiHelper user interface helper
      */
     @Inject
     public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository,
-            final CanonicalConverter canonicalConverter, final ProcessService processService, final UserInterfaceHelper uiHelper) {
+             final ProcessService processService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
-        converter = canonicalConverter;
         processSrv = processService;
         ui = uiHelper;
     }
@@ -64,16 +62,18 @@ public class SimilarityServiceImpl implements SimilarityService {
      * @see org.apromore.service.SimilarityService#SearchForSimilarProcesses(Integer, String, Boolean, String, org.apromore.model.ParametersType)
      *      {@inheritDoc}
      */
-    public ProcessSummariesType SearchForSimilarProcesses(final Integer branchId, final String versionName, final Boolean latestVersions,
+    public ProcessSummariesType SearchForSimilarProcesses(final Integer processId, final String branchName, final Boolean latestVersions,
             final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         LOGGER.debug("Starting Similarity Search...");
 
         ProcessVersionsType similarProcesses = null;
-        ProcessModelVersion query = processModelVersionRepo.findProcessModelVersionByBranch(branchId, versionName);
+        ProcessModelVersion query = processModelVersionRepo.findProcessModelVersionByBranch(processId, branchName);
         List<ProcessModelVersion> models = processModelVersionRepo.getLatestProcessModelVersions();
         try {
-            ToolboxData data = getParametersForSearch(method, params);
-            similarProcesses = performSearch(data, models, query);
+            //ToolboxData data = getParametersForSearch(method, params);
+            ToolboxData data = convertModelsToCPT(models, query);
+            data = getParametersForSearch(data, method, params);
+            similarProcesses = performSearch(data);
             if (similarProcesses.getProcessVersion().size() == 0) {
                 LOGGER.error("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
                         query.getVersionNumber() + " probably faulty");
@@ -86,9 +86,21 @@ public class SimilarityServiceImpl implements SimilarityService {
     }
 
 
-    /* Loads the Parameters used for the Search */
-    private ToolboxData getParametersForSearch(String method, ParametersType params) {
+    /* Responsible for getting all the Models and converting them to CPT internal format */
+    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query) throws SerializationException {
         ToolboxData data = new ToolboxData();
+
+        data.setOrigin(processSrv.getCanonicalFormat(query));
+        for (ProcessModelVersion pmv : models) {
+            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
+        }
+
+        return data;
+    }
+
+
+    /* Loads the Parameters used for the Search */
+    private ToolboxData getParametersForSearch(ToolboxData data, String method, ParametersType params) {
         data.setAlgorithm(method);
 
         for (ParameterType p : params.getParameter()) {
@@ -110,33 +122,25 @@ public class SimilarityServiceImpl implements SimilarityService {
         return data;
     }
 
+
     /* Does the similarity search. */
-    private ProcessVersionsType performSearch(ToolboxData data, List<ProcessModelVersion> models, ProcessModelVersion query) {
+    private ProcessVersionsType performSearch(ToolboxData data) {
         double similarity;
         ProcessVersionType processVersion;
         ProcessVersionsType similarProcesses = new ProcessVersionsType();
-        Canonical original = converter.convert(processSrv.getCanonicalFormat(query));
 
-        SearchForSimilarProcesses search = new SearchForSimilarProcesses();
-
-        for (ProcessModelVersion pmv : models) {
-            if (!query.equals(pmv)) {
-                Canonical current = converter.convert(processSrv.getCanonicalFormat(pmv));
-
-                similarity = search.findProcessesSimilarity(
-                        original, current, data.getAlgorithm(), data.getLabelthreshold(), data.getContextthreshold(),
-                        data.getSkipnweight(), data.getSubnweight(), data.getSkipeweight());
-
-                if (similarity >= data.getModelthreshold()) {
-                    processVersion = new ProcessVersionType();
-                    processVersion.setProcessId(pmv.getProcessBranch().getProcess().getId());
-                    processVersion.setVersionName(pmv.getProcessBranch().getBranchName());
-                    processVersion.setScore(similarity);
-                    similarProcesses.getProcessVersion().add(processVersion);
-                }
+        for (Map.Entry<ProcessModelVersion, CanonicalProcessType> e : data.getModel().entrySet()) {
+            similarity = SearchForSimilarProcesses.findProcessesSimilarity(
+                    data.getOrigin(), e.getValue(), data.getAlgorithm(), data.getLabelthreshold(), data.getContextthreshold(),
+                    data.getSkipnweight(), data.getSubnweight(), data.getSkipeweight());
+            if (similarity >= data.getModelthreshold()) {
+                processVersion = new ProcessVersionType();
+                processVersion.setProcessId(e.getKey().getProcessBranch().getProcess().getId());
+                processVersion.setVersionName(e.getKey().getProcessBranch().getBranchName());
+                processVersion.setScore(similarity);
+                similarProcesses.getProcessVersion().add(processVersion);
             }
         }
-
         return similarProcesses;
     }
 

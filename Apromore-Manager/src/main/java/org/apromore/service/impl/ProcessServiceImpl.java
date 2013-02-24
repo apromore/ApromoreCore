@@ -559,6 +559,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Does the processing of ImportProcess. */
+    @Transactional(readOnly = false)
     private ProcessModelVersion addProcess(final Process process, final String processName, final Double versionNumber, final String branchName,
             final String created, final String lastUpdated, final CanonisedProcess cpf) throws ImportException {
         if (cpf == null) {
@@ -574,23 +575,35 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pmv = null;
         Map<String, ProcessModelVersion> models = new HashMap<String, ProcessModelVersion>(0);
         try {
+            LOGGER.info("Starting to process: " + cpf.getCpt().getUri() + " - " + cpf.getCpt().getName());
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
-            for (NetType net : cpf.getCpt().getNet()) {
-                if (net.getNode() != null || net.getNode().size() > 0) {
-                    LOGGER.info("Starting to process Net: " + net.getId() + " - " + net.getName());
-
-                    can = converter.convert(createNet(cpf, net));
-                    pmv = createProcessModelVersion(process, branch, versionNumber, can, net.getId());
-                    netRoot = decomposerSrv.decompose(can, pmv);
-                    if (netRoot != null) {
-                        pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
-                        models.put(net.getId(), pmv);
-                    }
-                }
+            can = converter.convert(cpf.getCpt());
+            pmv = createProcessModelVersion(process, branch, versionNumber, can, cpf.getCpt().getUri());
+            netRoot = decomposerSrv.decompose(can, pmv);
+            if (netRoot != null) {
+                pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
+            } else {
+                throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
             }
-            createSubProcessReferences(cpf, models);
-            createRootProcessReferences(process, cpf, models);
+
+
+            /* This is for Sub processes, doesn't seem to work correctly just yet. */
+//            for (NetType net : cpf.getCpt().getNet()) {
+//                if (net.getNode() != null || net.getNode().size() > 0) {
+//                    LOGGER.info("Starting to process Net: " + net.getId() + " - " + net.getName());
+//
+//                    can = converter.convert(createNet(cpf, net));
+//                    pmv = createProcessModelVersion(process, branch, versionNumber, can, net.getId());
+//                    netRoot = decomposerSrv.decompose(can, pmv);
+//                    if (netRoot != null) {
+//                        pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
+//                        models.put(net.getId(), pmv);
+//                    }
+//                }
+//            }
+//            createSubProcessReferences(cpf, models);
+//            createRootProcessReferences(process, cpf, models);
         } catch (RepositoryException re) {
             throw new ImportException("Failed to add the process model " + processName, re);
         }
@@ -607,9 +620,6 @@ public class ProcessServiceImpl implements ProcessService {
                 LOGGER.error("There are other branches forked from this Process Model.");
             } else {
                 FragmentVersion fragmentVersion = pmv.getRootFragmentVersion();
-
-                // Delete the ProcessModelVersion
-                //processModelVersionRepo.delete(pmv);
 
                 // Delete the FragmentVersions
                 deleteFragmentVersion(fragmentVersion, true);

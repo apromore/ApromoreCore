@@ -85,7 +85,7 @@ public class BpmnDefinitionsTest implements TestConstants {
      *     minus the respective <code>.cpf</code>, <code>.anf</code> and <code>.bpmn.xml</code> file extensions
      * @return the decanonised BPMN model
      */
-    private final BpmnDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
+    private BpmnDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
 
         // Read the CPF source file
         CpfCanonicalProcessType cpf =

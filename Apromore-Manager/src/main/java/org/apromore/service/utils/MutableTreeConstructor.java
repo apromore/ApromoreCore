@@ -1,5 +1,6 @@
 package org.apromore.service.utils;
 
+import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.service.model.FragmentNode;
@@ -17,11 +18,12 @@ public class MutableTreeConstructor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MutableTreeConstructor.class);
 
-    public FragmentNode construct(RPST<CPFEdge, CPFNode> rpst) {
+    public FragmentNode construct(RPST<CPFEdge, CPFNode> rpst) throws RepositoryException {
         return constructTree(rpst.getRoot(), null, rpst);
     }
 
-    private FragmentNode constructTree(IRPSTNode<CPFEdge, CPFNode> root, FragmentNode parent, RPST<CPFEdge, CPFNode> rpst) {
+    private FragmentNode constructTree(IRPSTNode<CPFEdge, CPFNode> root, FragmentNode parent, RPST<CPFEdge, CPFNode> rpst)
+            throws RepositoryException {
         FragmentNode rf = null;
         if (root != null) {
             rf = new FragmentNode();
@@ -47,6 +49,7 @@ public class MutableTreeConstructor {
             }
         } else {
             LOGGER.error("Can not construct tree with a null node.");
+            throw new RepositoryException("Can not construct tree with a null node.");
         }
 
         return rf;

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apromore.dao.model.Cluster;
 import org.apromore.service.model.ClusterFilter;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
+import org.apromore.clustering.algorithm.dbscan.FragmentPair;
 
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.

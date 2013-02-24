@@ -19,6 +19,19 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.apromore.canoniser.bpmn,
+                            org.apromore.canoniser.bpmn.bpmn,
+                            org.apromore.canoniser.bpmn.anf,
+                            org.apromore.canoniser.bpmn.cpf
+                        </Export-Package>
+                        <Import-Packages>
+                            com.sun*
+                        </Import-Packages>
+                    </instructions>
+                </configuration>
             </plugin>
 <!--
             <plugin>
@@ -100,7 +113,7 @@
         <dependency>
             <groupId>com.sun.xml</groupId>
             <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
-        </dependency>       
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

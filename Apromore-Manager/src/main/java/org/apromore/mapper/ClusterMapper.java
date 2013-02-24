@@ -20,8 +20,8 @@ import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
-import org.apromore.toolbox.clustering.algorithms.dbscan.DBSCANClusterSettings;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
+import org.apromore.clustering.algorithm.dbscan.DBSCANClusterSettings;
+import org.apromore.clustering.algorithm.dbscan.FragmentPair;
 
 import java.util.List;
 import java.util.Map;

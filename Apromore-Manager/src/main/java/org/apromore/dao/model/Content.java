@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "content")
+@Cacheable(true)
 @Configurable("content")
 public class Content implements Serializable {
 

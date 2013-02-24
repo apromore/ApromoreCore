@@ -49,9 +49,15 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <tx:annotation-driven />
+    <tx:annotation-driven  />
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" >
+        <constructor-arg type="javax.sql.DataSource">
+            <ref bean="dataSource"/>
+        </constructor-arg>
+    </bean>
 
 </beans>
