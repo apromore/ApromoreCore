@@ -6,7 +6,7 @@ import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
+import org.apromore.clustering.algorithm.dbscan.FragmentPair;
 
 import java.util.List;
 import java.util.Map;
@@ -93,10 +93,5 @@ public interface ClusterService {
      * @param distanceMap the distance map, contains two fragments and the distance.
      */
     void saveDistances(MultiKeyMap distanceMap);
-
-    /**
-     * Remove the cluster information.
-     */
-    void clearClusters();
 
 }

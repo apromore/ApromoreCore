@@ -1,5 +1,6 @@
 package org.apromore.dao.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "process_model_version")
+@Cacheable(true)
 @Configurable("processModelVersion")
 public class ProcessModelVersion implements Serializable {
 

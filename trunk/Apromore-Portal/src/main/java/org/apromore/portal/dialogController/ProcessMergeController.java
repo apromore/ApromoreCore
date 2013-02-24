@@ -37,10 +37,8 @@ public class ProcessMergeController extends BaseController {
     private Row labelthreshold;
     private Row contextthreshold;
     private Row skipeweight;
-    //	private Row subeweight;
     private Row skipnweight;
     private Row subnweight;
-    private Row ownerR;
     private Row processNameR;
     private Row versionNameR;
     private Button OKbutton;
@@ -53,7 +51,8 @@ public class ProcessMergeController extends BaseController {
     private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
 
-    public ProcessMergeController(MainController mainC, MenuController menuC, Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
+    public ProcessMergeController(MainController mainC, MenuController menuC, Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions)
+            throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
         this.menuC = menuC;
 

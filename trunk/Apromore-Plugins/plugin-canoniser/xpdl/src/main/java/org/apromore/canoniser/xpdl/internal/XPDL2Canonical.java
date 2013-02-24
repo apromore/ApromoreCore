@@ -1,7 +1,6 @@
 package org.apromore.canoniser.xpdl.internal;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,6 +37,8 @@ import org.apromore.cpf.TimerType;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.Artifact;
@@ -66,6 +67,8 @@ import org.wfmc._2008.xpdl2.TransitionRestrictions;
 import org.wfmc._2008.xpdl2.Transitions;
 
 public class XPDL2Canonical {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XPDL2Canonical.class);
 
     List<Activity> activities = new LinkedList<Activity>();
     List<Transition> transitions = new LinkedList<Transition>();
@@ -158,7 +161,7 @@ public class XPDL2Canonical {
             for (Object obj : pkg.getArtifacts().getArtifactAndAny()) {
                 if (obj instanceof Artifact) {
                     Artifact arti = (Artifact) obj;
-                    if (arti.getArtifactType().equals("DataObject") && arti.getDataObject() != null) {
+                    if (arti.getArtifactType() != null && arti.getArtifactType().equals("DataObject") && arti.getDataObject() != null) {
                         ObjectType ot = new ObjectType();
                         ot.setName(arti.getDataObject().getName());
                         ot.setId(String.valueOf(cpfId++));
@@ -620,47 +623,61 @@ public class XPDL2Canonical {
     }
 
     private NodeType translateEvent(final NetType net, final Activity act, final Event event) throws CanoniserException {
-        NodeType node;
+        NodeType node = null;
 
-        if (event.getStartEvent() != null) {
-            StartEvent startEvent = event.getStartEvent();
-            if (startEvent.getTrigger().equals("None") || startEvent.getTrigger().equals("Conditional")) {
-                node = new EventType();
-            } else if (startEvent.getTrigger().equals("Message")) {
-                node = new MessageType();
-            } else if (startEvent.getTrigger().equals("Timer")) {
-                node = new TimerType();
+        if (event != null) {
+            if (event.getStartEvent() != null) {
+                StartEvent startEvent = event.getStartEvent();
+                if (startEvent.getTrigger() != null) {
+                    if (startEvent.getTrigger().equals("None") || startEvent.getTrigger().equals("Conditional")) {
+                        node = new EventType();
+                    } else if (startEvent.getTrigger().equals("Message")) {
+                        node = new MessageType();
+                    } else if (startEvent.getTrigger().equals("Timer")) {
+                        node = new TimerType();
+                    } else {
+                        throw new CanoniserException("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
+                    }
+                }
+            } else if (event.getEndEvent() != null) {
+                EndEvent endEvent = event.getEndEvent();
+                if (endEvent.getResult() != null) {
+                    if (endEvent.getResult().equals("None")) {
+                        node = new EventType();
+                    } else if (endEvent.getResult().equals("Message")) {
+                        node = new MessageType();
+                    } else if (endEvent.getResult().equals("Cancel")) {
+                        node = new EventType();
+                        node.setName("Cancel");
+                    } else {
+                        throw new CanoniserException("XPDL2Canonical: event type not supported (End Event): " + endEvent.getResult());
+                    }
+                }
+            } else  if (event.getIntermediateEvent() != null) {
+                IntermediateEvent interEvent = event.getIntermediateEvent();
+                if (interEvent.getTrigger() != null) {
+                    if (interEvent.getTrigger().equals("None")) {
+                        node = new EventType();
+                    } else if (interEvent.getTrigger().equals("Message")) {
+                        node = new MessageType();
+                    } else if (interEvent.getTrigger().equals("Timer")) {
+                        node = new TimerType();
+                    } else if (interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
+                        node = new EventType();
+                    } else {
+                        throw new CanoniserException("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
+                    }
+                }
             } else {
-                throw new CanoniserException("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
-            }
-        } else if (event.getEndEvent() != null) {
-            EndEvent endEvent = event.getEndEvent();
-            if (endEvent.getResult().equals("None")) {
-                node = new EventType();
-            } else if (endEvent.getResult().equals("Message")) {
-                node = new MessageType();
-            } else if (endEvent.getResult().equals("Cancel")) {
-                node = new EventType();
-                node.setName("Cancel");
-            } else {
-                throw new CanoniserException("XPDL2Canonical: event type not supported (End Event): " + endEvent.getResult());
+                LOGGER.warn("Found an Event where all details within were empty!");
             }
         } else {
-            IntermediateEvent interEvent = event.getIntermediateEvent();
-            if (interEvent.getTrigger().equals("None")) {
-                node = new EventType();
-            } else if (interEvent.getTrigger().equals("Message")) {
-                node = new MessageType();
-            } else if (interEvent.getTrigger().equals("Timer")) {
-                node = new TimerType();
-            } else if (interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
-                node = new EventType();
-//                unrequired_event_list.add(BigInteger.valueOf(cpfId));
-//                node_remove_list.add(node);
-                //TODO : Inform the user that the element has been removed during the process
-            } else {
-                throw new CanoniserException("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
-            }
+            LOGGER.warn("Found an Event that was null!");
+        }
+
+        // Still could be null at this point if we just had an empty <event/> tag (they do exist)
+        if (node == null) {
+            node = new EventType();
         }
         node.setName(act.getName());
         return node;

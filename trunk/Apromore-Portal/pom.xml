@@ -44,10 +44,10 @@
     </issueManagement>
 
     <!--<distributionManagement>-->
-        <!--<site>-->
-            <!--<id>Apromore-site</id>-->
-            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Portal/portal-service</url>-->
-        <!--</site>-->
+    <!--<site>-->
+    <!--<id>Apromore-site</id>-->
+    <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Portal/portal-service</url>-->
+    <!--</site>-->
     <!--</distributionManagement>-->
 
     <licenses>
@@ -99,25 +99,25 @@
     </repositories>
 
     <build>
-        <finalName>portal</finalName>        
+        <finalName>portal</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<!-- No OSGi, because we still use ZK 5 -->
-				<configuration>
-					<archive>					
-						<manifestFile>
-							src/main/webapp/META-INF/MANIFEST.MF
-						</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <!-- No OSGi, because we still use ZK 5 -->
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            src/main/webapp/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -184,16 +184,16 @@
             <artifactId>org.springframework.ws</artifactId>
             <scope>compile</scope>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.ws.support</artifactId>
-			<scope>compile</scope>
-		</dependency> 
-		<dependency> 
-			<groupId>javax.wsdl</groupId>
-			<artifactId>com.springsource.javax.wsdl</artifactId>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.ws.support</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.wsdl</groupId>
+            <artifactId>com.springsource.javax.wsdl</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Spring dependencies -->
         <dependency>
@@ -205,7 +205,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context.support</artifactId>
             <scope>compile</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.web</artifactId>

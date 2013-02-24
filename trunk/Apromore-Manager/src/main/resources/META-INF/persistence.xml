@@ -4,6 +4,28 @@
 
     <persistence-unit name="Apromore" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.cache.type.default" value="SOFT"/>
+            <property name="eclipselink.cache.shared.Process" value="true"/>
+            <property name="eclipselink.cache.size.Process" value="1000"/>
+            <property name="eclipselink.cache.shared.ProcessBranch" value="true"/>
+            <property name="eclipselink.cache.size.ProcessBranch" value="1000"/>
+            <property name="eclipselink.cache.shared.ProcessModelVersion" value="true"/>
+            <property name="eclipselink.cache.size.ProcessModelVersion" value="1000"/>
+            <property name="eclipselink.cache.shared.FragmentVersion" value="true"/>
+            <property name="eclipselink.cache.size.FragmentVersion" value="1000"/>
+            <property name="eclipselink.cache.shared.Content" value="true"/>
+            <property name="eclipselink.cache.size.Content" value="1000"/>
+            <property name="eclipselink.cache.shared.Node" value="true"/>
+            <property name="eclipselink.cache.size.Node" value="10000"/>
+            <property name="eclipselink.cache.shared.Edge" value="true"/>
+            <property name="eclipselink.cache.size.Edge" value="10000"/>
+            <property name="eclipselink.cache.shared.NonPocketNode" value="true"/>
+            <property name="eclipselink.cache.size.NonPocketNode" value="10000"/>
+        </properties>
 
         <class>org.apromore.dao.model.Annotation</class>
         <class>org.apromore.dao.model.Cluster</class>

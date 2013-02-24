@@ -1,10 +1,20 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Inject;
+
 import nl.tue.tm.is.graph.SimpleGraph;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
+import org.apromore.clustering.algorithm.dbscan.FragmentPair;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
+import org.apromore.clustering.algorithm.hac.HACClusterer;
+import org.apromore.clustering.algorithm.dbscan.InMemoryClusterer;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
@@ -24,19 +34,10 @@ import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
-import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
 
 /**
  * Implementation of the ClusterService Contract.
@@ -47,13 +48,17 @@ import javax.inject.Inject;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ClusterServiceImpl implements ClusterService {
 
+    private static final String DBSCAN = "DBSCAN";
+    private static final String HAC = "HAC";
+
     private ClusterRepository cRepository;
     private ClusterAssignmentRepository caRepository;
     private FragmentVersionRepository fvRepository;
     private FragmentDistanceRepository fdRepository;
-    private DistanceMatrix matrix;
-    private InMemoryClusterer clusterer;
     private FragmentService fService;
+
+    private InMemoryClusterer dbscanClusterer;
+    private HACClusterer hacCluster;
 
 
     /**
@@ -63,20 +68,19 @@ public class ClusterServiceImpl implements ClusterService {
      * @param fragmentVersionRepository Fragment Version Repository.
      * @param fragmentDistanceRepository Fragment Distance Repository.
      * @param fragmentService Fragment Repository.
-     * @param distanceMatrix Distance Matrix.
      * @param inMemoryClusterer in Memory Clusterer.
      */
     @Inject
     public ClusterServiceImpl(final ClusterRepository clusterRepository,
             final ClusterAssignmentRepository clusterAssignmentRepository, final FragmentVersionRepository fragmentVersionRepository,
-            final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService, final DistanceMatrix distanceMatrix,
-            final InMemoryClusterer inMemoryClusterer) {
+            final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService,
+            final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
         fvRepository = fragmentVersionRepository;
         fdRepository = fragmentDistanceRepository;
-        matrix = distanceMatrix;
-        clusterer = inMemoryClusterer;
+        dbscanClusterer = inMemoryClusterer;
+        hacCluster = hacClusterer;
         fService = fragmentService;
     }
 
@@ -112,9 +116,14 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional(readOnly = false)
     public void cluster(ClusterSettings settings) throws RepositoryException {
-        computeDistanceMatrix();
-        clearClusters();
-        clusterer.clusterRepository(settings);
+        cRepository.deleteAll();
+        caRepository.deleteAll();
+
+        if (DBSCAN.equals(settings.getAlgorithm())) {
+            dbscanClusterer.clusterRepository(settings);
+        } else if (HAC.equals(settings.getAlgorithm())) {
+            hacCluster.clusterRepository(settings);
+        }
     }
 
     /**
@@ -322,27 +331,13 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
 
-    /**
-     * @see org.apromore.service.ClusterService#clearClusters()
-     * {@inheritDoc}
-     */
-    @Override
+    /* Delete the previous cluster run. */
     @Transactional(readOnly = false)
-    public void clearClusters() {
+    private void clearClusters() {
         cRepository.deleteAll();
         caRepository.deleteAll();
     }
 
 
-
-    /* Computers the fragment distances. */
-    @Transactional(readOnly = false)
-    private void computeDistanceMatrix() {
-        try {
-            matrix.compute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }

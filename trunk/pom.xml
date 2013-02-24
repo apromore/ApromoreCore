@@ -45,17 +45,23 @@
         </repository>
         <repository>
             <id>com.springsource.repository.bundles.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle
-                Releases
-            </name>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/release</url>
         </repository>
         <repository>
             <id>com.springsource.repository.bundles.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Bundle
-                Releases
-            </name>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.libraries.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
+            <url>http://repository.springsource.com/maven/libraries/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.libraries.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
+            <url>http://repository.springsource.com/maven/libraries/external</url>
         </repository>
         <repository>
             <id>sonatype-oss-public</id>
@@ -214,9 +220,9 @@
                                 <exclude>**/*${integration.test.suffix}</exclude>
                             </excludes>
                             <!--<includes>-->
-                                <!--<include>**/${integration.test.package}/**/*Test.java</include>-->
-                                <!--<include>**/${integration.test.package}/**/*TestCase.java</include>-->
-                                <!--<include>**/*${integration.test.suffix}</include>-->
+                            <!--<include>**/${integration.test.package}/**/*Test.java</include>-->
+                            <!--<include>**/${integration.test.package}/**/*TestCase.java</include>-->
+                            <!--<include>**/*${integration.test.suffix}</include>-->
                             <!--</includes>-->
                         </configuration>
                     </execution>
@@ -299,6 +305,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.plugin}</version>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -970,6 +977,12 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>org.springframework.jdbc</artifactId>
+                <version>${spring.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.asm</artifactId>
                 <version>${spring.version}</version>
                 <scope>provided</scope>
@@ -1142,6 +1155,12 @@
                 <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
                 <version>${jaxb-xjc.version}</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.xml</groupId>
+                        <artifactId>com.springsource.com.sun.xml.bind.jaxb1</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Commons -->
@@ -1481,6 +1500,7 @@
         <maven.help.plugin>2.1.1</maven.help.plugin>
         <maven.install.plugin>2.3.1</maven.install.plugin>
         <maven.jar.plugin>2.3.2</maven.jar.plugin>
+        <maven.jacoco.version>0.6.2.201302030002</maven.jacoco.version>
         <!-- Need to downgrade to 2.3.2 because of this bug: https://github.com/sonatype/m2eclipse-extras/issues/10 -->
         <maven.javadoc.plugin>2.8.1</maven.javadoc.plugin>
         <maven.jaxb2.plugin>0.8.2</maven.jaxb2.plugin>

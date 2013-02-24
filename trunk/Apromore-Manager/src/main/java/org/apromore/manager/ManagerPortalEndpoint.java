@@ -180,7 +180,7 @@ import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.NameValuePair;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
+import org.apromore.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;

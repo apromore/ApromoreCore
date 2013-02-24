@@ -15,7 +15,7 @@ public interface SimilarityService {
     /**
      * Search for similar processes.
      *
-     * @param branchId       the branchId
+     * @param processId      the processId
      * @param versionName    the name of the version we are looking for
      * @param latestVersions are we looking at the latest version or all processes
      * @param method         the search algorithm

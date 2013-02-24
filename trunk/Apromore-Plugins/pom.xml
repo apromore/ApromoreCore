@@ -363,11 +363,15 @@
             <groupId>org.eclipse.gemini</groupId>
             <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
         </dependency>
-        
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
 
@@ -377,6 +381,8 @@
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
+
+        <httpcomponents.version>4.2.1</httpcomponents.version>
     </properties>
 
 </project>

@@ -3,6 +3,7 @@ package org.apromore.dao.model;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "non_pocket_node")
+@Cacheable(true)
 @Configurable("nonPocketNode")
 public class NonPocketNode implements Serializable {
 

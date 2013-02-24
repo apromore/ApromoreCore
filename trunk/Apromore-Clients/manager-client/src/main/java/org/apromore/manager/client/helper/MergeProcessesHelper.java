@@ -28,7 +28,7 @@ public class MergeProcessesHelper {
         ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
 
         for (Map.Entry<ProcessSummaryType, List<VersionSummaryType>> i : selectedProcessVersions.entrySet()) {
-            for (VersionSummaryType v : i.getValue()) {
+            for (VersionSummaryType v : i.getKey().getVersionSummaries()) {
                 id = new ProcessVersionIdType();
                 id.setProcessId(i.getKey().getId());
                 id.setVersionName(v.getName());

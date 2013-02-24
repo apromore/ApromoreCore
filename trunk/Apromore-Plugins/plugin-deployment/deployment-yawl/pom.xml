@@ -88,6 +88,10 @@
 
         <!-- Test dependencies -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
         </dependency>
@@ -103,7 +107,7 @@
     </dependencies>
 
     <properties>
-        <httpcomponents.version>4.2.1</httpcomponents.version>
+        <!--<httpcomponents.version>4.2.1</httpcomponents.version>-->
     </properties>
 
 </project>

@@ -82,8 +82,8 @@ public class FormatServiceImpl implements FormatService {
     @Transactional(readOnly = false)
     public void storeNative(String procName, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
             NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException {
-        InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
-        String nativeString = StreamUtil.inputStream2String(sync_npf).trim();
+        //InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
+        String nativeString = StreamUtil.inputStream2String(cpf).trim();
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
 
         Native nat = new Native();
@@ -92,15 +92,18 @@ public class FormatServiceImpl implements FormatService {
         nat.setProcessModelVersion(pmv);
         nat = nativeRepo.save(nat);
 
-        Annotation annotation = new Annotation();
-        annotation.setContent(annString);
-        annotation.setName(annVersion);
-        annotation.setNatve(nat);
-        annotation.setProcessModelVersion(pmv);
-        annotation = annotationRepo.save(annotation);
-
         pmv.getNatives().add(nat);
-        pmv.getAnnotations().add(annotation);
+
+        if (annString != null && !annString.equals("")) {
+            Annotation annotation = new Annotation();
+            annotation.setContent(annString);
+            annotation.setName(annVersion);
+            annotation.setNatve(nat);
+            annotation.setProcessModelVersion(pmv);
+            annotation = annotationRepo.save(annotation);
+
+            pmv.getAnnotations().add(annotation);
+        }
     }
 
 }

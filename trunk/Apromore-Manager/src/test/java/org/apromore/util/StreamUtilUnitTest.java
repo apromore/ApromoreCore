@@ -133,42 +133,42 @@ public class StreamUtilUnitTest {
         assertThat(result, containsString(updated));
     }
 
-    @Ignore
-    @Test
-    public void testCopyParam2NPFXPDL() throws Exception {
-        //TODO FM, i think that is not needed anymore
+//    @Ignore
+//    @Test
+//    public void testCopyParam2NPFXPDL() throws Exception {
+//        //TODO FM, i think that is not needed anymore
+//
+//        String nativeType = "XPDL 2.1";
+//        String name = "bob43";
+//        double version = 99.9;
+//        String username = "Osama";
+//        String created = "12/12/2012";
+//        String updated = "12/12/2012";
+//
+//        InputStream stream = new ByteArrayInputStream(TestData.XPDL2.getBytes());
+//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
+//        String result = StreamUtil.convertStreamToString(stream2);
+//
+//        assertThat(result, containsString(name));
+//        assertThat(result, containsString(username));
+//        assertThat(result, containsString(created));
+//        assertThat(result, containsString(updated));
+//    }
 
-        String nativeType = "XPDL 2.1";
-        String name = "bob43";
-        double version = 99.9;
-        String username = "Osama";
-        String created = "12/12/2012";
-        String updated = "12/12/2012";
-
-        InputStream stream = new ByteArrayInputStream(TestData.XPDL2.getBytes());
-        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
-        String result = StreamUtil.convertStreamToString(stream2);
-
-        assertThat(result, containsString(name));
-        assertThat(result, containsString(username));
-        assertThat(result, containsString(created));
-        assertThat(result, containsString(updated));
-    }
-
-    @Test
-    public void testCopyParam2NPFEPML() throws Exception {
-        String nativeType = "EPML 2.0";
-        String name = "bob43";
-        double version = 99.9;
-        String username = "Osama";
-        String created = "12/12/2012";
-        String updated = "12/12/2012";
-
-        InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
-        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
-
-        assertThat(stream2, equalTo(stream));
-    }
+//    @Test
+//    public void testCopyParam2NPFEPML() throws Exception {
+//        String nativeType = "EPML 2.0";
+//        String name = "bob43";
+//        double version = 99.9;
+//        String username = "Osama";
+//        String created = "12/12/2012";
+//        String updated = "12/12/2012";
+//
+//        InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
+//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType, name, version, username, created, updated);
+//
+//        assertThat(stream2, equalTo(stream));
+//    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -216,20 +216,20 @@ public class StreamUtilUnitTest {
         assertThat(pkg.getPackageHeader().getDocumentation(), notNullValue());
     }
 
-    @Ignore
-    @Test
-    public void testCopyParam2NPFPMNL() throws Exception {
-        String nativeType = "PMNL 2.0";
-        String name = "bob43";
-        double version = 99.9;
-        String username = "Osama";
-        String created = "12/12/2012";
-        String updated = "12/12/2012";
-
-        InputStream stream = new ByteArrayInputStream("test".getBytes());
-        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType,  name, version, username, created, updated);
-
-        //TODO why should it be NULL?
-        assertThat(stream2, equalTo(null));
-    }
+//    @Ignore
+//    @Test
+//    public void testCopyParam2NPFPMNL() throws Exception {
+//        String nativeType = "PMNL 2.0";
+//        String name = "bob43";
+//        double version = 99.9;
+//        String username = "Osama";
+//        String created = "12/12/2012";
+//        String updated = "12/12/2012";
+//
+//        InputStream stream = new ByteArrayInputStream("test".getBytes());
+//        InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType,  name, version, username, created, updated);
+//
+//        //TODO why should it be NULL?
+//        assertThat(stream2, equalTo(null));
+//    }
 }
