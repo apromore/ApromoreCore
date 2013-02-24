@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
 import org.xml.sax.SAXException;
 
 // Local packages
@@ -248,6 +249,12 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      */
     public static JAXBContext newContext() {
         try {
+//            ClassLoader bpmnClassLoader = org.omg.spec.bpmn._20100524.model.ObjectFactory.class.getClassLoader();
+//            return JAXBContext.newInstance(
+//                    "org.omg.spec.bpmn._20100524.model:" +
+//                    "org.omg.spec.bpmn._20100524.di:" +
+//                    "org.omg.spec.dd._20100524.dc:" +
+//                    "org.omg.spec.dd._20100524.di", bpmnClassLoader);
             return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,

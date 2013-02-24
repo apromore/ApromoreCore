@@ -109,7 +109,7 @@ public class UIHelper implements UserInterfaceHelper {
         List<Process> processes = pRepository.findAllProcesses(conditions);
 
         for (Process process : processes) {
-            processSummaryType = buildProcessList(proIds, process);
+            processSummaryType = buildProcessList(proIds, similarProcesses, process);
             if (processSummaryType != null) {
                 processSummaries.getProcessSummary().add(processSummaryType);
             }
@@ -131,7 +131,7 @@ public class UIHelper implements UserInterfaceHelper {
         List<ProcessUser> processes = workspaceService.getUserProcesses(userId, folderId);
 
         for (ProcessUser processUser : processes) {
-            processSummaryType = buildProcessList(proIds, processUser.getProcess());
+            processSummaryType = buildProcessList(proIds, similarProcesses, processUser.getProcess());
             if (processSummaryType != null) {
                 processSummaryType.setHasRead(processUser.isHasRead());
                 processSummaryType.setHasWrite(processUser.isHasWrite());
@@ -145,7 +145,7 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /* Builds the list from a process record. */
-    private ProcessSummaryType buildProcessList(List<Integer> proIds, Process process) {
+    private ProcessSummaryType buildProcessList(List<Integer> proIds, ProcessVersionsType similarProcesses, Process process) {
         ProcessSummaryType processSummary = null;
         if (proIds != null && (proIds.isEmpty() || !proIds.contains(process.getId()))) {
             return processSummary;
@@ -161,16 +161,25 @@ public class UIHelper implements UserInterfaceHelper {
         if (process.getUser() != null) {
             processSummary.setOwner(process.getUser().getUsername());
         }
-        buildVersionSummaryTypeList(processSummary, process);
+        buildVersionSummaryTypeList(processSummary, similarProcesses, process);
 
         return processSummary;
     }
 
 
     /* Builds the list of version Summaries for a process. */
-    private void buildVersionSummaryTypeList(ProcessSummaryType processSummary, Process pro) {
+    private void buildVersionSummaryTypeList(ProcessSummaryType processSummary, ProcessVersionsType similarProcesses, Process pro) {
         Double maxVersion;
         VersionSummaryType versionSummary;
+        ProcessVersionType processVersionType = null;
+
+        if (similarProcesses != null) {
+            for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
+                if (pvt.getProcessId().equals(pro.getId())) {
+                    processVersionType = pvt;
+                }
+            }
+        }
 
         // Find the branches for a RootFragment.
         Set<ProcessBranch> branches = pro.getProcessBranches();
@@ -183,6 +192,9 @@ public class UIHelper implements UserInterfaceHelper {
             versionSummary.setLastUpdate(branch.getLastUpdate());
             versionSummary.setRanking(branch.getRanking());
             versionSummary.setVersionNumber(maxVersion);
+            if (processVersionType != null) {
+                versionSummary.setScore(processVersionType.getScore());
+            }
             buildNativeSummaryList(processSummary, versionSummary, maxVersion);
 
             processSummary.getVersionSummaries().add(versionSummary);
@@ -223,10 +235,8 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         List<Integer> proIds = new ArrayList<Integer>(0);
-        if (similarProcesses != null) {
-            for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
-                proIds.add(pvt.getProcessId());
-            }
+        for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
+            proIds.add(pvt.getProcessId());
         }
         return proIds;
     }

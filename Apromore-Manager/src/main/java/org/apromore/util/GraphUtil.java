@@ -119,19 +119,23 @@ public class GraphUtil {
 
     public static boolean isWorkNode(INode node) {
         boolean result = false;
-        if (node.getNodeType().equals(NodeTypeEnum.WORK)) {
-            result = true;
+        if (node != null && node.getNodeType() != null) {
+            if (node.getNodeType().equals(NodeTypeEnum.WORK)) {
+                result = true;
+            }
         }
         return result;
     }
 
     public static boolean isGatewayNode(INode node) {
         boolean result = false;
-        if (node.getNodeType().equals(NodeTypeEnum.STATE) ||
-                node.getNodeType().equals(NodeTypeEnum.ORJOIN) || node.getNodeType().equals(NodeTypeEnum.ORSPLIT) ||
-                node.getNodeType().equals(NodeTypeEnum.ANDJOIN) || node.getNodeType().equals(NodeTypeEnum.ANDSPLIT) ||
-                node.getNodeType().equals(NodeTypeEnum.XORJOIN) || node.getNodeType().equals(NodeTypeEnum.XORSPLIT)) {
-            result = true;
+        if (node != null && node.getNodeType() != null) {
+            if (node.getNodeType().equals(NodeTypeEnum.STATE) ||
+                    node.getNodeType().equals(NodeTypeEnum.ORJOIN) || node.getNodeType().equals(NodeTypeEnum.ORSPLIT) ||
+                    node.getNodeType().equals(NodeTypeEnum.ANDJOIN) || node.getNodeType().equals(NodeTypeEnum.ANDSPLIT) ||
+                    node.getNodeType().equals(NodeTypeEnum.XORJOIN) || node.getNodeType().equals(NodeTypeEnum.XORSPLIT)) {
+                result = true;
+            }
         }
         return result;
     }

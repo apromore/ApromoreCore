@@ -6,6 +6,7 @@ package org.apromore.dao.model;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "fragment_distance",
         uniqueConstraints = @UniqueConstraint(columnNames = {"fragmentVersionId1", "fragmentVersionId2"}))
+@Cacheable(true)
 @Configurable("fragmentDistance")
 public class FragmentDistance implements Serializable {
 
@@ -37,12 +39,13 @@ public class FragmentDistance implements Serializable {
     /**
      * Public Constructor.
      */
-    public FragmentDistance() { }
-
+    public FragmentDistance() {
+    }
 
 
     /**
      * returns the Id of this Object.
+     *
      * @return the id
      */
     @Id
@@ -54,12 +57,12 @@ public class FragmentDistance implements Serializable {
 
     /**
      * Sets the Id of this Object
+     *
      * @param id the new Id.
      */
     public void setId(final Integer id) {
         this.id = id;
     }
-
 
 
     @ManyToOne

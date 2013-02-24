@@ -23,7 +23,6 @@ import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
-import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ToolboxData;
@@ -50,7 +49,6 @@ public class MergeServiceImpl implements MergeService {
     private CanoniserService canoniserSrv;
     private ProcessService processSrv;
     private UserInterfaceHelper ui;
-    private MergeProcesses merge;
 
 
     /**
@@ -60,16 +58,14 @@ public class MergeServiceImpl implements MergeService {
      * @param canoniserService              Canoniser Service.
      * @param processService                Native Type repository.
      * @param uiHelper                      the User Interface Helper.
-     * @param mergeProcesses                the m
      */
     @Inject
     public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
-            final ProcessService processService, final UserInterfaceHelper uiHelper, final MergeProcesses mergeProcesses) {
+            final ProcessService processService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
         canoniserSrv = canoniserService;
         processSrv = processService;
         ui = uiHelper;
-        merge = mergeProcesses;
     }
 
 
@@ -98,7 +94,8 @@ public class MergeServiceImpl implements MergeService {
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
 
-            ProcessModelVersion pmv = processSrv.importProcess(username, processName, 0.1d, null, null, null, domain, "", created, created);
+            // This fails as we need to specify a native type and pass in the model.
+            ProcessModelVersion pmv = processSrv.importProcess(username, processName, 0.1d, null, cp, cp.getCpf(), domain, "", created, created);
             pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getProcessBranch().getBranchName(), 0.1d, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
@@ -151,7 +148,7 @@ public class MergeServiceImpl implements MergeService {
     /* Does the merge. */
     private CanonicalProcessType performMerge(ToolboxData data) {
         ArrayList<CanonicalProcessType> models = new ArrayList<CanonicalProcessType>(data.getModel().values());
-        return merge.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
+        return MergeProcesses.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
                 data.getModelthreshold(), data.getLabelthreshold(), data.getContextthreshold(), data.getSkipnweight(),
                 data.getSubnweight(), data.getSkipeweight());
     }
