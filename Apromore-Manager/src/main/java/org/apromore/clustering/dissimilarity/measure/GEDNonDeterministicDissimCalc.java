@@ -1,10 +1,11 @@
 package org.apromore.clustering.dissimilarity.measure;
 
-import matching.algos.GraphEditDistanceDeterministicGreedy;
+import matching.algos.DistanceAlgoAbstr;
+import matching.algos.GraphEditDistanceGreedy;
 import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.clustering.dissimilarity.DissimilarityCalc;
 
-public class GEDDissimCalc implements DissimilarityCalc {
+public class GEDNonDeterministicDissimCalc implements DissimilarityCalc {
 	private double threshold;
 	
 	static double ledcutoff = 0.5;
@@ -19,10 +20,9 @@ public class GEDDissimCalc implements DissimilarityCalc {
 	static double sweight = 1.0;
 	static double eweight = 1.0;
 
-//	static GraphEditDistanceGreedy gedepc = new GraphEditDistanceGreedy();
-	static GraphEditDistanceDeterministicGreedy gedepc = new GraphEditDistanceDeterministicGreedy();
+	static DistanceAlgoAbstr gedepc = new GraphEditDistanceGreedy(); 
 
-	public GEDDissimCalc(double threshold, double ledc) {
+	public GEDNonDeterministicDissimCalc(double threshold, double ledc) {
 		ledcutoff = ledc;
 		Object weights[] = {"vweight",vweight,"sweight",sweight,"eweight",eweight,"ledcutoff",ledcutoff,"usepuredistance",usepuredistance,"prunewhen",prunewhen,"pruneto",pruneto,"useepsilon",useepsilon};
 		gedepc.setWeight(weights);
@@ -31,14 +31,9 @@ public class GEDDissimCalc implements DissimilarityCalc {
 	}
 
 	public double compute(SimpleGraph graph1, SimpleGraph graph2) {
-		gedepc.resetDeterminismFlag();
 		return gedepc.compute(graph1,graph2);
 	}
 
-	public boolean isDeterministicGED() {
-		return gedepc.isDeterministic();
-	}
-	
 	public boolean isAboveThreshold(double disim) {
 		return disim > threshold;
 	}

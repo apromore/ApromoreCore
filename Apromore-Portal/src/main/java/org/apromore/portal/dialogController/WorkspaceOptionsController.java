@@ -29,7 +29,7 @@ public class WorkspaceOptionsController extends Menubar {
     private Button btnRenameFolder;
     private Button btnRemoveFolder;
     private Button btnSecurity;
-    private Button btnListView;
+//    private Button btnListView;
 
     public WorkspaceOptionsController(MainController mainController) throws ExceptionFormats {
         this.mainController = mainController;
@@ -39,7 +39,7 @@ public class WorkspaceOptionsController extends Menubar {
         this.btnRenameFolder = (Button) options.getFellow("btnRenameFolder");
         this.btnRemoveFolder = (Button) options.getFellow("btnRemoveFolder");
         this.btnSecurity = (Button) options.getFellow("btnSecurity");
-        this.btnListView = (Button) options.getFellow("btnListView");
+//        this.btnListView = (Button) options.getFellow("btnListView");
 
         this.btnAddFolder.addEventListener("onClick", new EventListener() {
             public void onEvent(Event event) throws Exception {
@@ -47,11 +47,11 @@ public class WorkspaceOptionsController extends Menubar {
             }
         });
 
-        this.btnListView.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                showList();
-            }
-        });
+//        this.btnListView.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                showList();
+//            }
+//        });
 
         this.btnAddProcess.addEventListener("onClick", new EventListener() {
             public void onEvent(Event event) throws Exception {
@@ -78,9 +78,9 @@ public class WorkspaceOptionsController extends Menubar {
         });
     }
 
-    protected void showList() {
-        this.mainController.toggleView(false);
-    }
+//    protected void showList() {
+//        this.mainController.toggleView(false);
+//    }
 
     protected void addFolder() throws InterruptedException {
         this.mainController.eraseMessage();

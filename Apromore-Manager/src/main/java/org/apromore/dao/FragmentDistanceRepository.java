@@ -2,9 +2,7 @@ package org.apromore.dao;
 
 import java.util.List;
 
-import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FragmentDistance;
-import org.apromore.dao.model.FragmentVersion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  */
 @Repository
-public interface FragmentDistanceRepository extends JpaRepository<FragmentDistance, Integer> {
+public interface FragmentDistanceRepository extends JpaRepository<FragmentDistance, Integer>, FragmentDistanceRepositoryCustom {
 
     /**
      * Searches for a a particular fragment distance.

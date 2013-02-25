@@ -8,7 +8,9 @@ public interface ContainmentRelation {
 
     Integer getFragmentId(int index);
 
-    Integer getFragmentIndex(Integer fragId);
+    Integer getFragmentIndex(Integer fragmentId);
+
+    int getFragmentSize(Integer fragmentId);
 
     boolean areInContainmentRelation(int index1, int index2);
 
@@ -19,4 +21,5 @@ public interface ContainmentRelation {
     void setMinSize(int minSize);
 
     void initialize() throws Exception;
+
 }

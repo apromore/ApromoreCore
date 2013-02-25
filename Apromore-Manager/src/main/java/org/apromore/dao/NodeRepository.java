@@ -15,7 +15,7 @@ import java.util.List;
  * @see org.apromore.dao.model.Node
  */
 @Repository
-public interface NodeRepository extends JpaRepository<Node, Integer> {
+public interface NodeRepository extends JpaRepository<Node, Integer>, NodeRepositoryCustom {
 
     /**
      * Find the Node by It's Uri.
