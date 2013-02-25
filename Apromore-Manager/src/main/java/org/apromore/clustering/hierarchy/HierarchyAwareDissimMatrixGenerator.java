@@ -1,5 +1,12 @@
 package org.apromore.clustering.hierarchy;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
@@ -14,17 +21,11 @@ import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
@@ -32,15 +33,10 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
 
-    @Inject
     private ClusterService cService;
-    @Inject
     private FragmentVersionRepository fragmentVersionRepository;
-    @Inject
     private ContainmentRelation containmentRelation;
-    @Inject
     private ComposerService composerService;
-
 
     /* Fragment Id -> SimpleGraph object containing all nodes and edges of the fragment. */
     private Map<Integer, SimpleGraph> models = new HashMap<Integer, SimpleGraph>();
@@ -53,6 +49,29 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     int totalPairs = 0;
     int reportingInterval = 0;
     int processedPairs = 0;
+
+
+
+    @Inject
+    public HierarchyAwareDissimMatrixGenerator(final ClusterService cSrv, final FragmentVersionRepository fragRepo,
+            final ContainmentRelation cRel, final @Qualifier("composerServiceImpl") ComposerService compSrv) {
+        cService = cSrv;
+        fragmentVersionRepository = fragRepo;
+        containmentRelation = cRel;
+        composerService = compSrv;
+    }
+
+
+
+    /**
+     * Initializes the Object.
+     * @param threshold the threshold for dis-similarity
+     */
+    @Override
+    public void initialize(ContainmentRelation containmentRelation, double threshold) {
+        this.containmentRelation = containmentRelation;
+        this.dissThreshold = threshold;
+    }
 
 
     /**

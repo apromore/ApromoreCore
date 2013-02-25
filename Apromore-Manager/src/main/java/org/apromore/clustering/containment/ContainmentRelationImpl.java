@@ -17,23 +17,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ContainmentRelationImpl implements ContainmentRelation {
 
-    @Resource
     private FragmentVersionRepository fragmentVersionRepository;
-    @Resource
     private FragmentVersionDagRepository fragmentVersionDagRepository;
-    @Resource
     private ProcessModelVersionRepository processModelVersionRepository;
 
     private Map<Integer, Integer> idIndexMap = new HashMap<Integer, Integer>();
     private  Map<Integer, Integer> indexIdMap = new HashMap<Integer, Integer>();
     private List<Integer> idList = new ArrayList<Integer>();
     private Map<Integer, Integer> fragSize = new HashMap<Integer, Integer>();
-
     private List<Integer> rootIds = new ArrayList<Integer>();
 
     /* Mapping from root fragment Id -> Ids of all ascendant fragments of that root fragment */
@@ -41,11 +38,17 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     private boolean[][] contmatrix;
     private int minSize = 3;
 
-
     /**
-     * Public Constructor.
+     * Public Constructor used for spring wiring of objects, also used for tests.
      */
-    public ContainmentRelationImpl() { }
+
+    @Inject
+    public ContainmentRelationImpl(final FragmentVersionRepository fragVersionRepo, final FragmentVersionDagRepository fragDagRepo,
+            final ProcessModelVersionRepository pmvRepo) {
+        fragmentVersionRepository = fragVersionRepo;
+        fragmentVersionDagRepository = fragDagRepo;
+        processModelVersionRepository = pmvRepo;
+    }
 
     /**
      * Get something.
@@ -87,6 +90,9 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         }
     }
 
+    public int getFragmentSize(Integer fragmentId) {
+        return fragSize.get(fragmentId);
+    }
 
     public List<Integer> queryRoots() throws Exception {
         rootIds = processModelVersionRepository.getRootFragments(minSize);
@@ -158,7 +164,6 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     public List<Integer> getRoots() {
         return rootIds;
     }
-
 
     @Override
     public List<Integer> getHierarchy(Integer rootFragmentId) {

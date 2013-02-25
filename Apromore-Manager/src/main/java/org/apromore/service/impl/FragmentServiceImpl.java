@@ -19,6 +19,7 @@ import org.apromore.service.LockService;
 import org.apromore.clustering.algorithm.dbscan.FragmentDataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -63,7 +64,8 @@ public class FragmentServiceImpl implements FragmentService {
     @Inject
     public FragmentServiceImpl(final FragmentVersionRepository fragmentVersionRepository,
             final FragmentVersionDagRepository fragmentVersionDagRepository, final CanoniserService canoniserService,
-            final LockService lockService, final ComposerService composerService, final CanonicalConverter canonicalConverter) {
+            final LockService lockService, final @Qualifier("composerServiceImpl") ComposerService composerService,
+            final CanonicalConverter canonicalConverter) {
         fvRepository = fragmentVersionRepository;
         fvdRepository = fragmentVersionDagRepository;
         converter = canonicalConverter;

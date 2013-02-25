@@ -1,20 +1,4 @@
-package org.apromore.toolbox.clustering.algorithms.dbscan;
-
-import org.apromore.common.Constants;
-import org.apromore.dao.ClusterAssignmentRepository;
-import org.apromore.dao.ClusterRepository;
-import org.apromore.dao.model.Cluster;
-import org.apromore.dao.model.ClusterAssignment;
-import org.apromore.exception.RepositoryException;
-import org.apromore.service.FragmentService;
-import org.apromore.service.model.ClusterSettings;
-import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+package org.apromore.clustering.algorithm.dbscan;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +12,21 @@ import java.util.Random;
 import java.util.Set;
 import javax.inject.Inject;
 
+import org.apromore.clustering.analyzers.ClusterAnalyzer;
+import org.apromore.common.Constants;
+import org.apromore.dao.ClusterRepository;
+import org.apromore.dao.model.Cluster;
+import org.apromore.dao.model.ClusterAssignment;
+import org.apromore.exception.RepositoryException;
+import org.apromore.service.FragmentService;
+import org.apromore.service.model.ClusterSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * @author Chathura Ekanayake
  */
@@ -37,21 +36,12 @@ public class InMemoryClusterer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
 
-    @Inject
     private InMemoryGEDMatrix inMemoryGEDMatrix;
-    @Inject
     private InMemoryExcludedObjectClusterer inMemoryExcludedObjectClusterer;
-    @Inject
     private InMemoryHierarchyBasedFilter inMemoryHierarchyBasedFilter;
-    @Inject
     private ClusterAnalyzer clusterAnalyzer;
-    @Inject
     private ClusterRepository clusterRepository;
-    @Inject
-    private ClusterAssignmentRepository clusterAssignmentRepository;
-    @Inject
     private FragmentService fragmentService;
-
 
     private int minPoints = 4;
     private ClusterSettings settings;
@@ -64,7 +54,26 @@ public class InMemoryClusterer {
     private Map<Integer, InMemoryCluster> clusters = null;
 
 
+
+    /**
+     * Public Constructor used for because we don't implement an interface and use Proxys.
+     */
     public InMemoryClusterer() { }
+
+    /**
+     * Public Constructor used for spring wiring of objects, also used for tests.
+     */
+    @Inject
+    public InMemoryClusterer(final InMemoryGEDMatrix gedMatrix, final InMemoryExcludedObjectClusterer excludeObjects,
+            final InMemoryHierarchyBasedFilter hierarchyFilter, final ClusterAnalyzer clusterAn, final ClusterRepository cRepo,
+            final FragmentService fragService) {
+        inMemoryGEDMatrix = gedMatrix;
+        inMemoryExcludedObjectClusterer = excludeObjects;
+        inMemoryHierarchyBasedFilter = hierarchyFilter;
+        clusterAnalyzer = clusterAn;
+        clusterRepository = cRepo;
+        fragmentService = fragService;
+    }
 
 
     @Transactional(readOnly = false)
@@ -134,33 +143,23 @@ public class InMemoryClusterer {
     }
 
     /* TODO: Fix this class and not use this temp method. */
+    @Transactional(readOnly = false)
     private void buildClusters(final List<Cluster> cds, final Collection<InMemoryCluster> values) {
-        Cluster newCluster;
         ClusterAssignment newClusterAssignment;
 
         for (Cluster cluster : cds) {
             for (InMemoryCluster imc : values) {
                 if (cluster.getId().equals(imc.getClusterId())) {
-                    newCluster = new Cluster();
-                    newCluster.setAvgFragmentSize(cluster.getAvgFragmentSize());
-                    newCluster.setBCR(cluster.getBCR());
-                    newCluster.setMedoidId(cluster.getMedoidId());
-                    newCluster.setRefactoringGain(cluster.getRefactoringGain());
-                    newCluster.setSize(cluster.getSize());
-                    newCluster.setStandardizingEffort(cluster.getStandardizingEffort());
-                    //newCluster = clusterRepository.save(newCluster);
-
                     for (FragmentDataObject f : imc.getFragments()) {
                         newClusterAssignment = new ClusterAssignment();
-                        newClusterAssignment.setCluster(newCluster);
+                        newClusterAssignment.setCluster(cluster);
                         newClusterAssignment.setFragment(f.getFragment());
                         newClusterAssignment.setCoreObjectNb(f.getCoreObjectNB());
-                        //newClusterAssignment = clusterAssignmentRepository.save(newClusterAssignment);
 
-                        newCluster.addClusterAssignment(newClusterAssignment);
+                        cluster.addClusterAssignment(newClusterAssignment);
                     }
 
-                    clusterRepository.save(newCluster);
+                    clusterRepository.save(cluster);
                 }
             }
         }
@@ -310,8 +309,8 @@ public class InMemoryClusterer {
     }
 
     /**
-     * @param n
-     * @param usedHierarchies
+     * @param n FragmentDataObjects
+     * @param usedHierarchies the set of used Hierarchies
      */
     private void removeAll(List<FragmentDataObject> n, Set<Integer> usedHierarchies) {
         List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
@@ -325,16 +324,13 @@ public class InMemoryClusterer {
     }
 
     /**
-     * @param newNeighbours
-     * @param allClusterFragments
-     * @return
+     * @param newNeighbours list of FragmentDataObjects
+     * @param allClusterFragments list of FragmentDataObjects
+     * @return true if the data satisfies the common medoid
      * @throws org.apromore.exception.RepositoryException
-     *
      */
-    private boolean isSatisfyCommonMedoid(
-            List<FragmentDataObject> newNeighbours, List<FragmentDataObject> allClusterFragments)
+    private boolean isSatisfyCommonMedoid(List<FragmentDataObject> newNeighbours, List<FragmentDataObject> allClusterFragments)
             throws RepositoryException {
-
         if (!settings.isEnableMergingRestriction()) {
             return true;
         }
@@ -375,6 +371,7 @@ public class InMemoryClusterer {
 
         return maxMedoidToFragmentDistance <= gedThreshold;
     }
+
 
     private double[] computeMedoidProperties(Integer fid, Map<FragmentPair, Double> distances) {
         double totalCost = 0;

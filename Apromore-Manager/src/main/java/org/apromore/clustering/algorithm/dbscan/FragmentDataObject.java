@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.algorithms.dbscan;
+package org.apromore.clustering.algorithm.dbscan;
 
 import org.apromore.dao.model.FragmentVersion;
 
@@ -46,8 +46,6 @@ public class FragmentDataObject {
     public FragmentDataObject(FragmentVersion newFragment) {
         this.fragment = newFragment;
     }
-
-
 
 
     public boolean isClusterSync() {

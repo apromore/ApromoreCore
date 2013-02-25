@@ -88,7 +88,7 @@ public class FolderController extends GenericForwardComposer {
             ex.printStackTrace();
         }
 
-        Clients.evalJavaScript("bindTiles();");
+        //Clients.evalJavaScript("bindTiles();");
     }
 
     public void onFolderDblClick$folderWindow(Event event) {

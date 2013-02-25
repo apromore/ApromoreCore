@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.algorithms.dbscan;
+package org.apromore.clustering.algorithm.dbscan;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,6 @@ public class NeighbourhoodCache {
     private static final Logger log = LoggerFactory.getLogger(NeighbourhoodCache.class);
 
     private Map<String, List<FragmentDataObject>> cache = new HashMap<String, List<FragmentDataObject>>();
-    private int cacheSize = 8000;
     private Queue<String> fifo = new LinkedList<String>();
 
     public void add(String fragmentId, List<FragmentDataObject> neighborhood) {
@@ -28,6 +27,7 @@ public class NeighbourhoodCache {
             return;
         }
 
+        int cacheSize = 8000;
         if (cache.size() >= cacheSize) {
             String oldestFragmentId = fifo.poll();
             cache.remove(oldestFragmentId);

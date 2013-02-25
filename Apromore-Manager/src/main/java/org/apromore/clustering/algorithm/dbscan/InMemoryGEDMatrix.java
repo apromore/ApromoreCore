@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.algorithms.dbscan;
+package org.apromore.clustering.algorithm.dbscan;
 
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentVersionRepository;
@@ -11,6 +11,8 @@ import org.apromore.service.model.ClusterSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -23,14 +25,12 @@ import javax.inject.Inject;
  * @author Chathura Ekanayake
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class InMemoryGEDMatrix {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGEDMatrix.class);
 
-    @Inject
     private ClusterRepository clusterRepository;
-    @Inject
     private FragmentVersionRepository fragmentVersionRepository;
 
     private NeighbourhoodCache neighborhoodCache;
@@ -42,13 +42,24 @@ public class InMemoryGEDMatrix {
     private ClusterSettings settings;
 
 
-    public InMemoryGEDMatrix() {
-        neighborhoodCache = new NeighbourhoodCache();
+    /**
+     * Public Constructor used for because we don't implement an interface and use Proxys.
+     */
+    public InMemoryGEDMatrix() { }
+
+    /**
+     * Public Constructor used for spring wiring of objects, also used for tests.
+     */
+    @Inject
+    public InMemoryGEDMatrix(final ClusterRepository cRepo, final FragmentVersionRepository fragVerRepo) {
+        clusterRepository = cRepo;
+        fragmentVersionRepository = fragVerRepo;
     }
 
 
     public void initialize(ClusterSettings settings, Map<Integer, InMemoryCluster> clusters, List<FragmentDataObject> noise,
                            List<FragmentDataObject> unprocessedFragments) throws RepositoryException {
+        neighborhoodCache = new NeighbourhoodCache();
         this.settings = settings;
         this.clusters = clusters;
         this.noise = noise;

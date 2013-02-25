@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.algorithms.dbscan;
+package org.apromore.clustering.algorithm.dbscan;
 
 import org.apromore.common.Constants;
 import org.apromore.exception.RepositoryException;
@@ -9,6 +9,8 @@ import org.apromore.service.model.ClusterSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -26,16 +28,13 @@ import javax.inject.Inject;
  * @author Chathura Ekanayake
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class InMemoryExcludedObjectClusterer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryExcludedObjectClusterer.class);
 
-    @Inject
     private InMemoryGEDMatrix inMemoryGEDMatrix;
-    @Inject
     private InMemoryHierarchyBasedFilter inMemoryHierarchyBasedFilter;
-
 
     private int minPoints;
     private ClusterSettings settings;
@@ -43,13 +42,27 @@ public class InMemoryExcludedObjectClusterer {
 
     private Map<Integer, InMemoryCluster> excludedClusters;
     private List<FragmentDataObject> excluded;
-
     private List<FragmentDataObject> unprocessedFragments;
     private List<Integer> allowedFragmentIds;
     private List<FragmentDataObject> ignoredFragments;
     private List<FragmentDataObject> noise;
 
+
+    /**
+     * Public Constructor used for because we don't implement an interface and use Proxys.
+     */
     public InMemoryExcludedObjectClusterer() { }
+
+    /**
+     * Public Constructor used for spring wiring of objects, also used for tests.
+     */
+    @Inject
+    public InMemoryExcludedObjectClusterer(final InMemoryGEDMatrix matrix, final InMemoryHierarchyBasedFilter hierarchyFilter) {
+        this.inMemoryGEDMatrix = matrix;
+        this.inMemoryHierarchyBasedFilter = hierarchyFilter;
+    }
+
+
 
     public void initialize(ClusterSettings settings, ClusteringContext cc) {
         this.settings = settings;

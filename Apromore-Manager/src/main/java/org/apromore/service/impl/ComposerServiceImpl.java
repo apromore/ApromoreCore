@@ -87,6 +87,11 @@ public class ComposerServiceImpl implements ComposerService {
     }
 
 
+    @Override
+    public void clearCache(List<Integer> fids) {
+        throw new UnsupportedOperationException("ClearCache for this Composer Service Implementation hasn't been Implemented.");
+    }
+
 
     private void composeFragment(final OperationContext op, final FragmentVersion fragVersion, final String pocketId) throws ExceptionDao {
         if (fragVersion != null) {
