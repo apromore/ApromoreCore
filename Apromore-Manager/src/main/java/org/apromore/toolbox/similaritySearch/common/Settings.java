@@ -1,8 +1,9 @@
 package org.apromore.toolbox.similaritySearch.common;
 
-import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
-
+import java.lang.reflect.InvocationTargetException;
 import java.util.StringTokenizer;
+
+import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
 
 import static java.lang.Class.forName;
 

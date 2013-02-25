@@ -1,5 +1,11 @@
 package org.apromore.toolbox.similaritySearch.common;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -36,19 +42,9 @@ import org.apromore.toolbox.similaritySearch.graph.VertexObjectRef;
 import org.apromore.toolbox.similaritySearch.graph.VertexResource;
 import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 public class CPFModelParser {
 
-    private static final String ATTRIBUTE_ADDED_NAME = "org.apromore.toolbox.similaritySearch.common.added";
-    private static final String ATTRIBUTE_ANNOTATION_NAME = "org.apromore.toolbox.similaritySearch.common.annotation";
-
-    public static Graph readModel(final CanonicalProcessType cpf) {
+    public static Graph readModel(CanonicalProcessType cpf) {
         Graph epcGraph = new Graph();
         epcGraph.name = cpf.getName();
 
@@ -74,7 +70,7 @@ public class CPFModelParser {
         return epcGraph;
     }
 
-    public static List<Graph> readModels(final CanonicalProcessType cpf) {
+    public static List<Graph> readModels(CanonicalProcessType cpf) {
         LinkedList<Graph> l = new LinkedList<Graph>();
 
         for (NetType mainNet : cpf.getNet()) {
@@ -93,31 +89,29 @@ public class CPFModelParser {
         return l;
     }
 
-    private static void addObjectsAndResources(final CanonicalProcessType cpf, final Graph epcGraph) {
-// TODO: FIX
-//        for (Object o : cpf.getObject()) {
-//            epcGraph.addObject(new VertexObject(o.getId(), o.getName(), o.isConfigurable(),
-//                    o instanceof HardType ? VertexObject.SoftHart.Hard :
-//                            (o instanceof SoftType ? VertexObject.SoftHart.Soft :
-//                                    VertexObject.SoftHart.Other)));
-//        }
+    private static void addObjectsAndResources(CanonicalProcessType cpf, Graph epcGraph) {
+        for (NetType net : cpf.getNet()) {
+            for (ObjectType o : net.getObject()) {
+                epcGraph.addObject(
+                        new VertexObject(o.getId(), o.getName(), o.isConfigurable(),
+                                o instanceof HardType ? VertexObject.SoftHart.Hard : (o instanceof SoftType ? VertexObject.SoftHart.Soft : VertexObject.SoftHart.Other))
+                );
+            }
+        }
 
         for (ResourceTypeType r : cpf.getResourceType()) {
             epcGraph.addResource(new VertexResource(r.getId(), r.getName(), r.isConfigurable(),
-                    r instanceof HumanType ? VertexResource.Type.Human :
-                            (r instanceof NonhumanType ? VertexResource.Type.NonHuman :
-                                    VertexResource.Type.Other)));
+                    r instanceof HumanType ? VertexResource.Type.Human : (r instanceof NonhumanType ? VertexResource.Type.NonHuman : VertexResource.Type.Other)));
         }
     }
 
-    private static void addNodes(final NetType mainNet, final Graph epcGraph) {
-
+    private static void addNodes(NetType mainNet, Graph epcGraph) {
         for (NodeType n : mainNet.getNode()) {
-            HashMap<String, String> annotationMap = parseAnnotationForEventsAndFunctions(getFromAnnotations(ATTRIBUTE_ANNOTATION_NAME, n.getAttribute()));
+            HashMap<String, String> annotationMap = parseAnnotationForEventsAndFunctions(getFromAnnotations("annotation", n.getAttribute()));
             // gateways
             if (n instanceof RoutingType && !(n instanceof StateType)) {
                 boolean initialGW = true;
-                String initial = getFromAnnotations(ATTRIBUTE_ADDED_NAME, n.getAttribute());
+                String initial = getFromAnnotations("added", n.getAttribute());
                 if (initial != null && "true".equals(initial)) {
                     initialGW = false;
                 }
@@ -173,15 +167,13 @@ public class CPFModelParser {
         }
     }
 
-    private static void addResourcesAndObjects(final WorkType n, final Vertex v) {
+    private static void addResourcesAndObjects(WorkType n, Vertex v) {
         // add resources
         for (ResourceTypeRefType r : n.getResourceTypeRef()) {
-            //TODO removed optional in CPF schema
-            v.resourceRefs.add(new VertexResourceRef(false,
+            v.resourceRefs.add(new VertexResourceRef(
                     r.getResourceTypeId(),
                     r.getQualifier(),
-                    parseModelsFromAnnotations(
-                            getFromAnnotations(ATTRIBUTE_ANNOTATION_NAME, r.getAttribute()))));
+                    parseModelsFromAnnotations(getFromAnnotations("annotation", r.getAttribute()))));
         }
 
         // add objects
@@ -193,13 +185,11 @@ public class CPFModelParser {
                     (o.getType().equals(InputOutputType.INPUT) ?
                             VertexObjectRef.InputOutput.Input :
                             VertexObjectRef.InputOutput.Output),
-                    parseModelsFromAnnotations(
-                            getFromAnnotations(ATTRIBUTE_ANNOTATION_NAME, o.getAttribute()))));
+                    parseModelsFromAnnotations(getFromAnnotations("annotation", o.getAttribute()))));
         }
     }
 
-    private static String getFromAnnotations(final String typeRef, final List<TypeAttribute> attributes) {
-
+    private static String getFromAnnotations(String typeRef, List<TypeAttribute> attributes) {
         for (TypeAttribute a : attributes) {
             if (a.getName().equals(typeRef)) {
                 return a.getValue();
@@ -211,7 +201,7 @@ public class CPFModelParser {
     // the annotation attribute for events and functions are in format
     // model1:name in model1;model2:name in modelass 2;
     // the names must not contain ';', otherwise the name parsing fails
-    private static HashMap<String, String> parseAnnotationForEventsAndFunctions(final String nodeValue) {
+    private static HashMap<String, String> parseAnnotationForEventsAndFunctions(String nodeValue) {
         HashMap<String, String> annotationMap = new HashMap<String, String>();
         if (nodeValue == null) {
             return annotationMap;
@@ -229,7 +219,7 @@ public class CPFModelParser {
         return annotationMap;
     }
 
-    private static void addEdges(final NetType mainNet, final Graph epcGraph) {
+    private static void addEdges(NetType mainNet, Graph epcGraph) {
 
         List<EdgeType> edges = mainNet.getEdge();
         HashSet<String> graphLabels = new HashSet<String>();
@@ -237,7 +227,7 @@ public class CPFModelParser {
         // add elements
         for (EdgeType e : edges) {
             Edge toAdd = new Edge(e.getSourceId(), e.getTargetId(), e.getId());
-            String annotations = getFromAnnotations(ATTRIBUTE_ANNOTATION_NAME, e.getAttribute());
+            String annotations = getFromAnnotations("annotation", e.getAttribute());
 
             graphLabels = parseModelsFromAnnotations(annotations);
             toAdd.addLabels(graphLabels);
@@ -250,7 +240,7 @@ public class CPFModelParser {
         }
     }
 
-    private static HashSet<String> parseModelsFromAnnotations(final String annotations) {
+    private static HashSet<String> parseModelsFromAnnotations(String annotations) {
         HashSet<String> graphLabels = new HashSet<String>();
         if (annotations != null && annotations.length() > 0) {
             StringTokenizer st = new StringTokenizer(annotations, ";");
@@ -262,7 +252,7 @@ public class CPFModelParser {
         return graphLabels;
     }
 
-    public static CanonicalProcessType writeModel(final Graph g, final IdGeneratorHelper idGenerator) {
+    public static CanonicalProcessType writeModel(Graph g, IdGeneratorHelper idGenerator) {
         CanonicalProcessType toReturn = new CanonicalProcessType();
 
         // objects and resources
@@ -278,11 +268,10 @@ public class CPFModelParser {
             ot.setId(o.getId());
             ot.setName(o.getName());
             TypeAttribute a = new TypeAttribute();
-            a.setName(ATTRIBUTE_ANNOTATION_NAME);
+            a.setName("annotation");
             a.setValue(parseAnnotationFromSet(o.getModels()));
             ot.getAttribute().add(a);
-            //TODO: FIX
-            //toReturn.getObject().add(ot);
+            toReturn.getNet().get(0).getObject().add(ot);
         }
 
         // objects and resources
@@ -298,7 +287,7 @@ public class CPFModelParser {
             rt.setId(r.getId());
             rt.setName(r.getName());
             TypeAttribute a = new TypeAttribute();
-            a.setName(ATTRIBUTE_ANNOTATION_NAME);
+            a.setName("annotation");
             a.setValue(parseAnnotationFromSet(r.getModels()));
             rt.getAttribute().add(a);
             toReturn.getResourceType().add(rt);
@@ -336,7 +325,7 @@ public class CPFModelParser {
                 }
                 if (v.isAddedGW()) {
                     TypeAttribute a = new TypeAttribute();
-                    a.setName(ATTRIBUTE_ADDED_NAME);
+                    a.setName("added");
                     a.setValue("true");
                     n.getAttribute().add(a);
                 }
@@ -346,7 +335,7 @@ public class CPFModelParser {
             n.setId(v.getID());
             n.setName(v.getLabel());
             TypeAttribute a = new TypeAttribute();
-            a.setName(ATTRIBUTE_ANNOTATION_NAME);
+            a.setName("annotation");
             a.setValue(parseAnnotationFromMap(v.getAnnotationMap()));
             n.getAttribute().add(a);
 
@@ -364,7 +353,7 @@ public class CPFModelParser {
                     oRef.setOptional(o.isOptional());
                     // attributes
                     TypeAttribute a1 = new TypeAttribute();
-                    a1.setName(ATTRIBUTE_ANNOTATION_NAME);
+                    a1.setName("annotation");
                     a1.setValue(parseAnnotationFromSet(o.getModels()));
                     oRef.getAttribute().add(a1);
 
@@ -373,13 +362,11 @@ public class CPFModelParser {
                 // resource ref
                 for (VertexResourceRef r : v.resourceRefs) {
                     ResourceTypeRefType rRef = new ResourceTypeRefType();
-                    rRef.setResourceTypeId(r.getresourceID());
-                    //TODO removed optional in CPF schema
-                    //rRef.setOptional(r.isOptional());
+                    rRef.setResourceTypeId(r.getResourceID());
                     rRef.setQualifier(r.getQualifier());
                     // attrubutes
                     TypeAttribute a1 = new TypeAttribute();
-                    a1.setName(ATTRIBUTE_ANNOTATION_NAME);
+                    a1.setName("annotation");
                     a1.setValue(parseAnnotationFromSet(r.getModels()));
                     rRef.getAttribute().add(a1);
 
@@ -397,7 +384,7 @@ public class CPFModelParser {
             et.setTargetId(e.getToVertex());
             // attributes
             TypeAttribute a = new TypeAttribute();
-            a.setName(ATTRIBUTE_ANNOTATION_NAME);
+            a.setName("annotation");
             a.setValue(parseAnnotationFromSet(e.getLabels()));
             et.getAttribute().add(a);
             net.getEdge().add(et);
@@ -407,7 +394,7 @@ public class CPFModelParser {
     }
 
     private static String parseAnnotationFromMap(
-            final HashMap<String, String> annotationMap) {
+            HashMap<String, String> annotationMap) {
         String toReturn = "";
         for (Map.Entry<String, String> a : annotationMap.entrySet()) {
             toReturn += a.getKey() + ":" + a.getValue() + ";";
@@ -415,7 +402,7 @@ public class CPFModelParser {
         return toReturn;
     }
 
-    private static String parseAnnotationFromSet(final HashSet<String> annotationSet) {
+    private static String parseAnnotationFromSet(HashSet<String> annotationSet) {
         String toReturn = "";
         for (String a : annotationSet) {
             toReturn += a + ";";

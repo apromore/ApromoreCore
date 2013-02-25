@@ -4,32 +4,22 @@ import java.util.HashSet;
 
 public class VertexResourceRef {
 
-    private boolean optional;
     private String resourceID;
     private String qualifier;
     private HashSet<String> models = new HashSet<String>();
 
-    public VertexResourceRef(boolean optional, String resourceID,
-                             String qualifier, HashSet<String> models) {
-        this.optional = optional;
+    public VertexResourceRef(String resourceID, String qualifier, HashSet<String> models) {
         this.resourceID = resourceID;
         this.qualifier = qualifier;
         this.models = models;
     }
 
-    public boolean isOptional() {
-        return optional;
-    }
 
-    public void setOptional(boolean optional) {
-        this.optional = optional;
-    }
-
-    public String getresourceID() {
+    public String getResourceID() {
         return resourceID;
     }
 
-    public void setresourceID(String resourceID) {
+    public void setResourceID(String resourceID) {
         this.resourceID = resourceID;
     }
 
@@ -54,8 +44,7 @@ public class VertexResourceRef {
     }
 
     public boolean canMerge(VertexResourceRef other) {
-        return this.optional == other.optional &&
-                (this.qualifier == null && other.qualifier == null ||
+        return (this.qualifier == null && other.qualifier == null ||
                         this.qualifier != null && other.qualifier != null && this.qualifier.equals(other.qualifier));
     }
 }
