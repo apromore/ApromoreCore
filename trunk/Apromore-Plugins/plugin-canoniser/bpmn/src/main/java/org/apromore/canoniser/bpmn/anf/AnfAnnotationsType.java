@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 // Local packages
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.ObjectFactory;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
@@ -25,6 +26,7 @@ import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.dd._20100524.di.DiagramElement;
+
 
 /**
  * ANF 0.3 top-level document element.
@@ -40,11 +42,12 @@ public class AnfAnnotationsType extends AnnotationsType {
     private static final Schema ANF_SCHEMA;
 
     static {
-        ClassLoader loader = AnfAnnotationsType.class.getClassLoader();
+        //ClassLoader loader = AnfAnnotationsType.class.getClassLoader();
         try {
-            ANF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-                new StreamSource(loader.getResourceAsStream("xsd/anf_0.3.xsd"))
-            );
+            //ANF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
+            //    new StreamSource(loader.getResourceAsStream("xsd/anf_0.3.xsd"))
+            //);
+			ANF_SCHEMA = ANFSchema.getANFSchema();
         } catch (SAXException e) {
             throw new RuntimeException("Unable to parse ANF schema", e);
         }
@@ -96,7 +99,7 @@ public class AnfAnnotationsType extends AnnotationsType {
      * @return the parsed instance
      */
     public static AnnotationsType newInstance(final InputStream in, final Boolean validate) throws JAXBException {
-        Unmarshaller unmarshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createUnmarshaller();
+        Unmarshaller unmarshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT, ObjectFactory.class.getClassLoader()).createUnmarshaller();
         if (validate) {
             unmarshaller.setSchema(ANF_SCHEMA);
         }
@@ -112,7 +115,7 @@ public class AnfAnnotationsType extends AnnotationsType {
      * @throws JAXBException if serialization fails
      */
     public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
-        Marshaller marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT, ObjectFactory.class.getClassLoader()).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         if (validate) {
             marshaller.setSchema(ANF_SCHEMA);
