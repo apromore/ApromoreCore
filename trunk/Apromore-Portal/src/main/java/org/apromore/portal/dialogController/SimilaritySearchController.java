@@ -139,7 +139,7 @@ public class SimilaritySearchController extends BaseController {
                 resultToDisplay = result;
             }
 
-            mainC.toggleView(false);
+//            mainC.toggleView(false);
             mainC.displayProcessSummaries(resultToDisplay, true, process, version);
             mainC.displayMessage(message);
         } catch (Exception e) {

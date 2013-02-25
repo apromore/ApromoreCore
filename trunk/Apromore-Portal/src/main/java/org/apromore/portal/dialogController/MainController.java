@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
@@ -34,11 +33,9 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
@@ -73,7 +70,7 @@ public class MainController extends BaseController {
     private Component workspaceOptionsPanel;
     private Html folders;
     private Div listView;
-    private Button btnTileView;
+    //private Button btnTileView;
 
     private WorkspaceOptionsController workspaceOptionsController;
     private BaseListboxController baseListboxController;
@@ -108,7 +105,7 @@ public class MainController extends BaseController {
             this.folders = (Html) mainW.getFellow("folders");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.listView = (Div) mainW.getFellow("listView");
-            this.btnTileView = (Button) mainW.getFellow("btnTileView");
+            //this.btnTileView = (Button) mainW.getFellow("btnTileView");
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.header = new HeaderController(this);
@@ -130,13 +127,16 @@ public class MainController extends BaseController {
             this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
             this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
             UserSessionManager.setMainController(this);
-            toggleView(true);
+            this.listView.setVisible(true);
+            this.pagingandbuttons.setVisible(true);
+            //this.workspaceOptionsPanel.setVisible(true);
+            //toggleView(true);
 
-            this.btnTileView.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener() {
-                public void onEvent(Event event) throws Exception {
-                    toggleView(true);
-                }
-            });
+//            this.btnTileView.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener() {
+//                public void onEvent(Event event) throws Exception {
+//                    toggleView(true);
+//                }
+//            });
 
         } catch (Exception e) {
             String message;
@@ -150,18 +150,12 @@ public class MainController extends BaseController {
         }
     }
 
-    public void loadTree() {
-        List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
-        UserSessionManager.setTree(folders);
-        this.navigation.loadWorkspace();
-    }
-
-    public void toggleView(boolean showTiles) {
-        this.pagingandbuttons.setVisible(!showTiles);
-        this.workspaceOptionsPanel.setVisible(showTiles);
-        this.folders.setVisible(showTiles);
-        this.listView.setVisible(!showTiles);
-    }
+//    public void toggleView(boolean showTiles) {
+//        this.pagingandbuttons.setVisible(!showTiles);
+//        this.workspaceOptionsPanel.setVisible(showTiles);
+//        this.folders.setVisible(showTiles);
+//        this.listView.setVisible(!showTiles);
+//    }
 
     public void loadWorkspace() {
         updateActions();
@@ -184,7 +178,13 @@ public class MainController extends BaseController {
         }
 
         buildWorkspaceControls(html, folders, availableProcesses);
-        Clients.evalJavaScript("bindTiles();");
+        //Clients.evalJavaScript("bindTiles();");
+    }
+
+    public void loadTree() {
+        List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        UserSessionManager.setTree(folders);
+        this.navigation.loadWorkspace();
     }
 
     public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {

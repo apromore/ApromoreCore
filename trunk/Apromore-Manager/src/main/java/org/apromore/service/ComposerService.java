@@ -3,6 +3,8 @@
  */
 package org.apromore.service;
 
+import java.util.List;
+
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.graph.canonical.Canonical;
@@ -20,4 +22,11 @@ public interface ComposerService {
      * @throws ExceptionDao if there is a DB Exception
      */
     public Canonical compose(FragmentVersion rootFragment) throws ExceptionDao;
+
+
+    /**
+     * Some Implementations have an internal Cache that needs to be cleared at times.
+     * @param ids the list of ID's that needs to be clears from the cache.
+     */
+    public void clearCache(List<Integer> ids);
 }

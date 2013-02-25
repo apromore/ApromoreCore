@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @see org.apromore.dao.model.Content
  */
 @Repository
-public interface ContentRepository extends JpaRepository<Content, Integer> {
+public interface ContentRepository extends JpaRepository<Content, Integer>, ContentRepositoryCustom {
 
     /**
      * Finds the Content item from the fragment Version.

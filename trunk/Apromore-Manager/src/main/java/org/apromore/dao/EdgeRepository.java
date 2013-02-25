@@ -14,7 +14,7 @@ import java.util.List;
  * @see org.apromore.dao.model.Edge
  */
 @Repository
-public interface EdgeRepository extends JpaRepository<Edge, Integer> {
+public interface EdgeRepository extends JpaRepository<Edge, Integer>, EdgeRepositoryCustom {
 
     /**
      * Returns the Edge records for the ContentId.

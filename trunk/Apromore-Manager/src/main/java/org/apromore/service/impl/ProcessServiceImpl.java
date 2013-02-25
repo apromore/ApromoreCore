@@ -88,6 +88,7 @@ import org.apromore.util.VersionNameUtil;
 import org.apromore.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -151,7 +152,7 @@ public class ProcessServiceImpl implements ProcessService {
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
-            final FormatService formatSrv, final ComposerService composerSrv, final DecomposerService decomposerSrv,
+            final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
             final UserInterfaceHelper ui) {
         this.annotationRepo = annotationRepo;
         this.contentRepo = contentRepo;

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.apromore.toolbox.clustering.analyzers;
+package org.apromore.clustering.analyzers;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionRepository;
@@ -9,10 +9,10 @@ import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterSettings;
-import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentDataObject;
-import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryCluster;
-import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer;
-import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryGEDMatrix;
+import org.apromore.clustering.algorithm.dbscan.FragmentDataObject;
+import org.apromore.clustering.algorithm.dbscan.InMemoryCluster;
+import org.apromore.clustering.algorithm.dbscan.InMemoryClusterer;
+import org.apromore.clustering.algorithm.dbscan.InMemoryGEDMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,12 +34,25 @@ public class ClusterAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
 
-    @Inject
     private InMemoryGEDMatrix inMemoryGEDMatrix;
-    @Inject
     private FragmentVersionRepository fragmentVersionRepository;
 
     private Map<Integer, Integer> fragmentSizes;
+
+
+    /**
+     * Public Constructor used for because we don't implement an interface and use Proxys.
+     */
+    public ClusterAnalyzer() { }
+
+    /**
+     * Public Constructor used for spring wiring of objects, also used for tests.
+     */
+    @Inject
+    public ClusterAnalyzer(final InMemoryGEDMatrix matrix, final FragmentVersionRepository fragVersionRepo) {
+        inMemoryGEDMatrix = matrix;
+        fragmentVersionRepository = fragVersionRepo;
+    }
 
 
     public void loadFragmentSizes() {
