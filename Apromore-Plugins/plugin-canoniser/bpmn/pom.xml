@@ -33,7 +33,7 @@
                     </instructions>
                 </configuration>
             </plugin>
-<!--
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -47,7 +47,7 @@
                     </links>
                 </configuration>
             </plugin>
--->
+            -->
         </plugins>
     </build>
 
@@ -109,10 +109,6 @@
         <dependency>
             <groupId>com.sun.xml</groupId>
             <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
