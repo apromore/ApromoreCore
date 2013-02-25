@@ -131,6 +131,7 @@
                             net.sf.cglib.reflect,
                             javax.wsdl.extensions,
                             org.springframework.ws.transport.http,
+							com.sun.xml.bind.v2, <!-- JAXB RI implementation from SUN for BPMN Canoniser -->
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
@@ -389,10 +390,6 @@
         <dependency>
             <groupId>com.sun.xml</groupId>
             <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
         </dependency>
 
         <!-- Test Scope Dependencies -->
