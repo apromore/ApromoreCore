@@ -1,7 +1,6 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
 public class TwoVertices {
-
     public String v1;
     public String v2;
     public double weight;
@@ -17,7 +16,7 @@ public class TwoVertices {
     }
 
     public boolean equals(Object pair2) {
-        return pair2 instanceof TwoVertices && (v1.equals(((TwoVertices) pair2).v1) && v2.equals(((TwoVertices) pair2).v2));
+        return pair2 instanceof TwoVertices ? (v1.equals(((TwoVertices) pair2).v1) && v2.equals(((TwoVertices) pair2).v2)) : false;
     }
 
     public int hashCode() {

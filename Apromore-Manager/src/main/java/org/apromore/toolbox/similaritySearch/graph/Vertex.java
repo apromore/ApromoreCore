@@ -2,6 +2,7 @@ package org.apromore.toolbox.similaritySearch.graph;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;

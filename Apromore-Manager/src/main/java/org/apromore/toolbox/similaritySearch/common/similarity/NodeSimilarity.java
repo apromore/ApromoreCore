@@ -1,29 +1,34 @@
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
-import org.apromore.graph.canonical.CPFNode;
+
 import org.apromore.toolbox.similaritySearch.common.Settings;
-import org.apromore.util.GraphUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apromore.toolbox.similaritySearch.graph.Graph;
+import org.apromore.toolbox.similaritySearch.graph.Vertex;
+import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
+
 
 public class NodeSimilarity {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeSimilarity.class);
-
-    public double findNodeSimilarity(CPFNode n, CPFNode m, double labelTreshold) {
-        SemanticSimilarity semanticSimilarity = new SemanticSimilarity();
+    public static double findNodeSimilarity(Vertex n, Vertex m, double labelTreshold) {
         // functions or events -
         // compare the labels of these nodes
         // tokenize, stem and find the similarity score
-        if (GraphUtil.isWorkNode(n) && GraphUtil.isWorkNode(m) && AssingmentProblem.canMap(n, m)) {
-            return LabelEditDistance.edTokensWithStemming(m.getLabel(), n.getLabel(), Settings.STRING_DELIMETER,
+        if ((n.getType().equals(Type.function) && m.getType().equals(Type.function)
+                || n.getType().equals(Type.event) && m.getType().equals(Type.event))
+                && AssingmentProblem.canMap(n, m)) {
+            return LabelEditDistance.edTokensWithStemming(m.getLabel(),
+                    n.getLabel(), Settings.STRING_DELIMETER,
                     Settings.getEnglishStemmer(), true);
-        } else if (GraphUtil.isGatewayNode(n) && GraphUtil.isGatewayNode(m)) {
+
+        }
+        // gateways
+        else if (n.getType().equals(Type.gateway) && m.getType().equals(Type.gateway)) {
             // splits can not be merged with joins
-            if ((GraphUtil.isSplitNode(n) && GraphUtil.isJoinNode(m)) || (GraphUtil.isSplitNode(m) && GraphUtil.isJoinNode(n))) {
+            if (Graph.isSplit(n) && Graph.isJoin(m)
+                    || Graph.isSplit(m) && Graph.isJoin(n)) {
                 return 0;
             }
-            return semanticSimilarity.getSemanticSimilarity(n, m, labelTreshold);
+            return SemanticSimilarity.getSemanticSimilarity(n, m, labelTreshold);
         }
         return 0;
     }

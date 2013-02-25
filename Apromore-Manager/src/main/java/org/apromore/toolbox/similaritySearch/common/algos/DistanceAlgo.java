@@ -1,8 +1,8 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
-import org.apromore.graph.canonical.Canonical;
-
 import java.util.Set;
+
+import org.apromore.toolbox.similaritySearch.graph.Graph;
 
 
 public interface DistanceAlgo {
@@ -17,6 +17,6 @@ public interface DistanceAlgo {
      * @param sg2 A graph.
      * @return A value, where a lower value represents a more relevant match between graphs.
      */
-    public Set<TwoVertices> compute(Canonical sg1, Canonical sg2);
+    public Set<TwoVertices> compute(Graph sg1, Graph sg2);
 
 }
