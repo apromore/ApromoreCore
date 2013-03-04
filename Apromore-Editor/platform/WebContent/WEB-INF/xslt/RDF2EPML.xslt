@@ -52,7 +52,7 @@
 
     <!-- Nodes and Egdes   -->
     <xsl:template match="rdf:Description">
-        <xsl:variable name="type" select="./oryx:type"/>
+        <xsl:variable name="type" select="concat('http://b3mn.org/stencilset/epc#',./oryx:type)"/>
         <xsl:variable name="title" select="./oryx:title"/>
         <xsl:variable name="realID">
             <xsl:value-of select="@rdf:about"/>

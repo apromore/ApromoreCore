@@ -117,7 +117,7 @@ public class EPMLToJSONConverter {
             bounds.setCoordinates(0, 0, 600, 600);
             diagram.setBounds(bounds);
             context.addDiagram(diagram);
-            for (Object obj : epc.getEventOrFunctionOrRole()) {
+            for (Object obj : epc.getEventAndFunctionAndRole()) {
                 if (obj instanceof JAXBElement) {
                     obj = ((JAXBElement<?>) obj).getValue();
                 }
@@ -132,7 +132,7 @@ public class EPMLToJSONConverter {
                     diagram.addChildShape(converter.convert());
                 }
             }
-            for (Object obj : epc.getEventOrFunctionOrRole()) {
+            for (Object obj : epc.getEventAndFunctionAndRole()) {
                 if (obj instanceof JAXBElement) {
                     obj = ((JAXBElement<?>) obj).getValue();
                 }
@@ -148,6 +148,7 @@ public class EPMLToJSONConverter {
 
     private void writeJson(final EPMLConversionContext context, final OutputStream jsonStream) throws JSONException, IOException {
         BasicDiagram diagram = context.getDiagram(0);
+        assert diagram != null;
         JSONObject jsonDiagram = GenericJSONBuilder.parseModel(diagram);
         OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, "UTF-8");
         jsonDiagram.write(outWriter);

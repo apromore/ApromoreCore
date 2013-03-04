@@ -24,12 +24,28 @@
  */
 package org.apromore.common.converters.epml.servlet;
 
-import org.apromore.common.converters.epml.EPMLToJSONConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import org.xml.sax.SAXException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import de.epml.EPMLSchema;
+import de.unihannover.se.infocup2008.bpmn.JsonErdfTransformation;
+import org.apromore.common.converters.epml.JSONToEPMLConverter;
+import org.json.JSONException;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 
 /**
  * Currently, we use client side processing to do the transformation from json to epml.
@@ -45,13 +61,15 @@ public class EPMLExportServlet extends HttpServlet {
       */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
-        String epmlData = req.getParameter("data");
-
         /* Transform and return as JSON */
         try {
+            String jsonString = req.getParameter("data");
+
+            String epmlString = jsonToEpml(jsonString);
+            
             res.setContentType("application/xml; charset=UTF-8");
             res.setStatus(200);
-            res.getWriter().write(epmlData);
+            res.getWriter().write(epmlString);
         } catch (Exception e) {
             try {
                 e.printStackTrace();
@@ -65,4 +83,67 @@ public class EPMLExportServlet extends HttpServlet {
 
     }
 
+    /**
+     * @param jsonString  an EPC represented in Signavio's serialized JSON, never <code>null</code>
+     * @return an EPML serialization of the EPC
+     */
+    private String jsonToEpml(final String jsonString) throws JAXBException, JSONException, SAXException {
+        ServletContext context = getServletConfig().getServletContext();
+
+        /* The following commented-out code duplicates the original Javascript implementation, in which
+           JSON is converted in turn to eRDF, RDF, and finally EPML.
+
+        // JSON to ERDF
+        JsonErdfTransformation jsonErdf = new JsonErdfTransformation(jsonString);
+        String erdfString = jsonErdf.toString();
+        String resource = "Oryx-EPC";
+        erdfString =
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:b3mn=\"http://b3mn.org/2007/b3mn\" " +
+                "               xmlns:ext=\"http://b3mn.org/2007/ext\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" " +
+                "               xmlns:atom=\"http://b3mn.org/2007/atom+xhtml\">" +
+                "  <head profile=\"http://purl.org/NET/erdf/profile\">" +
+                "    <link rel=\"schema.dc\" href=\"http://purl.org/dc/elements/1.1/\" />" +
+                "    <link rel=\"schema.dcTerms\" href=\"http://purl.org/dc/terms/\" />" +
+                "    <link rel=\"schema.b3mn\" href=\"http://b3mn.org\" />" +
+                "    <link rel=\"schema.oryx\" href=\"http://oryx-editor.org/\" />" +
+                "    <link rel=\"schema.raziel\" href=\"http://raziel.org/\" />" +
+                "    <base href=\"" + "http://example.com/" *//* location.href.split("?")[0] *//* + "\" />" +
+                "  </head>" +
+                "  <body>" +
+                erdfString +
+                "    <div id=\"generatedProcessInfos\">" +
+                "      <span class=\"oryx-id\">" + resource + "</span>" +
+                "      <span class=\"oryx-name\">" + resource + "</span>" +
+                "    </div>" +
+                "  </body>" +
+                "</html>";
+        context.log("TALISMAN-ERDF:" + erdfString);
+
+        // ERDF TO RDF
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer(
+            new StreamSource(context.getResourceAsStream("WEB-INF/xslt/extract-rdf.xsl"))
+        );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new StreamSource(new StringReader(erdfString)), new StreamResult(baos));
+        String rdfString = baos.toString();
+        context.log("TALISMAN-RDF:" + rdfString);
+
+        // RDF TO EPML
+        Transformer transformer2 = transformerFactory.newTransformer(
+            new StreamSource(context.getResourceAsStream("WEB-INF/xslt/RDF2EPML.xslt"))
+        );
+        ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+        transformer2.transform(new StreamSource(new StringReader(rdfString)), new StreamResult(baos2));
+        String epmlString = baos2.toString();
+        */
+
+        ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+        JSONToEPMLConverter jsonToEpmlConverter = new JSONToEPMLConverter();
+        EPMLSchema.marshalEPMLFormat(baos2, jsonToEpmlConverter.toEPML(BasicDiagramBuilder.parseJson(jsonString)), true /* is validating */);
+        String epmlString = baos2.toString();
+
+        return epmlString;
+    }
 }

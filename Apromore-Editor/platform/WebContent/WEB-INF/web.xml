@@ -297,9 +297,9 @@
     </servlet-mapping>
 
     <servlet>
-        <display-name>EPCExport</display-name>
+        <display-name>EPMLExport</display-name>
         <servlet-name>EPMLExportServlet</servlet-name>
-        <servlet-class>org.apromore.common.converters.epml.servlet.EPCExportServlet</servlet-class>
+        <servlet-class>org.apromore.common.converters.epml.servlet.EPMLExportServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
