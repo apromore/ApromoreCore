@@ -207,6 +207,19 @@
 					"wrapLines":true
 				},
 				{
+					"id":"isSystemFunction",
+					"type":"Boolean",
+					"title":"Is system function?",
+					"title_de":"Systemsfunktion?",
+					"value":false,
+					"description":"A system function is automated.",
+					"description_de":"Eine Systemsfunktion wird automatisiert.",
+					"tooltip":"System functions are annotated with SYS",
+					"readonly":false,
+					"optional":true,
+					"refToView":"sys"
+				},
+				{
 					"id":"refuri",
 					"type":"String",
 					"title":"URI",
