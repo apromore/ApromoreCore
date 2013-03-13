@@ -1,12 +1,11 @@
 package org.apromore.service;
 
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
-import org.apromore.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 
 import java.util.List;
 import java.util.Map;
@@ -20,25 +19,16 @@ import java.util.Map;
 public interface ClusterService {
 
     /**
-     * Assign multiple fragments to a single cluster.
-     * @param fragmentIds the list of fragments
-     * @param clusterId   the cluster to assign the fragments
-     */
-    void assignFragments(List<Integer> fragmentIds, Integer clusterId);
-
-    /**
-     * Assign a single fragment to a single cluster.
-     * @param fragVersion the fragment
-     * @param clusterId   the cluster to assign the fragments
-     */
-    void assignFragment(Integer fragVersion, Integer clusterId);
-
-    /**
      * Does something to a cluster, comments would be good.
      * @param settings
      * @throws RepositoryException
      */
     void cluster(ClusterSettings settings) throws RepositoryException;
+
+    /**
+     * Computes the GED Matrix used by the clusterers.
+     */
+    void computeGEDMatrix();
 
     /**
      * Gets the clustering summary.
@@ -87,11 +77,5 @@ public interface ClusterService {
      * @throws RepositoryException if the repository had issues
      */
     Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException;
-
-    /**
-     * Persist fragment distances.
-     * @param distanceMap the distance map, contains two fragments and the distance.
-     */
-    void saveDistances(MultiKeyMap distanceMap);
 
 }

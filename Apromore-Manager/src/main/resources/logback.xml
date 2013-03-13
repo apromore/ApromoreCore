@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true" scan="true" scanPeriod="30 seconds">
+<configuration scan="true" scanPeriod="30 seconds">
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
@@ -13,47 +13,71 @@
         </encoder>
     </appender>
 
-	
-    <!-- 
-    	Does not work in OSGi :(
-    	<include resource="logJpaToFile.xml" /> 
-    -->
-   <appender name="jpalogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/manager.log</file>
+    <appender name="jpalogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/ApromoreJPA.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/manager.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${catalina.home}/logs/ApromoreJPA.%i.log.zip</fileNamePattern>
             <minIndex>1</minIndex>
-            <maxIndex>3</maxIndex>
+            <maxIndex>5</maxIndex>
         </rollingPolicy>
 
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1MB</maxFileSize>
+            <maxFileSize>5MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
             <pattern>%date %level | %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.apromore" level="DEBUG">
-        <appender-ref ref="jpalogfile" />
+    <appender name="methodlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/ApromoreMethod.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.home}/logs/ApromoreMethod.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>5MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date %level | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="everythinglogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/Apromore.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.home}/logs/Apromore.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>5MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date %level | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="org.apromore.aop.DaoInterceptor" level="INFO">
+        <appender-ref ref="jpalogfile"/>
     </logger>
-    <logger name="org.springframework.orm" level="WARN">
-        <appender-ref ref="jpalogfile" />
-    </logger>
-    <logger name="org.springframework.jdbc" level="WARN">
-        <appender-ref ref="jpalogfile" />
-    </logger>
-    <logger name="org.springframework.transaction" level="WARN">
-        <appender-ref ref="jpalogfile" />
+    <logger name="org.apromore.aop.LoggingInterceptor" level="INFO">
+        <appender-ref ref="methodlogfile"/>
     </logger>
 
-    <logger name="org.apromore" level="TRACE" />
-    <logger name="org.springframework" level="WARN" />
-    <logger name="javax.xml" level="WARN" />
-    <logger name="com.sun" level="WARN" />
+    <logger name="org.apromore" level="INFO"/>
+    <logger name="org.springframework" level="DEBUG"/>
+    <logger name="org.eclipse.persistence" level="DEBUG"/>
+    <logger name="javax.xml" level="WARN"/>
+    <logger name="com.sun" level="WARN"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="console"/>
+        <appender-ref ref="everythinglogfile"/>
     </root>
 
 </configuration>

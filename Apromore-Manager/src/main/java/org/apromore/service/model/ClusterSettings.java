@@ -3,13 +3,17 @@
  */
 package org.apromore.service.model;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
-/**
- * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
- */
-public abstract class ClusterSettings {
 
+/**
+ * @author Chathura C. Ekanayake
+ */
+public class ClusterSettings {
+
+    private String algorithm;
     private float minLuceneSimilarity = 0.5F;
     private float filteringSizePercentage = 0.4F;
     private double maxNeighborGraphEditDistance = 0.4;
@@ -29,10 +33,6 @@ public abstract class ClusterSettings {
     private boolean enableNearestRelativeFiltering = true;
     private List<Integer> constrainedProcessIds = null;
     private boolean ignoreClustersWithExactClones = true;
-    private boolean enableClusterWideNearestRelativeFiltering = false;
-    private boolean dbscanClustering = true;
-
-    public abstract String getAlgorithm();
 
     /**
      * When searching for the neighbourhood NBHk of k, a fragment b is excluded from NBHk, if b is included in a
@@ -42,14 +42,31 @@ public abstract class ClusterSettings {
      * with fragments included in their hierarchy clusters.
      */
     private boolean removeHierarchyClusterContainments = true;
-
+    private boolean enableClusterWideNearestRelativeFiltering = false;
 
     /**
-     * Default Constructor.
+     * Fragments in this collection are not to be included in any cluster.
+     * Currently this is used when we execute exact clone detection as a separate functionality, AND if we don't want
+     * to mix exact clones with approximate clones. In that scenario, we give all fragments in exact clones as fragments
+     * to be avoided.
+     * <p/>
+     * TODO: currently this is supported only by the DBSCAN clusterer.
      */
-    public ClusterSettings() {
+    private Collection<String> fidsToAvoid = new HashSet<String>();
+
+    public Collection<String> getFidsToAvoid() {
+        return fidsToAvoid;
     }
 
+    private boolean dbscanClustering = true;
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
 
     public boolean isIgnoreClustersWithExactClones() {
         return ignoreClustersWithExactClones;
@@ -228,5 +245,4 @@ public abstract class ClusterSettings {
     public void setEnableClusterWideNearestRelativeFiltering(boolean enableClusterWideNearestRelativeFiltering) {
         this.enableClusterWideNearestRelativeFiltering = enableClusterWideNearestRelativeFiltering;
     }
-
 }

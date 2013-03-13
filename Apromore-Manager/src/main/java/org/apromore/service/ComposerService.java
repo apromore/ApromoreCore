@@ -23,6 +23,13 @@ public interface ComposerService {
      */
     public Canonical compose(FragmentVersion rootFragment) throws ExceptionDao;
 
+    /**
+     * Compose from the Apromore DB version to CPF RPST Directed Graph.
+     * @param rootFragmentId the fragment version root id
+     * @return the Directed Graph
+     * @throws ExceptionDao if there is a DB Exception
+     */
+    public Canonical compose(Integer rootFragmentId) throws ExceptionDao;
 
     /**
      * Some Implementations have an internal Cache that needs to be cleared at times.

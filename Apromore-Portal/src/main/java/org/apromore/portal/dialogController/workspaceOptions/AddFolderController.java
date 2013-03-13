@@ -19,7 +19,6 @@ import java.io.IOException;
 
 public class AddFolderController extends BaseController {
 
-    private WorkspaceOptionsController workspaceOptionsController;
     private MainController mainController;
     private Window folderEditWindow;
     private Button btnSave;
@@ -27,9 +26,8 @@ public class AddFolderController extends BaseController {
     private Textbox txtName;
     private int folderId;
 
-    public AddFolderController(WorkspaceOptionsController workspaceOptionsController, MainController mainController, int folderId, String name) throws DialogException {
+    public AddFolderController(MainController mainController, int folderId, String name) throws DialogException {
         this.mainController = mainController;
-        this.workspaceOptionsController = workspaceOptionsController;
 
         try {
             final Window win = (Window) Executions.createComponents("macros/folderEdit.zul", null, null);

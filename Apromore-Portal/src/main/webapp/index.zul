@@ -24,15 +24,14 @@
 		<Header id="headercomp" />
 
 		<borderlayout vflex="true">
-			<west id="leftPanel" title="Key word filter" size="35%" collapsible="true"
-				flex="true" splittable="true">
+			<west id="leftPanel" title="Key word filter" size="35%" collapsible="true" flex="true" splittable="true">
 				<borderlayout vflex="true">
 					<north id="leftNorthPanel" flex="true">
 						<SimpleSearch id="simplesearchcomp"/>
 					</north>
 					<center id="leftCenterPanel" flex="true">
-						<borderlayout vflex="true">
-							<center id="leftInnerCenterPanel" title="My Workspace" flex="true">
+						<borderlayout vflex="true" height="100%">
+							<center id="leftInnerCenterPanel" title="My Workspace" flex="true" vflex="true">
 								<Navigation id="navigationcomp"/>
 							</center>
 							<south id="leftInnerSouthPanel" title="Refine Filter" flex="true" splittable="true" collapsible="true" open="false">
@@ -40,8 +39,7 @@
 							</south>
 						</borderlayout>
 					</center>
-					<south id="leftSouthPanel" title="Process Details" size="30%"
-						collapsible="true" splittable="true">
+					<south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
 						<DetailView id="baseDetail" />
 					</south>
 				</borderlayout>
@@ -49,26 +47,24 @@
 			<center id="mainPanel" flex="true" vflex="true">
 				<div vflex="true">
 					<Menu id="menucomp" />
-					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="false" visible="false">
+					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="true">
 						<paging id="pg" />
 						<hbox id="buttons" align="center" height="100%">
-							<button id="revertSelectionB" label="" image="img/revertSelection.png"
-								style="background: transparent; border:none" tooltiptext="Revert selection" />
-							<button id="selectAllB" label="" style="background: transparent; border:none"
-								image="img/selectAll.png" tooltiptext="Select all" />
-							<button id="unselectAllB" label="" style="background: transparent; border:none"
-								image="img/unselectAll.png" tooltiptext="Unselect all" />
-							<button id="refreshB" label="" style="background: transparent; border:none"
-								image="img/reload.png" tooltiptext="Reload data" />
-							<button id="showVisualisation" label="" style="background: transparent; border:none"
-								image="img/wizard.png" tooltiptext="Show Visualisation" />
-                            <button id="btnTileView" label="" style="background: transparent; border:none"
-                                    image="img/tile.png" tooltiptext="Show Tile View" />
+							<button id="revertSelectionB" label="" image="img/revertSelection.png" style="background: transparent; border:none" tooltiptext="Revert selection" />
+							<button id="selectAllB" label="" style="background: transparent; border:none" image="img/selectAll.png" tooltiptext="Select all" />
+							<button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselectAll.png" tooltiptext="Unselect all" />
+							<button id="refreshB" label="" style="background: transparent; border:none" image="img/reload.png" tooltiptext="Reload data" />
+							<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/wizard.png" tooltiptext="Show Visualisation" />
+
+							<button id="btnAddFolder" label="" image="img/new_folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button id="btnAddProcess" label="" image="img/new_process.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="false"/>
+                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="false"/>
+                            <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/lock.png" tooltiptext="Security"/>
 						</hbox>
 					</hbox>
-					<WorkspaceOptions id="workspaceOptionsPanel" />
 
-                    <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController">
+                    <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
                         <html>
                             <![CDATA[
                             <script type="text/javascript">
@@ -88,15 +84,10 @@
                         </html>
                     </window>
 
-                    <html id="breadCrumbs" vflex="true" width="100%">
-                    </html>
+                    <html id="breadCrumbs" vflex="true" width="100%" height="10"/>
+                    <html id="folders" width="100%" visible="false" height="0"/>
 
-                    <html id="folders" vflex="true" width="100%" visible="false">
-                    </html>
-
-					<div visible="true" id="listView">
-                        <BaseListbox id="baseListbox" />
-                    </div>
+					<BaseListbox id="baseListbox" />
 
 				</div>
 			</center>

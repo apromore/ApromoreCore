@@ -86,6 +86,16 @@ public class ComposerServiceImpl implements ComposerService {
         return g;
     }
 
+    /**
+     * Compose a process Model graph from the DB.
+     * @param rootFragmentId the root Fragment Id.
+     * @return the process model graph
+     * @throws ExceptionDao if something fails.
+     */
+    @Override
+    public Canonical compose(Integer rootFragmentId) throws ExceptionDao {
+        throw new UnsupportedOperationException("SimpleGraphComposerServiceImpl doesn't support this method.");
+    }
 
     @Override
     public void clearCache(List<Integer> fids) {

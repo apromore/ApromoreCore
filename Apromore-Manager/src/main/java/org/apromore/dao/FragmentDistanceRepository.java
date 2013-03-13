@@ -26,6 +26,11 @@ public interface FragmentDistanceRepository extends JpaRepository<FragmentDistan
     @Query("SELECT fd FROM FragmentDistance fd WHERE fd.fragmentVersionId1.id = ?1 AND fd.fragmentVersionId2.id = ?2")
     FragmentDistance findByFragmentVersionId1AndFragmentVersionId2(Integer fragmentVersionId1, Integer fragmentVersionId2);
 
-    //SELECT fd FROM FragmentDistance fd WHERE fd.distance < :threshold
+    /**
+     * Find all the distances that have a distance less than the threashold.
+     * @param threshold the distance threshold
+     * @return the list of found distances
+     */
     List<FragmentDistance> findByDistanceLessThan(double threshold);
+
 }

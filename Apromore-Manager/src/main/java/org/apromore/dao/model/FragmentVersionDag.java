@@ -1,8 +1,13 @@
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +29,8 @@ import static javax.persistence.GenerationType.IDENTITY;
         }
 )
 @Configurable("fragmentVersionDag")
+@Cacheable(true)
+@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class FragmentVersionDag implements Serializable {
 
     private Integer id;

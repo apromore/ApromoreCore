@@ -33,12 +33,12 @@ public class WorkspaceOptionsController extends Menubar {
 
     public WorkspaceOptionsController(MainController mainController) throws ExceptionFormats {
         this.mainController = mainController;
-        Hbox options = (Hbox) this.mainController.getFellow("workspaceOptionsPanel").getFellow("folderOptions");
-        this.btnAddFolder = (Button) options.getFellow("btnAddFolder");
-        this.btnAddProcess = (Button) options.getFellow("btnAddProcess");
-        this.btnRenameFolder = (Button) options.getFellow("btnRenameFolder");
-        this.btnRemoveFolder = (Button) options.getFellow("btnRemoveFolder");
-        this.btnSecurity = (Button) options.getFellow("btnSecurity");
+//        Hbox options = (Hbox) this.mainController.getFellow("workspaceOptionsPanel").getFellow("folderOptions");
+//        this.btnAddFolder = (Button) options.getFellow("btnAddFolder");
+//        this.btnAddProcess = (Button) options.getFellow("btnAddProcess");
+//        this.btnRenameFolder = (Button) options.getFellow("btnRenameFolder");
+//        this.btnRemoveFolder = (Button) options.getFellow("btnRemoveFolder");
+//        this.btnSecurity = (Button) options.getFellow("btnSecurity");
 //        this.btnListView = (Button) options.getFellow("btnListView");
 
         this.btnAddFolder.addEventListener("onClick", new EventListener() {
@@ -85,7 +85,7 @@ public class WorkspaceOptionsController extends Menubar {
     protected void addFolder() throws InterruptedException {
         this.mainController.eraseMessage();
         try {
-            this.addFolderController = new AddFolderController(this, mainController, 0, "");
+            this.addFolderController = new AddFolderController(mainController, 0, "");
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -142,7 +142,7 @@ public class WorkspaceOptionsController extends Menubar {
                     }
                 }
 
-                this.addFolderController = new AddFolderController(this, mainController, folderIds.get(0), selectedFolderName);
+                this.addFolderController = new AddFolderController(mainController, folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:sws="http://www.springframework.org/schema/web-services" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:sws="http://www.springframework.org/schema/web-services" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-3.0.xsd
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-            http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+            http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
 
-    <context:component-scan base-package="org.apromore"/>
+    <context:component-scan base-package="org.apromore.service"/>
+    <context:component-scan base-package="org.apromore.toolbox"/>
+    <context:component-scan base-package="org.apromore.manager"/>
 
     <!-- ************************** WebServices ************************** -->
 
@@ -20,8 +22,7 @@
 
     <sws:interceptors>
         <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
-        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor"
-              p:logRequest="true" p:logResponse="true"/>
+        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor" />
         <bean id="validatingInterceptor"  class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
               p:schemas-ref="schemasList" p:validateRequest="false" p:validateResponse="false"/>
     </sws:interceptors>

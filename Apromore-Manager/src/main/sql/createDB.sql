@@ -2,8 +2,6 @@ SET FOREIGN_KEY_CHECKS=0;
 
 USE `Apromore`;
 
-DROP TABLE IF EXISTS `merged_version`;
-DROP TABLE IF EXISTS `derived_version`;
 DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `temp_version`;
 DROP TABLE IF EXISTS `annotation`;
@@ -57,7 +55,18 @@ DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
 
+DROP TABLE IF EXISTS `batch_step_execution_seq`;
+DROP TABLE IF EXISTS `batch_job_execution_seq`;
+DROP TABLE IF EXISTS `batch_job_seq`;
+DROP TABLE IF EXISTS `batch_job_instance`;
+DROP TABLE IF EXISTS `batch_job_params`;
+DROP TABLE IF EXISTS `batch_job_execution`;
+DROP TABLE IF EXISTS `batch_step_execution`;
+DROP TABLE IF EXISTS `batch_job_execution_context`;
+DROP TABLE IF EXISTS `batch_step_execution_context`;
 
+
+-- Construct the DB
 
 CREATE TABLE `native_type` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -801,20 +810,113 @@ CREATE TABLE `cluster_assignment` (
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 
+-- Spring Batch / Scheduler tables
 
-CREATE INDEX `id_native_type` ON `native_type` (`nat_type`, `extension`) USING BTREE;
-CREATE INDEX `id_user_username` ON `user` (`username`) USING BTREE;
-CREATE INDEX `id_process_name` ON `process` (`name`) USING BTREE;
-CREATE INDEX `id_branch_name` ON `process_branch` (`branch_name`) USING BTREE;
-CREATE INDEX `id_pmv_version` ON `process_model_version` (`version_number`) USING BTREE;
-CREATE INDEX `id_pmv_lock` ON `process_model_version` (`lock_status`) USING BTREE;
-CREATE INDEX `id_annotation_name` ON `annotation` (`name`) USING BTREE;
-CREATE INDEX `id_fv_lock` ON `fragment_version` (`lock_status`) USING BTREE;
-CREATE INDEX `id_fv_sizetype` ON `fragment_version` (`fragment_size`, `fragment_type`) USING BTREE;
-CREATE INDEX `id_fvd_pocket` ON `fragment_version_dag` (`pocketId`) USING BTREE;
-CREATE INDEX `id_cluster` ON `cluster` (`size`, `avg_fragment_size`, `benifit_cost_ratio`) USING BTREE;
-CREATE INDEX `id_fragment_distance` ON `fragment_distance` (`ged`) USING BTREE;
+CREATE TABLE `batch_step_execution_seq` (
+  `id` BIGINT NOT NULL
+) ENGINE=MYISAM;
 
+CREATE TABLE `batch_job_execution_seq` (
+  `id` BIGINT NOT NULL
+) ENGINE=MYISAM;
+
+CREATE TABLE `batch_job_seq` (
+  `id` BIGINT NOT NULL
+) ENGINE=MYISAM;
+
+CREATE TABLE `batch_job_instance` (
+  `job_instance_id`     BIGINT PRIMARY KEY,
+  `version`             BIGINT,
+  `job_name`            VARCHAR(100) NOT NULL ,
+  `job_key`             VARCHAR(32),
+  CONSTRAINT `job_inst_un` UNIQUE (`job_name`, `job_key`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `batch_job_params` (
+  `job_instance_id`     BIGINT NOT NULL,
+  `type_cd`             VARCHAR(6) NOT NULL,
+  `key_name`            VARCHAR(100) NOT NULL,
+  `string_val`          VARCHAR(250),
+  `date_val`            DATETIME DEFAULT NULL,
+  `long_val`            BIGINT,
+  `double_val`          DOUBLE PRECISION,
+  CONSTRAINT `job_instance_params_fk` FOREIGN KEY (`job_instance_id`) REFERENCES `batch_job_instance` (`job_instance_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `batch_job_execution` (
+  `job_execution_id`      BIGINT PRIMARY KEY,
+  `version`               BIGINT,
+  `job_instance_id`       BIGINT NOT NULL,
+  `create_time`           DATETIME NOT NULL,
+  `start_time`            DATETIME DEFAULT NULL,
+  `end_time`              DATETIME DEFAULT NULL,
+  `status`                VARCHAR(10),
+  `exit_code`             VARCHAR(20),
+  `exit_message`          VARCHAR(2500),
+  `last_updated`          DATETIME,
+  CONSTRAINT `job_instance_execution_fk` FOREIGN KEY (`job_instance_id`) REFERENCES `batch_job_instance`(`job_instance_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `batch_step_execution`  (
+  `step_execution_id`    BIGINT PRIMARY KEY,
+  `version`              BIGINT NOT NULL,
+  `step_name`            VARCHAR(100) NOT NULL,
+  `job_execution_id`     BIGINT NOT NULL,
+  `start_time`           DATETIME NOT NULL ,
+  `end_time`             DATETIME DEFAULT NULL,
+  `status`               VARCHAR(10),
+  `commit_count`         BIGINT,
+  `read_count`           BIGINT,
+  `filter_count`         BIGINT,
+  `write_count`          BIGINT,
+  `read_skip_count`      BIGINT,
+  `write_skip_count`     BIGINT,
+  `process_skip_count`   BIGINT,
+  `rollback_count`       BIGINT,
+  `exit_code`            VARCHAR(20),
+  `exit_message`         VARCHAR(2500) ,
+  `last_updated`         DATETIME,
+  CONSTRAINT `job_execution_step_fk` FOREIGN KEY (`job_execution_id`) REFERENCES `batch_job_execution` (`job_execution_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `batch_job_execution_context`  (
+  `job_execution_id`     BIGINT PRIMARY KEY,
+  `short_context`        VARCHAR(2500) NOT NULL,
+  `serialized_context`   LONGTEXT,
+  CONSTRAINT `job_exec_ctx_fk` FOREIGN KEY (`job_execution_id`) REFERENCES `batch_job_execution` (`job_execution_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `batch_step_execution_context`  (
+  `step_execution_id`   BIGINT PRIMARY KEY,
+  `short_context`       VARCHAR(2500) NOT NULL,
+  `serialized_context`  LONGTEXT,
+  CONSTRAINT `step_exec_ctx_fk` FOREIGN KEY (`step_execution_id`) REFERENCES `batch_step_execution` (`step_execution_id`)
+) ENGINE=InnoDB;
+
+
+
+-- Create indexes for the tables
+
+CREATE INDEX `idx_native_type` ON `native_type` (`nat_type`, `extension`) USING BTREE;
+CREATE INDEX `idx_user_username` ON `user` (`username`) USING BTREE;
+CREATE INDEX `idx_process_name` ON `process` (`name`) USING BTREE;
+CREATE INDEX `idx_branch_name` ON `process_branch` (`branch_name`) USING BTREE;
+CREATE INDEX `idx_pmv_version` ON `process_model_version` (`version_number`) USING BTREE;
+CREATE INDEX `idx_pmv_lock` ON `process_model_version` (`lock_status`) USING BTREE;
+CREATE INDEX `idx_annotation_name` ON `annotation` (`name`) USING BTREE;
+CREATE INDEX `idx_fv_lock` ON `fragment_version` (`lock_status`) USING BTREE;
+CREATE INDEX `idx_fv_sizetype` ON `fragment_version` (`fragment_size`, `fragment_type`) USING BTREE;
+CREATE INDEX `idx_fvd_pocket` ON `fragment_version_dag` (`pocketId`) USING BTREE;
+CREATE INDEX `idx_cluster` ON `cluster` (`size`, `avg_fragment_size`, `benifit_cost_ratio`) USING BTREE;
+CREATE INDEX `idx_fragment_distance` ON `fragment_distance` (`ged`) USING BTREE;
+CREATE INDEX `idx_job_instance` on `batch_job_instance` (`job_name`, `job_key`);
+CREATE INDEX `idx_job_execution` on `batch_job_execution` (`job_instance_id`);
+CREATE INDEX `idx_step_execution_version` on `batch_step_execution` (`version`);
+CREATE INDEX `idx_step_execution` on `batch_step_execution` (`step_name`, `job_execution_id`);
+
+
+
+-- Add the basic data used by the system.
 
 LOCK TABLES `native_type` WRITE;
 /*!40000 ALTER TABLE `native_type` DISABLE KEYS */;
@@ -937,6 +1039,27 @@ INSERT INTO `search_history` VALUES (1,12,'airport');
 INSERT INTO `search_history` VALUES (2,14,'gold coast');
 INSERT INTO `search_history` VALUES (3,14,'goldcoast');
 /*!40000 ALTER TABLE `search_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `batch_step_execution_seq` WRITE;
+/*!40000 ALTER TABLE `batch_step_execution_seq` DISABLE KEYS */;
+INSERT INTO `batch_step_execution_seq` VALUES (0);
+/*!40000 ALTER TABLE `batch_step_execution_seq` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `batch_job_execution_seq` WRITE;
+/*!40000 ALTER TABLE `batch_job_execution_seq` DISABLE KEYS */;
+INSERT INTO `batch_job_execution_seq` VALUES (0);
+/*!40000 ALTER TABLE `batch_job_execution_seq` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `batch_job_seq` WRITE;
+/*!40000 ALTER TABLE `batch_job_seq` DISABLE KEYS */;
+INSERT INTO `batch_job_seq` VALUES (0);
+/*!40000 ALTER TABLE `batch_job_seq` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

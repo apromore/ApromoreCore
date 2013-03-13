@@ -1,23 +1,22 @@
 package org.apromore.util;
 
-import org.apromore.common.Constants;
-import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.exception.PocketMappingException;
-import org.apromore.graph.canonical.CPFEdge;
-import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.INode;
-import org.apromore.graph.canonical.NodeTypeEnum;
-import org.apromore.service.model.FragmentNode;
-import org.jbpt.algo.tree.tctree.TCType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apromore.common.Constants;
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
+import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.exception.PocketMappingException;
+import org.apromore.graph.canonical.CPFEdge;
+import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.service.model.FragmentNode;
+import org.jbpt.algo.tree.tctree.TCType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Chathura Ekanayake
@@ -137,6 +136,28 @@ public class FragmentUtil {
             if (o != null) {
                 String mappedPocketId = pocketMappings.get(fvd.getPocketId());
                 newChildMapping.put(mappedPocketId, fvd.getChildFragmentVersion().getId().toString());
+            } else {
+                String msg = "Mapping of pocket " + fvd.getPocketId() + " is null.";
+                LOGGER.error(msg);
+                throw new PocketMappingException(msg);
+            }
+        }
+        return newChildMapping;
+    }
+
+    /**
+     * Creates a new child mapping by replacing pocket ids of fragment by their corresponding pockets ids of content.
+     * @param childMappings map pocketId -> childId
+     * @param pocketMappings map fragment pocket Id -> content pocket Id
+     */
+    public static Map<String, Integer> remapChildrenCluster(final List<FragmentVersionDagDO> childMappings, final Map<String, String> pocketMappings)
+            throws PocketMappingException {
+        Map<String, Integer> newChildMapping = new HashMap<String, Integer>(0);
+        for (FragmentVersionDagDO fvd : childMappings) {
+            String o = pocketMappings.get(fvd.getPocketId().toString());
+            if (o != null) {
+                String mappedPocketId = pocketMappings.get(fvd.getPocketId().toString());
+                newChildMapping.put(mappedPocketId, fvd.getChildFragmentVersionId());
             } else {
                 String msg = "Mapping of pocket " + fvd.getPocketId() + " is null.";
                 LOGGER.error(msg);

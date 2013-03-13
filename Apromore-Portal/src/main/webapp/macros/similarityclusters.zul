@@ -15,7 +15,7 @@
 					<listitem value="DBSCAN" selected="true">
 						<listcell>DBSCAN</listcell>
 					</listitem>
-					<listitem value="HIERACHICAL" disabled="true">
+					<listitem value="HIERACHICAL">
 						<listcell>HAC</listcell>
 					</listitem>					
 				</listbox>

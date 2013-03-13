@@ -36,9 +36,9 @@ public class FolderController extends GenericForwardComposer {
 
     public void onFolderClick$folderWindow(Event event) {
         ForwardEvent eventx = (ForwardEvent) event;
-        Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
-        Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
-        Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
+//        Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
+//        Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
+//        Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
 
         try {
             String idsString = eventx.getOrigin().getData().toString();
@@ -48,13 +48,13 @@ public class FolderController extends GenericForwardComposer {
             UserSessionManager.getMainController().clearProcessVersions();
 
             if (!idsString.isEmpty()) {
-                folderOptions.setVisible(true);
+//                folderOptions.setVisible(true);
                 String[] ids = idsString.split(",");
-                if (ids.length == 1) {
-                    btnRenameFolder.setVisible(true);
-                } else {
-                    btnRenameFolder.setVisible(false);
-                }
+//                if (ids.length == 1) {
+//                    btnRenameFolder.setVisible(true);
+//                } else {
+//                    btnRenameFolder.setVisible(false);
+//                }
                 List<Integer> folderIds = new ArrayList<Integer>();
                 List<Integer> processIds = new ArrayList<Integer>();
                 boolean canDelete = true;
@@ -78,8 +78,8 @@ public class FolderController extends GenericForwardComposer {
                     }
                 }
 
-                btnRemoveFolder.setVisible(canDelete);
-                btnRenameFolder.setVisible(btnRenameFolder.isVisible() && canRename);
+//                btnRemoveFolder.setVisible(canDelete);
+//                btnRenameFolder.setVisible(btnRenameFolder.isVisible() && canRename);
                 UserSessionManager.setSelectedFolderIds(folderIds);
                 UserSessionManager.setSelectedProcessIds(processIds);
                 UserSessionManager.getMainController().updateSelectedListBox(processIds);
@@ -105,11 +105,11 @@ public class FolderController extends GenericForwardComposer {
             int selectedFolderId = Integer.parseInt(eventx.getOrigin().getData().toString());
             Html html = (Html) eventx.getOrigin().getTarget().getParent().getFellow("folders");
 
-            Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
-            Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
-            Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
-            btnRenameFolder.setVisible(false);
-            btnRemoveFolder.setVisible(false);
+//            Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
+//            Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
+//            Button btnRemoveFolder = (Button) folderOptions.getFellow("btnRemoveFolder");
+//            btnRenameFolder.setVisible(false);
+//            btnRemoveFolder.setVisible(false);
 
             if (html != null) {
                 FolderType selectedFolder = null;
