@@ -39,13 +39,6 @@
         <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
     </issueManagement>
 
-    <!--<distributionManagement>-->
-    <!--<site>-->
-    <!--<id>Apromore-site</id>-->
-    <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Core/apromore-service</url>-->
-    <!--</site>-->
-    <!--</distributionManagement>-->
-
     <licenses>
         <license>
             <name>GNU General Public License v3</name>
@@ -152,7 +145,7 @@
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
         </dependency>
-        
+
         <!-- Core Plugins -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -197,6 +190,14 @@
         </dependency>
 
         <!-- Blueprint OSGi -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.core</artifactId>
+        </dependency>
 
         <!-- BPM Imports -->
         <dependency>
@@ -267,16 +268,12 @@
             <groupId>org.aspectj</groupId>
             <artifactId>com.springsource.org.aspectj.runtime</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>com.springsource.org.aspectj.weaver</artifactId>
+        </dependency>
 
         <!-- Database -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>jta</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
@@ -301,11 +298,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.core</artifactId>
+            <artifactId>org.springframework.beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.beans</artifactId>
+            <artifactId>org.springframework.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -456,7 +453,6 @@
             <!--<version>1.0.2.RELEASE</version>-->
             <!--<scope>test</scope>-->
         <!--</dependency>-->
-
     </dependencies>
 
 </project>

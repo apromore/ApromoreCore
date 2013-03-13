@@ -38,7 +38,7 @@ public class NodeRepositoryCustomImpl implements NodeRepositoryCustom {
 
     @Override
     public List<NodeDO> getNodeDOsByContent(final Integer contentId) {
-        String sql = "select id, contentId, name, graphType, nodeType from node where content_id =?";
+        String sql = "select id, contentid, name, graphType, nodeType from node where contentid = ?";
 
         return this.jdbcTemplate.query(sql, new Object[] { contentId },
                 new RowMapper<NodeDO>() {

@@ -8,20 +8,17 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import nl.tue.tm.is.graph.SimpleGraph;
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.apache.commons.collections.map.MultiKeyMap;
-import org.apromore.clustering.algorithm.dbscan.FragmentPair;
-import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
-import org.apromore.clustering.algorithm.hac.HACClusterer;
-import org.apromore.clustering.algorithm.dbscan.InMemoryClusterer;
+import org.apromore.toolbox.clustering.DMatrix;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
+import org.apromore.toolbox.clustering.algorithm.hac.HACClusterer;
+import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryClusterer;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
-import org.apromore.dao.model.FragmentDistance;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
@@ -34,6 +31,8 @@ import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -48,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ClusterServiceImpl implements ClusterService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClusterServiceImpl.class);
+
     private static final String DBSCAN = "DBSCAN";
     private static final String HAC = "HAC";
 
@@ -59,6 +60,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     private InMemoryClusterer dbscanClusterer;
     private HACClusterer hacCluster;
+
+    private DMatrix dmatrix;
 
 
     /**
@@ -74,7 +77,7 @@ public class ClusterServiceImpl implements ClusterService {
     public ClusterServiceImpl(final ClusterRepository clusterRepository,
             final ClusterAssignmentRepository clusterAssignmentRepository, final FragmentVersionRepository fragmentVersionRepository,
             final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService,
-            final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer) {
+            final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer, final DMatrix matrix) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
         fvRepository = fragmentVersionRepository;
@@ -82,32 +85,9 @@ public class ClusterServiceImpl implements ClusterService {
         dbscanClusterer = inMemoryClusterer;
         hacCluster = hacClusterer;
         fService = fragmentService;
+        dmatrix = matrix;
     }
 
-
-    /**
-     * @see org.apromore.service.ClusterService#assignFragments(java.util.List, Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void assignFragments(List<Integer> fragmentIds, Integer clusterId) {
-        for (Integer frag : fragmentIds) {
-            assignFragment(frag, clusterId);
-        }
-    }
-
-    /**
-     * @see org.apromore.service.ClusterService#assignFragment(Integer, Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void assignFragment(Integer fragmentId, Integer clusterId) {
-        FragmentVersion fragVersion = fvRepository.findOne(fragmentId);
-        fragVersion.setCluster(cRepository.findOne(clusterId));
-        fvRepository.save(fragVersion);
-    }
 
     /**
      * @see org.apromore.service.ClusterService#cluster(org.apromore.service.model.ClusterSettings)
@@ -116,14 +96,31 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional(readOnly = false)
     public void cluster(ClusterSettings settings) throws RepositoryException {
-        cRepository.deleteAll();
-        caRepository.deleteAll();
+        clearClusters();
 
         if (DBSCAN.equals(settings.getAlgorithm())) {
             dbscanClusterer.clusterRepository(settings);
         } else if (HAC.equals(settings.getAlgorithm())) {
             hacCluster.clusterRepository(settings);
         }
+    }
+
+    /**
+     * @see org.apromore.service.ClusterService#cluster(org.apromore.service.model.ClusterSettings)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void computeGEDMatrix() {
+        LOGGER.debug("Computing the GED Matrix....");
+        try {
+            fdRepository.deleteAll();
+            dmatrix.compute();
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while computing the GED matrix for the first time. This could result in lesser number of clusters. PLEASE RERUN THE COMPUTATION.", e);
+            e.printStackTrace();
+        }
+        LOGGER.debug("Completed computing the GED Matrix....");
     }
 
     /**
@@ -179,7 +176,7 @@ public class ClusterServiceImpl implements ClusterService {
 
         org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
         c.setCluster(cinfo);
-        List<FragmentVersion> fs = fvRepository.getFragmentsByClusterId(clusterId);
+        List<FragmentVersion> fs = fvRepository.findByClusterId(clusterId);
         for (FragmentVersion f : fs) {
             MemberFragment fragment = new MemberFragment(f.getId());
             fragment.setFragmentSize(f.getFragmentSize());
@@ -199,7 +196,7 @@ public class ClusterServiceImpl implements ClusterService {
                 pa.setProcessName(processName);
                 fragment.getProcessAssociations().add(pa);
             }
-            double distance = cRepository.getDistance(cinfo.getMedoidId(), f.getId());
+            double distance = fdRepository.getDistance(cinfo.getMedoidId(), f.getId());
             fragment.setDistance(distance);
             c.addFragment(fragment);
         }
@@ -226,7 +223,7 @@ public class ClusterServiceImpl implements ClusterService {
         for (Cluster cinfo : cinfos) {
             org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
             c.setCluster(cinfo);
-            List<FragmentVersion> fs = fvRepository.getFragmentsByClusterId(cinfo.getId());
+            List<FragmentVersion> fs = fvRepository.findByClusterId(cinfo.getId());
             for (FragmentVersion f : fs) {
                 MemberFragment fragment = new MemberFragment(f.getId());
                 fragment.setFragmentSize(f.getFragmentSize());
@@ -246,7 +243,7 @@ public class ClusterServiceImpl implements ClusterService {
                     pa.setProcessName(processName);
                     fragment.getProcessAssociations().add(pa);
                 }
-                double distance = cRepository.getDistance(cinfo.getMedoidId(), f.getId());
+                double distance = fdRepository.getDistance(cinfo.getMedoidId(), f.getId());
                 fragment.setDistance(distance);
                 c.addFragment(fragment);
             }
@@ -276,7 +273,7 @@ public class ClusterServiceImpl implements ClusterService {
             for (int j = i + 1; j < fragmentIds.size(); j++) {
                 Integer fid1 = fragmentIds.get(i);
                 Integer fid2 = fragmentIds.get(j);
-                double distance = cRepository.getDistance(fid1, fid2);
+                double distance = fdRepository.getDistance(fid1, fid2);
                 if (distance < 0) {
 
                     try {
@@ -300,34 +297,6 @@ public class ClusterServiceImpl implements ClusterService {
         }
 
         return pairDistances;
-    }
-
-
-    /**
-     * @see org.apromore.service.ClusterService#saveDistances(org.apache.commons.collections.map.MultiKeyMap)
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void saveDistances(final MultiKeyMap distanceMap) {
-        FragmentDistance distance;
-        List<FragmentDistance> distances = new ArrayList<FragmentDistance>();
-
-        MapIterator mi = distanceMap.mapIterator();
-        while (mi.hasNext()) {
-            MultiKey fragmentIds = (MultiKey) mi.next();
-            Double ged = (Double) mi.getValue();
-
-            if (fdRepository.findByFragmentVersionId1AndFragmentVersionId2((Integer) fragmentIds.getKey(0), (Integer) fragmentIds.getKey(1)) == null) {
-                distance = new FragmentDistance();
-                distance.setFragmentVersionId1(fvRepository.findOne((Integer) fragmentIds.getKey(0)));
-                distance.setFragmentVersionId2(fvRepository.findOne((Integer) fragmentIds.getKey(1)));
-                distance.setDistance(ged);
-
-                distances.add(distance);
-            }
-        }
-        fdRepository.save(distances);
     }
 
 

@@ -40,8 +40,7 @@ public abstract class BaseListboxController extends BaseController {
 		this.pg = (Paging) mainController.getFellow("pg");
 		getListBox().setPaginal(pg);
 
-		this.revertSelectionB = (Button) mainController
-				.getFellow("revertSelectionB");
+		this.revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
 		this.unselectAllB = (Button) mainController.getFellow("unselectAllB");
 		this.selectAllB = (Button) mainController.getFellow("selectAllB");
 		this.refreshB = (Button) mainController.getFellow("refreshB");
@@ -90,8 +89,7 @@ public abstract class BaseListboxController extends BaseController {
 	protected abstract void refreshContent();
 
 	protected Listbox createListbox(String componentId) {
-		return (Listbox) Executions.createComponents(componentId,
-				getMainController(), null);
+		return (Listbox) Executions.createComponents(componentId, getMainController(), null);
 	}
 
 	protected Listbox getListBox() {

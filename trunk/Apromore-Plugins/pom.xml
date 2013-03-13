@@ -80,7 +80,7 @@
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
-  </modules>
+    </modules>
 
     <repositories>
         <repository>

@@ -3,6 +3,8 @@ package org.apromore.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
+
 /**
  * Interface domain model Data access object FragmentVersionDag.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
@@ -23,4 +25,10 @@ public interface FragmentVersionDagRepositoryCustom {
      */
     Map<Integer, List<Integer>> getAllChildParentMappings();
 
+    /**
+     * Returns all the child mappings for the FragmentId.
+     * @param fragmentId the fragment id
+     * @return the list of child fragments
+     */
+    List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId);
 }

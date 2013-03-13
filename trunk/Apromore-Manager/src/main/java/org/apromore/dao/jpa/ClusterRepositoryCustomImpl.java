@@ -3,20 +3,18 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apromore.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.apromore.dao.ClusterRepositoryCustom;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.FragmentDistance;
 import org.apromore.service.model.ClusterFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -18,6 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -27,8 +31,9 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "process_model_version")
-@Cacheable(true)
 @Configurable("processModelVersion")
+@Cacheable(true)
+@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class ProcessModelVersion implements Serializable {
 
     private Integer id;

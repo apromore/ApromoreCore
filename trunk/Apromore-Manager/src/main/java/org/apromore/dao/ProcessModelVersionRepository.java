@@ -97,8 +97,7 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      * @param minSize the minimum size fragment.
      * @return the list of root fragment ids
      */
-    @Query("SELECT f.id FROM FragmentVersion f, ProcessModelVersion pmv " +
-            "WHERE f.id = pmv.rootFragmentVersion.id AND f.fragmentSize > ?1")
+    @Query("SELECT f.id FROM FragmentVersion f JOIN f.rootProcessModelVersions pmv WHERE f.fragmentSize > ?1")
     List<Integer> getRootFragments(int minSize);
 
     /**

@@ -2,24 +2,21 @@ package org.apromore.service.impl;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentRepository;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NodeRepository;
 import org.apromore.dao.dataObject.ContentDO;
 import org.apromore.dao.dataObject.EdgeDO;
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
 import org.apromore.dao.dataObject.NodeDO;
 import org.apromore.dao.model.FragmentVersion;
-import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.graph.canonical.CPFEdge;
@@ -27,76 +24,74 @@ import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.NodeTypeEnum;
 import org.apromore.service.ComposerService;
-import org.apromore.service.GraphService;
 import org.apromore.service.helper.OperationContext;
+import org.apromore.util.CacheLinkedHashMap;
 import org.apromore.util.FragmentUtil;
 import org.apromore.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
 public class SimpleGraphComposerServiceImpl implements ComposerService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleGraphComposerServiceImpl.class);
 
     private ContentRepository contentRepository;
-    private FragmentVersionRepository fragmentVersionRepository;
     private FragmentVersionDagRepository fragmentVersionDagRepository;
     private EdgeRepository edgeRepository;
     private NodeRepository nodeRepository;
-    private GraphService graphService;
 
-    private Map<String, SimpleGraph> cache = new HashMap<String, SimpleGraph>();
-    private int minCachableFragmentSize = 2;
-    private int maxCachableFragmentSize = 100;
-
-    private Map<Integer, List<NodeDO>> nodeCache = new HashMap<Integer, List<NodeDO>>();
-    private Map<Integer, List<EdgeDO>> edgeCache = new HashMap<Integer, List<EdgeDO>>();
-	private Map<Integer, ContentDO> contentCache = new HashMap<Integer, ContentDO>();
-	private Map<Integer, List<FragmentVersionDag>> childMappingsCache = new HashMap<Integer, List<FragmentVersionDag>>();
+    private Map<Integer, List<NodeDO>> nodeCache = new CacheLinkedHashMap<Integer, List<NodeDO>>();
+    private Map<Integer, List<EdgeDO>> edgeCache = new CacheLinkedHashMap<Integer, List<EdgeDO>>();
+	private LinkedHashMap<Integer, ContentDO> contentCache = new CacheLinkedHashMap<Integer, ContentDO>();
+	private Map<Integer, List<FragmentVersionDagDO>> childMappingsCache = new CacheLinkedHashMap<Integer, List<FragmentVersionDagDO>>();
 
 
 
     @Inject
-    public SimpleGraphComposerServiceImpl(final ContentRepository cRepo, final FragmentVersionRepository fragRepo,
-            final FragmentVersionDagRepository fragDagRepo, final EdgeRepository eRepo, final NodeRepository nRepo,
-            final GraphService gSrv) {
+    public SimpleGraphComposerServiceImpl(final ContentRepository cRepo,
+            final FragmentVersionDagRepository fragDagRepo, final EdgeRepository eRepo, final NodeRepository nRepo) {
         contentRepository = cRepo;
-        fragmentVersionRepository = fragRepo;
         fragmentVersionDagRepository = fragDagRepo;
         edgeRepository = eRepo;
         nodeRepository = nRepo;
-        graphService = gSrv;
     }
 
 
     /**
-     * Compose a process Model graph from the DB.
-     * @param fragmentVersion the fragment version Id we are looking to construct from.
-     * @return the process model graph
-     * @throws org.apromore.exception.ExceptionDao if something fails.
+     * @see ComposerService#compose(org.apromore.dao.model.FragmentVersion)
+     * {@inheritDoc}
      */
     @Override
 	public Canonical compose(FragmentVersion fragmentVersion) throws ExceptionDao {
-		OperationContext op = new OperationContext();
-        Canonical g = new Canonical();
-		op.setGraph(g);
-		composeFragment(op, fragmentVersion, null);
-		return g;
+		throw new UnsupportedOperationException("SimpleGraphComposerServiceImpl doesn't support this method.");
 	}
 
+    /**
+     * @see ComposerService#compose(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    public Canonical compose(Integer rootFragmentId) throws ExceptionDao {
+        OperationContext op = new OperationContext();
+        Canonical g = new Canonical();
+        op.setGraph(g);
+        composeFragment(op, rootFragmentId, null);
+        return g;
+    }
+
+    /**
+     * @see ComposerService#clearCache(java.util.List)
+     * {@inheritDoc}
+     */
     @Override
     public void clearCache(List<Integer> fids) {
         for (Integer fid : fids) {
             clearCache(fid);
         }
     }
-
-
 
 
 	private ContentDO getContent(Integer fragmentId) {
@@ -108,54 +103,54 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 		return contentDO;
 	}
 
-	private void composeFragment(OperationContext op, FragmentVersion fragmentVersion, String pocketId) throws ExceptionDao {
-		ContentDO content = getContent(fragmentVersion.getId());
+
+	private void composeFragment(OperationContext op, Integer fragmentVersionId, String pocketId) throws ExceptionDao {
+		ContentDO content = getContent(fragmentVersionId);
 
 		if (op.getContentUsage(content.getId()) == 0) {
-			composeNewContent(op, fragmentVersion.getId(), pocketId, content);
+			composeNewContent(op, fragmentVersionId, pocketId, content);
 		} else {
-			composeDuplicateContent(op, fragmentVersion.getId(), pocketId, content);
+			composeDuplicateContent(op, fragmentVersionId, pocketId, content);
 		}
 	}
 
-	private void composeNewContent(OperationContext op, Integer fragmentVersionId, String pocketId, ContentDO contentDO)
-            throws ExceptionDao {
-		op.incrementContentUsage(contentDO.getId());
+	private void composeNewContent(OperationContext op, Integer fragmentVersionId, String pocketId, ContentDO contentDO) throws ExceptionDao {
+        CPFNode boundaryS;
+        CPFNode boundaryE;
+        CPFNode parentT1;
+        CPFNode parentT2;
+
+        op.incrementContentUsage(contentDO.getId());
 
         Canonical g = op.getGraph();
         fillNodes(g, contentDO.getId());
         fillEdges(g, contentDO.getId());
 
         Collection<CPFNode> nodesToBeRemoved = new HashSet<CPFNode>();
-        Collection<CPFEdge> edgesToBeRemoved = new HashSet<CPFEdge>();
 		if (pocketId != null) {
 			Collection<CPFEdge> edges = g.getEdges();
 			for (CPFEdge edge: edges) {
 				if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-					CPFNode boundaryS = g.getNode(contentDO.getBoundaryS());
-					CPFNode parentT1 = edge.getSource();
+				    boundaryS = g.getNode(contentDO.getBoundaryS());
+					parentT1 = edge.getSource();
 					if (canCombineSplit(parentT1, boundaryS)) {
-						Collection<CPFNode> childTs = g.getDirectSuccessors(boundaryS);
-						for (CPFNode ct : childTs) {
+						for (CPFNode ct : g.getDirectSuccessors(boundaryS)) {
 							g.addEdge(parentT1, ct);
 						}
 						nodesToBeRemoved.add(boundaryS);
-
 					} else {
 						edge.setTarget(g.getNode(contentDO.getBoundaryS()));
 					}
 				}
 
 				if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
-					CPFNode boundaryE = g.getNode(contentDO.getBoundaryE());
-					CPFNode parentT2 = edge.getTarget();
+					boundaryE = g.getNode(contentDO.getBoundaryE());
+					parentT2 = edge.getTarget();
 					if (canCombineJoin(parentT2, boundaryE)) {
-						Collection<CPFNode> childTs = g.getDirectPredecessors(boundaryE);
-						for (CPFNode ct : childTs) {
+						for (CPFNode ct : g.getDirectPredecessors(boundaryE)) {
 							g.addEdge(ct, parentT2);
 						}
 						nodesToBeRemoved.add(boundaryE);
-
 					} else {
 						edge.setSource(g.getNode(contentDO.getBoundaryE()));
 					}
@@ -165,9 +160,8 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 			g.removeNodes(nodesToBeRemoved);
 		}
 
-		List<FragmentVersionDag> childMappings = getChildMappings(fragmentVersionId);
-        for (FragmentVersionDag fvd : childMappings) {
-            composeFragment(op, fvd.getChildFragmentVersion(), fvd.getPocketId());
+        for (FragmentVersionDagDO fvd : getChildMappings(fragmentVersionId)) {
+            composeFragment(op, fvd.getChildFragmentVersionId(), fvd.getPocketId());
         }
 	}
 
@@ -214,9 +208,13 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
     }
     
     
-	private void composeDuplicateContent(OperationContext op, Integer fragmentVersionId, String pocketId,
-            ContentDO contentDO) throws ExceptionDao {
-		op.incrementContentUsage(contentDO.getId());
+	private void composeDuplicateContent(OperationContext op, Integer fragmentVersionId, String pocketId, ContentDO contentDO) throws ExceptionDao {
+        CPFNode boundaryS;
+        CPFNode boundaryE;
+        CPFNode parentT1;
+        CPFNode parentT2;
+
+        op.incrementContentUsage(contentDO.getId());
 
         Canonical g = op.getGraph();
         Canonical contentGraph = getGraph(contentDO.getId());
@@ -230,29 +228,25 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 			Collection<CPFEdge> edges = g.getEdges();
 			for (CPFEdge edge: edges) {
 				if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-					CPFNode boundaryS = g.getNode(vMap.get(contentDO.getBoundaryS()));
-					CPFNode parentT1 = edge.getSource();
+					boundaryS = g.getNode(vMap.get(contentDO.getBoundaryS()));
+					parentT1 = edge.getSource();
 					if (canCombineSplit(parentT1, boundaryS)) {
-						Collection<CPFNode> childTs = g.getDirectSuccessors(boundaryS);
-						for (CPFNode ct : childTs) {
+						for (CPFNode ct : g.getDirectSuccessors(boundaryS)) {
 							g.addEdge(parentT1, ct);
 						}
 						nodesToBeRemoved.add(boundaryS);
-
 					} else {
 						edge.setTarget(g.getNode(vMap.get(contentDO.getBoundaryS())));
 					}
 				}
 				if (edge.getSource().getId().equals(pocketId)) {
-					CPFNode boundaryE = g.getNode(vMap.get(contentDO.getBoundaryE()));
-					CPFNode parentT2 = edge.getTarget();
+					boundaryE = g.getNode(vMap.get(contentDO.getBoundaryE()));
+					parentT2 = edge.getTarget();
 					if (canCombineJoin(parentT2, boundaryE)) {
-						Collection<CPFNode> childTs = g.getDirectPredecessors(boundaryE);
-						for (CPFNode ct : childTs) {
+						for (CPFNode ct : g.getDirectPredecessors(boundaryE)) {
 							g.addEdge(ct, parentT2);
 						}
 						nodesToBeRemoved.add(boundaryE);
-
 					} else {
 						edge.setSource(g.getNode(vMap.get(contentDO.getBoundaryE())));
 					}
@@ -262,31 +256,28 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 			g.removeVertices(nodesToBeRemoved);
 		}
 
-        List<FragmentVersionDag> childMappings = getChildMappings(fragmentVersionId);
-		Map<String, String> newChildMapping = null;
+		Map<String, Integer> newChildMapping = null;
 		try {
-			newChildMapping = FragmentUtil.remapChildren(childMappings, vMap);
+			newChildMapping = FragmentUtil.remapChildrenCluster(getChildMappings(fragmentVersionId), vMap);
 		} catch (PocketMappingException e) {
 			String msg = "Failed a pocked mapping of fragment " + fragmentVersionId;
 			LOGGER.error(msg, e);
 		}
-		Set<String> pids = newChildMapping.keySet();
-		for (String pid: pids) {
-            FragmentVersion childId = fragmentVersionRepository.findFragmentVersionByUri(newChildMapping.get(pid));
-			composeFragment(op, childId, pid);
+        assert newChildMapping != null;
+		for (String pid: newChildMapping.keySet()) {
+			composeFragment(op, newChildMapping.get(pid), pid);
 		}
 	}
 
 	private void fillOriginalNodeMappings(Map<String, String> vMap, Canonical g) {
-		for (String originalNode : vMap.keySet()) {
-			String duplicateNode = vMap.get(originalNode);
+        String duplicateNode;
+        for (String originalNode : vMap.keySet()) {
+			duplicateNode = vMap.get(originalNode);
 			if (!g.getNodeProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
 				g.addOriginalNodeMapping(duplicateNode, originalNode);
 			}
 		}
 	}
-
-
 
 
 
@@ -302,7 +293,6 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 
     @Transactional(readOnly = true)
     public void fillNodes(Canonical procModelGraph, Integer contentID) {
-        CPFNode v;
         List<NodeDO> nodes = nodeCache.get(contentID);
         if (nodes == null) {
         	nodes =	nodeRepository.getNodeDOsByContent(contentID);
@@ -310,8 +300,7 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
         }
 
         for (NodeDO node : nodes) {
-            v = buildNodeByType(node);
-            procModelGraph.addVertex(v);
+            procModelGraph.addVertex(buildNodeByType(node));
             procModelGraph.setNodeProperty(String.valueOf(node.getId()), Constants.TYPE, node.getNodeType());
         }
     }
@@ -324,9 +313,11 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
     		edgeCache.put(contentID, edges);
     	}
 
+        CPFNode v1;
+        CPFNode v2;
         for (EdgeDO edge : edges) {
-            CPFNode v1 = procModelGraph.getNode(String.valueOf(edge.getSourceId()));
-            CPFNode v2 = procModelGraph.getNode(String.valueOf(edge.getTargetId()));
+            v1 = procModelGraph.getNode(String.valueOf(edge.getSourceId()));
+            v2 = procModelGraph.getNode(String.valueOf(edge.getTargetId()));
 
             if (v1 != null && v2 != null) {
             	procModelGraph.addEdge(v1, v2);
@@ -346,17 +337,16 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
         }
     }
 
-    private List<FragmentVersionDag> getChildMappings(Integer fragmentId) {
-    	List<FragmentVersionDag> childMappings = childMappingsCache.get(fragmentId);
+    private List<FragmentVersionDagDO> getChildMappings(Integer fragmentId) {
+    	List<FragmentVersionDagDO> childMappings = childMappingsCache.get(fragmentId);
     	if (childMappings == null) {
-			childMappings = fragmentVersionDagRepository.getChildMappings(fragmentId);
+			childMappings = fragmentVersionDagRepository.getChildMappingsDO(fragmentId);
 			childMappingsCache.put(fragmentId, childMappings);
     	}
     	return childMappings;
     }
 
-    @Transactional(readOnly = true)
-    public Canonical getGraph(Integer contentID){
+    private Canonical getGraph(Integer contentID){
         Canonical g = new Canonical();
         fillNodes(g, contentID);
         fillEdges(g, contentID);
@@ -368,23 +358,9 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
         CPFNode result = new CPFNode();
         if (node != null) {
             result.setId(node.getId().toString());
-            result.setNodeType(NodeTypeEnum.fromValue(node.getNodeType()));
+            result.setNodeType(NodeTypeEnum.fromName(node.getNodeType()));
         }
         return result;
-    }
-
-
-
-    public void setCache(Map<String, SimpleGraph> cache) {
-        this.cache = cache;
-    }
-
-    public void setMinCachableFragmentSize(int minCachableFragmentSize) {
-        this.minCachableFragmentSize = minCachableFragmentSize;
-    }
-
-    public void setMaxCachableFragmentSize(int maxCachableFragmentSize) {
-        this.maxCachableFragmentSize = maxCachableFragmentSize;
     }
 
 }

@@ -235,7 +235,7 @@
                         </Import-Package>
                     </instructions>
                 </configuration>                
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
 

@@ -33,21 +33,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <detectLinks>false</detectLinks>
-                    <detectOfflineLinks>true</detectOfflineLinks>
-                    <links>
-                        <link>file:///Users/raboczi/Project/apromore/Apromore-Schema/bpmn-schema/target/site/apidocs</link>
-                        <link>file:///Users/raboczi/Project/apromore/Apromore-Schema/cpf-schema/target/site/apidocs</link>
-                    </links>
-                </configuration>
-            </plugin>
-            -->
         </plugins>
     </build>
 

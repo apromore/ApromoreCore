@@ -20,8 +20,7 @@ import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
-import org.apromore.clustering.algorithm.dbscan.DBSCANClusterSettings;
-import org.apromore.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 
 import java.util.List;
 import java.util.Map;
@@ -93,24 +92,21 @@ public class ClusterMapper {
      * @return
      */
     public static ClusterSettings convertClusterSettingsTypeToClusterSettings(ClusterSettingsType clusterSettingsType) {
-        ClusterSettings clusterSettings = null;
-        if (DBSCANClusterSettings.DBSCAN_ALGORITHM_NAME.equals(clusterSettingsType.getAlgorithm())) {
-            DBSCANClusterSettings dbscanSettings = new DBSCANClusterSettings();
-            List<ClusteringParameterType> params = clusterSettingsType.getClusteringParams();
-            for (ClusteringParameterType param : params) {
-                if ("maxdistance".equalsIgnoreCase(param.getParamName())) {
-                    double maxDistance = Double.parseDouble(param.getParmaValue());
-                    dbscanSettings.setMaxNeighborGraphEditDistance(maxDistance);
-                }
+        ClusterSettings clusterSettings = new ClusterSettings();
+        clusterSettings.setAlgorithm(clusterSettingsType.getAlgorithm());
+        List<ClusteringParameterType> params = clusterSettingsType.getClusteringParams();
+        for (ClusteringParameterType param : params) {
+            if ("maxdistance".equalsIgnoreCase(param.getParamName())) {
+                double maxDistance = Double.parseDouble(param.getParmaValue());
+                clusterSettings.setMaxNeighborGraphEditDistance(maxDistance);
             }
-            ConstrainedProcessIdsType cpidsType = clusterSettingsType.getConstrainedProcessIds();
-            if (cpidsType != null) {
-                List<Integer> constrainedProcessIds = cpidsType.getProcessId();
-                if (constrainedProcessIds != null && !constrainedProcessIds.isEmpty()) {
-                    dbscanSettings.setConstrainedProcessIds(constrainedProcessIds);
-                }
+        }
+        ConstrainedProcessIdsType cpidsType = clusterSettingsType.getConstrainedProcessIds();
+        if (cpidsType != null) {
+            List<Integer> constrainedProcessIds = cpidsType.getProcessId();
+            if (constrainedProcessIds != null && !constrainedProcessIds.isEmpty()) {
+                clusterSettings.setConstrainedProcessIds(constrainedProcessIds);
             }
-            clusterSettings = dbscanSettings;
         }
 
         return clusterSettings;

@@ -1,5 +1,13 @@
 package org.apromore.dao.dataObject;
 
+import javax.persistence.Cacheable;
+
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
+
+@Cacheable(true)
+@org.eclipse.persistence.annotations.Cache(type = CacheType.WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 10000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class EdgeDO {
 	
 	private Integer id;

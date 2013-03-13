@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apromore.dao.model.Cluster;
 import org.apromore.service.model.ClusterFilter;
-import org.apromore.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.
@@ -37,17 +37,17 @@ public interface ClusterRepositoryCustom {
     List<Cluster> getFilteredClusters(ClusterFilter filter);
 
     /**
-     *
-     * @param fragmentId1
-     * @param fragmentId2
-     * @return
+     * return the distance stored for two fragments.
+     * @param fragmentId1 fragment one id
+     * @param fragmentId2 fragment two id
+     * @return the found distance
      */
     double getDistance(final Integer fragmentId1, final Integer fragmentId2);
 
     /**
-     *
-     * @param threshold
-     * @return
+     * returns the map of fragment pair and distances for all distances.
+     * @param threshold the distance threshold. anything under this threshold is ignored.
+     * @return the map of fragment pairs and their distance.
      */
     Map<FragmentPair, Double> getDistances(final double threshold);
 

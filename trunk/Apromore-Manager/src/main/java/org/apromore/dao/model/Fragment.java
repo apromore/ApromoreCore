@@ -1,5 +1,9 @@
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
@@ -19,8 +23,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "fragment")
-@Cacheable(true)
 @Configurable("fragment")
+@Cacheable(true)
+@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Fragment implements Serializable {
 
     private Integer id;

@@ -34,7 +34,7 @@
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <module>Apromore-Editor</module>
+        <!--<module>Apromore-Editor</module>-->
     </modules>
 
     <repositories>
@@ -270,6 +270,7 @@
                                 org.springframework.asm,
                                 org.springframework.aspects,
                                 org.springframework.beans,
+                                org.springframework.batch,
                                 org.springframework.context,
                                 org.springframework.context.support,
                                 org.springframework.core,
@@ -1056,9 +1057,7 @@
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
-                        <artifactId>
-                            com.springsource.org.apache.commons.logging
-                        </artifactId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                         <groupId>org.apache.commons</groupId>
                     </exclusion>
                 </exclusions>
@@ -1219,9 +1218,9 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
-                <version>${jta.version}</version>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.core</artifactId>
+                <version>${eclipselink.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -1409,8 +1408,8 @@
         <asm.version>3.2.0</asm.version>
         <javassist.version>3.15.0.GA</javassist.version>
 
-        <!-- AspectJ Runtime and Weaver -->
-        <aspectj.version>1.7.1.RELEASE</aspectj.version>
+        <!-- AspectJ Runtime and Weaver - Use 1.6.12 as it what virgo uses -->
+        <aspectj.version>1.6.12.RELEASE</aspectj.version>
 
         <!-- Blueprint OSGi -->
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
@@ -1435,7 +1434,6 @@
 
         <!-- Database / JPA -->
         <eclipselink.version>2.4.1</eclipselink.version>
-        <jta.version>1.1</jta.version>
         <bonecp.version>0.7.1.RELEASE</bonecp.version>
         <mysql.connector.version>5.1.18</mysql.connector.version>
         <joda-time.version>2.1</joda-time.version>
