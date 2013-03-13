@@ -7,7 +7,7 @@
                     _display: inline;
                 }
             </style>
-            <tree id="tree" vflex="true" width="100%" style="border-width: 0px;">
+            <tree id="tree" vflex="true" height="100%" width="100%" style="border-width: 0px;">
                 <treecols sizable="true">
                     <treecol label=""/>
                 </treecols>

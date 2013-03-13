@@ -16,7 +16,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.ComposerService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
-import org.apromore.clustering.algorithm.dbscan.FragmentDataObject;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

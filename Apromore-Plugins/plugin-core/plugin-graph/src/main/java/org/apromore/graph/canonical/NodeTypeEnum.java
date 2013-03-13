@@ -24,7 +24,16 @@ public enum NodeTypeEnum {
 
     public static NodeTypeEnum fromValue(String v) {
         for (NodeTypeEnum c: NodeTypeEnum.values()) {
-            if (c.value.equals(v)) {
+            if (c.value().equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+
+    public static NodeTypeEnum fromName(String v) {
+        for (NodeTypeEnum c: NodeTypeEnum.values()) {
+            if (c.name().equals(v)) {
                 return c;
             }
         }

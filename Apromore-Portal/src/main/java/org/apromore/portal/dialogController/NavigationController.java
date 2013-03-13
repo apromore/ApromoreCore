@@ -19,23 +19,18 @@ public class NavigationController extends BaseController {
     private MainController mainC;
     private Panel navigationP;
     private Tree tree;
-    private Listbox treeChoice;
     private Window treeW;
     private ProcessSummariesType processSummaries;
 
     public NavigationController(MainController mainC) throws Exception {
         this.mainC = mainC;
 
-        /**
-         * Get commponents
-         */
         this.navigationP = (Panel) this.mainC.getFellow("navigationcomp").getFellow("navigationPanel");
-        //this.treeChoice = (Listbox) this.navigationP.getFellow("treeChoice");
         this.treeW = (Window) this.navigationP.getFellow("treeW");
         this.tree = (Tree) this.navigationP.getFellow("treeW").getFellow("tree");
 
-        //loadWorkspace();
-
+        setHflex("true");
+        setVflex("true");
     }
 
     public void loadWorkspace() {

@@ -3,6 +3,10 @@
  */
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
@@ -26,8 +30,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "fragment_distance",
         uniqueConstraints = @UniqueConstraint(columnNames = {"fragmentVersionId1", "fragmentVersionId2"}))
-@Cacheable(true)
 @Configurable("fragmentDistance")
+@Cacheable(true)
+@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class FragmentDistance implements Serializable {
 
     private Integer id;

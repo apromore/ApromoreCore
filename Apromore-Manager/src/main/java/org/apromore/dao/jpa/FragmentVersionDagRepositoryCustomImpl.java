@@ -1,12 +1,18 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.FragmentVersionDagRepositoryCustom;
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
 import org.apromore.dao.model.FragmentVersionDag;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -21,6 +27,9 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
 
     @PersistenceContext
     private EntityManager em;
+
+    @Resource
+    private JdbcTemplate jdbcTemplate;
 
 
     /**
@@ -71,6 +80,31 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
             }
         }
         return childParentMap;
+    }
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDagRepository#getChildMappingsDO(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    public List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId) {
+        String sql = "SELECT id, fragmentVersionId, childFragmentVersionId, pocketId FROM fragment_version_dag WHERE fragmentVersionId = ?";
+
+        List<FragmentVersionDagDO> cmaps = this.jdbcTemplate.query(
+            sql,
+            new Object[] {fragmentId},
+            new RowMapper<FragmentVersionDagDO>() {
+                public FragmentVersionDagDO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    FragmentVersionDagDO cmap = new FragmentVersionDagDO();
+                    cmap.setId(rs.getInt("id"));
+                    cmap.setFragmentVersionId(rs.getInt("fragmentVersionId"));
+                    cmap.setChildFragmentVersionId(rs.getInt("childFragmentVersionId"));
+                    cmap.setPocketId(rs.getString("pocketId"));
+                    return cmap;
+                }
+            });
+
+        return cmaps;
     }
 
 }

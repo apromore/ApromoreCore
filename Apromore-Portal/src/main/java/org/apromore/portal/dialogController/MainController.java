@@ -67,12 +67,12 @@ public class MainController extends BaseController {
     private String msgWhenClose;
     private List<SearchHistoriesType> searchHistory;
     private Hbox pagingandbuttons;
-    private Component workspaceOptionsPanel;
+    //private Component workspaceOptionsPanel;
     private Html folders;
-    private Div listView;
+    //private Div listView;
     //private Button btnTileView;
 
-    private WorkspaceOptionsController workspaceOptionsController;
+    //private WorkspaceOptionsController workspaceOptionsController;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
     private BaseFilterController baseFilterController;
@@ -101,17 +101,17 @@ public class MainController extends BaseController {
             this.mainW = (Window) this.getFellow("mainW");
             this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
-            this.workspaceOptionsPanel = mainW.getFellow("workspaceOptionsPanel");
+            //this.workspaceOptionsPanel = mainW.getFellow("workspaceOptionsPanel");
             this.folders = (Html) mainW.getFellow("folders");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
-            this.listView = (Div) mainW.getFellow("listView");
+            //this.listView = (Div) mainW.getFellow("listView");
             //this.btnTileView = (Button) mainW.getFellow("btnTileView");
 
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.header = new HeaderController(this);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
-            this.workspaceOptionsController = new WorkspaceOptionsController(this);
+            //this.workspaceOptionsController = new WorkspaceOptionsController(this);
 
             switchToProcessSummaryView();
             this.navigation = new NavigationController(this);
@@ -127,7 +127,7 @@ public class MainController extends BaseController {
             this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
             this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
             UserSessionManager.setMainController(this);
-            this.listView.setVisible(true);
+            //this.listView.setVisible(true);
             this.pagingandbuttons.setVisible(true);
             //this.workspaceOptionsPanel.setVisible(true);
             //toggleView(true);
@@ -214,7 +214,6 @@ public class MainController extends BaseController {
 
         content += "</ul>";
         html.setContent(content);
-
     }
 
     /**

@@ -6,7 +6,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.clustering.algorithm.dbscan.FragmentDataObject;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 
 import java.util.List;
 import java.util.Map;
