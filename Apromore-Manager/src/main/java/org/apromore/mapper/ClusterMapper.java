@@ -3,6 +3,8 @@
  */
 package org.apromore.mapper;
 
+import org.apromore.dao.dataObject.ClusterFilter;
+import org.apromore.dao.dataObject.FragmentPair;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.model.ClusterFilterType;
@@ -16,11 +18,9 @@ import org.apromore.model.FragmentData;
 import org.apromore.model.PairDistanceType;
 import org.apromore.model.PairDistancesType;
 import org.apromore.model.ProcessAssociationsType;
-import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 
 import java.util.List;
 import java.util.Map;
