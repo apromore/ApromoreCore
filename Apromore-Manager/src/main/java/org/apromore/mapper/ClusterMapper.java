@@ -3,8 +3,8 @@
  */
 package org.apromore.mapper;
 
-import org.apromore.dao.dataObject.ClusterFilter;
-import org.apromore.dao.dataObject.FragmentPair;
+import org.apromore.service.model.ClusterFilter;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.model.ClusterFilterType;
