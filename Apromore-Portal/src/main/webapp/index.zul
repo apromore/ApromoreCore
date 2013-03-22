@@ -34,9 +34,6 @@
 							<center id="leftInnerCenterPanel" title="My Workspace" flex="true" vflex="true">
 								<Navigation id="navigationcomp"/>
 							</center>
-							<south id="leftInnerSouthPanel" title="Refine Filter" flex="true" splittable="true" collapsible="true" open="false">
-								<Filter id="baseFilter"/>
-							</south>
 						</borderlayout>
 					</center>
 					<south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
@@ -50,16 +47,16 @@
 					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="true">
 						<paging id="pg" />
 						<hbox id="buttons" align="center" height="100%">
-							<button id="revertSelectionB" label="" image="img/revertSelection.png" style="background: transparent; border:none" tooltiptext="Revert selection" />
-							<button id="selectAllB" label="" style="background: transparent; border:none" image="img/selectAll.png" tooltiptext="Select all" />
-							<button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselectAll.png" tooltiptext="Unselect all" />
-							<button id="refreshB" label="" style="background: transparent; border:none" image="img/reload.png" tooltiptext="Reload data" />
-							<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/wizard.png" tooltiptext="Show Visualisation" />
+							<button id="revertSelectionB" label="" image="img/invertselection.png" style="background: transparent; border:none" tooltiptext="Invert selection" />
+							<button id="selectAllB" label="" style="background: transparent; border:none" image="img/select.png" tooltiptext="Select all" />
+							<button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselect.png" tooltiptext="Unselect all" />
+							<button id="refreshB" label="" style="background: transparent; border:none" image="img/relaod.png" tooltiptext="Reload data" />
+							<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/cluster.png" tooltiptext="Show Clustering" />
 
-							<button id="btnAddFolder" label="" image="img/new_folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
-                            <button id="btnAddProcess" label="" image="img/new_process.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
-                            <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="false"/>
-                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="false"/>
+							<button id="btnAddFolder" label="" image="img/folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button id="btnAddProcess" label="" image="img/process.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
+                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
                             <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/lock.png" tooltiptext="Security"/>
 						</hbox>
 					</hbox>
