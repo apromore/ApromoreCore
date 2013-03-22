@@ -128,6 +128,29 @@ public class FragmentUtil {
      * @param childMappings map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
+    public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
+            throws PocketMappingException {
+        Map<String, String> newChildMapping = new HashMap<String, String>();
+        for (Map.Entry<String, String> stringStringEntry : childMappings.entrySet()) {
+            String o = pocketMappings.get(stringStringEntry.getKey());
+            if (o != null) {
+                String mappedPocketId = pocketMappings.get(stringStringEntry.getKey());
+                String childId = stringStringEntry.getValue();
+                newChildMapping.put(mappedPocketId, childId);
+            } else {
+                String msg = "Mapping of pocket " + stringStringEntry.getKey() + " is null.";
+                LOGGER.error(msg);
+                throw new PocketMappingException(msg);
+            }
+        }
+        return newChildMapping;
+    }
+
+    /**
+     * Creates a new child mapping by replacing pocket ids of fragment by their corresponding pockets ids of content.
+     * @param childMappings map pocketId -> childId
+     * @param pocketMappings map fragment pocket Id -> content pocket Id
+     */
     public static Map<String, String> remapChildren(final List<FragmentVersionDag> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
         Map<String, String> newChildMapping = new HashMap<String, String>(0);

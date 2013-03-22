@@ -1,8 +1,14 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.exception.PocketMappingException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.TreeVisitor;
 import org.apromore.graph.canonical.CPFEdge;
@@ -11,25 +17,23 @@ import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
 import org.apromore.service.FragmentService;
+import org.apromore.service.helper.ContentHandler;
+import org.apromore.service.helper.GraphPocketMapper;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.FragmentNode;
 import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
+import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.inject.Inject;
 
 /**
  * @author Chathura Ekanayake
@@ -42,6 +46,8 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     private ContentService cService;
     private FragmentService fService;
+    private GraphPocketMapper pMapper;
+    private ContentHandler bcHandler;
 
 
     /**
@@ -50,9 +56,12 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @param fragmentService Fragment Service.
      */
     @Inject
-    public DecomposerServiceImpl(final ContentService contentService, final FragmentService fragmentService) {
+    public DecomposerServiceImpl(final ContentService contentService, final FragmentService fragmentService,
+            final GraphPocketMapper pocketMapper, final @Qualifier("bondContentHandler") ContentHandler bondContentHandler) {
         cService = contentService;
         fService = fragmentService;
+        pMapper = pocketMapper;
+        bcHandler = bondContentHandler;
     }
 
 
@@ -102,9 +111,48 @@ public class DecomposerServiceImpl implements DecomposerService {
         Collection<FragmentNode> childFragments = parent.getChildren();
         Map<String, String> childMappings = mapPocketChildId(modelVersion, parent, op, childFragments);
 
-        String hash = UUID.randomUUID().toString();
-        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
-    }
+        String hash = HashUtil.computeHash(parent, parent.getType(), op);
+        if (hash == null) {
+            return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+        }
+
+        Content matchingContent = cService.getContentByCode(hash);
+        if (matchingContent == null) {
+            return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+        }
+
+        Map<String, String> newChildMappings = null;
+        if (parent.getType().equals(TCType.BOND)) {
+            newChildMappings = new HashMap<String, String>();
+            int matchingBondFragmentId = bcHandler.matchFragment(parent, matchingContent, childMappings, newChildMappings);
+            if (matchingBondFragmentId != -1) {
+                FragmentVersion existingFragment = fService.getFragmentVersion(matchingBondFragmentId);
+                op.addFragmentVersion(existingFragment);
+                op.setCurrentFragment(existingFragment);
+                return op;
+            }
+        } else {
+            Map<String, String> pocketMappings = pMapper.mapPockets(parent, op.getGraph(), matchingContent);
+            if (pocketMappings == null) {
+                LOGGER.info("Could not map pockets of fragment with its matching fragment " + childMappings);
+                return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+            }
+            try {
+                newChildMappings = FragmentUtil.remapChildren(childMappings, pocketMappings);
+            } catch (PocketMappingException e) {
+                String msg = "Failed to remap pockets of the structure " + matchingContent + " to new child fragments.";
+                LOGGER.error(msg, e);
+                return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+            }
+            FragmentVersion matchingFV = fService.getMatchingFragmentVersionId(matchingContent.getId(), newChildMappings);
+            if (matchingFV != null) {
+                op.addFragmentVersion(matchingFV);
+                op.setCurrentFragment(matchingFV);
+                return op;
+            }
+        }
+
+        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);    }
 
     /* mapping pocketId -> childId */
     private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op,

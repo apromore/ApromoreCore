@@ -47,7 +47,7 @@ public class MenuController extends Menubar {
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
         Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
 
-        Menu evaluationM = (Menu) this.menuB.getFellow("evaluation");
+        //Menu evaluationM = (Menu) this.menuB.getFellow("evaluation");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
@@ -56,7 +56,7 @@ public class MenuController extends Menubar {
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         this.mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
-        Menu presentationM = (Menu) this.menuB.getFellow("presentation");
+        //Menu presentationM = (Menu) this.menuB.getFellow("presentation");
 
         createMI.addEventListener("onClick", new EventListener() {
             @Override

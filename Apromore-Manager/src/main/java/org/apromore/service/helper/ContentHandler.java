@@ -23,7 +23,7 @@ public interface ContentHandler {
      *                         fragment. i.e. return value is null.
      * @return Matching fragment id. Null if there is no matching fragment.
      */
-    String matchFragment(Canonical f, Content matchingContent, Map<String, String> childMappings,
+    int matchFragment(Canonical f, Content matchingContent, Map<String, String> childMappings,
         Map<String, String> newChildMappings);
 
 }

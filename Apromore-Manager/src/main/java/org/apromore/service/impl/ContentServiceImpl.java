@@ -82,15 +82,15 @@ public class ContentServiceImpl implements ContentService {
 
 
     /**
-     * @see org.apromore.service.ContentService#getMatchingContentId(String)
+     * @see org.apromore.service.ContentService#getContentByCode(String)
      * {@inheritDoc}
      */
     @Override
-    public Integer getMatchingContentId(final String hash) {
+    public Content getContentByCode(final String hash) {
         if (hash == null) {
             return null;
         }
-        return cRepository.getContentByCode(hash).getId();
+        return cRepository.getContentByCode(hash);
     }
 
     /**

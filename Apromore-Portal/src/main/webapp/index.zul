@@ -29,12 +29,12 @@
 					<north id="leftNorthPanel" flex="true">
 						<SimpleSearch id="simplesearchcomp"/>
 					</north>
-					<center id="leftCenterPanel" flex="true">
-						<borderlayout vflex="true" height="100%">
-							<center id="leftInnerCenterPanel" title="My Workspace" flex="true" vflex="true">
-								<Navigation id="navigationcomp"/>
-							</center>
-						</borderlayout>
+					<center id="leftCenterPanel" flex="false">
+						    <borderlayout vflex="true" height="100%">
+							    <center id="leftInnerCenterPanel" title="My Workspace" flex="true" vflex="true">
+								    <Navigation id="navigationcomp"/>
+							    </center>
+						    </borderlayout>
 					</center>
 					<south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
 						<DetailView id="baseDetail" />
