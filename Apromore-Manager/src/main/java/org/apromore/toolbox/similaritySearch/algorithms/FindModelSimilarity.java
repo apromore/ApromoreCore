@@ -17,6 +17,7 @@ public class FindModelSimilarity {
             gedepc.setWeight(weights);
 
             double weight = gedepc.computeGED(g1, g2);
+            gedepc.resetDeterminismFlag();
             return (1 - (weight < 0.0000001 ? 0 : (weight > 1 ? 1 : weight)));
 
         } else if (algortithm.equals("Hungarian")) {

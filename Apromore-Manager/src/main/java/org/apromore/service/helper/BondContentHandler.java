@@ -56,11 +56,11 @@ public class BondContentHandler implements ContentHandler {
      * @param matchingContent  Matching content.
      * @param childMappings    Original child mapping of the fragment f.
      * @param newChildMappings New child mapping to the matching content. Filled only if there is not matching
-     *                         fragment. i.e. return value is null.
+     *                         fragment. i.e. if return value is null.
      * @return Matching fragment id. Null if there is no matching fragment.
      */
-    public String matchFragment(Canonical f, Content matchingContent, Map<String, String> childMappings,
-            Map<String, String> newChildMappings) {
+    public int matchFragment(Canonical f, Content matchingContent, Map<String, String> childMappings,
+                             Map<String, String> newChildMappings) {
         // find forward and reverse pocket ids of the given fragment
         String fragmentEntryId = f.getEntry().getId();
         String fragmentExitId = f.getExit().getId();
@@ -119,7 +119,7 @@ public class BondContentHandler implements ContentHandler {
             }
         }
 
-        String matchingFragmentId = null;
+        int matchingFragmentId = -1;
         List<FragmentChildMapping> candidateChildMappings = getCandidateChildMappings(matchingContent.getId());
         for (FragmentChildMapping fragmentChildMapping : candidateChildMappings) {
             List<FragmentVersionDag> candidateMapping = fragmentChildMapping.getChildMapping();
@@ -129,20 +129,20 @@ public class BondContentHandler implements ContentHandler {
 
             for (FragmentVersionDag candidatePocket : candidateMapping) {
                 if (forwardContentPocketIds.contains(candidatePocket.getPocketId())) {
-                    forwardCandidateChildIds.add(candidatePocket.getChildFragmentVersion().getId().toString());
+                    forwardCandidateChildIds.add(candidatePocket.getChildFragmentVersion().getUri().toString());
                 }
                 if (reverseContentPocketIds.contains(candidatePocket.getPocketId())) {
-                    reverseCandidateChildIds.add(candidatePocket.getChildFragmentVersion().getId().toString());
+                    reverseCandidateChildIds.add(candidatePocket.getChildFragmentVersion().getUri().toString());
                 }
             }
             if (forwardFragmentChildIds.containsAll(forwardCandidateChildIds) &&
                     reverseFragmentChildIds.containsAll(reverseCandidateChildIds)) {
-                matchingFragmentId = fragmentChildMapping.getFragmentId().toString();
+                matchingFragmentId = fragmentChildMapping.getFragmentId();
                 break;
             }
         }
 
-        if (matchingFragmentId == null) {
+        if (matchingFragmentId == -1) {
             // there is no matching fragment Id. we have to map fragment children to content pockets.
             for (int i = 0; i < forwardFragmentChildIds.size(); i++) {
                 String forwardFragmentChildId = forwardFragmentChildIds.get(i);
@@ -171,6 +171,5 @@ public class BondContentHandler implements ContentHandler {
         }
         return candidateChildMappings;
     }
-
 
 }

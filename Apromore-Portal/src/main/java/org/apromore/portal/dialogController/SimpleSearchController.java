@@ -1,17 +1,15 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
-import org.apromore.portal.exception.ExceptionDao;
+import javax.xml.bind.JAXBException;
+import java.io.UnsupportedEncodingException;
+
 import org.apromore.model.ProcessSummariesType;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apromore.portal.exception.ExceptionDao;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Window;
-
-import javax.xml.bind.JAXBException;
-import java.io.UnsupportedEncodingException;
 
 public class SimpleSearchController extends BaseController {
 

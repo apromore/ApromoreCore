@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class Graph {
+
     private List<Edge> edges = new LinkedList<Edge>();
     private List<Vertex> vertices = new LinkedList<Vertex>();
 
@@ -22,7 +23,6 @@ public class Graph {
     public String ID;
 
     private IdGeneratorHelper idGenerator;
-
     public int beforeReduction = 0;
 
     // time that merging takes (without cleaning)
@@ -31,8 +31,10 @@ public class Graph {
     public long cleanTime = 0;
 
     private HashSet<String> graphLabels = new HashSet<String>();
-
+    private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    private static HashMap<String, String> edgeLabelMap = new HashMap<String, String>();
     private boolean isConfigurableGraph = false;
+
 
     public HashSet<String> getGraphLabel1() {
         return graphLabels;
@@ -93,6 +95,29 @@ public class Graph {
         return "";
     }
 
+    public List<Vertex> getPreset(String vertexId) {
+        List<Vertex> result = null;
+        for (Vertex vertex : vertices) {
+            if (vertex.getID().equalsIgnoreCase(vertexId)) {
+                result = vertex.getChildren();
+                break;
+            }
+        }
+        return result;
+    }
+
+    public List<Vertex> getPostset(String vertexId) {
+        List<Vertex> result = null;
+        for (Vertex vertex : vertices) {
+            if (vertex.getID().equalsIgnoreCase(vertexId)) {
+                result = vertex.getParents();
+                break;
+            }
+        }
+        return result;
+    }
+
+
     public void addGraphLabel(String graphLabel) {
         graphLabels.add(graphLabel);
     }
@@ -100,10 +125,6 @@ public class Graph {
     public void addGraphLabels(HashSet<String> graphLabel) {
         graphLabels.addAll(graphLabel);
     }
-
-    private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
-
-    private static HashMap<String, String> edgeLabelMap = new HashMap<String, String>();
 
     public Set<String> getEdgeLabels() {
         return edgeLabelMap.keySet();
@@ -129,6 +150,17 @@ public class Graph {
                 }
             }
         }
+    }
+
+    public String getVertexLabel(String vertexId) {
+        String result = null;
+        for (Vertex vertex : vertices) {
+            if (vertex.getID().equalsIgnoreCase(vertexId)) {
+                result = vertex.getLabel();
+                break;
+            }
+        }
+        return result;
     }
 
     private HashSet<String> getCombinedLabels(Vertex v, boolean parents) {
@@ -402,9 +434,7 @@ public class Graph {
     }
 
     private boolean canMerge(Vertex v1, Vertex v2) {
-        if (v1.isInitialGW() && v2.isInitialGW()) {
-            return false;
-        } else return true;
+        return !(v1.isInitialGW() && v2.isInitialGW());
     }
 
     public void removeSplitJoins() {
