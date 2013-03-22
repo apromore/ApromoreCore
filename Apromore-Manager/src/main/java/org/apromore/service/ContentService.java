@@ -6,6 +6,7 @@ import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.helper.OperationContext;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public interface ContentService {
      * @param hash the hash to search for.
      * @return any matching content records
      */
-    Content getContentByCode(String hash);
+    List<Content> getContentByCode(String hash);
 
     /**
      * Add new Content?

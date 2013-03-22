@@ -3,6 +3,7 @@ package org.apromore.service.impl;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apromore.dao.model.Content;
@@ -116,10 +117,12 @@ public class DecomposerServiceImpl implements DecomposerService {
             return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
 
-        Content matchingContent = cService.getContentByCode(hash);
-        if (matchingContent == null) {
+        List<Content> matchingContents = cService.getContentByCode(hash);
+        if (matchingContents == null || matchingContents.isEmpty()) {
             return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
+
+        Content matchingContent = matchingContents.get(0);
 
         Map<String, String> newChildMappings = null;
         if (parent.getType().equals(TCType.BOND)) {
