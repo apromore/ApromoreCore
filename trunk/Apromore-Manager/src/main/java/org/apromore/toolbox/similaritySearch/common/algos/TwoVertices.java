@@ -1,6 +1,6 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
-public class TwoVertices {
+public class TwoVertices implements Comparable<TwoVertices> {
     public String v1;
     public String v2;
     public double weight;
@@ -19,7 +19,11 @@ public class TwoVertices {
         return pair2 instanceof TwoVertices ? (v1.equals(((TwoVertices) pair2).v1) && v2.equals(((TwoVertices) pair2).v2)) : false;
     }
 
-    public int hashCode() {
+    public int hashCode(){
         return v1.hashCode() + v2.hashCode();
+    }
+
+    public int compareTo(TwoVertices o) {
+        return equals(o) ? 0 : 1;
     }
 }

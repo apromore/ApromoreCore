@@ -34,7 +34,7 @@ public class HashUtil {
         Set<CPFEdge> edges = new HashSet<CPFEdge>(fEdges);
 
         String hash = null;
-        String type = "None";
+        String type;
 
         try {
             if (nodeType == TCType.POLYGON) {

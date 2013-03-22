@@ -23,7 +23,7 @@ public interface ContentService {
      * @param hash the hash to search for.
      * @return any matching content records
      */
-    Integer getMatchingContentId(String hash);
+    Content getContentByCode(String hash);
 
     /**
      * Add new Content?

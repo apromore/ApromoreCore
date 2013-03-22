@@ -1,12 +1,13 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
+import com.google.common.collect.TreeMultimap;
+import com.google.common.collect.TreeMultiset;
 import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
 import org.apromore.toolbox.similaritySearch.common.similarity.NodeSimilarity;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
@@ -25,6 +26,8 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphEditDistanceGreedy.class);
 
     public int nrSubstitudedVertices = 0;
+    private boolean deterministic = true;
+
 
     private Set<TwoVertices> times(List<Vertex> a, List<Vertex> b, double labelTreshold) {
         Set<TwoVertices> result = new HashSet<TwoVertices>();
@@ -123,12 +126,87 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                 }
 
                 if (bestCandidates.size() > 0) {
-                    //Choose a random candidate
-                    TwoVertices couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
+                    TwoVertices couple;
+
+                    // Case 1: Only one candidate pair
+                    if (bestCandidates.size() == 1) {
+                        couple = bestCandidates.firstElement();
+                    } else {
+                        //  CASE 2: Lexicographical order is enough
+                        TreeMultimap<String, TwoVertices> tmap = TreeMultimap.create();
+                        for (TwoVertices pair: bestCandidates) {
+                            String label1, label2;
+                            label1 = sg1.getVertexLabel(pair.v1);
+                            label2 = sg2.getVertexLabel(pair.v2);
+                            if (label1.compareTo(label2) > 0) {
+                                String tmp = label1;
+                                label1 = label2;
+                                label2 = tmp;
+                            }
+                            tmap.put(label1+label2, pair);
+                        }
+                        String firstkey = tmap.keySet().first();
+
+                        if (tmap.get(firstkey).size() == 1) {
+                            couple = tmap.get(firstkey).first();
+                        } else if (tmap.get(firstkey).size() > 1) {
+                            Set<TwoVertices> set = tmap.get(firstkey);
+                            TreeMultimap<String, TwoVertices> tmapp = TreeMultimap.create();
+
+                            TreeMultiset<String> mset = TreeMultiset.create();
+                            for (TwoVertices pair: set) {
+                                String label1, label2;
+                                label1 = sg1.getVertexLabel(pair.v1);
+                                mset.clear();
+                                for (Vertex n: sg1.getPreset(pair.v1)) {
+                                    mset.add(sg1.getVertexLabel(n.getID()));
+                                }
+                                label1 += mset.toString();
+                                mset.clear();
+                                for (Vertex n: sg1.getPostset(pair.v1)) {
+                                    mset.add(sg1.getVertexLabel(n.getID()));
+                                }
+                                label1 += mset.toString();
+
+                                label2 = sg2.getVertexLabel(pair.v2);
+                                mset.clear();
+                                for (Vertex n: sg2.getPreset(pair.v2)) {
+                                    mset.add(sg2.getVertexLabel(n.getID()));
+                                }
+                                label2 += mset.toString();
+                                mset.clear();
+                                for (Vertex n: sg2.getPostset(pair.v2)) {
+                                    mset.add(sg2.getVertexLabel(n.getID()));
+                                }
+                                label2 += mset.toString();
+
+                                if (label1.compareTo(label2) > 0) {
+                                    String tmp = label1;
+                                    label1 = label2;
+                                    label2 = tmp;
+                                }
+                                tmapp.put(label1+label2, pair);
+                            }
+                            String contextkey = tmapp.keySet().first();
+                            // CASE 3: Composite labels (concatenation of labels of nodes surrounding the target vertex)
+                            if (tmapp.get(contextkey).size() == 1) {
+                                couple = tmapp.get(contextkey).first();
+                            } else {
+                                // CASE 4: Non deterministic choice (Choose a random candidate)
+                                deterministic = false;
+                                couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
+                            }
+                        } else {
+                            // CASE 5: Non deterministic choice (Choose a random candidate)
+                            System.out.println("oops ...");
+                            deterministic = false;
+                            couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
+                        }
+                    }
 
                     Set<TwoVertices> newOpenCouples = new HashSet<TwoVertices>();
-                    for (TwoVertices p : openCouples) {
-                        if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)) {
+                    for (TwoVertices p: openCouples){
+                        if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)){
                             newOpenCouples.add(p);
                         }
                     }
@@ -147,6 +225,15 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
         // Return the smallest edit distance
         return shortestEditDistance;
+    }
+
+
+
+    public void resetDeterminismFlag() {
+        deterministic = true;
+    }
+    public boolean isDeterministic() {
+        return deterministic;
     }
 
 }

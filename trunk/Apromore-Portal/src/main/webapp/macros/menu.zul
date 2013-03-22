@@ -46,6 +46,7 @@
             <menuitem id="designExtension" label="Extension control" disabled="true"/>
         </menupopup>
     </menu>
+   <!--
     <menu id="evaluation" label="Evaluation">
         <menupopup>
             <menuitem id="evaluationQuality" label="Quality" disabled="true"/>
@@ -64,4 +65,5 @@
             <menuitem id="presentationReporting" label="Reporting" disabled="true"/>
         </menupopup>
     </menu>
+    -->
 </menubar>

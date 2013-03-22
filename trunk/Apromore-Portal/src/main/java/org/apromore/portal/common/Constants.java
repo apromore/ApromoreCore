@@ -25,7 +25,7 @@ public final class Constants {
     public static final String CANONICAL_EXT = "cpf";
 
     public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
-    public static final String MORE_INFO = "http://code.google.com/p/apromore";
+    public static final String MORE_INFO = "http://apromore.org/";
 
     public static final String MSG_WHEN_CLOSE = "You are about to leave Apromore. You might loose unsaved data.";
 

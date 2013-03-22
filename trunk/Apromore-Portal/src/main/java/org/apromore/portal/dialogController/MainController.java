@@ -75,7 +75,7 @@ public class MainController extends BaseController {
     //private WorkspaceOptionsController workspaceOptionsController;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    private BaseFilterController baseFilterController;
+    //private BaseFilterController baseFilterController;
     private NavigationController navigation;
 
     public Html breadCrumbs;
@@ -251,7 +251,17 @@ public class MainController extends BaseController {
         while (itC.hasNext()) {
             Component C = itC.next();
             if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
-                if (C.getId().compareTo("processMerge") != 0) {
+                if (C.getId().equals("designPatternCr")) {
+                    ((Menuitem) C).setDisabled(true);
+                } else if (C.getId().equals("designReference")) {
+                    ((Menuitem) C).setDisabled(true);
+                } else if (C.getId().equals("designPatternCo")) {
+                    ((Menuitem) C).setDisabled(true);
+                } else if (C.getId().equals("designConfiguration")) {
+                    ((Menuitem) C).setDisabled(true);
+                } else if (C.getId().equals("designExtension")) {
+                    ((Menuitem) C).setDisabled(true);
+                } else {
                     ((Menuitem) C).setDisabled(!connected);
                 }
             }
@@ -538,7 +548,7 @@ public class MainController extends BaseController {
     private void deattachDynamicUI() {
         getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
         getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
+        //getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
 
@@ -546,7 +556,7 @@ public class MainController extends BaseController {
      * Attaches the the listbox, detail and filter view
      */
     private void reattachDynamicUI() {
-        getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
+        //getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
         getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
         getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
     }
@@ -571,13 +581,13 @@ public class MainController extends BaseController {
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
+        //this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
 
         // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Process Details");
-        ((South) getFellow("leftInnerSouthPanel")).setOpen(false);
+        //((South) getFellow("leftInnerSouthPanel")).setOpen(false);
 
         reloadProcessSummaries();
     }
@@ -602,15 +612,16 @@ public class MainController extends BaseController {
         }
 
         // Otherwise create new Listbox
-        this.baseFilterController = new SimilarityClustersFilterController(this);
+        //this.baseFilterController = new SimilarityClustersFilterController(this);
+        SimilarityClustersFilterController simFilterController = new SimilarityClustersFilterController(this);
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+        this.baseListboxController = new SimilarityClustersListboxController(this, simFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
 
         // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
-        ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
+        //((South) getFellow("leftInnerSouthPanel")).setOpen(true);
     }
 
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
