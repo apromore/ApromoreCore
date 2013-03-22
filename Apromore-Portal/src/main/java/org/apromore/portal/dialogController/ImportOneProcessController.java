@@ -128,6 +128,8 @@ public class ImportOneProcessController extends BaseController {
 
         this.cancelAllButton.setVisible(this.importProcessesC.getToImportList().size() > 0);
         this.okForAllButton.setVisible(this.importProcessesC.getToImportList().size() > 0);
+
+        this.versionNumberTb.setText("1.0");
         reset();
 
         readMetaData(nativeType, ownerNames);
