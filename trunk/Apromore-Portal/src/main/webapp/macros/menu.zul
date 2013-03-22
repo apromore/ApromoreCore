@@ -24,11 +24,11 @@
     </menu>
     <menu id="filtering" label="Filtering">
         <menupopup>
-            <menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
+            <menuitem id="similaritySearch" label="Similarity Search" disabled="true"/>
             <menuseparator/>
-            <menuitem id="similarityClusters" label="Similarity Clusters" disabled="true"/>
+            <menuitem id="exactMatching" label="Exact Clone Detection" disabled="true"/>
             <menuseparator/>
-            <menuitem id="exactMatching" label="Exact matching" disabled="true"/>
+            <menuitem id="similarityClusters" label="Approximate Clone Detection" disabled="true"/>
         </menupopup>
     </menu>
     <menu id="design" label="Design">
