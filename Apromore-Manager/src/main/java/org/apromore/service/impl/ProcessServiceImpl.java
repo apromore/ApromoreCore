@@ -1,20 +1,19 @@
 package org.apromore.service.impl;
 
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -245,35 +244,35 @@ public class ProcessServiceImpl implements ProcessService {
         }
 
         try {
-            List<ProcessModelVersion> pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+            ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
             if (pmVersion != null) {
-                if (pmVersion.size() > 1 && pmVersion.size() == cpf.getCpt().getNet().size()) {
-                    // A process with sub processes.
-                    for (ProcessModelVersion pmv : pmVersion) {
-                        if (versionNumber.equals(processModelVersion.getVersionNumber())) {
-                            LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-                                    "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
-                                    processModelVersion.getVersionNumber());
-                        }
-
-                        NetType net = findNetTypeForPMV(cpf.getCpt().getNet(), pmv);
-                        if (net != null || net.getNode().size() > 0) {
-                            graph = converter.convert(createNet(cpf, net));
-                            netRoot = decomposerSrv.decompose(graph, processModelVersion);
-                            if (netRoot != null) {
-                                propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
-                                        netRoot.getFragmentVersions());
-                            }
-                        }
-                    }
-
-                } else {
+//                if (pmVersion.size() > 1 && pmVersion.size() == cpf.getCpt().getNet().size()) {
+//                    // A process with sub processes.
+//                    for (ProcessModelVersion pmv : pmVersion) {
+//                        if (versionNumber.equals(processModelVersion.getVersionNumber())) {
+//                            LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
+//                                    "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
+//                                    processModelVersion.getVersionNumber());
+//                        }
+//
+//                        NetType net = findNetTypeForPMV(cpf.getCpt().getNet(), pmv);
+//                        if (net != null || net.getNode().size() > 0) {
+//                            graph = converter.convert(createNet(cpf, net));
+//                            netRoot = decomposerSrv.decompose(graph, processModelVersion);
+//                            if (netRoot != null) {
+//                                propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
+//                                        netRoot.getFragmentVersions());
+//                            }
+//                        }
+//                    }
+//
+//                } else {
                     // A process without sub processes.
-                    processModelVersion = findRootProcessModelVersion(pmVersion);
-                    if (versionNumber.equals(processModelVersion.getVersionNumber())) {
+//                    processModelVersion = findRootProcessModelVersion(pmVersion);
+                    if (versionNumber.equals(pmVersion.getVersionNumber())) {
                         LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
                                 "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
-                                processModelVersion.getVersionNumber());
+                                pmVersion.getVersionNumber());
                     }
 
                     for (NetType net : cpf.getCpt().getNet()) {
@@ -281,7 +280,7 @@ public class ProcessServiceImpl implements ProcessService {
                             graph = converter.convert(createNet(cpf, net));
                             netRoot = decomposerSrv.decompose(graph, processModelVersion);
                             if (netRoot != null) {
-                                propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
+                                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
                                         netRoot.getFragmentVersions());
                             }
                         }
@@ -289,7 +288,7 @@ public class ProcessServiceImpl implements ProcessService {
 
                     String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
                     formatSrv.storeNative(processName, processModelVersion, nativeXML, now, now, user, nativeType, versionNumber.toString(), cpf);
-                }
+//                }
             } else {
                 LOGGER.error("unable to find the Process Model to update.");
             }
@@ -402,51 +401,45 @@ public class ProcessServiceImpl implements ProcessService {
     public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv) {
         String processName = pmv.getProcessBranch().getProcess().getName();
         String branchName = pmv.getProcessBranch().getBranchName();
-
-        List<ProcessModelVersion> pmvs = new ArrayList<ProcessModelVersion>(1);
-        pmvs.add(pmv);
-
-        return getCanonicalFormat(pmvs, processName, branchName, false);
+        return getCanonicalFormat(pmv, processName, branchName, false);
     }
 
 
     /**
-     * @see ProcessService#getCanonicalFormat(java.util.List, String, String, boolean)
+     * @see ProcessService#getCanonicalFormat(ProcessModelVersion, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public CanonicalProcessType getCanonicalFormat(final List<ProcessModelVersion> pmvs, final String processName, final String branchName, final boolean lock) {
+    public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv, final String processName, final String branchName, final boolean lock) {
         Canonical canonical;
         CanonicalProcessType tmp;
         CanonicalProcessType result = new CanonicalProcessType();
         try {
-            for (ProcessModelVersion pmv : pmvs) {
-                canonical = composerSrv.compose(pmv.getRootFragmentVersion());
-                canonical.setProperty(Constants.PROCESS_NAME, processName);
-                canonical.setProperty(Constants.BRANCH_NAME, branchName);
-                canonical.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
-                canonical.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
-                canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
-                canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
-                if (lock) {
-                    canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
-                }
+            canonical = composerSrv.compose(pmv.getRootFragmentVersion());
+            canonical.setProperty(Constants.PROCESS_NAME, processName);
+            canonical.setProperty(Constants.BRANCH_NAME, branchName);
+            canonical.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
+            canonical.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
+            canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
+            canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
+            if (lock) {
+                canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
+            }
 
-                tmp = converter.convert(canonical);
+            tmp = converter.convert(canonical);
 
-                result.getNet().addAll(tmp.getNet());
-                result.getResourceType().addAll(tmp.getResourceType());
-                result.getAttribute().addAll(tmp.getAttribute());
-                if (pmv.getNet() != null) {
-                    result.setName(processName);
-                    result.setUri(pmv.getProcessBranch().getProcess().getId().toString());
-                    result.setAuthor(pmv.getProcessBranch().getProcess().getUser().getUsername());
-                    result.setCreationDate(pmv.getProcessBranch().getCreationDate());
-                    result.setModificationDate(pmv.getProcessBranch().getLastUpdate());
-                    result.setVersion(Double.toString(pmv.getVersionNumber()));
-                    result.getRootIds().add(pmv.getNet().getNetUri());
-                }
+            result.getNet().addAll(tmp.getNet());
+            result.getResourceType().addAll(tmp.getResourceType());
+            result.getAttribute().addAll(tmp.getAttribute());
+            if (pmv.getNet() != null) {
+                result.setName(processName);
+                result.setUri(pmv.getProcessBranch().getProcess().getId().toString());
+                result.setAuthor(pmv.getProcessBranch().getProcess().getUser().getUsername());
+                result.setCreationDate(pmv.getProcessBranch().getCreationDate());
+                result.setModificationDate(pmv.getProcessBranch().getLastUpdate());
+                result.setVersion(Double.toString(pmv.getVersionNumber()));
+                result.getRootIds().add(pmv.getNet().getNetUri());
             }
         } catch (ExceptionDao e) {
             String msg = "Failed to retrieve the current version of the process model " + processName + " - " + branchName;
@@ -464,21 +457,19 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     public CanonicalProcessType getCurrentProcessModel(final String processName, final String branchName, final boolean lock)
             throws LockFailedException {
-        List<ProcessModelVersion> pmvs = processModelVersionRepo.getCurrentProcessModelVersion(processName, branchName);
+        ProcessModelVersion pmv = processModelVersionRepo.getCurrentProcessModelVersion(processName, branchName);
 
-        if (pmvs == null) {
+        if (pmv == null) {
             return null;
         }
         if (lock) {
-            for (ProcessModelVersion pmv : pmvs) {
-                boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());
-                if (!locked) {
-                    throw new LockFailedException();
-                }
+            boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());
+            if (!locked) {
+                throw new LockFailedException();
             }
         }
 
-        return getCanonicalFormat(pmvs, processName, branchName, lock);
+        return getCanonicalFormat(pmv, processName, branchName, lock);
     }
 
 
@@ -538,18 +529,16 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public void deleteProcessModel(final List<NameValuePair> models) {
-        List<ProcessModelVersion> pvids;
+        ProcessModelVersion pvid;
         for (NameValuePair entry : models) {
             try {
                 LOGGER.debug("Retrieving the Process Model of the current version of " + entry.getName() + " - " + entry.getValue() + " to be deleted.");
-                pvids = processModelVersionRepo.getCurrentProcessModelVersion(entry.getName(), entry.getValue());
+                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getName(), entry.getValue());
 
-                Process process = pvids.get(0).getProcessBranch().getProcess();
+                Process process = pvid.getProcessBranch().getProcess();
                 processRepo.delete(process);
 
-                for (ProcessModelVersion pmv : pvids) {
-                    deleteProcessModelVersion(pmv);
-                }
+                deleteProcessModelVersion(pvid);
             } catch (Exception e) {
                 String msg = "Failed to delete the current version of the branch " + entry.getValue() + " of the process model " + entry.getValue();
                 LOGGER.error(msg, e);

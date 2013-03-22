@@ -129,7 +129,7 @@ public interface ProcessService {
      * @param lock is it locked?
      * @return the built Canonical
      */
-    CanonicalProcessType getCanonicalFormat(List<ProcessModelVersion> pmvs, String processName, String branchName, boolean lock);
+    CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmvs, String processName, String branchName, boolean lock);
 
     /**
      * Gets the Current Process Model. this on can have any branch name.

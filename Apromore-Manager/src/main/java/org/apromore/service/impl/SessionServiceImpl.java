@@ -1,5 +1,8 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import java.util.Date;
+
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.SessionRepository;
 import org.apromore.dao.UserRepository;
@@ -11,10 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
-import javax.inject.Inject;
 
 /**
  * Implementation of the FragmentService Contract.
@@ -81,7 +80,7 @@ public class SessionServiceImpl implements SessionService {
         Double versionNumber = editSession.getVersionNumber();
         Boolean withAnnotation = editSession.isWithAnnotation();
 
-        List<ProcessModelVersion> pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
 
         EditSession session = new EditSession();
         session.setCreationDate(editSession.getCreationDate());
@@ -92,7 +91,7 @@ public class SessionServiceImpl implements SessionService {
         session.setNewBranchName(editSession.getNewBranchName());
         session.setCreateNewBranch(editSession.isCreateNewBranch());
         session.setNatType(editSession.getNativeType());
-        session.setProcessModelVersion(pmv.get(0));
+        session.setProcessModelVersion(pmv);
         session.setUser(userRepo.findByUsername(editSession.getUsername()));
         if (withAnnotation) {
             session.setAnnotation(editSession.getAnnotation());
