@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
@@ -86,7 +87,7 @@ public class ContentServiceImpl implements ContentService {
      * {@inheritDoc}
      */
     @Override
-    public Content getContentByCode(final String hash) {
+    public List<Content> getContentByCode(final String hash) {
         if (hash == null) {
             return null;
         }
