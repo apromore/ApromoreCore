@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Interface domain model Data access object Content.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
@@ -28,6 +30,6 @@ public interface ContentRepository extends JpaRepository<Content, Integer>, Cont
      * @return the found content record or null
      */
     @Query("SELECT c FROM Content c WHERE c.code = ?1")
-    Content getContentByCode(String code);
+    List<Content> getContentByCode(String code);
 
 }
