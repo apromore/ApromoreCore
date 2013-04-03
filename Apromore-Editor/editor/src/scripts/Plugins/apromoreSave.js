@@ -96,7 +96,7 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         if (docElement) {
             var child = docElement.childNodes[0];
             if (child)
-                value = nodeValue;
+                value = docElement.nodeValue;
         }
         if (value) {
             if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)) {
