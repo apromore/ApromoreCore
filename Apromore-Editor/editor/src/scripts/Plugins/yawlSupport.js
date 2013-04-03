@@ -1036,9 +1036,11 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
      * Initalise the Editor with a default YAWL Net
      **/
     initialiseDiagram:function () {
+        /*
         if (this.facade.getCanvas().getChildNodes().length === 0) {
             this.facade.importJSON(this._dummyRootnetData);
         }
+        */
     },
 
     /**************** Magnets Visible ***************/
