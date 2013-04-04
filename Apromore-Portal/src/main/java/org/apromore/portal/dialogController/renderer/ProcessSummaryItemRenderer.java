@@ -72,19 +72,18 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         Label processScoreLb = new Label();
 
         List<VersionSummaryType> processVersions = process.getVersionSummaries();
-        // find the score of the latest version, if any: this a one which will
-        // be displayed
-        // with the process
+        // find the score of the latest version, if any: this a one which will  be displayed with the process
         int i = 0;
         while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion()) != 0) {
             i++;
         }
-        // Each process should have at least one version. So it should have a
-        // legal value which
-        // is the index of the process latest version.
-        // But some are faulty!!!
+
+        i = i - 1;
+
+        // Each process should have at least one version. So it should have a legal value which
+        // is the index of the process latest version. But some are faulty!!!
         if (i < processVersions.size() && processVersions.get(i).getScore() != null) {
-            processScoreLb.setValue(processVersions.get(i).getScore().toString());
+            processScoreLb.setValue(roundToDecimals(processVersions.get(i).getScore(), 4).toString());
         } else {
             processScoreLb.setValue("1.0");
         }
@@ -102,6 +101,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
      * Display in hbox versionRanking, 5 stars according to ranking (0...5).
      * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
      * process version directly by interacting with the stars displayed.
+     *
      * @param ranking
      */
     private void displayRanking(Hbox rankingHb, String ranking) {
@@ -130,6 +130,11 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
                 rankingHb.appendChild(star);
             }
         }
+    }
+
+    public static Double roundToDecimals(Double num, int places) {
+        int temp = (int) ((num * Math.pow(10, places)));
+        return ((double) temp) / Math.pow(10, places);
     }
 
 }

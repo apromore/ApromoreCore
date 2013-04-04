@@ -279,7 +279,7 @@ public class MainController extends BaseController {
             processSummaries.getProcessSummary().add(processSummary);
         }
 
-        String message = null;
+        String message;
         if (processSummaries.getProcessSummary().size() > 1) {
             message = " processes.";
         } else {
@@ -303,7 +303,6 @@ public class MainController extends BaseController {
     /**
      * Forward to the controller ProcessTableController the request to add the
      * process to the table
-     * @param returnedProcess
      */
     public void displayNewProcess(final ProcessSummaryType returnedProcess) {
         switchToProcessSummaryView();
@@ -314,7 +313,7 @@ public class MainController extends BaseController {
 
     /**
      * Send request to Manager: deleted process versions given as parameter
-     * @param processVersions
+     * @param processVersions a selection of process versions to delete.
      * @throws InterruptedException
      */
     public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {

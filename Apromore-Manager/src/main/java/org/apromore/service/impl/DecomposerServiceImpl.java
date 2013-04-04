@@ -124,7 +124,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
         Content matchingContent = matchingContents.get(0);
 
-        Map<String, String> newChildMappings = null;
+        Map<String, String> newChildMappings;
         if (parent.getType().equals(TCType.BOND)) {
             newChildMappings = new HashMap<String, String>();
             int matchingBondFragmentId = bcHandler.matchFragment(parent, matchingContent, childMappings, newChildMappings);

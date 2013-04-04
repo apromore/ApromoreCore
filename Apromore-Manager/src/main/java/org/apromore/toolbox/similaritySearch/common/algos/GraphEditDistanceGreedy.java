@@ -135,10 +135,9 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                         //  CASE 2: Lexicographical order is enough
                         TreeMultimap<String, TwoVertices> tmap = TreeMultimap.create();
                         for (TwoVertices pair: bestCandidates) {
-                            String label1, label2;
-                            label1 = sg1.getVertexLabel(pair.v1);
-                            label2 = sg2.getVertexLabel(pair.v2);
-                            if (label1.compareTo(label2) > 0) {
+                            String label1 = sg1.getVertexLabel(pair.v1);
+                            String label2 = sg2.getVertexLabel(pair.v2);
+                            if (label1 != null && label2 != null && label1.compareTo(label2) > 0) {
                                 String tmp = label1;
                                 label1 = label2;
                                 label2 = tmp;
@@ -155,8 +154,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
                             TreeMultiset<String> mset = TreeMultiset.create();
                             for (TwoVertices pair: set) {
-                                String label1, label2;
-                                label1 = sg1.getVertexLabel(pair.v1);
+                                String label1 = sg1.getVertexLabel(pair.v1);
                                 mset.clear();
                                 for (Vertex n: sg1.getPreset(pair.v1)) {
                                     mset.add(sg1.getVertexLabel(n.getID()));
@@ -168,7 +166,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                                 }
                                 label1 += mset.toString();
 
-                                label2 = sg2.getVertexLabel(pair.v2);
+                                String label2 = sg2.getVertexLabel(pair.v2);
                                 mset.clear();
                                 for (Vertex n: sg2.getPreset(pair.v2)) {
                                     mset.add(sg2.getVertexLabel(n.getID()));

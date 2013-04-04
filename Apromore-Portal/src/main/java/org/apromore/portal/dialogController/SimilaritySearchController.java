@@ -139,7 +139,6 @@ public class SimilaritySearchController extends BaseController {
                 resultToDisplay = result;
             }
 
-//            mainC.toggleView(false);
             mainC.displayProcessSummaries(resultToDisplay, true, process, version);
             mainC.displayMessage(message);
         } catch (Exception e) {
@@ -161,19 +160,17 @@ public class SimilaritySearchController extends BaseController {
      */
     private ProcessSummariesType sort(ProcessSummaryType process, ProcessSummariesType toBeSorted) {
         ProcessSummariesType res = new ProcessSummariesType();
-        ProcessSummaryType query = null;
         for (int i = 0; i < toBeSorted.getProcessSummary().size(); i++) {
             if (toBeSorted.getProcessSummary().get(i).getId().equals(process.getId())) {
-                 query = toBeSorted.getProcessSummary().get(i);
+                res.getProcessSummary().add(0, toBeSorted.getProcessSummary().get(i));
             } else {
-                sortInsertion(SortVersions(toBeSorted.getProcessSummary().get(i)), res);
+                sortInsertion(sortVersions(toBeSorted.getProcessSummary().get(i)), res);
             }
         }
-        res.getProcessSummary().add(0, query);
         return res;
     }
 
-    private ProcessSummaryType SortVersions(ProcessSummaryType process) {
+    private ProcessSummaryType sortVersions(ProcessSummaryType process) {
         ProcessSummaryType res = new ProcessSummaryType();
         res.setDomain(process.getDomain());
         res.setId(process.getId());
@@ -203,8 +200,8 @@ public class SimilaritySearchController extends BaseController {
      */
     private void sortInsertion(ProcessSummaryType process, ProcessSummariesType sortedList) {
         int i = 0;
-        while (i < sortedList.getProcessSummary().size()
-                && sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore()) {
+        while (i < sortedList.getProcessSummary().size() &&
+                sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore()) {
             i++;
         }
         sortedList.getProcessSummary().add(i, process);
