@@ -174,7 +174,7 @@ CREATE TABLE `temp_version` (
 
 CREATE TABLE `process_branch` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `branch_name` varchar(1000),
+    `branch_name` varchar(255),
     `processId` int(11) DEFAULT NULL,
     `creation_date` varchar(35) DEFAULT NULL,
     `last_update` varchar(35) DEFAULT NULL,

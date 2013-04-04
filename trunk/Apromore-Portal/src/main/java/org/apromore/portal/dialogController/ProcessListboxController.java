@@ -1,16 +1,16 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listheader;
-
-import java.util.List;
-import java.util.Map;
 
 public class ProcessListboxController extends BaseListboxController {
 
@@ -72,6 +72,11 @@ public class ProcessListboxController extends BaseListboxController {
         getListBox().clearSelection();
         getListModel().clear();
         getListModel().addAll(processSummaries.getProcessSummary());
+
+        if (isQueryResult) {
+            // Highlight the first row as this will be the original search model.
+            getListBox().getItemAtIndex(0).setStyle("background-color:#CCCC00");
+        }
     }
 
     /**

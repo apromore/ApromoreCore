@@ -30,21 +30,21 @@ public class Extractor {
         CPFNode pocket;
         if (parent.getType().equals(TCType.POLYGON)) {
             if (child.getType() != TCType.POLYGON) {
-                LOGGER.info("Processing FS CNS - " + FragmentUtil.fragmentToString(parent));
+                LOGGER.info("Processing FS CNS");
                 pocket = FSCNSExtractor.extract(parent, child, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
-                LOGGER.info("Processing FS CS - SUB - POLYGON - " + FragmentUtil.fragmentToString(parent));
+                LOGGER.info("Processing FS CS");
                 pocket = FSCSExtractor.extract(parent, child, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());
             }
         } else {
             if (child.getType().equals(TCType.POLYGON)) {
-                LOGGER.info("Processing FNS CS - " + FragmentUtil.fragmentToString(parent));
+                LOGGER.info("Processing FNS CS");
                 pocket = FNSCSExtractor.extract(parent, child, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());
             } else {
-                LOGGER.info("Processing FNS CNS - " + FragmentUtil.fragmentToString(parent));
+                LOGGER.info("Processing FNS CNS");
                 pocket = FNSCNSExtractor.extract(parent, child, g);
                 LOGGER.info("Pocket Id: " + pocket.getId());
             }

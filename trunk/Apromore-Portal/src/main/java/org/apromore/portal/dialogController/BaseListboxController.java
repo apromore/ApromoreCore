@@ -14,115 +14,115 @@ import org.zkoss.zul.Paging;
 
 public abstract class BaseListboxController extends BaseController {
 
-	private static final long serialVersionUID = -4693075788311730404L;
+    private static final long serialVersionUID = -4693075788311730404L;
 
-	private final Listbox listBox;
+    private final Listbox listBox;
 
-	private final MainController mainController; // the main controller
+    private final MainController mainController; // the main controller
 
-	private final Paging pg;
+    private final Paging pg;
 
-	private final Button revertSelectionB;
-	private final Button selectAllB;
-	private final Button unselectAllB;
-	private final Button refreshB;
+    private final Button revertSelectionB;
+    private final Button selectAllB;
+    private final Button unselectAllB;
+    private final Button refreshB;
 
-	public BaseListboxController(MainController mainController,
-			String componentId, ListitemRenderer itemRenderer) {
-		super();
-		setHflex("true");
-		setVflex("true");
-		
-		this.mainController = mainController;
+    public BaseListboxController(MainController mainController,
+                                 String componentId, ListitemRenderer itemRenderer) {
+        super();
+        setHflex("true");
+        setVflex("true");
 
-		this.listBox = createListbox(componentId);
+        this.mainController = mainController;
 
-		this.pg = (Paging) mainController.getFellow("pg");
-		getListBox().setPaginal(pg);
+        this.listBox = createListbox(componentId);
 
-		this.revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
-		this.unselectAllB = (Button) mainController.getFellow("unselectAllB");
-		this.selectAllB = (Button) mainController.getFellow("selectAllB");
-		this.refreshB = (Button) mainController.getFellow("refreshB");
+        this.pg = (Paging) mainController.getFellow("pg");
+        getListBox().setPaginal(pg);
 
-		getListBox().setItemRenderer(itemRenderer);
-		getListBox().setModel(new ListModelList());
+        this.revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
+        this.unselectAllB = (Button) mainController.getFellow("unselectAllB");
+        this.selectAllB = (Button) mainController.getFellow("selectAllB");
+        this.refreshB = (Button) mainController.getFellow("refreshB");
 
-		attachEvents();
+        getListBox().setItemRenderer(itemRenderer);
+        getListBox().setModel(new ListModelList());
 
-		appendChild(listBox);
-	}
+        attachEvents();
 
-	protected void attachEvents() {
-		this.revertSelectionB.addEventListener("onClick", new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				revertSelection();
-			}
-		});
+        appendChild(listBox);
+    }
 
-		this.selectAllB.addEventListener("onClick", new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				selectAll();
-			}
-		});
+    protected void attachEvents() {
+        this.revertSelectionB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                revertSelection();
+            }
+        });
 
-		this.unselectAllB.addEventListener("onClick", new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				unselectAll();
-			}
-		});
+        this.selectAllB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectAll();
+            }
+        });
 
-		this.refreshB.addEventListener("onClick", new EventListener() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				refreshContent();
-			}
-		});
-	}
+        this.unselectAllB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                unselectAll();
+            }
+        });
 
-	/**
-	 * Refresh the currently displayed content from any kind of data source
-	 */
-	protected abstract void refreshContent();
+        this.refreshB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                refreshContent();
+            }
+        });
+    }
 
-	protected Listbox createListbox(String componentId) {
-		return (Listbox) Executions.createComponents(componentId, getMainController(), null);
-	}
+    /**
+     * Refresh the currently displayed content from any kind of data source
+     */
+    protected abstract void refreshContent();
 
-	protected Listbox getListBox() {
-		return listBox;
-	}
+    protected Listbox createListbox(String componentId) {
+        return (Listbox) Executions.createComponents(componentId, getMainController(), null);
+    }
 
-	protected ListModelList getListModel() {
-		return (ListModelList) listBox.getModel();
-	}
+    protected Listbox getListBox() {
+        return listBox;
+    }
 
-	public void unselectAll() {
-		getListBox().clearSelection();
-	}
+    protected ListModelList getListModel() {
+        return (ListModelList) listBox.getModel();
+    }
 
-	public void selectAll() {
-		getListBox().selectAll();
-	}
+    public void unselectAll() {
+        getListBox().clearSelection();
+    }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void revertSelection() {
-		Set selectedItems = getListBox().getSelectedItems();
-		Set reveredSet = new HashSet();
-		for (Object obj : getListBox().getItems()) {
-			if (!selectedItems.contains(obj)) {
-				reveredSet.add(obj);
-			}
-		}
-		getListBox().clearSelection();
-		getListBox().setSelectedItems(reveredSet);
-	}
+    public void selectAll() {
+        getListBox().selectAll();
+    }
 
-	public MainController getMainController() {
-		return mainController;
-	}
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void revertSelection() {
+        Set selectedItems = getListBox().getSelectedItems();
+        Set reveredSet = new HashSet();
+        for (Object obj : getListBox().getItems()) {
+            if (!selectedItems.contains(obj)) {
+                reveredSet.add(obj);
+            }
+        }
+        getListBox().clearSelection();
+        getListBox().setSelectedItems(reveredSet);
+    }
+
+    public MainController getMainController() {
+        return mainController;
+    }
 
 }

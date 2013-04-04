@@ -63,17 +63,17 @@ public class FNSCSExtractor {
             parent.addEdge(pocket, fragmentB2);
         }
 
-        if (childB1 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
-            if (g.getDirectSuccessors(childB1).size() == 1) {
-                log.info("NEW CHILD BOUNDARY CONNECTOR B1 - " + FragmentUtil.fragmentToString(child));
-            }
-        }
-
-        if (childB2 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
-            if (g.getDirectPredecessors(childB2).size() == 1) {
-                log.info("NEW CHILD BOUNDARY CONNECTOR B2 - " + FragmentUtil.fragmentToString(child));
-            }
-        }
+//        if (childB1 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB1.getId(), Constants.TYPE))) {
+//            if (g.getDirectSuccessors(childB1).size() == 1) {
+//                log.info("NEW CHILD BOUNDARY CONNECTOR B1 - " + FragmentUtil.fragmentToString(child));
+//            }
+//        }
+//
+//        if (childB2 != null && Constants.CONNECTOR.equals(g.getNodeProperty(childB2.getId(), Constants.TYPE))) {
+//            if (g.getDirectPredecessors(childB2).size() == 1) {
+//                log.info("NEW CHILD BOUNDARY CONNECTOR B2 - " + FragmentUtil.fragmentToString(child));
+//            }
+//        }
 
         return pocket;
     }
