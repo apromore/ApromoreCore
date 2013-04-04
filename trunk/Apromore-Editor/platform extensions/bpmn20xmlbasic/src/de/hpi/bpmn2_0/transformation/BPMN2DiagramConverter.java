@@ -37,7 +37,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import com.sun.xml.bind.IDResolver;
-import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 
