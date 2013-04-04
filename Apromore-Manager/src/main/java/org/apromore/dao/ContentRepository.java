@@ -1,5 +1,7 @@
 package org.apromore.dao;
 
+import java.util.List;
+
 import org.apromore.dao.model.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

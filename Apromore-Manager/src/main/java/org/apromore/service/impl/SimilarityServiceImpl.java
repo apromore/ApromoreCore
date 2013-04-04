@@ -70,7 +70,6 @@ public class SimilarityServiceImpl implements SimilarityService {
         ProcessModelVersion query = processModelVersionRepo.findProcessModelVersionByBranch(processId, branchName);
         List<ProcessModelVersion> models = processModelVersionRepo.getLatestProcessModelVersions();
         try {
-            //ToolboxData data = getParametersForSearch(method, params);
             ToolboxData data = convertModelsToCPT(models, query);
             data = getParametersForSearch(data, method, params);
             similarProcesses = performSearch(data);
