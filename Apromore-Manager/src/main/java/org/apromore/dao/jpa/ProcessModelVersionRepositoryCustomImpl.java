@@ -1,13 +1,15 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.ProcessModelVersionRepositoryCustom;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apromore.dao.ProcessModelVersionRepositoryCustom;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
@@ -20,6 +22,11 @@ public class ProcessModelVersionRepositoryCustomImpl implements ProcessModelVers
     @PersistenceContext
     private EntityManager em;
 
+    @Resource
+    private JdbcTemplate jdbcTemplate;
+
+
+    /* ************************** JPA Methods here ******************************* */
 
     /**
      * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcesses(String)
@@ -45,12 +52,12 @@ public class ProcessModelVersionRepositoryCustomImpl implements ProcessModelVers
 
 
     /**
-     * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcesses(String)
+     * @see org.apromore.dao.ProcessModelVersionRepositoryCustom#getCurrentModelVersions(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getCurrentModelVersions(Integer fragmentVersionId) {
+    public Map<String, Integer> getCurrentModelVersions(final Integer fragmentVersionId) {
         Map<String, Integer> currentModels = new HashMap<String, Integer>();
         Query query = em.createQuery("SELECT pmv1.processBranch.id, max(pmv1.versionNumber) " +
                 "FROM ProcessModelVersion pmv1, ProcessModelVersion pmv2, ProcessFragmentMap pfm " +
@@ -66,4 +73,8 @@ public class ProcessModelVersionRepositoryCustomImpl implements ProcessModelVers
 
         return currentModels;
     }
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
+
 }

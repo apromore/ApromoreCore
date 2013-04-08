@@ -11,6 +11,8 @@ import org.apromore.dao.model.User;
  */
 public interface UserRepositoryCustom {
 
+    /* ************************** JPA Methods here ******************************* */
+
     /**
      * Attempts to find the User and check their login details.
      * @param username the username.
@@ -26,5 +28,9 @@ public interface UserRepositoryCustom {
      * @return true ro false.
      */
     boolean hasAccess(String userId, String permissionId);
+
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
 
 }

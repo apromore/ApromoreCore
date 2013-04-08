@@ -1,5 +1,6 @@
 package org.apromore.service;
 
+import org.apromore.dao.dataObject.ProcessUserDO;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
@@ -19,7 +20,7 @@ public interface WorkspaceService {
 
     List<ProcessUser> getProcessUsers(Integer processId);
 
-    List<ProcessUser> getUserProcesses(String userId, Integer folderId);
+    List<ProcessUser> getUserProcessesOrig(String userId, Integer folderId);
 
     void createFolder(String userId, String folderName, Integer parentFolderId);
 

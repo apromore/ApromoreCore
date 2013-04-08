@@ -37,8 +37,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
@@ -165,9 +163,9 @@ public class MainController extends BaseController {
         this.loadTree();
 
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
-        List<ProcessSummaryType> availableProcesses = getService().getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
+        //List<ProcessSummaryType> availableProcesses = getService().getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
 
-        Html html = (Html) (this.getFellow("folders"));
+        //Html html = (Html) (this.getFellow("folders"));
         if (UserSessionManager.getCurrentFolder() != null) {
             FolderType folder = UserSessionManager.getCurrentFolder();
             folder.getFolders().clear();
@@ -177,7 +175,7 @@ public class MainController extends BaseController {
             UserSessionManager.setCurrentFolder(folder);
         }
 
-        buildWorkspaceControls(html, folders, availableProcesses);
+        //buildWorkspaceControls(html, folders, availableProcesses);
         //Clients.evalJavaScript("bindTiles();");
     }
 
@@ -269,7 +267,7 @@ public class MainController extends BaseController {
     }
 
     public void reloadProcessSummaries() {
-        ProcessSummariesType processSummaries = getService().readProcessSummaries("");
+        ProcessSummariesType processSummaries = new ProcessSummariesType(); //getService().readProcessSummaries("");
         processSummaries.getProcessSummary().clear();
         UserType user = UserSessionManager.getCurrentUser();
         FolderType currentFolder = UserSessionManager.getCurrentFolder();

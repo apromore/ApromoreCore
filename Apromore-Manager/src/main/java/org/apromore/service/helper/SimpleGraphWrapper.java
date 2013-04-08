@@ -24,6 +24,8 @@ import java.util.Set;
 public class SimpleGraphWrapper extends SimpleGraph {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SimpleGraphWrapper.class);
+
+
     /**
      * Constructor for the Simple Graph Wrapper.
      * @param pg the canonical Graph.

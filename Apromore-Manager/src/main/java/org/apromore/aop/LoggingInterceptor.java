@@ -26,7 +26,7 @@ public class LoggingInterceptor {
      */
     @Before("execution(* org.apromore..*.*(..))")
     public void logEntry(JoinPoint joinPoint) {
-        LOGGER.debug("--> Entering: " + joinPoint.getSignature().getName());
+        LOGGER.debug("--> Entering: " + joinPoint.getSignature().toLongString());
     }
 
 
@@ -36,7 +36,7 @@ public class LoggingInterceptor {
      */
     @After("execution(* org.apromore..*.*(..))")
     public void logExit(JoinPoint joinPoint) {
-        LOGGER.debug("<-- Exiting: " + joinPoint.getSignature().getName());
+        LOGGER.debug("<-- Exiting: " + joinPoint.getSignature().toLongString());
     }
 
 

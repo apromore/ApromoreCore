@@ -298,7 +298,7 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
         }
 
         for (NodeDO node : nodes) {
-            procModelGraph.addVertex(buildNodeByType(node));
+            procModelGraph.addNode(buildNodeByType(node));
             procModelGraph.setNodeProperty(String.valueOf(node.getId()), Constants.TYPE, node.getNodeType());
         }
     }

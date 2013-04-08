@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Aspect
-public class DAOInterceptor {
+public class TimerInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DAOInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimerInterceptor.class);
 
     /**
      * This goes around the DAO methods and times how long to query and construct objects.
@@ -24,7 +24,7 @@ public class DAOInterceptor {
      * @return the return object of this method we are wrapping around.
      * @throws Throwable if the method throws an exception.
      */
-    @Around("execution(* org.apromore.dao..*.*(..)) || execution(* org.springframework.data.repository.CrudRepository..*.*(..))")
+    @Around("execution(* org.apromore.manager.*.*(..)) || execution(* org.apromore.service.*.*(..))")   //|| execution(* org.springframework.data.repository.CrudRepository..*.*(..))
     public Object logQueryTimes(ProceedingJoinPoint pjp) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

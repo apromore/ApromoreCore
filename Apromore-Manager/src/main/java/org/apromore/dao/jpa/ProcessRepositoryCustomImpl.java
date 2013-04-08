@@ -1,12 +1,14 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.model.Process;
-import org.apromore.dao.ProcessRepositoryCustom;
-
-import java.util.List;
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.List;
+
+import org.apromore.dao.ProcessRepositoryCustom;
+import org.apromore.dao.model.Process;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
@@ -19,12 +21,17 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    @Resource
+    private JdbcTemplate jdbcTemplate;
 
-    /** The start of the manual search query. */
-    public static final String GET_ALL_PROCESSES = "SELECT p FROM Process p ";
-    /** The order by for the manual search query. */
-    public static final String GET_ALL_PRO_SORT = " ORDER by p.id";
 
+    private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process p ";
+    private static final String GET_ALL_PRO_SORT_JPA = " ORDER by p.id";
+    private static final String GET_ALL_PROCESSES_JDBC = "SELECT p.id, p.name, p.domain, p.owner, p.original_type, p.folderId FROM Process p ";
+    private static final String GET_ALL_PRO_SORT_JDBC = " ORDER by p.id";
+
+
+    /* ************************** JPA Methods here ******************************* */
 
     /**
      * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcesses(String)
@@ -34,14 +41,18 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcesses(final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES);
+        strQry.append(GET_ALL_PROCESSES_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(conditions);
         }
-        strQry.append(GET_ALL_PRO_SORT);
+        strQry.append(GET_ALL_PRO_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
         return query.getResultList();
     }
+
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
 
 }
