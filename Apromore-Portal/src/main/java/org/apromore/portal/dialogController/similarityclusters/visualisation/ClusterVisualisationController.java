@@ -120,7 +120,8 @@ public class ClusterVisualisationController extends BaseController {
 
         List<PairDistanceType> pairwiseMedoidDistances = getService().getPairwiseDistances(new ArrayList<Integer>(indexMap.keySet()));
         for (PairDistanceType pairDistance : pairwiseMedoidDistances) {
-            if (nodeFilter.contains(pairDistance.getFragmentId1()) || nodeFilter.contains(pairDistance.getFragmentId2())) {
+            if (nodeFilter.contains(Integer.toString(pairDistance.getFragmentId1())) ||
+                    nodeFilter.contains(Integer.toString(pairDistance.getFragmentId2()))) {
                 Integer fragment1Id = pairDistance.getFragmentId1();
                 Integer fragment2Id = pairDistance.getFragmentId2();
                 if (indexMap.containsKey(fragment1Id)&& indexMap.containsKey(fragment2Id)) {

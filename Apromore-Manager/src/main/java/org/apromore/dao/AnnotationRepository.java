@@ -1,11 +1,11 @@
 package org.apromore.dao;
 
+import java.util.List;
+
 import org.apromore.dao.model.Annotation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object Annotations.

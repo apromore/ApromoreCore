@@ -1,7 +1,5 @@
 package org.apromore.dao;
 
-import org.apromore.dao.model.Process;
-
 import java.util.Map;
 
 /**
@@ -11,6 +9,8 @@ import java.util.Map;
  * @see org.apromore.dao.model.Process
  */
 public interface ProcessModelVersionRepositoryCustom {
+
+    /* ************************** JPA Methods here ******************************* */
 
     /**
      * The Map of max model versions.
@@ -25,5 +25,8 @@ public interface ProcessModelVersionRepositoryCustom {
      * @return the mapped results
      */
     Map<String, Integer> getCurrentModelVersions(Integer fragmentVersionId);
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
 
 }

@@ -13,7 +13,7 @@
 
     <!-- Aspects -->
     <aop:aspectj-autoproxy />
-    <bean id="loggingDAOAspect" class="org.apromore.aop.DAOInterceptor"/>
+    <bean id="loggingTimerAspect" class="org.apromore.aop.TimerInterceptor"/>
     <bean id="loggingMethodAspect" class="org.apromore.aop.LoggingInterceptor"/>
 
     <!-- Import other Application Context used to construct the Spring context. -->

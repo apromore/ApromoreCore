@@ -1,14 +1,16 @@
 package org.apromore.dao.jpa;
 
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+
 import org.apromore.dao.UserRepositoryCustom;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.User;
-
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
@@ -21,6 +23,11 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    @Resource
+    private JdbcTemplate jdbcTemplate;
+
+
+    /* ************************** JPA Methods here ******************************* */
 
     /**
      * @see org.apromore.dao.UserRepositoryCustom#login(String, String)
@@ -57,4 +64,9 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
         return permissions != null && permissions.size() > 0;
     }
+
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
+
 }

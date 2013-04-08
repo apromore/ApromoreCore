@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * Interface domain model Data access object Branch.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
