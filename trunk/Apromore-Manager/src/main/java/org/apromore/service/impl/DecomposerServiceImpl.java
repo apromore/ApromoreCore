@@ -127,6 +127,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Map<String, String> newChildMappings;
         if (parent.getType().equals(TCType.BOND)) {
             newChildMappings = new HashMap<String, String>();
+            // Currently returns -1, doesn't handle MEME only SESE.
             int matchingBondFragmentId = bcHandler.matchFragment(parent, matchingContent, childMappings, newChildMappings);
             if (matchingBondFragmentId != -1) {
                 FragmentVersion existingFragment = fService.getFragmentVersion(matchingBondFragmentId);
@@ -143,8 +144,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             try {
                 newChildMappings = FragmentUtil.remapChildren(childMappings, pocketMappings);
             } catch (PocketMappingException e) {
-                String msg = "Failed to remap pockets of the structure " + matchingContent + " to new child fragments.";
-                LOGGER.error(msg, e);
+                LOGGER.error("Failed to remap pockets of the structure " + matchingContent + " to new child fragments.", e);
                 return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
             }
             FragmentVersion matchingFV = fService.getMatchingFragmentVersionId(matchingContent.getId(), newChildMappings);

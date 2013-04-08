@@ -34,7 +34,7 @@
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <module>Apromore-Editor</module>
+        <!--<module>Apromore-Editor</module>-->
     </modules>
 
     <repositories>
@@ -42,6 +42,11 @@
             <id>EclipseLink Repo</id>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
             <name>EclipseLink Repo</name>
+        </repository>
+        <repository>
+            <id>eclipse-gemini</id>
+            <name>Eclipse Gemini Maven repository</name>
+            <url>http://download.eclipse.org/gemini/mvn/</url>
         </repository>
         <repository>
             <id>com.springsource.repository.bundles.release</id>

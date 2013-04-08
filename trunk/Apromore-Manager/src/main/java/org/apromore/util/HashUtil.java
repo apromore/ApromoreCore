@@ -19,14 +19,21 @@ import java.util.Set;
  */
 public class HashUtil {
 
-    private static Logger log = LoggerFactory.getLogger(HashUtil.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(HashUtil.class);
 
+    /**
+     * Computes the hash of this fragment.
+     * @param fragment the fragment we are comnputing the hash.
+     * @param nodeType the node type
+     * @param op the operation context
+     * @return the generated hash code for the fragment.
+     */
     public static String computeHash(FragmentNode fragment, TCType nodeType, OperationContext op) {
         Canonical graph = op.getGraph();
         TreeVisitor visitor = op.getTreeVisitor();
         int fragmentSize = fragment.getVertices().size();
 
-        log.debug("Computing hash of a fragment with " + fragmentSize + " vertices...");
+        LOGGER.debug("Computing hash of a fragment with " + fragmentSize + " vertices...");
 
         Collection<CPFEdge> fEdges = fragment.getEdges();
         Collection<CPFNode> fVertices = fragment.getVertices();
@@ -39,33 +46,33 @@ public class HashUtil {
         try {
             if (nodeType == TCType.POLYGON) {
                 type = "P";
-                log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
+                LOGGER.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
                 hash = visitor.visitSNode(graph, edges, fragment.getEntry());
             } else if (nodeType == TCType.BOND) {
                 type = "B";
-                log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
+                LOGGER.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
                 hash = computeBondHash(fragment, op);
             } else if (nodeType == TCType.RIGID) {
                 type = "R";
-                log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
+                LOGGER.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
                 if (fragmentSize <= 10) {
                     hash = visitor.visitRNode(graph, edges, vertices, fragment.getEntry(), fragment.getExit());
                 } else {
                     hash = null;
-                    log.debug("Large fragment. Skipped the hash computation.");
+                    LOGGER.debug("Large fragment. Skipped the hash computation.");
                 }
             }
         } catch (StringIndexOutOfBoundsException se) {
             String msg = "Unable to compute hash. " + se.getMessage();
-            log.error(msg, se);
+            LOGGER.error(msg, se);
             hash = null;
         } catch (Exception e) {
             String msg = "Fragment code computation error. " + e.getMessage();
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             hash = null;
         }
 
-        log.debug("Hash: " + hash);
+        LOGGER.debug("Hash: " + hash);
 
         return hash;
     }
@@ -81,7 +88,7 @@ public class HashUtil {
         Collection<CPFNode> successors = FragmentUtil.getPostset(entry, fragment.getEdges());
 
         for (CPFNode successor : successors) {
-            if (exit.equals(successor)) {
+            if (exit != null && exit.equals(successor)) {
                 oDirectConnections++;
             } else {
                 oPockets++;
@@ -91,7 +98,7 @@ public class HashUtil {
         // this is required if the fragment contains loops
         Collection<CPFNode> predecessors = FragmentUtil.getPreset(entry, fragment.getEdges());
         for (CPFNode predecessor : predecessors) {
-            if (exit.equals(predecessor)) {
+            if (exit != null && exit.equals(predecessor)) {
                 iDirectConnections++;
             } else {
                 iPockets++;

@@ -23,6 +23,9 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceUnitName" value="Apromore" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>
+        </property>
         <property name="jpaVendorAdapter">
             <bean id="vendorAdaptor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter"
                   p:generateDdl="${jpa.generateDDL}" p:database="${jpa.database}" p:showSql="${jpa.showSql}"
@@ -30,7 +33,7 @@
         </property>
         <property name="jpaProperties">
             <util:properties id="jpaProperties">
-                <prop key="showSql">false</prop>
+                <prop key="showSql">true</prop>
                 <prop key="eclipselink.weaving">static</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
@@ -41,7 +44,8 @@
                 <prop key="eclipselink.cache.shared.default">false</prop>
                 <prop key="eclipselink.cache.type.default">SOFT</prop>
 
-                <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
+                <prop key="eclipselink.profiler">PerformanceProfiler</prop>
+                <prop key="eclipselink.profiler">QueryMonitor</prop>
 
                 <prop key="eclipselink.logging.file">output.log</prop>
                 <prop key="eclipselink.logging.level">FINE</prop>

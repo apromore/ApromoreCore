@@ -121,7 +121,7 @@ public final class Import {
 
         ImportProcessResultType result = manager.importProcess(
             userName,
-            "AML fragment",
+            "EPML 2.0",
             file.getName(),
             1.0D,
             new FileInputStream(file),

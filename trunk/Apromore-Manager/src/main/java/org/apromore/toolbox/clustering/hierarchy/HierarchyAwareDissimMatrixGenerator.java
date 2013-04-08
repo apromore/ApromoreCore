@@ -37,7 +37,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     private Map<Integer, SimpleGraph> models = new HashMap<Integer, SimpleGraph>();
     private List<DissimilarityCalc> chain = new LinkedList<DissimilarityCalc>();
-    private	MultiKeyMap dissimmap = null;
+    private MultiKeyMap dissimmap = null;
 
     private double dissThreshold;
     private long startedTime = 0;
@@ -45,10 +45,10 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private int reportingInterval = 0;
     private int processedPairs = 0;
 
-    
+
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-            final @Qualifier("simpleGraphComposerServiceImpl") ComposerService compSrv) {
+                                               final @Qualifier("simpleGraphComposerServiceImpl") ComposerService compSrv) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
@@ -57,7 +57,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#setDissThreshold(double)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void setDissThreshold(double dissThreshold) {
@@ -67,7 +67,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#getDissimilarity(Integer, Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Double getDissimilarity(Integer frag1, Integer frag2) {
@@ -81,7 +81,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#addDissimCalc(org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addDissimCalc(DissimilarityCalc calc) {
@@ -91,7 +91,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -116,14 +116,14 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             h1 = crel.getHierarchy(intraRoot);
             h1.removeAll(processedFragmentIds);
 
-			LOGGER.debug("Processing Root: " + intraRoot);
+            LOGGER.debug("Processing Root: " + intraRoot);
             computeIntraHierarchyGEDs(h1);
 
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
                     interRoot = roots.get(q);
                     h2 = crel.getHierarchy(interRoot);
-					LOGGER.debug("Process Root Combo: " + intraRoot + " and " + interRoot);
+                    LOGGER.debug("Process Root Combo: " + intraRoot + " and " + interRoot);
                     computeInterHierarchyGEDs(h1, h2);
                 }
             }
@@ -147,7 +147,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private void computeIntraHierarchyGEDs(List<Integer> h1) {
         StringEditDistance.clearWordCache();
         for (int i = 0; i < h1.size() - 1; i++) {
-            for (int j = i+1; j < h1.size(); j++) {
+            for (int j = i + 1; j < h1.size(); j++) {
                 computeDissim(h1.get(i), h1.get(j));
             }
         }
@@ -194,7 +194,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         } catch (Exception e) {
             LOGGER.error("Failed to compute GED between {} and {} due to {}. " +
                     "GED computation between other fragments will proceed normally.",
-                    new Object[] {fid1, fid2, e.getMessage()});
+                    new Object[]{fid1, fid2, e.getMessage()});
         }
     }
 
@@ -212,7 +212,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         SimpleGraph g1 = getSimpleGraph(frag1);
         SimpleGraph g2 = getSimpleGraph(frag2);
 
-        for (DissimilarityCalc calc: chain) {
+        for (DissimilarityCalc calc : chain) {
             disim = calc.compute(g1, g2);
             if (calc.isAboveThreshold(disim)) {
                 disim = 1.0;

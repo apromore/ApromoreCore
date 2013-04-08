@@ -62,14 +62,13 @@
     </appender>
 
 
-    <logger name="org.apromore.aop.DaoInterceptor" level="INFO">
+    <logger name="org.apromore.aop.TimerInterceptor" level="INFO">
         <appender-ref ref="jpalogfile"/>
     </logger>
     <logger name="org.apromore.aop.LoggingInterceptor" level="INFO">
         <appender-ref ref="methodlogfile"/>
     </logger>
 
-    <logger name="org.apromore" level="INFO"/>
     <logger name="org.springframework" level="DEBUG"/>
     <logger name="org.eclipse.persistence" level="DEBUG"/>
     <logger name="javax.xml" level="WARN"/>

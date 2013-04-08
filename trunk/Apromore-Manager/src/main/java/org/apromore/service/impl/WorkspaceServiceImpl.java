@@ -1,5 +1,10 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.FolderUserRepository;
 import org.apromore.dao.ProcessRepository;
@@ -18,11 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import javax.inject.Inject;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -72,7 +72,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<ProcessUser> getUserProcesses(String userId, Integer folderId) {
+    public List<ProcessUser> getUserProcessesOrig(String userId, Integer folderId) {
         if (folderId == 0) {
             return processUserRepo.findRootProcessesByUser(userId);
         } else {
