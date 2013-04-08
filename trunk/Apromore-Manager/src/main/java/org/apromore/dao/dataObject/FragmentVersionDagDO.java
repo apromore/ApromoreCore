@@ -13,9 +13,9 @@ import org.eclipse.persistence.config.CacheIsolationType;
 @org.eclipse.persistence.annotations.Cache(type = CacheType.WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class FragmentVersionDagDO {
 
-	private Integer id;
+    private Integer id;
     private Integer fragmentVersionId;
-	private Integer childFragmentVersionId;
+    private Integer childFragmentVersionId;
     private String pocketId;
 
     public Integer getId() {

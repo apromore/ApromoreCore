@@ -116,14 +116,14 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             h1 = crel.getHierarchy(intraRoot);
             h1.removeAll(processedFragmentIds);
 
-            LOGGER.debug("Processing Root: " + intraRoot);
+            //LOGGER.debug("Processing Root: " + intraRoot);
             computeIntraHierarchyGEDs(h1);
 
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
                     interRoot = roots.get(q);
                     h2 = crel.getHierarchy(interRoot);
-                    LOGGER.debug("Process Root Combo: " + intraRoot + " and " + interRoot);
+                    //LOGGER.debug("Process Root Combo: " + intraRoot + " and " + interRoot);
                     computeInterHierarchyGEDs(h1, h2);
                 }
             }

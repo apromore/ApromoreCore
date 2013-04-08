@@ -33,7 +33,7 @@
         </property>
         <property name="jpaProperties">
             <util:properties id="jpaProperties">
-                <prop key="showSql">true</prop>
+                <prop key="showSql">false</prop>
                 <prop key="eclipselink.weaving">static</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
@@ -44,12 +44,12 @@
                 <prop key="eclipselink.cache.shared.default">false</prop>
                 <prop key="eclipselink.cache.type.default">SOFT</prop>
 
-                <prop key="eclipselink.profiler">PerformanceProfiler</prop>
-                <prop key="eclipselink.profiler">QueryMonitor</prop>
+                <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
+                <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
 
                 <prop key="eclipselink.logging.file">output.log</prop>
-                <prop key="eclipselink.logging.level">FINE</prop>
-                <prop key="eclipselink.logging.level.sql">FINE</prop>
+                <prop key="eclipselink.logging.level">OFF</prop>
+                <prop key="eclipselink.logging.level.sql">OFF</prop>
                 <prop key="eclipselink.logging.parameters">FALSE</prop>
             </util:properties>
         </property>

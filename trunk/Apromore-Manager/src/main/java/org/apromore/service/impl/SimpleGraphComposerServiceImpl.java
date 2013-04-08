@@ -94,11 +94,11 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 
 
     private ContentDO getContent(Integer fragmentId) {
-        ContentDO contentDO = contentCache.get(fragmentId);
-        if (contentDO == null) {
-            contentDO = contentRepository.getContentDOByFragmentVersion(fragmentId);
+        //ContentDO contentDO = contentCache.get(fragmentId);
+        //if (contentDO == null) {
+            ContentDO contentDO = contentRepository.getContentDOByFragmentVersion(fragmentId);
             contentCache.put(fragmentId, contentDO);
-        }
+        //}
         return contentDO;
     }
 
@@ -291,11 +291,11 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 
     @Transactional(readOnly = true)
     public void fillNodes(Canonical procModelGraph, Integer contentID) {
-        List<NodeDO> nodes = nodeCache.get(contentID);
-        if (nodes == null) {
-            nodes = nodeRepository.getNodeDOsByContent(contentID);
+        //List<NodeDO> nodes = nodeCache.get(contentID);
+        //if (nodes == null) {
+            List<NodeDO> nodes = nodeRepository.getNodeDOsByContent(contentID);
             nodeCache.put(contentID, nodes);
-        }
+        //}
 
         for (NodeDO node : nodes) {
             procModelGraph.addNode(buildNodeByType(node));
@@ -305,11 +305,11 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
 
     @Transactional(readOnly = true)
     public void fillEdges(Canonical procModelGraph, Integer contentID) {
-        List<EdgeDO> edges = edgeCache.get(contentID);
-        if (edges == null) {
-            edges = edgeRepository.getEdgeDOsByContent(contentID);
+        //List<EdgeDO> edges = edgeCache.get(contentID);
+        //if (edges == null) {
+            List<EdgeDO> edges = edgeRepository.getEdgeDOsByContent(contentID);
             edgeCache.put(contentID, edges);
-        }
+        //}
 
         CPFNode v1;
         CPFNode v2;
@@ -336,11 +336,11 @@ public class SimpleGraphComposerServiceImpl implements ComposerService {
     }
 
     private List<FragmentVersionDagDO> getChildMappings(Integer fragmentId) {
-        List<FragmentVersionDagDO> childMappings = childMappingsCache.get(fragmentId);
-        if (childMappings == null) {
-            childMappings = fragmentVersionDagRepository.getChildMappingsDO(fragmentId);
+        //List<FragmentVersionDagDO> childMappings = childMappingsCache.get(fragmentId);
+        //if (childMappings == null) {
+            List<FragmentVersionDagDO> childMappings = fragmentVersionDagRepository.getChildMappingsDO(fragmentId);
             childMappingsCache.put(fragmentId, childMappings);
-        }
+        //}
         return childMappings;
     }
 

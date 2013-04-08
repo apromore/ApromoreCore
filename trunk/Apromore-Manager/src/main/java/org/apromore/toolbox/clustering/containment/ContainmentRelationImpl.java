@@ -10,8 +10,8 @@ import java.util.Map;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.model.FragmentVersion;
-import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.dataObject.FragmentVersionDO;
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -144,25 +144,25 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
     /* Query the Fragments and setup the different data structures. */
     private void queryFragments() throws Exception {
-        List<FragmentVersion> fs = fragmentVersionRepository.getSimilarFragmentsBySize(minSize, 5000);
-        for (FragmentVersion f : fs) {
-            Integer index = idIndexMap.size();
-            Integer id = f.getId();
-            idIndexMap.put(id, index);
-            indexIdMap.put(index, id);
-            fragSize.put(id, f.getFragmentSize());
+        Integer index;
+        List<FragmentVersionDO> fs = fragmentVersionRepository.getAllSimilarFragmentsBySize(minSize, 5000);
+        for (FragmentVersionDO f : fs) {
+            index = idIndexMap.size();
+            idIndexMap.put(f.getId(), index);
+            indexIdMap.put(index, f.getId());
+            fragSize.put(f.getId(), f.getFragmentSize());
         }
     }
 
     /* Initialise the Containment Matrix. */
     private void initContainmentMatrix() throws Exception {
-        List<FragmentVersionDag> dags = fragmentVersionDagRepository.getAllDAGEntriesBySize(minSize);
         contmatrix = new boolean[idIndexMap.size()][idIndexMap.size()];
 
         // Initialize the containment matrix using the parent-child relation
-        for (FragmentVersionDag fdag : dags) {
-            Integer parentIndex = idIndexMap.get(fdag.getFragmentVersion().getId());
-            Integer childIndex = idIndexMap.get(fdag.getChildFragmentVersion().getId());
+        List<FragmentVersionDagDO> dags = fragmentVersionDagRepository.getAllDAGEntriesBySize(minSize);
+        for (FragmentVersionDagDO fdag : dags) {
+            Integer parentIndex = idIndexMap.get(fdag.getFragmentVersionId());
+            Integer childIndex = idIndexMap.get(fdag.getChildFragmentVersionId());
             if (parentIndex != null && childIndex != null) {
                 contmatrix[parentIndex][childIndex] = true;
             }
