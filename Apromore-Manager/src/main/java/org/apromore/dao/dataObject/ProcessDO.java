@@ -9,8 +9,9 @@ import org.eclipse.persistence.config.CacheIsolationType;
 
 /**
  * Stores the process in apromore.
- *
+ * <p/>
  * NOTE: this is for the JDBC template calls only.
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Cacheable(true)
@@ -34,9 +35,9 @@ public class ProcessDO implements Serializable {
     }
 
 
-
     /**
      * returns the Id of this Object.
+     *
      * @return the id
      */
     public Integer getId() {
@@ -45,6 +46,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Sets the Id of this Object
+     *
      * @param id the new Id.
      */
     public void setId(final Integer id) {
@@ -52,9 +54,9 @@ public class ProcessDO implements Serializable {
     }
 
 
-
     /**
      * Get the Name for the Object.
+     *
      * @return Returns the name.
      */
     public String getName() {
@@ -63,6 +65,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Set the Name for the Object.
+     *
      * @param newName The name to set.
      */
     public void setName(final String newName) {
@@ -71,6 +74,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Get the User for the Object.
+     *
      * @return Returns the domain.
      */
     public String getDomain() {
@@ -79,6 +83,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Set the domain for the Object.
+     *
      * @param newDomain The domain to set.
      */
     public void setDomain(final String newDomain) {
@@ -87,6 +92,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Get the nativeType for the Object.
+     *
      * @return Returns the nativeType.
      */
     public Integer getFolderId() {
@@ -95,6 +101,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Set the user for the Object.
+     *
      * @param newFolder The user to set.
      */
     public void setFolderId(final Integer newFolder) {
@@ -103,6 +110,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Get the nativeType for the Object.
+     *
      * @return Returns the nativeType.
      */
     public Integer getNativeTypeId() {
@@ -111,6 +119,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Set the nativeType for the Object.
+     *
      * @param newNativeType The nativeType to set.
      */
     public void setNativeTypeId(final Integer newNativeType) {
@@ -119,6 +128,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Get the nativeType for the Object.
+     *
      * @return Returns the nativeType.
      */
     public Integer getUserId() {
@@ -127,6 +137,7 @@ public class ProcessDO implements Serializable {
 
     /**
      * Set the user for the Object.
+     *
      * @param newUser The user to set.
      */
     public void setUserId(final Integer newUser) {

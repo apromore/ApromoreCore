@@ -1,21 +1,21 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.FragmentVersionDagRepositoryCustom;
-import org.apromore.dao.dataObject.FragmentVersionDagDO;
-import org.apromore.dao.model.FragmentVersionDag;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
+import org.apromore.dao.FragmentVersionDagRepositoryCustom;
+import org.apromore.dao.dataObject.FragmentVersionDagDO;
+import org.apromore.dao.model.FragmentVersionDag;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * implementation of the org.apromore.dao.FragmentVersionDagDao interface.
@@ -31,6 +31,8 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
     @Resource
     private JdbcTemplate jdbcTemplate;
 
+
+    /* ************************** JPA Methods here ******************************* */
 
     /**
      * @see org.apromore.dao.FragmentVersionDagRepository#getAllParentChildMappings()
@@ -82,6 +84,11 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
         return childParentMap;
     }
 
+
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
+
     /**
      * @see org.apromore.dao.FragmentVersionDagRepository#getChildMappingsDO(Integer)
      * {@inheritDoc}
@@ -90,9 +97,7 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
     public List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId) {
         String sql = "SELECT id, fragmentVersionId, childFragmentVersionId, pocketId FROM fragment_version_dag WHERE fragmentVersionId = ?";
 
-        List<FragmentVersionDagDO> cmaps = this.jdbcTemplate.query(
-            sql,
-            new Object[] {fragmentId},
+        return jdbcTemplate.query(sql, new Object[] { fragmentId },
             new RowMapper<FragmentVersionDagDO>() {
                 public FragmentVersionDagDO mapRow(ResultSet rs, int rowNum) throws SQLException {
                     FragmentVersionDagDO cmap = new FragmentVersionDagDO();
@@ -103,8 +108,30 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
                     return cmap;
                 }
             });
+    }
 
-        return cmaps;
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDagRepository#getAllDAGEntriesBySize(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public List<FragmentVersionDagDO> getAllDAGEntriesBySize(int minimumChildFragmentSize) {
+        String sql = "SELECT fvd.* " +
+                "FROM fragment_version_dag fvd JOIN fragment_version fv ON fvd.childFragmentVersionId = fv.id " +
+                "WHERE fv.fragment_size > ?";
+
+        return jdbcTemplate.query(sql, new Object[] { minimumChildFragmentSize },
+                new RowMapper<FragmentVersionDagDO>() {
+                    public FragmentVersionDagDO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        FragmentVersionDagDO cmap = new FragmentVersionDagDO();
+                        cmap.setId(rs.getInt("id"));
+                        cmap.setFragmentVersionId(rs.getInt("fragmentVersionId"));
+                        cmap.setChildFragmentVersionId(rs.getInt("childFragmentVersionId"));
+                        cmap.setPocketId(rs.getString("pocketId"));
+                        return cmap;
+                    }
+                });
     }
 
 }

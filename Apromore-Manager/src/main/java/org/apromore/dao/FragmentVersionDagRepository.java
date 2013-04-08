@@ -1,13 +1,13 @@
 package org.apromore.dao;
 
+import java.util.List;
+
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Interface domain model Data access object FragmentVersionDag.
@@ -41,15 +41,6 @@ public interface FragmentVersionDagRepository extends JpaRepository<FragmentVers
      */
     @Query("SELECT fvd FROM FragmentVersionDag fvd WHERE fvd.fragmentVersion.uri = ?1")
     List<FragmentVersionDag> getChildMappingsByURI(String parentUri);
-
-    /**
-     * Finds all the DAG entries greater than a min size.
-     * @param minimumChildFragmentSize min fragment child size.
-     * @return list of DAG entries
-     */
-    @Query("SELECT fvd FROM FragmentVersionDag fvd, FragmentVersion f WHERE fvd.childFragmentVersion.id = f.id AND f.fragmentSize > ?1")
-    List<FragmentVersionDag> getAllDAGEntriesBySize(int minimumChildFragmentSize);
-
 
     /**
      * Delete all the Child relationships for this Fragment Version.

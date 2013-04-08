@@ -2,7 +2,6 @@ package org.apromore.dao.dataObject;
 
 import javax.persistence.Cacheable;
 import java.io.Serializable;
-import java.util.Date;
 
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.eclipse.persistence.annotations.CacheType;
@@ -10,8 +9,9 @@ import org.eclipse.persistence.config.CacheIsolationType;
 
 /**
  * Stores the process user in apromore.
- *
+ * <p/>
  * NOTE: this is for the JDBC template calls only.
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Cacheable(true)
@@ -36,6 +36,7 @@ public class ProcessUserDO implements Serializable {
 
     /**
      * returns the Id of this Object.
+     *
      * @return the id
      */
     public Integer getId() {
@@ -44,6 +45,7 @@ public class ProcessUserDO implements Serializable {
 
     /**
      * Sets the Id of this Object
+     *
      * @param id the new Id.
      */
     public void setId(final Integer id) {

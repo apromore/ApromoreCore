@@ -63,15 +63,19 @@ public class OperationContext {
     }
 
     public int getContentUsage(Integer contentId) {
-        if (contentUsage.containsKey(contentId)) {
-            return contentUsage.get(contentId);
+        if (contentId != null) {
+            if (contentUsage.containsKey(contentId)) {
+                return contentUsage.get(contentId);
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
     }
 
     public void incrementContentUsage(Integer contentId) {
-        if (!contentUsage.containsKey(contentId)) {
+        if (contentId != null && !contentUsage.containsKey(contentId)) {
             contentUsage.put(contentId, 1);
         } else {
             int usage = contentUsage.get(contentId);

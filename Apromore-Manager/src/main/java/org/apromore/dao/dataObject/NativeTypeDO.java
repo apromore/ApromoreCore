@@ -9,8 +9,9 @@ import org.eclipse.persistence.config.CacheIsolationType;
 
 /**
  * Stores the Native types in apromore.
- *
+ * <p/>
  * NOTE: this is for the JDBC template calls only.
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Cacheable(true)
@@ -30,9 +31,9 @@ public class NativeTypeDO implements Serializable {
     }
 
 
-
     /**
      * returns the Id of this Object.
+     *
      * @return the id
      */
     public Integer getId() {
@@ -41,6 +42,7 @@ public class NativeTypeDO implements Serializable {
 
     /**
      * Sets the Id of this Object
+     *
      * @param id the new Id.
      */
     public void setId(final Integer id) {
@@ -50,6 +52,7 @@ public class NativeTypeDO implements Serializable {
 
     /**
      * Get the native type for the Object.
+     *
      * @return Returns the native type.
      */
     public String getNatType() {
@@ -58,6 +61,7 @@ public class NativeTypeDO implements Serializable {
 
     /**
      * Set the Native type for the Object.
+     *
      * @param newNatType The nat type to set.
      */
     public void setNatType(final String newNatType) {
@@ -66,6 +70,7 @@ public class NativeTypeDO implements Serializable {
 
     /**
      * Get the extension for the Object.
+     *
      * @return Returns the extension.
      */
     public String getExtension() {
@@ -74,6 +79,7 @@ public class NativeTypeDO implements Serializable {
 
     /**
      * Set the extension for the Object.
+     *
      * @param newExtension The extension to set.
      */
     public void setExtension(final String newExtension) {
