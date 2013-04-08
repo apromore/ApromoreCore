@@ -62,10 +62,10 @@
     </appender>
 
 
-    <logger name="org.apromore.aop.TimerInterceptor" level="INFO">
+    <logger name="org.apromore.aop.TimerInterceptor" level="DEBUG">
         <appender-ref ref="jpalogfile"/>
     </logger>
-    <logger name="org.apromore.aop.LoggingInterceptor" level="INFO">
+    <logger name="org.apromore.aop.LoggingInterceptor" level="DEBUG">
         <appender-ref ref="methodlogfile"/>
     </logger>
 

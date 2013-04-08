@@ -14,7 +14,7 @@ import java.util.List;
  * @see org.apromore.dao.model.FragmentVersion
  */
 @Repository
-public interface FragmentVersionRepository extends JpaRepository<FragmentVersion, Integer> {
+public interface FragmentVersionRepository extends JpaRepository<FragmentVersion, Integer>, FragmentVersionRepositoryCustom {
 
     /**
      * Find the Fragment version from it's URI.
@@ -50,7 +50,6 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
             "AND fv.lockStatus = 1 AND fvd.childFragmentVersion = ?1")
     List<FragmentVersion> getLockedParentFragments(FragmentVersion childFragmentVersion);
 
-
     /**
      * Find all the fragments that have been used by a particular fragment.
      * @param contentId the fragment id we are searching for.
@@ -58,15 +57,6 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
      */
     @Query("SELECT fv FROM FragmentVersion fv WHERE fv.content.id = ?1")
     List<FragmentVersion> getUsedFragments(Integer contentId);
-
-    /**
-     * Find all the similar fragments byt their size.
-     * @param minSize the min size to search for
-     * @param maxSize the max size to search for.
-     * @return the list of found fragments.
-     */
-    @Query("SELECT fv FROM FragmentVersion fv WHERE fv.fragmentSize > ?1 AND fv.fragmentSize < ?2")
-    List<FragmentVersion> getSimilarFragmentsBySize(int minSize, int maxSize);
 
     /**
      * the child Fragments from the fragment Version.

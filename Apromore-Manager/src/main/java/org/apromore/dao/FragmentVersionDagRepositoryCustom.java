@@ -13,7 +13,10 @@ import org.apromore.dao.dataObject.FragmentVersionDagDO;
  */
 public interface FragmentVersionDagRepositoryCustom {
 
-     /**
+
+    /* ************************** JPA Methods here ******************************* */
+
+    /**
      * Returns all parent-child mappings between all fragments
      * @return mappings fragment Id -> list of child Ids for all fragments that has at least one child
      */
@@ -25,10 +28,21 @@ public interface FragmentVersionDagRepositoryCustom {
      */
     Map<Integer, List<Integer>> getAllChildParentMappings();
 
+
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
+
     /**
      * Returns all the child mappings for the FragmentId.
      * @param fragmentId the fragment id
      * @return the list of child fragments
      */
     List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId);
+
+    /**
+     * Finds all the DAG entries by size.
+     * @param minimumChildFragmentSize the min size we are interested in
+     * @return the list of fragment Version DAG entries
+     */
+    List<FragmentVersionDagDO> getAllDAGEntriesBySize(int minimumChildFragmentSize);
 }
