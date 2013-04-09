@@ -23,5 +23,5 @@ public interface FragmentVersionRepositoryCustom {
      * @param maxSize the max size we are looking for
      * @return the list of found fragment versions
      */
-    List<FragmentVersionDO> getAllSimilarFragmentsBySize(int minSize, int maxSize);
+    List<FragmentVersionDO> getFragmentsBetweenSize(int minSize, int maxSize);
 }
