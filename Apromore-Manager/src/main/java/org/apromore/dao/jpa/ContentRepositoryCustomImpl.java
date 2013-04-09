@@ -36,8 +36,7 @@ public class ContentRepositoryCustomImpl implements ContentRepositoryCustom {
 
     @Override
     public ContentDO getContentDOByFragmentVersion(final Integer fragVersionId) {
-        String sql = "select c.id, c.boundary_e, c.boundary_s from content c, fragment_version f " +
-                "where f.contentId = c.id and f.id = ?";
+        String sql = "SELECT c.* FROM content c JOIN fragment_version f ON f.contentId = c.id WHERE f.id = ?";
 
         List<ContentDO> contents = this.jdbcTemplate.query(sql, new Object[] { fragVersionId },
                 new RowMapper<ContentDO>() {
