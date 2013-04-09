@@ -160,7 +160,7 @@ public class CreateProcessController extends BaseController {
                 String processName = this.processNameT.getValue();
                 String owner = UserSessionManager.getCurrentUser().getUsername();
                 String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-                Double versionNumber = Double.valueOf(this.versionNumberT.getValue());
+                Double versionNumber = 1.0d;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
                 String creationDate = dateFormat.format(new Date());
 

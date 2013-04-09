@@ -191,18 +191,16 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void cleanFragment(final FragmentNode f) {
-        Collection<CPFEdge> es = f.getEdges();
-        Collection<CPFNode> vs = f.getNodes();
+    public static void cleanFragment(final FragmentNode fragmentNode) {
         Collection<CPFEdge> removableEdges = new ArrayList<CPFEdge>();
 
-        for (CPFEdge e : es) {
-            if (!vs.contains(e.getSource()) || !vs.contains(e.getTarget())) {
+        for (CPFEdge e : fragmentNode.getEdges()) {
+            if (!fragmentNode.getNodes().contains(e.getSource()) || !fragmentNode.getNodes().contains(e.getTarget())) {
                 removableEdges.add(e);
             }
         }
 
-        f.removeEdges(removableEdges);
+        fragmentNode.removeEdges(removableEdges);
     }
 
     @SuppressWarnings("unchecked")

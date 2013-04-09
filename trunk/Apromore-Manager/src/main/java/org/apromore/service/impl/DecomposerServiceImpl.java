@@ -73,8 +73,9 @@ public class DecomposerServiceImpl implements DecomposerService {
     @Override
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = false)
-    public OperationContext decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
+    public FragmentVersion decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
         try {
+            FragmentVersion root = null;
             TreeVisitor visitor = new TreeVisitor();
             OperationContext op = new OperationContext();
             op.setGraph(graph);
@@ -83,17 +84,17 @@ public class DecomposerServiceImpl implements DecomposerService {
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
 
-            //IOUtils.toFile("outputCPF.dot", graph.toDOT());
-            //IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
-            //IOUtils.toFile("outputRPST.dot", rpst.toDOT());
-            //IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
+//            IOUtils.toFile("outputCPF.dot", graph.toDOT());
+//            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
+//            IOUtils.toFile("outputRPST.dot", rpst.toDOT());
+//            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
 
             if (rf != null) {
-                op = decompose(modelVersion, rf, op);
+                root = decompose(modelVersion, rf, op);
                 cService.updateCancelNodes(op);
             }
 
-            return op;
+            return root;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
             LOGGER.error(msg, e);
@@ -103,14 +104,14 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Doing all the work of decomposing into the DB structure. */
     @SuppressWarnings("unchecked")
-    private OperationContext decompose(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op)
+    private FragmentVersion decompose(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op)
             throws RepositoryException {
         String keywords = "";
         int fragmentSize = parent.getNodes().size();
         String nodeType = FragmentUtil.getFragmentType(parent);
 
         Collection<FragmentNode> childFragments = parent.getChildren();
-        Map<String, String> childMappings = mapPocketChildId(modelVersion, parent, op, childFragments);
+        Map<String, String> childMappings = mapPocketChildId(modelVersion, parent, op, childFragments);  // pocket Id -> child Id
 
         String hash = HashUtil.computeHash(parent, parent.getType(), op);
         if (hash == null) {
@@ -122,6 +123,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
 
+        // It's possible to have multiple contents with the same Hash.....Is this correct?
         Content matchingContent = matchingContents.get(0);
 
         Map<String, String> newChildMappings;
@@ -130,10 +132,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             // Currently returns -1, doesn't handle MEME only SESE.
             int matchingBondFragmentId = bcHandler.matchFragment(parent, matchingContent, childMappings, newChildMappings);
             if (matchingBondFragmentId != -1) {
-                FragmentVersion existingFragment = fService.getFragmentVersion(matchingBondFragmentId);
-                op.addFragmentVersion(existingFragment);
-                op.setCurrentFragment(existingFragment);
-                return op;
+                return fService.getFragmentVersion(matchingBondFragmentId);
             }
         } else {
             Map<String, String> pocketMappings = pMapper.mapPockets(parent, op.getGraph(), matchingContent);
@@ -149,33 +148,30 @@ public class DecomposerServiceImpl implements DecomposerService {
             }
             FragmentVersion matchingFV = fService.getMatchingFragmentVersionId(matchingContent.getId(), newChildMappings);
             if (matchingFV != null) {
-                op.addFragmentVersion(matchingFV);
-                op.setCurrentFragment(matchingFV);
-                return op;
+                return matchingFV;
             }
         }
 
-        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);    }
+        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+    }
 
-    /* mapping pocketId -> childId */
+    /* Mapping pocketId -> childId */
     private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op,
             final Collection<FragmentNode> childFragments) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>();
         for (FragmentNode child : childFragments) {
-            if (TCType.TRIVIAL.equals(child.getType())) {
-                continue;
+            if (!TCType.TRIVIAL.equals(child.getType())) {
+                CPFNode pocket = Extractor.extractChildFragment(parent, child, op.getGraph());
+                FragmentUtil.cleanFragment(parent);
+                FragmentVersion childFragment = decompose(modelVersion, child, op);
+                childMappings.put(pocket.getId(), childFragment.getUri());
             }
-
-            CPFNode pocket = Extractor.extractChildFragment(parent, child, op.getGraph());
-            FragmentUtil.cleanFragment(parent);
-            OperationContext fragment = decompose(modelVersion, child, op);
-            childMappings.put(pocket.getId(), fragment.getCurrentFragment().getUri());
         }
         return childMappings;
     }
 
     /* Adds the decomposed fragment to the process model version. */
-    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode parent, final String hash,
+    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode parent, final String hash,
             final Map<String, String> childMappings, final int fragmentSize, final String fragmentType, final String keywords,
             OperationContext op) throws RepositoryException {
         LOGGER.info("Adding Fragment Version: " + modelVersion.getProcessBranch().getBranchName() + " - " + modelVersion.getVersionNumber());
@@ -196,7 +192,7 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private OperationContext addFragmentVersion(ProcessModelVersion modelVersion, Content content, final Map<String, String> childMappings,
+    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, Content content, final Map<String, String> childMappings,
             final String derivedFrom, final int lockStatus, final int lockCount, final int originalSize, final String fragmentType,
             final String keywords, OperationContext op) throws RepositoryException {
         FragmentVersion fragmentVersion = fService.addFragmentVersion(modelVersion, content, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
@@ -207,6 +203,6 @@ public class DecomposerServiceImpl implements DecomposerService {
         op.addAllEdges(content.getEdges());
         op.addFragmentVersion(fragmentVersion);
 
-        return op;
+        return fragmentVersion;
     }
 }

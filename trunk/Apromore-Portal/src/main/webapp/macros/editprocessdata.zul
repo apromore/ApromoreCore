@@ -16,7 +16,7 @@ and CreateProcessController.java for creating process purpose.
 					<textbox width="100%"/>
 				</row>
 				<row>
-					<label value="Version name*" width="100%"/>
+					<label value="Version number*" width="100%"/>
 					<textbox width="100%" />
 				</row>
 				<row width="100%"  tooltiptext="Process domain modification will be applied on all process versions.">
