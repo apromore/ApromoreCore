@@ -202,7 +202,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin}</version>
                 <configuration>
-                    <argLine>-XX:-UseSplitVerifier</argLine>
                     <!--<argLine>-javaagent:${settings.localRepository}/org/springframework/spring-instrument/3.1.2-RELEASE/spring-instrument-3.1.2-RELEASE.jar</argLine> -->
                     <excludes>
                         <exclude>**/${integration.test.package}/**</exclude>
@@ -244,8 +243,7 @@
                             <goal>sources</goal>
                         </goals>
                     </execution>
-                    <!-- This is used by the Apromore ANT script to automatically copy dependencies
-                             to Eclipse Virgo -->
+                    <!-- This is used by the Apromore ANT script to automatically copy dependencies to Eclipse Virgo -->
                     <execution>
                         <id>copy-dependencies</id>
                         <phase>package</phase>
@@ -310,6 +308,42 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <check>
+                                <classRatio>10</classRatio>
+                                <instructionRatio>0</instructionRatio>
+                                <methodRatio>10</methodRatio>
+                                <branchRatio>0</branchRatio>
+                                <complexityRatio>5</complexityRatio>
+                                <lineRatio>0</lineRatio>
+                            </check>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -1490,7 +1524,7 @@
         <maven.assembly.plugin>2.3</maven.assembly.plugin>
         <maven.build.helper.plugin>1.7</maven.build.helper.plugin>
         <maven.bundle.plugin>2.3.7</maven.bundle.plugin>
-        <maven.checkstyle.plugin>2.9.1</maven.checkstyle.plugin>
+        <maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
         <maven.clean.plugin>2.5</maven.clean.plugin>
         <maven.cobertura.plugin>2.5.1</maven.cobertura.plugin>
         <maven.compiler.plugin>2.5.1</maven.compiler.plugin>

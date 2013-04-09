@@ -50,7 +50,7 @@
 							<button id="revertSelectionB" label="" image="img/invertselection.png" style="background: transparent; border:none" tooltiptext="Invert selection" />
 							<button id="selectAllB" label="" style="background: transparent; border:none" image="img/select.png" tooltiptext="Select all" />
 							<button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselect.png" tooltiptext="Unselect all" />
-							<button id="refreshB" label="" style="background: transparent; border:none" image="img/relaod.png" tooltiptext="Reload data" />
+							<button id="refreshB" label="" style="background: transparent; border:none" image="img/reload.png" tooltiptext="Reload data" />
 							<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/cluster.png" tooltiptext="Show Clustering" />
 
 							<button id="btnAddFolder" label="" image="img/folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>

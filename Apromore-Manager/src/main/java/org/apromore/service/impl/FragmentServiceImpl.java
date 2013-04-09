@@ -161,6 +161,31 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
 
+    /* Add the Fragment Version DAG */
+    private void addChildMappings(ProcessModelVersion processModel, FragmentVersion fragVer, Map<String, String> childMappings) {
+        Set<String> pocketIds = childMappings.keySet();
+        for (String pocketId : pocketIds) {
+            String childId = childMappings.get(pocketId);
+            if (fragVer == null || childId == null || pocketId == null) {
+                LOGGER.error("Invalid child mapping parameters. child Id: " + childId + ", Pocket Id: " + pocketId);
+            }
+
+            FragmentVersionDag fvd = new FragmentVersionDag();
+            fvd.setPocketId(pocketId);
+            fvd.setFragmentVersion(fragVer);
+            //fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
+
+            for (FragmentVersion fv : processModel.getFragmentVersions()) {
+                if (fv.getUri().equals(childId)) {
+                    fvd.setChildFragmentVersion(fv);
+                }
+            }
+
+            fvdRepository.save(fvd);
+        }
+    }
+
+
     /**
      * @see FragmentService#getFragment(String, boolean)
      *      {@inheritDoc}
@@ -252,30 +277,6 @@ public class FragmentServiceImpl implements FragmentService {
             buf.append(pid).append(":").append(cid).append("|");
         }
         return buf.toString();
-    }
-
-    /* Add the Fragment Version DAG */
-    private void addChildMappings(ProcessModelVersion processModel, FragmentVersion fragVer, Map<String, String> childMappings) {
-        Set<String> pocketIds = childMappings.keySet();
-        for (String pocketId : pocketIds) {
-            String childId = childMappings.get(pocketId);
-            if (fragVer == null || childId == null || pocketId == null) {
-                LOGGER.error("Invalid child mapping parameters. child Id: " + childId + ", Pocket Id: " + pocketId);
-            }
-
-            FragmentVersionDag fvd = new FragmentVersionDag();
-            fvd.setPocketId(pocketId);
-            fvd.setFragmentVersion(fragVer);
-            //fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
-
-            for (FragmentVersion fv : processModel.getFragmentVersions()) {
-                if (fv.getUri().equals(childId)) {
-                    fvd.setChildFragmentVersion(fv);
-                }
-            }
-
-            fvdRepository.save(fvd);
-        }
     }
 
 }
