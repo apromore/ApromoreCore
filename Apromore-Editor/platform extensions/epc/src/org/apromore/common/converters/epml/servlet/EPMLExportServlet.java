@@ -25,6 +25,7 @@
 package org.apromore.common.converters.epml.servlet;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import de.epml.EPMLSchema;
 import de.unihannover.se.infocup2008.bpmn.JsonErdfTransformation;
 import org.apromore.common.converters.epml.JSONToEPMLConverter;
+import org.json.JSONObject;
 import org.json.JSONException;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
@@ -71,13 +73,19 @@ public class EPMLExportServlet extends HttpServlet {
             res.setStatus(200);
             res.getWriter().write(epmlString);
         } catch (Exception e) {
-            try {
-                e.printStackTrace();
-                res.setStatus(500);
+            e.printStackTrace();
+            res.setStatus(500);
+            if (e.getCause() != null) {
                 res.setContentType("text/plain");
-                res.getWriter().write(e.getCause().getMessage());
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                assert res != null;
+                assert e != null;
+                assert e.getCause() != null;
+                assert e.getCause().getMessage() != null;
+                try {
+                    res.getWriter().write(e.getCause().getMessage());
+                } catch (IOException e1) {
+                    throw new ServletException(e1);
+                }
             }
         }
 
@@ -87,7 +95,7 @@ public class EPMLExportServlet extends HttpServlet {
      * @param jsonString  an EPC represented in Signavio's serialized JSON, never <code>null</code>
      * @return an EPML serialization of the EPC
      */
-    private String jsonToEpml(final String jsonString) throws JAXBException, JSONException, SAXException {
+    private String jsonToEpml(/* final */ String jsonString) throws JAXBException, JSONException, SAXException {
         ServletContext context = getServletConfig().getServletContext();
 
         /* The following commented-out code duplicates the original Javascript implementation, in which
@@ -139,8 +147,16 @@ public class EPMLExportServlet extends HttpServlet {
         String epmlString = baos2.toString();
         */
 
+        // Workaround because the JSON we get doesn't have its stencil set namespace set
+        JSONObject object = new JSONObject(jsonString);
+        JSONObject stencilset = object.getJSONObject("stencilset");
+        stencilset.put("namespace", "http://b3mn.org/stencilset/epc#");
+        object.put("stencilset", stencilset);
+        jsonString = object.toString();
+
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
         JSONToEPMLConverter jsonToEpmlConverter = new JSONToEPMLConverter();
+        context.log("TALISMAN-JSON: " + jsonString);
         EPMLSchema.marshalEPMLFormat(baos2, jsonToEpmlConverter.toEPML(BasicDiagramBuilder.parseJson(jsonString)), true /* is validating */);
         String epmlString = baos2.toString();
 

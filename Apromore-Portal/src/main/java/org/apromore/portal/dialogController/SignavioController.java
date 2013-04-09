@@ -43,10 +43,8 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    String[] data = (String[]) event.getData();
-                    LOGGER.debug(data[0]);
-                    isNormalSave = true;
-                    new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
+                    LOGGER.info("Event type " + event.getData().getClass() + ": " + event.getData());
+                    new SaveAsDialogController(mainC, process, version, editSession, true /* a normal save */, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     exceptionFormats.printStackTrace();
                 }
@@ -57,10 +55,7 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    String[] data = (String[]) event.getData();
-                    LOGGER.debug(data[0]);
-                    isNormalSave = false;
-                    new SaveAsDialogController(mainC, process, version, editSession, isNormalSave, data[0]);
+                    new SaveAsDialogController(mainC, process, version, editSession, false /* not a normal save */, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     exceptionFormats.printStackTrace();
                 }
@@ -96,6 +91,24 @@ public class SignavioController extends BaseController {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * YAWL models package their event data as an array of {@link String}s, EPML packages it as a {@link String}; this function
+     * hides the difference.
+     *
+     * @param event
+     * @throws RuntimeException if the data associated with <var>event</var> is neither a {@link String} nor an array of {@link String}s
+     */
+    private static String eventToString(final Event event) {
+        if (event.getData() instanceof String[]) {
+            return ((String[]) event.getData())[0];
+        }
+        if (event.getData() instanceof String) {
+            return (String) event.getData();
+        }
+
+        throw new RuntimeException("Unsupported class of event data: " + event.getData());
     }
 
     private String getURL(final String nativeType) {

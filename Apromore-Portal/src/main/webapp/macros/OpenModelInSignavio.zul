@@ -46,7 +46,7 @@
                                     method: 'POST',
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
-                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', [nativeFormat, svg]));
+                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', nativeFormat));
                                     }.bind(this),
                                     onFailure: function(transport) {
                                         alert("Failed to save process as "+nativeFormat);
@@ -63,7 +63,7 @@
                                     method: 'POST',
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
-                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', [nativeFormat, svg]));
+                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
                                     }.bind(this),
                                     onFailure: function(transport) {
                                         alert("Failed to save process!");
