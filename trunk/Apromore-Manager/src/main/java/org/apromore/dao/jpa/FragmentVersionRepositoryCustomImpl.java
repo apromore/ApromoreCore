@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-public class FragmentVersionCustomImpl implements FragmentVersionRepositoryCustom {
+public class FragmentVersionRepositoryCustomImpl implements FragmentVersionRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
@@ -33,7 +33,7 @@ public class FragmentVersionCustomImpl implements FragmentVersionRepositoryCusto
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
     @Override
-    public List<FragmentVersionDO> getAllSimilarFragmentsBySize(int minSize, int maxSize) {
+    public List<FragmentVersionDO> getFragmentsBetweenSize(int minSize, int maxSize) {
         String sql = "SELECT fv.* FROM fragment_version fv WHERE fv.fragment_size > ? AND fv.fragment_size < ?";
 
         return jdbcTemplate.query(sql, new Object[] {minSize, maxSize},

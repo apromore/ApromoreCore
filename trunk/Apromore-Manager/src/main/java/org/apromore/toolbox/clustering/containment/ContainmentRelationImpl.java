@@ -145,7 +145,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     /* Query the Fragments and setup the different data structures. */
     private void queryFragments() throws Exception {
         Integer index;
-        List<FragmentVersionDO> fs = fragmentVersionRepository.getAllSimilarFragmentsBySize(minSize, 5000);
+        List<FragmentVersionDO> fs = fragmentVersionRepository.getFragmentsBetweenSize(minSize, 5000);
         for (FragmentVersionDO f : fs) {
             index = idIndexMap.size();
             idIndexMap.put(f.getId(), index);
