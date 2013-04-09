@@ -28,7 +28,7 @@ if (!ORYX.Plugins)
     ORYX.Plugins = new Object();
 
 /**
- *  Location of Import and Export Servlet
+ *  Location of Import Servlet
  *  This was located in config.js in Oryx
  **/
 ORYX.CONFIG.EPMLIMPORTURL = ORYX.CONFIG.ROOT_PATH + "epmlimport";
@@ -49,7 +49,6 @@ ORYX.Plugins.EPCSupport = ORYX.Plugins.AbstractPlugin.extend({
         // Progress dialog on export and import
         this.progressDialog = null;
 
-        /*
          this.facade.offer({
          'name':ORYX.I18N.EPCSupport.exp,
          'functionality': this.exportEPC.bind(this),
@@ -59,7 +58,6 @@ ORYX.Plugins.EPCSupport = ORYX.Plugins.AbstractPlugin.extend({
          'index': 1,
          'minShape': 0,
          'maxShape': 0});
-         */
 
         this.facade.offer({
             'name':ORYX.I18N.EPCSupport.imp,
@@ -91,6 +89,10 @@ ORYX.Plugins.EPCSupport = ORYX.Plugins.AbstractPlugin.extend({
         var xmlSerializer = new XMLSerializer();
         var resource = "Oryx-EPC";
         var serializedDOM = DataManager.serializeDOM(this.facade);
+
+        // Bypass doing the eRDF -> RDF -> EPML transformation; just return the raw eRDF
+        this.facade.raiseEvent({type:ORYX.CONFIG.EVENT_LOADING_DISABLE});
+        return serializedDOM;
 
         serializedDOM =
             '<?xml version="1.0" encoding="utf-8"?>' +
@@ -171,7 +173,7 @@ ORYX.Plugins.EPCSupport = ORYX.Plugins.AbstractPlugin.extend({
             return new String("Parse Error: \nThe given dom content is null.");
         }
         var xsl = "";
-        new Ajax.Request(source, {
+        new Ajax.Request(xsltPath, {
             asynchronous:false,
             method:'get',
             onSuccess:function (transport) {
