@@ -112,7 +112,7 @@ public class EPMLToJSONConverter {
         for (TExtensibleElements ext : extList) {
             TypeEPC epc = (TypeEPC) ext;
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
-            BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
+            BasicDiagram diagram = new BasicDiagram(epc.getEpcId().toString(), epc.getName(), new StencilSetReference(stencilSetNs));
             Bounds bounds = new Bounds();
             bounds.setCoordinates(0, 0, 600, 600);
             diagram.setBounds(bounds);
