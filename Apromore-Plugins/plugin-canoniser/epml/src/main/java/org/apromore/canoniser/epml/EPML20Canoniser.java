@@ -54,10 +54,10 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
-      */
+     * (non-Javadoc)
+     *
+     * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
+     */
     @Override
     public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
 
@@ -77,10 +77,10 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
-      */
+     * (non-Javadoc)
+     *
+     * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
+     */
     @Override
     public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput, final PluginRequest request) throws CanoniserException {
 
@@ -109,8 +109,8 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
     }
 
     /* (non-Javadoc)
-    * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, org.apromore.plugin.PluginRequest)
-    */
+     * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, org.apromore.plugin.PluginRequest)
+     */
     @Override
     public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
                                                   final Date processCreated, final PluginRequest request) {
