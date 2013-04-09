@@ -70,6 +70,13 @@ public class JSONToEPMLConverter {
 
     private final ObjectFactory factory = new ObjectFactory();
 
+    private final IdFactory idFactory = new IdFactory();
+
+    /**
+     * Maps identifiers in the source JSON representation to identifiers in the target EPML representation.
+     */
+    private final Map<String, BigInteger> jsonToEpmlIdMap = new HashMap<String, BigInteger>();
+
     /**
      * @param jsonStream  source stream in Signavio JSON format
      * @param epmlStream  destination stream to receive EPML 2.0 format
@@ -79,7 +86,7 @@ public class JSONToEPMLConverter {
             String json = new Scanner(jsonStream, "UTF-8" ).useDelimiter("\\A").next();
             BasicDiagram diagram = BasicDiagramBuilder.parseJson(json);
             TypeEPML epml = toEPML(diagram);
-            EPMLSchema.marshalEPMLFormat(epmlStream, epml, false /* is validating */);
+            EPMLSchema.marshalEPMLFormat(epmlStream, epml, true /* is validating */);
         } catch (JAXBException | JSONException | SAXException e) {
             e.printStackTrace();
         }
@@ -114,11 +121,8 @@ public class JSONToEPMLConverter {
         coordinates.setYOrigin("topToBottom");        
         epml.setCoordinates(coordinates);
 
-        TypeDirectory directory = factory.createTypeDirectory();
-        epml.getDirectory().add(directory);
-
         TypeEPC epc = factory.createTypeEPC();
-        epc.setEpcId(new BigInteger(diagram.getResourceId()));
+        epc.setEpcId(new BigInteger("1" /*diagram.getResourceId()*/));  // TODO: 1 is a dummy value
         epc.setName("dummy" /* diagram.getProperty("title") */);
         for (BasicShape shape: diagram.getAllShapesReadOnly()) {
             switch (shape.getStencilId()) {
@@ -154,9 +158,31 @@ public class JSONToEPMLConverter {
             }
         }
 
+        TypeDirectory directory = factory.createTypeDirectory();
         directory.getEpcOrDirectory().add(epc);
         epml.getDirectory().add(directory);
+
         return epml;
+    }
+
+    /**
+     * Name an EPC element within an EPC.
+     *
+     * @param jsonId  the identifier of the element within the source JSON representation
+     * @return the identifier within the target EPML representation
+     */
+    private BigInteger getId(final String jsonId) {
+
+        if (jsonToEpmlIdMap.containsKey(jsonId)) {
+             // This JSON identifier has been encountered before, so return its previously-mapped EPML value
+            return jsonToEpmlIdMap.get(jsonId);
+        } else {
+            // This is the first occurrence of this JSON identifier, so map it to a new EPC identifier
+            BigInteger epmlId = idFactory.newId(jsonId);
+            jsonToEpmlIdMap.put(jsonId, epmlId);
+            return epmlId;
+        }
+
     }
 
     /**
@@ -172,11 +198,11 @@ public class JSONToEPMLConverter {
         BasicShape sourceShape = sourceMap.get(shape);
         BasicShape targetShape = targetMap.get(shape);
 
-        arc.setId(new BigInteger(shape.getResourceId()));
+        arc.setId(getId(shape.getResourceId()));
 
         TypeFlow flow = factory.createTypeFlow();
-        flow.setSource(new BigInteger(sourceShape.getResourceId()));
-        flow.setTarget(new BigInteger(targetShape.getResourceId()));
+        flow.setSource(getId(sourceShape.getResourceId()));
+        flow.setTarget(getId(targetShape.getResourceId()));
         arc.setFlow(flow);
 
         TypeMove move = factory.createTypeMove();
@@ -211,7 +237,7 @@ public class JSONToEPMLConverter {
      * @return <var>element</var>
      */
     private <T extends TEpcElement> T populateElement(final T element, final BasicShape shape) {
-        element.setId(new BigInteger(shape.getResourceId()));
+        element.setId(getId(shape.getResourceId()));
         element.setName(shape.getProperty("title"));
         element.setGraphics(toGraphics(shape.getBounds()));
         return element;
