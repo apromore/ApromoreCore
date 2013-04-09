@@ -27,7 +27,7 @@ public class LoggingInterceptor {
     @Before("execution(* org.apromore..*.*(..))")
 //    @Before("execution(* org.apromore.service.impl.SimpleGraphComposerServiceImpl.*(..)) || execution(* org.apromore.service.impl.ClusterServiceImpl.*(..))")
     public void logEntry(JoinPoint joinPoint) {
-        LOGGER.debug("--> Entering: " + joinPoint.getSignature().toLongString());
+        LOGGER.debug("--> Entering: " + joinPoint.getSignature().toShortString());
     }
 
 
@@ -38,7 +38,7 @@ public class LoggingInterceptor {
     @After("execution(* org.apromore..*.*(..))")
 //    @After("execution(* org.apromore.service.impl.SimpleGraphComposerServiceImpl.*(..)) || execution(* org.apromore.service.impl.ClusterServiceImpl.*(..))")
     public void logExit(JoinPoint joinPoint) {
-        LOGGER.debug("<-- Exiting: " + joinPoint.getSignature().toLongString());
+        LOGGER.debug("<-- Exiting: " + joinPoint.getSignature().toShortString());
     }
 
 

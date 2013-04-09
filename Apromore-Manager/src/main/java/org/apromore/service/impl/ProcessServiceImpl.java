@@ -235,6 +235,7 @@ public class ProcessServiceImpl implements ProcessService {
             final NativeType nativeType, final CanonisedProcess cpf, final InputStream nativeXML) throws ImportException, RepositoryException {
         Canonical graph;
         OperationContext netRoot;
+        FragmentVersion rootFragment;
         ProcessModelVersion processModelVersion = null;
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
@@ -278,10 +279,9 @@ public class ProcessServiceImpl implements ProcessService {
                     for (NetType net : cpf.getCpt().getNet()) {
                         if (net.getNode() != null || net.getNode().size() > 0) {
                             graph = converter.convert(createNet(cpf, net));
-                            netRoot = decomposerSrv.decompose(graph, processModelVersion);
-                            if (netRoot != null) {
-                                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
-                                        netRoot.getFragmentVersions());
+                            rootFragment = decomposerSrv.decompose(graph, processModelVersion);
+                            if (rootFragment != null) {
+                                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions());
                             }
                         }
                     }
@@ -561,18 +561,19 @@ public class ProcessServiceImpl implements ProcessService {
         }
 
         Canonical can;
-        OperationContext netRoot;
-        ProcessModelVersion pmv = null;
-        Map<String, ProcessModelVersion> models = new HashMap<String, ProcessModelVersion>(0);
+        FragmentVersion rootFragment;
+        ProcessModelVersion pmv;
+//        OperationContext netRoot = new OperationContext();
+//        Map<String, ProcessModelVersion> models = new HashMap<String, ProcessModelVersion>(0);
         try {
             LOGGER.info("Starting to process: " + cpf.getCpt().getUri() + " - " + cpf.getCpt().getName());
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());
             pmv = createProcessModelVersion(process, branch, versionNumber, can, cpf.getCpt().getUri());
-            netRoot = decomposerSrv.decompose(can, pmv);
-            if (netRoot != null) {
-                pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
+            rootFragment = decomposerSrv.decompose(can, pmv);
+            if (rootFragment != null) {
+                pmv.setRootFragmentVersion(rootFragment);
             } else {
                 throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
             }
