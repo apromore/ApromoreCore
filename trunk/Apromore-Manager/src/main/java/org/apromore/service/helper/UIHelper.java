@@ -260,15 +260,19 @@
 
 package org.apromore.service.helper;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.NativeRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessUser;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
@@ -279,11 +283,6 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
 
 /**
 * Used By the Services to generate the data objects used by the UI.
@@ -296,7 +295,6 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
-    private ProcessModelVersionRepository pmvRepository;
     private NativeRepository nRepository;
 
     private WorkspaceService workspaceService;
@@ -306,17 +304,14 @@ public class UIHelper implements UserInterfaceHelper {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepository Annotations Repository.
      * @param processRepository process Repository.
-     * @param processModelVersionRepository process model version repository.
      * @param nativeRepository Native Repository.
      * @param workspaceService Workspace Services.
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository, final ProcessRepository processRepository,
-                    final ProcessModelVersionRepository processModelVersionRepository, final NativeRepository nativeRepository,
-                    final WorkspaceService workspaceService) {
+                    final NativeRepository nativeRepository, final WorkspaceService workspaceService) {
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
-        this.pmvRepository = processModelVersionRepository;
         this.nRepository = nativeRepository;
         this.workspaceService = workspaceService;
     }
@@ -429,7 +424,6 @@ public class UIHelper implements UserInterfaceHelper {
 
     /* Builds the list of version Summaries for a process. */
     private void buildVersionSummaryTypeList(ProcessSummaryType processSummary, ProcessVersionsType similarProcesses, Process pro) {
-        Double maxVersion;
         VersionSummaryType versionSummary;
         ProcessVersionType processVersionType = null;
 
@@ -442,24 +436,23 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         // Find the branches for a RootFragment.
-        Set<ProcessBranch> branches = pro.getProcessBranches();
-        for (ProcessBranch branch : branches) {
-            maxVersion = pmvRepository.findMaxVersionNumberByProcessIdAndBranchName(pro.getId(), branch.getBranchName());
+        for (ProcessBranch branch : pro.getProcessBranches()) {
+            for (ProcessModelVersion processModelVersion : branch.getProcessModelVersions()) {
+                versionSummary = new VersionSummaryType();
+                versionSummary.setName(branch.getBranchName());
+                versionSummary.setCreationDate(branch.getCreationDate());
+                versionSummary.setLastUpdate(branch.getLastUpdate());
+                versionSummary.setRanking(branch.getRanking());
+                versionSummary.setVersionNumber(processModelVersion.getVersionNumber());
+                if (processVersionType != null) {
+                    versionSummary.setScore(processVersionType.getScore());
+                }
+                buildNativeSummaryList(processSummary, versionSummary, processModelVersion.getVersionNumber());
 
-            versionSummary = new VersionSummaryType();
-            versionSummary.setName(branch.getBranchName());
-            versionSummary.setCreationDate(branch.getCreationDate());
-            versionSummary.setLastUpdate(branch.getLastUpdate());
-            versionSummary.setRanking(branch.getRanking());
-            versionSummary.setVersionNumber(maxVersion);
-            if (processVersionType != null) {
-                versionSummary.setScore(processVersionType.getScore());
+                processSummary.getVersionSummaries().add(versionSummary);
+
+                processSummary.setLastVersion(branch.getCurrentProcessModelVersion().getVersionNumber().toString());
             }
-            buildNativeSummaryList(processSummary, versionSummary, maxVersion);
-
-            processSummary.getVersionSummaries().add(versionSummary);
-
-            processSummary.setLastVersion(branch.getCurrentProcessModelVersion().getVersionNumber().toString());
         }
     }
 
