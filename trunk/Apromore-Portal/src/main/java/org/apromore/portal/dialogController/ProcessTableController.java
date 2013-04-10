@@ -1,25 +1,26 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.FolderType;
+import javax.xml.bind.JAXBException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ProcessIdColComparator;
 import org.apromore.portal.common.ProcessNameColComparator;
 import org.apromore.portal.common.ProcessRankingColComparator;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.VersionNameColComparator;
 import org.apromore.portal.common.VersionRankingColComparator;
-import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
@@ -34,27 +35,17 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Toolbarbutton;
 
-import javax.xml.bind.JAXBException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class ProcessTableController extends BaseController {
 
     private MainController mainC;                             // the main controller
-    private AddFolderController addFolderController;
-    private CreateProcessController createController;
-    private SecuritySetupController securitySetupController;
+//    private AddFolderController addFolderController;
+//    private CreateProcessController createController;
+//    private SecuritySetupController securitySetupController;
 
 
     private Grid processSummariesGrid;                         // the grid for process summaries
@@ -75,11 +66,11 @@ public class ProcessTableController extends BaseController {
     private Button selectAllB;
     private Button unselectAllB;
     private Button refreshB;
-    private Button btnAddFolder;
-    private Button btnAddProcess;
-    private Button btnRenameFolder;
-    private Button btnRemoveFolder;
-    private Button btnSecurity;
+//    private Button btnAddFolder;
+//    private Button btnAddProcess;
+//    private Button btnRenameFolder;
+//    private Button btnRemoveFolder;
+//    private Button btnSecurity;
 
     private Column columnScore;                                // column to display process score
     // for the purpose of answering query
@@ -106,11 +97,11 @@ public class ProcessTableController extends BaseController {
         this.unselectAllB = (Button) this.processSummariesGrid.getFellow("unselectAllB");
         this.selectAllB = (Button) this.processSummariesGrid.getFellow("selectAllB");
         this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
-        this.btnAddFolder = (Button) this.processSummariesGrid.getFellow("btnAddFolder");
-        this.btnAddProcess = (Button) this.processSummariesGrid.getFellow("btnAddProcess");
-        this.btnRenameFolder = (Button) this.processSummariesGrid.getFellow("btnRenameFolder");
-        this.btnRemoveFolder = (Button) this.processSummariesGrid.getFellow("btnRemoveFolder");
-        this.btnSecurity = (Button) this.processSummariesGrid.getFellow("btnSecurity");
+//        this.btnAddFolder = (Button) this.processSummariesGrid.getFellow("btnAddFolder");
+//        this.btnAddProcess = (Button) this.processSummariesGrid.getFellow("btnAddProcess");
+//        this.btnRenameFolder = (Button) this.processSummariesGrid.getFellow("btnRenameFolder");
+//        this.btnRemoveFolder = (Button) this.processSummariesGrid.getFellow("btnRemoveFolder");
+//        this.btnSecurity = (Button) this.processSummariesGrid.getFellow("btnSecurity");
 
         this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
         this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
@@ -179,35 +170,35 @@ public class ProcessTableController extends BaseController {
                     }
                 });
 
-        this.btnAddFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                addFolder();
-            }
-        });
-
-        this.btnAddProcess.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                addProcess();
-            }
-        });
-
-        this.btnRenameFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                renameFolder();
-            }
-        });
-
-        this.btnRemoveFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                removeFolder();
-            }
-        });
-
-        this.btnSecurity.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                security();
-            }
-        });
+//        this.btnAddFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                addFolder();
+//            }
+//        });
+//
+//        this.btnAddProcess.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                addProcess();
+//            }
+//        });
+//
+//        this.btnRenameFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                renameFolder();
+//            }
+//        });
+//
+//        this.btnRemoveFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                removeFolder();
+//            }
+//        });
+//
+//        this.btnSecurity.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                security();
+//            }
+//        });
 
         /**
          * At creation of the controller, get summaries of all processes.
@@ -246,105 +237,105 @@ public class ProcessTableController extends BaseController {
         }
     }
 
-    protected void addFolder() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            this.addFolderController = new AddFolderController(mainC, 0, "");
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void addProcess() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            this.createController = new CreateProcessController(this.mainC, this.mainC.getNativeTypes());
-        } catch (SuspendNotAllowedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (InterruptedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionDomains e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve domains reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionFormats e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve formats reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionAllUsers e) {
-            String message;
-            if (e.getMessage() == null) {
-                message = "Couldn't retrieve users reference list.";
-            } else {
-                message = e.getMessage();
-            }
-            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void renameFolder() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
-
-            if (folderIds.size() == 1) {
-                int selectedFolderId = folderIds.get(0);
-                String selectedFolderName = "";
-                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
-                for (FolderType folder : availableFolders) {
-                    if (folder.getId() == selectedFolderId) {
-                        selectedFolderName = folder.getFolderName();
-                        break;
-                    }
-                }
-
-                this.addFolderController = new AddFolderController(mainC, folderIds.get(0), selectedFolderName);
-            } else if (folderIds.size() > 1) {
-                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
-            } else {
-                Messagebox.show("Please select item to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
-            }
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void removeFolder() throws Exception {
-        Messagebox.show("Are you sure you want to delete selected item(s)?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
-            public void onEvent(Event evt) throws Exception {
-                switch (((Integer) evt.getData())) {
-                    case Messagebox.YES:
-                        MainController mainController = UserSessionManager.getMainController();
-                        List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
-                        for (int folderId : folderIds) {
-                            mainController.getService().deleteFolder(folderId);
-                        }
-                        mainController.getMenu().deleteSelectedProcessVersions();
-                        mainController.loadWorkspace();
-                        break;
-                    case Messagebox.NO:
-                        break;
-                }
-            }
-        });
-    }
-
-    protected void security() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            this.securitySetupController = new SecuritySetupController(this.mainC);
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
+//    protected void addFolder() throws InterruptedException {
+//        this.mainC.eraseMessage();
+//        try {
+//            this.addFolderController = new AddFolderController(mainC, 0, "");
+//        } catch (DialogException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
+//
+//    protected void addProcess() throws InterruptedException {
+//        this.mainC.eraseMessage();
+//        try {
+//            this.createController = new CreateProcessController(this.mainC, this.mainC.getNativeTypes());
+//        } catch (SuspendNotAllowedException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (InterruptedException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (ExceptionDomains e) {
+//            String message;
+//            if (e.getMessage() == null) {
+//                message = "Couldn't retrieve domains reference list.";
+//            } else {
+//                message = e.getMessage();
+//            }
+//            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (ExceptionFormats e) {
+//            String message;
+//            if (e.getMessage() == null) {
+//                message = "Couldn't retrieve formats reference list.";
+//            } else {
+//                message = e.getMessage();
+//            }
+//            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (ExceptionAllUsers e) {
+//            String message;
+//            if (e.getMessage() == null) {
+//                message = "Couldn't retrieve users reference list.";
+//            } else {
+//                message = e.getMessage();
+//            }
+//            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
+//
+//    protected void renameFolder() throws InterruptedException {
+//        this.mainC.eraseMessage();
+//        try {
+//            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+//
+//            if (folderIds.size() == 1) {
+//                int selectedFolderId = folderIds.get(0);
+//                String selectedFolderName = "";
+//                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
+//                for (FolderType folder : availableFolders) {
+//                    if (folder.getId() == selectedFolderId) {
+//                        selectedFolderName = folder.getFolderName();
+//                        break;
+//                    }
+//                }
+//
+//                this.addFolderController = new AddFolderController(mainC, folderIds.get(0), selectedFolderName);
+//            } else if (folderIds.size() > 1) {
+//                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+//            } else {
+//                Messagebox.show("Please select item to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
+//            }
+//        } catch (DialogException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
+//
+//    protected void removeFolder() throws Exception {
+//        Messagebox.show("Are you sure you want to delete selected item(s)?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+//            public void onEvent(Event evt) throws Exception {
+//                switch (((Integer) evt.getData())) {
+//                    case Messagebox.YES:
+//                        MainController mainController = UserSessionManager.getMainController();
+//                        List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+//                        for (int folderId : folderIds) {
+//                            mainController.getService().deleteFolder(folderId);
+//                        }
+//                        mainController.getMenu().deleteSelectedProcessVersions();
+//                        mainController.loadWorkspace();
+//                        break;
+//                    case Messagebox.NO:
+//                        break;
+//                }
+//            }
+//        });
+//    }
+//
+//    protected void security() throws InterruptedException {
+//        this.mainC.eraseMessage();
+//        try {
+//            this.securitySetupController = new SecuritySetupController(this.mainC);
+//        } catch (DialogException e) {
+//            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
 
     public void emptyProcessSummaries() {
         this.processHM.clear();
