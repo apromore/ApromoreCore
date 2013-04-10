@@ -7,8 +7,8 @@ import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,7 +42,7 @@ public class ProcessBranch implements Serializable {
     private Process process;
     private ProcessModelVersion currentProcessModelVersion;
     private ProcessModelVersion sourceProcessModelVersion;
-    private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
+    private List<ProcessModelVersion> processModelVersions = new ArrayList<ProcessModelVersion>(0);
 
 
     /**
@@ -154,11 +154,11 @@ public class ProcessBranch implements Serializable {
 
     @OneToMany(mappedBy = "processBranch", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("versionNumber ASC")
-    public Set<ProcessModelVersion> getProcessModelVersions() {
+    public List<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }
 
-    public void setProcessModelVersions(final Set<ProcessModelVersion> newProcessModelVersions) {
+    public void setProcessModelVersions(final List<ProcessModelVersion> newProcessModelVersions) {
         this.processModelVersions = newProcessModelVersions;
     }
 
