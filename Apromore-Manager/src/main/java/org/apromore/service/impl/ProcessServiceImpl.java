@@ -82,7 +82,6 @@ import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.service.model.NameValuePair;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
-import org.apromore.util.VersionNameUtil;
 import org.apromore.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,7 +254,7 @@ public class ProcessServiceImpl implements ProcessService {
                 graph = converter.convert(cpf.getCpt());
                 rootFragment = decomposerSrv.decompose(graph, pmVersion);
                 if (rootFragment != null) {
-                    propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions());
+                    propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions(), versionNumber);
                 }
 
                 String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
@@ -456,11 +455,11 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public void propagateChangesWithLockRelease(final FragmentVersion originalFragment, final FragmentVersion updatedFragment,
-            final Set<FragmentVersion> composingFragments) throws RepositoryException {
+            final Set<FragmentVersion> composingFragments, final Double newVersionNumber) throws RepositoryException {
         // create new versions for all process models, which use this fragment as the root fragment, and unlock those process models.
         List<ProcessModelVersion> usedProcessModels = processModelVersionRepo.getUsedProcessModelVersions(originalFragment);
         for (ProcessModelVersion pmv : usedProcessModels) {
-            createNewProcessModelVersion(pmv, updatedFragment, composingFragments);
+            createNewProcessModelVersion(pmv, updatedFragment, composingFragments, newVersionNumber);
         }
 
         // unlock the fragment
@@ -475,7 +474,7 @@ public class ProcessServiceImpl implements ProcessService {
         List<FragmentVersion> lockedParents = fragmentVersionRepo.getLockedParentFragments(originalFragment);
 
         for (FragmentVersion parent : lockedParents) {
-            propagateToParentsWithLockRelease(parent, originalFragment, updatedFragment, composingFragments);
+            propagateToParentsWithLockRelease(parent, originalFragment, updatedFragment, composingFragments, newVersionNumber);
         }
     }
 
@@ -922,8 +921,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment,
-            FragmentVersion updatedFragment, Set<FragmentVersion> composingFragments) throws RepositoryException {
+    private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
+            Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException {
         LOGGER.info("Propagating - fragment: " + originalFragment + ", parent: " + parent);
         FragmentVersion newParent = createNewFragmentVersionByReplacingChild(parent, originalFragment, updatedFragment);
         composingFragments.add(newParent);
@@ -931,14 +930,14 @@ public class ProcessServiceImpl implements ProcessService {
 
         List<ProcessModelVersion> usedProcessModels = processModelVersionRepo.getUsedProcessModelVersions(parent);
         for (ProcessModelVersion pmv : usedProcessModels) {
-            createNewProcessModelVersion(pmv, newParent, composingFragments);
+            createNewProcessModelVersion(pmv, newParent, composingFragments, newVersionNumber);
             lService.unlockProcessModelVersion(pmv);
         }
         lService.unlockFragment(parent);
 
         List<FragmentVersion> nextLockedParents = fragmentVersionRepo.getLockedParentFragments(parent);
         for (FragmentVersion nextParent : nextLockedParents) {
-            propagateToParentsWithLockRelease(nextParent, parent, newParent, composingFragments);
+            propagateToParentsWithLockRelease(nextParent, parent, newParent, composingFragments, newVersionNumber);
         }
         LOGGER.debug("Completed propagation - fragment: " + originalFragment + ", parent: " + parent);
     }
@@ -987,12 +986,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private void createNewProcessModelVersion(ProcessModelVersion pmv, FragmentVersion rootFragment,
-            Set<FragmentVersion> composingFragments) throws RepositoryException {
+            Set<FragmentVersion> composingFragments, final Double newVersionNumber) throws RepositoryException {
         try {
-            // TODO: fix this shit....
-            Double versionNumber = pmv.getVersionNumber() + 1;
-            String versionName = VersionNameUtil.getNextVersionName(pmv.getVersionNumber());
-            ProcessModelVersion pdo = addProcessModelVersion(pmv.getProcessBranch(), rootFragment, versionNumber, 0, 0);
+            ProcessModelVersion pdo = addProcessModelVersion(pmv.getProcessBranch(), rootFragment, newVersionNumber, 0, 0);
             //ProcessDAO.addProcessFragmentMappings(pdo.getProcessModelVersionId(), composingFragmentIds);
         } catch (ExceptionDao de) {
             throw new RepositoryException(de);

@@ -152,9 +152,10 @@ public interface ProcessService {
      * @param originalFragment the original fragment id
      * @param updatedFragment the updated fragment id
      * @param composingFragments the composing fragment
+     * @param newVersionNumber the new version number of the process model version.
      */
     void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
-        Set<FragmentVersion> composingFragments) throws RepositoryException;
+        Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException;
 
 
     /**

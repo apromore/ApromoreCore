@@ -57,7 +57,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderProcessRankingHB(final ProcessSummaryType process) {
         Hbox processRankingHB = new Hbox();
-        if (process.getRanking() != null && process.getRanking().toString().compareTo("") != 0) {
+        if (process.getRanking() != null && process.getRanking().compareTo("") != 0) {
             displayRanking(processRankingHB, process.getRanking());
         }
         return wrapIntoListCell(processRankingHB);
