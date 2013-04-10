@@ -67,7 +67,7 @@ public class SimilarityServiceImpl implements SimilarityService {
         LOGGER.debug("Starting Similarity Search...");
 
         ProcessVersionsType similarProcesses = null;
-        ProcessModelVersion query = processModelVersionRepo.findProcessModelVersionByBranch(processId, branchName);
+        ProcessModelVersion query = processModelVersionRepo.getCurrentProcessModelVersion(processId, branchName);
         List<ProcessModelVersion> models = processModelVersionRepo.getLatestProcessModelVersions();
         try {
             ToolboxData data = convertModelsToCPT(models, query);

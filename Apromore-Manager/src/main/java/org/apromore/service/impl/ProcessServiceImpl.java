@@ -76,7 +76,6 @@ import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
-import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
@@ -225,74 +224,45 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see ProcessService#updateProcess(Integer, String, String, String, Double, Boolean, org.apromore.dao.model.User, String, NativeType, org.apromore.service.model.CanonisedProcess, java.io.InputStream)
+     * @see ProcessService#updateProcess
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
-            final String newBranchName, final Double versionNumber, final Boolean createNewBranch, final User user, final String lockStatus,
-            final NativeType nativeType, final CanonisedProcess cpf, final InputStream nativeXML) throws ImportException, RepositoryException {
+            final String newBranchName, final Double versionNumber, final Double originalVersionNumber, final Boolean createNewBranch,
+            final User user, final String lockStatus, final NativeType nativeType, final CanonisedProcess cpf, final InputStream nativeXML)
+            throws ImportException, RepositoryException {
         Canonical graph;
-        OperationContext netRoot;
         FragmentVersion rootFragment;
         ProcessModelVersion processModelVersion = null;
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             throw new RepositoryException("Process model " + processName + " is not locked for the updating session.");
         }
-        if (processName == null || originalBranchName == null || versionNumber == null) {
+        if (processName == null || originalBranchName == null || originalVersionNumber == null) {
             throw new RepositoryException("Process Name, Branch Name and Version Number need to be supplied to update a process model!");
         }
 
         try {
-            ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+            ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, originalVersionNumber);
             if (pmVersion != null) {
-//                if (pmVersion.size() > 1 && pmVersion.size() == cpf.getCpt().getNet().size()) {
-//                    // A process with sub processes.
-//                    for (ProcessModelVersion pmv : pmVersion) {
-//                        if (versionNumber.equals(processModelVersion.getVersionNumber())) {
-//                            LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-//                                    "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
-//                                    processModelVersion.getVersionNumber());
-//                        }
-//
-//                        NetType net = findNetTypeForPMV(cpf.getCpt().getNet(), pmv);
-//                        if (net != null || net.getNode().size() > 0) {
-//                            graph = converter.convert(createNet(cpf, net));
-//                            netRoot = decomposerSrv.decompose(graph, processModelVersion);
-//                            if (netRoot != null) {
-//                                propagateChangesWithLockRelease(processModelVersion.getRootFragmentVersion(), netRoot.getCurrentFragment(),
-//                                        netRoot.getFragmentVersions());
-//                            }
-//                        }
-//                    }
-//
-//                } else {
-                    // A process without sub processes.
-//                    processModelVersion = findRootProcessModelVersion(pmVersion);
-                    if (versionNumber.equals(pmVersion.getVersionNumber())) {
-                        LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-                                "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
-                                pmVersion.getVersionNumber());
-                    }
+                if (versionNumber.equals(pmVersion.getVersionNumber())) {
+                    LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
+                            "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
+                            pmVersion.getVersionNumber());
+                }
 
-                    for (NetType net : cpf.getCpt().getNet()) {
-                        if (net.getNode() != null || net.getNode().size() > 0) {
-                            graph = converter.convert(createNet(cpf, net));
-                            rootFragment = decomposerSrv.decompose(graph, processModelVersion);
-                            if (rootFragment != null) {
-                                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions());
-                            }
-                        }
-                    }
+                graph = converter.convert(cpf.getCpt());
+                rootFragment = decomposerSrv.decompose(graph, pmVersion);
+                if (rootFragment != null) {
+                    propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions());
+                }
 
-                    String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
-                    formatSrv.storeNative(processName, processModelVersion, nativeXML, now, now, user, nativeType, versionNumber.toString(), cpf);
-//                }
+                String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+                formatSrv.storeNative(processName, pmVersion, nativeXML, now, now, user, nativeType, versionNumber.toString(), cpf);
             } else {
                 LOGGER.error("unable to find the Process Model to update.");
             }
-
 
         } catch (RepositoryException | JAXBException e) {
             throw new RepositoryException("Failed to Update process model.", e);

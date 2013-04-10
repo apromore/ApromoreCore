@@ -334,11 +334,11 @@
                         </goals>
                         <configuration>
                             <check>
-                                <classRatio>10</classRatio>
+                                <classRatio>0</classRatio>
                                 <instructionRatio>0</instructionRatio>
-                                <methodRatio>10</methodRatio>
+                                <methodRatio>0</methodRatio>
                                 <branchRatio>0</branchRatio>
-                                <complexityRatio>5</complexityRatio>
+                                <complexityRatio>0</complexityRatio>
                                 <lineRatio>0</lineRatio>
                             </check>
                         </configuration>

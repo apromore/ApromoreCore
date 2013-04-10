@@ -28,11 +28,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
-@Table(name = "native",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"processModelVersionId", "nat_type"})
-        }
-)
+@Table(name = "native")
 @Configurable("native")
 @Cacheable(true)
 @Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000 ,alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)

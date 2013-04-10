@@ -4,19 +4,20 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apromore.canoniser.Canoniser;
+import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.manager.client.ManagerServiceClient;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
-import org.zkoss.zul.*;
-import org.apromore.portal.common.UserSessionManager;
-
-import javax.activation.DataHandler;
 
 public class SaveAsDialogController extends BaseController {
 
@@ -36,6 +37,7 @@ public class SaveAsDialogController extends BaseController {
     private boolean save;
     private boolean createNewBranch;
     private String modelData;
+    private Double originalVersionNumber;
 
     public SaveAsDialogController(MainController mainC, ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
@@ -49,6 +51,7 @@ public class SaveAsDialogController extends BaseController {
         this.createNewBranch = false;
         this.saveAsW = (Window) Executions.createComponents("SaveAsDialog.zul", null, null);
         this.modelData = data;
+        this.originalVersionNumber = this.editSession.getVersionNumber();
         if (isNormalSave) {
             this.saveAsW.setTitle("Save");
         } else {
@@ -93,7 +96,7 @@ public class SaveAsDialogController extends BaseController {
         if (isNormalSave) {
             this.modelName.setReadonly(true);
             this.branchName.setText(this.editSession.getOriginalBranchName());
-            this.versionNumber.setText(this.editSession.getVersionNumber().toString());
+            this.versionNumber.setText(Double.toString(this.editSession.getVersionNumber() + 0.1));
         } else {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
@@ -137,13 +140,13 @@ public class SaveAsDialogController extends BaseController {
                             Messagebox.OK, Messagebox.INFORMATION);
                 } else {
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, process.getName(),
-                            editSession.getOriginalBranchName(), branch, editSession.getVersionNumber(), createNewBranch, versionName, is);
+                            editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, createNewBranch, versionName, is);
                     Messagebox.show("Saved as : Branch Name : " + branch, "Save Outcome", Messagebox.OK, Messagebox.INFORMATION);
                 }
                 closePopup();
             }
         } catch (Exception e) {
-            Messagebox.show("Unable to Save Model : Error : /n " + e.getMessage());
+            Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
         }
     }
 

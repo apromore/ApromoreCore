@@ -85,7 +85,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp, stream.getInputStream());
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp, stream.getInputStream());
         em.flush();
 
         // Delete Process
