@@ -152,29 +152,43 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                             Set<TwoVertices> set = tmap.get(firstkey);
                             TreeMultimap<String, TwoVertices> tmapp = TreeMultimap.create();
 
+                            String label1;
+                            String tmpLabel;
                             TreeMultiset<String> mset = TreeMultiset.create();
                             for (TwoVertices pair: set) {
-                                String label1 = sg1.getVertexLabel(pair.v1);
+                                label1 = sg1.getVertexLabel(pair.v1);
                                 mset.clear();
                                 for (Vertex n: sg1.getPreset(pair.v1)) {
-                                    mset.add(sg1.getVertexLabel(n.getID()));
+                                    tmpLabel = sg1.getVertexLabel(n.getID());
+                                    if (tmpLabel != null) {
+                                        mset.add(tmpLabel);
+                                    }
                                 }
                                 label1 += mset.toString();
                                 mset.clear();
                                 for (Vertex n: sg1.getPostset(pair.v1)) {
-                                    mset.add(sg1.getVertexLabel(n.getID()));
+                                    tmpLabel = sg1.getVertexLabel(n.getID());
+                                    if (tmpLabel != null) {
+                                        mset.add(tmpLabel);
+                                    }
                                 }
                                 label1 += mset.toString();
 
                                 String label2 = sg2.getVertexLabel(pair.v2);
                                 mset.clear();
                                 for (Vertex n: sg2.getPreset(pair.v2)) {
-                                    mset.add(sg2.getVertexLabel(n.getID()));
+                                    tmpLabel = sg2.getVertexLabel(n.getID());
+                                    if (tmpLabel != null) {
+                                        mset.add(tmpLabel);
+                                    }
                                 }
                                 label2 += mset.toString();
                                 mset.clear();
                                 for (Vertex n: sg2.getPostset(pair.v2)) {
-                                    mset.add(sg2.getVertexLabel(n.getID()));
+                                    tmpLabel = sg2.getVertexLabel(n.getID());
+                                    if (tmpLabel != null) {
+                                        mset.add(tmpLabel);
+                                    }
                                 }
                                 label2 += mset.toString();
 

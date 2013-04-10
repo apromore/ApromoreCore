@@ -103,7 +103,6 @@ CREATE TABLE `native` (
     `nat_type` int(11) DEFAULT NULL,
     `processModelVersionId` int(11) NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `un_native` (`processModelVersionId` , `nat_type`),
     CONSTRAINT `fk_native` FOREIGN KEY (`nat_type`)
         REFERENCES `native_type` (`id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
