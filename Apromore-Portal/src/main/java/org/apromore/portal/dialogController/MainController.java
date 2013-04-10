@@ -109,11 +109,11 @@ public class MainController extends BaseController {
             this.header = new HeaderController(this);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
+            this.navigation = new NavigationController(this);
             //this.workspaceOptionsController = new WorkspaceOptionsController(this);
 
             switchToProcessSummaryView();
-            this.navigation = new NavigationController(this);
-            loadWorkspace();
+            //loadWorkspace();
 
             this.searchHistory = new ArrayList<SearchHistoriesType>();
             this.msgWhenClose = null;
@@ -156,7 +156,7 @@ public class MainController extends BaseController {
 //    }
 
     public void loadWorkspace() {
-        updateActions();
+//        updateActions();
         String userId = UserSessionManager.getCurrentUser().getId();
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
@@ -184,35 +184,35 @@ public class MainController extends BaseController {
         UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
     }
-
-    public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
-        String content = "<ul class='workspace'>";
-
-        for (FolderType folder : folders) {
-            int access = 1;
-            if (folder.isHasWrite()) {
-                access = 2;
-            }
-            if (folder.isHasOwnership()) {
-                access = 4;
-            }
-            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
-        }
-
-        for (ProcessSummaryType process : processes) {
-            int access = 1;
-            if (process.isHasWrite()) {
-                access = 2;
-            }
-            if (process.isHasOwnership()) {
-                access = 4;
-            }
-            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
-        }
-
-        content += "</ul>";
-        html.setContent(content);
-    }
+//
+//    public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
+//        String content = "<ul class='workspace'>";
+//
+//        for (FolderType folder : folders) {
+//            int access = 1;
+//            if (folder.isHasWrite()) {
+//                access = 2;
+//            }
+//            if (folder.isHasOwnership()) {
+//                access = 4;
+//            }
+//            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
+//        }
+//
+//        for (ProcessSummaryType process : processes) {
+//            int access = 1;
+//            if (process.isHasWrite()) {
+//                access = 2;
+//            }
+//            if (process.isHasOwnership()) {
+//                access = 4;
+//            }
+//            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
+//        }
+//
+//        content += "</ul>";
+//        html.setContent(content);
+//    }
 
     /**
      * register an event listener for the clientInfo event (to prevent user to close the browser window)
@@ -286,17 +286,19 @@ public class MainController extends BaseController {
         this.displayMessage(processSummaries.getProcessSummary().size() + message);
         this.simplesearch.clearSearches();
         this.displayProcessSummaries(processSummaries, false, null, null);
+
+        loadWorkspace();
     }
 
-    /**
-     * reset displayed informations: - short message - process summaries -
-     * simple search
-     * @throws Exception
-     */
-    public void resetUserInformation() throws Exception {
-        eraseMessage();
-        this.simplesearch.clearSearches();
-    }
+//    /**
+//     * reset displayed informations: - short message - process summaries -
+//     * simple search
+//     * @throws Exception
+//     */
+//    public void resetUserInformation() throws Exception {
+//        eraseMessage();
+//        this.simplesearch.clearSearches();
+//    }
 
     /**
      * Forward to the controller ProcessTableController the request to add the
@@ -306,7 +308,7 @@ public class MainController extends BaseController {
         switchToProcessSummaryView();
         ((ProcessListboxController) this.baseListboxController).displayNewProcess(returnedProcess);
         this.displayMessage(this.baseListboxController.getListModel().getSize() + " processes.");
-        loadWorkspace();
+        //loadWorkspace();
     }
 
     /**

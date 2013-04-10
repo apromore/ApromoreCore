@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -152,6 +153,7 @@ public class ProcessBranch implements Serializable {
     }
 
     @OneToMany(mappedBy = "processBranch", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("versionNumber ASC")
     public Set<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
     }
