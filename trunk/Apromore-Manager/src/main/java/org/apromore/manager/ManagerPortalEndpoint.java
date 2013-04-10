@@ -493,8 +493,8 @@ public class ManagerPortalEndpoint {
             CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
-                    editType.getVersionNumber(), editType.isCreateNewBranch(), secSrv.getUserByName(editType.getUsername()), Constants.LOCKED,
-                    natType, canonisedProcess, native_is);
+                    editType.getVersionNumber(), editType.getOriginalVersionNumber(), editType.isCreateNewBranch(),
+                    secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess, native_is);
 
             result.setCode(0);
             result.setMessage("");

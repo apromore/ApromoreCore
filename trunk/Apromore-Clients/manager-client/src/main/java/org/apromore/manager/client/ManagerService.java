@@ -325,6 +325,7 @@ public interface ManagerService {
      * @param originalBranchName the originalBranchName.
      * @param newBranchName the originalBranchName.
      * @param versionNumber the versionNumber.
+     * @param originalVersionNumber the original version number of the model.
      * @param createNewBranch are we forcing a new branch.
      * @param preVersion the process current version.
      * @param native_is the actual input stream of the model.
@@ -332,8 +333,8 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
-            String originalBranchName, String newBranchName, Double versionNumber, Boolean createNewBranch, String preVersion, InputStream native_is)
-            throws IOException, Exception;
+            String originalBranchName, String newBranchName, Double versionNumber, Double originalVersionNumber, Boolean createNewBranch,
+            String preVersion, InputStream native_is) throws IOException, Exception;
 
     /**
      * Write the modified processes which are in processVersions. For each of which, preNewVersion gives the mapping between its previous and new

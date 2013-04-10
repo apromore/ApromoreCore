@@ -306,6 +306,7 @@
         <xs:attribute name="processId" type="xs:int" />
         <xs:attribute name="processName" type="xs:string" />
         <xs:attribute name="versionNumber" type="xs:double" />
+        <xs:attribute name="originalVersionNumber" type="xs:double" />
         <xs:attribute name="originalBranchName" type="xs:string" />
         <xs:attribute name="newBranchName" type="xs:string" />
         <xs:attribute name="createNewBranch" type="xs:boolean" />
