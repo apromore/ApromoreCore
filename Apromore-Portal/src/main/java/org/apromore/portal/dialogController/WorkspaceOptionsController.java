@@ -41,11 +41,11 @@ public class WorkspaceOptionsController extends Menubar {
 //        this.btnSecurity = (Button) options.getFellow("btnSecurity");
 //        this.btnListView = (Button) options.getFellow("btnListView");
 
-        this.btnAddFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                addFolder();
-            }
-        });
+//        this.btnAddFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                addFolder();
+//            }
+//        });
 
 //        this.btnListView.addEventListener("onClick", new EventListener() {
 //            public void onEvent(Event event) throws Exception {
@@ -53,29 +53,29 @@ public class WorkspaceOptionsController extends Menubar {
 //            }
 //        });
 
-        this.btnAddProcess.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                addProcess();
-            }
-        });
-
-        this.btnRenameFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                renameFolder();
-            }
-        });
-
-        this.btnRemoveFolder.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                removeFolder();
-            }
-        });
-
-        this.btnSecurity.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
-                security();
-            }
-        });
+//        this.btnAddProcess.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                addProcess();
+//            }
+//        });
+//
+//        this.btnRenameFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                renameFolder();
+//            }
+//        });
+//
+//        this.btnRemoveFolder.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                removeFolder();
+//            }
+//        });
+//
+//        this.btnSecurity.addEventListener("onClick", new EventListener() {
+//            public void onEvent(Event event) throws Exception {
+//                security();
+//            }
+//        });
     }
 
 //    protected void showList() {
