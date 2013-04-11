@@ -290,16 +290,16 @@ public class FragmentUtil {
         return fs.toString();
     }
 
-    public static void removeNodes(final FragmentNode canoncial, final FragmentNode cf) {
+    public static void removeNodes(final FragmentNode canonical, final FragmentNode cf) {
         List<CPFNode> toBeRemoved = new ArrayList<CPFNode>();
-        for (CPFNode pn : canoncial.getNodes()) {
+        for (CPFNode pn : canonical.getNodes()) {
             for (CPFNode cn : cf.getNodes()) {
                 if (pn.getId().equals(cn.getId())) {
                     toBeRemoved.add(pn);
                 }
             }
         }
-        canoncial.removeNodes(toBeRemoved);
+        canonical.removeNodes(toBeRemoved);
     }
 
 }

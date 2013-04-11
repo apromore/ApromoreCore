@@ -19,7 +19,7 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Integer>
     /**
      * Find the annotation record by it's native uri id.
      * @param nativeUri the native uri
-     * @return the annotation, a list of them for all the different canoncials.
+     * @return the annotation, a list of them for all the different canonicals.
      */
     @Query("SELECT a FROM Annotation a WHERE a.natve.id = ?1")
     List<Annotation> findByUri(final Integer nativeUri);

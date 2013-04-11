@@ -119,7 +119,7 @@ public class CanoniserServiceImpl implements CanoniserService {
                 cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
                 cp.setAnt(anfList.get(0));
 
-                CPFSchema.marshalCanoncialFormat(cpfXml, cpfList.get(0), false);
+                CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
                 cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
                 cp.setCpt(cpfList.get(0));
 
@@ -173,7 +173,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     public String CPFtoString(final CanonicalProcessType cpt) throws JAXBException {
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         try {
-            CPFSchema.marshalCanoncialFormat(xml, cpt, false);
+            CPFSchema.marshalCanonicalFormat(xml, cpt, false);
         } catch (SAXException e) {
             throw new JAXBException(e);
         }
