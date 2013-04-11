@@ -646,7 +646,7 @@ public class CanoniserServiceImplIntgTest {
     private void saveCanonisedProcess(final CanonisedProcess canonisedProcess, final String fileName) throws PropertyException, JAXBException,
             SAXException, IOException {
         try (FileOutputStream fileOutputStream = new FileOutputStream("target/" + fileName)) {
-            CPFSchema.marshalCanoncialFormat(fileOutputStream, canonisedProcess.getCpt(), true);
+            CPFSchema.marshalCanonicalFormat(fileOutputStream, canonisedProcess.getCpt(), true);
             fileOutputStream.flush();
         }
     }

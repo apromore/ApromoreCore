@@ -68,7 +68,7 @@ public final class TestUtils {
     public static void printCpf(final CanonicalProcessType cpf, final OutputStream outputStream) throws JAXBException, SAXException, IOException {
         BufferedOutputStream canonicalFormat = new BufferedOutputStream(outputStream, BUFFER_SIZE);
         try {
-            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpf, true);
+            CPFSchema.marshalCanonicalFormat(canonicalFormat, cpf, true);
         } finally {
             canonicalFormat.close();
         }

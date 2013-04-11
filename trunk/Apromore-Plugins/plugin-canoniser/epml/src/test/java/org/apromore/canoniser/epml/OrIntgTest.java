@@ -34,7 +34,7 @@ public class OrIntgTest {
         assertFalse(cpfList.isEmpty());
 
         try (FileOutputStream canonicalFormat = new FileOutputStream("target/or.cpf")) {
-            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+            CPFSchema.marshalCanonicalFormat(canonicalFormat, cpfList.get(0), true);
         }
     }
 

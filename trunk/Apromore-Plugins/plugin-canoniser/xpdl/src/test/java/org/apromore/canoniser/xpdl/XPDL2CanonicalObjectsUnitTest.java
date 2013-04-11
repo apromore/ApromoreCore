@@ -39,7 +39,7 @@ public class XPDL2CanonicalObjectsUnitTest {
 
         CanonicalProcessType cpt = x2c.getCpf();
         //TODO produce valid CPF
-        CPFSchema.marshalCanoncialFormat(System.out, cpt, false);
+        CPFSchema.marshalCanonicalFormat(System.out, cpt, false);
     }
 
     /* The model that has objects we want to convert. */

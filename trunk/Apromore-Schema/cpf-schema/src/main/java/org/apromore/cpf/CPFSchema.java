@@ -98,7 +98,7 @@ public class CPFSchema {
      * @throws PropertyException
      * @throws SAXException
      */
-    public static void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
+    public static void marshalCanonicalFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
         final JAXBContext context = JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

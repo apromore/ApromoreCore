@@ -51,56 +51,56 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         final CanonicalProcessType cpf = getContext().getCanonicalResult();
         final AnnotationsType anf = getContext().getAnnotationResult();
 
-        final NetType canoncialNet = createNet();
-        cpf.getNet().add(canoncialNet);
+        final NetType canonicalNet = createNet();
+        cpf.getNet().add(canonicalNet);
 
         final LayoutNetFactsType netLayout = getContext().getLayoutForNet(getObject().getId());
         if (netLayout != null) {
             anf.getAnnotation().add(convertGraphics(netLayout));
         }
         if (getObject().getDocumentation() != null) {
-            anf.getAnnotation().add(convertDocumentation(canoncialNet, getObject().getDocumentation()));
+            anf.getAnnotation().add(convertDocumentation(canonicalNet, getObject().getDocumentation()));
         }
 
         // Set rootId of parent if this is the RootNet
         if (getObject().isIsRootNet() != null && getObject().isIsRootNet()) {
-            getConvertedParent().getRootIds().add(canoncialNet.getId());
+            getConvertedParent().getRootIds().add(canonicalNet.getId());
         }
 
         // First convert data as it is referenced by Tasks
-        convertNetData(canoncialNet, getObject());
+        convertNetData(canonicalNet, getObject());
 
         final ProcessControlElements processControlElements = getObject().getProcessControlElements();
 
         // Convert Input Condition
         final ExternalConditionFactsType inputCondition = processControlElements.getInputCondition();
-        getContext().createHandler(inputCondition, canoncialNet, getObject()).convert();
+        getContext().createHandler(inputCondition, canonicalNet, getObject()).convert();
 
         // Convert Net Elements
         for (final ExternalNetElementFactsType element : processControlElements.getTaskOrCondition()) {
-            getContext().createHandler(element, canoncialNet, getObject()).convert();
+            getContext().createHandler(element, canonicalNet, getObject()).convert();
         }
 
         // Convert Output Condition
         final OutputConditionFactsType outputCondition = processControlElements.getOutputCondition();
-        getContext().createHandler(outputCondition, canoncialNet, getObject()).convert();
+        getContext().createHandler(outputCondition, canonicalNet, getObject()).convert();
     }
 
-    private void convertNetData(final NetType canoncialNet, final NetFactsType netDecomposition) throws CanoniserException {
+    private void convertNetData(final NetType canonicalNet, final NetFactsType netDecomposition) throws CanoniserException {
         for (final VariableBaseType var : netDecomposition.getLocalVariable()) {
-            getContext().createHandler(var, canoncialNet, netDecomposition).convert();
+            getContext().createHandler(var, canonicalNet, netDecomposition).convert();
         }
         for (final InputParameterFactsType param : netDecomposition.getInputParam()) {
-            getContext().createHandler(param, canoncialNet, getObject()).convert();
+            getContext().createHandler(param, canonicalNet, getObject()).convert();
         }
         for (final OutputParameterFactsType param : netDecomposition.getOutputParam()) {
-            getContext().createHandler(param, canoncialNet, getObject()).convert();
+            getContext().createHandler(param, canonicalNet, getObject()).convert();
         }
     }
 
-    private DocumentationType convertDocumentation(final NetType canoncialNet, final String documentation) throws CanoniserException {
+    private DocumentationType convertDocumentation(final NetType canonicalNet, final String documentation) throws CanoniserException {
         final DocumentationType d = ANF_FACTORY.createDocumentationType();
-        d.setCpfId(generateUUID(NET_ID_PREFIX, canoncialNet.getId()));
+        d.setCpfId(generateUUID(NET_ID_PREFIX, canonicalNet.getId()));
         d.setId(generateUUID());
         d.getAny().add(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.DOCUMENTATION, documentation, String.class));
         return d;

@@ -72,8 +72,8 @@ public class ArisCanoniserTest {
         canoniser.canonise(new FileInputStream(new File(AML_DIRECTORY, "GI - Building Blocks - ClaimCenter.xml")), anfList, cpfList, request);
 
         assertEquals(1, cpfList.size());
-        CPFSchema.marshalCanoncialFormat(new FileOutputStream(new File(OUTPUT_DIRECTORY, "GI.cpf")), cpfList.get(0), false);
-        CPFSchema.marshalCanoncialFormat(new NullOutputStream(), cpfList.get(0), true);
+        CPFSchema.marshalCanonicalFormat(new FileOutputStream(new File(OUTPUT_DIRECTORY, "GI.cpf")), cpfList.get(0), false);
+        CPFSchema.marshalCanonicalFormat(new NullOutputStream(), cpfList.get(0), true);
     }
 
     /** Exercise the {@link ArisCanoniser#canonise} method. */
@@ -94,9 +94,9 @@ public class ArisCanoniserTest {
         canoniser.canonise(new FileInputStream(new File(AML_DIRECTORY, "Model.gp2---10----u--.xml")), anfList, cpfList, request);
 
         assertEquals(1, cpfList.size());
-        CPFSchema.marshalCanoncialFormat(new FileOutputStream(new File(OUTPUT_DIRECTORY, "gp2.cpf")), cpfList.get(0), false);
+        CPFSchema.marshalCanonicalFormat(new FileOutputStream(new File(OUTPUT_DIRECTORY, "gp2.cpf")), cpfList.get(0), false);
         ANFSchema.marshalAnnotationFormat(new FileOutputStream(new File(OUTPUT_DIRECTORY, "gp2.anf")), anfList.get(0), false);
-        CPFSchema.marshalCanoncialFormat(new NullOutputStream(), cpfList.get(0), true);
+        CPFSchema.marshalCanonicalFormat(new NullOutputStream(), cpfList.get(0), true);
         ANFSchema.marshalAnnotationFormat(new NullOutputStream(), anfList.get(0), true);
     }
 }
