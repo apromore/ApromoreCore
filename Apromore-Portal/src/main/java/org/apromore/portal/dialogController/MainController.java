@@ -156,7 +156,7 @@ public class MainController extends BaseController {
 //    }
 
     public void loadWorkspace() {
-//        updateActions();
+        updateActions();
         String userId = UserSessionManager.getCurrentUser().getId();
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
@@ -184,7 +184,7 @@ public class MainController extends BaseController {
         UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
     }
-//
+
 //    public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
 //        String content = "<ul class='workspace'>";
 //
@@ -245,6 +245,7 @@ public class MainController extends BaseController {
         Boolean connected = UserSessionManager.getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
+        @SuppressWarnings("unchecked")
         Iterator<Component> itC = (Iterator<Component>) this.menu.getMenuB().getFellows().iterator();
         while (itC.hasNext()) {
             Component C = itC.next();
@@ -290,15 +291,15 @@ public class MainController extends BaseController {
         loadWorkspace();
     }
 
-//    /**
-//     * reset displayed informations: - short message - process summaries -
-//     * simple search
-//     * @throws Exception
-//     */
-//    public void resetUserInformation() throws Exception {
-//        eraseMessage();
-//        this.simplesearch.clearSearches();
-//    }
+    /**
+     * reset displayed informations: - short message - process summaries -
+     * simple search
+     * @throws Exception
+     */
+    public void resetUserInformation() throws Exception {
+        eraseMessage();
+        this.simplesearch.clearSearches();
+    }
 
     /**
      * Forward to the controller ProcessTableController the request to add the
