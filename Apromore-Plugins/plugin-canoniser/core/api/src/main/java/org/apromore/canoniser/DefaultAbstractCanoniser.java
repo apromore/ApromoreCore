@@ -56,8 +56,8 @@ public abstract class DefaultAbstractCanoniser extends DefaultParameterAwarePlug
      * @throws JAXBException
      * @throws SAXException
      */
-    protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException, SAXException {
-        CPFSchema.marshalCanoncialFormat(canonicalFormat, cpf, true);
+    protected void marshalCanonicalFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException, SAXException {
+        CPFSchema.marshalCanonicalFormat(canonicalFormat, cpf, true);
     }
 
     /**

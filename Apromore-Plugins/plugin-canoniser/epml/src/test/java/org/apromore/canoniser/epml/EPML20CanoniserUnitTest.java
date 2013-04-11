@@ -50,7 +50,7 @@ public class EPML20CanoniserUnitTest {
         assertFalse(cpfList.isEmpty());
 
         try (FileOutputStream canonicalFormat = new FileOutputStream("target/Basic.cpf")) {
-            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+            CPFSchema.marshalCanonicalFormat(canonicalFormat, cpfList.get(0), true);
         }
     }
 

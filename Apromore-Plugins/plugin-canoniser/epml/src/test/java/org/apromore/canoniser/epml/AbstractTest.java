@@ -41,11 +41,11 @@ public class AbstractTest {
              FileOutputStream anfOut = new FileOutputStream("target/" + resource + ".epml.anf")) {
 
             // Unvalidated write to the target directory           
-            CPFSchema.marshalCanoncialFormat(cpfOut, cpfList.get(0), false);
+            CPFSchema.marshalCanonicalFormat(cpfOut, cpfList.get(0), false);
             ANFSchema.marshalAnnotationFormat(anfOut, anfList.get(0), false);
 
             // Validation pass
-            CPFSchema.marshalCanoncialFormat(new NullOutputStream(), cpfList.get(0), true);
+            CPFSchema.marshalCanonicalFormat(new NullOutputStream(), cpfList.get(0), true);
             ANFSchema.marshalAnnotationFormat(new NullOutputStream(), anfList.get(0), true);
         }
     }

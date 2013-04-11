@@ -35,7 +35,7 @@ public class ObjectIntgTest {
         assertFalse(cpfList.isEmpty());
 
         try (FileOutputStream canonicalFormat = new FileOutputStream("target/object.cpf")) {
-            CPFSchema.marshalCanoncialFormat(canonicalFormat, cpfList.get(0), true);
+            CPFSchema.marshalCanonicalFormat(canonicalFormat, cpfList.get(0), true);
         }
     }
 
