@@ -108,7 +108,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
                             mainC.reloadProcessSummaries();
                             loadWorkspace(html, availableFolders, availableProcesses);
-                            Clients.evalJavaScript("bindTiles();");
+                            //Clients.evalJavaScript("bindTiles();");
                         }
                     }
                 }

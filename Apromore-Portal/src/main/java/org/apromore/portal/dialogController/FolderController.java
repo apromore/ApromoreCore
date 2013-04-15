@@ -19,11 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Igor
- * Date: 2/07/12
- * Time: 5:08 PM
- * To change this template use File | Settings | File Templates.
+ * handles the navigation and movement around in folders.
+ *
+ * @author Igor
  */
 public class FolderController extends GenericForwardComposer {
 
@@ -156,7 +154,7 @@ public class FolderController extends GenericForwardComposer {
 
                     UserSessionManager.getMainController().reloadProcessSummaries();
                     loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
-                    Clients.evalJavaScript("bindTiles();");
+                    //Clients.evalJavaScript("bindTiles();");
                 }
             }
         } catch (Exception ex) {
