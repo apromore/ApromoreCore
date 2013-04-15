@@ -55,7 +55,7 @@ public class MenuController extends Menubar {
         Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
 
         Menu designM = (Menu) this.menuB.getFellow("design");
-        this.mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
+        mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
         //Menu presentationM = (Menu) this.menuB.getFellow("presentation");
 
         createMI.addEventListener("onClick", new EventListener() {
@@ -106,7 +106,7 @@ public class MenuController extends Menubar {
                 clusterSimilarProcesses();
             }
         });
-        this.mergeMI.addEventListener("onClick", new EventListener() {
+        mergeMI.addEventListener("onClick", new EventListener() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 mergeSelectedProcessVersions();

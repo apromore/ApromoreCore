@@ -2,6 +2,7 @@ package org.apromore.portal.dialogController;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.manager.client.ManagerServiceClient;
@@ -96,7 +97,7 @@ public class SaveAsDialogController extends BaseController {
         if (isNormalSave) {
             this.modelName.setReadonly(true);
             this.branchName.setText(this.editSession.getOriginalBranchName());
-            this.versionNumber.setText(Double.toString(this.editSession.getVersionNumber() + 0.1));
+            this.versionNumber.setText(BigDecimal.valueOf(this.editSession.getVersionNumber() + 0.1).toString());
         } else {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
@@ -148,6 +149,8 @@ public class SaveAsDialogController extends BaseController {
         } catch (Exception e) {
             Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
         }
+
+        this.mainC.reloadProcessSummaries();
     }
 
 
