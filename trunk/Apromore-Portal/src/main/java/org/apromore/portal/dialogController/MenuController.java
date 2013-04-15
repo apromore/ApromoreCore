@@ -291,30 +291,28 @@ public class MenuController extends Menubar {
      * name belong to l are selected.
      * @return HashMap
      */
+    @SuppressWarnings("unchecked")
     private HashMap<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() {
         this.mainC.eraseMessage();
 
         if (this.mainC.getBaseListboxController() instanceof ProcessListboxController) {
-            Set selectedProcesses = this.mainC.getBaseListboxController().getListModel().getSelection();
-
+            ArrayList<VersionSummaryType> versionList;
             HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
 
-            ProcessVersionDetailController detailController = ((ProcessVersionDetailController) this.mainC.getDetailListbox());
-            VersionSummaryType selectedVersion = detailController.getSelectedVersion();
-
-            for (Object obj : selectedProcesses) {
-                ProcessSummaryType selectedProcess = (ProcessSummaryType) obj;
-                ArrayList<VersionSummaryType> versionList = new ArrayList<VersionSummaryType>();
+            VersionSummaryType selectedVersion = ((ProcessVersionDetailController) this.mainC.getDetailListbox()).getSelectedVersion();
+            Set<ProcessSummaryType> selectedProcesses = (Set<ProcessSummaryType>) this.mainC.getBaseListboxController().getListModel().getSelection();
+            for (ProcessSummaryType obj : selectedProcesses) {
+                versionList = new ArrayList<VersionSummaryType>();
                 if (selectedVersion != null) {
                     versionList.add(selectedVersion);
                 } else {
-                    for (VersionSummaryType summaryType : selectedProcess.getVersionSummaries()) {
-                        if (summaryType.getName().equals(selectedProcess.getLastVersion())) {
+                    for (VersionSummaryType summaryType : obj.getVersionSummaries()) {
+                        if (summaryType.getName().equals(obj.getLastVersion())) {
                             versionList.add(summaryType);
                         }
                     }
                 }
-                processVersions.put(selectedProcess, versionList);
+                processVersions.put(obj, versionList);
             }
 
             return processVersions;

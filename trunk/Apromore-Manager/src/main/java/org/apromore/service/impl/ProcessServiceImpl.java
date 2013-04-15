@@ -94,7 +94,7 @@ import org.w3c.dom.Element;
 import org.wfmc._2008.xpdl2.PackageType;
 
 /**
- * Implementation of the UserService Contract.
+ * Implementation of the ProcessService Contract.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
@@ -213,7 +213,7 @@ public class ProcessServiceImpl implements ProcessService {
             Process process = insertProcess(processName, user, nativeType, domain);
             pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf);
             formatSrv.storeNative(processName, pmv, nativeXml, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
-        } catch (UserNotFoundException | JAXBException| ImportException e) {
+        } catch (UserNotFoundException | JAXBException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
@@ -258,6 +258,7 @@ public class ProcessServiceImpl implements ProcessService {
                 }
 
                 String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+                pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
                 formatSrv.storeNative(processName, pmVersion, nativeXML, now, now, user, nativeType, versionNumber.toString(), cpf);
             } else {
                 LOGGER.error("unable to find the Process Model to update.");
@@ -280,7 +281,7 @@ public class ProcessServiceImpl implements ProcessService {
             final String format, final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
             throws ExportFormatException {
         try {
-            CanonicalProcessType cpt = getCurrentProcessModel(name, branch, false);
+            CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
 
             // TODO XML model of web service should not already be used here, but in ManagerEndpoint
             ExportFormatResultType exportResult = new ExportFormatResultType();
@@ -292,8 +293,12 @@ public class ProcessServiceImpl implements ProcessService {
                 DecanonisedProcess dp;
                 if (withAnn) {
                     String annotation = annotationRepo.getAnnotation(processId, branch, version, annName).getContent();
-                    AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayDataSource(annotation, "text/xml").getInputStream(), false).getValue();
-                    dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
+                    if (annotation != null || !annotation.equals("")) {
+                        AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayDataSource(annotation, "text/xml").getInputStream(), false).getValue();
+                        dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
+                    } else {
+                        dp = canoniserSrv.deCanonise(processId, branch, format, cpt, null, canoniserProperties);
+                    }
                 } else {
                     dp = canoniserSrv.deCanonise(processId, branch, format, cpt, null, canoniserProperties);
                 }
@@ -441,6 +446,29 @@ public class ProcessServiceImpl implements ProcessService {
         return getCanonicalFormat(pmv, processName, branchName, lock);
     }
 
+    /**
+     * @see ProcessService#getProcessModelVersion(Integer, String, String, Double, boolean)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName, final Double version,
+            final boolean lock) throws LockFailedException {
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version);
+
+        if (pmv == null) {
+            return null;
+        }
+        if (lock) {
+            boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());
+            if (!locked) {
+                throw new LockFailedException();
+            }
+        }
+
+        return getCanonicalFormat(pmv, processName, branchName, lock);
+    }
+
 
     /**
      * Creates new versions for all ascendant fragments of originalFragment by
@@ -532,8 +560,6 @@ public class ProcessServiceImpl implements ProcessService {
         Canonical can;
         FragmentVersion rootFragment;
         ProcessModelVersion pmv;
-//        OperationContext netRoot = new OperationContext();
-//        Map<String, ProcessModelVersion> models = new HashMap<String, ProcessModelVersion>(0);
         try {
             LOGGER.info("Starting to process: " + cpf.getCpt().getUri() + " - " + cpf.getCpt().getName());
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
@@ -546,24 +572,6 @@ public class ProcessServiceImpl implements ProcessService {
             } else {
                 throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
             }
-
-
-            /* This is for Sub processes, doesn't seem to work correctly just yet. */
-//            for (NetType net : cpf.getCpt().getNet()) {
-//                if (net.getNode() != null || net.getNode().size() > 0) {
-//                    LOGGER.info("Starting to process Net: " + net.getId() + " - " + net.getName());
-//
-//                    can = converter.convert(createNet(cpf, net));
-//                    pmv = createProcessModelVersion(process, branch, versionNumber, can, net.getId());
-//                    netRoot = decomposerSrv.decompose(can, pmv);
-//                    if (netRoot != null) {
-//                        pmv.setRootFragmentVersion(netRoot.getCurrentFragment());
-//                        models.put(net.getId(), pmv);
-//                    }
-//                }
-//            }
-//            createSubProcessReferences(cpf, models);
-//            createRootProcessReferences(process, cpf, models);
         } catch (RepositoryException re) {
             throw new ImportException("Failed to add the process model " + processName, re);
         }
@@ -573,6 +581,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Delete a Process Model */
+    @Transactional(readOnly = false)
     private void deleteProcessModelVersion(final ProcessModelVersion pmv) throws ExceptionDao {
         try {
             // Check is the ProcessModelVersion used by any other Branch (Check the sourceProcessModelVersionId column in branch).

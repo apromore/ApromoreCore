@@ -173,13 +173,7 @@ public class FragmentServiceImpl implements FragmentService {
             FragmentVersionDag fvd = new FragmentVersionDag();
             fvd.setPocketId(pocketId);
             fvd.setFragmentVersion(fragVer);
-            //fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
-
-            for (FragmentVersion fv : processModel.getFragmentVersions()) {
-                if (fv.getUri().equals(childId)) {
-                    fvd.setChildFragmentVersion(fv);
-                }
-            }
+            fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
 
             fvdRepository.save(fvd);
         }

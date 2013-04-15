@@ -132,6 +132,7 @@ public interface ProcessService {
      */
     CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmvs, String processName, String branchName, boolean lock);
 
+
     /**
      * Gets the Current Process Model. this on can have any branch name.
      * @param processName the process name.
@@ -141,6 +142,18 @@ public interface ProcessService {
      * @throws LockFailedException if the lock failed.
      */
     CanonicalProcessType getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
+
+    /**
+     * Gets the Current Process Model. this on can have any branch name.
+     * @param processId the process id
+     * @param processName the process name.
+     * @param branchName the branch name.
+     * @param lock do we lock the records or not.
+     * @return the found process model graph.
+     * @throws LockFailedException if the lock failed.
+     */
+    CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Double version,
+        boolean lock) throws LockFailedException;
 
 
     /**

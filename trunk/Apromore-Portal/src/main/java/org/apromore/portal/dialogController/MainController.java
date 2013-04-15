@@ -369,7 +369,7 @@ public class MainController extends BaseController {
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
 
         editSession.setOriginalBranchName(version.getName());
-        editSession.setVersionNumber(Double.valueOf(process.getLastVersion()));
+        editSession.setVersionNumber(version.getVersionNumber());
 
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
