@@ -24,16 +24,12 @@
 
         <borderlayout vflex="true">
             <west id="leftPanel" title="Key word filter" size="35%" collapsible="true" flex="true" splittable="true">
-                <borderlayout vflex="true">
+                <borderlayout vflex="true" height="100%">
                     <north id="leftNorthPanel" flex="true">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
-                    <center id="leftCenterPanel" flex="false">
-                            <borderlayout vflex="true" height="100%">
-                                <center id="leftInnerCenterPanel" title="My Workspace" flex="true" vflex="true">
-                                    <Navigation id="navigationcomp"/>
-                                </center>
-                            </borderlayout>
+                    <center id="leftCenterPanel" title="My Workspace" flex="true">
+                        <Navigation id="navigationcomp"/>
                     </center>
                     <south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
                         <DetailView id="baseDetail" />
