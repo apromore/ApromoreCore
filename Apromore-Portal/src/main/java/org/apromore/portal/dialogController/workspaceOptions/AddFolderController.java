@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController.workspaceOptions;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.WorkspaceOptionsController;
 import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
