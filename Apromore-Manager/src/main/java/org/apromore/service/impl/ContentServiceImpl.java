@@ -474,13 +474,13 @@ public class ContentServiceImpl implements ContentService {
                 break;
             }
         }
-        //if (found == null) {
-        //    LOGGER.warn("Could not find Node with Id: " + nodeId);
-        //}
+        if (found == null) {
+            LOGGER.warn("Could not find Node with Id: " + nodeId);
+        }
         return found;
     }
 
-    /* Given the the NodeId, it find the Node record and returns it. */
+    /* Given the the edgeId, it find the Edge record and returns it. */
     private Edge findEdge(Set<Edge> edges, String edgeId) {
         Edge found = null;
         for (Edge edge : edges) {
@@ -489,9 +489,9 @@ public class ContentServiceImpl implements ContentService {
                 break;
             }
         }
-        //if (found == null) {
-        //    LOGGER.warn("Could not find Edge with Id: " + edgeId);
-        //}
+        if (found == null) {
+            LOGGER.warn("Could not find Edge with Id: " + edgeId);
+        }
         return found;
     }
 }
