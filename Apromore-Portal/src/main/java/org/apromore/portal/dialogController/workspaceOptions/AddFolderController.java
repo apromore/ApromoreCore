@@ -83,7 +83,7 @@ public class AddFolderController extends BaseController {
                     this.mainController.getService().updateFolder(this.folderId, folderName);
                 }
 
-                this.mainController.loadWorkspace();
+                this.mainController.reloadProcessSummaries();
             }
         } catch (Exception ex) {
 
