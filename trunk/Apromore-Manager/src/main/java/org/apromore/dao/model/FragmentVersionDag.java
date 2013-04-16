@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.Serializable;
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -77,7 +78,7 @@ public class FragmentVersionDag implements Serializable {
     }
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fragmentVersionId")
     public FragmentVersion getFragmentVersion() {
         return this.fragmentVersion;
@@ -87,7 +88,7 @@ public class FragmentVersionDag implements Serializable {
         this.fragmentVersion = newFragmentVersion;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "childFragmentVersionId")
     public FragmentVersion getChildFragmentVersion() {
         return this.childFragmentVersion;
