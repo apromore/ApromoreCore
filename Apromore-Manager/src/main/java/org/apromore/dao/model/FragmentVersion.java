@@ -219,7 +219,7 @@ public class FragmentVersion implements Serializable {
         this.rootProcessModelVersions = processModelVersions;
     }
 
-    @OneToMany(mappedBy = "childFragmentVersion", cascade = CascadeType.ALL, targetEntity = FragmentVersionDag.class)
+    @OneToMany(mappedBy = "childFragmentVersion", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<FragmentVersionDag> getChildFragmentVersionDags() {
         return this.childFragmentVersionDags;
     }

@@ -1,13 +1,10 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.FolderTreeRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
@@ -20,7 +17,7 @@ public class NavigationController extends BaseController {
     private Panel navigationP;
     private Tree tree;
     private Window treeW;
-    private ProcessSummariesType processSummaries;
+//    private ProcessSummariesType processSummaries;
 
     public NavigationController(MainController mainC) throws Exception {
         this.mainC = mainC;
@@ -28,9 +25,6 @@ public class NavigationController extends BaseController {
         this.navigationP = (Panel) this.mainC.getFellow("navigationcomp").getFellow("navigationPanel");
         this.treeW = (Window) this.navigationP.getFellow("treeW");
         this.tree = (Tree) this.navigationP.getFellow("treeW").getFellow("tree");
-
-        setHflex("true");
-        setVflex("true");
     }
 
     public void loadWorkspace() {
@@ -39,12 +33,12 @@ public class NavigationController extends BaseController {
         tree.setModel(model);
     }
 
-    /**
-     * process of domains associated with opened branches are selected
-     */
-    protected void displayProcessRowDetails(Event event) throws Exception {
-        LOGGER.debug(this.tree.getSelectedItem().getLabel());
-    }
+//    /**
+//     * process of domains associated with opened branches are selected
+//     */
+//    protected void displayProcessRowDetails(Event event) throws Exception {
+//        LOGGER.debug(this.tree.getSelectedItem().getLabel());
+//    }
     /*
      private void buildDomainIndex(ProcessSummariesType processSummaries) {
          DomainIndex index = this.mainC.getDomainIndex();
