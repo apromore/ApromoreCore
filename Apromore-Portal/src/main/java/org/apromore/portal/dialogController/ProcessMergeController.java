@@ -149,8 +149,9 @@ public class ProcessMergeController extends BaseController {
         String message = null;
         if ("".compareTo(this.processNameT.getValue()) != 0 && "".compareTo(this.versionNameT.getValue()) != 0) {
             try {
+                Integer folderId = UserSessionManager.getCurrentFolder().getId();
                 ProcessSummaryType result = getService().mergeProcesses(selectedProcessVersions, this.processNameT.getValue(),
-                        this.versionNameT.getValue(), this.domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername(),
+                        this.versionNameT.getValue(), this.domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername(), folderId,
                         this.algosLB.getSelectedItem().getLabel(), this.removeEnt.isChecked(),
                         ((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),

@@ -699,14 +699,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#mergeProcesses(java.util.Map, String, String, String, String, String, boolean, double, double, double, double, double, double)
+     * @see ManagerService#mergeProcesses(java.util.Map, String, String, String, String, Integer, String, boolean, double, double, double, double, double, double)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ProcessSummaryType mergeProcesses(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
             final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
-            final String method, final boolean removeEntanglements, final double mergeThreshold, final double labelThreshold,
+            final Integer folderId, final String method, final boolean removeEntanglements, final double mergeThreshold, final double labelThreshold,
             final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing MergeProcessesRequest.....");
 
@@ -716,6 +716,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setVersionName(mergedVersionName);
         msg.setDomain(mergedDomain);
         msg.setUsername(mergedUsername);
+        msg.setFolderId(folderId);
         msg.setProcessVersionIds(MergeProcessesHelper.setProcessModels(selectedProcessVersions));
         msg.setParameters(MergeProcessesHelper.setParams(method, removeEntanglements, mergeThreshold, labelThreshold, contextThreshold,
                 skipnWeight, skipeWeight, subnWeight));
@@ -761,18 +762,19 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#importProcess(String, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, java.util.Set)
+     * @see ManagerService#importProcess(String, java.lang.Integer, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName, final Double versionNumber,
-            final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
-            final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
+    public ImportProcessResultType importProcess(final String username, final Integer folderId, final String nativeType, final String processName,
+            final Double versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
+            final String lastUpdate, final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
         editSession.setUsername(username);
+        editSession.setFolderId(folderId);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
         editSession.setVersionNumber(versionNumber);

@@ -76,6 +76,7 @@ import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
@@ -121,6 +122,7 @@ public class ProcessServiceImpl implements ProcessService {
     private ComposerService composerSrv;
     private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
+    private WorkspaceService workspaceSrv;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -150,7 +152,7 @@ public class ProcessServiceImpl implements ProcessService {
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
-            final UserInterfaceHelper ui) {
+            final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
         this.annotationRepo = annotationRepo;
         this.contentRepo = contentRepo;
         this.nativeRepo = nativeRepo;
@@ -169,6 +171,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.composerSrv = composerSrv;
         this.decomposerSrv = decomposerSrv;
         this.ui = ui;
+        this.workspaceSrv = workspaceService;
     }
 
     /**
@@ -196,13 +199,13 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, String, Double, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
+     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Double, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProcessModelVersion importProcess(final String username, final String processName, final Double versionNumber, final String natType,
-            final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation,
+    public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName, final Double versionNumber,
+            final String natType, final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
         ProcessModelVersion pmv;
@@ -212,6 +215,7 @@ public class ProcessServiceImpl implements ProcessService {
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain);
             pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf);
+            workspaceSrv.addProcessToFolder(process.getId(), folderId);
             formatSrv.storeNative(processName, pmv, nativeXml, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
         } catch (UserNotFoundException | JAXBException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -259,6 +263,8 @@ public class ProcessServiceImpl implements ProcessService {
 
                 String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
                 pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+                pmVersion.getProcessBranch().setCurrentProcessModelVersion(pmVersion);
+
                 formatSrv.storeNative(processName, pmVersion, nativeXML, now, now, user, nativeType, versionNumber.toString(), cpf);
             } else {
                 LOGGER.error("unable to find the Process Model to update.");

@@ -187,9 +187,7 @@ public abstract class BaseListboxController extends BaseController {
         this.mainController.eraseMessage();
         try {
             this.createController = new CreateProcessController(this.mainController, this.mainController.getNativeTypes());
-        } catch (SuspendNotAllowedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (InterruptedException e) {
+        } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
             String message;

@@ -60,6 +60,7 @@ public class ProcessServiceImplUnitTest {
     private ComposerService composerSrv;
     private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
+    private WorkspaceService workspaceSrv;
 
     @Before
     public final void setUp() throws Exception {
@@ -81,8 +82,9 @@ public class ProcessServiceImplUnitTest {
         decomposerSrv = createMock(DecomposerService.class);
         ui = createMock(UserInterfaceHelper.class);
         fSrv = createMock(FragmentService.class);
+        workspaceSrv = createMock(WorkspaceService.class);
 
-        service = new ProcessServiceImpl(annDao, contDao, netDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui);
+        service = new ProcessServiceImpl(annDao, contDao, netDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
 
 

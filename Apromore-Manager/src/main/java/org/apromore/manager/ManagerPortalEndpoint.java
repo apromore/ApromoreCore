@@ -1,5 +1,9 @@
 package org.apromore.manager;
 
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -10,10 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -311,6 +311,7 @@ public class ManagerPortalEndpoint {
             String version = payload.getVersionName();
             String domain = payload.getDomain();
             Integer processId = payload.getProcessId();
+            Integer folderId = payload.getFolderId();
             String username = payload.getUsername();
             ParametersType parameters = new ParametersType();
             for (ParameterType p : payload.getParameters().getParameter()) {
@@ -327,7 +328,7 @@ public class ManagerPortalEndpoint {
                 id.setVersionName(t.getVersionName());
                 ids.getProcessVersionId().add(id);
             }
-            ProcessSummaryType respFromToolbox = merSrv.mergeProcesses(processName, version, domain, username, algo, parameters, ids);
+            ProcessSummaryType respFromToolbox = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids);
             res.setProcessSummary(respFromToolbox);
             result.setCode(0);
             result.setMessage("");
@@ -637,6 +638,7 @@ public class ManagerPortalEndpoint {
 
         try {
             EditSessionType editSession = payload.getEditSession();
+            Integer folderId = editSession.getFolderId();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
             Double versionNumber = editSession.getVersionNumber();
@@ -650,7 +652,7 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-            ProcessModelVersion pmv = procSrv.importProcess(username, processName, versionNumber, nativeType, canonisedProcess, handler.getInputStream(),
+            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess, handler.getInputStream(),
                     domain, "", creationDate, lastUpdate);
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
                     pmv.getProcessBranch().getBranchName(), pmv.getVersionNumber(), nativeType, domain, creationDate, lastUpdate, username);
