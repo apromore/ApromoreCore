@@ -31,9 +31,9 @@ public final class Constants {
 
     public static final String MSG_WHEN_CLOSE = "You are about to leave Apromore. You might loose unsaved data.";
 
-    public static final String STAR_FULL_ICON = "/img/selectAll-8.png";
-    public static final String STAR_BLK_ICON = "/img/unselectAll-8.png";
-    public static final String STAR_MID_ICON = "/img/revertSelection-8.png";
+    public static final String STAR_FULL_ICON = "/img/selectAll-12.png";
+    public static final String STAR_BLK_ICON = "/img/unselectAll-12.png";
+    public static final String STAR_MID_ICON = "/img/revertSelection-12.png";
     public static final String SESSION_CODE = "sessionCode";
     public static final String ANNOTATIONS_ONLY = "notationsOnly";
 

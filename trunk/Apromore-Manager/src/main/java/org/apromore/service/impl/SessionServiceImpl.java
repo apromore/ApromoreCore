@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import javax.inject.Inject;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -74,7 +75,7 @@ public class SessionServiceImpl implements SessionService {
      */
     @Override
     @Transactional(readOnly = false)
-    public EditSession createSession(final EditSessionType editSession) {
+    public EditSession createSession(final EditSessionType editSession) throws ParseException {
         Integer processId = editSession.getProcessId();
         String branchName = editSession.getOriginalBranchName();
         Double versionNumber = editSession.getVersionNumber();
@@ -83,8 +84,8 @@ public class SessionServiceImpl implements SessionService {
         ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
 
         EditSession session = new EditSession();
-        session.setCreationDate(editSession.getCreationDate());
-        session.setLastUpdate(editSession.getLastUpdate());
+        session.setCreateDate(editSession.getCreationDate());
+        session.setLastUpdateDate(editSession.getLastUpdate());
         session.setRecordTime(new Date());
         session.setVersionNumber(editSession.getVersionNumber());
         session.setOriginalBranchName(editSession.getOriginalBranchName());

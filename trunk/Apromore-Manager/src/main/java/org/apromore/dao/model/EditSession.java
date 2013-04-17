@@ -1,9 +1,7 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores all the edits to the session mappings in apromore.
@@ -35,8 +35,8 @@ public class EditSession implements Serializable {
     private String natType;
     private String annotation;
     private Boolean removeFakeEvents;
-    private String creationDate;
-    private String lastUpdate;
+    private String createDate;
+    private String lastUpdateDate;
 
     private User user;
     private Process process;
@@ -152,22 +152,22 @@ public class EditSession implements Serializable {
         this.removeFakeEvents = newRemoveFakeEvents;
     }
 
-    @Column(name = "creation_date", length = 35)
-    public String getCreationDate() {
-        return this.creationDate;
+    @Column(name = "createDate")
+    public String getCreateDate() {
+        return this.createDate;
     }
 
-    public void setCreationDate(final String newCreationDate) {
-        this.creationDate = newCreationDate;
+    public void setCreateDate(final String newCreationDate) {
+        this.createDate = newCreationDate;
     }
 
-    @Column(name = "last_update", length = 35)
-    public String getLastUpdate() {
-        return this.lastUpdate;
+    @Column(name = "lastUpdateDate")
+    public String getLastUpdateDate() {
+        return this.lastUpdateDate;
     }
 
-    public void setLastUpdate(final String newLastUpdate) {
-        this.lastUpdate = newLastUpdate;
+    public void setLastUpdateDate(final String newLastUpdate) {
+        this.lastUpdateDate = newLastUpdate;
     }
 
 

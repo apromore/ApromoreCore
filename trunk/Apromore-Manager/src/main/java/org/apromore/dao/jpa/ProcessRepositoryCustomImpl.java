@@ -27,8 +27,6 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
 
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process p ";
     private static final String GET_ALL_PRO_SORT_JPA = " ORDER by p.id";
-    private static final String GET_ALL_PROCESSES_JDBC = "SELECT p.id, p.name, p.domain, p.owner, p.original_type, p.folderId FROM Process p ";
-    private static final String GET_ALL_PRO_SORT_JDBC = " ORDER by p.id";
 
 
     /* ************************** JPA Methods here ******************************* */

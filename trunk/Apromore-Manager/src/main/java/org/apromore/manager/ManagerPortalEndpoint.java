@@ -529,8 +529,8 @@ public class ManagerPortalEndpoint {
             editSessionP.setNewBranchName(session.getNewBranchName());
             editSessionP.setCreateNewBranch(session.getCreateNewBranch());
             editSessionP.setDomain(session.getProcess().getDomain());
-            editSessionP.setCreationDate(session.getCreationDate());
-            editSessionP.setLastUpdate(session.getLastUpdate());
+            editSessionP.setCreationDate(session.getCreateDate());
+            editSessionP.setLastUpdate(session.getLastUpdateDate());
             if (session.getAnnotation() == null) {
                 editSessionP.setWithAnnotation(false);
             } else {

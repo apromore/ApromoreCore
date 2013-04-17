@@ -53,6 +53,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderProcessName(process));
         listItem.appendChild(renderProcessNativeType(process));
         listItem.appendChild(renderProcessDomain(process));
+        listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
         listItem.appendChild(renderProcessOwner(process));
     }
@@ -85,7 +86,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
         Listcell lc = new Listcell();
         lc.appendChild(name);
-        lc.setSpan(6);
+        lc.setSpan(7);
         return lc;
     }
 
@@ -107,6 +108,16 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     protected Listcell renderProcessName(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getName()));
+    }
+
+    private Component renderVersionRanking(final ProcessSummaryType process) {
+        Hbox processRanking = new Hbox();
+        if (process.getRanking() != null && process.getRanking().compareTo("") != 0) {
+            displayRanking(processRanking, process.getRanking());
+        } else {
+            displayRanking(processRanking, "0");
+        }
+        return wrapIntoListCell(processRanking);
     }
 
     protected Listcell renderProcessId(final ProcessSummaryType process) {
@@ -143,6 +154,39 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         return lc;
     }
 
+    /**
+     * Display in hbox versionRanking, 5 stars according to ranking (0...5).
+     * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
+     * process version directly by interacting with the stars displayed.
+     * @param ranking
+     */
+    private void displayRanking(Hbox rankingHb, String ranking) {
+        String imgFull = Constants.STAR_FULL_ICON;
+        String imgMid = Constants.STAR_MID_ICON;
+        String imgBlank = Constants.STAR_BLK_ICON;
+        Image star;
+        Float rankingF = Float.parseFloat(ranking);
+        int fullStars = rankingF.intValue();
+        int i;
+        for (i = 1; i <= fullStars; i++) {
+            star = new Image();
+            rankingHb.appendChild(star);
+            star.setSrc(imgFull);
+        }
+        if (i <= 5) {
+            if (Math.floor(rankingF) != rankingF) {
+                star = new Image();
+                star.setSrc(imgMid);
+                rankingHb.appendChild(star);
+                i = i + 1;
+            }
+            for (int j = i; j <= 5; j++) {
+                star = new Image();
+                star.setSrc(imgBlank);
+                rankingHb.appendChild(star);
+            }
+        }
+    }
 
     public static Double roundToDecimals(Double num, int places) {
         int temp = (int) ((num * Math.pow(10, places)));

@@ -102,18 +102,14 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                             selectedFolder.getFolders().add(folderType);
                         }
 
-                        if (selectedFolder != null){
-                            UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
-                            UserSessionManager.setCurrentFolder(selectedFolder);
+                        UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
+                        UserSessionManager.setCurrentFolder(selectedFolder);
 
-                            mainC.reloadProcessSummaries();
-                            loadWorkspace(html, availableFolders, availableProcesses);
-                            //Clients.evalJavaScript("bindTiles();");
-                        }
+                        mainC.reloadProcessSummaries();
+                        loadWorkspace(html, availableFolders, availableProcesses);
+                        //Clients.evalJavaScript("bindTiles();");
                     }
-                }
-                catch(Exception ex){
-
+                } catch(Exception ignored){
                 }
             }
 

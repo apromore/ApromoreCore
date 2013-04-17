@@ -1,9 +1,9 @@
 package org.apromore.service.impl;
 
-import java.io.InputStream;
-import java.util.List;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
+import java.io.InputStream;
+import java.util.List;
 
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.NativeRepository;
@@ -92,7 +92,7 @@ public class FormatServiceImpl implements FormatService {
         nat.setProcessModelVersion(pmv);
         nat = nativeRepo.save(nat);
 
-        pmv.getNatives().add(nat);
+        pmv.setNativeDocument(nat);
 
         if (annString != null && !annString.equals("")) {
             Annotation annotation = new Annotation();

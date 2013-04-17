@@ -95,9 +95,9 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      * @return returns the list of processModelVersions
      */
     @Query("SELECT pmv FROM ProcessModelVersion pmv, ProcessBranch pb " +
-            "WHERE pb.id = pmv.processBranch.id AND pb.creationDate in " +
-            "  (SELECT max(pb2.creationDate) FROM ProcessBranch pb2 WHERE pb2.id = pmv.processBranch.id GROUP BY pb2.id) " +
-            "ORDER by pb.id, pb.creationDate")
+            "WHERE pb.id = pmv.processBranch.id AND pb.createDate in " +
+            "  (SELECT max(pb2.createDate) FROM ProcessBranch pb2 WHERE pb2.id = pmv.processBranch.id GROUP BY pb2.id) " +
+            "ORDER by pb.id, pb.createDate")
     List<ProcessModelVersion> getLatestProcessModelVersions();
 
     /**

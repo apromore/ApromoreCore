@@ -135,7 +135,10 @@ public class SaveAsDialogController extends BaseController {
         try {
             if (validateFields()) {
                 if (!isNormalSave) {
-                    Integer folderId = UserSessionManager.getCurrentFolder().getId();
+                    Integer folderId = 0;
+                    if (UserSessionManager.getCurrentFolder() != null) {
+                        folderId = UserSessionManager.getCurrentFolder().getId();
+                    }
                     getService().importProcess(userName, folderId, nativeType, processName, versionNo, is, domain, null, created, null,
                             pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
                     Messagebox.show("Saved as : Model Name : " + processName + ", Branch Name : " + branchName.getText(), "Save As Outcome",
