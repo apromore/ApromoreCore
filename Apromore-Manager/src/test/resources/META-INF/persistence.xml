@@ -34,7 +34,6 @@
         <class>org.apromore.dao.model.ProcessBranch</class>
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
-        <class>org.apromore.dao.model.Net</class>
         <class>org.apromore.dao.model.Node</class>
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ResourceAttribute</class>

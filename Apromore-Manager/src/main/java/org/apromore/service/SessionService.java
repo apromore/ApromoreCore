@@ -1,5 +1,7 @@
 package org.apromore.service;
 
+import java.text.ParseException;
+
 import org.apromore.dao.model.EditSession;
 import org.apromore.model.EditSessionType;
 
@@ -24,7 +26,7 @@ public interface SessionService {
      * @param editSession the details from the Portal.
      * @return the new session id that will be used.
      */
-    EditSession createSession(EditSessionType editSession);
+    EditSession createSession(EditSessionType editSession) throws ParseException;
 
     /**
      * Removes a session from the Repository.

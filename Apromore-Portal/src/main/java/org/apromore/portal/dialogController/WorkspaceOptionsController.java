@@ -1,5 +1,7 @@
 package org.apromore.portal.dialogController;
 
+import java.util.List;
+
 import org.apromore.model.FolderType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
@@ -11,11 +13,8 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Messagebox;
-
-import java.util.List;
 
 public class WorkspaceOptionsController extends Menubar {
 
@@ -95,9 +94,7 @@ public class WorkspaceOptionsController extends Menubar {
         this.mainController.eraseMessage();
         try {
             this.createController = new CreateProcessController(this.mainController, this.mainController.getNativeTypes());
-        } catch (SuspendNotAllowedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (InterruptedException e) {
+        } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
             String message;

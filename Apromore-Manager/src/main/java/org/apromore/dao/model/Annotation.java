@@ -1,12 +1,7 @@
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.CacheType;
-import org.eclipse.persistence.config.CacheIsolationType;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,8 +12,13 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.eclipse.persistence.annotations.CacheType;
+import org.eclipse.persistence.config.CacheIsolationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the Annotation in apromore.
@@ -29,7 +29,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "annotation",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"processModelVersionId", "name"}),
-                @UniqueConstraint(columnNames = {"native"})
+                @UniqueConstraint(columnNames = {"nativeId"})
         }
 )
 @Configurable("annotation")
@@ -40,6 +40,7 @@ public class Annotation implements Serializable {
     private Integer id;
     private String name;
     private String content;
+    private String lastUpdateDate;
 
     private Native natve;
     private ProcessModelVersion processModelVersion;
@@ -51,10 +52,6 @@ public class Annotation implements Serializable {
 
 
 
-    /**
-     * returns the Id of this Object.
-     * @return the id
-     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -62,84 +59,58 @@ public class Annotation implements Serializable {
         return this.id;
     }
 
-    /**
-     * Sets the Id of this Object
-     * @param id the new Id.
-     */
     public void setId(final Integer id) {
         this.id = id;
     }
 
 
-    /**
-     * Get the name for the Object.
-     * @return Returns the name.
-     */
     @Column(name = "name", unique = false, nullable = true, length = 40)
     public String getName() {
         return name;
     }
 
-    /**
-     * Set the name for the Object.
-     * @param newName The name to set.
-     */
     public void setName(final String newName) {
         this.name = newName;
     }
 
 
-    /**
-     * Get the contents for the Object.
-     * @return Returns the contents.
-     */
     @Lob
     @Column(name = "content")
     public String getContent() {
         return content;
     }
 
-    /**
-     * Set the contents for the Object.
-     * @param newContent The contents to set.
-     */
     public void setContent(final String newContent) {
         this.content = newContent;
     }
 
+    @Column(name = "lastUpdateDate")
+    public String getLastUpdateDate() {
+        return this.lastUpdateDate;
+    }
 
-    /**
-     * Get the native format for the Object.
-     * @return Returns the native format.
-     */
+    public void setLastUpdateDate(final String newLastUpdate) {
+        this.lastUpdateDate = newLastUpdate;
+    }
+
+
+
     @ManyToOne
-    @JoinColumn(name = "native")
+    @JoinColumn(name = "nativeId")
     public Native getNatve() {
         return this.natve;
     }
 
-    /**
-     * Set the native format for the Object.
-     * @param newNative The native format to set.
-     */
     public void setNatve(final Native newNative) {
         this.natve = newNative;
     }
 
-    /**
-     * Get the process Model Version for the Object.
-     * @return Returns the process Model Version.
-     */
     @ManyToOne
     @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }
 
-    /**
-     * Set the process Model Version for the Object.
-     * @param newProcessModelVersion The process Model Version format to set.
-     */
     public void setProcessModelVersion(final ProcessModelVersion newProcessModelVersion) {
         this.processModelVersion = newProcessModelVersion;
     }
