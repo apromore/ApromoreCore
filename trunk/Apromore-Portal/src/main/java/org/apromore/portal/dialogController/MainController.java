@@ -231,13 +231,21 @@ public class MainController extends BaseController {
      * @throws Exception
      */
     public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult, final ProcessSummaryType process, final VersionSummaryType version) {
+        int folderId;
+
         if (isQueryResult) {
             clearProcessVersions();
+        }
+        if (UserSessionManager.getCurrentFolder() == null) {
+            folderId = 0;
+        } else {
+            folderId = UserSessionManager.getCurrentFolder().getId();
         }
 
         // TODO switch to process query result view
         switchToProcessSummaryView();
-        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(processSummaries, isQueryResult, process, version);
+        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
+        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, processSummaries, isQueryResult, process, version);
     }
 
     // disable/enable features depending on user status
@@ -302,7 +310,7 @@ public class MainController extends BaseController {
     }
 
     /**
-     * Forward to the controller ProcessTableController the request to add the
+     * Forward to the controller ProcessListBoxController the request to add the
      * process to the table
      */
     public void displayNewProcess(final ProcessSummaryType returnedProcess) {

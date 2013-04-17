@@ -33,6 +33,7 @@ public interface ProcessService {
      * Import a Process.
      *
      * @param username      The user doing the importing.
+     * @param folderId      The folder we are saving the process in.
      * @param processName   the name of the process being imported.
      * @param versionNumber the process version number.
      * @param nativeType    the native process format type
@@ -46,8 +47,9 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessModelVersion importProcess(String username, String processName, Double versionNumber, String nativeType, CanonisedProcess cpf, InputStream nativeXml,
-            String domain, String documentation, String created, String lastUpdate) throws ImportException;
+    ProcessModelVersion importProcess(String username, Integer folderId, String processName, Double versionNumber, String nativeType,
+            CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate)
+            throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.

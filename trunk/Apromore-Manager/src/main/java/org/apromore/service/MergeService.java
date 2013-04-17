@@ -21,12 +21,13 @@ public interface MergeService {
      * @param domain      the domain
      * @param username    the username that did this merge
      * @param algo        the algorithm used
+     * @param folderId    The folder we are going to store the new model in.
      * @param parameters  the algorithm photos
      * @param ids         ID'd of the processes to merge.
      * @return the new process summary of the newly merged process
      * @throws ExceptionMergeProcess if the merge failed
      */
-    ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
+    ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
         ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess;
 
 

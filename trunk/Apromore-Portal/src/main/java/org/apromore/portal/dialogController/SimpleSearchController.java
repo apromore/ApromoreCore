@@ -49,7 +49,7 @@ public class SimpleSearchController extends BaseController {
          */
         this.previoussearchesCB.setId("previoussearchescombobox");
         this.previoussearchesCB.setAutodrop(true);
-        this.previoussearchesCB.setWidth("85%");
+        this.previoussearchesCB.setWidth("95%");
         this.previoussearchesCB.setHeight("100%");
         this.previoussearchesCB.setAttribute("hflex", "1");
         //this.previoussearchesCB.setVisible(false);

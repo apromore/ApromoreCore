@@ -9,7 +9,6 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -208,7 +207,6 @@ public class ProcessDetailsController extends BaseController {
      * @param history
      */
     private void insertInHistory(Object value, Vector<HistoryElement> history) {
-
         int i = 0;
         while (i < history.size() && !value.equals(history.get(i).getValue())) {
             i++;

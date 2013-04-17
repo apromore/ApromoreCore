@@ -12,6 +12,8 @@ public final class Constants {
     // #598DCA blue
 
     public static final String TOOLBARBUTTON_STYLE = "font-size:12px";
+    public static final String FONT_BOLD = "font-weight:bold";
+    public static final String FOLDER = "background-color:#FFFFEE";
     public static final String UNSELECTED_VERSION = "background-color:#E5E5E5" + ";" + TOOLBARBUTTON_STYLE;
     public static final String SELECTED_VERSION = "background-color:#598DCA" + ";" + TOOLBARBUTTON_STYLE;
     public static final String SELECTED_PROCESS = "background-color:#598DCA" + ";" + TOOLBARBUTTON_STYLE;
@@ -29,9 +31,9 @@ public final class Constants {
 
     public static final String MSG_WHEN_CLOSE = "You are about to leave Apromore. You might loose unsaved data.";
 
-    public static final String STAR_FULL_ICON = "/img/selectAll-12.png";
-    public static final String STAR_BLK_ICON = "/img/unselectAll-12.png";
-    public static final String STAR_MID_ICON = "/img/revert-12.png";
+    public static final String STAR_FULL_ICON = "/img/selectAll-8.png";
+    public static final String STAR_BLK_ICON = "/img/unselectAll-8.png";
+    public static final String STAR_MID_ICON = "/img/revertSelection-8.png";
     public static final String SESSION_CODE = "sessionCode";
     public static final String ANNOTATIONS_ONLY = "notationsOnly";
 

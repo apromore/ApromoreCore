@@ -1,12 +1,12 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -70,12 +70,12 @@ public class MergeServiceImpl implements MergeService {
 
 
     /**
-     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
+     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, Integer, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
+    public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<ProcessModelVersion>(0);
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
@@ -95,7 +95,7 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
 
             // This fails as we need to specify a native type and pass in the model.
-            ProcessModelVersion pmv = processSrv.importProcess(username, processName, 0.1d, null, cp, cp.getCpf(), domain, "", created, created);
+            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, 0.1d, null, cp, cp.getCpf(), domain, "", created, created);
             pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getProcessBranch().getBranchName(), 0.1d, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);

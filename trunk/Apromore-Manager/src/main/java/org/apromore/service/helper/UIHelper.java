@@ -322,7 +322,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#createProcessSummary(String, Integer, String, Double, String, String, String, String, String)
      */
     public ProcessSummaryType createProcessSummary(String name, Integer processId, String branchName, Double versionNumber, String nativeType,
-                                                   String domain, String created, String lastUpdate, String username) {
+            String domain, String created, String lastUpdate, String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
         AnnotationsType annType = new AnnotationsType();
