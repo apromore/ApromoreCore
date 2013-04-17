@@ -192,6 +192,7 @@ public interface ManagerService {
      * @param mergedVersionName the new process version name
      * @param mergedDomain the new process model domain name
      * @param mergedUsername the new process model username who modified/merged
+     * @param folderId the folder we are going to save the document in.
      * @param method the method of search algorithm
      * @param removeEntanglements remove the entanglements
      * @param mergeThreshold the Model Threshold
@@ -202,7 +203,9 @@ public interface ManagerService {
      * @param skipeWeight the Skip E weight
      * @return the processSummaryType from the WebService
      */
-    ProcessSummaryType mergeProcesses(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, String mergedProcessName, String mergedVersionName, String mergedDomain, String mergedUsername, String method, boolean removeEntanglements, double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight);
+    ProcessSummaryType mergeProcesses(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, String mergedProcessName,
+            String mergedVersionName, String mergedDomain, String mergedUsername, Integer folderId, String method, boolean removeEntanglements,
+            double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight);
 
     /**
      * Export the process model in a particular format.
@@ -236,9 +239,9 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ImportProcessResultType importProcess(String username, String nativeType, String processName, Double versionNumber, InputStream xml_process,
-            String domain, String documentation, String created, String lastUpdate, Set<RequestParameterType<?>> canoniserProperties)
-            throws IOException, Exception;
+    ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, Double versionNumber,
+            InputStream xml_process, String domain, String documentation, String created, String lastUpdate,
+            Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception;
 
     /**
      * Get list of all currently installed Plugins.

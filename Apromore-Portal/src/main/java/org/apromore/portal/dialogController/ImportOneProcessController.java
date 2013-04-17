@@ -313,9 +313,10 @@ public class ImportOneProcessController extends BaseController {
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
             Double version = Double.valueOf(this.versionNumberTb.getValue());
-            ImportProcessResultType importResult = getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
-                    version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue().toString(),
-                    this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+            Integer folderId = UserSessionManager.getCurrentFolder().getId();
+            ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
+                    version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
+                    this.lastUpdateTb.getValue(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
             // process successfully imported
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);
@@ -324,9 +325,6 @@ public class ImportOneProcessController extends BaseController {
             this.domainCB.addItem(domain);
             // delete process from the list of processes still to be imported
             this.importProcessesC.deleteFromToBeImported(this);
-        } catch (WrongValueException e) {
-            LOGGER.error("Import failed!", e);
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
             LOGGER.error("Import failed!", e);
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);

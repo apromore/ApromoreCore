@@ -169,7 +169,8 @@ public class CreateProcessController extends BaseController {
 
                 // Documentation and Last Update are set to NULL & No Canoniser properties are used
                 //TODO show canoniser properties
-                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionNumber,
+                Integer folderId = UserSessionManager.getCurrentFolder().getId();
+                ImportProcessResultType importResult = getService().importProcess(owner, folderId, nativeType, processName, versionNumber,
                         initialNativeFormat.getInputStream(), domain, null, creationDate, null, new HashSet<RequestParameterType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
