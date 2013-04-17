@@ -312,8 +312,12 @@ public class ImportOneProcessController extends BaseController {
 
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
+            Integer folderId = 0;
+            if (UserSessionManager.getCurrentFolder() != null) {
+                folderId = UserSessionManager.getCurrentFolder().getId();
+            }
+
             Double version = Double.valueOf(this.versionNumberTb.getValue());
-            Integer folderId = UserSessionManager.getCurrentFolder().getId();
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
                     version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
                     this.lastUpdateTb.getValue(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));

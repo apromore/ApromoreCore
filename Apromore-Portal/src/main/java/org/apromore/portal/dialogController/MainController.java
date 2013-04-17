@@ -341,7 +341,7 @@ public class MainController extends BaseController {
             if (nb > 1) {
                 message = nb + " process versions deleted.";
             } else {
-                message = " One process version deleted.";
+                message = "One process version deleted.";
             }
             displayMessage(message);
         } catch (Exception e) {

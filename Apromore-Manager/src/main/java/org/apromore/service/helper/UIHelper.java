@@ -255,12 +255,10 @@
 //    }
 //
 //}
-
-
-
 package org.apromore.service.helper;
 
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -409,7 +407,7 @@ public class UIHelper implements UserInterfaceHelper {
         processSummary.setId(process.getId());
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
-        processSummary.setRanking("");
+        processSummary.setRanking(process.getRanking());
         if (process.getNativeType() != null) {
             processSummary.setOriginalNativeType(process.getNativeType().getNatType());
         }
@@ -440,9 +438,8 @@ public class UIHelper implements UserInterfaceHelper {
             for (ProcessModelVersion processModelVersion : branch.getProcessModelVersions()) {
                 versionSummary = new VersionSummaryType();
                 versionSummary.setName(branch.getBranchName());
-                versionSummary.setCreationDate(branch.getCreationDate());
-                versionSummary.setLastUpdate(branch.getLastUpdate());
-                versionSummary.setRanking(branch.getRanking());
+                versionSummary.setCreationDate(processModelVersion.getCreateDate());
+                versionSummary.setLastUpdate(processModelVersion.getLastUpdateDate());
                 versionSummary.setVersionNumber(processModelVersion.getVersionNumber());
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
@@ -487,7 +484,7 @@ public class UIHelper implements UserInterfaceHelper {
             return null;
         }
 
-        List<Integer> proIds = new ArrayList<Integer>(0);
+        List<Integer> proIds = new ArrayList<>(0);
         for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
             proIds.add(pvt.getProcessId());
         }

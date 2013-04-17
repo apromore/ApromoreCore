@@ -60,6 +60,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
 
+    @Override
+    public Folder getFolder(Integer folderId) {
+        return folderRepo.findOne(folderId);
+    }
 
     @Override
     public List<FolderUser> getFolderUsers(Integer folderId) {
@@ -213,10 +217,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     @Transactional(readOnly = false)
     public void addProcessToFolder(Integer processId, Integer folderId) {
-        Process process = processRepo.findOne(processId);
-        Folder folder = folderRepo.findOne(folderId);
+        if (folderId != null && processId != null) {
+            Process process = processRepo.findOne(processId);
+            Folder folder = folderRepo.findOne(folderId);
 
-        if (folder != null && process != null) {
             process.setFolder(folder);
             processRepo.save(process);
         }

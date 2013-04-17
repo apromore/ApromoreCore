@@ -1,6 +1,5 @@
 package org.apromore.service;
 
-import org.apromore.dao.dataObject.ProcessUserDO;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
@@ -15,6 +14,8 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public interface WorkspaceService {
+
+    Folder getFolder(Integer folderId);
 
     List<FolderUser> getFolderUsers(Integer folderId);
 

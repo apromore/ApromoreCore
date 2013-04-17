@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,15 +19,11 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.TaskType;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.ContentRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NativeRepository;
-import org.apromore.dao.NetRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
@@ -37,8 +32,6 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Net;
-import org.apromore.dao.model.Node;
 import org.apromore.dao.model.Object;
 import org.apromore.dao.model.ObjectAttribute;
 import org.apromore.dao.model.Process;
@@ -107,7 +100,6 @@ public class ProcessServiceImpl implements ProcessService {
     private AnnotationRepository annotationRepo;
     private ContentRepository contentRepo;
     private NativeRepository nativeRepo;
-    private NetRepository netRepo;
     private ProcessBranchRepository processBranchRepo;
     private ProcessRepository processRepo;
     private FragmentVersionRepository fragmentVersionRepo;
@@ -129,7 +121,6 @@ public class ProcessServiceImpl implements ProcessService {
      * @param annotationRepo Annotations repository.
      * @param contentRepo Content Repository
      * @param nativeRepo Native Repository.
-     * @param netRepo Net Repository.
      * @param processBranchRepo Process Branch Map Repository.
      * @param processRepo Process Repository
      * @param fragmentVersionRepo Fragment Version Repository.
@@ -146,7 +137,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public ProcessServiceImpl(final AnnotationRepository annotationRepo, final ContentRepository contentRepo, final NetRepository netRepo,
+    public ProcessServiceImpl(final AnnotationRepository annotationRepo, final ContentRepository contentRepo,
             final NativeRepository nativeRepo, final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
@@ -156,7 +147,6 @@ public class ProcessServiceImpl implements ProcessService {
         this.annotationRepo = annotationRepo;
         this.contentRepo = contentRepo;
         this.nativeRepo = nativeRepo;
-        this.netRepo = netRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
         this.fragmentVersionRepo = fragmentVersionRepo;
@@ -213,7 +203,8 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
-            Process process = insertProcess(processName, user, nativeType, domain);
+            Process process = insertProcess(processName, user, nativeType, domain, folderId);
+
             pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf);
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             formatSrv.storeNative(processName, pmv, nativeXml, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
@@ -261,7 +252,7 @@ public class ProcessServiceImpl implements ProcessService {
                     propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions(), versionNumber);
                 }
 
-                String now = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+                String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
                 pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
                 pmVersion.getProcessBranch().setCurrentProcessModelVersion(pmVersion);
 
@@ -289,7 +280,9 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
 
-            // TODO XML model of web service should not already be used here, but in ManagerEndpoint
+            // TODO - XML model of web service should not already be used here, but in ManagerEndpoint
+            // TODO - if exporting format the same as the import bpm type then just get the native.
+            // TODO - Only decanonise if different format. display message about losing info if change format.
             ExportFormatResultType exportResult = new ExportFormatResultType();
             if ((withAnn && format.startsWith(Constants.INITIAL_ANNOTATION)) || format.startsWith(Constants.ANNOTATIONS)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, version, format).getContent(), "text/xml")));
@@ -299,7 +292,7 @@ public class ProcessServiceImpl implements ProcessService {
                 DecanonisedProcess dp;
                 if (withAnn) {
                     String annotation = annotationRepo.getAnnotation(processId, branch, version, annName).getContent();
-                    if (annotation != null || !annotation.equals("")) {
+                    if (annotation != null && !annotation.equals("")) {
                         AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayDataSource(annotation, "text/xml").getInputStream(), false).getValue();
                         dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
                     } else {
@@ -333,13 +326,13 @@ public class ProcessServiceImpl implements ProcessService {
             Process process = processRepo.findOne(processId);
             process.setDomain(domain);
             process.setName(processName);
+            process.setRanking(ranking);
             process.setUser(userSrv.findUserByLogin(username));
 
             ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
             ProcessBranch branch = processModelVersion.getProcessBranch();
-            branch.setRanking(ranking);
 
-            updateNativeRecords(processModelVersion.getNatives(), processName, username, newVersion);
+            updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
 
             processRepo.save(process);
             processModelVersionRepo.save(processModelVersion);
@@ -365,6 +358,8 @@ public class ProcessServiceImpl implements ProcessService {
         pmv.setVersionNumber(versionNumber);
         pmv.setNumVertices(numVertices);
         pmv.setNumEdges(numEdges);
+        pmv.setCreateDate(SimpleDateFormat.getDateInstance().format(new Date()));
+        pmv.setLastUpdateDate(pmv.getCreateDate());
 
         return processModelVersionRepo.save(pmv);
     }
@@ -412,15 +407,6 @@ public class ProcessServiceImpl implements ProcessService {
             result.getNet().addAll(tmp.getNet());
             result.getResourceType().addAll(tmp.getResourceType());
             result.getAttribute().addAll(tmp.getAttribute());
-            if (pmv.getNet() != null) {
-                result.setName(processName);
-                result.setUri(pmv.getProcessBranch().getProcess().getId().toString());
-                result.setAuthor(pmv.getProcessBranch().getProcess().getUser().getUsername());
-                result.setCreationDate(pmv.getProcessBranch().getCreationDate());
-                result.setModificationDate(pmv.getProcessBranch().getLastUpdate());
-                result.setVersion(Double.toString(pmv.getVersionNumber()));
-                result.getRootIds().add(pmv.getNet().getNetUri());
-            }
         } catch (ExceptionDao e) {
             String msg = "Failed to retrieve the current version of the process model " + processName + " - " + branchName;
             LOGGER.error(msg, e);
@@ -571,7 +557,7 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());
-            pmv = createProcessModelVersion(process, branch, versionNumber, can, cpf.getCpt().getUri());
+            pmv = createProcessModelVersion(branch, versionNumber, can, cpf.getCpt().getUri());
             rootFragment = decomposerSrv.decompose(can, pmv);
             if (rootFragment != null) {
                 pmv.setRootFragmentVersion(rootFragment);
@@ -625,25 +611,22 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Update a list of native process models with this new meta data, */
-    private void updateNativeRecords(final Set<Native> natives, final String processName, final String username, final Double version)
+    private void updateNative(final Native natve, final String processName, final String username, final Double version)
             throws CanoniserException, JAXBException {
-        for (Native n : natives) {
-            String natType = n.getNativeType().getNatType();
-            InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
-            CanonisedProcess cp = canoniserSrv.canonise(natType, inStr, new HashSet<RequestParameterType<?>>(0));
+        String natType = natve.getNativeType().getNatType();
+        InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
 
-            //TODO why is this done here? apromore should not know about native format outside of canonisers
-            if (natType.compareTo("XPDL 2.1") == 0) {
-                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-                StreamUtil.copyParam2XPDL(pakType, processName, version.toString(), username, null, null);
-                n.setContent(StreamUtil.marshallXPDL(pakType));
-            }
+        //TODO why is this done here? apromore should not know about native format outside of canonisers
+        if (natType.compareTo("XPDL 2.1") == 0) {
+            PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
+            StreamUtil.copyParam2XPDL(pakType, processName, version.toString(), username, null, null);
+            natve.setContent(StreamUtil.marshallXPDL(pakType));
         }
     }
 
     /* Inserts a new process into the DB. */
-    private Process insertProcess(final String processName, final User user, final NativeType nativeType, final String domain)
-            throws ImportException {
+    private Process insertProcess(final String processName, final User user, final NativeType nativeType, final String domain,
+            final Integer folderId) throws ImportException {
         LOGGER.info("Executing operation Insert Process");
         Process process = new Process();
 
@@ -652,6 +635,9 @@ public class ProcessServiceImpl implements ProcessService {
             process.setUser(user);
             process.setDomain(domain);
             process.setNativeType(nativeType);
+            if (folderId != null) {
+                process.setFolder(workspaceSrv.getFolder(folderId));
+            }
 
             ProcessUser processUser = new ProcessUser();
             processUser.setProcess(process);
@@ -678,8 +664,8 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             branch.setProcess(process);
             branch.setBranchName(name);
-            branch.setCreationDate(created);
-            branch.setLastUpdate(lastUpdated);
+            branch.setCreateDate(created);
+            branch.setLastUpdateDate(lastUpdated);
 
             process.getProcessBranches().add(branch);
 
@@ -690,8 +676,9 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final Process process, final ProcessBranch branch, final Double versionNumber,
+    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Double versionNumber,
             final Canonical proModGrap, final String netId) {
+        String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 
         processModel.setProcessBranch(branch);
@@ -700,6 +687,8 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setNumEdges(proModGrap.countEdges());
         processModel.setNumVertices(proModGrap.countVertices());
         processModel.setLockStatus(Constants.NO_LOCK);
+        processModel.setCreateDate(now);
+        processModel.setLastUpdateDate(now);
 
         branch.setCurrentProcessModelVersion(processModel);
 
@@ -848,93 +837,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    /* Create a Net used for the Creation of the Process Model. */
-    private CanonicalProcessType createNet(CanonisedProcess cpf, NetType net) {
-        CanonicalProcessType cpt = new CanonicalProcessType();
-
-        cpt.setUri(net.getId());
-        cpt.setName(cpf.getCpt().getName());
-        cpt.setAuthor(cpf.getCpt().getAuthor());
-        cpt.setDataTypes(cpf.getCpt().getDataTypes());
-        cpt.setCreationDate(cpf.getCpt().getCreationDate());
-        cpt.setModificationDate(cpf.getCpt().getModificationDate());
-
-        cpt.getNet().add(net);
-        cpt.getRootIds().addAll(cpf.getCpt().getRootIds());
-        cpt.getAttribute().addAll(cpf.getCpt().getAttribute());
-        cpt.getResourceType().addAll(cpf.getCpt().getResourceType());
-
-        return cpt;
-    }
-
-    /* Updates the Node Sub processes if they have any. */
-    private void createSubProcessReferences(CanonisedProcess cpf, Map<String, ProcessModelVersion> models) {
-        for (NetType net : cpf.getCpt().getNet()) {
-            for (NodeType nodeType : net.getNode()) {
-                if ((nodeType instanceof TaskType) && ((TaskType) nodeType).getSubnetId() != null) {
-                    Node node = findNode(nodeType.getId(), models);
-                    if (node != null) {
-                        node.setSubProcess(models.get(((TaskType) nodeType).getSubnetId()));
-                    } else {
-                        LOGGER.debug("Tried to find a node that doesn't exist: " + nodeType.getId());
-                    }
-                }
-            }
-        }
-    }
-
-
-    /* Create Net records so we can determine the root processes for a model. */
-    private void createRootProcessReferences(Process process, CanonisedProcess cpf, Map<String, ProcessModelVersion> models) {
-        if (cpf.getCpt().getNet().size() == 1) {
-            createNetRecord(process, models, cpf.getCpt().getNet().get(0));
-        } else {
-            for (NetType netType : cpf.getCpt().getNet()) {
-                if (cpf.getCpt().getRootIds() != null) {
-                    for (String rootId : cpf.getCpt().getRootIds()) {
-                        if (rootId.equals(netType.getId())) {
-                            createNetRecord(process, models, netType);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    /* Create a net Record for the Process Model. */
-    private void createNetRecord(Process process, Map<String, ProcessModelVersion> models, NetType netType) {
-        ProcessModelVersion pmv = models.get(netType.getId());
-
-        if (pmv != null) {
-            Net net = new Net();
-            net.setNetUri(netType.getId());
-            net.setProcess(process);
-            net.setProcessModelVersion(pmv);
-
-            pmv.setNet(net);
-            process.getNets().add(net);
-
-            netRepo.save(net);
-        }
-    }
-
-    /* Finds a node in the maybe multiple process model versions by it's URI. */
-    private Node findNode(final String nodeUri, final Map<String, ProcessModelVersion> models) {
-        Node found = null;
-        for (ProcessModelVersion pmv : models.values()) {
-            for (FragmentVersion fv : pmv.getFragmentVersions()) {
-                for (Node node : fv.getContent().getNodes()) {
-                    if (node.getUri().equals(nodeUri)) {
-                        found = node;
-                        break;
-                    }
-                }
-            }
-        }
-        return found;
-    }
-
 
     private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
             Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException {
@@ -969,7 +871,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
         }
 
-        Map<String, String> childMappings = new HashMap<String, String>(0);
+        Map<String, String> childMappings = new HashMap<>(0);
         Set<FragmentVersionDag> childFragmentVersionDags = fragmentVersion.getChildFragmentVersionDags();
         for (FragmentVersionDag childFragment : childFragmentVersionDags) {
             childMappings.put(childFragment.getPocketId(), childFragment.getChildFragmentVersion().getId().toString());
@@ -1004,35 +906,13 @@ public class ProcessServiceImpl implements ProcessService {
             Set<FragmentVersion> composingFragments, final Double newVersionNumber) throws RepositoryException {
         try {
             ProcessModelVersion pdo = addProcessModelVersion(pmv.getProcessBranch(), rootFragment, newVersionNumber, 0, 0);
-            //ProcessDAO.addProcessFragmentMappings(pdo.getProcessModelVersionId(), composingFragmentIds);
+            for (FragmentVersion fragVersion : composingFragments) {
+                fragVersion.addProcessModelVersion(pdo);
+                pdo.addFragmentVersion(fragVersion);
+            }
         } catch (ExceptionDao de) {
             throw new RepositoryException(de);
         }
-    }
-
-    /* From the list of process model versions, it returns the first one it finds. */
-    private ProcessModelVersion findRootProcessModelVersion(List<ProcessModelVersion> pmVersion) {
-        ProcessModelVersion root = null;
-        if (pmVersion != null && !pmVersion.isEmpty()) {
-            for (ProcessModelVersion pmv : pmVersion) {
-                if (pmv.getNet() != null) {
-                    root = pmv;
-                }
-            }
-        }
-        return root;
-    }
-
-    /* Finds the NetType for the PMV passed in or returns null. */
-    private NetType findNetTypeForPMV(List<NetType> nets, ProcessModelVersion pmv) {
-        NetType netType = null;
-        for (NetType net : nets) {
-            if (net.getId().equals(pmv.getOriginalId())) {
-                netType = net;
-                break;
-            }
-        }
-        return netType;
     }
 
 }

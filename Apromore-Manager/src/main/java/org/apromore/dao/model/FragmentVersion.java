@@ -176,6 +176,9 @@ public class FragmentVersion implements Serializable {
         this.processModelVersions = processModelVersions;
     }
 
+    public void addProcessModelVersion(final ProcessModelVersion processModelVersion) {
+        this.processModelVersions.add(processModelVersion);
+    }
 
 
     @ManyToOne

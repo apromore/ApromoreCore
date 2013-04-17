@@ -29,7 +29,6 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderVersionVersion(version));
         listItem.appendChild(renderVersionLastUpdate(version));
         listItem.appendChild(renderVersionAnnotations(version));
-        listItem.appendChild(renderVersionRanking(version));
     }
 
     private Component renderVersionRanking(VersionSummaryType version) {
