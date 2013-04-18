@@ -100,6 +100,7 @@ public class UserSessionManager {
         Executions.getCurrent().getSession().setAttribute(TREE, folders);
     }
 
+    @SuppressWarnings("unchecked")
     public static List<FolderType> getTree() {
         if (Executions.getCurrent().getSession().getAttribute(TREE) != null) {
             return (List<FolderType>) Executions.getCurrent().getSession().getAttribute(TREE);

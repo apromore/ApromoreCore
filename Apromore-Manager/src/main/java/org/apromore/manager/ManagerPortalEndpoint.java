@@ -495,7 +495,7 @@ public class ManagerPortalEndpoint {
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
                     editType.getVersionNumber(), editType.getOriginalVersionNumber(), editType.isCreateNewBranch(),
-                    secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess, native_is);
+                    secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
 
             result.setCode(0);
             result.setMessage("");
@@ -652,7 +652,7 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess, handler.getInputStream(),
+            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
                     domain, "", creationDate, lastUpdate);
             ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
                     pmv.getProcessBranch().getBranchName(), pmv.getVersionNumber(), nativeType, domain, creationDate, lastUpdate, username);

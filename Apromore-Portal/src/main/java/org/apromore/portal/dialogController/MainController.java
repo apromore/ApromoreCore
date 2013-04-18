@@ -26,7 +26,6 @@ import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -124,7 +123,7 @@ public class MainController extends BaseController {
             this.host = properties.getProperty("Host");
             this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
             this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
-            UserSessionManager.setMainController(this);
+            setMainController(this);
             //this.listView.setVisible(true);
             this.pagingandbuttons.setVisible(true);
             //this.workspaceOptionsPanel.setVisible(true);
@@ -157,8 +156,8 @@ public class MainController extends BaseController {
 
     public void loadWorkspace() {
         updateActions();
-        String userId = UserSessionManager.getCurrentUser().getId();
-        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+        String userId = getCurrentUser().getId();
+        int currentParentFolderId = getCurrentFolder() == null || getCurrentFolder().getId() == 0 ? 0 : getCurrentFolder().getId();
 
         this.loadTree();
 
@@ -166,13 +165,13 @@ public class MainController extends BaseController {
         //List<ProcessSummaryType> availableProcesses = getService().getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
 
         //Html html = (Html) (this.getFellow("folders"));
-        if (UserSessionManager.getCurrentFolder() != null) {
-            FolderType folder = UserSessionManager.getCurrentFolder();
+        if (getCurrentFolder() != null) {
+            FolderType folder = getCurrentFolder();
             folder.getFolders().clear();
             for (FolderType newFolder : folders) {
                 folder.getFolders().add(newFolder);
             }
-            UserSessionManager.setCurrentFolder(folder);
+            setCurrentFolder(folder);
         }
 
         //buildWorkspaceControls(html, folders, availableProcesses);
@@ -180,8 +179,8 @@ public class MainController extends BaseController {
     }
 
     public void loadTree() {
-        List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
-        UserSessionManager.setTree(folders);
+        List<FolderType> folders = this.getService().getWorkspaceFolderTree(getCurrentUser().getId());
+        setTree(folders);
         this.navigation.loadWorkspace();
     }
 
@@ -230,27 +229,28 @@ public class MainController extends BaseController {
      * @param version
      * @throws Exception
      */
-    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult, final ProcessSummaryType process, final VersionSummaryType version) {
+    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult, final ProcessSummaryType process,
+               final VersionSummaryType version) {
         int folderId;
 
         if (isQueryResult) {
             clearProcessVersions();
         }
-        if (UserSessionManager.getCurrentFolder() == null) {
+        if (getCurrentFolder() == null) {
             folderId = 0;
         } else {
-            folderId = UserSessionManager.getCurrentFolder().getId();
+            folderId = getCurrentFolder().getId();
         }
 
         // TODO switch to process query result view
         switchToProcessSummaryView();
-        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
+        List<FolderType> subFolders = getService().getSubFolders(getCurrentUser().getId(), folderId);
         ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, processSummaries, isQueryResult, process, version);
     }
 
     // disable/enable features depending on user status
     public void updateActions() {
-        Boolean connected = UserSessionManager.getCurrentUser() != null;
+        Boolean connected = getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
         @SuppressWarnings("unchecked")
@@ -276,10 +276,10 @@ public class MainController extends BaseController {
     }
 
     public void reloadProcessSummaries() {
-        ProcessSummariesType processSummaries = new ProcessSummariesType(); //getService().readProcessSummaries("");
+        ProcessSummariesType processSummaries = new ProcessSummariesType();
         processSummaries.getProcessSummary().clear();
-        UserType user = UserSessionManager.getCurrentUser();
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        UserType user = getCurrentUser();
+        FolderType currentFolder = getCurrentFolder();
 
         List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
         for (ProcessSummaryType processSummary : processSummaryTypes) {
@@ -292,9 +292,9 @@ public class MainController extends BaseController {
         } else {
             message = " process.";
         }
-        this.displayMessage(processSummaries.getProcessSummary().size() + message);
-        this.simplesearch.clearSearches();
-        this.displayProcessSummaries(processSummaries, false, null, null);
+        displayMessage(processSummaries.getProcessSummary().size() + message);
+        simplesearch.clearSearches();
+        displayProcessSummaries(processSummaries, false, null, null);
 
         loadWorkspace();
     }
@@ -374,7 +374,7 @@ public class MainController extends BaseController {
         editSession.setNativeType(nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
-        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+        editSession.setUsername(getCurrentUser().getUsername());
 
         editSession.setOriginalBranchName(version.getName());
         editSession.setVersionNumber(version.getVersionNumber());
