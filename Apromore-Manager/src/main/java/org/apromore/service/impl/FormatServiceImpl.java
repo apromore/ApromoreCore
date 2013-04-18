@@ -2,7 +2,7 @@ package org.apromore.service.impl;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.apromore.dao.AnnotationRepository;
@@ -65,9 +65,9 @@ public class FormatServiceImpl implements FormatService {
 
     /**
      * @see org.apromore.service.FormatService#findNativeType(String)
-     *      {@inheritDoc}
-     *      <p/>
-     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     * {@inheritDoc}
+     * <p/>
+     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     public NativeType findNativeType(String nativeType) {
@@ -75,15 +75,17 @@ public class FormatServiceImpl implements FormatService {
     }
 
     /**
-     * @see org.apromore.service.FormatService#storeNative(String, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, String, org.apromore.service.model.CanonisedProcess)
-     *      {@inheritDoc}
+     * @see org.apromore.service.FormatService#storeNative(String, org.apromore.dao.model.ProcessModelVersion, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, String, org.apromore.service.model.CanonisedProcess)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public void storeNative(String procName, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
-            NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException {
+    public void storeNative(String procName, ProcessModelVersion pmv, String created, String lastUpdate, User user,
+            NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException, IOException {
         //InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
-        String nativeString = StreamUtil.inputStream2String(cpf).trim();
+        cp.getOriginal().reset();
+
+        String nativeString = StreamUtil.inputStream2String(cp.getOriginal()).trim();
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
 
         Native nat = new Native();

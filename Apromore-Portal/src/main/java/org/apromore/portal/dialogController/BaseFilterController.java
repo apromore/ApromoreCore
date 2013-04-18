@@ -2,18 +2,15 @@ package org.apromore.portal.dialogController;
 
 public class BaseFilterController extends BaseController {
 
-	private static final long serialVersionUID = -7879730927994569217L;
-	
-	private final MainController mainController;
+    private static final long serialVersionUID = -7879730927994569217L;
 
-	public BaseFilterController(MainController mainController) {
-		super();
-		this.mainController = mainController;
-		setHflex("true");
-		setVflex("true");
-	}
+    private final MainController mainController;
 
-	public MainController getMainController() {
-		return mainController;
-	}
+    public BaseFilterController(MainController mainController) {
+        super();
+        this.mainController = mainController;
+        setHflex("true");
+        setVflex("true");
+    }
+
 }

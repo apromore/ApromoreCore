@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class CanonisedProcess {
 
+    private InputStream original;
+
     private InputStream cpf;
     private CanonicalProcessType cpt;
 
@@ -25,27 +27,23 @@ public class CanonisedProcess {
 
     private List<PluginMessage> messages;
 
-    /**
-     * Public Constructor.
-     */
+
     public CanonisedProcess() {
     }
 
 
-    /**
-     * Returns the Annotation.
-     *
-     * @return the annotation
-     */
+    public InputStream getOriginal() {
+        return original;
+    }
+
+    public void setOriginal(final InputStream newOriginal) {
+        this.original = newOriginal;
+    }
+
     public InputStream getAnf() {
         return anf;
     }
 
-    /**
-     * Sets the Annotation.
-     *
-     * @param anf the annotation
-     */
     public void setAnf(final InputStream anf) {
         this.anf = anf;
     }
@@ -66,20 +64,10 @@ public class CanonisedProcess {
         this.ant = ant;
     }
 
-    /**
-     * Returns the Canonical process model.
-     *
-     * @return the model in canonical format
-     */
     public InputStream getCpf() {
         return cpf;
     }
 
-    /**
-     * Sets the Canonical format.
-     *
-     * @param cpf the canonical format
-     */
     public void setCpf(final InputStream cpf) {
         this.cpf = cpf;
     }

@@ -1,17 +1,25 @@
 package org.apromore.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.model.*;
-import org.apromore.exception.*;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
+import org.apromore.exception.ExceptionDao;
+import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.ImportException;
+import org.apromore.exception.LockFailedException;
+import org.apromore.exception.RepositoryException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -38,7 +46,6 @@ public interface ProcessService {
      * @param versionNumber the process version number.
      * @param nativeType    the native process format type
      * @param cpf           the canonised process
-     * @param nativeXml     the original native process XML
      * @param domain        the domain of the model
      * @param documentation any documentation that is required
      * @param created       the time created
@@ -48,8 +55,7 @@ public interface ProcessService {
      *
      */
     ProcessModelVersion importProcess(String username, Integer folderId, String processName, Double versionNumber, String nativeType,
-            CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate)
-            throws ImportException;
+            CanonisedProcess cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.
@@ -108,11 +114,10 @@ public interface ProcessService {
      * @param lockStatus is this model now going to be locked?
      * @param nativeType the native format.
      * @param cpf the process model graph.
-     * @param nativeIs the native stream.
      */
     ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName, Double versionNumber,
-            Double originalVersionNumber, Boolean createNewBranch, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf,
-            InputStream nativeIs) throws ImportException, RepositoryException;
+            Double originalVersionNumber, Boolean createNewBranch, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
+            throws ImportException, RepositoryException;
 
 
     /**

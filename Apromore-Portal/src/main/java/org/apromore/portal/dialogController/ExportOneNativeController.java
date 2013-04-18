@@ -71,7 +71,8 @@ public class ExportOneNativeController extends BaseController {
         this.exportNativeW.setId(id);
         Grid exportNatG = (Grid) this.exportNativeW.getFirstChild().getFirstChild();
         Rows exportNatRs = (Rows) exportNatG.getFirstChild().getNextSibling();
-        Row processNameR = (Row) exportNatRs.getFirstChild();
+        Row warning = (Row) exportNatRs.getFirstChild();
+        Row processNameR = (Row) warning.getFirstChild();
         Row versionNameR = (Row) processNameR.getNextSibling();
         Row formatsR = (Row) versionNameR.getNextSibling();
         this.annotationsR = (Row) formatsR.getNextSibling();

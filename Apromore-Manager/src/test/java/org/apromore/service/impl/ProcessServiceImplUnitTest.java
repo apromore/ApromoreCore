@@ -5,8 +5,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
 import java.util.HashSet;
 
 import org.apromore.dao.AnnotationRepository;
@@ -18,7 +16,7 @@ import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Native;
-import org.apromore.graph.canonical.Canonical;
+import org.apromore.dao.model.NativeType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanonicalConverter;
@@ -49,45 +47,29 @@ public class ProcessServiceImplUnitTest {
 
     private ProcessServiceImpl service;
 
-    private AnnotationRepository annDao;
-    private ContentRepository contDao;
     private NativeRepository natDao;
-    private ProcessBranchRepository branchDao;
     private ProcessRepository proDao;
-    private FragmentVersionRepository fvDao;
-    private FragmentVersionDagRepository fvdDao;
-    private ProcessModelVersionRepository pmvDao;
-    private CanonicalConverter convertor;
-    private CanoniserService canSrv;
-    private FragmentService fSrv;
-    private LockService lSrv;
-    private UserService usrSrv;
-    private FormatService fmtSrv;
-    private ComposerService composerSrv;
-    private DecomposerService decomposerSrv;
-    private UserInterfaceHelper ui;
-    private WorkspaceService workspaceSrv;
 
     @Before
     public final void setUp() throws Exception {
-        annDao = createMock(AnnotationRepository.class);
-        contDao = createMock(ContentRepository.class);
+        AnnotationRepository annDao = createMock(AnnotationRepository.class);
+        ContentRepository contDao = createMock(ContentRepository.class);
         natDao = createMock(NativeRepository.class);
-        branchDao = createMock(ProcessBranchRepository.class);
+        ProcessBranchRepository branchDao = createMock(ProcessBranchRepository.class);
         proDao = createMock(ProcessRepository.class);
-        fvDao = createMock(FragmentVersionRepository.class);
-        fvdDao = createMock(FragmentVersionDagRepository.class);
-        pmvDao = createMock(ProcessModelVersionRepository.class);
-        usrSrv = createMock(UserService.class);
-        fmtSrv = createMock(FormatService.class);
-        canSrv = createMock(CanoniserService.class);
-        lSrv = createMock(LockService.class);
-        convertor = createMock(CanonicalConverter.class);
-        composerSrv = createMock(ComposerService.class);
-        decomposerSrv = createMock(DecomposerService.class);
-        ui = createMock(UserInterfaceHelper.class);
-        fSrv = createMock(FragmentService.class);
-        workspaceSrv = createMock(WorkspaceService.class);
+        FragmentVersionRepository fvDao = createMock(FragmentVersionRepository.class);
+        FragmentVersionDagRepository fvdDao = createMock(FragmentVersionDagRepository.class);
+        ProcessModelVersionRepository pmvDao = createMock(ProcessModelVersionRepository.class);
+        UserService usrSrv = createMock(UserService.class);
+        FormatService fmtSrv = createMock(FormatService.class);
+        CanoniserService canSrv = createMock(CanoniserService.class);
+        LockService lSrv = createMock(LockService.class);
+        CanonicalConverter convertor = createMock(CanonicalConverter.class);
+        ComposerService composerSrv = createMock(ComposerService.class);
+        DecomposerService decomposerSrv = createMock(DecomposerService.class);
+        UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
+        FragmentService fSrv = createMock(FragmentService.class);
+        WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
 
         service = new ProcessServiceImpl(annDao, contDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
@@ -139,26 +121,28 @@ public class ProcessServiceImplUnitTest {
         Integer processId = 123;
         String version = "1.2";
         String name = "processName";
-        String format = "Annotations-BPMN";
+        String format = "EPML 2.0";
         String subStr = "MN";
         Double versionNumber = 1.0;
 
-        Canonical cpf = new Canonical();
+        NativeType natType = new NativeType();
+        natType.setNatType("EPML 2.0");
 
         Native nat = new Native();
         nat.setContent("<xml/>");
 
-        DataSource result = new ByteArrayDataSource("<xml/>", "text/xml");
+        org.apromore.dao.model.Process process = new org.apromore.dao.model.Process();
+        process.setId(processId);
+        process.setNativeType(natType);
 
+        expect(proDao.findOne(processId)).andReturn(process);
         expect(natDao.getNative(processId, versionNumber, format)).andReturn(nat);
-        //expect(rSrv.getCurrentProcessModel(name, version, false)).andReturn(cpf);
-        //expect(annDao.getAnnotation(processId, version, subStr)).andReturn(annotation);
 
-        replay(natDao);
+        replay(proDao, natDao);
 
         ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format, subStr, true, new HashSet<RequestParameterType<?>>());
 
-        verify(natDao);
+        verify(proDao, natDao);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }
