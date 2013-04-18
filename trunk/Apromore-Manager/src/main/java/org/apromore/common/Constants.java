@@ -2,11 +2,9 @@ package org.apromore.common;
 
 public interface Constants {
 
-    // For the DB JNDI Lookup
-    public static final String CONTEXT = "java:comp/env/jdbc/ApromoreDB";
+    public static final String XML_MIMETYPE = "text/xml";
 
     public static final String INITIAL_ANNOTATION = "Initial";
-    public static final String ANNOTATIONS = "Annotations";
     public static final String CANONICAL = "Canonical";
 
     public static final String TRUNK_NAME = "MAIN";
@@ -16,8 +14,6 @@ public interface Constants {
     public static final String EVENT = "Event";
     public static final String POCKET = "Pocket";
 
-    public static final String URI = "uri";
-    public static final String NAME = "uri";
     public static final String PROCESS_NAME = "ProcessName";
     public static final String BRANCH_NAME = "BranchName";
     public static final String BRANCH_ID = "BranchID";

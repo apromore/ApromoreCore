@@ -85,7 +85,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     /*
      * (non-Javadoc)
      *
-     * @see org.apromore.service.CanoniserService#canonise(java.lang.String, java.lang.String, java.io.InputStream, java.util.Set)
+     * @see org.apromore.service.CanoniserService#canonise(java.lang.String, java.io.InputStream, java.util.Set)
      */
     @Override
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
@@ -93,12 +93,15 @@ public class CanoniserServiceImpl implements CanoniserService {
         LOGGER.info("Canonising process with native type {}", nativeType);
         LOGGER.info(StreamUtil.convertStreamToString(processXml));
 
-        List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
-        List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
+        List<CanonicalProcessType> cpfList = new ArrayList<>();
+        List<AnnotationsType> anfList = new ArrayList<>();
         CanonisedProcess cp = new CanonisedProcess();
+
+        cp.setOriginal(processXml);
 
         try {
             processXml.reset();
+            cp.setOriginal(processXml);
             Canoniser c = canProvider.findByNativeType(nativeType);
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);
@@ -156,8 +159,6 @@ public class CanoniserServiceImpl implements CanoniserService {
             decanonisedProces.setNativeFormat(nativeXmlIs);
             decanonisedProces.setMessages(pluginResult.getPluginMessage());
             return decanonisedProces;
-        } catch (PluginNotFoundException e) {
-            throw new CanoniserException("Could not deCanonise " + nativeType, e);
         } catch (PluginException e) {
             throw new CanoniserException("Could not deCanonise " + nativeType, e);
         }

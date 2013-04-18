@@ -272,8 +272,4 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    public MainController getMainController() {
-        return mainController;
-    }
-
 }

@@ -1,6 +1,6 @@
 <!-- exportnative window has exportOneNativeController.java as a controller 
-	components id and listbox to choose native type implemented by the controller 
-	one controller per process version to export -->
+    components id and listbox to choose native type implemented by the controller 
+    one controller per process version to export -->
 
 <window title="Export process model" width="500px" closable="true"
         position="center">
@@ -11,6 +11,9 @@
                 <column width="70%"></column>
             </columns>
             <rows>
+                <row spans="2">
+                    <label value="Choosing a Native Format different to the Original Format will result in loss of information in the returned model." />
+                </row>
                 <row>
                     <label value="Process name" width="100%"/>
                     <label width="100%"/>

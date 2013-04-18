@@ -58,7 +58,7 @@ public class UIHelperImplIntgTest {
     @Test
     @Rollback
     public void TestUIHelper() throws Exception {
-        createProcessModel("testUI", "1.0");
+        createProcessModel("testUI");
 
         ProcessSummariesType processSummaries = uiSrv.buildProcessSummaryList("", null);
 
@@ -79,7 +79,7 @@ public class UIHelperImplIntgTest {
 
 
 
-    private void createProcessModel(String name, String version) throws Exception {
+    private void createProcessModel(String name) throws Exception {
         String nativeType = "EPML 2.0";
 
         InputStream input = ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml");
@@ -93,7 +93,7 @@ public class UIHelperImplIntgTest {
         String created = "01/01/2011";
         String lastUpdate = "01/01/2011";
 
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, nativeType, cp, input, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, nativeType, cp, domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
     }

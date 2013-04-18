@@ -141,12 +141,12 @@ public class SaveAsDialogController extends BaseController {
                     }
                     getService().importProcess(userName, folderId, nativeType, processName, versionNo, is, domain, null, created, null,
                             pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
-                    Messagebox.show("Saved as : Model Name : " + processName + ", Branch Name : " + branchName.getText(), "Save As Outcome",
+                    Messagebox.show("Saved as: Model Name : " + processName + ", Branch Name : " + branchName.getText(), "Save As",
                             Messagebox.OK, Messagebox.INFORMATION);
                 } else {
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, process.getName(),
                             editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, createNewBranch, versionName, is);
-                    Messagebox.show("Saved as : Branch Name : " + branch, "Save Outcome", Messagebox.OK, Messagebox.INFORMATION);
+                    Messagebox.show("Saved as: Branch Name : " + branch, "Save", Messagebox.OK, Messagebox.INFORMATION);
                 }
                 closePopup();
             }
