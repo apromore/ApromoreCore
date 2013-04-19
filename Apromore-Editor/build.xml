@@ -257,6 +257,9 @@
         <junit printsummary="yes" fork="yes">
             <classpath>
                 <path refid="executable.path"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/epml-schema.jar"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
+                <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-epc.jar"/>
                 <pathelement location="${basedir}/platform/lib/junit-4.6.jar"/>
             </classpath>
             <formatter type="plain"/>
@@ -267,6 +270,14 @@
                 <fileset dir="platform extensions/bpmn20xmlbasic/src">
                     <include name="**/*Test.java"/>
                     <exclude name="**/BPMNSerializationTest.java"/>
+
+                    <!-- The following tests date from the configurable BPMN incarnation of Signavio -->
+                    <exclude name="**/BPMN2DiagramConverterTest.java"/>
+                    <exclude name="**/ConfigurationAlgorithmTest.java"/>
+                    <exclude name="**/Diagram2BpmnConverterTest.java"/>
+                </fileset>
+                <fileset dir="platform extensions/epc/src">
+                    <include name="**/*Test.java"/>
                 </fileset>
             </batchtest>
         </junit>
