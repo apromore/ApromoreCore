@@ -501,10 +501,18 @@ public class ProcessServiceImpl implements ProcessService {
                 LOGGER.debug("Retrieving the Process Model of the current version of " + entry.getName() + " - " + entry.getValue() + " to be deleted.");
                 pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getName(), entry.getValue());
 
-                Process process = pvid.getProcessBranch().getProcess();
-                processRepo.delete(process);
+                if (pvid != null) {
+                    Process process = pvid.getProcessBranch().getProcess();
+                    Set<ProcessBranch> branch = process.getProcessBranches();
 
-                deleteProcessModelVersion(pvid);
+                    // Only delete the version selected, but if there is only a single version then remove all of the process
+                    if (branch.size() > 1 || (branch.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
+                        deleteProcessModelVersion(pvid);
+                    } else {
+                        processRepo.delete(process);
+                        deleteProcessModelVersion(pvid);
+                    }
+                }
             } catch (Exception e) {
                 String msg = "Failed to delete the current version of the branch " + entry.getValue() + " of the process model " + entry.getValue();
                 LOGGER.error(msg, e);
