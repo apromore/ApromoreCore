@@ -161,7 +161,7 @@ public class ProcessModelVersion implements Serializable {
 
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "nativeId", referencedColumnName = "id")
     public Native getNativeDocument() {
         return this.nativeDocument;
