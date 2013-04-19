@@ -26,8 +26,8 @@ import org.zkoss.zk.ui.event.EventListener;
 public class SignavioController extends BaseController {
 
     private final String JSON_DATA = "jsonData";
-    public  static EditSessionType editSession;
-    public  static MainController mainC;
+    public static EditSessionType editSession;
+    public static MainController mainC;
     public static ProcessSummaryType process;
     public static VersionSummaryType version;
     private boolean isNormalSave;
@@ -37,6 +37,41 @@ public class SignavioController extends BaseController {
 
     public SignavioController() {
         super();
+
+        Map<String, String> param = new HashMap<>();
+        try {
+            ExportFormatResultType exportResult =
+                    getService().exportFormat(editSession.getProcessId(),
+                            editSession.getProcessName(),
+                            editSession.getOriginalBranchName(),
+                            editSession.getVersionNumber(),
+                            editSession.getNativeType(),
+                            editSession.getAnnotation(),
+                            editSession.isWithAnnotation(),
+                            editSession.getUsername(), new HashSet<RequestParameterType<?>>());
+            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+            mainC.showPluginMessages(exportResult.getMessage());
+            this.setTitle(editSession.getProcessName());
+            param.put(JSON_DATA, data.replace("\n", "").trim());
+            param.put("url", getURL(editSession.getNativeType()));
+            param.put("importPath", getImportPath(editSession.getNativeType()));
+            param.put("exportPath", getExportPath(editSession.getNativeType()));
+
+            if (process.getOriginalNativeType().equals(editSession.getNativeType())) {
+                param.put("doAutoLayout", "false");
+            } else {
+                param.put("doAutoLayout", "true");
+            }
+            //if (editSession.isWithAnnotation()) {
+            //    param.put("doAutoLayout", "false");
+            //} else {
+            //    param.put("doAutoLayout", "true");
+            //}
+            Executions.getCurrent().pushArg(param);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         this.addEventListener("onSave", new EventListener() {
 
@@ -61,35 +96,6 @@ public class SignavioController extends BaseController {
                 }
             }
         });
-
-        Map<String, String> param = new HashMap<String, String>();
-        try {
-            ExportFormatResultType exportResult =
-                    getService().exportFormat(editSession.getProcessId(),
-                            editSession.getProcessName(),
-                            editSession.getOriginalBranchName(),
-                            editSession.getVersionNumber(),
-                            editSession.getNativeType(),
-                            editSession.getAnnotation(),
-                            editSession.isWithAnnotation(),
-                            editSession.getUsername(), new HashSet<RequestParameterType<?>>());
-            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-
-            this.mainC.showPluginMessages(exportResult.getMessage());
-            this.setTitle(editSession.getProcessName());
-            param.put(JSON_DATA, data.replace("\n", "").trim());
-            param.put("url", getURL(editSession.getNativeType()));
-            param.put("importPath", getImportPath(editSession.getNativeType()));
-            param.put("exportPath", getExportPath(editSession.getNativeType()));
-            //if (editSession.isWithAnnotation()) {
-            //    param.put("doAutoLayout", "false");
-            //} else {
-                param.put("doAutoLayout", "true");
-            //}
-            Executions.getCurrent().pushArg(param);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
