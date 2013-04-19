@@ -1,16 +1,22 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -25,6 +31,12 @@ import org.zkoss.zul.Paging;
 public abstract class BaseListboxController extends BaseController {
 
     private static final long serialVersionUID = -4693075788311730404L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseListboxController.class);
+
+    private static final String ALERT = "Alert";
+    private static final String FOLDER_DELETE = "Are you sure you want to delete selected Folder(s) and all it's contents?";
+    private static final String PROCESS_DELETE = "Are you sure you want to delete selected Process(es)? If no version has been select the latest version will be removed.";
+    private static final String FOLDER_PROCESS_DELETE = "Are you sure you want to delete selected Folders and Processes?";
 
     private final Listbox listBox;
 
@@ -244,17 +256,46 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void removeFolder() throws Exception {
-        Messagebox.show("Are you sure you want to delete selected item(s)?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+        // See if the user has mixed folders and process models. we handle everything differently.
+        MainController mainController = UserSessionManager.getMainController();
+        ArrayList<FolderType> folders =  mainController.getMenu().getSelectedFolders();
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> processes =  mainController.getMenu().getSelectedProcessVersions();
+
+        if (doesSelectionContainFoldersAndProcesses(folders, processes)) {
+            showMessageFoldersAndProcessesDelete(mainController, folders);
+        } else {
+            if (folders != null && !folders.isEmpty()) {
+                showMessageFolderDelete(mainController, folders);
+            } else if (processes != null && !processes.isEmpty()) {
+                showMessageProcessesDelete(mainController);
+            } else {
+               LOGGER.error("Nothing selected to delete?");
+            }
+        }
+        mainController.loadWorkspace();
+    }
+
+    /* Show the message tailored to deleting one or more folders. */
+    private void showMessageProcessesDelete(final MainController mainController) throws Exception {
+        Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
-                        MainController mainController = UserSessionManager.getMainController();
-                        List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
-                        for (int folderId : folderIds) {
-                            mainController.getService().deleteFolder(folderId);
-                        }
-                        mainController.getMenu().deleteSelectedProcessVersions();
-                        mainController.loadWorkspace();
+                        deleteProcesses(mainController);
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });    }
+
+    /* Show the message tailored to deleting one or more folders. */
+    private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
+        Messagebox.show(FOLDER_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteFolders(folders, mainController);
                         break;
                     case Messagebox.NO:
                         break;
@@ -263,6 +304,23 @@ public abstract class BaseListboxController extends BaseController {
         });
     }
 
+    /* Show a message tailored to deleting a combo of folders and processes */
+    private void showMessageFoldersAndProcessesDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
+        Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+            public void onEvent(Event evt) throws Exception {
+                switch (((Integer) evt.getData())) {
+                    case Messagebox.YES:
+                        deleteFolders(folders, mainController);
+                        deleteProcesses(mainController);
+                        break;
+                    case Messagebox.NO:
+                        break;
+                }
+            }
+        });
+    }
+
+    /* Setup the Security controller. */
     protected void security() throws InterruptedException {
         this.mainController.eraseMessage();
         try {
@@ -272,4 +330,22 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+
+
+    /* Removes all the selected processes, either the select version or the latest if no version is selected. */
+    private void deleteProcesses(MainController mainController) throws Exception {
+        mainController.getMenu().deleteSelectedProcessVersions();
+    }
+
+    /* Removes all the selected folders and the containing folders and processes. */
+    private void deleteFolders(ArrayList<FolderType> folders, MainController mainController) {
+        for (FolderType folderId : folders) {
+            mainController.getService().deleteFolder(folderId.getId());
+        }
+    }
+
+    /* Does the selection in the main detail list contain folders and processes. */
+    private boolean doesSelectionContainFoldersAndProcesses(ArrayList<FolderType> folders, HashMap<ProcessSummaryType, List<VersionSummaryType>> processes) throws Exception {
+        return (folders != null && !folders.isEmpty()) && (processes != null && !processes.isEmpty());
+    }
 }

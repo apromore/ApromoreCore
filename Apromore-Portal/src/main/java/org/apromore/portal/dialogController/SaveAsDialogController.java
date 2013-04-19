@@ -154,7 +154,7 @@ public class SaveAsDialogController extends BaseController {
             Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
         }
 
-        this.mainC.reloadProcessSummaries();
+        //this.mainC.reloadProcessSummaries();
     }
 
 
