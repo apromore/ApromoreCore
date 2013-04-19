@@ -23,7 +23,7 @@
         <Header id="headercomp" />
 
         <borderlayout vflex="true">
-            <west id="leftPanel" title="Key word filter" size="35%" collapsible="true" flex="true" splittable="true">
+            <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" flex="true" splittable="true">
                 <borderlayout vflex="true" height="100%">
                     <north id="leftNorthPanel" flex="true">
                         <SimpleSearch id="simplesearchcomp"/>

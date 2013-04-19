@@ -16,6 +16,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Messagebox;
 
+@Deprecated
 public class WorkspaceOptionsController extends Menubar {
 
     private MainController mainController;

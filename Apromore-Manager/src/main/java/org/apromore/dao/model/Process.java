@@ -46,7 +46,6 @@ public class Process implements Serializable {
     private NativeType nativeType;
 
     private Set<EditSession> editSessions = new HashSet<>(0);
-    private Set<TempVersion> tempVersions = new HashSet<>(0);
     private Set<ProcessBranch> processBranches = new HashSet<>(0);
     private Set<ProcessUser> processUsers = new HashSet<>(0);
 
@@ -147,15 +146,6 @@ public class Process implements Serializable {
 
     public void setEditSessions(final Set<EditSession> newEditSessions) {
         this.editSessions = newEditSessions;
-    }
-
-    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<TempVersion> getTempVersions() {
-        return this.tempVersions;
-    }
-
-    public void setTempVersions(final Set<TempVersion> tempVersions) {
-        this.tempVersions = tempVersions;
     }
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
