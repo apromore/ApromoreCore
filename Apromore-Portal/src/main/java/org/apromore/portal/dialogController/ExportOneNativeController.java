@@ -72,7 +72,7 @@ public class ExportOneNativeController extends BaseController {
         Grid exportNatG = (Grid) this.exportNativeW.getFirstChild().getFirstChild();
         Rows exportNatRs = (Rows) exportNatG.getFirstChild().getNextSibling();
         Row warning = (Row) exportNatRs.getFirstChild();
-        Row processNameR = (Row) warning.getFirstChild();
+        Row processNameR = (Row) warning.getNextSibling();
         Row versionNameR = (Row) processNameR.getNextSibling();
         Row formatsR = (Row) versionNameR.getNextSibling();
         this.annotationsR = (Row) formatsR.getNextSibling();
@@ -128,23 +128,23 @@ public class ExportOneNativeController extends BaseController {
             cbi.setLabel(this.formats_ext.get(extension));
             cbi.setValue(this.formats_ext.get(extension));
         }
+        formatsLB.setSelectedItem((Listitem) formatsLB.getFirstChild());
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.exportNativeW.getFellow("canoniserPropertiesGrid"));
 
-        this.formatsLB.setSelectedItem((Listitem) this.formatsLB.getFirstChild());
-        this.formatsLB.addEventListener("onSelect", new EventListener() {
+        formatsLB.addEventListener("onSelect", new EventListener() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         updateActions();
                     }
                 });
-        this.okB.addEventListener("onClick", new EventListener() {
+        okB.addEventListener("onClick", new EventListener() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         export();
                     }
                 });
-        this.exportNativeW.addEventListener("onOK", new EventListener() {
+        exportNativeW.addEventListener("onOK", new EventListener() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         export();
@@ -162,14 +162,14 @@ public class ExportOneNativeController extends BaseController {
                 cancelAll();
             }
         });
-        this.exportNativeW.doModal();
+        exportNativeW.doModal();
     }
 
 
     protected void updateActions() throws InterruptedException {
         this.okB.setDisabled(false);
-        // if the selected format is an available native format, display
-        // the choice for an annotation
+
+        // if the selected format is an available native format, display the choice for an annotation
         String selectedFormat = (String) this.formatsLB.getSelectedItem().getValue();
         if (formats_ext.containsValue(selectedFormat)) {
             this.annotationsR.setVisible(true);
@@ -188,7 +188,6 @@ public class ExportOneNativeController extends BaseController {
             canoniserInfos = getService().readCanoniserInfo(nativeType);
 
             if (canoniserInfos.size() >= 1) {
-
                 List<String> canoniserNames = new ArrayList<String>();
                 for (PluginInfo cInfo: canoniserInfos) {
                     canoniserNames.add(cInfo.getName());

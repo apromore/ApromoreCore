@@ -12,7 +12,7 @@
             </columns>
             <rows>
                 <row spans="2">
-                    <label value="Choosing a Native Format different to the Original Format will result in loss of information in the returned model." />
+                    <label value="Choosing a Native Format different to the Original Format may result in loss of information in the returned model." />
                 </row>
                 <row>
                     <label value="Process name" width="100%"/>
