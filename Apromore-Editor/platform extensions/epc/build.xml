@@ -31,6 +31,9 @@
                 <fileset dir=".">
                     <include name="**/*.jar"/>
                 </fileset>
+                <fileset dir="../../platform/lib">
+                    <include name="junit-4.6.jar"/>
+                </fileset>
             </classpath>
         </javac>
     </target>

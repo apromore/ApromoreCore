@@ -124,6 +124,11 @@
                         <scope>system</scope>
                         <systemPath>${java.home}/../lib/tools.jar</systemPath>
                     </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-junit</artifactId>
+                        <version>1.8.4</version>
+                    </dependency>
                 </dependencies>
                 <executions>
                     <execution>
@@ -139,6 +144,23 @@
                                 <ant target="build-all" dir="platform extensions" inheritall="false"/>
 
                                 <ant target="build-all-in-one-war" inheritall="false" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <target>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="test_classpath" refid="maven.test.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+
+                                <ant target="test" inheritall="false"/>
                             </target>
                         </configuration>
                         <goals>

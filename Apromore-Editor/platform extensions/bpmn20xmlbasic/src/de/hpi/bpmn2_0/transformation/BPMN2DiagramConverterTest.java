@@ -19,6 +19,7 @@ import javax.xml.transform.stream.StreamSource;
 import com.sun.xml.bind.IDResolver;
 import org.json.JSONException;
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.processconfiguration.ConfigurationAlgorithmTest;
@@ -48,6 +49,7 @@ public class BPMN2DiagramConverterTest {
      * Test the {@link BPMN2DiagramConverter#getDiagramFromBpmn20} method on
      * {@link ConfigurationAlgorithmTest#test1File}.
      */
+    @Ignore
     @Test public void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
 
         // Parse BPMN from XML to JAXB
