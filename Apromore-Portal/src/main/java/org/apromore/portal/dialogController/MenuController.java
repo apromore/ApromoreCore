@@ -254,6 +254,7 @@ public class MenuController extends Menubar {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             this.mainC.deleteProcessVersions(selectedProcessVersions);
+            mainC.clearProcessVersions();
         } else {
             this.mainC.displayMessage("No process version selected.");
         }

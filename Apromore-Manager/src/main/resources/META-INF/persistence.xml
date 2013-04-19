@@ -15,7 +15,6 @@
         <class>org.apromore.dao.model.NativeType</class>
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.SearchHistory</class>
-        <class>org.apromore.dao.model.TempVersion</class>
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Role</class>
         <class>org.apromore.dao.model.Permission</class>
