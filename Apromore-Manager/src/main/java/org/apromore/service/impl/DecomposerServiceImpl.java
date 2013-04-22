@@ -2,14 +2,22 @@ package org.apromore.service.impl;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
-import org.apromore.dao.model.Content;
+import org.apromore.common.Constants;
+import org.apromore.dao.EdgeMappingRepository;
+import org.apromore.dao.FragmentVersionDagRepository;
+import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.NodeMappingRepository;
+import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.EdgeMapping;
 import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.Node;
+import org.apromore.dao.model.NodeMapping;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.exception.PocketMappingException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.TreeVisitor;
 import org.apromore.graph.canonical.CPFEdge;
@@ -17,20 +25,13 @@ import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
-import org.apromore.service.FragmentService;
-import org.apromore.service.helper.ContentHandler;
-import org.apromore.service.helper.GraphPocketMapper;
 import org.apromore.service.helper.OperationContext;
-import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.FragmentNode;
 import org.apromore.service.utils.MutableTreeConstructor;
-import org.apromore.util.FragmentUtil;
-import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -46,36 +47,41 @@ public class DecomposerServiceImpl implements DecomposerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DecomposerServiceImpl.class);
 
     private ContentService cService;
-    private FragmentService fService;
-    private GraphPocketMapper pMapper;
-    private ContentHandler bcHandler;
+    private FragmentVersionRepository fvRepository;
+    private FragmentVersionDagRepository fvdRepository;
+    private NodeMappingRepository nmRepository;
+    private EdgeMappingRepository emRepository;
+
 
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param contentService Content Service.
-     * @param fragmentService Fragment Service.
+     * @param contentService  Content Service.
+     * @param fragmentVersionRepository Fragment Version Repo.
+     * @param fragmentVersionDagRepository Fragment Version Dag Repo.
+     * @param nodeMappingRepository Node Mapping Repo.
+     * @param edgeMappingRepository Edge mapping Repo.
      */
     @Inject
-    public DecomposerServiceImpl(final ContentService contentService, final FragmentService fragmentService,
-            final GraphPocketMapper pocketMapper, final @Qualifier("bondContentHandler") ContentHandler bondContentHandler) {
+    public DecomposerServiceImpl(final ContentService contentService, final FragmentVersionRepository fragmentVersionRepository,
+            final FragmentVersionDagRepository fragmentVersionDagRepository, final NodeMappingRepository nodeMappingRepository,
+            final EdgeMappingRepository edgeMappingRepository) {
         cService = contentService;
-        fService = fragmentService;
-        pMapper = pocketMapper;
-        bcHandler = bondContentHandler;
+        fvRepository = fragmentVersionRepository;
+        fvdRepository = fragmentVersionDagRepository;
+        nmRepository = nodeMappingRepository;
+        emRepository = edgeMappingRepository;
     }
 
 
     /**
      * @see DecomposerService#decompose(org.apromore.graph.canonical.Canonical, ProcessModelVersion)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Transactional(readOnly = false)
-    public FragmentVersion decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
+    public OperationContext decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
         try {
-            FragmentVersion root = null;
             TreeVisitor visitor = new TreeVisitor();
             OperationContext op = new OperationContext();
             op.setGraph(graph);
@@ -83,18 +89,11 @@ public class DecomposerServiceImpl implements DecomposerService {
 
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
-
-//            IOUtils.toFile("outputCPF.dot", graph.toDOT());
-//            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputCPF.png", graph.toDOT());
-//            IOUtils.toFile("outputRPST.dot", rpst.toDOT());
-//            IOUtils.invokeDOT("/Users/cameron/Development/logs", "outputRPST.png", rpst.toDOT());
-
             if (rf != null) {
-                root = decompose(modelVersion, rf, op);
-                cService.updateCancelNodes(op);
+                op = decompose(modelVersion, rf, op);
             }
 
-            return root;
+            return op;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
             LOGGER.error(msg, e);
@@ -104,105 +103,105 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Doing all the work of decomposing into the DB structure. */
     @SuppressWarnings("unchecked")
-    private FragmentVersion decompose(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op)
-            throws RepositoryException {
-        String keywords = "";
-        int fragmentSize = parent.getNodes().size();
-        String nodeType = FragmentUtil.getFragmentType(parent);
+    private OperationContext decompose(ProcessModelVersion pmv, final FragmentNode root, OperationContext op) throws RepositoryException {
+        Queue<FragmentNode> q = new LinkedList<>();
+        q.add(root);
 
-        Collection<FragmentNode> childFragments = parent.getChildren();
-        Map<String, String> childMappings = mapPocketChildId(modelVersion, parent, op, childFragments);  // pocket Id -> child Id
+        FragmentVersion rootfv = saveFragment(root);
+        op.setCurrentFragment(rootfv);
+        addElements(root, rootfv, pmv, op);
 
-        String hash = HashUtil.computeHash(parent, parent.getType(), op);
-        if (hash == null) {
-            return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
-        }
+        while (!q.isEmpty()) {
+            // add fragment -> element Id mappings to all non-root fragments
+            FragmentNode f = q.poll();
+            FragmentNode parent = f.getParent();
 
-        List<Content> matchingContents = cService.getContentByCode(hash);
-        if (matchingContents == null || matchingContents.isEmpty()) {
-            return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
-        }
+            if (parent != null) {
+                // we don't have to save the root again, or to save parent relationship of root
+                preprocessFragment(f);
+                FragmentVersion fv = saveFragment(f);
+                addElementMappings(fv, f, op);
 
-        // It's possible to have multiple contents with the same Hash.....Is this correct?
-        Content matchingContent = matchingContents.get(0);
-
-        Map<String, String> newChildMappings;
-        if (parent.getType().equals(TCType.BOND)) {
-            newChildMappings = new HashMap<String, String>();
-            // Currently returns -1, doesn't handle MEME only SESE.
-            int matchingBondFragmentId = bcHandler.matchFragment(parent, matchingContent, childMappings, newChildMappings);
-            if (matchingBondFragmentId != -1) {
-                return fService.getFragmentVersion(matchingBondFragmentId);
+                FragmentVersion parentfv = fvRepository.findFragmentVersionByUri(parent.getUri());
+                FragmentVersionDag dag = new FragmentVersionDag();
+                dag.setFragmentVersion(parentfv);
+                dag.setChildFragmentVersion(fv);
+                fvdRepository.save(dag);
             }
-        } else {
-            Map<String, String> pocketMappings = pMapper.mapPockets(parent, op.getGraph(), matchingContent);
-            if (pocketMappings == null) {
-                LOGGER.info("Could not map pockets of fragment with its matching fragment " + childMappings);
-                return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
-            }
-            try {
-                newChildMappings = FragmentUtil.remapChildren(childMappings, pocketMappings);
-            } catch (PocketMappingException e) {
-                LOGGER.error("Failed to remap pockets of the structure " + matchingContent + " to new child fragments.", e);
-                return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
-            }
-            FragmentVersion matchingFV = fService.getMatchingFragmentVersionId(matchingContent.getId(), newChildMappings);
-            if (matchingFV != null) {
-                return matchingFV;
+
+            Collection<FragmentNode> children = f.getChildren();
+            for (FragmentNode child : children) {
+                if (!child.getType().equals(TCType.TRIVIAL)) {
+                    q.add(child);
+                }
             }
         }
 
-        return addFragmentVersion(modelVersion, parent, hash, childMappings, fragmentSize, nodeType, keywords, op);
+        return op;
     }
 
-    /* Mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(ProcessModelVersion modelVersion, final FragmentNode parent, OperationContext op,
-            final Collection<FragmentNode> childFragments) throws RepositoryException {
-        Map<String, String> childMappings = new HashMap<String, String>();
-        for (FragmentNode child : childFragments) {
-            if (!TCType.TRIVIAL.equals(child.getType())) {
-                CPFNode pocket = Extractor.extractChildFragment(parent, child, op.getGraph());
-                FragmentUtil.cleanFragment(parent);
-                FragmentVersion childFragment = decompose(modelVersion, child, op);
-                childMappings.put(pocket.getId(), childFragment.getUri());
-            }
-        }
-        return childMappings;
-    }
+    private void addElementMappings(FragmentVersion fv, FragmentNode f, OperationContext op) {
+        Set<CPFNode> nodes = f.getNodes();
+        for (CPFNode node : nodes) {
+            Node pNode = op.getPersistedNodes().get(node.getId());
 
-    /* Adds the decomposed fragment to the process model version. */
-    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, final FragmentNode parent, final String hash,
-            final Map<String, String> childMappings, final int fragmentSize, final String fragmentType, final String keywords,
-            OperationContext op) throws RepositoryException {
-        LOGGER.info("Adding Fragment Version: " + modelVersion.getProcessBranch().getBranchName() + " - " + modelVersion.getVersionNumber());
-
-        // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
-        Map<String, String> pocketIdMappings = new HashMap<String, String>();
-        Content content = cService.addContent(modelVersion, parent, hash, op, pocketIdMappings);
-
-        // rewrite child mapping with new pocket Ids
-        Map<String, String> refinedChildMappings = new HashMap<String, String>();
-        for (String oldPocketId : childMappings.keySet()) {
-            String childId = childMappings.get(oldPocketId);
-            String newPocketId = pocketIdMappings.get(oldPocketId);
-            refinedChildMappings.put(newPocketId, childId);
+            NodeMapping nodeMapping = new NodeMapping();
+            nodeMapping.setFragmentVersion(fv);
+            nodeMapping.setNode(pNode);
+            nmRepository.save(nodeMapping);
         }
 
-        return addFragmentVersion(modelVersion, content, refinedChildMappings, null, 0, 0, fragmentSize, fragmentType, keywords, op);
+        Set<CPFEdge> edges = f.getEdges();
+        for (CPFEdge edge : edges) {
+            Edge pEdge = op.getPersistedEdges().get(edge.getId());
+
+            EdgeMapping edgeMapping = new EdgeMapping();
+            edgeMapping.setFragmentVersion(fv);
+            edgeMapping.setEdge(pEdge);
+            emRepository.save(edgeMapping);
+        }
     }
 
-    /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(ProcessModelVersion modelVersion, Content content, final Map<String, String> childMappings,
-            final String derivedFrom, final int lockStatus, final int lockCount, final int originalSize, final String fragmentType,
-            final String keywords, OperationContext op) throws RepositoryException {
-        FragmentVersion fragmentVersion = fService.addFragmentVersion(modelVersion, content, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
 
-        op.addProcessedFragmentType(fragmentType);
-        op.setCurrentFragment(fragmentVersion);
-        op.addAllNodes(content.getNodes());
-        op.addAllEdges(content.getEdges());
-        op.addFragmentVersion(fragmentVersion);
+    public void addElements(FragmentNode f, FragmentVersion fv, ProcessModelVersion pmv, OperationContext op) {
+        Set<CPFNode> nodes = f.getNodes();
+        for (CPFNode node : nodes) {
+            String type = op.getGraph().getNodeProperty(node.getId(), Constants.TYPE);
 
-        return fragmentVersion;
+            Node pNode = cService.addNode(node, type, pmv.getObjects(), pmv.getResources());
+            op.addPersistedNode(pNode.getUri(), pNode);
+
+            NodeMapping nodeMapping = new NodeMapping();
+            nodeMapping.setFragmentVersion(fv);
+            nodeMapping.setNode(pNode);
+            nmRepository.save(nodeMapping);
+        }
+
+        Set<CPFEdge> edges = f.getEdges();
+        for (CPFEdge edge : edges) {
+            Edge pEdge = cService.addEdge(edge, fv, op);
+            op.addPersistedEdge(pEdge.getUri(), pEdge);
+
+            EdgeMapping edgeMapping = new EdgeMapping();
+            edgeMapping.setFragmentVersion(fv);
+            edgeMapping.setEdge(pEdge);
+            emRepository.save(edgeMapping);
+        }
     }
+
+
+    private void preprocessFragment(FragmentNode f) {
+        // if a polygon starts (or ends) with a connector AND if that connector has a single outgoing (or incoming) edge,
+        // we can remove that connector from the fragment (OR should we keep that and have polygons with connectors as boundaries?)
+    }
+
+
+    private FragmentVersion saveFragment(FragmentNode f) {
+        FragmentVersion fv = new FragmentVersion();
+        fv.setUri(f.getUri());
+        fv.setFragmentType(f.getType().toString());
+        fv.setFragmentSize(f.getNodes().size());
+        return fvRepository.save(fv);
+    }
+
 }

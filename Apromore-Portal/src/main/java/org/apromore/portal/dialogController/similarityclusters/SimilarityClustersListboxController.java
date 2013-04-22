@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSummaryType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseListboxController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.similarityclusters.renderer.SimilarityClustersItemRenderer;
@@ -29,8 +30,6 @@ public class SimilarityClustersListboxController extends BaseListboxController {
 
     private final SimilarityClustersFilterController filterController;
 
-    private Button btnShowVisualisation;
-
     /**
      * Creates the Similarity Cluster Listbox.
      *
@@ -38,17 +37,13 @@ public class SimilarityClustersListboxController extends BaseListboxController {
      * @param filterController    controlling the current search filter.
      * @param fragmentsController controlling the listbox with fragments.
      */
-    public SimilarityClustersListboxController(
-            final MainController mainController,
-            final SimilarityClustersFilterController filterController,
+    public SimilarityClustersListboxController(final MainController mainController, final SimilarityClustersFilterController filterController,
             final SimilarityClustersFragmentsListboxController fragmentsController) {
-        super(mainController, ZUL_PAGE,
-                new SimilarityClustersItemRenderer());
+        super(mainController, ZUL_PAGE, new SimilarityClustersItemRenderer());
         this.filterController = filterController;
 
-        this.btnShowVisualisation = (Button) getMainController().getFellow(
-                "showVisualisation");
-        this.btnShowVisualisation.setVisible(true);
+        Button btnShowVisualisation = (Button) UserSessionManager.getMainController().getFellow("showVisualisation");
+        btnShowVisualisation.setVisible(true);
         btnShowVisualisation.addEventListener("onClick", new EventListener() {
 
             @Override
@@ -56,12 +51,9 @@ public class SimilarityClustersListboxController extends BaseListboxController {
                 if (getListModel().getSelection().size() > 0) {
                     // We can assume it will always be a ArrayList of ClusterType here, because we initialize it in that way.
                     @SuppressWarnings("unchecked")
-                    List<ClusterSummaryType> selectedClusters = new ArrayList<ClusterSummaryType>(
-                            getListModel().getInnerList());
+                    List<ClusterSummaryType> selectedClusters = new ArrayList<ClusterSummaryType>(getListModel().getInnerList());
                     selectedClusters.retainAll(getListModel().getSelection());
-                    setAttribute(
-                            ClusterVisualisationController.CLUSTER_RESULT_ATTRIBUTE_NAME,
-                            selectedClusters, SESSION_SCOPE);
+                    setAttribute(ClusterVisualisationController.CLUSTER_RESULT_ATTRIBUTE_NAME, selectedClusters, SESSION_SCOPE);
                     Clients.evalJavaScript("window.open('macros/similarityclusters/','ApromoreVisualisationWindow'+new Date().getTime(),"
                             + "'left=20,top=20,width=1000,height=800,toolbar=0,resizable=1,location=0');");
                 } else {
@@ -76,9 +68,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
             @Override
             public void onEvent(final Event event) throws Exception {
                 if (getListBox().getSelectedItems().size() == 1) {
-                    fragmentsController
-                            .displayClusterFragments((ClusterSummaryType) getListModel()
-                                    .getSelection().iterator().next());
+                    fragmentsController.displayClusterFragments((ClusterSummaryType) getListModel().getSelection().iterator().next());
                 } else {
                     fragmentsController.clearFragments();
                 }
@@ -93,10 +83,9 @@ public class SimilarityClustersListboxController extends BaseListboxController {
     protected final void refreshContent() {
         getListBox().clearSelection();
         getListModel().clear();
-        getListModel().addAll(
-                getService().getClusterSummaries(this.filterController.getCurrentFilter()));
+        getListModel().addAll(getService().getClusterSummaries(this.filterController.getCurrentFilter()));
 
-        getMainController().displayMessage(buildRefreshMessage());
+        UserSessionManager.getMainController().displayMessage(buildRefreshMessage());
     }
 
     /**

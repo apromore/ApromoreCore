@@ -8,11 +8,12 @@ import java.util.Map;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.dataObject.FragmentVersionDagDO;
-import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.NodeTypeEnum;
 import org.apromore.service.model.FragmentNode;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -25,7 +26,44 @@ public class FragmentUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FragmentUtil.class);
 
+    /* Returns the Node Type. */
+    public static String getType(final INode node) {
+        String type = null;
+        if (node != null) {
+            if (node.getNodeType() != null) {
+                if (node.getNodeType().equals(NodeTypeEnum.TASK)) {
+                    type = Constants.FUNCTION;
+                } else if (node.getNodeType().equals(NodeTypeEnum.EVENT)) {
+                    type = Constants.EVENT;
+                } else if (node.getNodeType().equals(NodeTypeEnum.MESSAGE)) {
+                    type = Constants.EVENT;
+                } else if (node.getNodeType().equals(NodeTypeEnum.TIMER)) {
+                    type = Constants.EVENT;
+                } else {
+                    if (node.getNodeType().equals(NodeTypeEnum.ORJOIN) || node.getNodeType().equals(NodeTypeEnum.XORJOIN) ||
+                            node.getNodeType().equals(NodeTypeEnum.ANDJOIN) || node.getNodeType().equals(NodeTypeEnum.ORSPLIT) ||
+                            node.getNodeType().equals(NodeTypeEnum.XORSPLIT) || node.getNodeType().equals(NodeTypeEnum.ANDSPLIT) ||
+                            node.getNodeType().equals(NodeTypeEnum.STATE)) {
+                        type = Constants.CONNECTOR;
+                    } else {
+                        String nodeName = node.getName();
+                        if (nodeName != null && (nodeName.equals("OrJoin") || nodeName.equals("XOrJoin") ||
+                                nodeName.equals("AndJoin") || nodeName.equals("OrSplit") || nodeName.equals("XOrSplit") ||
+                                nodeName.equals("AndSplit") || nodeName.equals("State"))) {
+                            type = Constants.CONNECTOR;
+                        }
+                    }
+                }
+            } else {
+                LOGGER.warn("Unable to determine Node Type, Type is NULL (Could be a Pocket). " + node.getId());
+            }
+        } else {
+            LOGGER.warn("Unable to determine Node Type, Node is NULL. ");
+        }
+        return type;
+    }
 
+    /* Returns the Fragment Type. */
     public static String getFragmentType(final FragmentNode f) {
         String nodeType = "UNKNOWN";
         if (f != null) {
@@ -42,6 +80,7 @@ public class FragmentUtil {
         return nodeType;
     }
 
+    /* Removes Edges from a Fragment */
     @SuppressWarnings("unchecked")
     public static void removeEdges(final FragmentNode f, final Collection<CPFEdge> cfEdges) {
         Collection<CPFEdge> fEdges = f.getEdges();
@@ -55,8 +94,9 @@ public class FragmentUtil {
         }
     }
 
+    /* Removes Edges from a list of edges. */
     public static void removeEdges(final Collection<CPFEdge> es1, final Collection<CPFEdge> es2) {
-        Collection<CPFEdge> toBeRemoved = new ArrayList<CPFEdge>();
+        Collection<CPFEdge> toBeRemoved = new ArrayList<>();
         for (CPFEdge fe : es1) {
             for (CPFEdge cfe : es2) {
                 if (fe.getSource().getId().equals(cfe.getSource().getId()) && fe.getTarget().getId().equals(cfe.getTarget().getId())) {
@@ -67,8 +107,9 @@ public class FragmentUtil {
         es1.removeAll(toBeRemoved);
     }
 
+    /* Returns all the incoming edges. */
     public static Collection<CPFEdge> getIncomingEdges(final CPFNode v, final Collection<CPFEdge> es) {
-        Collection<CPFEdge> incomingEdges = new ArrayList<CPFEdge>();
+        Collection<CPFEdge> incomingEdges = new ArrayList<>();
         if (v != null) {
             for (CPFEdge e : es) {
                 if (e.getTarget().getId().equals(v.getId())) {
@@ -80,7 +121,7 @@ public class FragmentUtil {
     }
 
     public static Collection<CPFEdge> getOutgoingEdges(final CPFNode v, final Collection<CPFEdge> es) {
-        Collection<CPFEdge> outgoingEdges = new ArrayList<CPFEdge>();
+        Collection<CPFEdge> outgoingEdges = new ArrayList<>(0);
         if (v != null) {
             for (CPFEdge e : es) {
                 if (e.getSource().getId().equals(v.getId())) {
@@ -92,7 +133,7 @@ public class FragmentUtil {
     }
 
     public static List<CPFNode> getPreset(final CPFNode v, final Collection<CPFEdge> es) {
-        List<CPFNode> preset = new ArrayList<CPFNode>(0);
+        List<CPFNode> preset = new ArrayList<>(0);
         if (v != null) {
             for (CPFEdge e: es) {
                 if (e.getTarget().getId().equals(v.getId())) {
@@ -104,7 +145,7 @@ public class FragmentUtil {
     }
 
     public static List<CPFNode> getPostset(final CPFNode v, final Collection<CPFEdge> es) {
-        List<CPFNode> postset = new ArrayList<CPFNode>(0);
+        List<CPFNode> postset = new ArrayList<>(0);
         if (v != null) {
             for (CPFEdge e: es) {
                 if (e.getSource().getId().equals(v.getId())) {
@@ -115,58 +156,10 @@ public class FragmentUtil {
         return postset;
     }
 
-    public static CPFNode getFirstNode(final Collection<CPFNode> vertices) {
-        return vertices.iterator().next();
-    }
-
     public static CPFEdge getFirstEdge(final Collection<CPFEdge> c) {
         return c.iterator().next();
     }
 
-    /**
-     * Creates a new child mapping by replacing pocket ids of fragment by their corresponding pockets ids of content.
-     * @param childMappings map pocketId -> childId
-     * @param pocketMappings map fragment pocket Id -> content pocket Id
-     */
-    public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
-            throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<String, String>();
-        for (Map.Entry<String, String> stringStringEntry : childMappings.entrySet()) {
-            String o = pocketMappings.get(stringStringEntry.getKey());
-            if (o != null) {
-                String mappedPocketId = pocketMappings.get(stringStringEntry.getKey());
-                String childId = stringStringEntry.getValue();
-                newChildMapping.put(mappedPocketId, childId);
-            } else {
-                String msg = "Mapping of pocket " + stringStringEntry.getKey() + " is null.";
-                LOGGER.error(msg);
-                throw new PocketMappingException(msg);
-            }
-        }
-        return newChildMapping;
-    }
-
-    /**
-     * Creates a new child mapping by replacing pocket ids of fragment by their corresponding pockets ids of content.
-     * @param childMappings map pocketId -> childId
-     * @param pocketMappings map fragment pocket Id -> content pocket Id
-     */
-    public static Map<String, String> remapChildren(final List<FragmentVersionDag> childMappings, final Map<String, String> pocketMappings)
-            throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<String, String>(0);
-        for (FragmentVersionDag fvd : childMappings) {
-            String o = pocketMappings.get(fvd.getPocketId());
-            if (o != null) {
-                String mappedPocketId = pocketMappings.get(fvd.getPocketId());
-                newChildMapping.put(mappedPocketId, fvd.getChildFragmentVersion().getId().toString());
-            } else {
-                String msg = "Mapping of pocket " + fvd.getPocketId() + " is null.";
-                LOGGER.error(msg);
-                throw new PocketMappingException(msg);
-            }
-        }
-        return newChildMapping;
-    }
 
     /**
      * Creates a new child mapping by replacing pocket ids of fragment by their corresponding pockets ids of content.
@@ -175,11 +168,11 @@ public class FragmentUtil {
      */
     public static Map<String, Integer> remapChildrenCluster(final List<FragmentVersionDagDO> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, Integer> newChildMapping = new HashMap<String, Integer>(0);
+        Map<String, Integer> newChildMapping = new HashMap<>(0);
         for (FragmentVersionDagDO fvd : childMappings) {
-            String o = pocketMappings.get(fvd.getPocketId().toString());
+            String o = pocketMappings.get(fvd.getPocketId());
             if (o != null) {
-                String mappedPocketId = pocketMappings.get(fvd.getPocketId().toString());
+                String mappedPocketId = pocketMappings.get(fvd.getPocketId());
                 newChildMapping.put(mappedPocketId, fvd.getChildFragmentVersionId());
             } else {
                 String msg = "Mapping of pocket " + fvd.getPocketId() + " is null.";
@@ -190,18 +183,6 @@ public class FragmentUtil {
         return newChildMapping;
     }
 
-    @SuppressWarnings("unchecked")
-    public static void cleanFragment(final FragmentNode fragmentNode) {
-        Collection<CPFEdge> removableEdges = new ArrayList<CPFEdge>();
-
-        for (CPFEdge e : fragmentNode.getEdges()) {
-            if (!fragmentNode.getNodes().contains(e.getSource()) || !fragmentNode.getNodes().contains(e.getTarget())) {
-                removableEdges.add(e);
-            }
-        }
-
-        fragmentNode.removeEdges(removableEdges);
-    }
 
     @SuppressWarnings("unchecked")
     public static void reconnectBoundary1(final FragmentNode f, final CPFNode oldB1, final CPFNode newB1) {
@@ -267,19 +248,6 @@ public class FragmentUtil {
         return newV;
     }
 
-//    @SuppressWarnings("unchecked")
-//    public static String fragmentToString(final FragmentNode f, final Canonical g) {
-//        StringBuilder fs = new StringBuilder(0);
-//        Collection<CPFNode> vs = f.getNodes();
-//        for (CPFNode v : vs) {
-//            String label = v.getName();
-//            fs.append('\n').append(v).append(" : ").append(label);
-//        }
-//        fs.append("\nBoundary 1: ").append(f.getEntry().getId());
-//        fs.append("\nBoundary 2: ").append(f.getExit().getId());
-//        return fs.toString();
-//    }
-
     @SuppressWarnings("unchecked")
     public static String fragmentToString(final FragmentNode f) {
         StringBuilder fs = new StringBuilder(0);
@@ -291,7 +259,7 @@ public class FragmentUtil {
     }
 
     public static void removeNodes(final FragmentNode canonical, final FragmentNode cf) {
-        List<CPFNode> toBeRemoved = new ArrayList<CPFNode>();
+        List<CPFNode> toBeRemoved = new ArrayList<>(0);
         for (CPFNode pn : canonical.getNodes()) {
             for (CPFNode cn : cf.getNodes()) {
                 if (pn.getId().equals(cn.getId())) {

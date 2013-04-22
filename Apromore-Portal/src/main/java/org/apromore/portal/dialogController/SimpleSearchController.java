@@ -83,7 +83,7 @@ public class SimpleSearchController extends BaseController {
             message += " process.";
         }
         this.mainC.displayMessage(message);
-        this.mainC.displayProcessSummaries(processSummaries, false, null, null);
+        this.mainC.displayProcessSummaries(processSummaries, false);
         /**
          *Keeps search history up to date
          */

@@ -47,7 +47,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     /* Used to render the process summary infomation into the list box. */
     private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
-        listItem.appendChild(new Listcell()); // Built-In Checkbox
+        listItem.appendChild(new Listcell());
         listItem.appendChild(renderProcessScore(process));
         listItem.appendChild(renderProcessId(process));
         listItem.appendChild(renderProcessName(process));
@@ -60,7 +60,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     /* Used to render folders in the list of process models. */
     private void renderFolder(final Listitem listitem, final FolderType folder) {
-        listitem.appendChild(new Listcell()); // Built-In Checkbox
+        listitem.appendChild(new Listcell());
         listitem.appendChild(renderFolderId(folder));
         listitem.appendChild(renderFolderName(folder));
 

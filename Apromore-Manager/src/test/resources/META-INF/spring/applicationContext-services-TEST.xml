@@ -57,6 +57,9 @@
         <value>classpath:/manager.xsd</value>
     </util:list>
 
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+    <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
+
 
     <!-- ************************** Non WebServices ************************** -->
 

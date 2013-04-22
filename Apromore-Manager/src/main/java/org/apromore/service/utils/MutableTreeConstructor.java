@@ -24,7 +24,7 @@ public class MutableTreeConstructor {
 
     private FragmentNode constructTree(IRPSTNode<CPFEdge, CPFNode> root, FragmentNode parent, RPST<CPFEdge, CPFNode> rpst)
             throws RepositoryException {
-        FragmentNode rf = null;
+        FragmentNode rf;
         if (root != null) {
             rf = new FragmentNode();
             rf.setType(root.getType());

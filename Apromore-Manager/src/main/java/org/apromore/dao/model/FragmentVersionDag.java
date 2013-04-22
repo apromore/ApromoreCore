@@ -78,7 +78,7 @@ public class FragmentVersionDag implements Serializable {
     }
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "fragmentVersionId")
     public FragmentVersion getFragmentVersion() {
         return this.fragmentVersion;
@@ -88,7 +88,7 @@ public class FragmentVersionDag implements Serializable {
         this.fragmentVersion = newFragmentVersion;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "childFragmentVersionId")
     public FragmentVersion getChildFragmentVersion() {
         return this.childFragmentVersion;

@@ -18,6 +18,9 @@
 
     <jpa:repositories base-package="org.apromore.dao" repository-impl-postfix="CustomImpl" />
 
+    <!-- Setting up the Data Access details -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
     <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
           p:driverClass="${jdbc.driver}" p:jdbcUrl="${jdbc.url}" p:username="${jdbc.username}" p:password="${jdbc.password}"
           p:maxConnectionsPerPartition="30" p:minConnectionsPerPartition="10" p:partitionCount="5" p:acquireIncrement="5"
@@ -26,6 +29,9 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceUnitName" value="TESTApromore" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/>
+        </property>
         <property name="jpaVendorAdapter">
             <bean id="vendorAdaptor" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter"
                   p:generateDdl="${jpa.generateDDL}" p:database="${jpa.database}" p:showSql="${jpa.showSql}"
@@ -33,20 +39,25 @@
         </property>
         <property name="jpaProperties">
             <util:properties id="jpaProperties">
-                <prop key="showSql">true</prop>
-                <prop key="eclipselink.logging.level">INFO</prop>
-                <prop key="eclipselink.weaving">static</prop>
+                <prop key="showSql">false</prop>
+                <prop key="eclipselink.weaving">false</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
-                <prop key="eclipselink.persistence-context.flush-mode">COMMIT</prop>
                 <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
+                <prop key="eclipselink.persistence-context.close-on-commit">true</prop>
+                <prop key="eclipselink.persistence-context.flush-mode">AUTO</prop>
+
+                <prop key="eclipselink.cache.shared.default">false</prop>
+                <prop key="eclipselink.cache.type.default">SOFT</prop>
+
+                <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
+                <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
+
+                <prop key="eclipselink.logging.file">output.log</prop>
                 <prop key="eclipselink.logging.level">OFF</prop>
-                <prop key="eclipselink.logging.level.sql">FINE</prop>
-                <prop key="eclipselink.logging.parameters">TRUE</prop>
+                <prop key="eclipselink.logging.level.sql">OFF</prop>
+                <prop key="eclipselink.logging.parameters">flase</prop>
             </util:properties>
-        </property>
-        <property name="loadTimeWeaver">
-            <bean class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver"/>
         </property>
     </bean>
 
@@ -54,6 +65,10 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <tx:annotation-driven proxy-target-class="false" />
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" >
+        <constructor-arg type="javax.sql.DataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:annotation-driven  />
 
 </beans>

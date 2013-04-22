@@ -59,24 +59,24 @@ public class Node implements Serializable {
     private NodeTypeEnum nodeType;
     private AllocationStrategyEnum allocation;
 
-    private Content content;
     private ProcessModelVersion subProcess;
     private Expression timerExpression;
     private Expression resourceDataExpression;
     private Expression resourceRunExpression;
 
-    private Set<Expression> inputExpressions = new HashSet<Expression>(0);
-    private Set<Expression> outputExpressions = new HashSet<Expression>(0);
+    private Set<NodeMapping> nodeMappings = new HashSet<>(0);
 
-    private Set<Edge> sourceNodes = new HashSet<Edge>(0);
-    private Set<Edge> targetNodes = new HashSet<Edge>(0);
-    private Set<Node> cancelNodes = new HashSet<Node>(0);
-    private Set<Edge> cancelEdges = new HashSet<Edge>(0);
+    private Set<Expression> inputExpressions = new HashSet<>(0);
+    private Set<Expression> outputExpressions = new HashSet<>(0);
 
-    private Set<NonPocketNode> nonPocketNodes = new HashSet<NonPocketNode>(0);
-    private Set<ObjectRef> objectRefs = new HashSet<ObjectRef>(0);
-    private Set<ResourceRef> resourceRefs = new HashSet<ResourceRef>(0);
-    private Set<NodeAttribute> attributes = new HashSet<NodeAttribute>(0);
+    private Set<Edge> sourceNodes = new HashSet<>(0);
+    private Set<Edge> targetNodes = new HashSet<>(0);
+    private Set<Node> cancelNodes = new HashSet<>(0);
+    private Set<Edge> cancelEdges = new HashSet<>(0);
+
+    private Set<ObjectRef> objectRefs = new HashSet<>(0);
+    private Set<ResourceRef> resourceRefs = new HashSet<>(0);
+    private Set<NodeAttribute> attributes = new HashSet<>(0);
 
 
 
@@ -220,16 +220,6 @@ public class Node implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "contentId")
-    public Content getContent() {
-        return this.content;
-    }
-
-    public void setContent(final Content newContent) {
-        this.content = newContent;
-    }
-
-    @ManyToOne
     @JoinColumn(name = "subVersionId")
     public ProcessModelVersion getSubProcess() {
         return this.subProcess;
@@ -270,6 +260,14 @@ public class Node implements Serializable {
     }
 
 
+    @OneToMany(mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<NodeMapping> getNodeMappings() {
+        return nodeMappings;
+    }
+
+    public void setNodeMappings(Set<NodeMapping> newNodeMappings) {
+        nodeMappings = newNodeMappings;
+    }
 
 
     @ManyToMany
@@ -330,15 +328,6 @@ public class Node implements Serializable {
 
     public void setOutputExpressions(final Set<Expression> newOutputExpression) {
         this.outputExpressions = newOutputExpression;
-    }
-
-    @OneToMany(mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<NonPocketNode> getNonPocketNodes() {
-        return this.nonPocketNodes;
-    }
-
-    public void setNonPocketNodes(final Set<NonPocketNode> newNonPocketNodes) {
-        this.nonPocketNodes = newNonPocketNodes;
     }
 
     @OneToMany(mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)

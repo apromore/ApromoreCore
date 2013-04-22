@@ -1,5 +1,9 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.model.UserType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
@@ -16,34 +20,22 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
- * Created by IntelliJ IDEA.
- * User: Igor
- * Date: 2/07/12
- * Time: 5:08 PM
- * To change this template use File | Settings | File Templates.
+ * Controller used to find user in apromore and display them. usually for Security.
  */
 public class FindUsersController extends BaseController {
 
-    private SecuritySetupController securitySetupController;
     private MainController mainController;
-    private Button btnSearch;
-    private Button btnClear;
     private Button btnSave;
     private Textbox txtSearch;
     private Listbox lstUsers;
-    
-    public FindUsersController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
 
-        this.securitySetupController = securitySetupController;
-        this.mainController = securitySetupController.getMainController();
+    @SuppressWarnings("unchecked")
+    public FindUsersController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
+        this.mainController = UserSessionManager.getMainController();
         this.lstUsers = (Listbox)win.getFellow("findUsers").getFellow("lstUsers");
-        this.btnSearch = (Button)win.getFellow("findUsers").getFellow("btnSearch");
-        this.btnClear = (Button)win.getFellow("findUsers").getFellow("btnClear");
+        Button btnSearch = (Button) win.getFellow("findUsers").getFellow("btnSearch");
+        Button btnClear = (Button) win.getFellow("findUsers").getFellow("btnClear");
         this.btnSave = (Button)win.getFellow("findUsers").getFellow("btnSave");
         this.txtSearch = (Textbox)win.getFellow("findUsers").getFellow("txtSearch");
         btnSave.setDisabled(true);
@@ -70,7 +62,7 @@ public class FindUsersController extends BaseController {
                         }
                         Set<Listitem> items = lstUsers.getSelectedItems();
                         if (items.size() > 0){
-                            List<Listitem> processedItems = new ArrayList<Listitem>();
+                            List<Listitem> processedItems = new ArrayList<>();
                             for (Listitem item : items){
                                 List<Listcell> cells = item.getChildren();
                                 if (cells.size() == 6){
@@ -115,12 +107,11 @@ public class FindUsersController extends BaseController {
         
         btnSearch.addEventListener("onClick",
                 new EventListener() {
-                    public void onEvent(Event event) throws Exception {                        
-                        if (txtSearch.getText().isEmpty()){
+                    public void onEvent(Event event) throws Exception {
+                        if (txtSearch.getText().isEmpty()) {
                             Messagebox.show("Please type search text", "Attention", Messagebox.OK,
                                     Messagebox.ERROR);
-                        }
-                        else{
+                        } else {
                             boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
 
                             lstUsers.getItems().clear();
@@ -129,7 +120,7 @@ public class FindUsersController extends BaseController {
                             btnSave.setDisabled(users.size() == 0 || !hasOwnership);
 
                             for (UserType user : users) {
-                                if (!(user.getId().equals(UserSessionManager.getCurrentUser().getId()))){
+                                if (!(user.getId().equals(UserSessionManager.getCurrentUser().getId()))) {
 
                                     Listitem newItem = new Listitem();
 

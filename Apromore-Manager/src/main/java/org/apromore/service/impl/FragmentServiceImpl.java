@@ -1,9 +1,17 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.UUID;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -24,15 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 /**
  * Implementation of the FragmentService Contract.
@@ -135,16 +134,15 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     /**
-     * @see FragmentService#addFragmentVersion(org.apromore.dao.model.ProcessModelVersion, org.apromore.dao.model.Content, java.util.Map, String, int, int, int, String)
+     * @see FragmentService#addFragmentVersion(org.apromore.dao.model.ProcessModelVersion, java.util.Map, String, int, int, int, String)
      */
     @Override
     @Transactional(readOnly = false)
-    public FragmentVersion addFragmentVersion(ProcessModelVersion processModel, Content content, Map<String, String> childMappings,
+    public FragmentVersion addFragmentVersion(ProcessModelVersion processModel, Map<String, String> childMappings,
             String derivedFrom, int lockStatus, int lockCount, int originalSize, String fragmentType) {
         String childMappingCode = calculateChildMappingCode(childMappings);
 
         FragmentVersion fragVersion = new FragmentVersion();
-        fragVersion.setContent(content);
         fragVersion.setUri(UUID.randomUUID().toString());
         fragVersion.setChildMappingCode(childMappingCode);
         fragVersion.setDerivedFromFragment(derivedFrom);
@@ -155,33 +153,42 @@ public class FragmentServiceImpl implements FragmentService {
         fragVersion.getProcessModelVersions().add(processModel) ;
         processModel.getFragmentVersions().add(fragVersion);
 
-        addChildMappings(processModel, fragVersion, childMappings);
-
         return fvRepository.save(fragVersion);
     }
 
+    /**
+     * @see FragmentService#addFragmentVersionDag(java.util.Map)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void addFragmentVersionDag(Map<FragmentVersion, Map<String, String>> childMappings) {
+        String childId;
+        Set<String> pocketIds;
+        Map<String, String> mappings;
 
-    /* Add the Fragment Version DAG */
-    private void addChildMappings(ProcessModelVersion processModel, FragmentVersion fragVer, Map<String, String> childMappings) {
-        Set<String> pocketIds = childMappings.keySet();
-        for (String pocketId : pocketIds) {
-            String childId = childMappings.get(pocketId);
-            if (fragVer == null || childId == null || pocketId == null) {
-                LOGGER.error("Invalid child mapping parameters. child Id: " + childId + ", Pocket Id: " + pocketId);
+        Set<FragmentVersion> parentIds = childMappings.keySet();
+        for (FragmentVersion parent : parentIds) {
+            mappings = childMappings.get(parent);
+
+            pocketIds = mappings.keySet();
+            for (String pocketId : pocketIds) {
+                childId = mappings.get(pocketId);
+                if (parent == null || childId == null || pocketId == null) {
+                    LOGGER.error("Invalid child mapping parameters. child Id: " + childId + ", Pocket Id: " + pocketId);
+                }
+
+                FragmentVersionDag fvd = new FragmentVersionDag();
+                fvd.setPocketId(pocketId);
+                fvd.setFragmentVersion(parent);
+                fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
+
+                if (fvd.getChildFragmentVersion() == null) {
+                    LOGGER.debug("FragmentVersionDAG without a Child fragment version.....");
+                }
+
+                fvdRepository.save(fvd);
             }
-
-            FragmentVersionDag fvd = new FragmentVersionDag();
-            fvd.setPocketId(pocketId);
-            fvd.setFragmentVersion(fragVer);
-            fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
-
-//            for (FragmentVersion fv : processModel.getFragmentVersions()) {
-//                if (fv.getUri().equals(childId)) {
-//                    fvd.setChildFragmentVersion(fv);
-//                }
-//            }
-
-            fvdRepository.save(fvd);
         }
     }
 
@@ -215,11 +222,6 @@ public class FragmentServiceImpl implements FragmentService {
         return processModelGraph;
     }
 
-    @Override
-    public FragmentVersion getMatchingFragmentVersionId(Integer contentId, Map<String, String> childMappings) {
-        String childMappingCode = calculateChildMappingCode(childMappings);
-        return fvRepository.getMatchingFragmentVersionId(contentId, childMappingCode);
-    }
 
     /**
      * @see FragmentService#getUnprocessedFragments()
@@ -229,7 +231,7 @@ public class FragmentServiceImpl implements FragmentService {
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<FragmentDataObject> getUnprocessedFragments() {
-        List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
+        List<FragmentDataObject> fragments = new ArrayList<>();
         List<FragmentVersion> fvs = fvRepository.findAll();
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
@@ -248,7 +250,7 @@ public class FragmentServiceImpl implements FragmentService {
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public List<FragmentDataObject> getUnprocessedFragmentsOfProcesses(final List<Integer> processIds) {
-        List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
+        List<FragmentDataObject> fragments = new ArrayList<>();
         List<FragmentVersion> fvs = fvRepository.getFragmentsByProcessIds(processIds);
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
@@ -260,17 +262,11 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
 
-    @Override
-    public void deleteChildRelationships(Integer fvid) {
-        fvRepository.delete(fvid);
-    }
-
-
 
     private String calculateChildMappingCode(Map<String, String> childMapping) {
         StringBuilder buf = new StringBuilder();
         Set<String> pids = childMapping.keySet();
-        PriorityQueue<String> q = new PriorityQueue<String>(pids);
+        PriorityQueue<String> q = new PriorityQueue<>(pids);
         while (!q.isEmpty()) {
             String pid = q.poll();
             String cid = childMapping.get(pid);

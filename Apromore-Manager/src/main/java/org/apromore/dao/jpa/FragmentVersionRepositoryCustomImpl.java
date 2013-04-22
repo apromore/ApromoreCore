@@ -42,7 +42,6 @@ public class FragmentVersionRepositoryCustomImpl implements FragmentVersionRepos
                         FragmentVersionDO fragVerDO = new FragmentVersionDO();
                         fragVerDO.setId(rs.getInt("id"));
                         fragVerDO.setFragmentId(rs.getInt("fragmentId"));
-                        fragVerDO.setContentId(rs.getInt("contentId"));
                         fragVerDO.setClusterId(rs.getInt("clusterId"));
                         fragVerDO.setUri(rs.getString("uri"));
                         fragVerDO.setChildMappingCode(rs.getString("child_mapping_code"));
