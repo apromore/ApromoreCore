@@ -28,11 +28,9 @@ public class SaveAsDialogController extends BaseController {
     private org.zkoss.zul.Textbox modelName;
     private org.zkoss.zul.Textbox versionNumber;
     private org.zkoss.zul.Textbox branchName;
-    private MainController mainC;
     private ProcessSummaryType process;
     private VersionSummaryType version;
     private ManagerServiceClient managerService;
-    private MenuController menuC;
     private PluginPropertiesHelper pluginPropertiesHelper;
     private EditSessionType editSession;
     private boolean save;
@@ -42,9 +40,6 @@ public class SaveAsDialogController extends BaseController {
 
     public SaveAsDialogController(MainController mainC, ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-
-        this.mainC = mainC;
-        this.menuC = mainC.getMenu();
         this.process = process;
         this.version = version;
         this.editSession = editSession;
@@ -69,10 +64,8 @@ public class SaveAsDialogController extends BaseController {
         this.branchName = (org.zkoss.zul.Textbox) branchNameR.getFirstChild().getNextSibling();
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.saveAsW.getFellow("saveAsGrid"));
-
         this.saveB = (org.zkoss.zul.Button) buttonGroupR.getFirstChild().getFirstChild();
         this.cancelB = (org.zkoss.zul.Button) this.saveB.getNextSibling();
-
         this.modelName.setText(this.editSession.getProcessName());
 
 
@@ -94,6 +87,7 @@ public class SaveAsDialogController extends BaseController {
                         cancel();
                     }
                 });
+
         if (isNormalSave) {
             this.modelName.setReadonly(true);
             this.branchName.setText(this.editSession.getOriginalBranchName());

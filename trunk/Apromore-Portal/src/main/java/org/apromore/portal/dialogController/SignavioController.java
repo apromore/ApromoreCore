@@ -61,13 +61,12 @@ public class SignavioController extends BaseController {
             if (process.getOriginalNativeType().equals(editSession.getNativeType())) {
                 param.put("doAutoLayout", "false");
             } else {
-                param.put("doAutoLayout", "true");
+                if (editSession.isWithAnnotation()) {
+                    param.put("doAutoLayout", "false");
+                } else {
+                    param.put("doAutoLayout", "true");
+                }
             }
-            //if (editSession.isWithAnnotation()) {
-            //    param.put("doAutoLayout", "false");
-            //} else {
-            //    param.put("doAutoLayout", "true");
-            //}
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
             e.printStackTrace();

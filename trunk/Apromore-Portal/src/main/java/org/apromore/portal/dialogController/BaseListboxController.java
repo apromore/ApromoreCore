@@ -40,7 +40,7 @@ public abstract class BaseListboxController extends BaseController {
 
     private final Listbox listBox;
 
-    private final MainController mainController; // the main controller
+    private final MainController mainController;
     private AddFolderController addFolderController;
     private CreateProcessController createController;
     private SecuritySetupController securitySetupController;
@@ -64,9 +64,7 @@ public abstract class BaseListboxController extends BaseController {
         setVflex("true");
 
         this.mainController = mainController;
-
         this.listBox = createListbox(componentId);
-
         this.pg = (Paging) mainController.getFellow("pg");
         getListBox().setPaginal(pg);
 
@@ -154,7 +152,7 @@ public abstract class BaseListboxController extends BaseController {
     protected abstract void refreshContent();
 
     protected Listbox createListbox(String componentId) {
-        return (Listbox) Executions.createComponents(componentId, getMainController(), null);
+        return (Listbox) Executions.createComponents(componentId, UserSessionManager.getMainController(), null);
     }
 
     protected Listbox getListBox() {

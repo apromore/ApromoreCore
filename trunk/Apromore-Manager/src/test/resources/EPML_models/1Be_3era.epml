@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+	<epc epcId="84" name="1Be_3era">
+		<function defRef="0" id="0">
+			<name> Delivery
+Processing</name>
+		</function>
+		<function defRef="3" id="3">
+			<name> Goods Issue
+Processing</name>
+		</function>
+		<event defRef="2" id="2">
+			<name> Material
+withdrawal is
+to be posted</name>
+		</event>
+		<event defRef="5" id="5">
+			<name> Goods issue
+is posted</name>
+		</event>
+		<event defRef="6" id="6">
+			<name> Components to
+be replenished
+as per
+delivery</name>
+		</event>
+		<event defRef="7" id="7">
+			<name> Components
+are to be
+replenished
+per goods
+issue</name>
+		</event>
+		<event defRef="8" id="8">
+			<name> Material is
+issued</name>
+		</event>
+		<and id="4">
+			<name/>
+		</and>
+		<xor id="1">
+			<name/>
+		</xor>
+		<arc id="3">
+			<flow source="0" target="2"/>
+		</arc>
+		<arc id="13">
+			<flow source="1" target="3"/>
+		</arc>
+		<arc id="20">
+			<flow source="2" target="1"/>
+		</arc>
+		<arc id="32">
+			<flow source="3" target="4"/>
+		</arc>
+		<arc id="42">
+			<flow source="4" target="5"/>
+		</arc>
+		<arc id="45">
+			<flow source="4" target="8"/>
+		</arc>
+		<arc id="55">
+			<flow source="6" target="0"/>
+		</arc>
+		<arc id="65">
+			<flow source="7" target="1"/>
+		</arc>
+	</epc>
+</epml:epml>

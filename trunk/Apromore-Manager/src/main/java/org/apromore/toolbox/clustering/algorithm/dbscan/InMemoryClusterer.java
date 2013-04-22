@@ -113,14 +113,14 @@ public class InMemoryClusterer {
         log.debug("Analyzing and persisting " + clusters.size() + " clusters in the database...");
 
         clusterAnalyzer.loadFragmentSizes();
-        List<Cluster> cds = new ArrayList<Cluster>();
+        List<Cluster> cds = new ArrayList<>();
         for (InMemoryCluster cluster : clusters.values()) {
             Cluster cd = clusterAnalyzer.analyzeCluster(cluster, settings);
             cds.add(cd);
         }
 
         if (settings.isIgnoreClustersWithExactClones()) {
-            Set<Cluster> toBeRemovedCDs = new HashSet<Cluster>();
+            Set<Cluster> toBeRemovedCDs = new HashSet<>();
             for (Cluster cd : cds) {
                 if (cd.getStandardizingEffort() == 0) {
                     // this is a cluster with exact clones (i.e. inter-fragment distances and std effort are zero)
@@ -178,7 +178,7 @@ public class InMemoryClusterer {
             unprocessedFragments = fragmentService.getUnprocessedFragments();
         } else {
             unprocessedFragments = fragmentService.getUnprocessedFragmentsOfProcesses(settings.getConstrainedProcessIds());
-            allowedFragmentIds = new ArrayList<Integer>();
+            allowedFragmentIds = new ArrayList<>(0);
             for (FragmentDataObject f : unprocessedFragments) {
                 allowedFragmentIds.add(f.getFragment().getId());
             }
@@ -196,7 +196,7 @@ public class InMemoryClusterer {
                 inMemoryGEDMatrix.getCoreObjectNeighborhood(fo, allowedFragmentIds) :
                 inMemoryGEDMatrix.getUnsharedCoreObjectNeighborhood(fo, FragmentDataObject.NOISE, allowedFragmentIds);
 
-        Set<Integer> usedHierarchies = new HashSet<Integer>();
+        Set<Integer> usedHierarchies = new HashSet<>();
         if (settings.isEnableNearestRelativeFiltering() && n != null && n.size() >= minPoints) {
             usedHierarchies = inMemoryHierarchyBasedFilter.retainNearestRelatives(fo, n, inMemoryGEDMatrix);
         }
@@ -213,20 +213,20 @@ public class InMemoryClusterer {
     }
 
     private void expandClusterer(FragmentDataObject firstCore, List<FragmentDataObject> n, InMemoryCluster cluster,
-                                 Set<Integer> usedHierarchies) throws RepositoryException {
+            Set<Integer> usedHierarchies) throws RepositoryException {
         if (log.isDebugEnabled()) {
             log.debug("Expanding a cluster from the core fragment: " + firstCore.getFragment().getId());
         }
 
-        List<FragmentDataObject> excludedCoreObjects = new ArrayList<FragmentDataObject>();
-        List<FragmentDataObject> allClusterFragments = new ArrayList<FragmentDataObject>();
+        List<FragmentDataObject> excludedCoreObjects = new ArrayList<>();
+        List<FragmentDataObject> allClusterFragments = new ArrayList<>();
 
         // we should assign the neighbourhood of the first core object to the cluster before entering the loop.
         // so that the first core object is expanded.
         allClusterFragments.addAll(n);
         firstCore.setCoreObjectNB(n.size());
 
-        Queue<FragmentDataObject> unexpandedMembers = new LinkedList<FragmentDataObject>(n);
+        Queue<FragmentDataObject> unexpandedMembers = new LinkedList<>(n);
         unexpandedMembers.remove(firstCore);
         FragmentDataObject o = unexpandedMembers.poll();
         while (o != null) {
@@ -248,7 +248,7 @@ public class InMemoryClusterer {
                     inMemoryGEDMatrix.getCoreObjectNeighborhood(o, allowedFragmentIds) :
                     inMemoryGEDMatrix.getUnsharedCoreObjectNeighborhood(o, cluster.getClusterId(), allowedFragmentIds);
 
-            Set<Integer> n2Hierarchies = new HashSet<Integer>();
+            Set<Integer> n2Hierarchies;
             if (settings.isEnableNearestRelativeFiltering() && n2 != null && n2.size() >= minPoints) {
                 removeAll(n2, usedHierarchies);
                 if (n2.size() >= minPoints) {
@@ -261,7 +261,7 @@ public class InMemoryClusterer {
 
                 o.setCoreObjectNB(n2.size());
 
-                List<FragmentDataObject> newNeighbours = new ArrayList<FragmentDataObject>();
+                List<FragmentDataObject> newNeighbours = new ArrayList<>();
                 for (FragmentDataObject nObject : n2) {
                     if (!allClusterFragments.contains(nObject)) {
                         // nObject can be added to the cluster if it satisfies distance requirement.
@@ -312,7 +312,7 @@ public class InMemoryClusterer {
      * @param usedHierarchies the set of used Hierarchies
      */
     private void removeAll(List<FragmentDataObject> n, Set<Integer> usedHierarchies) {
-        List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
+        List<FragmentDataObject> toBeRemoved = new ArrayList<>();
         for (FragmentDataObject nfo : n) {
             Integer nfid = nfo.getFragment().getId();
             if (usedHierarchies.contains(nfid)) {
@@ -336,10 +336,10 @@ public class InMemoryClusterer {
 
         double gedThreshold = settings.getMaxNeighborGraphEditDistance();
 
-        List<FragmentDataObject> pendingClusterFragments = new ArrayList<FragmentDataObject>(allClusterFragments);
+        List<FragmentDataObject> pendingClusterFragments = new ArrayList<>(allClusterFragments);
         pendingClusterFragments.addAll(newNeighbours);
 
-        Map<FragmentPair, Double> distances = new HashMap<FragmentPair, Double>();
+        Map<FragmentPair, Double> distances = new HashMap<>();
         for (int i = 0; i < pendingClusterFragments.size(); i++) {
             FragmentDataObject f1 = pendingClusterFragments.get(i);
             if (i + 1 < pendingClusterFragments.size()) {

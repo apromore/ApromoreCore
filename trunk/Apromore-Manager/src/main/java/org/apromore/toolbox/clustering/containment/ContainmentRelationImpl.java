@@ -29,13 +29,13 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     private FragmentVersionDagRepository fragmentVersionDagRepository;
     private ProcessModelVersionRepository processModelVersionRepository;
 
-    private Map<Integer, Integer> idIndexMap = new HashMap<Integer, Integer>();
-    private Map<Integer, Integer> indexIdMap = new HashMap<Integer, Integer>();
-    private Map<Integer, Integer> fragSize = new HashMap<Integer, Integer>();
-    private List<Integer> rootIds = new ArrayList<Integer>();
+    private Map<Integer, Integer> idIndexMap = new HashMap<>();
+    private Map<Integer, Integer> indexIdMap = new HashMap<>();
+    private Map<Integer, Integer> fragSize = new HashMap<>();
+    private List<Integer> rootIds = new ArrayList<>();
 
     /* Mapping from root fragment Id -> Ids of all ascendant fragments of that root fragment */
-    private Map<Integer, List<Integer>> hierarchies = new HashMap<Integer, List<Integer>>();
+    private Map<Integer, List<Integer>> hierarchies = new HashMap<>();
     private boolean[][] contmatrix;
     private int minSize = 3;
 
@@ -196,7 +196,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         LOGGER.debug("Total roots: " + rootIds.size());
 
         for (Integer rootId : rootIds) {
-            List<Integer> hierarchy = new ArrayList<Integer>();
+            List<Integer> hierarchy = new ArrayList<>();
             hierarchies.put(rootId, hierarchy);
             hierarchy.add(rootId);
 

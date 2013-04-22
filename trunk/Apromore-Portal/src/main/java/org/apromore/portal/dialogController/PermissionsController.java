@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.FolderType;
+import java.util.List;
+
 import org.apromore.model.UserFolderType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
@@ -8,40 +9,30 @@ import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.*;
-
-import java.util.List;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Igor
- * Date: 2/07/12
- * Time: 5:08 PM
- * To change this template use File | Settings | File Templates.
+ * Used to setup permissions for processes and users.
  */
 public class PermissionsController extends BaseController {
 
-    private SecuritySetupController securitySetupController;
     private Listbox lstPermissions;
 
     public PermissionsController(SecuritySetupController securitySetupController, Window win) throws DialogException {
-
-        this.securitySetupController = securitySetupController;
         this.lstPermissions = (Listbox)win.getFellow("existingPermissions").getFellow("lstPermissions");
     }
 
+    @SuppressWarnings("unchecked")
     public void loadUsers(final int id, FolderTreeNodeTypes type){
         List<UserFolderType> users = type == FolderTreeNodeTypes.Folder
-                                     ?
-                                     this.securitySetupController
-                                         .getMainController()
-                                         .getService()
-                                         .getFolderUsers(id)
-                                     :
-                                     this.securitySetupController
-                                         .getMainController()
-                                         .getService()
-                                         .getProcessUsers(id);
+                                     ? UserSessionManager.getMainController().getService().getFolderUsers(id)
+                                     : UserSessionManager.getMainController().getService().getProcessUsers(id);
         lstPermissions.getItems().clear();
         lstPermissions.setPageSize(6);
         UserSessionManager.setCurrentSecurityItem(id);
@@ -92,10 +83,10 @@ public class PermissionsController extends BaseController {
                                         if (chkWrite != null && chkOwner != null){
                                             String message = "";
                                             if (selectedType == FolderTreeNodeTypes.Folder){
-                                                message = securitySetupController.getMainController().getService().saveFolderPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = UserSessionManager.getMainController().getService().saveFolderPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                             }
                                             else if (selectedType == FolderTreeNodeTypes.Process){
-                                                message = securitySetupController.getMainController().getService().saveProcessPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = UserSessionManager.getMainController().getService().saveProcessPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                             }
                                             if (message.isEmpty()){
                                                 Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK,
@@ -122,10 +113,10 @@ public class PermissionsController extends BaseController {
                                     String message = "";
                                     if (cells.size() == 5){
                                         if (selectedType == FolderTreeNodeTypes.Folder){
-                                            message = securitySetupController.getMainController().getService().removeFolderPermissions(id, user.getUserId());
+                                            message = UserSessionManager.getMainController().getService().removeFolderPermissions(id, user.getUserId());
                                         }
                                         else if (selectedType == FolderTreeNodeTypes.Process){
-                                            message = securitySetupController.getMainController().getService().removeProcessPermissions(id, user.getUserId());
+                                            message = UserSessionManager.getMainController().getService().removeProcessPermissions(id, user.getUserId());
                                         }
                                         if (message.isEmpty()){
                                             Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK,

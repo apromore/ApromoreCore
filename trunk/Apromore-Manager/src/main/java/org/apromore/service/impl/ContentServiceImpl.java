@@ -1,29 +1,30 @@
 package org.apromore.service.impl;
 
-import org.apromore.common.Constants;
-import org.apromore.dao.ContentRepository;
+import static java.util.Map.Entry;
+
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.ExpressionRepository;
 import org.apromore.dao.NodeRepository;
-import org.apromore.dao.NonPocketNodeRepository;
-import org.apromore.dao.model.Content;
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.EdgeAttribute;
 import org.apromore.dao.model.Expression;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeAttribute;
-import org.apromore.dao.model.NonPocketNode;
 import org.apromore.dao.model.Object;
 import org.apromore.dao.model.ObjectRef;
 import org.apromore.dao.model.ObjectRefAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceRef;
 import org.apromore.dao.model.ResourceRefAttribute;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.IAttribute;
 import org.apromore.graph.canonical.ICPFObjectReference;
 import org.apromore.graph.canonical.ICPFResourceReference;
@@ -37,14 +38,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
-
-import static java.util.Map.Entry;
-
 /**
  * Implementation of the FormatService Contract.
  *
@@ -56,121 +49,37 @@ public class ContentServiceImpl implements ContentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentServiceImpl.class);
 
-    private ContentRepository cRepository;
     private NodeRepository nRepository;
-    private NonPocketNodeRepository npnRepository;
     private EdgeRepository eRepository;
     private ExpressionRepository exRepository;
 
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param cRepo Content Repository.
      * @param nRepo Node Repository.
      * @param eRepo Edge Repository.
      * @param exRepo Expression Repository.
      */
     @Inject
-    public ContentServiceImpl(final ContentRepository cRepo, final NodeRepository nRepo, final NonPocketNodeRepository npnRepo,
-            final EdgeRepository eRepo, final ExpressionRepository exRepo) {
-        cRepository = cRepo;
+    public ContentServiceImpl(final NodeRepository nRepo, final EdgeRepository eRepo, final ExpressionRepository exRepo) {
         nRepository = nRepo;
-        npnRepository = npnRepo;
         eRepository = eRepo;
         exRepository = exRepo;
     }
 
 
-
     /**
-     * @see org.apromore.service.ContentService#getContentByCode(String)
+     * @see org.apromore.service.ContentService#addNode(org.apromore.graph.canonical.INode, String, java.util.Set, java.util.Set)
      * {@inheritDoc}
      */
     @Override
-    public List<Content> getContentByCode(final String hash) {
-        if (hash == null) {
-            return null;
-        }
-        return cRepository.getContentByCode(hash);
-    }
-
-    /**
-     * @see org.apromore.service.ContentService#deleteContent(Integer)
-     *      {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteContent(final Integer contentId) {
-        cRepository.delete(contentId);
-    }
-
-    /**
-     * @see org.apromore.service.ContentService#addContent(org.apromore.dao.model.ProcessModelVersion, org.apromore.graph.canonical.Canonical, String, org.apromore.service.helper.OperationContext, java.util.Map)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    @Transactional(readOnly = false)
-    public Content addContent(ProcessModelVersion pmv, Canonical c, String hash, OperationContext op, Map<String, String> pocketIdMappings) {
-        LOGGER.info("Adding the Fragment Content: " + hash);
-
-        op.addAllCpfNodes(c.getNodes());
-        op.addAllCpfEdges(c.getEdges());
-
-        Content content = new Content();
-        content.setCode(hash);
-        content = cRepository.save(content);
-
-        addNodes(content, c.getNodes(), op, pocketIdMappings, pmv.getObjects(), pmv.getResources());
-        addEdges(content, c.getEdges());
-
-        if (c.getEntry() != null) {
-            content.setBoundaryS(findNode(content.getNodes(), c.getEntry().getId()));
-        } else {
-            LOGGER.warn("Content Entry Node can not be found using: " + c.getId());
-        }
-        if (c.getExit() != null) {
-            content.setBoundaryE(findNode(content.getNodes(), c.getExit().getId()));
-        } else {
-            LOGGER.warn("Content Exit Node can not be found using: " + c.getId());
-        }
-
-        return content;
-    }
-
-
-
-    /* Add the nodes to the DB. */
-    private void addNodes(final Content content, final Collection<CPFNode> nodes, final OperationContext g,
-            final Map<String, String> pocketIdMappings, Set<Object> objs, Set<Resource> ress) {
-        for (CPFNode node : nodes) {
-            String oldId = node.getId();
-            String type = g.getGraph().getNodeProperty(node.getId(), Constants.TYPE);
-
-            Node n = addNode(content, node, type, objs, ress);
-            if (n != null) {
-                content.getNodes().add(n);
-
-                if (!"Pocket".equals(type)) {
-                    addNonPocketNode(n);
-                } else {
-                    pocketIdMappings.put(oldId, n.getUri());
-                }
-            }
-        }
-    }
-
-    /* Add a single Node */
-    private Node addNode(final Content content, final INode cpfNode, final String graphType,
-             Set<org.apromore.dao.model.Object> objects, Set<Resource> resources) {
+    public Node addNode(final INode cpfNode, final String graphType, Set<org.apromore.dao.model.Object> objects, Set<Resource> resources) {
         LOGGER.info("Adding new Node: " + cpfNode.getId());
 
         try {
             Node node = new Node();
-            node.setContent(content);
             node.setName(cpfNode.getName());
             node.setUri(cpfNode.getId());
-            node.setNetId(cpfNode.getNetId());
             node.setOriginalId(cpfNode.getOriginalId());
             node.setGraphType(graphType);
             node.setNodeType(cpfNode.getNodeType());
@@ -195,6 +104,52 @@ public class ContentServiceImpl implements ContentService {
         }
         return null;
     }
+
+    /**
+     * @see org.apromore.service.ContentService#addEdge(org.apromore.graph.canonical.CPFEdge, org.apromore.dao.model.FragmentVersion, org.apromore.service.helper.OperationContext)
+     * {@inheritDoc}
+     */
+    @Override
+    public Edge addEdge(final CPFEdge cpfEdge, FragmentVersion fv, OperationContext op) {
+        LOGGER.info("Adding new Edge: " + cpfEdge.getId());
+
+        try {
+            Edge edge = new Edge();
+            edge.setUri(cpfEdge.getId());
+            edge.setOriginalId(cpfEdge.getOriginalId());
+
+            edge.setSourceNode(nRepository.findNodeByUriAndFragmentVersion(cpfEdge.getSource().getId(), fv.getId()));
+            if (edge.getSourceNode() == null) {
+                edge.setSourceNode(findNode(op.getPersistedNodes().values(), cpfEdge.getSource().getId()));
+            }
+
+            edge.setTargetNode(nRepository.findNodeByUriAndFragmentVersion(cpfEdge.getTarget().getId(), fv.getId()));
+            if (edge.getSourceNode() == null) {
+                edge.setSourceNode(findNode(op.getPersistedNodes().values(), cpfEdge.getTarget().getId()));
+            }
+
+            if (cpfEdge.getConditionExpr() != null) {
+                Expression expr = new Expression();
+                expr.setDescription(cpfEdge.getConditionExpr().getDescription());
+                expr.setExpression(cpfEdge.getConditionExpr().getExpression());
+                expr.setLanguage(cpfEdge.getConditionExpr().getLanguage());
+                expr.setReturnType(cpfEdge.getConditionExpr().getReturnType());
+                edge.setConditionExpression(exRepository.save(expr));
+            }
+
+            addEdgeAttributes(edge, cpfEdge);
+
+            if (edge.getSourceNode() == null || edge.getTargetNode() == null) {
+                LOGGER.error("Either the Source or Target nodes are null. Please check!");
+            }
+
+            return eRepository.save(edge);
+        } catch (Exception e) {
+            LOGGER.error("Unable to add Edge(" + cpfEdge.getId() + "): " + e.getMessage());
+        }
+        return null;
+    }
+
 
     private void addNodeAttributes(final Node node, final INode v) {
         NodeAttribute nAtt;
@@ -337,46 +292,6 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-
-    /* Adds the Edges to the DB. */
-    private void addEdges(final Content content, final Set<CPFEdge> edges) {
-        for (CPFEdge e : edges) {
-            addEdge(content, e);
-        }
-    }
-
-    /* Adding an edge to the DB. */
-    private Edge addEdge(final Content content, final CPFEdge cpfEdge) {
-        LOGGER.info("Adding new Edge: " + cpfEdge.getId());
-
-        try {
-            Edge edge = new Edge();
-            edge.setContent(content);
-            edge.setUri(cpfEdge.getId());
-            edge.setOriginalId(cpfEdge.getOriginalId());
-            edge.setSourceNode(findNode(content.getNodes(), cpfEdge.getSource().getId()));
-            edge.setTargetNode(findNode(content.getNodes(), cpfEdge.getTarget().getId()));
-
-            if (cpfEdge.getConditionExpr() != null) {
-                Expression expr = new Expression();
-                expr.setDescription(cpfEdge.getConditionExpr().getDescription());
-                expr.setExpression(cpfEdge.getConditionExpr().getExpression());
-                expr.setLanguage(cpfEdge.getConditionExpr().getLanguage());
-                expr.setReturnType(cpfEdge.getConditionExpr().getReturnType());
-                edge.setConditionExpression(exRepository.save(expr));
-            }
-
-            addEdgeAttributes(edge, cpfEdge);
-
-            content.getEdges().add(edge);
-
-            return eRepository.save(edge);
-        } catch (Exception e) {
-            LOGGER.error("Unable to add Edge(" + cpfEdge.getId() + "): " + e.getMessage());
-        }
-        return null;
-    }
-
     /* Add the Attributes to an Edge. */
     private void addEdgeAttributes(final Edge edge, final CPFEdge cpfEdge) {
         EdgeAttribute edgeAttribute;
@@ -426,17 +341,8 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-
-    /* Add a Non pocket Node */
-    private NonPocketNode addNonPocketNode(final Node node) {
-        NonPocketNode nonPockNode = new NonPocketNode();
-        nonPockNode.setNode(node);
-        node.getNonPocketNodes().add(nonPockNode);
-        return npnRepository.save(nonPockNode);
-    }
-
     /* Given the ObjectId, it finds the Object record and returns it. */
-    private org.apromore.dao.model.Object findObject(Set<Object> objects, String objectId) {
+    private org.apromore.dao.model.Object findObject(Collection<Object> objects, String objectId) {
         org.apromore.dao.model.Object found = null;
         for (Object obj : objects) {
             if (obj.getUri().equals(objectId)) {
@@ -451,7 +357,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /* Given the ResourceId, it finds the Resource record and returns it. */
-    private Resource findResourceType(Set<Resource> resources, String resourceId) {
+    private Resource findResourceType(Collection<Resource> resources, String resourceId) {
         Resource found = null;
         for (Resource res : resources) {
             if (res.getUri().equals(resourceId)) {
@@ -466,7 +372,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /* Given the the NodeId, it find the Node record and returns it. */
-    private Node findNode(Set<Node> nodes, String nodeId) {
+    private Node findNode(Collection<Node> nodes, String nodeId) {
         Node found = null;
         for (Node node : nodes) {
             if (node.getUri().equals(nodeId)) {
@@ -481,7 +387,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /* Given the the edgeId, it find the Edge record and returns it. */
-    private Edge findEdge(Set<Edge> edges, String edgeId) {
+    private Edge findEdge(Collection<Edge> edges, String edgeId) {
         Edge found = null;
         for (Edge edge : edges) {
             if (edge.getUri().equals(edgeId)) {

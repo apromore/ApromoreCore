@@ -442,6 +442,49 @@
         </dependency>
 
         <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>plugin-api</artifactId>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>canoniser-api</artifactId>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>deployment-api</artifactId>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>deployment-api-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-epml</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!--<dependency>-->
             <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
             <!--<artifactId>gemini-blueprint-test</artifactId>-->
             <!--<version>1.0.2.RELEASE</version>-->

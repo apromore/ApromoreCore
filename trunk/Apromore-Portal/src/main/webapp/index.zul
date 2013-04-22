@@ -19,7 +19,7 @@
         .z-list-item a:visited {font-size: ${fontSizeMS}}
     </style>
 
-    <window id="mainW" border="none" width="100%" vflex="true" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" vflex="true" use="org.apromore.portal.dialogController.MainController">
         <Header id="headercomp" />
 
         <borderlayout vflex="true">
@@ -28,9 +28,9 @@
                     <north id="leftNorthPanel" flex="true">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
-                    <center id="leftCenterPanel" title="My Workspace" vflex="1" autoscroll="true">
-                        <div height="3000px">
-                            <Navigation id="navigationcomp" vflex="min"/>
+                    <center id="leftCenterPanel" title="My Workspace" vflex="1" >
+                        <div height="3000px" >
+                            <Navigation id="navigationcomp" vflex="min" />
                         </div>
                     </center>
                     <south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">

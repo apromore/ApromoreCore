@@ -1,16 +1,42 @@
 package org.apromore.service.model;
 
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.service.utils.IDGenerator;
 import org.jbpt.algo.tree.tctree.TCType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 public class FragmentNode extends Canonical {
 
+    private String fragmentId;
     private TCType type = null;
-    private Collection<FragmentNode> children = new ArrayList<FragmentNode>();
+    private Collection<FragmentNode> children = new ArrayList<>();
     private FragmentNode parent = null;
+    private String fragmentCode;
+
+    public FragmentNode() {
+        super();
+        this.setUri(UUID.randomUUID().toString());
+        fragmentId = "F" + IDGenerator.generateID();
+    }
+
+    public String getFragmentId() {
+        return fragmentId;
+    }
+
+    public void setFragmentId(String fragmentId) {
+        this.fragmentId = fragmentId;
+    }
+
+    public String getFragmentCode() {
+        return fragmentCode;
+    }
+
+    public void setFragmentCode(String fragmentCode) {
+        this.fragmentCode = fragmentCode;
+    }
 
     public TCType getType() {
         return type;

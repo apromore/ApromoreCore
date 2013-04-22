@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.DomainsType;
@@ -26,12 +25,15 @@ import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
@@ -51,34 +53,20 @@ public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
-    private Window mainW;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+
     private HeaderController header;
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
     private Window shortmessageW;
     private String host;
-    private String OryxEndPoint_xpdl;
-    private String OryxEndPoint_epml;
-    private Logger LOG;
-    private String msgWhenClose;
     private List<SearchHistoriesType> searchHistory;
-    private Hbox pagingandbuttons;
-    //private Component workspaceOptionsPanel;
-    private Html folders;
-    //private Div listView;
-    //private Button btnTileView;
-
-    //private WorkspaceOptionsController workspaceOptionsController;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    //private BaseFilterController baseFilterController;
     private NavigationController navigation;
 
     public Html breadCrumbs;
-
-    // uncomment when ready
-    // private NavigationController navigation;
 
     /**
      * onCreate is executed after the main window has been created it is
@@ -93,48 +81,30 @@ public class MainController extends BaseController {
             if (!Executions.getCurrent().isGecko() && !Executions.getCurrent().isGecko3()) {
                 throw new Exception("Sorry, we currently support firefox only.");
             }
-            this.LOG = Logger.getLogger(MainController.class.getName());
 
-            this.mainW = (Window) this.getFellow("mainW");
+            Window mainW = (Window) this.getFellow("mainW");
+            Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
+            //Html folders = (Html) mainW.getFellow("folders");
+
             this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
-            this.pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
-            //this.workspaceOptionsPanel = mainW.getFellow("workspaceOptionsPanel");
-            this.folders = (Html) mainW.getFellow("folders");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
-            //this.listView = (Div) mainW.getFellow("listView");
-            //this.btnTileView = (Button) mainW.getFellow("btnTileView");
-
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.header = new HeaderController(this);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
             this.navigation = new NavigationController(this);
-            //this.workspaceOptionsController = new WorkspaceOptionsController(this);
 
             switchToProcessSummaryView();
-            //loadWorkspace();
 
-            this.searchHistory = new ArrayList<SearchHistoriesType>();
-            this.msgWhenClose = null;
+            this.searchHistory = new ArrayList<>();
+            //String msgWhenClose = null;
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
 
             Properties properties = new Properties();
             properties.load(inputStream);
             this.host = properties.getProperty("Host");
-            this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
-            this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
-            setMainController(this);
-            //this.listView.setVisible(true);
-            this.pagingandbuttons.setVisible(true);
-            //this.workspaceOptionsPanel.setVisible(true);
-            //toggleView(true);
-
-//            this.btnTileView.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener() {
-//                public void onEvent(Event event) throws Exception {
-//                    toggleView(true);
-//                }
-//            });
-
+            UserSessionManager.setMainController(this);
+            pagingandbuttons.setVisible(true);
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {
@@ -147,71 +117,30 @@ public class MainController extends BaseController {
         }
     }
 
-//    public void toggleView(boolean showTiles) {
-//        this.pagingandbuttons.setVisible(!showTiles);
-//        this.workspaceOptionsPanel.setVisible(showTiles);
-//        this.folders.setVisible(showTiles);
-//        this.listView.setVisible(!showTiles);
-//    }
-
     public void loadWorkspace() {
         updateActions();
-        String userId = getCurrentUser().getId();
-        int currentParentFolderId = getCurrentFolder() == null || getCurrentFolder().getId() == 0 ? 0 : getCurrentFolder().getId();
+        String userId = UserSessionManager.getCurrentUser().getId();
+        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
         this.loadTree();
 
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
-        //List<ProcessSummaryType> availableProcesses = getService().getProcesses(UserSessionManager.getCurrentUser().getId(), currentParentFolderId);
-
-        //Html html = (Html) (this.getFellow("folders"));
-        if (getCurrentFolder() != null) {
-            FolderType folder = getCurrentFolder();
+        if (UserSessionManager.getCurrentFolder() != null) {
+            FolderType folder = UserSessionManager.getCurrentFolder();
             folder.getFolders().clear();
             for (FolderType newFolder : folders) {
                 folder.getFolders().add(newFolder);
             }
-            setCurrentFolder(folder);
+            UserSessionManager.setCurrentFolder(folder);
         }
-
-        //buildWorkspaceControls(html, folders, availableProcesses);
-        //Clients.evalJavaScript("bindTiles();");
     }
 
     public void loadTree() {
-        List<FolderType> folders = this.getService().getWorkspaceFolderTree(getCurrentUser().getId());
-        setTree(folders);
+        List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
+        UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
     }
 
-//    public void buildWorkspaceControls(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
-//        String content = "<ul class='workspace'>";
-//
-//        for (FolderType folder : folders) {
-//            int access = 1;
-//            if (folder.isHasWrite()) {
-//                access = 2;
-//            }
-//            if (folder.isHasOwnership()) {
-//                access = 4;
-//            }
-//            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
-//        }
-//
-//        for (ProcessSummaryType process : processes) {
-//            int access = 1;
-//            if (process.isHasWrite()) {
-//                access = 2;
-//            }
-//            if (process.isHasOwnership()) {
-//                access = 4;
-//            }
-//            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
-//        }
-//
-//        content += "</ul>";
-//        html.setContent(content);
-//    }
 
     /**
      * register an event listener for the clientInfo event (to prevent user to close the browser window)
@@ -225,32 +154,29 @@ public class MainController extends BaseController {
      * query is given by version of process
      * @param processSummaries
      * @param isQueryResult
-     * @param process
-     * @param version
      * @throws Exception
      */
-    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult, final ProcessSummaryType process,
-               final VersionSummaryType version) {
+    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult) {
         int folderId;
 
         if (isQueryResult) {
             clearProcessVersions();
         }
-        if (getCurrentFolder() == null) {
+        if (UserSessionManager.getCurrentFolder() == null) {
             folderId = 0;
         } else {
-            folderId = getCurrentFolder().getId();
+            folderId = UserSessionManager.getCurrentFolder().getId();
         }
 
         // TODO switch to process query result view
         switchToProcessSummaryView();
-        List<FolderType> subFolders = getService().getSubFolders(getCurrentUser().getId(), folderId);
-        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, processSummaries, isQueryResult, process, version);
+        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
+        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, processSummaries, isQueryResult);
     }
 
     // disable/enable features depending on user status
     public void updateActions() {
-        Boolean connected = getCurrentUser() != null;
+        Boolean connected = UserSessionManager.getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
         @SuppressWarnings("unchecked")
@@ -278,8 +204,8 @@ public class MainController extends BaseController {
     public void reloadProcessSummaries() {
         ProcessSummariesType processSummaries = new ProcessSummariesType();
         processSummaries.getProcessSummary().clear();
-        UserType user = getCurrentUser();
-        FolderType currentFolder = getCurrentFolder();
+        UserType user = UserSessionManager.getCurrentUser();
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
 
         List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
         for (ProcessSummaryType processSummary : processSummaryTypes) {
@@ -294,7 +220,7 @@ public class MainController extends BaseController {
         }
         displayMessage(processSummaries.getProcessSummary().size() + message);
         simplesearch.clearSearches();
-        displayProcessSummaries(processSummaries, false, null, null);
+        displayProcessSummaries(processSummaries, false);
 
         loadWorkspace();
     }
@@ -374,7 +300,7 @@ public class MainController extends BaseController {
         editSession.setNativeType(nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
-        editSession.setUsername(getCurrentUser().getUsername());
+        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
 
         editSession.setOriginalBranchName(version.getName());
         editSession.setVersionNumber(version.getVersionNumber());
@@ -406,7 +332,6 @@ public class MainController extends BaseController {
             
             instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'); ";
 
-            // Send http post to Oryx
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -470,16 +395,8 @@ public class MainController extends BaseController {
         this.shortmessageW = shortmessageW;
     }
 
-    public String getOryxEndPoint_xpdl() {
-        return OryxEndPoint_xpdl;
-    }
-
-    public String getOryxEndPoint_epml() {
-        return OryxEndPoint_epml;
-    }
-
     public Logger getLOG() {
-        return LOG;
+        return LOGGER;
     }
 
     public String getHost() {
@@ -556,7 +473,6 @@ public class MainController extends BaseController {
     private void deattachDynamicUI() {
         getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
         getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        //getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
 
@@ -564,7 +480,6 @@ public class MainController extends BaseController {
      * Attaches the the listbox, detail and filter view
      */
     private void reattachDynamicUI() {
-        //getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
         getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
         getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
     }
@@ -589,13 +504,10 @@ public class MainController extends BaseController {
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        //this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
 
-        // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Process Details");
-        //((South) getFellow("leftInnerSouthPanel")).setOpen(false);
 
         reloadProcessSummaries();
     }
@@ -611,25 +523,20 @@ public class MainController extends BaseController {
 
         if (this.baseListboxController != null) {
             if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
-                // Everything is correctly setup
                 return;
             } else {
-                // Another view is currently displayed
                 deattachDynamicUI();
             }
         }
 
         // Otherwise create new Listbox
-        //this.baseFilterController = new SimilarityClustersFilterController(this);
         SimilarityClustersFilterController simFilterController = new SimilarityClustersFilterController(this);
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
         this.baseListboxController = new SimilarityClustersListboxController(this, simFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
-        reattachDynamicUI();
-
-        // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
-        //((South) getFellow("leftInnerSouthPanel")).setOpen(true);
+
+        reattachDynamicUI();
     }
 
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {

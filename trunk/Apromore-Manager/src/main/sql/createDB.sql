@@ -9,17 +9,16 @@ DROP TABLE IF EXISTS `edit_session`;
 DROP TABLE IF EXISTS `fragment_version_dag`;
 DROP TABLE IF EXISTS `process_fragment_map`;
 DROP TABLE IF EXISTS `expression`;
-DROP TABLE IF EXISTS `non_pocket_node`;
 DROP TABLE IF EXISTS `node`;
+DROP TABLE IF EXISTS `node_mapping`;
 DROP TABLE IF EXISTS `cancel_nodes`;
 DROP TABLE IF EXISTS `edge`;
+DROP TABLE IF EXISTS `edge_mapping`;
 DROP TABLE IF EXISTS `fragment_version`;
-DROP TABLE IF EXISTS `content`;
 DROP TABLE IF EXISTS `native_type`;
 DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
-DROP TABLE IF EXISTS `net`;
 
 DROP TABLE IF EXISTS `folder`;
 DROP TABLE IF EXISTS `folder_process`;
@@ -212,25 +211,10 @@ CREATE TABLE `annotation` (
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `content` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `boundary_s` int(11) DEFAULT NULL,
-  `boundary_e` int(11) DEFAULT NULL,
-  `code` longtext,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_start_edge` FOREIGN KEY (`boundary_s`)
-  REFERENCES `node` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_end_edge` FOREIGN KEY (`boundary_e`)
-  REFERENCES `node` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `fragment_version` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uri` varchar(40),
   `fragmentId` int(11) DEFAULT NULL,
-  `contentId` int(11) DEFAULT NULL,
   `clusterId` int(11) DEFAULT NULL,
   `child_mapping_code` varchar(20000),
   `derived_from_fragment` int(11),
@@ -240,9 +224,6 @@ CREATE TABLE `fragment_version` (
   `fragment_type` varchar(10),
   `newest_neighbor` varchar(40),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_contents_version` FOREIGN KEY (`contentId`)
-  REFERENCES `content` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_fragments_version` FOREIGN KEY (`fragmentId`)
   REFERENCES `fragment` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
@@ -278,7 +259,6 @@ CREATE TABLE `fragment_version_dag` (
 CREATE TABLE `node` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uri` varchar(40),
-  `contentId` int(11) DEFAULT NULL,
   `subVersionId` int(11) DEFAULT NULL,
   `originalId` varchar(200) DEFAULT NULL,
   `netId` varchar(200) DEFAULT NULL,
@@ -294,9 +274,6 @@ CREATE TABLE `node` (
   `timeDate` datetime DEFAULT NULL,
   `timeDuration` varchar(100) NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_node_content` FOREIGN KEY (`contentId`)
-  REFERENCES `content` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_node_subversion` FOREIGN KEY (`subVersionId`)
   REFERENCES `process_model_version` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
@@ -310,6 +287,20 @@ CREATE TABLE `node` (
   REFERENCES `expression` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `node_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fragmentVersionId` int(11),
+  `nodeId` int(11),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_node_mapping` (`fragmentVersionId` , `nodeId`),
+  CONSTRAINT `fk_nm_fragment_version` FOREIGN KEY (`fragmentVersionId`)
+  REFERENCES `fragment_version` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_nm_node` FOREIGN KEY (`nodeId`)
+  REFERENCES `node` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+)  engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cancel_nodes` (
   `nodeId` int(11) NOT NULL,
@@ -326,7 +317,6 @@ CREATE TABLE `cancel_nodes` (
 CREATE TABLE `edge` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uri` varchar(40),
-  `contentId` int(11) DEFAULT NULL,
   `sourceNodeId` int(11) DEFAULT NULL,
   `targetNodeId` int(11) DEFAULT NULL,
   `cancelNodeId` int(11) DEFAULT NULL,
@@ -334,9 +324,6 @@ CREATE TABLE `edge` (
   `conditionExpressionId` int(11) DEFAULT NULL,
   `def` varchar(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_content_edge` FOREIGN KEY (`contentId`)
-  REFERENCES `content` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_source_node` FOREIGN KEY (`sourceNodeId`)
   REFERENCES `node` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
@@ -351,12 +338,17 @@ CREATE TABLE `edge` (
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `non_pocket_node` (
+CREATE TABLE `edge_mapping` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nodeId` int(11) DEFAULT NULL,
+  `fragmentVersionId` int(11),
+  `edgeId` int(11),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_non_pocket_node` FOREIGN KEY (`nodeId`)
-  REFERENCES `node` (`id`)
+  UNIQUE KEY `un_edge_mapping` (`fragmentVersionId` , `edgeId`),
+  CONSTRAINT `fk_em_fragment_version` FOREIGN KEY (`fragmentVersionId`)
+  REFERENCES `fragment_version` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_em_edge` FOREIGN KEY (`edgeId`)
+  REFERENCES `edge` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

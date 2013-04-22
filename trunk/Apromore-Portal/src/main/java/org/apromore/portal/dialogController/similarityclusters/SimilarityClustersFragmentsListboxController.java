@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.FragmentData;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseDetailController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.similarityclusters.renderer.SimilarityFragmentsItemRenderer;
@@ -19,8 +20,7 @@ import org.zkoss.zul.Listbox;
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  */
-public class SimilarityClustersFragmentsListboxController extends
-        BaseDetailController {
+public class SimilarityClustersFragmentsListboxController extends BaseDetailController {
 
     private static final String ZUL_PAGE = "macros/detail/fragmentDetail.zul";
 
@@ -29,14 +29,12 @@ public class SimilarityClustersFragmentsListboxController extends
     private final Listbox listBox;
 
     /**
-     * @param mainController
+     * @param mainController the main controller of the application.
      */
-    public SimilarityClustersFragmentsListboxController(
-            final MainController mainController) {
+    public SimilarityClustersFragmentsListboxController(final MainController mainController) {
         super(mainController);
 
-        this.listBox = ((Listbox) Executions.createComponents(
-                ZUL_PAGE, getMainController(), null));
+        this.listBox = ((Listbox) Executions.createComponents(ZUL_PAGE, UserSessionManager.getMainController(), null));
 
         getListBox().setItemRenderer(new SimilarityFragmentsItemRenderer());
         getListBox().setModel(new ListModelList());
@@ -65,7 +63,7 @@ public class SimilarityClustersFragmentsListboxController extends
 
             @Override
             public int compare(FragmentData o1, FragmentData o2) {
-                return Double.valueOf(o1.getDistance()).compareTo(Double.valueOf(o2.getDistance()));
+                return Double.valueOf(o1.getDistance()).compareTo(o2.getDistance());
             }
 
         });

@@ -31,9 +31,4 @@ public interface ComposerService {
      */
     public Canonical compose(Integer rootFragmentId) throws ExceptionDao;
 
-    /**
-     * Some Implementations have an internal Cache that needs to be cleared at times.
-     * @param ids the list of ID's that needs to be clears from the cache.
-     */
-    public void clearCache(List<Integer> ids);
 }

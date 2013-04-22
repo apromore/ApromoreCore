@@ -34,7 +34,7 @@
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <!--<module>Apromore-Editor</module>-->
+        <module>Apromore-Editor</module>
     </modules>
 
     <repositories>
@@ -1012,12 +1012,6 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.core</artifactId>
-                <version>${spring.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>org.springframework.jdbc</artifactId>
                 <version>${spring.version}</version>
                 <scope>provided</scope>
             </dependency>
