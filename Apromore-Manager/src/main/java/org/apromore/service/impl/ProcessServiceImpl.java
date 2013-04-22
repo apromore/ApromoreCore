@@ -21,14 +21,12 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.ContentRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.Native;
@@ -71,6 +69,7 @@ import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
@@ -99,7 +98,6 @@ public class ProcessServiceImpl implements ProcessService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
     private AnnotationRepository annotationRepo;
-    private ContentRepository contentRepo;
     private NativeRepository nativeRepo;
     private ProcessBranchRepository processBranchRepo;
     private ProcessRepository processRepo;
@@ -120,7 +118,6 @@ public class ProcessServiceImpl implements ProcessService {
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepo Annotations repository.
-     * @param contentRepo Content Repository
      * @param nativeRepo Native Repository.
      * @param processBranchRepo Process Branch Map Repository.
      * @param processRepo Process Repository
@@ -138,7 +135,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public ProcessServiceImpl(final AnnotationRepository annotationRepo, final ContentRepository contentRepo,
+    public ProcessServiceImpl(final AnnotationRepository annotationRepo,
             final NativeRepository nativeRepo, final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
@@ -146,7 +143,6 @@ public class ProcessServiceImpl implements ProcessService {
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
             final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
         this.annotationRepo = annotationRepo;
-        this.contentRepo = contentRepo;
         this.nativeRepo = nativeRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
@@ -535,7 +531,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
 
         Canonical can;
-        FragmentVersion rootFragment;
+        OperationContext rootFragment;
         ProcessModelVersion pmv;
         try {
             LOGGER.info("Starting to process: " + cpf.getCpt().getUri() + " - " + cpf.getCpt().getName());
@@ -545,7 +541,7 @@ public class ProcessServiceImpl implements ProcessService {
             pmv = createProcessModelVersion(branch, versionNumber, can, cpf.getCpt().getUri());
             rootFragment = decomposerSrv.decompose(can, pmv);
             if (rootFragment != null) {
-                pmv.setRootFragmentVersion(rootFragment);
+                pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
             } else {
                 throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
             }
@@ -560,7 +556,7 @@ public class ProcessServiceImpl implements ProcessService {
     private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Double versionNumber,
             Double originalVersionNumber, String lockStatus, CanonisedProcess cpf)  throws RepositoryException {
         Canonical graph;
-        FragmentVersion rootFragment;
+        OperationContext rootFragment;
         ProcessModelVersion processModelVersion = null;
 
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
@@ -581,7 +577,8 @@ public class ProcessServiceImpl implements ProcessService {
             graph = converter.convert(cpf.getCpt());
             rootFragment = decomposerSrv.decompose(graph, pmVersion);
             if (rootFragment != null) {
-                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment, pmVersion.getFragmentVersions(), versionNumber);
+                propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
+                        pmVersion.getFragmentVersions(), versionNumber);
             }
 
             processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
@@ -620,10 +617,10 @@ public class ProcessServiceImpl implements ProcessService {
         if ((rootFragmentVersion && processCount == 1 && fragmentCount == 0) ||
                 (!rootFragmentVersion && processCount == 0 && fragmentCount == 0)) {
             List<FragmentVersion> children = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
-            Content content = fragmentVersion.getContent();
+            //Content content = fragmentVersion.getContent();
             fragmentVersionDagRepo.deleteChildRelationships(fragmentVersion);
             fragmentVersionRepo.delete(fragmentVersion);
-            contentRepo.delete(content);
+            //contentRepo.delete(content);
             for (FragmentVersion child : children) {
                 deleteFragmentVersion(child, false);
             }
@@ -901,7 +898,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
         }
 
-        return fService.addFragmentVersion(null, fragmentVersion.getContent(), childMappings, fragmentVersion.getId().toString(),
+        return fService.addFragmentVersion(null, childMappings, fragmentVersion.getId().toString(),
                 lockType, lockCount, fragmentVersion.getFragmentSize(), fragmentVersion.getFragmentType());
     }
 

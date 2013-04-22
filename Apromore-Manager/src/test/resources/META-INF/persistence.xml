@@ -24,16 +24,16 @@
         <class>org.apromore.dao.model.FragmentUser</class>
         <class>org.apromore.dao.model.FolderUser</class>
         <class>org.apromore.dao.model.ProcessUser</class>
-        <class>org.apromore.dao.model.Content</class>
         <class>org.apromore.dao.model.Edge</class>
+        <class>org.apromore.dao.model.EdgeMapping</class>
         <class>org.apromore.dao.model.Expression</class>
         <class>org.apromore.dao.model.FragmentVersion</class>
         <class>org.apromore.dao.model.FragmentVersionDag</class>
-        <class>org.apromore.dao.model.NonPocketNode</class>
         <class>org.apromore.dao.model.ProcessBranch</class>
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
         <class>org.apromore.dao.model.Node</class>
+        <class>org.apromore.dao.model.NodeMapping</class>
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ResourceAttribute</class>
         <class>org.apromore.dao.model.ObjectAttribute</class>

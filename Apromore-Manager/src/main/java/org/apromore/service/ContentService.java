@@ -1,14 +1,14 @@
 package org.apromore.service;
 
-import org.apromore.dao.model.Content;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.graph.canonical.CPFNode;
-import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.helper.OperationContext;
-
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.Node;
+import org.apromore.dao.model.Resource;
+import org.apromore.graph.canonical.CPFEdge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.service.helper.OperationContext;
 
 /**
  * Interface for the Content Service. Defines all the methods that will do the majority of the work for
@@ -18,24 +18,6 @@ import java.util.Set;
  */
 public interface ContentService {
 
-
-    /**
-     * Get all the matching Content record with the same Hash.
-     * @param hash the hash to search for.
-     * @return any matching content records
-     */
-    List<Content> getContentByCode(String hash);
-
-    /**
-     * Add new Content?
-     * @param modelVersion the process model version
-     * @param c    RPSTNode
-     * @param hash the contents Hash code
-     * @param op   The operation Context of this graph
-     * @param pocketIdMappings the pocket mappings
-     */
-    Content addContent(ProcessModelVersion modelVersion, Canonical c, String hash, OperationContext op, Map<String, String> pocketIdMappings);
-
     /**
      * Updates the Cancel Nodes and Edges with the correct Information.
      * @param operationContext the current Operational Context.
@@ -43,9 +25,24 @@ public interface ContentService {
     public void updateCancelNodes(OperationContext operationContext);
 
     /**
-     * Delete the Content and all it's extra elements.
-     * @param contentId the content to remove.
+     * Adds a Single node to the Repository.
+     * @param cpfNode the cpfNode we are persisting.
+     * @param graphType the Graph Type (Bond, Rigid, Polygon)
+     * @param objects any objects attached to this node
+     * @param resources any resources attached to this node
+     * @return the saved Node.
      */
-    void deleteContent(Integer contentId);
+    Node addNode(final INode cpfNode, final String graphType, Set<org.apromore.dao.model.Object> objects,
+        Set<Resource> resources);
 
+    /**
+     * Add a single Edge to the Repository.
+     *
+     *
+     * @param cpfEdge the cpfEdge we are persisting.
+     * @param fv
+     * @param op
+     * @return the saved Edge.
+     */
+    Edge addEdge(final CPFEdge cpfEdge, FragmentVersion fv, OperationContext op);
 }

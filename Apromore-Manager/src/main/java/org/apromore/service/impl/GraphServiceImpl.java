@@ -1,15 +1,13 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.inject.Inject;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.ContentRepository;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.NodeRepository;
-import org.apromore.dao.model.Content;
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.Expression;
 import org.apromore.dao.model.Node;
@@ -38,8 +36,8 @@ import org.apromore.graph.canonical.NodeTypeEnum;
 import org.apromore.graph.canonical.NonHumanTypeEnum;
 import org.apromore.graph.canonical.ObjectTypeEnum;
 import org.apromore.graph.canonical.ResourceTypeEnum;
-import org.apromore.graph.util.GraphUtil;
 import org.apromore.service.GraphService;
+import org.apromore.util.FragmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,142 +56,54 @@ public class GraphServiceImpl implements GraphService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphServiceImpl.class);
 
-    private ContentRepository contentRepo;
     private EdgeRepository edgeRepo;
     private NodeRepository nodeRepo;
 
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param contentRepository Content Repository.
      * @param edgeRepository Edge Repository.
      * @param nodeRepository Node repository.
      */
     @Inject
-    public GraphServiceImpl(final ContentRepository contentRepository, final EdgeRepository edgeRepository,
-            final NodeRepository nodeRepository) {
-        contentRepo = contentRepository;
+    public GraphServiceImpl(final EdgeRepository edgeRepository, final NodeRepository nodeRepository) {
         edgeRepo = edgeRepository;
         nodeRepo = nodeRepository;
     }
 
 
-    /**
-     * @see org.apromore.service.GraphService#getContent(Integer)
-     *      {@inheritDoc}
-     */
-    @Override
-    public Content getContent(final Integer fragmentVersionId) {
-        return contentRepo.getContentByFragmentVersion(fragmentVersionId);
-    }
 
-    /**
-     * @see org.apromore.service.GraphService#getContentIds()
-     *      {@inheritDoc}
-     */
-    @Override
-    public List<String> getContentIds() {
-        return nodeRepo.getContentIDs();
-    }
 
-    /**
-     * @see org.apromore.service.GraphService#getGraph(Integer)
-     *      {@inheritDoc}
-     */
     @Override
-    public Canonical getGraph(final Integer contentID) {
-        Canonical g = new Canonical();
-        fillNodes(g, contentID);
-        fillEdges(g, contentID);
-        return g;
-    }
-
-    /**
-     * @see org.apromore.service.GraphService#fillNodes(org.apromore.graph.canonical.Canonical, Integer)
-     *      {@inheritDoc}
-     */
-    @Override
-    public void fillNodes(final Canonical procModelGraph, final Integer contentID) {
+    @Transactional(readOnly = true)
+    public void fillNodesByFragment(final Canonical procModelGraph, final String fragmentURI) {
         INode v;
-        List<Node> nodes = nodeRepo.getNodesByContent(contentID);
+        List<Node> nodes = nodeRepo.getNodesByFragmentURI(fragmentURI);
         for (Node node : nodes) {
             v = buildNodeByType(node, procModelGraph);
             procModelGraph.addNode((CPFNode) v);
-            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, GraphUtil.getType(v));
+            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, FragmentUtil.getType(v));
         }
     }
 
-
-    /**
-     * @see org.apromore.service.GraphService#fillEdges(org.apromore.graph.canonical.Canonical, Integer)
-     *      {@inheritDoc}
-     */
     @Override
-    public void fillEdges(final Canonical procModelGraph, final Integer contentID) {
-        List<Edge> edges = edgeRepo.getEdgesByContent(contentID);
+    @Transactional(readOnly = true)
+    public void fillEdgesByFragmentURI(final Canonical procModelGraph, final String fragmentURI) {
+        List<Edge> edges = edgeRepo.getEdgesByFragmentURI(fragmentURI);
         for (Edge edge : edges) {
             CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
             CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
             if (v1 != null && v2 != null) {
-                if (edge.getOriginalId() != null) {
-                    procModelGraph.addEdge(edge.getOriginalId(), v1, v2);
-                } else {
-                    procModelGraph.addEdge(v1, v2);
-                }
+                procModelGraph.addEdge(v1, v2);
             } else {
                 if (v1 == null && v2 != null) {
-                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in content " + contentID);
+                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentURI);
                 }
                 if (v2 == null && v1 != null) {
-                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in content " + contentID);
+                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in fragment " + fragmentURI);
                 }
                 if (v1 == null && v2 == null) {
-                    LOGGER.info("Null source and target nodes found for an edge in content " + contentID);
-                }
-            }
-        }
-    }
-
-    /**
-     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.canonical.Canonical, Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    public void fillNodesByFragmentId(final Canonical procModelGraph, final Integer fragmentID) {
-        INode v;
-        List<Node> nodes = nodeRepo.getNodesByFragment(fragmentID);
-        for (Node node : nodes) {
-            v = buildNodeByType(node, procModelGraph);
-            procModelGraph.addNode((CPFNode) v);
-            procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, GraphUtil.getType(v));
-        }
-    }
-
-    /**
-     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.canonical.Canonical, Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    public void fillEdgesByFragmentId(final Canonical procModelGraph, final Integer fragmentID) {
-        List<Edge> edges = edgeRepo.getEdgesByFragment(fragmentID);
-        for (Edge edge : edges) {
-            CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
-            CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
-            if (v1 != null && v2 != null) {
-                if (edge.getOriginalId() != null) {
-                    procModelGraph.addEdge(edge.getOriginalId(), v1, v2);
-                } else {
-                    procModelGraph.addEdge(v1, v2);
-                }
-            } else {
-                if (v1 == null && v2 != null) {
-                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentID);
-                }
-                if (v2 == null && v1 != null) {
-                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in fragment " + fragmentID);
-                }
-                if (v1 == null && v2 == null) {
-                    LOGGER.info("Null source and target nodes found for an edge in fragment " + fragmentID);
+                    LOGGER.info("Null source and target nodes found for an edge in fragment " + fragmentURI);
                 }
             }
         }

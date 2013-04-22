@@ -14,22 +14,14 @@ import java.util.List;
  * @see org.apromore.dao.model.Edge
  */
 @Repository
-public interface EdgeRepository extends JpaRepository<Edge, Integer>, EdgeRepositoryCustom {
+public interface EdgeRepository extends JpaRepository<Edge, Integer> {
 
     /**
-     * Returns the Edge records for the ContentId.
-     * @param contentId the content id
-     * @return the list of Edges or null.
-     */
-    @Query("SELECT e FROM Edge e WHERE e.content.id = ?1")
-    List<Edge> getEdgesByContent(Integer contentId);
-
-    /**
-     * Returns the Edge records for the fragmentId.
-     * @param fragmentId the fragmentId
+     * Returns the Edge records for the fragment URI.
+     * @param fragmentURI the fragment uri.
      * @return the list of edges or null.
      */
-    @Query("SELECT e FROM Edge e, FragmentVersion fv WHERE e.content.id = fv.content.id AND fv.id = ?1")
-    List<Edge> getEdgesByFragment(Integer fragmentId);
+    @Query("SELECT e FROM Edge e JOIN e.edgeMappings em JOIN em.fragmentVersion f WHERE f.uri = ?1")
+    List<Edge> getEdgesByFragmentURI(String fragmentURI);
 
 }

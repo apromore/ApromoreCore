@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController.similarityclusters;
 
 import org.apromore.model.ClusterFilterType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseFilterController;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Executions;
@@ -17,39 +18,28 @@ import org.zkoss.zul.Grid;
 public class SimilarityClustersFilterController extends BaseFilterController {
 
     final class FilterScrollListener implements EventListener {
-
         @Override
         public void onEvent(final Event event) throws Exception {
-
             if (event instanceof ScrollEvent) {
                 refreshListbox();
             }
-
         }
     }
 
     private static final long serialVersionUID = 5542144067417950810L;
-
-    private final Grid filterGrid;
-
     private final SimilarityClustersFilterProperties propertiesController;
 
     public SimilarityClustersFilterController(MainController mainController) {
         super(mainController);
-
-        this.filterGrid = ((Grid) Executions.createComponents(
-                "macros/filter/similarityClustersFilter.zul",
-                getMainController(), null));
-
-        propertiesController = new SimilarityClustersFilterProperties(
-                this.filterGrid, new FilterScrollListener());
-
+        Grid filterGrid = ((Grid) Executions.createComponents("macros/filter/similarityClustersFilter.zul", UserSessionManager.getMainController(),
+                null));
+        propertiesController = new SimilarityClustersFilterProperties(filterGrid, new FilterScrollListener());
         appendChild(filterGrid);
     }
 
     private void refreshListbox() {
         ClusterFilterType filter = propertiesController.buildClusterFilter();
-        getMainController().displaySimilarityClusters(filter);
+        UserSessionManager.getMainController().displaySimilarityClusters(filter);
     }
 
     public void setCurrentFilter(ClusterFilterType filter) {

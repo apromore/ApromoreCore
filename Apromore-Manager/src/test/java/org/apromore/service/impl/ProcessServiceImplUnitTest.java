@@ -8,7 +8,6 @@ import static org.easymock.EasyMock.verify;
 import java.util.HashSet;
 
 import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.ContentRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NativeRepository;
@@ -53,7 +52,6 @@ public class ProcessServiceImplUnitTest {
     @Before
     public final void setUp() throws Exception {
         AnnotationRepository annDao = createMock(AnnotationRepository.class);
-        ContentRepository contDao = createMock(ContentRepository.class);
         natDao = createMock(NativeRepository.class);
         ProcessBranchRepository branchDao = createMock(ProcessBranchRepository.class);
         proDao = createMock(ProcessRepository.class);
@@ -71,7 +69,7 @@ public class ProcessServiceImplUnitTest {
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
 
-        service = new ProcessServiceImpl(annDao, contDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
+        service = new ProcessServiceImpl(annDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
 
 

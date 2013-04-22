@@ -35,8 +35,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private FragmentDistanceRepository fragmentDistanceRepository;
     private ComposerService composerService;
 
-    private Map<Integer, SimpleGraph> models = new HashMap<Integer, SimpleGraph>();
-    private List<DissimilarityCalc> chain = new LinkedList<DissimilarityCalc>();
+    private Map<Integer, SimpleGraph> models = new HashMap<>();
+    private List<DissimilarityCalc> chain = new LinkedList<>();
     private MultiKeyMap dissimmap = null;
 
     private double dissThreshold;
@@ -48,7 +48,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-                                               final @Qualifier("simpleGraphComposerServiceImpl") ComposerService compSrv) {
+            final @Qualifier("composerServiceImpl") ComposerService compSrv) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
@@ -102,7 +102,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         List<Integer> h2;
 
         startedTime = System.currentTimeMillis();
-        List<Integer> processedFragmentIds = new ArrayList<Integer>();
+        List<Integer> processedFragmentIds = new ArrayList<>();
 
         dissimmap = new MultiKeyMap();
         int nfrag = crel.getNumberOfFragments();
@@ -131,7 +131,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             // at this point we have processed all fragments of h1, with fragments in the entire repository.
             // so we can remove all h1's fragments from the cache
             //models.remove(h1);
-            composerService.clearCache(h1);
+            //composerService.clearCache(h1);
             processedFragmentIds.addAll(h1);
         }
 

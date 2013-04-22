@@ -8,6 +8,7 @@ import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +23,9 @@ public class ProcessListboxController extends BaseListboxController {
     private static final long serialVersionUID = -6874531673992239378L;
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class.getName());
 
-    private Listheader columnScore; // column to display process score for the
-    // purpose of answering query
+    private Listheader columnScore; // column to display process score for the purpose of answering query
 
-    private Boolean isQueryResult; // says whether the data to be displayed have
-    // been produced by a query
-
-    private ProcessSummaryType processQ;
-    private VersionSummaryType versionQ;
+    private Boolean isQueryResult; // says whether the data to be displayed have been produced by a query
 
     public ProcessListboxController(MainController mainController) {
         super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
@@ -43,10 +39,10 @@ public class ProcessListboxController extends BaseListboxController {
                 if (getListBox().getSelectedItems().size() == 1) {
                     Object obj = getListModel().getSelection().iterator().next();
                     if (obj instanceof ProcessSummaryType) {
-                        getMainController().displayProcessVersions((ProcessSummaryType) obj);
+                        UserSessionManager.getMainController().displayProcessVersions((ProcessSummaryType) obj);
                     }
                 } else {
-                    getMainController().clearProcessVersions();
+                    UserSessionManager.getMainController().clearProcessVersions();
                 }
             }
         });
@@ -61,7 +57,7 @@ public class ProcessListboxController extends BaseListboxController {
       */
     @Override
     protected void refreshContent() {
-        getMainController().reloadProcessSummaries();
+        UserSessionManager.getMainController().reloadProcessSummaries();
     }
 
     /**
@@ -70,13 +66,9 @@ public class ProcessListboxController extends BaseListboxController {
      * @param subFolders list of folders to display as well in the list.
      * @param processSummaries
      * @param isQueryResult
-     * @param processQ
-     * @param versionQ
      */
-    public void displayProcessSummaries(List<FolderType> subFolders, ProcessSummariesType processSummaries, Boolean isQueryResult, ProcessSummaryType processQ, VersionSummaryType versionQ) {
+    public void displayProcessSummaries(List<FolderType> subFolders, ProcessSummariesType processSummaries, Boolean isQueryResult) {
         this.isQueryResult = isQueryResult;
-        this.processQ = processQ;
-        this.versionQ = versionQ;
         this.columnScore.setVisible(isQueryResult);
 
         getListBox().clearSelection();

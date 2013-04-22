@@ -42,14 +42,14 @@ public class Edge implements Serializable {
     private String originalId;
     private Boolean def = false;
 
-    private Content content;
     private Expression conditionExpression;
 
     private Node sourceNode;
     private Node targetNode;
     private Node cancelNode;
 
-    private Set<EdgeAttribute> attributes = new HashSet<EdgeAttribute>(0);
+    private Set<EdgeMapping> edgeMappings = new HashSet<>(0);
+    private Set<EdgeAttribute> attributes = new HashSet<>(0);
 
     /**
      * Public Constructor.
@@ -107,17 +107,6 @@ public class Edge implements Serializable {
     }
 
 
-
-    @ManyToOne
-    @JoinColumn(name = "contentId")
-    public Content getContent() {
-        return this.content;
-    }
-
-    public void setContent(final Content newContent) {
-        this.content = newContent;
-    }
-
     @ManyToOne
     @JoinColumn(name = "conditionExpressionId")
     public Expression getConditionExpression() {
@@ -159,6 +148,14 @@ public class Edge implements Serializable {
     }
 
 
+    @OneToMany(mappedBy = "edge", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<EdgeMapping> getEdgeMappings() {
+        return edgeMappings;
+    }
+
+    public void setEdgeMappings(Set<EdgeMapping> newEdgeMappings) {
+        edgeMappings = newEdgeMappings;
+    }
 
     @OneToMany(mappedBy = "edge", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<EdgeAttribute> getAttributes() {

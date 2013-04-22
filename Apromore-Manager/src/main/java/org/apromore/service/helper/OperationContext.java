@@ -1,5 +1,10 @@
 package org.apromore.service.helper;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Node;
@@ -7,8 +12,6 @@ import org.apromore.graph.TreeVisitor;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-
-import java.util.*;
 
 /**
  * @author Chathura Ekanayake
@@ -21,16 +24,19 @@ public class OperationContext {
     private Map<String, Integer> processedFragmentTypes;
 
     private FragmentVersion currentFragment;
-    private Set<Node> nodes = new HashSet<Node>(0);
-    private Set<CPFNode> cpfNodes = new HashSet<CPFNode>(0);
-    private Set<Edge> edges = new HashSet<Edge>(0);
-    private Set<CPFEdge> cpfEdges = new HashSet<CPFEdge>(0);
-    private Set<FragmentVersion> fragmentVersions = new HashSet<FragmentVersion>(0);
+    private Set<Node> nodes = new HashSet<>(0);
+    private Set<CPFNode> cpfNodes = new HashSet<>(0);
+    private Set<Edge> edges = new HashSet<>(0);
+    private Set<CPFEdge> cpfEdges = new HashSet<>(0);
+    private Set<FragmentVersion> fragmentVersions = new HashSet<>(0);
+
+    private Map<String, Node> persistedNodes = new HashMap<>(0);
+    private Map<String, Edge> persistedEdges = new HashMap<>(0);
 
 
     public OperationContext() {
-        contentUsage = new HashMap<Integer, Integer>();
-        processedFragmentTypes = new HashMap<String, Integer>();
+        contentUsage = new HashMap<>();
+        processedFragmentTypes = new HashMap<>();
         processedFragmentTypes.put("S", 0);
         processedFragmentTypes.put("P", 0);
         processedFragmentTypes.put("R", 0);
@@ -42,6 +48,22 @@ public class OperationContext {
 
     public void setGraph(Canonical graph) {
         this.graph = graph;
+    }
+
+    public Map<String, Node> getPersistedNodes() {
+        return persistedNodes;
+    }
+
+    public void addPersistedNode(String uri, Node pNode) {
+        this.persistedNodes.put(uri, pNode);
+    }
+
+    public Map<String, Edge> getPersistedEdges() {
+        return persistedEdges;
+    }
+
+    public void addPersistedEdge(String uri, Edge pEdge) {
+        this.persistedEdges.put(uri, pEdge);
     }
 
     public TreeVisitor getTreeVisitor() {
@@ -63,19 +85,15 @@ public class OperationContext {
     }
 
     public int getContentUsage(Integer contentId) {
-        if (contentId != null) {
-            if (contentUsage.containsKey(contentId)) {
-                return contentUsage.get(contentId);
-            } else {
-                return 0;
-            }
+        if (contentUsage.containsKey(contentId)) {
+            return contentUsage.get(contentId);
         } else {
             return 0;
         }
     }
 
     public void incrementContentUsage(Integer contentId) {
-        if (contentId != null && !contentUsage.containsKey(contentId)) {
+        if (!contentUsage.containsKey(contentId)) {
             contentUsage.put(contentId, 1);
         } else {
             int usage = contentUsage.get(contentId);
@@ -132,4 +150,5 @@ public class OperationContext {
     public Set<FragmentVersion> getFragmentVersions() {
         return this.fragmentVersions;
     }
+
 }
