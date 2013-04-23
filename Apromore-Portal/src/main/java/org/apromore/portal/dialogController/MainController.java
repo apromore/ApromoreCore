@@ -96,7 +96,7 @@ public class MainController extends BaseController {
 
             switchToProcessSummaryView();
 
-            this.searchHistory = new ArrayList<>();
+            this.searchHistory = new ArrayList<SearchHistoriesType>();
             //String msgWhenClose = null;
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
 
@@ -218,9 +218,9 @@ public class MainController extends BaseController {
         } else {
             message = " process.";
         }
-        displayMessage(processSummaries.getProcessSummary().size() + message);
-        simplesearch.clearSearches();
-        displayProcessSummaries(processSummaries, false);
+        this.displayMessage(processSummaries.getProcessSummary().size() + message);
+        this.simplesearch.clearSearches();
+        this.displayProcessSummaries(processSummaries, false);
 
         loadWorkspace();
     }
@@ -534,9 +534,9 @@ public class MainController extends BaseController {
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
         this.baseListboxController = new SimilarityClustersListboxController(this, simFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
-        ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
-
         reattachDynamicUI();
+
+        ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
     }
 
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {

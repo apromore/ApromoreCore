@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 )
 @Configurable("fragmentVersion")
 @Cacheable(true)
-@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 10000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class FragmentVersion implements Serializable {
 
     private Integer id;
