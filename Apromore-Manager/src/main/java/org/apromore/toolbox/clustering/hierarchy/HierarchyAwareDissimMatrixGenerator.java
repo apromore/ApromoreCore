@@ -10,23 +10,21 @@ import java.util.Map;
 import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
-import org.apromore.toolbox.clustering.containment.ContainmentRelation;
-import org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc;
-import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
+import org.apromore.toolbox.clustering.containment.ContainmentRelation;
+import org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc;
+import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@Transactional(readOnly = true, rollbackFor = Exception.class)
 public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
@@ -48,7 +46,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-            final @Qualifier("composerServiceImpl") ComposerService compSrv) {
+            final ComposerService compSrv) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
@@ -90,11 +88,12 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
 
     /**
-     * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
+     * @see org
+     * .apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
      *      {@inheritDoc}
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
     public void computeDissimilarity() {
         Integer intraRoot;
         Integer interRoot;
@@ -116,29 +115,33 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             h1 = crel.getHierarchy(intraRoot);
             h1.removeAll(processedFragmentIds);
 
-            //LOGGER.debug("Processing Root: " + intraRoot);
+            LOGGER.info("Processing Root: " + intraRoot);
             computeIntraHierarchyGEDs(h1);
 
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
                     interRoot = roots.get(q);
                     h2 = crel.getHierarchy(interRoot);
-                    //LOGGER.debug("Process Root Combo: " + intraRoot + " and " + interRoot);
                     computeInterHierarchyGEDs(h1, h2);
                 }
             }
 
             // at this point we have processed all fragments of h1, with fragments in the entire repository.
             // so we can remove all h1's fragments from the cache
-            //models.remove(h1);
-            //composerService.clearCache(h1);
-            processedFragmentIds.addAll(h1);
+            clearCaches(processedFragmentIds, h1);
         }
 
         // ged values are written to the database periodically after reporting period. if there are left over geds we have to write them here.
         if (!dissimmap.isEmpty()) {
             fragmentDistanceRepository.saveDistances(dissimmap);
             dissimmap.clear();
+        }
+    }
+
+    private void clearCaches(List<Integer> processedFragmentIds, List<Integer> h1) {
+        processedFragmentIds.addAll(h1);
+        for (Integer fragmentId : h1) {
+            models.remove(fragmentId);
         }
     }
 
@@ -171,7 +174,6 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
             if (!crel.areInContainmentRelation(fid1Index, fid2Index)) {
                 double dissim = compute(fid1, fid2);
-
                 if (dissim <= dissThreshold) {
                     dissimmap.put(fid1, fid2, dissim);
                 }
@@ -179,7 +181,6 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
             reportingInterval++;
             processedPairs++;
-
             if (reportingInterval == 1000) {
                 long duration = (System.currentTimeMillis() - startedTime) / 1000;
                 reportingInterval = 0;
@@ -187,16 +188,15 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
                 percentage = (double) Math.round((percentage * 1000)) / 1000d;
                 LOGGER.info(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + dissimmap.size());
                 fragmentDistanceRepository.saveDistances(dissimmap);
-                fragmentDistanceRepository.flush();
                 dissimmap.clear();
             }
-
         } catch (Exception e) {
             LOGGER.error("Failed to compute GED between {} and {} due to {}. " +
                     "GED computation between other fragments will proceed normally.",
                     new Object[]{fid1, fid2, e.getMessage()});
         }
     }
+
 
     /* Asks each of the Calculators to it's thing. */
     private double compute(Integer frag1, Integer frag2) {
@@ -230,11 +230,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             try {
                 Canonical cpfGraph = composerService.compose(frag);
                 graph = new SimpleGraphWrapper(cpfGraph);
-
-                // NOTE: this was commented out in the svn version
-                if (graph.getEdges().size() < 100) {
-                    models.put(frag, graph);
-                }
+                models.put(frag, graph);
             } catch (Exception e) {
                 LOGGER.error("Failed to get graph of fragment {}", frag);
                 e.printStackTrace();

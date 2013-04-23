@@ -44,6 +44,9 @@
                 <prop key="eclipselink.cache.shared.default">false</prop>
                 <prop key="eclipselink.cache.type.default">SOFT</prop>
 
+                <prop key="eclipselink.jdbc.batch-writing">JDBC</prop>
+                <prop key="eclipselink.jdbc.batch-writing.size">1000</prop>
+
                 <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
 

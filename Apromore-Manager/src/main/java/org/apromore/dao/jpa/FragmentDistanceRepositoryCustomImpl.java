@@ -17,8 +17,6 @@ import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.FragmentDistanceRepositoryCustom;
 import org.apromore.dao.dataObject.DistanceDO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,9 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class FragmentDistanceRepositoryCustomImpl implements FragmentDistanceRepositoryCustom {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FragmentDistanceRepositoryCustomImpl.class);
-
 
     @PersistenceContext
     private EntityManager em;
@@ -51,7 +46,7 @@ public class FragmentDistanceRepositoryCustomImpl implements FragmentDistanceRep
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
     public void saveDistances(final MultiKeyMap distanceMap) {
         MapIterator mi = distanceMap.mapIterator();
-        List<DistanceDO> distances = new ArrayList<DistanceDO>();
+        List<DistanceDO> distances = new ArrayList<>();
         while (mi.hasNext()) {
             MultiKey fragmentIds = (MultiKey) mi.next();
             Double ged = (Double) mi.getValue();

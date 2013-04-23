@@ -16,13 +16,13 @@ public class NavigationController extends BaseController {
 
     public NavigationController(MainController newMainC) throws Exception {
         mainC = newMainC;
-        navigationP = (Panel) mainC.getFellow("navigationcomp").getFellow("navigationPanel");
+        this.navigationP = (Panel) mainC.getFellow("navigationcomp").getFellow("navigationPanel");
 
-        treeW = (Window) navigationP.getFellow("treeW");
-        treeW.setContentStyle("background-image: none; background-color: white");
+        this.treeW = (Window) this.navigationP.getFellow("treeW");
+        this.treeW.setContentStyle("background-image: none; background-color: white");
 
-        tree = (Tree) navigationP.getFellow("treeW").getFellow("tree");
-        tree.setStyle("background-image: none; background-color: white");
+        this.tree = (Tree) this.navigationP.getFellow("treeW").getFellow("tree");
+        this.tree.setStyle("background-image: none; background-color: white");
     }
 
     public void loadWorkspace() {

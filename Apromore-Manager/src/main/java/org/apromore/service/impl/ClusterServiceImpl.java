@@ -1,18 +1,13 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.inject.Inject;
 
 import nl.tue.tm.is.graph.SimpleGraph;
-import org.apromore.toolbox.clustering.DMatrix;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
-import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
-import org.apromore.toolbox.clustering.algorithm.hac.HACClusterer;
-import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryClusterer;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
@@ -23,7 +18,6 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ClusterService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.helper.SimpleGraphWrapper;
@@ -31,6 +25,11 @@ import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
+import org.apromore.toolbox.clustering.DMatrix;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
+import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryClusterer;
+import org.apromore.toolbox.clustering.algorithm.hac.HACClusterer;
+import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -198,8 +197,7 @@ public class ClusterServiceImpl implements ClusterService {
                 pa.setProcessName(processName);
                 fragment.getProcessAssociations().add(pa);
             }
-            double distance = fdRepository.getDistance(cinfo.getMedoidId(), f.getId());
-            fragment.setDistance(distance);
+            fragment.setDistance(fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId()).getDistance());
             c.addFragment(fragment);
         }
         return c;
@@ -220,7 +218,7 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public List<org.apromore.service.model.Cluster> getClusters(ClusterFilter filter) {
-        List<org.apromore.service.model.Cluster> clusters = new ArrayList<org.apromore.service.model.Cluster>();
+        List<org.apromore.service.model.Cluster> clusters = new ArrayList<>();
         List<Cluster> cinfos = cRepository.getFilteredClusters(filter);
         for (Cluster cinfo : cinfos) {
             org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
@@ -245,8 +243,7 @@ public class ClusterServiceImpl implements ClusterService {
                     pa.setProcessName(processName);
                     fragment.getProcessAssociations().add(pa);
                 }
-                double distance = fdRepository.getDistance(cinfo.getMedoidId(), f.getId());
-                fragment.setDistance(distance);
+                fragment.setDistance(fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId()).getDistance());
                 c.addFragment(fragment);
             }
             clusters.add(c);
@@ -269,25 +266,26 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException {
-        Map<FragmentPair, Double> pairDistances = new HashMap<FragmentPair, Double>(0);
+        Map<FragmentPair, Double> pairDistances = new HashMap<>(0);
+        Integer fid1;
+        Integer fid2;
+        SimpleGraph sg1;
+        SimpleGraph sg2;
+        GEDDissimCalc calc;
 
         for (int i = 0; i < fragmentIds.size() - 1; i++) {
             for (int j = i + 1; j < fragmentIds.size(); j++) {
-                Integer fid1 = fragmentIds.get(i);
-                Integer fid2 = fragmentIds.get(j);
-                double distance = fdRepository.getDistance(fid1, fid2);
+                fid1 = fragmentIds.get(i);
+                fid2 = fragmentIds.get(j);
+                double distance = fdRepository.findByFragmentVersionId1AndFragmentVersionId2(fid1, fid2).getDistance();
+
                 if (distance < 0) {
-
                     try {
-                        Canonical g1 = fService.getFragment(fid1, false);
-                        Canonical g2 = fService.getFragment(fid2, false);
+                        sg1 = new SimpleGraphWrapper(fService.getFragment(fid1, false));
+                        sg2 = new SimpleGraphWrapper(fService.getFragment(fid2, false));
 
-                        SimpleGraph sg1 = new SimpleGraphWrapper(g1);
-                        SimpleGraph sg2 = new SimpleGraphWrapper(g2);
-
-                        GEDDissimCalc calc = new GEDDissimCalc(1, 0.4);
+                        calc = new GEDDissimCalc(1, 0.4);
                         distance = calc.compute(sg1, sg2);
-
                     } catch (LockFailedException e) {
                         throw new RepositoryException(e);
                     }
