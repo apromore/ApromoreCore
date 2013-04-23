@@ -123,8 +123,9 @@
                             net.sf.cglib.core,
                             net.sf.cglib.reflect,
                             javax.wsdl.extensions,
+                            com.google.common.base,
                             org.springframework.ws.transport.http,
-							com.sun.xml.bind.v2, <!-- JAXB RI implementation from SUN for BPMN Canoniser -->
+                            com.sun.xml.bind.v2, <!-- JAXB RI implementation from SUN for BPMN Canoniser -->
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
@@ -234,11 +235,17 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.guava-osgi</groupId>-->
+            <!--<artifactId>guava-osgi</artifactId>-->
+            <!--<scope>provided</scope>-->
+            <!--<version>${google.guava.version}</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>com.googlecode.guava-osgi</groupId>
-            <artifactId>guava-osgi</artifactId>
-            <scope>provided</scope>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
             <version>${google.guava.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- logging -->
@@ -442,9 +449,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>plugin-api</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apromore.plugin</groupId>-->
+        <!--<artifactId>plugin-api</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -452,9 +459,9 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>canoniser-api</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apromore.plugin</groupId>-->
+        <!--<artifactId>canoniser-api</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -462,9 +469,9 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>deployment-api</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apromore.plugin</groupId>-->
+        <!--<artifactId>deployment-api</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -485,16 +492,16 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
-            <!--<artifactId>gemini-blueprint-test</artifactId>-->
-            <!--<version>1.0.2.RELEASE</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
+        <!--<artifactId>gemini-blueprint-test</artifactId>-->
+        <!--<version>1.0.2.RELEASE</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
-            <!--<artifactId>gemini-blueprint-mock</artifactId>-->
-            <!--<version>1.0.2.RELEASE</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
+        <!--<artifactId>gemini-blueprint-mock</artifactId>-->
+        <!--<version>1.0.2.RELEASE</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
     </dependencies>
 

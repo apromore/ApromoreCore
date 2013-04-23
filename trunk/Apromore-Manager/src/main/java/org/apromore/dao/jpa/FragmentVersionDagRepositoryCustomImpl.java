@@ -89,27 +89,6 @@ public class FragmentVersionDagRepositoryCustomImpl implements FragmentVersionDa
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
-    /**
-     * @see org.apromore.dao.FragmentVersionDagRepository#getChildMappingsDO(Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    public List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId) {
-        String sql = "SELECT id, fragmentVersionId, childFragmentVersionId, pocketId FROM fragment_version_dag WHERE fragmentVersionId = ?";
-
-        return jdbcTemplate.query(sql, new Object[] { fragmentId },
-            new RowMapper<FragmentVersionDagDO>() {
-                public FragmentVersionDagDO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    FragmentVersionDagDO cmap = new FragmentVersionDagDO();
-                    cmap.setId(rs.getInt("id"));
-                    cmap.setFragmentVersionId(rs.getInt("fragmentVersionId"));
-                    cmap.setChildFragmentVersionId(rs.getInt("childFragmentVersionId"));
-                    cmap.setPocketId(rs.getString("pocketId"));
-                    return cmap;
-                }
-            });
-    }
-
 
     /**
      * @see org.apromore.dao.FragmentVersionDagRepository#getAllDAGEntriesBySize(int)

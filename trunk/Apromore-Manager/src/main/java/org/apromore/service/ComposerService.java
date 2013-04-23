@@ -3,8 +3,6 @@
  */
 package org.apromore.service;
 
-import java.util.List;
-
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.graph.canonical.Canonical;

@@ -33,13 +33,6 @@ public interface FragmentVersionDagRepositoryCustom {
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
     /**
-     * Returns all the child mappings for the FragmentId.
-     * @param fragmentId the fragment id
-     * @return the list of child fragments
-     */
-    List<FragmentVersionDagDO> getChildMappingsDO(Integer fragmentId);
-
-    /**
      * Finds all the DAG entries by size.
      * @param minimumChildFragmentSize the min size we are interested in
      * @return the list of fragment Version DAG entries
