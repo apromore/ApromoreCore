@@ -85,7 +85,7 @@ public class InMemoryExcludedObjectClusterer {
 
     public Map<Integer, InMemoryCluster> clusterRepository(List<FragmentDataObject> excluded) throws RepositoryException {
         this.excluded = excluded;
-        excludedClusters = new HashMap<Integer, InMemoryCluster>();
+        excludedClusters = new HashMap<>();
 
         while (!excluded.isEmpty()) {
             FragmentDataObject excludedFragment = excluded.remove(0);
@@ -98,19 +98,19 @@ public class InMemoryExcludedObjectClusterer {
 
     private void expandFromCoreObject(FragmentDataObject fo) throws RepositoryException {
         List<FragmentDataObject> n = inMemoryGEDMatrix.getCoreObjectNeighborhood(fo, allowedFragmentIds);
-        Set<Integer> usedHierarchies = new HashSet<Integer>();
+        Set<Integer> usedHierarchies = new HashSet<>();
         if (settings.isEnableNearestRelativeFiltering() && n != null && n.size() >= minPoints) {
             usedHierarchies = inMemoryHierarchyBasedFilter.retainNearestRelatives(fo, n, inMemoryGEDMatrix);
         }
 
         if (n == null || n.size() < minPoints) {
-            log.error("The excluded fragment " + fo.getFragment().getId() + " does not have sufficient neighbourhood to be " +
+            log.error("The excluded fragment " + fo.getFragmentId() + " does not have sufficient neighbourhood to be " +
                     "a core object. It's excluded state will be cleared and the clustering will progress normally.");
             excluded.remove(fo);
 
         } else if (coveredByExistingCluster(n, cc.getClusters()) || coveredByExistingCluster(n, excludedClusters)) {
             log.debug("Neighbourhood of the excluded object does not contain any fragments that are not already " +
-                    "clustered. The excluded object " + fo.getFragment().getId() + " will not be processed further.");
+                    "clustered. The excluded object " + fo.getFragmentId() + " will not be processed further.");
             excluded.remove(fo);
 
         } else {
@@ -137,21 +137,19 @@ public class InMemoryExcludedObjectClusterer {
     }
 
     private void expandClusterer(FragmentDataObject firstCore, List<FragmentDataObject> n, InMemoryCluster cluster,
-                                 Set<Integer> usedHierarchies) throws RepositoryException {
+            Set<Integer> usedHierarchies) throws RepositoryException {
         if (log.isDebugEnabled()) {
-            log.debug("Expanding a cluster from the excluded core fragment: " + firstCore.getFragment().getId());
+            log.debug("Expanding a cluster from the excluded core fragment: " + firstCore.getFragmentId());
         }
 
-        List<FragmentDataObject> allClusterFragments = new ArrayList<FragmentDataObject>();
-        List<FragmentDataObject> includedCoreFragments = new ArrayList<FragmentDataObject>();
-        includedCoreFragments.add(firstCore);
+        List<FragmentDataObject> allClusterFragments = new ArrayList<>();
 
         // we should assign the neighbourhood of the first core object to the cluster before entering the loop.
         // so that the first core object is expanded.
         allClusterFragments.addAll(n);
         firstCore.setCoreObjectNB(n.size());
 
-        Queue<FragmentDataObject> unexpandedMembers = new LinkedList<FragmentDataObject>(n);
+        Queue<FragmentDataObject> unexpandedMembers = new LinkedList<>(n);
         unexpandedMembers.remove(firstCore);
         FragmentDataObject o = unexpandedMembers.poll();
         while (o != null) {
@@ -168,10 +166,9 @@ public class InMemoryExcludedObjectClusterer {
             }
 
             // o is already in the cluster. we only need to check o's neighbourhood
-
             List<FragmentDataObject> n2 = inMemoryGEDMatrix.getCoreObjectNeighborhood(o, allowedFragmentIds);
 
-            Set<Integer> n2Hierarchies = new HashSet<Integer>();
+            Set<Integer> n2Hierarchies;
             if (settings.isEnableNearestRelativeFiltering() && n2 != null && n2.size() >= minPoints) {
                 removeAll(n2, usedHierarchies);
                 if (n2.size() >= minPoints) {
@@ -181,10 +178,8 @@ public class InMemoryExcludedObjectClusterer {
             }
 
             if (n2 != null && n2.size() >= minPoints) {
-
                 o.setCoreObjectNB(n2.size());
-
-                List<FragmentDataObject> newNeighbours = new ArrayList<FragmentDataObject>();
+                List<FragmentDataObject> newNeighbours = new ArrayList<>();
                 for (FragmentDataObject nObject : n2) {
                     if (!allClusterFragments.contains(nObject)) {
                         // nObject can be added to the cluster if it satisfies distance requirement.
@@ -197,14 +192,11 @@ public class InMemoryExcludedObjectClusterer {
                     if (isSatisfyCommonMedoid(newNeighbours, allClusterFragments)) {
                         unexpandedMembers.addAll(newNeighbours);
                         excluded.remove(o);
-                        includedCoreFragments.add(o);
                         allClusterFragments.addAll(newNeighbours);
                     }
                 } else {
-                    // if there are no new neighbours, the core object neighbourhood is already included
-                    // in the current cluster.
+                    // if there are no new neighbours, the core object neighbourhood is already included in the current cluster.
                     excluded.remove(o);
-                    includedCoreFragments.add(o);
                 }
             }
             o = unexpandedMembers.poll();
@@ -219,9 +211,9 @@ public class InMemoryExcludedObjectClusterer {
     }
 
     private void removeAll(List<FragmentDataObject> n, Set<Integer> usedHierarchies) {
-        List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
+        List<FragmentDataObject> toBeRemoved = new ArrayList<>();
         for (FragmentDataObject nfo : n) {
-            Integer nfid = nfo.getFragment().getId();
+            Integer nfid = nfo.getFragmentId();
             if (usedHierarchies.contains(nfid)) {
                 toBeRemoved.add(nfo);
             }
@@ -240,17 +232,17 @@ public class InMemoryExcludedObjectClusterer {
             throws RepositoryException {
         double gedThreshold = settings.getMaxNeighborGraphEditDistance();
 
-        List<FragmentDataObject> pendingClusterFragments = new ArrayList<FragmentDataObject>(allClusterFragments);
+        List<FragmentDataObject> pendingClusterFragments = new ArrayList<>(allClusterFragments);
         pendingClusterFragments.addAll(newNeighbours);
 
-        Map<FragmentPair, Double> distances = new HashMap<FragmentPair, Double>();
+        Map<FragmentPair, Double> distances = new HashMap<>();
         for (int i = 0; i < pendingClusterFragments.size(); i++) {
             FragmentDataObject f1 = pendingClusterFragments.get(i);
             if (i + 1 < pendingClusterFragments.size()) {
                 for (int j = i + 1; j < pendingClusterFragments.size(); j++) {
                     FragmentDataObject f2 = pendingClusterFragments.get(j);
-                    double ged = inMemoryGEDMatrix.getGED(f1.getFragment().getId(), f2.getFragment().getId());
-                    distances.put(new FragmentPair(f1.getFragment(), f2.getFragment()), ged);
+                    double ged = inMemoryGEDMatrix.getGED(f1.getFragmentId(), f2.getFragmentId());
+                    distances.put(new FragmentPair(f1.getFragmentId(), f2.getFragmentId()), ged);
                 }
             }
         }
@@ -259,17 +251,15 @@ public class InMemoryExcludedObjectClusterer {
         double maxMedoidToFragmentDistance = Double.MAX_VALUE;
         double minimumCost = Double.MAX_VALUE;
         for (FragmentDataObject f : pendingClusterFragments) {
-            double[] medoidProps = computeMedoidProperties(f.getFragment().getId(), distances);
+            double[] medoidProps = computeMedoidProperties(f.getFragmentId(), distances);
             if (medoidProps[1] <= gedThreshold) {
                 if (medoidProps[1] < maxMedoidToFragmentDistance) {
                     minimumCost = medoidProps[0];
                     maxMedoidToFragmentDistance = medoidProps[1];
-                    //medoidFragmentId = f.getFragmentId();
                 } else if (medoidProps[1] == maxMedoidToFragmentDistance) {
                     if (medoidProps[0] < minimumCost) {
                         minimumCost = medoidProps[0];
                         maxMedoidToFragmentDistance = medoidProps[1];
-                        //medoidFragmentId = f.getFragmentId();
                     }
                 }
             }
@@ -284,7 +274,7 @@ public class InMemoryExcludedObjectClusterer {
         Set<FragmentPair> pairs = distances.keySet();
         for (FragmentPair pair : pairs) {
             if (pair.hasFragment(fid)) {
-                double cost = distances.get(pair).doubleValue();
+                double cost = distances.get(pair);
                 totalCost += cost;
                 if (cost > maxDistance) {
                     maxDistance = cost;

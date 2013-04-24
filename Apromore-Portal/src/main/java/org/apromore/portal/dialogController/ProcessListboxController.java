@@ -8,7 +8,6 @@ import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +38,10 @@ public class ProcessListboxController extends BaseListboxController {
                 if (getListBox().getSelectedItems().size() == 1) {
                     Object obj = getListModel().getSelection().iterator().next();
                     if (obj instanceof ProcessSummaryType) {
-                        UserSessionManager.getMainController().displayProcessVersions((ProcessSummaryType) obj);
+                        getMainController().displayProcessVersions((ProcessSummaryType) obj);
                     }
                 } else {
-                    UserSessionManager.getMainController().clearProcessVersions();
+                    getMainController().clearProcessVersions();
                 }
             }
         });
@@ -57,7 +56,7 @@ public class ProcessListboxController extends BaseListboxController {
       */
     @Override
     protected void refreshContent() {
-        UserSessionManager.getMainController().reloadProcessSummaries();
+        getMainController().reloadProcessSummaries();
     }
 
     /**

@@ -33,8 +33,7 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
     }
 
     private Listcell renderClusterId(final ClusterSummaryType obj) {
-        Listcell listcell = new Listcell(obj.getClusterId().toString());
-        return listcell;
+        return new Listcell(obj.getClusterId().toString());
     }
 
     private Listcell renderClusterName(final ClusterSummaryType obj) {

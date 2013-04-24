@@ -32,7 +32,7 @@ public class FindUsersController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public FindUsersController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
-        this.mainController = UserSessionManager.getMainController();
+        this.mainController = securitySetupController.getMainController();
         this.lstUsers = (Listbox)win.getFellow("findUsers").getFellow("lstUsers");
         Button btnSearch = (Button) win.getFellow("findUsers").getFellow("btnSearch");
         Button btnClear = (Button) win.getFellow("findUsers").getFellow("btnClear");

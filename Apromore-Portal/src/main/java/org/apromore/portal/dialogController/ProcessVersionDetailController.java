@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
@@ -19,7 +18,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
     public ProcessVersionDetailController(MainController mainController) {
         super(mainController);
 
-        this.listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", UserSessionManager.getMainController(), null));
+        this.listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", getMainController(), null));
 
         getListBox().setItemRenderer(new VersionSummaryItemRenderer());
         getListBox().setModel(new ListModelList());

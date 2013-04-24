@@ -1,34 +1,36 @@
 package org.apromore.toolbox.clustering.algorithm.dbscan;
 
 
-import org.apromore.dao.model.FragmentVersion;
-
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class FragmentPair {
 
-    private FragmentVersion fid1;
-    private FragmentVersion fid2;
+    private Integer fid1;
+    private Integer fid2;
+    private Double distance;
 
-    public FragmentPair(FragmentVersion fid1, FragmentVersion fid2) {
+    public FragmentPair() {
+    }
+
+    public FragmentPair(Integer fid1, Integer fid2) {
         this.fid1 = fid1;
         this.fid2 = fid2;
     }
 
-    public FragmentVersion getFid1() {
+    public Integer getFid1() {
         return fid1;
     }
 
-    public void setFid1(FragmentVersion fid1) {
+    public void setFid1(Integer fid1) {
         this.fid1 = fid1;
     }
 
-    public FragmentVersion getFid2() {
+    public Integer getFid2() {
         return fid2;
     }
 
-    public void setFid2(FragmentVersion fid2) {
+    public void setFid2(Integer fid2) {
         this.fid2 = fid2;
     }
 
@@ -36,10 +38,18 @@ public class FragmentPair {
         return fid1.equals(fid) || fid2.equals(fid);
     }
 
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+
     @Override
     public int hashCode() {
-        int hashCode = fid1.hashCode() + fid2.hashCode();
-        return hashCode;
+        return fid1.hashCode() + fid2.hashCode();
     }
 
     @Override

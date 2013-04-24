@@ -13,4 +13,8 @@ public class BaseDetailController extends BaseController {
         setVflex("true");
     }
 
+    public MainController getMainController() {
+        return mainController;
+    }
+
 }
