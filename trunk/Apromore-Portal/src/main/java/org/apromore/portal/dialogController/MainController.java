@@ -489,14 +489,10 @@ public class MainController extends BaseController {
      * listbox, detail and filter view
      */
     private void switchToProcessSummaryView() {
-        // TODO should replace this with TabBox!! and without all these
-        // instanceof checks!
         if (this.baseListboxController != null) {
             if ((this.baseListboxController instanceof ProcessListboxController)) {
-                // Everything is correctly setup
                 return;
             } else {
-                // Another view is currently displayed
                 deattachDynamicUI();
             }
         }

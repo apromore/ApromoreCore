@@ -1,5 +1,6 @@
 package org.apromore.toolbox.clustering.algorithm.hac;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,21 +8,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
-import javax.inject.Inject;
 
-import org.apromore.toolbox.clustering.containment.ContainmentRelation;
-import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
-import org.apromore.toolbox.clustering.algorithm.hac.dendogram.InternalNode;
 import org.apromore.dao.ClusterRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusterAssignment;
 import org.apromore.exception.RepositoryException;
+import org.apromore.service.FragmentService;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryCluster;
 import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryGEDMatrix;
+import org.apromore.toolbox.clustering.algorithm.hac.dendogram.InternalNode;
 import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
+import org.apromore.toolbox.clustering.containment.ContainmentRelation;
+import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,8 +43,7 @@ public class HACClusterer {
     private ClusterAnalyzer clusterAnalyzer;
     private InMemoryGEDMatrix gedMatrix;
     private ClusterRepository clusterRepository;
-    private FragmentVersionRepository fragmentVersionRepository;
-
+    private FragmentService fragmentService;
 
 
     /**
@@ -58,13 +57,13 @@ public class HACClusterer {
     @Inject
     public HACClusterer(final ContainmentRelation crel, final @Qualifier("dissimilarityMatrixReader") DissimilarityMatrix disMatrix,
             final ClusterAnalyzer cAnalyzer, final InMemoryGEDMatrix matrix, final ClusterRepository cRepository,
-            final FragmentVersionRepository fvRepository) {
+            final FragmentService fragService) {
         containmentRelation = crel;
         dmatrixReader = disMatrix;
         clusterAnalyzer = cAnalyzer;
         gedMatrix = matrix;
         clusterRepository = cRepository;
-        fragmentVersionRepository = fvRepository;
+        fragmentService = fragService;
     }
 
 
@@ -75,20 +74,19 @@ public class HACClusterer {
             containmentRelation.setMinSize(6);
             containmentRelation.initialize();
             dmatrixReader.setDissThreshold(0.45);
-            //dmatrixReader.initialize(containmentRelation, 0.45);
 
             HierarchicalAgglomerativeClustering clusterer = new CompleteLinkage(containmentRelation, dmatrixReader);
             clusterer.setDiameterThreshold(maxDistance);
             SortedSet<InternalNode> sources2 = clusterer.cluster();
 
             // now convert clusters into InMemoryCluster objects so that we can analyse them
-            List<InMemoryCluster> clusters = new ArrayList<InMemoryCluster>();
+            List<InMemoryCluster> clusters = new ArrayList<>();
             for (InternalNode inode : sources2) {
                 Integer clusterId = new Random().nextInt();
                 InMemoryCluster c = new InMemoryCluster(clusterId, PHASE1);
 
                 for (Integer fid : inode.getChildren()) {
-                    FragmentDataObject fd = new FragmentDataObject(fragmentVersionRepository.findOne(fid));
+                    FragmentDataObject fd = new FragmentDataObject(fid);
                     c.addFragment(fd);
                 }
                 clusters.add(c);
@@ -99,7 +97,7 @@ public class HACClusterer {
             log.debug("Analyzing and persisting " + clusters.size() + " clusters in the database...");
             gedMatrix.initialize(settings, null, null, null);
             clusterAnalyzer.loadFragmentSizes();
-            List<Cluster> cds = new ArrayList<Cluster>();
+            List<Cluster> cds = new ArrayList<>();
             for (InMemoryCluster cluster : clusters) {
                 Cluster cd = clusterAnalyzer.analyzeCluster(cluster, settings);
                 cds.add(cd);
@@ -107,14 +105,13 @@ public class HACClusterer {
 
             // if there are exact clones, remove them if the configuration says so
             if (settings.isIgnoreClustersWithExactClones()) {
-                Set<Cluster> toBeRemovedCDs = new HashSet<Cluster>();
+                Set<Cluster> toBeRemovedCDs = new HashSet<>();
                 for (Cluster cd : cds) {
                     if (cd.getStandardizingEffort() == 0) {
                         // this is a cluster with exact clones (i.e. inter-fragment distances and std effort are zero)
                         toBeRemovedCDs.add(cd);
                         clusters.remove(cd.getId());
-                        log.debug("Removed cluster: " + cd.getId() +
-                                " from results as it only contains identical fragments (i.e. exact clones)");
+                        log.debug("Removed cluster: " + cd.getId() + " from results as it only contains identical fragments (i.e. exact clones)");
                     }
                 }
                 cds.removeAll(toBeRemovedCDs);
@@ -144,7 +141,7 @@ public class HACClusterer {
                     for (FragmentDataObject f : imc.getFragments()) {
                         newClusterAssignment = new ClusterAssignment();
                         newClusterAssignment.setCluster(cluster);
-                        newClusterAssignment.setFragment(f.getFragment());
+                        newClusterAssignment.setFragment(fragmentService.getFragmentVersion(f.getFragmentId()));
                         newClusterAssignment.setCoreObjectNb(f.getCoreObjectNB());
 
                         cluster.addClusterAssignment(newClusterAssignment);

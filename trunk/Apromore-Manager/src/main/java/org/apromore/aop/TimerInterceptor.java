@@ -25,7 +25,10 @@ public class TimerInterceptor {
      * @throws Throwable if the method throws an exception.
      * //|| execution(* org.springframework.data.repository.CrudRepository..*.*(..))
      */
-    @Around("execution(* org.apromore.manager.*.*(..)) || execution(* org.apromore.service.*.*(..)) || execution(* org.apromore.toolbox.*.*(..)) || execution(* org.apromore.dao.jpa.*.*(..))")
+    @Around("execution(* org.apromore.manager..*(..)) || " +
+            "execution(* org.apromore.service..*(..)) || " +
+            "execution(* org.apromore.dao..*(..)) || " +
+            "(execution(* org.apromore.toolbox..*(..)) && !within(*..*.InMemoryGEDMatrix))")
     public Object logQueryTimes(ProceedingJoinPoint pjp) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

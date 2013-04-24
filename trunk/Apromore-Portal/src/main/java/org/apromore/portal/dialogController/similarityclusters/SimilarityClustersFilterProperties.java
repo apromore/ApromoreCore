@@ -60,48 +60,30 @@ public class SimilarityClustersFilterProperties extends BaseController {
         this.filterWrapper = filterWrapper;
 
         // Wire Slider
-        this.minClusterSize = (Slider) this.filterWrapper
-                .getFellow("minclustersize");
-        this.maxClusterSize = (Slider) this.filterWrapper
-                .getFellow("maxclustersize");
-        this.minAverageFragmentSize = (Slider) this.filterWrapper
-                .getFellow("minavgfragmentsize");
-        this.maxAverageFragmentSize = (Slider) this.filterWrapper
-                .getFellow("maxavgfragmentsize");
-        this.minBenefitCostRatio = (Slider) this.filterWrapper
-                .getFellow("minbcr");
-        this.maxBenefitCostRatio = (Slider) this.filterWrapper
-                .getFellow("maxbcr");
+        this.minClusterSize = (Slider) this.filterWrapper.getFellow("minclustersize");
+        this.maxClusterSize = (Slider) this.filterWrapper.getFellow("maxclustersize");
+        this.minAverageFragmentSize = (Slider) this.filterWrapper.getFellow("minavgfragmentsize");
+        this.maxAverageFragmentSize = (Slider) this.filterWrapper.getFellow("maxavgfragmentsize");
+        this.minBenefitCostRatio = (Slider) this.filterWrapper.getFellow("minbcr");
+        this.maxBenefitCostRatio = (Slider) this.filterWrapper.getFellow("maxbcr");
 
         this.currentFilter = buildClusterFilter();
 
         FilterScrollListener internalScrollListener = new FilterScrollListener();
 
-        this.minClusterSize
-                .addEventListener("onScroll", internalScrollListener);
-        this.maxClusterSize
-                .addEventListener("onScroll", internalScrollListener);
-        this.minAverageFragmentSize.addEventListener("onScroll",
-                internalScrollListener);
-        this.maxAverageFragmentSize.addEventListener("onScroll",
-                internalScrollListener);
-        this.minBenefitCostRatio.addEventListener("onScroll",
-                internalScrollListener);
-        this.maxBenefitCostRatio.addEventListener("onScroll",
-                internalScrollListener);
+        this.minClusterSize.addEventListener("onScroll", internalScrollListener);
+        this.maxClusterSize.addEventListener("onScroll", internalScrollListener);
+        this.minAverageFragmentSize.addEventListener("onScroll", internalScrollListener);
+        this.maxAverageFragmentSize.addEventListener("onScroll", internalScrollListener);
+        this.minBenefitCostRatio.addEventListener("onScroll", internalScrollListener);
+        this.maxBenefitCostRatio.addEventListener("onScroll", internalScrollListener);
 
-        this.minClusterSize
-                .addEventListener("onScroll", externalScrollListener);
-        this.maxClusterSize
-                .addEventListener("onScroll", externalScrollListener);
-        this.minAverageFragmentSize.addEventListener("onScroll",
-                externalScrollListener);
-        this.maxAverageFragmentSize.addEventListener("onScroll",
-                externalScrollListener);
-        this.minBenefitCostRatio.addEventListener("onScroll",
-                externalScrollListener);
-        this.maxBenefitCostRatio.addEventListener("onScroll",
-                externalScrollListener);
+        this.minClusterSize.addEventListener("onScroll", externalScrollListener);
+        this.maxClusterSize.addEventListener("onScroll", externalScrollListener);
+        this.minAverageFragmentSize.addEventListener("onScroll", externalScrollListener);
+        this.maxAverageFragmentSize.addEventListener("onScroll", externalScrollListener);
+        this.minBenefitCostRatio.addEventListener("onScroll", externalScrollListener);
+        this.maxBenefitCostRatio.addEventListener("onScroll", externalScrollListener);
 
         initFilterConstraints();
     }
@@ -117,35 +99,25 @@ public class SimilarityClustersFilterProperties extends BaseController {
 
     private void initFilterConstraints() {
         ClusteringSummaryType summary = getService().getClusteringSummary();
-        this.minAverageFragmentSize
-                .setMaxpos(convertFromMinAvgFragmentSize(summary
-                        .getMaxAvgFragmentSize()));
-        this.maxAverageFragmentSize
-                .setMaxpos(convertFromMaxAvgFragmentSize(summary
-                        .getMaxAvgFragmentSize()));
-        this.minClusterSize.setMaxpos(convertFromClusterSize(summary
-                .getMaxClusterSize()));
-        this.maxClusterSize.setMaxpos(convertFromClusterSize(summary
-                .getMaxClusterSize()));
+        this.minAverageFragmentSize.setMaxpos(convertFromMinAvgFragmentSize(summary.getMaxAvgFragmentSize()));
+        this.maxAverageFragmentSize.setMaxpos(convertFromMaxAvgFragmentSize(summary.getMaxAvgFragmentSize()));
+        this.minClusterSize.setMaxpos(convertFromClusterSize(summary.getMaxClusterSize()));
+        this.maxClusterSize.setMaxpos(convertFromClusterSize(summary.getMaxClusterSize()));
         this.minBenefitCostRatio.setMaxpos(convertFromBCR(summary.getMaxBCR()));
         this.maxBenefitCostRatio.setMaxpos(convertFromBCR(summary.getMaxBCR()));
     }
 
     private void refreshSliderPositionFromFilter() {
-        int currentMinAvgFragmentSize = convertFromMinAvgFragmentSize(currentFilter
-                .getMinAvgFragmentSize());
+        int currentMinAvgFragmentSize = convertFromMinAvgFragmentSize(currentFilter.getMinAvgFragmentSize());
         this.minAverageFragmentSize.setCurpos(currentMinAvgFragmentSize);
 
-        int currentMaxAvgFragmentSize = convertFromMaxAvgFragmentSize(currentFilter
-                .getMaxAvgFragmentSize());
+        int currentMaxAvgFragmentSize = convertFromMaxAvgFragmentSize(currentFilter.getMaxAvgFragmentSize());
         this.maxAverageFragmentSize.setCurpos(currentMaxAvgFragmentSize);
 
-        int currentMinClusterSize = convertFromClusterSize(currentFilter
-                .getMinClusterSize());
+        int currentMinClusterSize = convertFromClusterSize(currentFilter.getMinClusterSize());
         this.minClusterSize.setCurpos(currentMinClusterSize);
 
-        int currentMaxClusterSize = convertFromClusterSize(currentFilter
-                .getMaxClusterSize());
+        int currentMaxClusterSize = convertFromClusterSize(currentFilter.getMaxClusterSize());
         this.maxClusterSize.setCurpos(currentMaxClusterSize);
 
         int currentMinBCR = convertFromBCR(currentFilter.getMinBCR());
@@ -157,20 +129,16 @@ public class SimilarityClustersFilterProperties extends BaseController {
 
     private void refreshLabelsFromFilter() {
 
-        int currentMinAvgFragmentSize = convertFromMinAvgFragmentSize(currentFilter
-                .getMinAvgFragmentSize());
+        int currentMinAvgFragmentSize = convertFromMinAvgFragmentSize(currentFilter.getMinAvgFragmentSize());
         updateLabel(this.minAverageFragmentSize, currentMinAvgFragmentSize);
 
-        int currentMaxAvgFragmentSize = convertFromMaxAvgFragmentSize(currentFilter
-                .getMaxAvgFragmentSize());
+        int currentMaxAvgFragmentSize = convertFromMaxAvgFragmentSize(currentFilter.getMaxAvgFragmentSize());
         updateLabel(this.maxAverageFragmentSize, currentMaxAvgFragmentSize);
 
-        int currentMinClusterSize = convertFromClusterSize(currentFilter
-                .getMinClusterSize());
+        int currentMinClusterSize = convertFromClusterSize(currentFilter.getMinClusterSize());
         updateLabel(this.minClusterSize, currentMinClusterSize);
 
-        int currentMaxClusterSize = convertFromClusterSize(currentFilter
-                .getMaxClusterSize());
+        int currentMaxClusterSize = convertFromClusterSize(currentFilter.getMaxClusterSize());
         updateLabel(this.maxClusterSize, currentMaxClusterSize);
 
         int currentMinBCR = convertFromBCR(currentFilter.getMinBCR());
@@ -187,8 +155,7 @@ public class SimilarityClustersFilterProperties extends BaseController {
      * @param currentMinAvgFragmentSize
      */
     private void updateLabel(Component slider, int currentMinAvgFragmentSize) {
-        ((Label) slider.getNextSibling()).setValue(String
-                .valueOf(currentMinAvgFragmentSize));
+        ((Label) slider.getNextSibling()).setValue(String.valueOf(currentMinAvgFragmentSize));
     }
 
     /**
@@ -203,17 +170,10 @@ public class SimilarityClustersFilterProperties extends BaseController {
      */
     public ClusterFilterType buildClusterFilter() {
         ClusterFilterType filter = new ClusterFilterType();
-
-        filter.setMinClusterSize(convertToClusterSize(this.minClusterSize
-                .getCurpos()));
-        filter.setMaxClusterSize(convertToClusterSize(this.maxClusterSize
-                .getCurpos()));
-
-        filter.setMinAvgFragmentSize(convertToAvgFragmentSize(this.minAverageFragmentSize
-                .getCurpos()));
-        filter.setMaxAvgFragmentSize(convertToAvgFragmentSize(this.maxAverageFragmentSize
-                .getCurpos()));
-
+        filter.setMinClusterSize(convertToClusterSize(this.minClusterSize.getCurpos()));
+        filter.setMaxClusterSize(convertToClusterSize(this.maxClusterSize.getCurpos()));
+        filter.setMinAvgFragmentSize(convertToAvgFragmentSize(this.minAverageFragmentSize.getCurpos()));
+        filter.setMaxAvgFragmentSize(convertToAvgFragmentSize(this.maxAverageFragmentSize.getCurpos()));
         filter.setMinBCR(convertToBCR(this.minBenefitCostRatio.getCurpos()));
         filter.setMaxBCR(convertToBCR(this.maxBenefitCostRatio.getCurpos()));
         return filter;
@@ -241,11 +201,17 @@ public class SimilarityClustersFilterProperties extends BaseController {
     }
 
     private int convertFromMaxAvgFragmentSize(final float avgFragmentSize) {
-        return (int) Math.floor(avgFragmentSize);
+        if (avgFragmentSize > 0.0) {
+            return (int) Math.floor(avgFragmentSize);
+        }
+        return 1;
     }
 
     private int convertFromMinAvgFragmentSize(final float avgFragmentSize) {
-        return (int) Math.ceil(avgFragmentSize);
+        if (avgFragmentSize > 0.0) {
+            return (int) Math.ceil(avgFragmentSize);
+        }
+        return 1;
     }
 
     private int convertFromClusterSize(final int clusterSize) {

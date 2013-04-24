@@ -97,7 +97,7 @@ public class ClusterServiceImpl implements ClusterService {
     public void cluster(ClusterSettings settings) throws RepositoryException {
         clearClusters();
 
-        computeGEDMatrix();
+        //computeGEDMatrix();
 
         if (DBSCAN.equals(settings.getAlgorithm())) {
             dbscanClusterer.clusterRepository(settings);
@@ -116,6 +116,7 @@ public class ClusterServiceImpl implements ClusterService {
         LOGGER.debug("Computing the GED Matrix....");
         try {
             fdRepository.deleteAll();
+            fdRepository.flush();
             dmatrix.compute();
         } catch (Exception e) {
             LOGGER.error("An error occurred while computing the GED matrix for the first time. This could result in lesser number of clusters. PLEASE RERUN THE COMPUTATION.", e);
@@ -133,26 +134,28 @@ public class ClusterServiceImpl implements ClusterService {
         ClusteringSummary summary = new ClusteringSummary();
         List<Object[]> summaryObj = cRepository.getClusteringSummary();
         for (Object[] objects : summaryObj) {
-            if (objects[0] != null) {
-                summary.setNumClusters(((Long) objects[0]).intValue());
-            }
-            if (objects[1] != null) {
-                summary.setMinClusterSize((Integer) objects[1]);
-            }
-            if (objects[2] != null) {
-                summary.setMaxClusterSize((Integer) objects[2]);
-            }
-            if (objects[3] != null) {
-                summary.setMinAvgFragmentSize((Float) objects[3]);
-            }
-            if (objects[4] != null) {
-                summary.setMaxAvgFragmentSize((Float) objects[4]);
-            }
-            if (objects[5] != null) {
-                summary.setMinBCR((Double) objects[5]);
-            }
-            if (objects[6] != null) {
-                summary.setMaxBCR((Double) objects[6]);
+            if (objects[0] != null && ((Long) objects[0]).intValue() > 0) {
+                if (objects[0] != null) {
+                    summary.setNumClusters(((Long) objects[0]).intValue());
+                }
+                if (objects[1] != null) {
+                    summary.setMinClusterSize((Integer) objects[1]);
+                }
+                if (objects[2] != null) {
+                    summary.setMaxClusterSize((Integer) objects[2]);
+                }
+                if (objects[3] != null) {
+                    summary.setMinAvgFragmentSize((Float) objects[3]);
+                }
+                if (objects[4] != null) {
+                    summary.setMaxAvgFragmentSize((Float) objects[4]);
+                }
+                if (objects[5] != null) {
+                    summary.setMinBCR((Double) objects[5]);
+                }
+                if (objects[6] != null) {
+                    summary.setMaxBCR((Double) objects[6]);
+                }
             }
         }
         return summary;
@@ -291,7 +294,7 @@ public class ClusterServiceImpl implements ClusterService {
                     }
                 }
 
-                FragmentPair pair = new FragmentPair(fvRepository.findOne(fid1), fvRepository.findOne(fid2));
+                FragmentPair pair = new FragmentPair(fid1, fid2);
                 pairDistances.put(pair, distance);
             }
         }

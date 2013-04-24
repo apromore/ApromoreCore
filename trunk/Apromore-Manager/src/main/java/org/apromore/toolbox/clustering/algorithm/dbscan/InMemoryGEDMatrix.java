@@ -3,9 +3,13 @@
  */
 package org.apromore.toolbox.clustering.algorithm.dbscan;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.dao.ClusterRepository;
-import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterSettings;
 import org.slf4j.Logger;
@@ -14,12 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
 
 /**
  * @author Chathura Ekanayake
@@ -31,7 +29,6 @@ public class InMemoryGEDMatrix {
     private static final Logger log = LoggerFactory.getLogger(InMemoryGEDMatrix.class);
 
     private ClusterRepository clusterRepository;
-    private FragmentVersionRepository fragmentVersionRepository;
 
     private NeighbourhoodCache neighborhoodCache;
     private Map<FragmentPair, Double> inMemoryGEDs;
@@ -51,14 +48,13 @@ public class InMemoryGEDMatrix {
      * Public Constructor used for spring wiring of objects, also used for tests.
      */
     @Inject
-    public InMemoryGEDMatrix(final ClusterRepository cRepo, final FragmentVersionRepository fragVerRepo) {
+    public InMemoryGEDMatrix(final ClusterRepository cRepo) {
         clusterRepository = cRepo;
-        fragmentVersionRepository = fragVerRepo;
     }
 
 
     public void initialize(ClusterSettings settings, Map<Integer, InMemoryCluster> clusters, List<FragmentDataObject> noise,
-                           List<FragmentDataObject> unprocessedFragments) throws RepositoryException {
+            List<FragmentDataObject> unprocessedFragments) throws RepositoryException {
         neighborhoodCache = new NeighbourhoodCache();
         this.settings = settings;
         this.clusters = clusters;
@@ -82,7 +78,7 @@ public class InMemoryGEDMatrix {
         }
 
         double gedValue = 1;
-        FragmentPair pair = new FragmentPair(fragmentVersionRepository.findOne(fid1), fragmentVersionRepository.findOne(fid2));
+        FragmentPair pair = new FragmentPair(fid1, fid2);
         if (inMemoryGEDs.containsKey(pair)) {
             gedValue = inMemoryGEDs.get(pair);
         }
@@ -122,7 +118,7 @@ public class InMemoryGEDMatrix {
     }
 
     public List<FragmentDataObject> getCoreObjectNeighborhood(FragmentDataObject o, List<Integer> allowedIds) throws RepositoryException {
-        List<FragmentDataObject> nb = neighborhoodCache.getNeighborhood(o.getFragment().getId());
+        List<FragmentDataObject> nb = neighborhoodCache.getNeighborhood(o.getFragmentId());
 
         if (nb == null) {
             nb = getNeighbourhood(o);
@@ -134,7 +130,7 @@ public class InMemoryGEDMatrix {
         if (allowedIds != null) {
             List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
             for (FragmentDataObject nf : nb) {
-                if (!allowedIds.contains(nf.getFragment().getId())) {
+                if (!allowedIds.contains(nf.getFragmentId())) {
                     toBeRemoved.add(nf);
                 }
             }
@@ -153,8 +149,8 @@ public class InMemoryGEDMatrix {
      * @return
      */
     private List<FragmentDataObject> getNeighbourhood(FragmentDataObject o) {
-        FragmentVersion oid = o.getFragment();
-        List<FragmentDataObject> nb = new ArrayList<FragmentDataObject>();
+        Integer oid = o.getFragmentId();
+        List<FragmentDataObject> nb = new ArrayList<>();
         Set<FragmentPair> pairs = inMemoryGEDs.keySet();
         for (FragmentPair pair : pairs) {
             if (pair.getFid1().equals(oid)) {
