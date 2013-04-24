@@ -1,22 +1,17 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.portal.common.UserSessionManager;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * handles the navigation and movement around in folders.
@@ -112,7 +107,7 @@ public class FolderController extends GenericForwardComposer {
             if (html != null) {
                 FolderType selectedFolder = null;
                 List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
-                List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+                //List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
                 if (isFolder) {
                     for (FolderType folder : availableFolders) {
@@ -153,7 +148,7 @@ public class FolderController extends GenericForwardComposer {
                     UserSessionManager.setCurrentFolder(selectedFolder);
 
                     UserSessionManager.getMainController().reloadProcessSummaries();
-                    loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
+                    //loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
                     //Clients.evalJavaScript("bindTiles();");
                 }
             }
@@ -173,33 +168,33 @@ public class FolderController extends GenericForwardComposer {
         }
     }
 
-    public void loadWorkspace(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
-        String content = "<ul class='workspace'>";
-
-        for (FolderType folder : folders) {
-            int access = 1;
-            if (folder.isHasWrite()) {
-                access = 2;
-            }
-            if (folder.isHasOwnership()) {
-                access = 4;
-            }
-            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
-        }
-
-        for (ProcessSummaryType process : processes) {
-            int access = 1;
-            if (process.isHasWrite()) {
-                access = 2;
-            }
-            if (process.isHasOwnership()) {
-                access = 4;
-            }
-            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
-        }
-
-        content += "</ul>";
-        html.setContent(content);
-    }
+//    public void loadWorkspace(Html html, List<FolderType> folders, List<ProcessSummaryType> processes) {
+//        String content = "<ul class='workspace'>";
+//
+//        for (FolderType folder : folders) {
+//            int access = 1;
+//            if (folder.isHasWrite()) {
+//                access = 2;
+//            }
+//            if (folder.isHasOwnership()) {
+//                access = 4;
+//            }
+//            content += String.format("<li class='folder' id='%d' access='%d'><div>%s</div></li>", folder.getId(), access, folder.getFolderName());
+//        }
+//
+//        for (ProcessSummaryType process : processes) {
+//            int access = 1;
+//            if (process.isHasWrite()) {
+//                access = 2;
+//            }
+//            if (process.isHasOwnership()) {
+//                access = 4;
+//            }
+//            content += String.format("<li class='process' id='%d' access='%d'><div>%s</div></li>", process.getId(), access, process.getName().length() > 20 ? process.getName().substring(0, 16) + "" : process.getName());
+//        }
+//
+//        content += "</ul>";
+//        html.setContent(content);
+//    }
 
 }

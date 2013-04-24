@@ -1,8 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "folder_user")
 @Configurable("folder_user")
+@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class FolderUser implements Serializable {
 
     private Integer id;

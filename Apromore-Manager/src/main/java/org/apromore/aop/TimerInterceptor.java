@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * JPA DAO AspectJ Interceptor. Used to auto magically log the time taken to execute DB Queries.
  * This is useful to determine if queries, Spring data or eclipselink are slowing the development.
+ *
  * FOR DEVELOPMENT uses only, not for production.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
@@ -25,10 +26,10 @@ public class TimerInterceptor {
      * @throws Throwable if the method throws an exception.
      * //|| execution(* org.springframework.data.repository.CrudRepository..*.*(..))
      */
-    @Around("execution(* org.apromore.manager..*(..)) || " +
-            "execution(* org.apromore.service..*(..)) || " +
-            "execution(* org.apromore.dao..*(..)) || " +
-            "(execution(* org.apromore.toolbox..*(..)) && !within(*..*.InMemoryGEDMatrix))")
+    @Around("execution(* org.apromore.manager..*.*(..)) || " +
+            "execution(* org.apromore.service..*.*(..)) || " +
+            "execution(* org.apromore.dao..*.*(..)) || " +
+            "(execution(* org.apromore.toolbox..*.*(..)) && !within(*..*.InMemoryGEDMatrix))")
     public Object logQueryTimes(ProceedingJoinPoint pjp) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

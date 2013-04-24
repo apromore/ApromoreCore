@@ -1,11 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +14,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -33,6 +35,7 @@ import javax.persistence.UniqueConstraint;
         }
 )
 @Configurable("folder")
+@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Folder implements Serializable {
 
     private Integer id;
@@ -46,12 +49,12 @@ public class Folder implements Serializable {
     private Workspace workspace;
     private Folder parentFolder;
 
-    private Set<Process> processes = new HashSet<Process>(0);
-    private Set<Folder> subFolders = new HashSet<Folder>(0);
-    private Set<Process> folderProcesses = new HashSet<Process>(0);
-    private Set<FolderUser> folderUsers = new HashSet<FolderUser>(0);
-//    private Set<Folder> foldersForChildId = new HashSet<Folder>(0);
-//    private Set<Folder> foldersForParentId = new HashSet<Folder>(0);
+    private Set<Process> processes = new HashSet<>(0);
+    private Set<Folder> subFolders = new HashSet<>(0);
+    private Set<Process> folderProcesses = new HashSet<>(0);
+    private Set<FolderUser> folderUsers = new HashSet<>(0);
+//    private Set<Folder> foldersForChildId = new HashSet<>(0);
+//    private Set<Folder> foldersForParentId = new HashSet<>(0);
 
 
     /**

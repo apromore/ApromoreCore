@@ -17,7 +17,7 @@ public class FolderTreeNode {
     private int parent_id;
     private String name;
     private User user;
-    private List<FolderTreeNode> subFolders = new ArrayList<FolderTreeNode>();
+    private List<FolderTreeNode> subFolders = new ArrayList<>();
     private boolean hasRead;
     private boolean hasWrite;
     private boolean hasOwnership;
