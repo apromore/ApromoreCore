@@ -1,11 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +11,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -31,6 +33,7 @@ import javax.persistence.UniqueConstraint;
         }
 )
 @Configurable("role")
+@Cache(expiry = 180000, size = 10, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Role implements Serializable {
 
     private Integer id;
@@ -38,8 +41,8 @@ public class Role implements Serializable {
     private String name;
     private String description;
 
-    private Set<Permission> permissions = new HashSet<Permission>();
-    private Set<User> users = new HashSet<User>();
+    private Set<Permission> permissions = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
 
     /**

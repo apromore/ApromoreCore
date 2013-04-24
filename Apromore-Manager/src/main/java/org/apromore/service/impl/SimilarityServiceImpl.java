@@ -87,12 +87,16 @@ public class SimilarityServiceImpl implements SimilarityService {
 
     /* Responsible for getting all the Models and converting them to CPT internal format */
     private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query) throws SerializationException {
+        LOGGER.debug("Loading Data for search!");
+        int i = 0;
         ToolboxData data = new ToolboxData();
 
         data.setOrigin(processSrv.getCanonicalFormat(query));
         for (ProcessModelVersion pmv : models) {
             data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
+
         }
+        LOGGER.debug("Data Loaded for all models!");
 
         return data;
     }

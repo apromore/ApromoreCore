@@ -1,12 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +13,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -34,6 +36,7 @@ import javax.persistence.UniqueConstraint;
         }
 )
 @Configurable("user")
+@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class User implements Serializable {
 
     private Integer id;
@@ -46,16 +49,16 @@ public class User implements Serializable {
 
     private Membership membership = new Membership();
 
-    private Set<Role> roles = new HashSet<Role>();
-    private Set<ProcessUser> processUsers = new HashSet<ProcessUser>(0);
-    private Set<Workspace> workspaces = new HashSet<Workspace>(0);
-    private Set<FragmentUser> fragmentUsers = new HashSet<FragmentUser>(0);
-    private Set<FolderUser> folderUsers = new HashSet<FolderUser>(0);
-    private Set<Folder> foldersForCreatorId = new HashSet<Folder>(0);
-    private Set<EditSession> editSessionMappings = new HashSet<EditSession>(0);
-    private Set<Folder> foldersForModifiedById = new HashSet<Folder>(0);
-    private Set<Process> processes = new HashSet<Process>(0);
-    private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
+    private Set<Role> roles = new HashSet<>();
+    private Set<ProcessUser> processUsers = new HashSet<>(0);
+    private Set<Workspace> workspaces = new HashSet<>(0);
+    private Set<FragmentUser> fragmentUsers = new HashSet<>(0);
+    private Set<FolderUser> folderUsers = new HashSet<>(0);
+    private Set<Folder> foldersForCreatorId = new HashSet<>(0);
+    private Set<EditSession> editSessionMappings = new HashSet<>(0);
+    private Set<Folder> foldersForModifiedById = new HashSet<>(0);
+    private Set<Process> processes = new HashSet<>(0);
+    private Set<SearchHistory> searchHistories = new HashSet<>(0);
 
 
     /**

@@ -2,7 +2,6 @@ package org.apromore.dao.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.CacheType;
-import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -29,8 +26,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "process_branch")
 @Configurable("processBranch")
-@Cacheable(true)
-@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class ProcessBranch implements Serializable {
 
     private Integer id;

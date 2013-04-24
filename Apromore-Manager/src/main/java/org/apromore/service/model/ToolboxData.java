@@ -35,7 +35,7 @@ public class ToolboxData {
 
 
     public ToolboxData() {
-        model = new HashMap<ProcessModelVersion, CanonicalProcessType>(0);
+        model = new HashMap<>(0);
     }
 
 

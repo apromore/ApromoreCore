@@ -1,23 +1,20 @@
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.CacheType;
-import org.eclipse.persistence.config.CacheIsolationType;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the native type in apromore.
@@ -27,16 +24,15 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "native_type")
 @Configurable("nativeType")
-@Cacheable(true)
-@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, size = 10, expiry = 60000 ,alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 10, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class NativeType implements Serializable {
 
     private Integer id;
     private String natType;
     private String extension;
 
-    private Set<Native> natives = new HashSet<Native>(0);
-    private Set<Process> processes = new HashSet<Process>(0);
+    private Set<Native> natives = new HashSet<>(0);
+    private Set<Process> processes = new HashSet<>(0);
 
 
     /**
