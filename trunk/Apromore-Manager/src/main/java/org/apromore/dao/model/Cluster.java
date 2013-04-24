@@ -3,15 +3,8 @@
  */
 package org.apromore.dao.model;
 
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.CacheType;
-import org.eclipse.persistence.config.CacheIsolationType;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * The Cluster Data Object.
@@ -29,8 +27,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "cluster")
 @Configurable("cluster")
-@Cacheable(true)
-@org.eclipse.persistence.annotations.Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000, size = 1000, alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Cluster implements Serializable {
 
     private Integer id;
@@ -41,7 +38,7 @@ public class Cluster implements Serializable {
     private double BCR = 0;
     private int refactoringGain = 0;
 
-    private Set<ClusterAssignment> clusterAssignments = new HashSet<ClusterAssignment>(0);
+    private Set<ClusterAssignment> clusterAssignments = new HashSet<>(0);
 
     /**
      * Public Constructor.

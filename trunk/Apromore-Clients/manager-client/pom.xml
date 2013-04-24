@@ -92,7 +92,6 @@
     </developers>
 
     <dependencies>
-    
         <!-- Plugin API -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -158,6 +157,11 @@
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>org.springframework.ws.support</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
         </dependency>
         
         <dependency>
@@ -230,8 +234,8 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <!-- Mark all Import-Packages as optional -->
                         <Import-Package>
-                        	org.springframework.ws.soap,
-                        	*
+                            org.springframework.ws.soap,
+                            *
                         </Import-Package>
                     </instructions>
                 </configuration>                

@@ -14,6 +14,8 @@ import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "edit_session")
 @Configurable("editSession")
+@Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class EditSession implements Serializable {
 
     private Integer id;

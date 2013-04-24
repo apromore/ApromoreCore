@@ -5,6 +5,18 @@
             http://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-3.0.xsd
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="httpParams" class="org.apache.commons.httpclient.params.HttpClientParams">
+        <property name="soTimeout" value="120000" />  <!-- Timeout in milliseconds: in this case 2 minutes -->
+    </bean>
+
+    <bean id="httpClient" class="org.apache.commons.httpclient.HttpClient">
+        <property name="params" ref="httpParams" />
+    </bean>
+
+    <bean id="httpSender" class="org.springframework.ws.transport.http.CommonsHttpMessageSender">
+        <constructor-arg ref="httpClient" />
+    </bean>
+
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
         <property name="soapVersion">
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11" />
@@ -19,9 +31,7 @@
         <constructor-arg ref="messageFactory" />
         <property name="marshaller" ref="serviceMarshaller" />
         <property name="unmarshaller" ref="serviceMarshaller" />
-        <property name="messageSender">
-            <bean class="org.springframework.ws.transport.http.CommonsHttpMessageSender" />
-        </property>
+        <property name="messageSender" ref="httpSender" />
         <property name="defaultUri" value="http://localhost:9000/manager/services/manager" />
     </bean>
 

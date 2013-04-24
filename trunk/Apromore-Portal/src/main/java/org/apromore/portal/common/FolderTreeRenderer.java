@@ -95,7 +95,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                     
                     if (html != null){
                         List<FolderType> availableFolders = mainC.getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-                        List<ProcessSummaryType> availableProcesses = mainC.getService().getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+                        //List<ProcessSummaryType> availableProcesses = mainC.getService().getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
                         if (selectedFolder.getFolders().size() == 0)
                         for (FolderType folderType : availableFolders){
@@ -106,7 +106,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                         UserSessionManager.setCurrentFolder(selectedFolder);
 
                         mainC.reloadProcessSummaries();
-                        loadWorkspace(html, availableFolders, availableProcesses);
+                        //loadWorkspace(html, availableFolders, availableProcesses);
                         //Clients.evalJavaScript("bindTiles();");
                     }
                 } catch(Exception ignored){

@@ -25,7 +25,7 @@ public class ComposerServiceImpl implements ComposerService {
 
     private static final int CONCURRENCY_LEVEL = 4;
     private static final int CACHE_SIZE = 100000;
-    private static final int EXPIRATION_TIME = 600;
+    private static final int EXPIRATION_TIME = 180;
 
     private FragmentVersionRepository fragmentVersionRepository;
     private GraphService gService;

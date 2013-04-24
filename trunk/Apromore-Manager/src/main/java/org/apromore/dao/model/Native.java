@@ -2,7 +2,6 @@ package org.apromore.dao.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,8 +17,6 @@ import java.util.Set;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.eclipse.persistence.annotations.CacheType;
-import org.eclipse.persistence.config.CacheIsolationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -30,8 +27,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "native")
 @Configurable("native")
-@Cacheable(true)
-@Cache(type = CacheType.SOFT_WEAK, isolation = CacheIsolationType.SHARED, expiry = 60000 ,alwaysRefresh = true, disableHits = true, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+@Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Native implements Serializable {
 
     private Integer id;

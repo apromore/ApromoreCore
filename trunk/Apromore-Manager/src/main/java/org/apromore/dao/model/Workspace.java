@@ -1,11 +1,5 @@
 package org.apromore.dao.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +12,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -31,6 +33,7 @@ import javax.persistence.UniqueConstraint;
         }
 )
 @Configurable("workspace")
+@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Workspace implements Serializable {
 
     private Integer id;
@@ -40,7 +43,7 @@ public class Workspace implements Serializable {
 
     private User createdBy;
 
-    private Set<Folder> folders = new HashSet<Folder>(0);
+    private Set<Folder> folders = new HashSet<>(0);
 
     /**
      * Default Constructor.
