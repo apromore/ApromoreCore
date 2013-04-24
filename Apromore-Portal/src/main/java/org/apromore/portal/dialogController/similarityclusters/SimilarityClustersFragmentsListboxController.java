@@ -34,7 +34,7 @@ public class SimilarityClustersFragmentsListboxController extends BaseDetailCont
     public SimilarityClustersFragmentsListboxController(final MainController mainController) {
         super(mainController);
 
-        this.listBox = ((Listbox) Executions.createComponents(ZUL_PAGE, UserSessionManager.getMainController(), null));
+        this.listBox = ((Listbox) Executions.createComponents(ZUL_PAGE, getMainController(), null));
 
         getListBox().setItemRenderer(new SimilarityFragmentsItemRenderer());
         getListBox().setModel(new ListModelList());

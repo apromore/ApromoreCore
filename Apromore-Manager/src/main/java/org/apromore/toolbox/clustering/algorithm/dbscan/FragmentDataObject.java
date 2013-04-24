@@ -3,8 +3,6 @@
  */
 package org.apromore.toolbox.clustering.algorithm.dbscan;
 
-import org.apromore.dao.model.FragmentVersion;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class FragmentDataObject {
 
     private boolean clusterSync = false;
 
-    private FragmentVersion fragment;
+    private Integer fragmentId;
     private List<Integer> clusterIds;
     private String clusterStatus;
     private String keywords;
@@ -43,8 +41,8 @@ public class FragmentDataObject {
 
     public FragmentDataObject() { }
 
-    public FragmentDataObject(FragmentVersion newFragment) {
-        this.fragment = newFragment;
+    public FragmentDataObject(Integer newFragmentId) {
+        this.fragmentId = newFragmentId;
     }
 
 
@@ -56,12 +54,12 @@ public class FragmentDataObject {
         this.clusterSync = clusterSync;
     }
 
-    public FragmentVersion getFragment() {
-        return fragment;
+    public Integer getFragmentId() {
+        return fragmentId;
     }
 
-    public void setFragment(final FragmentVersion newFragment) {
-        this.fragment = newFragment;
+    public void setFragmentId(final Integer newFragmentId) {
+        this.fragmentId = newFragmentId;
     }
 
     public String getClusterStatus() {
@@ -140,10 +138,10 @@ public class FragmentDataObject {
 
     @Override
     public int hashCode() {
-        if (fragment == null) {
+        if (fragmentId == null) {
             return -1;
         } else {
-            return fragment.hashCode();
+            return fragmentId.hashCode();
         }
     }
 
@@ -151,20 +149,20 @@ public class FragmentDataObject {
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } else if (fragment == null) {
+        } else if (fragmentId == null) {
             return false;
         } else if (obj instanceof FragmentDataObject) {
             FragmentDataObject f2 = (FragmentDataObject) obj;
-            return fragment.equals(f2.getFragment());
+            return fragmentId.equals(f2.getFragmentId());
         } else if (obj instanceof String) {
             String f2Id = (String) obj;
-            return fragment.equals(f2Id);
+            return fragmentId.equals(f2Id);
         } else {
             return false;
         }
     }
 
     public String toString() {
-        return fragment.toString();
+        return fragmentId.toString();
     }
 }

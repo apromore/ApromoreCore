@@ -1,7 +1,6 @@
 package org.apromore.portal.dialogController.similarityclusters;
 
 import org.apromore.model.ClusterFilterType;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseFilterController;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Executions;
@@ -31,15 +30,14 @@ public class SimilarityClustersFilterController extends BaseFilterController {
 
     public SimilarityClustersFilterController(MainController mainController) {
         super(mainController);
-        Grid filterGrid = ((Grid) Executions.createComponents("macros/filter/similarityClustersFilter.zul", UserSessionManager.getMainController(),
-                null));
+        Grid filterGrid = ((Grid) Executions.createComponents("macros/filter/similarityClustersFilter.zul", mainController, null));
         propertiesController = new SimilarityClustersFilterProperties(filterGrid, new FilterScrollListener());
         appendChild(filterGrid);
     }
 
     private void refreshListbox() {
         ClusterFilterType filter = propertiesController.buildClusterFilter();
-        UserSessionManager.getMainController().displaySimilarityClusters(filter);
+        getMainController().displaySimilarityClusters(filter);
     }
 
     public void setCurrentFilter(ClusterFilterType filter) {

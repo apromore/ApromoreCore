@@ -51,4 +51,7 @@ public class SecuritySetupController extends BaseController {
         return this.findUsersController;
     }
 
+    public MainController getMainController(){
+        return this.mainController;
+    }
 }

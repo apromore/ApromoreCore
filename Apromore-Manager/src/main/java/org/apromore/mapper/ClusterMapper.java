@@ -3,8 +3,9 @@
  */
 package org.apromore.mapper;
 
-import org.apromore.service.model.ClusterFilter;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.model.ClusterFilterType;
@@ -18,12 +19,11 @@ import org.apromore.model.FragmentData;
 import org.apromore.model.PairDistanceType;
 import org.apromore.model.PairDistancesType;
 import org.apromore.model.ProcessAssociationsType;
+import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.MemberFragment;
 import org.apromore.service.model.ProcessAssociation;
-
-import java.util.List;
-import java.util.Map;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
@@ -132,8 +132,8 @@ public class ClusterMapper {
         PairDistancesType pdt = new PairDistancesType();
         for (FragmentPair pair : pairDistances.keySet()) {
             PairDistanceType p = new PairDistanceType();
-            p.setFragmentId1(pair.getFid1().getId());
-            p.setFragmentId2(pair.getFid2().getId());
+            p.setFragmentId1(pair.getFid1());
+            p.setFragmentId2(pair.getFid2());
             p.setDistance(pairDistances.get(pair));
             pdt.getPairDistance().add(p);
         }

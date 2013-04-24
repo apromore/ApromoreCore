@@ -235,7 +235,7 @@ public class FragmentServiceImpl implements FragmentService {
         List<FragmentVersion> fvs = fvRepository.findAll();
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
-            fragment.setFragment(fv);
+            fragment.setFragmentId(fv.getId());
             fragment.setSize(fv.getFragmentSize());
             fragments.add(fragment);
         }
@@ -254,7 +254,7 @@ public class FragmentServiceImpl implements FragmentService {
         List<FragmentVersion> fvs = fvRepository.getFragmentsByProcessIds(processIds);
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
-            fragment.setFragment(fv);
+            fragment.setFragmentId(fv.getId());
             fragment.setSize(fv.getFragmentSize());
             fragments.add(fragment);
         }

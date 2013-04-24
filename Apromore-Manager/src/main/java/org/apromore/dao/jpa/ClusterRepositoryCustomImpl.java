@@ -3,21 +3,22 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
-import org.apromore.dao.ClusterRepositoryCustom;
-import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.model.Cluster;
-import org.apromore.dao.model.FragmentDistance;
-import org.apromore.service.model.ClusterFilter;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apromore.dao.ClusterRepositoryCustom;
+import org.apromore.dao.model.Cluster;
+import org.apromore.service.model.ClusterFilter;
+import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.
@@ -28,8 +29,6 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
-    @Resource
-    private FragmentVersionRepository fragmentVersionRepository;
     @Resource
     private JdbcTemplate jdbcTemplate;
 
@@ -93,24 +92,24 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
         return distance;
     }
 
-    /**
-     * @see org.apromore.dao.ClusterRepositoryCustom#getDistances(double)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Map<FragmentPair, Double> getDistances(final double threshold) {
-        Query query = em.createQuery("SELECT fd FROM FragmentDistance fd WHERE fd.distance < :threshold");
-        query.setParameter("threshold", threshold);
-        List<FragmentDistance> distances = query.getResultList();
-
-        Map<FragmentPair, Double> fragmentDistances = new HashMap<FragmentPair, Double>();
-        for (FragmentDistance d : distances) {
-            FragmentPair pair = new FragmentPair(d.getFragmentVersionId1(), d.getFragmentVersionId2());
-            fragmentDistances.put(pair, d.getDistance());
-        }
-        return fragmentDistances;
-    }
+//    /**
+//     * @see org.apromore.dao.ClusterRepositoryCustom#getDistances(double)
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    public Map<FragmentPair, Double> getDistances(final double threshold) {
+//        Query query = em.createQuery("SELECT fd FROM FragmentDistance fd WHERE fd.distance < :threshold");
+//        query.setParameter("threshold", threshold);
+//        List<FragmentDistance> distances = query.getResultList();
+//
+//        Map<FragmentPair, Double> fragmentDistances = new HashMap<FragmentPair, Double>();
+//        for (FragmentDistance d : distances) {
+//            FragmentPair pair = new FragmentPair(d.getFragmentVersionId1().getId(), d.getFragmentVersionId2().getId());
+//            fragmentDistances.put(pair, d.getDistance());
+//        }
+//        return fragmentDistances;
+//    }
 
 
     private double getOrderedDistance(final Integer fragmentId1, final Integer fragmentId2) {
@@ -132,5 +131,32 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
 
+    /**
+     * @see org.apromore.dao.ClusterRepositoryCustom#getDistances(double)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<FragmentPair, Double> getDistances(final double threshold) {
+        Map<FragmentPair, Double> fragmentDistances = new HashMap<>();
 
+        String sql = "SELECT fragmentVersionId1, fragmentVersionId2, ged FROM fragment_distance WHERE ged < ?";
+        List<FragmentPair> distances = this.jdbcTemplate.query(sql, new Object[] {threshold},
+            new RowMapper<FragmentPair>() {
+                public FragmentPair mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    FragmentPair pair = new FragmentPair();
+                    pair.setFid1(rs.getInt("fragmentVersionId1"));
+                    pair.setFid2(rs.getInt("fragmentVersionId2"));
+                    pair.setDistance(rs.getDouble("ged"));
+                    return pair;
+                }
+            }
+        );
+
+        for (FragmentPair distance : distances) {
+            fragmentDistances.put(distance, distance.getDistance());
+        }
+
+        return fragmentDistances;
+    }
 }

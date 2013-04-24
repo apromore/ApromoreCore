@@ -13,4 +13,7 @@ public class BaseFilterController extends BaseController {
         setVflex("true");
     }
 
+    public MainController getMainController() {
+        return mainController;
+    }
 }

@@ -3,6 +3,11 @@
  */
 package org.apromore.toolbox.clustering.analyzers;
 
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
@@ -19,11 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
 
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
@@ -57,7 +57,7 @@ public class ClusterAnalyzer {
 
     public void loadFragmentSizes() {
         log.debug("Loading all fragment sizes from the database to memory...");
-        fragmentSizes = new HashMap<Integer, Integer>();
+        fragmentSizes = new HashMap<>();
         List<FragmentVersion> fragmentVersions = fragmentVersionRepository.findAll();
         for (FragmentVersion fragmentVersion : fragmentVersions) {
             if (fragmentVersion.getFragmentSize() != null) {
@@ -75,7 +75,7 @@ public class ClusterAnalyzer {
         List<FragmentDataObject> fragments = c.getFragments();
 
         for (FragmentDataObject fragment : fragments) {
-            fragment.setSize(fragmentSizes.get(fragment.getFragment().getId()));
+            fragment.setSize(fragmentSizes.get(fragment.getFragmentId()));
             sumOfFragmentSizes += fragment.getSize();
         }
         cd.setSize(fragments.size());
@@ -109,7 +109,7 @@ public class ClusterAnalyzer {
                         maxBenifitCostRatio = medoidProps[1];
                         standardizingEffot = medoidProps[2];
                         refactoringGain = (int) medoidProps[3];
-                        medoidFragmentId = f.getFragment().getId();
+                        medoidFragmentId = f.getFragmentId();
 
                     } else if (medoidProps[1] == maxBenifitCostRatio) {
                         if (medoidProps[0] < maxDistance) {
@@ -117,7 +117,7 @@ public class ClusterAnalyzer {
                             maxBenifitCostRatio = medoidProps[1];
                             standardizingEffot = medoidProps[2];
                             refactoringGain = (int) medoidProps[3];
-                            medoidFragmentId = f.getFragment().getId();
+                            medoidFragmentId = f.getFragmentId();
                         }
                     }
                 }
@@ -141,11 +141,11 @@ public class ClusterAnalyzer {
         double standardizingEffort = 0; // sum of absolute geds
         double maxDistance = 0; // normalized max distance
         double totalDistance = 0; // sum of normalized geds
-        int refactGain = 0;
-        double benifitCostRatio = 0;
+        int refactGain;
+        double benifitCostRatio;
 
         for (FragmentDataObject memberFragment : memberFragments) {
-            double normalizedDistance = inMemoryGEDMatrix.getGED(candidate.getFragment().getId(), memberFragment.getFragment().getId());
+            double normalizedDistance = inMemoryGEDMatrix.getGED(candidate.getFragmentId(), memberFragment.getFragmentId());
             if (normalizedDistance > maxDistance) {
                 maxDistance = normalizedDistance;
             }

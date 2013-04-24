@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSummaryType;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseListboxController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.similarityclusters.renderer.SimilarityClustersItemRenderer;
@@ -42,7 +41,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
         super(mainController, ZUL_PAGE, new SimilarityClustersItemRenderer());
         this.filterController = filterController;
 
-        Button btnShowVisualisation = (Button) UserSessionManager.getMainController().getFellow("showVisualisation");
+        Button btnShowVisualisation = (Button) getMainController().getFellow("showVisualisation");
         btnShowVisualisation.setVisible(true);
         btnShowVisualisation.addEventListener("onClick", new EventListener() {
 
@@ -83,9 +82,11 @@ public class SimilarityClustersListboxController extends BaseListboxController {
     protected final void refreshContent() {
         getListBox().clearSelection();
         getListModel().clear();
-        getListModel().addAll(getService().getClusterSummaries(this.filterController.getCurrentFilter()));
-
-        UserSessionManager.getMainController().displayMessage(buildRefreshMessage());
+        List<ClusterSummaryType> summary = getService().getClusterSummaries(this.filterController.getCurrentFilter());
+        if (summary!= null && !summary.isEmpty()) {
+            getListModel().addAll(summary);
+        }
+        getMainController().displayMessage(buildRefreshMessage());
     }
 
     /**

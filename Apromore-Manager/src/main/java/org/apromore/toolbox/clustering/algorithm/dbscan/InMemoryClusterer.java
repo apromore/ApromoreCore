@@ -1,5 +1,6 @@
 package org.apromore.toolbox.clustering.algorithm.dbscan;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,9 +11,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
-import javax.inject.Inject;
 
-import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
 import org.apromore.common.Constants;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.model.Cluster;
@@ -20,6 +19,7 @@ import org.apromore.dao.model.ClusterAssignment;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.FragmentService;
 import org.apromore.service.model.ClusterSettings;
+import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class InMemoryClusterer {
 
-    private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryClusterer.class);
 
     private InMemoryGEDMatrix inMemoryGEDMatrix;
     private InMemoryExcludedObjectClusterer inMemoryExcludedObjectClusterer;
@@ -78,12 +78,13 @@ public class InMemoryClusterer {
 
     @Transactional(readOnly = false)
     public void clusterRepository(ClusterSettings settings) throws RepositoryException {
-        log.debug("Initializing the in memory clusterer...");
+        LOGGER.debug("Initializing the in memory clusterer...");
         initializeForClustering(settings);
 
-        log.debug("Starting the clustering process...");
+        LOGGER.debug("Starting the clustering process...");
         long t1 = System.currentTimeMillis();
         while (!unprocessedFragments.isEmpty()) {
+            LOGGER.debug("Still to process: " + unprocessedFragments.size());
             FragmentDataObject unclassifiedFragment = unprocessedFragments.remove(0);
             if (unclassifiedFragment != null) {
                 if (2 < unclassifiedFragment.getSize() && unclassifiedFragment.getSize() < settings.getMaxClusteringFragmentSize()) {
@@ -99,18 +100,18 @@ public class InMemoryClusterer {
             // excluded core objects are always overlapped. so cluster overlapping has to be enabled to perform
             // clustering based on excluded core objects.
             Map<Integer, InMemoryCluster> excludedClusters = inMemoryExcludedObjectClusterer.clusterRepository(excluded);
-            log.debug("Excluded object clusters: " + excludedClusters.size());
+            LOGGER.debug("Excluded object clusters: " + excludedClusters.size());
             clusters.putAll(excludedClusters);
         }
         long t2 = System.currentTimeMillis();
         long duration = t2 - t1;
-        log.debug("Time for clustering: " + duration);
+        LOGGER.debug("Time for clustering: " + duration);
 
-        log.debug("Clusters: " + clusters.size() + ", Excluded core objects: " + excluded.size());
+        LOGGER.debug("Clusters: " + clusters.size() + ", Excluded core objects: " + excluded.size());
 
         // now persist clusters
         long pt1 = System.currentTimeMillis();
-        log.debug("Analyzing and persisting " + clusters.size() + " clusters in the database...");
+        LOGGER.debug("Analyzing and persisting " + clusters.size() + " clusters in the database...");
 
         clusterAnalyzer.loadFragmentSizes();
         List<Cluster> cds = new ArrayList<>();
@@ -126,7 +127,7 @@ public class InMemoryClusterer {
                     // this is a cluster with exact clones (i.e. inter-fragment distances and std effort are zero)
                     toBeRemovedCDs.add(cd);
                     clusters.remove(cd.getId());
-                    log.debug("Removed cluster: " + cd.getId() +
+                    LOGGER.debug("Removed cluster: " + cd.getId() +
                             " from results as it only contains identical fragments (i.e. exact clones)");
                 }
             }
@@ -136,12 +137,11 @@ public class InMemoryClusterer {
         buildClusters(cds, clusters.values());
         long pt2 = System.currentTimeMillis();
         long pduration = pt2 - pt1;
-        log.debug("Time for persisting clusters: " + pduration);
+        LOGGER.debug("Time for persisting clusters: " + pduration);
 
-        log.debug("Cluster persistance completed.");
+        LOGGER.debug("Cluster persistance completed.");
     }
 
-    /* TODO: Fix this class and not use this temp method. */
     @Transactional(readOnly = false)
     private void buildClusters(final List<Cluster> cds, final Collection<InMemoryCluster> values) {
         ClusterAssignment newClusterAssignment;
@@ -152,7 +152,7 @@ public class InMemoryClusterer {
                     for (FragmentDataObject f : imc.getFragments()) {
                         newClusterAssignment = new ClusterAssignment();
                         newClusterAssignment.setCluster(cluster);
-                        newClusterAssignment.setFragment(f.getFragment());
+                        newClusterAssignment.setFragment(fragmentService.getFragmentVersion(f.getFragmentId()));
                         newClusterAssignment.setCoreObjectNb(f.getCoreObjectNB());
 
                         cluster.addClusterAssignment(newClusterAssignment);
@@ -180,7 +180,7 @@ public class InMemoryClusterer {
             unprocessedFragments = fragmentService.getUnprocessedFragmentsOfProcesses(settings.getConstrainedProcessIds());
             allowedFragmentIds = new ArrayList<>(0);
             for (FragmentDataObject f : unprocessedFragments) {
-                allowedFragmentIds.add(f.getFragment().getId());
+                allowedFragmentIds.add(f.getFragmentId());
             }
         }
         cc.setUnprocessedFragments(unprocessedFragments);
@@ -214,8 +214,8 @@ public class InMemoryClusterer {
 
     private void expandClusterer(FragmentDataObject firstCore, List<FragmentDataObject> n, InMemoryCluster cluster,
             Set<Integer> usedHierarchies) throws RepositoryException {
-        if (log.isDebugEnabled()) {
-            log.debug("Expanding a cluster from the core fragment: " + firstCore.getFragment().getId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Expanding a cluster from the core fragment: " + firstCore.getFragmentId());
         }
 
         List<FragmentDataObject> excludedCoreObjects = new ArrayList<>();
@@ -291,13 +291,13 @@ public class InMemoryClusterer {
         }
 
 
-        log.debug("Core objects to exclude: " + excludedCoreObjects.size());
+        LOGGER.debug("Core objects to exclude: " + excludedCoreObjects.size());
 
         // it is required to run the below two statements in this order. otherwise excluded status will be cleared.
         for (FragmentDataObject fo : allClusterFragments) {
             fo.setClusterStatus(FragmentDataObject.CLUSTERED_STATUS);
             cluster.addFragment(fo);
-            cc.mapFragmentToCluster(fo.getFragment().getId(), cluster.getClusterId());
+            cc.mapFragmentToCluster(fo.getFragmentId(), cluster.getClusterId());
         }
         unprocessedFragments.removeAll(allClusterFragments);
 
@@ -314,7 +314,7 @@ public class InMemoryClusterer {
     private void removeAll(List<FragmentDataObject> n, Set<Integer> usedHierarchies) {
         List<FragmentDataObject> toBeRemoved = new ArrayList<>();
         for (FragmentDataObject nfo : n) {
-            Integer nfid = nfo.getFragment().getId();
+            Integer nfid = nfo.getFragmentId();
             if (usedHierarchies.contains(nfid)) {
                 toBeRemoved.add(nfo);
             }
@@ -345,8 +345,8 @@ public class InMemoryClusterer {
             if (i + 1 < pendingClusterFragments.size()) {
                 for (int j = i + 1; j < pendingClusterFragments.size(); j++) {
                     FragmentDataObject f2 = pendingClusterFragments.get(j);
-                    double ged = inMemoryGEDMatrix.getGED(f1.getFragment().getId(), f2.getFragment().getId());
-                    distances.put(new FragmentPair(f1.getFragment(), f2.getFragment()), ged);
+                    double ged = inMemoryGEDMatrix.getGED(f1.getFragmentId(), f2.getFragmentId());
+                    distances.put(new FragmentPair(f1.getFragmentId(), f2.getFragmentId()), ged);
                 }
             }
         }
@@ -354,7 +354,7 @@ public class InMemoryClusterer {
         double maxMedoidToFragmentDistance = Double.MAX_VALUE;
         double minimumCost = Double.MAX_VALUE;
         for (FragmentDataObject f : pendingClusterFragments) {
-            double[] medoidProps = computeMedoidProperties(f.getFragment().getId(), distances);
+            double[] medoidProps = computeMedoidProperties(f.getFragmentId(), distances);
             if (medoidProps[1] <= gedThreshold) {
                 if (medoidProps[1] < maxMedoidToFragmentDistance) {
                     minimumCost = medoidProps[0];

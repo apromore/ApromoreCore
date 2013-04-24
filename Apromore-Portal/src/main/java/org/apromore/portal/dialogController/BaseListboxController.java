@@ -152,7 +152,7 @@ public abstract class BaseListboxController extends BaseController {
     protected abstract void refreshContent();
 
     protected Listbox createListbox(String componentId) {
-        return (Listbox) Executions.createComponents(componentId, UserSessionManager.getMainController(), null);
+        return (Listbox) Executions.createComponents(componentId, getMainController(), null);
     }
 
     protected Listbox getListBox() {
@@ -185,18 +185,18 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void addFolder() throws InterruptedException {
-        this.mainController.eraseMessage();
+        getMainController().eraseMessage();
         try {
-            this.addFolderController = new AddFolderController(mainController, 0, "");
+            this.addFolderController = new AddFolderController(getMainController(), 0, "");
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
     protected void addProcess() throws InterruptedException {
-        this.mainController.eraseMessage();
+        getMainController().eraseMessage();
         try {
-            this.createController = new CreateProcessController(this.mainController, this.mainController.getNativeTypes());
+            this.createController = new CreateProcessController(getMainController(), getMainController().getNativeTypes());
         } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
@@ -227,7 +227,7 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void renameFolder() throws InterruptedException {
-        this.mainController.eraseMessage();
+        getMainController().eraseMessage();
         try {
             List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
 
@@ -242,7 +242,7 @@ public abstract class BaseListboxController extends BaseController {
                     }
                 }
 
-                this.addFolderController = new AddFolderController(mainController, folderIds.get(0), selectedFolderName);
+                this.addFolderController = new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
@@ -255,17 +255,16 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
-        MainController mainController = UserSessionManager.getMainController();
-        ArrayList<FolderType> folders =  mainController.getMenu().getSelectedFolders();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> processes =  mainController.getMenu().getSelectedProcessVersions();
+        ArrayList<FolderType> folders =  getMainController().getMenu().getSelectedFolders();
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> processes =  getMainController().getMenu().getSelectedProcessVersions();
 
         if (doesSelectionContainFoldersAndProcesses(folders, processes)) {
-            showMessageFoldersAndProcessesDelete(mainController, folders);
+            showMessageFoldersAndProcessesDelete(getMainController(), folders);
         } else {
             if (folders != null && !folders.isEmpty()) {
-                showMessageFolderDelete(mainController, folders);
+                showMessageFolderDelete(getMainController(), folders);
             } else if (processes != null && !processes.isEmpty()) {
-                showMessageProcessesDelete(mainController);
+                showMessageProcessesDelete(getMainController());
             } else {
                LOGGER.error("Nothing selected to delete?");
             }
@@ -320,9 +319,9 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Setup the Security controller. */
     protected void security() throws InterruptedException {
-        this.mainController.eraseMessage();
+        getMainController().eraseMessage();
         try {
-            this.securitySetupController = new SecuritySetupController(this.mainController);
+            this.securitySetupController = new SecuritySetupController(getMainController());
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -345,5 +344,9 @@ public abstract class BaseListboxController extends BaseController {
     /* Does the selection in the main detail list contain folders and processes. */
     private boolean doesSelectionContainFoldersAndProcesses(ArrayList<FolderType> folders, HashMap<ProcessSummaryType, List<VersionSummaryType>> processes) throws Exception {
         return (folders != null && !folders.isEmpty()) && (processes != null && !processes.isEmpty());
+    }
+
+    public MainController getMainController() {
+        return mainController;
     }
 }
