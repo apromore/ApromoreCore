@@ -81,6 +81,7 @@ public class ContentServiceImpl implements ContentService {
             node.setName(cpfNode.getName());
             node.setUri(cpfNode.getId());
             node.setOriginalId(cpfNode.getOriginalId());
+            node.setNetId(cpfNode.getNetId());
             node.setGraphType(graphType);
             node.setNodeType(cpfNode.getNodeType());
             node.setAllocation(cpfNode.getAllocation());
