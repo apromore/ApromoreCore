@@ -177,7 +177,7 @@ CREATE TABLE `process_model_version` (
   `nativeId` int(11) DEFAULT NULL,
   `canonicalId` int(11) DEFAULT NULL,
   `originalId` varchar(200),
---  `nativeTypeId` int(11) DEFAULT NULL,
+  `nativeTypeId` int(11) DEFAULT NULL,
   `version_number` double,
   `change_propagation` int,
   `lock_status` int,
@@ -197,11 +197,10 @@ CREATE TABLE `process_model_version` (
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_process_canonical` FOREIGN KEY (`canonicalId`)
   REFERENCES `canonical` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_process2` FOREIGN KEY (`nativeTypeId`)
+  REFERENCES `native_type` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
---  ,
---  CONSTRAINT `fk_process2` FOREIGN KEY (`nativeTypeId`)
---  REFERENCES `native_type` (`id`)
---    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `annotation` (

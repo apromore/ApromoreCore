@@ -46,6 +46,7 @@ public class ProcessModelVersion implements Serializable {
     private Canonical canonicalDocument;
     private ProcessBranch processBranch;
     private FragmentVersion rootFragmentVersion;
+    private NativeType nativeType;
 
     private Set<FragmentVersion> fragmentVersions = new HashSet<>(0);
 
@@ -195,6 +196,16 @@ public class ProcessModelVersion implements Serializable {
 
     public void setRootFragmentVersion(final FragmentVersion newRootFragmentVersion) {
         this.rootFragmentVersion = newRootFragmentVersion;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "nativeTypeId")
+    public NativeType getNativeType() {
+        return this.nativeType;
+    }
+
+    public void setNativeType(final NativeType newNativeType) {
+        this.nativeType = newNativeType;
     }
 
 

@@ -110,7 +110,8 @@ public class SaveAsDialogController extends BaseController {
 
     protected void saveModel(boolean isNormalSave) throws Exception {
         String userName = UserSessionManager.getCurrentUser().getUsername();
-        String nativeType = this.process.getOriginalNativeType();
+        //String originalNativeType = this.process.getOriginalNativeType();
+        String nativeType = this.editSession.getNativeType();
         String versionName = this.version.getName();
         String domain = this.process.getDomain();
         String processName = this.modelName.getText();
