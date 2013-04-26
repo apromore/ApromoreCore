@@ -75,7 +75,7 @@ public class EditOneProcessController extends BaseController {
             if (!label.equals("AML fragment")) {
                 cbi = new Listitem();
                 nativeTypesLB.appendChild(cbi);
-                cbi.setLabel(formats.get(it.next()));
+                cbi.setLabel(label);
                 if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(cbi.getLabel())) {
                     cbi.setSelected(true);
                 }
