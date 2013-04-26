@@ -34,8 +34,9 @@
         <property name="jpaProperties">
             <util:properties id="jpaProperties">
                 <prop key="showSql">false</prop>
-                <prop key="eclipselink.weaving">false</prop>
+                <prop key="eclipselink.weaving">static</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
+                <prop key="eclipselink.query-results-cache.size">10000</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
                 <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
                 <prop key="eclipselink.persistence-context.close-on-commit">true</prop>

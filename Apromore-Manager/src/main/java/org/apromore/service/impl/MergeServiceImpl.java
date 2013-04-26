@@ -77,9 +77,9 @@ public class MergeServiceImpl implements MergeService {
     @Transactional(readOnly = false)
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
-        List<ProcessModelVersion> models = new ArrayList<ProcessModelVersion>(0);
+        List<ProcessModelVersion> models = new ArrayList<>(0);
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
-            models.add(processModelVersionRepo.findProcessModelVersionByBranch(cpf.getProcessId(), cpf.getVersionName()));
+            models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
         }
 
         ProcessSummaryType pst = null;

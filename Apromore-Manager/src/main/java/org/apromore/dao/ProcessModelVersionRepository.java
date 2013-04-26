@@ -1,9 +1,12 @@
 package org.apromore.dao;
 
+import javax.persistence.QueryHint;
+
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,16 +29,6 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
     @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
             "WHERE p.id = ?1 AND pb.branchName = ?2")
     ProcessModelVersion findProcessModelVersionByBranch(Integer branchId, String branchName);
-
-    /**
-     * For a process Model and Branch what is the max version number we have, this query gets that version number.
-     * @param processId the process Identifier.
-     * @param branchName the branch Name.
-     * @return the found version number.
-     */
-    @Query("SELECT max(pmv.versionNumber) FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
-            "WHERE p.id = ?1 AND pb.branchName = ?2")
-    Double findMaxVersionNumberByProcessIdAndBranchName(Integer processId, String branchName);
 
     /**
      * Find the process model version for the process id branch and version.
@@ -98,6 +91,11 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             "WHERE pb.id = pmv.processBranch.id AND pb.createDate in " +
             "  (SELECT max(pb2.createDate) FROM ProcessBranch pb2 WHERE pb2.id = pmv.processBranch.id GROUP BY pb2.id) " +
             "ORDER by pb.id, pb.createDate")
+    @QueryHints(value = {
+            @QueryHint(name = "eclipselink.query-results-cache", value = "true"),
+            @QueryHint(name = "eclipselink.query-results-cache.size", value = "1000")
+        },
+    forCounting = false)
     List<ProcessModelVersion> getLatestProcessModelVersions();
 
     /**

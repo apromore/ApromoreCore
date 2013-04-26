@@ -325,7 +325,8 @@ public class ManagerPortalEndpoint {
             for (ProcessVersionIdType t : payload.getProcessVersionIds().getProcessVersionId()) {
                 ProcessVersionIdType id = new ProcessVersionIdType();
                 id.setProcessId(t.getProcessId());
-                id.setVersionName(t.getVersionName());
+                id.setBranchName(t.getBranchName());
+                id.setVersionNumber(t.getVersionNumber());
                 ids.getProcessVersionId().add(id);
             }
             ProcessSummaryType respFromToolbox = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids);
