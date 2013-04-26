@@ -19,6 +19,7 @@ import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.ResourceRef;
 import org.apromore.dao.model.ResourceRefAttribute;
+import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.CPFObject;
@@ -94,7 +95,7 @@ public class GraphServiceImpl implements GraphService {
             CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
             CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
             if (v1 != null && v2 != null) {
-                procModelGraph.addEdge(v1, v2);
+                new CPFEdge(procModelGraph, edge.getOriginalId(), v1, v2);
             } else {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentURI);

@@ -172,9 +172,8 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
             initializer.warn("Using reconstructed root net list: " + rootIds);
         }
 
-        // Translate CPF Nets as BPMN Processes
+        // Translate CPF Nets as BPMN Processes TODO: Fix
         for (final NetType net : cpf.getNet()) {
-
             // Only root elements are decanonised here; subnets are dealt with by recursion
             if (!rootIds.contains(net.getId())) {
                 continue;
