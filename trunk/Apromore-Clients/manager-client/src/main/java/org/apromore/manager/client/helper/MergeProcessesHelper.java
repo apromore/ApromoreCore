@@ -31,7 +31,8 @@ public class MergeProcessesHelper {
             for (VersionSummaryType v : i.getKey().getVersionSummaries()) {
                 id = new ProcessVersionIdType();
                 id.setProcessId(i.getKey().getId());
-                id.setVersionName(v.getName());
+                id.setBranchName(v.getName());
+                id.setVersionNumber(v.getVersionNumber());
                 modelIdList.getProcessVersionId().add(id);
             }
         }

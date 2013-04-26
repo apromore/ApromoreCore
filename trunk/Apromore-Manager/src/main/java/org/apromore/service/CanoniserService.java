@@ -22,7 +22,6 @@ public interface CanoniserService {
 
     /**
      * Lists all installed Canonisers for given native process format.
-     *
      * @param nativeType that the Canoniser supports
      * @return Set of Canoniser that support the native process format
      * @throws PluginNotFoundException
@@ -31,7 +30,6 @@ public interface CanoniserService {
 
     /**
      * Finds first Canoniser with given native type
-     *
      * @param nativeType that the Canoniser supports
      * @return Canoniser that support the native process format
      * @throws PluginNotFoundException
@@ -40,7 +38,6 @@ public interface CanoniserService {
 
     /**
      * Finds first Canoniser with given native type with given name and specified version.
-     *
      * @param nativeType that the Canoniser supports
      * @param name
      * @param version
@@ -52,7 +49,6 @@ public interface CanoniserService {
     /**
      * Canonise a process. Generate CPF and ANF from native XML which is specified in language nativeType. If cpfUri is equal to 0, take it from
      * nativeXml
-     *
      * @param nativeType          the native type
      * @param nativeXml           the processXML to canonise
      * @param canoniserProperties
@@ -64,7 +60,6 @@ public interface CanoniserService {
 
     /**
      * DeCanonise a process.
-     *
      * @param processId           the processId of the Canonical format.
      * @param version             the version of the canonical format
      * @param nativeType          the processes original format
@@ -79,10 +74,16 @@ public interface CanoniserService {
 
     /**
      * Convert the CPF Graph to XML.
-     *
      * @param cpt the CPT
      * @return the CPF as a String
      */
     String CPFtoString(CanonicalProcessType cpt) throws JAXBException;
 
+    /**
+     * Converts XML to CPF.
+     * @param xml the xml to convert.
+     * @return the Canonical Process Type
+     * @throws JAXBException
+     */
+    CanonicalProcessType XMLtoCPF(String xml) throws JAXBException;
 }

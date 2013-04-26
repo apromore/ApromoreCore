@@ -4,6 +4,7 @@ USE `Apromore`;
 
 DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `annotation`;
+DROP TABLE IF EXISTS `canonical`;
 DROP TABLE IF EXISTS `native`;
 DROP TABLE IF EXISTS `edit_session`;
 DROP TABLE IF EXISTS `fragment_version_dag`;
@@ -207,6 +208,23 @@ CREATE TABLE `annotation` (
   REFERENCES `native` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_annotation2` FOREIGN KEY (`processModelVersionId`)
+  REFERENCES `process_model_version` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `canonical` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nativeId` int(11) DEFAULT NULL,
+  `processModelVersionId` int(11) DEFAULT NULL,
+  `name` varchar(40) DEFAULT NULL,
+  `content` longtext,
+  `lastUpdateDate` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_canonical` (`processModelVersionId` , `name`),
+  CONSTRAINT `fk_canonical1` FOREIGN KEY (`nativeId`)
+  REFERENCES `native` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_canonical2` FOREIGN KEY (`processModelVersionId`)
   REFERENCES `process_model_version` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

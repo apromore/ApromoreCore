@@ -65,6 +65,9 @@
     <logger name="org.apromore.aop.TimerStatsInterceptor" level="DEBUG">
         <appender-ref ref="timerlogfile"/>
     </logger>
+    <logger name="org.apromore.aop.TimerInterceptor" level="DEBUG">
+        <appender-ref ref="timerlogfile"/>
+    </logger>
     <logger name="org.apromore.aop.LoggingInterceptor" level="DEBUG">
         <appender-ref ref="methodlogfile"/>
     </logger>

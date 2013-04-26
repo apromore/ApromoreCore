@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -168,7 +170,8 @@ public class CanoniserServiceImpl implements CanoniserService {
     // TODO all the following methods do not really belong here
 
     /**
-     * @see org.apromore.service.CanoniserService#CPFtoString(org.apromore.cpf.CanonicalProcessType) {@inheritDoc}
+     * @see org.apromore.service.CanoniserService#CPFtoString(org.apromore.cpf.CanonicalProcessType)
+     * {@inheritDoc}
      */
     @Override
     public String CPFtoString(final CanonicalProcessType cpt) throws JAXBException {
@@ -179,6 +182,22 @@ public class CanoniserServiceImpl implements CanoniserService {
             throw new JAXBException(e);
         }
         return StreamUtil.convertStreamToString(new ByteArrayInputStream(xml.toByteArray()));
+    }
+
+    /**
+     * @see org.apromore.service.CanoniserService#XMLtoCPF(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public CanonicalProcessType XMLtoCPF(final String xml) throws JAXBException {
+        CanonicalProcessType cpf;
+        try {
+            JAXBElement<CanonicalProcessType> jaxb = CPFSchema.unmarshalCanonicalFormat(new ByteArrayInputStream(xml.getBytes()) ,false);
+            cpf = jaxb.getValue();
+        } catch (SAXException e) {
+            throw new JAXBException(e);
+        }
+        return cpf;
     }
 
 }

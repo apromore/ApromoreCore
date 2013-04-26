@@ -1,8 +1,9 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -14,6 +15,7 @@ import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -38,6 +40,7 @@ public class SimilarityServiceImpl implements SimilarityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
+    private CanoniserService canoniserSrv;
     private ProcessService processSrv;
     private UserInterfaceHelper ui;
 
@@ -50,9 +53,10 @@ public class SimilarityServiceImpl implements SimilarityService {
      * @param uiHelper user interface helper
      */
     @Inject
-    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository,
+    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
              final ProcessService processService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
+        canoniserSrv = canoniserService;
         processSrv = processService;
         ui = uiHelper;
     }
@@ -86,16 +90,20 @@ public class SimilarityServiceImpl implements SimilarityService {
 
 
     /* Responsible for getting all the Models and converting them to CPT internal format */
-    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query) throws SerializationException {
+    private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query)
+            throws SerializationException, JAXBException {
         LOGGER.debug("Loading Data for search!");
-        int i = 0;
         ToolboxData data = new ToolboxData();
 
-        data.setOrigin(processSrv.getCanonicalFormat(query));
+        data.setOrigin(canoniserSrv.XMLtoCPF(query.getCanonicalDocument().getContent()));
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
-
+            data.addModel(pmv, canoniserSrv.XMLtoCPF(pmv.getCanonicalDocument().getContent()));
         }
+//        data.setOrigin(processSrv.getCanonicalFormat(query));
+//        for (ProcessModelVersion pmv : models) {
+//            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
+//        }
+
         LOGGER.debug("Data Loaded for all models!");
 
         return data;

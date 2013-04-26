@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apromore.dao.AnnotationRepository;
+import org.apromore.dao.CanonicalRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
 import org.apromore.dao.model.Annotation;
+import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FormatServiceImpl implements FormatService {
 
     private AnnotationRepository annotationRepo;
+    private CanonicalRepository canonicalRepo;
     private NativeRepository nativeRepo;
     private NativeTypeRepository nativeTypeRepo;
 
@@ -42,9 +45,10 @@ public class FormatServiceImpl implements FormatService {
      * @param nativeTypeRepository Native Type repository.
      */
     @Inject
-    public FormatServiceImpl(final AnnotationRepository annotationRepository, final NativeRepository nativeRepository,
-            final NativeTypeRepository nativeTypeRepository) {
+    public FormatServiceImpl(final AnnotationRepository annotationRepository, final CanonicalRepository canonicalRepository,
+            final NativeRepository nativeRepository, final NativeTypeRepository nativeTypeRepository) {
         annotationRepo = annotationRepository;
+        canonicalRepo = canonicalRepository;
         nativeRepo = nativeRepository;
         nativeTypeRepo = nativeTypeRepository;
     }
@@ -83,18 +87,21 @@ public class FormatServiceImpl implements FormatService {
     public void storeNative(String procName, ProcessModelVersion pmv, String created, String lastUpdate, User user,
             NativeType nativeType, String annVersion, CanonisedProcess cp) throws JAXBException, IOException {
         //InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, pmv.getVersionNumber(), user.getUsername(), created, lastUpdate);
-        cp.getOriginal().reset();
+        Native nat = null;
 
-        String nativeString = StreamUtil.inputStream2String(cp.getOriginal()).trim();
+        if (cp.getOriginal() != null) {
+            cp.getOriginal().reset();
+            String nativeString = StreamUtil.inputStream2String(cp.getOriginal()).trim();
+            nat = createNative(pmv, nativeType, nativeString);
+        }
+
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
+        String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
 
-        Native nat = new Native();
-        nat.setNativeType(nativeType);
-        nat.setContent(nativeString);
-        nat.setProcessModelVersion(pmv);
-        nat = nativeRepo.save(nat);
+        Canonical can = createCanonical(pmv, canonicalString);
 
         pmv.setNativeDocument(nat);
+        pmv.setCanonicalDocument(can);
 
         if (annString != null && !annString.equals("")) {
             Annotation annotation = new Annotation();
@@ -106,6 +113,23 @@ public class FormatServiceImpl implements FormatService {
 
             pmv.getAnnotations().add(annotation);
         }
+    }
+
+    private Canonical createCanonical(ProcessModelVersion pmv, String canonicalString) {
+        Canonical canonical = new Canonical();
+        canonical.setContent(canonicalString);
+        canonical.setProcessModelVersion(pmv);
+        canonicalRepo.save(canonical);
+        return canonical;
+    }
+
+    private Native createNative(ProcessModelVersion pmv, NativeType nativeType, String nativeString) {
+        Native nat = new Native();
+        nat.setNativeType(nativeType);
+        nat.setContent(nativeString);
+        nat.setProcessModelVersion(pmv);
+        nat = nativeRepo.save(nat);
+        return nat;
     }
 
 }

@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.AnnotationRepository;
+import org.apromore.dao.CanonicalRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.NativeTypeRepository;
 import org.apromore.dao.model.NativeType;
@@ -27,16 +28,18 @@ public class FormatServiceImplUnitTest {
     private FormatServiceImpl formatServiceImpl;
 
     private AnnotationRepository annotationRepository;
+    private CanonicalRepository canonicalRepository;
     private NativeRepository nativeRepository;
     private NativeTypeRepository nativeTypeRepository;
 
     @Before
     public void setUp() {
         annotationRepository = createMock(AnnotationRepository.class);
+        canonicalRepository = createMock(CanonicalRepository.class);
         nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);
 
-        formatServiceImpl = new FormatServiceImpl(annotationRepository, nativeRepository, nativeTypeRepository);
+        formatServiceImpl = new FormatServiceImpl(annotationRepository, canonicalRepository, nativeRepository, nativeTypeRepository);
     }
 
 

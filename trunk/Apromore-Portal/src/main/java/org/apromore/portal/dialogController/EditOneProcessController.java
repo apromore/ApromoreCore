@@ -74,7 +74,7 @@ public class EditOneProcessController extends BaseController {
             cbi = new Listitem();
             nativeTypesLB.appendChild(cbi);
             cbi.setLabel(formats.get(it.next()));
-            if (process.getOriginalNativeType().equals(cbi.getLabel())) {
+            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(cbi.getLabel())) {
                 cbi.setSelected(true);
             }
         }
@@ -166,13 +166,15 @@ public class EditOneProcessController extends BaseController {
      * @param event the on select event.
      */
     protected void syncAnnotationLB(Event event) {
-        String selected = nativeTypesLB.getSelectedItem().getLabel();
-        if (process.getOriginalNativeType().equals(selected)) {
-            annotationsLB.setDisabled(true);
-            annotationOnlyCB.setDisabled(true);
-        } else {
-            annotationsLB.setDisabled(false);
-            annotationOnlyCB.setDisabled(noAnnotationI.isSelected());
+        if (nativeTypesLB.getSelectedItem() != null) {
+            String selected = nativeTypesLB.getSelectedItem().getLabel();
+            if (process.getOriginalNativeType().equals(selected)) {
+                annotationsLB.setDisabled(true);
+                annotationOnlyCB.setDisabled(true);
+            } else {
+                annotationsLB.setDisabled(false);
+                annotationOnlyCB.setDisabled(noAnnotationI.isSelected());
+            }
         }
     }
 
