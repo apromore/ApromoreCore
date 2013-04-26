@@ -1,37 +1,37 @@
 <!-- SaveAsDialog window has SaveAsDialogController.java as a controller
-	TODO make a SaveAsDialogController
-	listbox to choose native type implemented by the controller -->
+    TODO make a SaveAsDialogController
+    listbox to choose native type implemented by the controller -->
 
 <window width="500px" closable="false" position="center">
-	<vbox vflex="1">
-		<grid id="saveAsGrid">
-			<columns sizable="true">
-				<column width="40%"></column>
-				<column width="60%"></column>
-			</columns>
-			<rows>
-				<row>
+    <vbox vflex="1">
+        <grid id="saveAsGrid">
+            <columns sizable="true">
+                <column width="40%"></column>
+                <column width="60%"></column>
+            </columns>
+            <rows>
+                <row>
                     <label value="Name*" />
                     <textbox id="modelName" width="100%" />
                 </row>
                 <row>
-                	<label value="Version Number*" />
-                	<textbox id="versionNumber" width="100%" />
+                    <label value="Version Number*" />
+                    <textbox id="versionNumber" width="100%" />
                 </row>
                 <row>
                     <label value="Branch Name*" />
                     <textbox id="branchName" width="100%" />
                 </row>
-				<row spans="3">
-					<div align="center">
-						<button label="Save" image="img/ok.png" >
-						</button>
-						<button label="Cancel"
-							image="img/cancel2.png">
-						</button>
-					</div>
-				</row>
-			</rows>
-		</grid>
-	</vbox>
+                <row spans="3">
+                    <div align="center">
+                        <button label="Save" image="../img/ok.png" >
+                        </button>
+                        <button label="Cancel"
+                            image="../img/cancel2.png">
+                        </button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
 </window>

@@ -936,7 +936,11 @@ public class ProcessServiceImpl implements ProcessService {
     /* Did the request ask for the model in the same format as it was originally added? */
     private boolean isRequestForNativeFormat(Integer processId, String format) {
         Process process = processRepo.findOne(processId);
-        return process.getNativeType().getNatType().equals(format);
+        if (process.getNativeType() != null) {
+            return process.getNativeType().getNatType().equals(format);
+        } else {
+            return false;
+        }
     }
 
 }

@@ -6,6 +6,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <class>org.apromore.dao.model.Annotation</class>
+        <class>org.apromore.dao.model.Canonical</class>
         <class>org.apromore.dao.model.Cluster</class>
         <class>org.apromore.dao.model.ClusterAssignment</class>
         <class>org.apromore.dao.model.EditSession</class>

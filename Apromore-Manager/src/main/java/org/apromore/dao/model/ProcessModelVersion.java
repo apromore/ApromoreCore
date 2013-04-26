@@ -43,6 +43,7 @@ public class ProcessModelVersion implements Serializable {
     private Integer numEdges;
 
     private Native nativeDocument;
+    private Canonical canonicalDocument;
     private ProcessBranch processBranch;
     private FragmentVersion rootFragmentVersion;
 
@@ -162,6 +163,16 @@ public class ProcessModelVersion implements Serializable {
 
     public void setNativeDocument(final Native newNative) {
         this.nativeDocument = newNative;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "canonicalId", referencedColumnName = "id")
+    public Canonical getCanonicalDocument() {
+        return this.canonicalDocument;
+    }
+
+    public void setCanonicalDocument(final Canonical newCanonical) {
+        this.canonicalDocument = newCanonical;
     }
 
 

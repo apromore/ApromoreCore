@@ -131,10 +131,27 @@
                             !net.didion.jwnl*,
                             *
                         </Import-Package>
-                        <JPA-PersistenceUnits>
-                            Apromore
-                        </JPA-PersistenceUnits>
+                        <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${maven.exec.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>weave-classes</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
+                    <commandlineArgs>-classpath %classpath;${basedir}/target/dependency/compile;${basedir}/target/dependency/provided -loglevel FINE -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
+                    <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>
         </plugins>
