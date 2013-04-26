@@ -176,8 +176,8 @@ CREATE TABLE `process_model_version` (
   `rootFragmentVersionId` int(11) DEFAULT NULL,
   `nativeId` int(11) DEFAULT NULL,
   `canonicalId` int(11) DEFAULT NULL,
-  `originalId` varchar(200),
   `nativeTypeId` int(11) DEFAULT NULL,
+  `originalId` varchar(200),
   `version_number` double,
   `change_propagation` int,
   `lock_status` int,
@@ -198,7 +198,7 @@ CREATE TABLE `process_model_version` (
   CONSTRAINT `fk_process_canonical` FOREIGN KEY (`canonicalId`)
   REFERENCES `canonical` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_process2` FOREIGN KEY (`nativeTypeId`)
+  CONSTRAINT `fk_process_native_type` FOREIGN KEY (`nativeTypeId`)
   REFERENCES `native_type` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
