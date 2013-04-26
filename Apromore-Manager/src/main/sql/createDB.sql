@@ -175,7 +175,9 @@ CREATE TABLE `process_model_version` (
   `branchId` int(11) DEFAULT NULL,
   `rootFragmentVersionId` int(11) DEFAULT NULL,
   `nativeId` int(11) DEFAULT NULL,
+  `canonicalId` int(11) DEFAULT NULL,
   `originalId` varchar(200),
+--  `nativeTypeId` int(11) DEFAULT NULL,
   `version_number` double,
   `change_propagation` int,
   `lock_status` int,
@@ -192,7 +194,14 @@ CREATE TABLE `process_model_version` (
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_process_native` FOREIGN KEY (`nativeId`)
   REFERENCES `native` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_process_canonical` FOREIGN KEY (`canonicalId`)
+  REFERENCES `canonical` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
+--  ,
+--  CONSTRAINT `fk_process2` FOREIGN KEY (`nativeTypeId`)
+--  REFERENCES `native_type` (`id`)
+--    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `annotation` (
@@ -214,19 +223,9 @@ CREATE TABLE `annotation` (
 
 CREATE TABLE `canonical` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nativeId` int(11) DEFAULT NULL,
-  `processModelVersionId` int(11) DEFAULT NULL,
-  `name` varchar(40) DEFAULT NULL,
   `content` longtext,
   `lastUpdateDate` varchar(40) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `un_canonical` (`processModelVersionId` , `name`),
-  CONSTRAINT `fk_canonical1` FOREIGN KEY (`nativeId`)
-  REFERENCES `native` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_canonical2` FOREIGN KEY (`processModelVersionId`)
-  REFERENCES `process_model_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `fragment_version` (
