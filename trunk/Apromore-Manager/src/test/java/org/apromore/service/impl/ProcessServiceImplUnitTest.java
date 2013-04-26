@@ -16,6 +16,8 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanonicalConverter;
@@ -48,6 +50,7 @@ public class ProcessServiceImplUnitTest {
 
     private NativeRepository natDao;
     private ProcessRepository proDao;
+    private ProcessModelVersionRepository pmvDao;
 
     @Before
     public final void setUp() throws Exception {
@@ -57,7 +60,7 @@ public class ProcessServiceImplUnitTest {
         proDao = createMock(ProcessRepository.class);
         FragmentVersionRepository fvDao = createMock(FragmentVersionRepository.class);
         FragmentVersionDagRepository fvdDao = createMock(FragmentVersionDagRepository.class);
-        ProcessModelVersionRepository pmvDao = createMock(ProcessModelVersionRepository.class);
+        pmvDao = createMock(ProcessModelVersionRepository.class);
         UserService usrSrv = createMock(UserService.class);
         FormatService fmtSrv = createMock(FormatService.class);
         CanoniserService canSrv = createMock(CanoniserService.class);
@@ -133,14 +136,23 @@ public class ProcessServiceImplUnitTest {
         process.setId(processId);
         process.setNativeType(natType);
 
-        expect(proDao.findOne(processId)).andReturn(process);
+        ProcessBranch branch = new ProcessBranch();
+        branch.setId(processId);
+        branch.setProcess(process);
+
+        ProcessModelVersion pmv = new ProcessModelVersion();
+        pmv.setId(processId);
+        pmv.setNativeType(natType);
+        pmv.setProcessBranch(branch);
+
+        expect(pmvDao.getCurrentProcessModelVersion(processId, versionNumber)).andReturn(pmv);
         expect(natDao.getNative(processId, versionNumber, format)).andReturn(nat);
 
-        replay(proDao, natDao);
+        replay(pmvDao, natDao);
 
         ExportFormatResultType data = service.exportProcess(name, processId, version, versionNumber, format, subStr, true, new HashSet<RequestParameterType<?>>());
 
-        verify(proDao, natDao);
+        verify(pmvDao, natDao);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }

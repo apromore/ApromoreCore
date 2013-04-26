@@ -31,12 +31,12 @@ public class Cpf2Bpmn {
      */
     public static void main(String[] arg) throws CanoniserException, IOException, JAXBException, SAXException {
 
-        CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(System.in, true);
+        CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(arg[0]), true);
         AnnotationsType      anf = null;
 
         // If there's a command line argument, treat it as the filename of an ANF file
         if (arg.length > 0) {
-            anf = AnfAnnotationsType.newInstance(new FileInputStream(arg[0]), true);
+            anf = AnfAnnotationsType.newInstance(new FileInputStream(arg[1]), true);
         }
 
         // Read BPMN from the input stream

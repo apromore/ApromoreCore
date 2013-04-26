@@ -53,12 +53,12 @@ public class SignavioController extends BaseController {
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
-            param.put(JSON_DATA, data.replace("\n", "").trim());
+            param.put(JSON_DATA, data.replace("\n", " ").trim());
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
             param.put("exportPath", getExportPath(editSession.getNativeType()));
 
-            if (process.getOriginalNativeType().equals(editSession.getNativeType())) {
+            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession.getNativeType())) {
                 param.put("doAutoLayout", "false");
             } else {
                 if (editSession.isWithAnnotation()) {

@@ -124,8 +124,8 @@ public class ContentServiceImpl implements ContentService {
             }
 
             edge.setTargetNode(nRepository.findNodeByUriAndFragmentVersion(cpfEdge.getTarget().getId(), fv.getId()));
-            if (edge.getSourceNode() == null) {
-                edge.setSourceNode(findNode(op.getPersistedNodes().values(), cpfEdge.getTarget().getId()));
+            if (edge.getTargetNode() == null) {
+                edge.setTargetNode(findNode(op.getPersistedNodes().values(), cpfEdge.getTarget().getId()));
             }
 
             if (cpfEdge.getConditionExpr() != null) {

@@ -71,12 +71,18 @@ public class EditOneProcessController extends BaseController {
         Iterator<String> it = extensions.iterator();
         Listitem cbi;
         while (it.hasNext()) {
-            cbi = new Listitem();
-            nativeTypesLB.appendChild(cbi);
-            cbi.setLabel(formats.get(it.next()));
-            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(cbi.getLabel())) {
-                cbi.setSelected(true);
+            String label = formats.get(it.next());
+            if (!label.equals("AML fragment")) {
+                cbi = new Listitem();
+                nativeTypesLB.appendChild(cbi);
+                cbi.setLabel(formats.get(it.next()));
+                if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(cbi.getLabel())) {
+                    cbi.setSelected(true);
+                }
             }
+        }
+        if (nativeTypesLB.getSelectedCount() == 0) {
+            nativeTypesLB.setSelectedIndex(0);
         }
 
         // Build list of annotations associated with the process version
@@ -168,7 +174,7 @@ public class EditOneProcessController extends BaseController {
     protected void syncAnnotationLB(Event event) {
         if (nativeTypesLB.getSelectedItem() != null) {
             String selected = nativeTypesLB.getSelectedItem().getLabel();
-            if (process.getOriginalNativeType().equals(selected)) {
+            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(selected)) {
                 annotationsLB.setDisabled(true);
                 annotationOnlyCB.setDisabled(true);
             } else {

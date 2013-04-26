@@ -202,7 +202,7 @@ public class ProcessServiceImpl implements ProcessService {
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain, folderId);
 
-            pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf);
+            pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
         } catch (UserNotFoundException | JAXBException | IOException e) {
@@ -227,7 +227,7 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pmv;
 
         try {
-            pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf);
+            pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
 
             String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
             formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), cpf);
@@ -253,7 +253,7 @@ public class ProcessServiceImpl implements ProcessService {
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
             // Work out if we are looking at the original format or native format for this model.
-            if (isRequestForNativeFormat(processId, format)) {
+            if (isRequestForNativeFormat(processId, version, format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, version, format).getContent(),
                         "text/xml")));
             } else {
@@ -521,7 +521,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Does the processing of ImportProcess. */
     @Transactional(readOnly = false)
     private ProcessModelVersion addProcess(final Process process, final String processName, final Double versionNumber, final String branchName,
-            final String created, final String lastUpdated, final CanonisedProcess cpf) throws ImportException {
+            final String created, final String lastUpdated, final CanonisedProcess cpf, NativeType nativeType) throws ImportException {
         if (cpf == null) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
@@ -539,11 +539,14 @@ public class ProcessServiceImpl implements ProcessService {
 
             can = converter.convert(cpf.getCpt());
             pmv = createProcessModelVersion(branch, versionNumber, can, cpf.getCpt().getUri());
-            rootFragment = decomposerSrv.decompose(can, pmv);
-            if (rootFragment != null) {
-                pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
-            } else {
-                throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
+            pmv.setNativeType(nativeType);
+            if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
+                rootFragment = decomposerSrv.decompose(can, pmv);
+                if (rootFragment != null) {
+                    pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
+                } else {
+                    throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
+                }
             }
         } catch (RepositoryException re) {
             throw new ImportException("Failed to add the process model " + processName, re);
@@ -554,7 +557,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Update an existing process with some changes. */
     @Transactional(readOnly = false)
     private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Double versionNumber,
-            Double originalVersionNumber, String lockStatus, CanonisedProcess cpf)  throws RepositoryException {
+            Double originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType)  throws RepositoryException {
         Canonical graph;
         OperationContext rootFragment;
         ProcessModelVersion processModelVersion = null;
@@ -579,6 +582,7 @@ public class ProcessServiceImpl implements ProcessService {
             if (rootFragment != null) {
                 propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
                         pmVersion.getFragmentVersions(), versionNumber);
+                pmVersion.setNativeType(nativeType);
             }
 
             processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
@@ -934,13 +938,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Did the request ask for the model in the same format as it was originally added? */
-    private boolean isRequestForNativeFormat(Integer processId, String format) {
-        Process process = processRepo.findOne(processId);
-        if (process.getNativeType() != null) {
-            return process.getNativeType().getNatType().equals(format);
-        } else {
-            return false;
-        }
+    private boolean isRequestForNativeFormat(Integer processId, Double version, String format) {
+        ProcessModelVersion pmv = processModelVersionRepo.getCurrentProcessModelVersion(processId, version);
+        return pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 
 }

@@ -59,18 +59,939 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>org.apromore.plugin</groupId>
-      <artifactId>canoniser-bpmn</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
-    </dependency>
-    -->
+      <dependency>
+          <groupId>org.jbpt</groupId>
+          <artifactId>jbpt-core</artifactId>
+          <version>${jbpt.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.jbpt</groupId>
+          <artifactId>jbpt-deco</artifactId>
+          <version>${jbpt.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>ee.ut</groupId>
+          <artifactId>bpstruct</artifactId>
+          <version>${bpstruct.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>tu</groupId>
+          <artifactId>rpsdag</artifactId>
+          <version>${rpsdag.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>tu</groupId>
+          <artifactId>taskmapping</artifactId>
+          <version>${taskmapping.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mathCollection</groupId>
+          <artifactId>mathCollection</artifactId>
+          <version>${mathCollection.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>lpsolve</groupId>
+          <artifactId>lpsolve</artifactId>
+          <version>${lpsolve.version}</version>
+      </dependency>
+
+      <!-- Clients -->
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>manager-client</artifactId>
+          <version>${manager-client.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!--  Core Plugins -->
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>plugin-graph</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Plugin API -->
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>plugin-api</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>plugin-api-provider</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>deployment-api</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>deployment-api-provider</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Deployment -->
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>deployment-yawl</artifactId>
+          <version>${apromore.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Canonisers -->
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-api</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-api-provider</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-aris</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-bpmn</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-epml</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-pnml</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-xpdl</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore.plugin</groupId>
+          <artifactId>canoniser-yawl</artifactId>
+          <version>${apromore.canoniser.plugin.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Schema -->
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>anf-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>aris-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>bpmn-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>cpf-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>epml-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>pnml-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>rlf-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>xpdl-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>yawl-schema</artifactId>
+          <version>${apromore.schema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Logging -->
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+          <version>${slf4j.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <version>${slf4j.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jul-to-slf4j</artifactId>
+          <version>${slf4j.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+          <version>${logback.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>com.springsource.ch.qos.logback.core</artifactId>
+          <version>${logback.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.objectweb.asm</groupId>
+          <artifactId>com.springsource.org.objectweb.asm</artifactId>
+          <version>${asm.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.jboss.javassist</groupId>
+          <artifactId>com.springsource.javassist</artifactId>
+          <version>${javassist.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- AspectJ Runtime and Weaver -->
+      <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>com.springsource.org.aspectj.runtime</artifactId>
+          <version>${aspectj.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>com.springsource.org.aspectj.weaver</artifactId>
+          <version>${aspectj.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Eclipse Gemini Blueprint (former Spring DM) -->
+      <dependency>
+          <groupId>org.eclipse.gemini</groupId>
+          <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+          <version>${gemini.blueprint.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>
+                      com.springsource.org.apache.commons.logging
+                  </artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.gemini</groupId>
+          <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+          <version>${gemini.blueprint.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>
+                      com.springsource.org.apache.commons.logging
+                  </artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.gemini</groupId>
+          <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+          <version>${gemini.blueprint.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>
+                      com.springsource.org.apache.commons.logging
+                  </artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+
+      <!-- Spring Framework dependencies -->
+      <dependency>
+          <groupId>org.springframework.data</groupId>
+          <artifactId>spring-data-jpa</artifactId>
+          <version>${spring.data.jpa.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>spring-beans</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-tx</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-context</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-orm</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-core</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-aop</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.beans</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.context</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.jdbc</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.aop</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.expression</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.transaction</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.asm</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.aspects</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.context.support</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.orm</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.jms</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.oxm</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.web</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.web.servlet</artifactId>
+          <version>${spring.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ws</groupId>
+          <artifactId>org.springframework.xml</artifactId>
+          <!-- <scope>provided</scope> -->
+          <version>${spring-ws.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>
+                      com.springsource.org.apache.commons.logging
+                  </artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ws</groupId>
+          <artifactId>org.springframework.ws</artifactId>
+          <version>${spring-ws.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ws</groupId>
+          <artifactId>org.springframework.ws.support</artifactId>
+          <version>${spring-ws.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <!-- Spring Social -->
+      <dependency>
+          <groupId>org.springframework.social</groupId>
+          <artifactId>spring-social-core</artifactId>
+          <version>${spring-social.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>spring-web</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-context</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.social</groupId>
+          <artifactId>spring-social-web</artifactId>
+          <version>${spring-social.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>spring-web</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-context</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.social</groupId>
+          <artifactId>spring-social-facebook</artifactId>
+          <version>${spring-social.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.social</groupId>
+          <artifactId>spring-social-twitter</artifactId>
+          <version>${spring-social.version}</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>spring-security-crypto</artifactId>
+                  <groupId>org.springframework.security</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>org.springframework.security.core</artifactId>
+          <version>${spring-security-crypto.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ldap</groupId>
+          <artifactId>org.springframework.ldap</artifactId>
+          <version>${spring-ldap.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <artifactId>
+                      com.springsource.org.apache.commons.logging
+                  </artifactId>
+                  <groupId>org.apache.commons</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <!-- JAXB -->
+      <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>com.springsource.javax.xml.bind</artifactId>
+          <version>${jaxb-api.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>com.sun.xml</groupId>
+          <artifactId>com.springsource.com.sun.xml.bind</artifactId>
+          <version>${jaxb-impl.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.jvnet.jaxb2_commons</groupId>
+          <artifactId>jaxb2-basics-runtime</artifactId>
+          <version>${jaxb2-basics-runtime.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>com.sun.xml</groupId>
+          <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
+          <version>${jaxb-xjc.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <groupId>com.sun.xml</groupId>
+                  <artifactId>com.springsource.com.sun.xml.bind.jaxb1</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <!-- Commons -->
+      <dependency>
+          <groupId>commons-lang</groupId>
+          <artifactId>commons-lang</artifactId>
+          <version>${commons.lang.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>${commons-io.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+          <version>${commons-codec.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+          <version>${commons-collections.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>net.sourceforge.cglib</groupId>
+          <artifactId>com.springsource.net.sf.cglib</artifactId>
+          <version>${cglib.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>${json.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>commons-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+          <version>${commons-httpclient.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <!-- Database -->
+      <dependency>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>org.eclipse.persistence.jpa</artifactId>
+          <version>${eclipselink.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>org.eclipse.persistence.core</artifactId>
+          <version>${eclipselink.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>com.jolbox</groupId>
+          <artifactId>bonecp</artifactId>
+          <version>${bonecp.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql.connector.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+          <version>${joda-time.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- WSDL / WS dependencies -->
+      <dependency>
+          <groupId>javax.wsdl</groupId>
+          <artifactId>com.springsource.javax.wsdl</artifactId>
+          <version>${wsdl4j.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>org.apache.ws.commons.schema</groupId>
+          <artifactId>XmlSchema</artifactId>
+          <version>${xmlSchema.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- JEE dependencies -->
+      <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+          <version>${servlet-api.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+          <version>${javamail.version}</version>
+          <!-- <scope>provided</scope> -->
+          <exclusions>
+              <exclusion>
+                  <groupId>javax.activation</groupId>
+                  <artifactId>activation</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+          <version>${activation.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+          <groupId>javax.inject</groupId>
+          <artifactId>com.springsource.javax.inject</artifactId>
+          <version>${inject.version}</version>
+          <!-- <scope>provided</scope> -->
+      </dependency>
+
+      <!-- Test Scope Dependencies -->
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>${junit.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.easymock</groupId>
+          <artifactId>easymock</artifactId>
+          <version>${easymock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.easymock</groupId>
+          <artifactId>easymockclassextension</artifactId>
+          <version>${easymock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-core</artifactId>
+          <version>${powermock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-api-easymock</artifactId>
+          <version>${powermock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-module-junit4</artifactId>
+          <version>${powermock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-module-junit4-rule-agent</artifactId>
+          <version>${powermock.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-all</artifactId>
+          <version>${hamcrest.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>test-tools</artifactId>
+          <version>${test-tools.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <version>${spring.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-instrument</artifactId>
+          <version>${spring.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ws</groupId>
+          <artifactId>spring-ws-core</artifactId>
+          <version>${spring-ws-tests.version}</version>
+          <scope>test</scope>
+          <classifier>tests</classifier>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.ldap</groupId>
+          <artifactId>spring-ldap-test</artifactId>
+          <version>${spring-ldap.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+              </exclusion>
+              <exclusion>
+                  <artifactId>spring-context</artifactId>
+                  <groupId>org.springframework</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
   </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.source.version>1.7</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+        <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
+        <jdk.version>1.7.0</jdk.version>
+        <ant.version>1.8.3</ant.version>
+
+        <manager-client.version>1.1</manager-client.version>
+
+        <!-- Logging with SLF4J and LogBack -->
+        <slf4j.version>1.6.6</slf4j.version>
+        <logback.version>0.9.28</logback.version>
+        <asm.version>3.2.0</asm.version>
+        <javassist.version>3.15.0.GA</javassist.version>
+
+        <!-- AspectJ Runtime and Weaver - Use 1.6.12 as it what virgo uses -->
+        <aspectj.version>1.6.12.RELEASE</aspectj.version>
+
+        <!-- Blueprint OSGi -->
+        <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
+
+        <!-- Spring Framework -->
+        <spring.version>3.1.0.RELEASE</spring.version>
+        <spring-ws.version>2.1.0.RELEASE</spring-ws.version>
+        <spring.data.jpa.version>1.1.2.RELEASE</spring.data.jpa.version>
+        <spring-ldap.version>1.3.1.RELEASE</spring-ldap.version>
+        <spring-social.version>1.0.2.RELEASE</spring-social.version>
+        <spring-security-crypto.version>3.1.0.RELEASE</spring-security-crypto.version>
+
+        <!-- Common and Commons -->
+        <commons.lang.version>2.6</commons.lang.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-codec.version>1.7</commons-codec.version>
+        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <cglib.version>2.2.0</cglib.version>
+        <google.guava.version>14.0.1</google.guava.version>
+        <json.version>20090211</json.version>
+
+        <!-- Database / JPA -->
+        <eclipselink.version>2.4.1</eclipselink.version>
+        <bonecp.version>0.7.1.RELEASE</bonecp.version>
+        <mysql.connector.version>5.1.18</mysql.connector.version>
+        <joda-time.version>2.1</joda-time.version>
+
+        <!-- Web/JEE -->
+        <servlet-api.version>2.5</servlet-api.version>
+        <javamail.version>1.4.1</javamail.version>
+        <activation.version>1.1.1</activation.version>
+        <inject.version>1.0.0</inject.version>
+
+        <!-- WebService Tech versions -->
+        <xmlSchema.version>1.4.7</xmlSchema.version>
+        <wsdl4j.version>1.6.1</wsdl4j.version>
+        <jaxb-xjc.version>2.2.0</jaxb-xjc.version>
+        <jaxb-impl.version>2.2.0</jaxb-impl.version>
+        <jaxb-api.version>2.2.0</jaxb-api.version>
+        <jaxb2-basics.version>0.5.3.MR1</jaxb2-basics.version>
+        <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>
+
+        <!-- Special for this project -->
+        <wagon.version>2.1</wagon.version>
+        <build-tools.version>1.0</build-tools.version>
+        <test-tools.version>1.1</test-tools.version>
+        <jbpt.version>0.2.314</jbpt.version>
+        <bpstruct.version>0.1.117</bpstruct.version>
+        <rpsdag.version>0.1</rpsdag.version>
+        <taskmapping.version>0.1</taskmapping.version>
+        <mathCollection.version>0.1</mathCollection.version>
+        <lpsolve.version>55j</lpsolve.version>
+
+        <!-- Testing Libraries -->
+        <junit.version>4.10</junit.version>
+        <clover.version>3.1.10</clover.version>
+        <easymock.version>3.1</easymock.version>
+        <powermock.version>1.4.12</powermock.version>
+        <hamcrest.version>1.1</hamcrest.version>
+        <ipsedixit.version>1.0.0</ipsedixit.version>
+        <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
+
+        <apromore.schema.version>1.1</apromore.schema.version>
+        <apromore.plugin.version>1.1</apromore.plugin.version>
+        <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
+
+
+        <!-- **** Settings for the building of the projects **** -->
+        <!-- Plugins used by the Build process -->
+        <maven.ant.plugin>1.7</maven.ant.plugin>
+        <maven.aspectj.plugin>1.4</maven.aspectj.plugin>
+        <maven.assembly.plugin>2.3</maven.assembly.plugin>
+        <maven.build.helper.plugin>1.7</maven.build.helper.plugin>
+        <maven.bundle.plugin>2.3.7</maven.bundle.plugin>
+        <maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
+        <maven.clean.plugin>2.5</maven.clean.plugin>
+        <maven.cobertura.plugin>2.5.1</maven.cobertura.plugin>
+        <maven.compiler.plugin>2.5.1</maven.compiler.plugin>
+        <maven.dependency.plugin>2.5.1</maven.dependency.plugin>
+        <maven.deploy.plugin>2.7</maven.deploy.plugin>
+        <maven.enforcer.plugin>1.1.1</maven.enforcer.plugin>
+        <maven.exec.plugin>1.2.1</maven.exec.plugin>
+        <maven.failsafe.plugin>2.12.3</maven.failsafe.plugin>
+        <maven.findbugs.plugin>2.5.1</maven.findbugs.plugin>
+        <maven.help.plugin>2.1.1</maven.help.plugin>
+        <maven.install.plugin>2.3.1</maven.install.plugin>
+        <maven.jar.plugin>2.3.2</maven.jar.plugin>
+        <maven.jacoco.version>0.6.2.201302030002</maven.jacoco.version>
+        <!-- Need to downgrade to 2.3.2 because of this bug: https://github.com/sonatype/m2eclipse-extras/issues/10 -->
+        <maven.javadoc.plugin>2.8.1</maven.javadoc.plugin>
+        <maven.jaxb2.plugin>0.8.2</maven.jaxb2.plugin>
+        <maven.jaxb2.codehaus.plugin>1.5</maven.jaxb2.codehaus.plugin>
+        <maven.jaxws.plugin.version>1.10</maven.jaxws.plugin.version>
+        <maven.jetty.plugin>8.1.5.v20120716</maven.jetty.plugin>
+        <maven.jxr.plugin>2.3</maven.jxr.plugin>
+        <maven.plugin.plugin>3.1</maven.plugin.plugin>
+        <maven.pmd.plugin>2.7.1</maven.pmd.plugin>
+        <maven.project.info.reports.plugin>2.6</maven.project.info.reports.plugin>
+        <maven.release.plugin>2.3.2</maven.release.plugin>
+        <maven.resources.plugin>2.6</maven.resources.plugin>
+        <maven.site.plugin>3.0</maven.site.plugin>
+        <maven.sonar.plugin>3.2</maven.sonar.plugin>
+        <maven.source.plugin>2.2.1</maven.source.plugin>
+        <maven.surefire.plugin>2.12.3</maven.surefire.plugin>
+        <maven.taglist.plugin>2.4</maven.taglist.plugin>
+        <maven.tomcat.plugin>2.0-beta-1</maven.tomcat.plugin>
+        <maven.versions.plugin>1.3.1</maven.versions.plugin>
+        <maven.war.plugin>2.1.1</maven.war.plugin>
+        <!-- Need to downgrade to 2.1.1 because of this bug: https://github.com/sonatype/m2eclipse-extras/issues/10 -->
+
+        <maven.version.range>[3.0.3,3.1.0)</maven.version.range>
+
+        <!-- Clover Settings -->
+        <clover.license>clover.license</clover.license>
+
+        <!-- Cobertura Settings -->
+        <cobertura.total-branch-rate>70</cobertura.total-branch-rate>
+        <cobertura.total-line-rate>70</cobertura.total-line-rate>
+        <cobertura.halt-on-failure>false</cobertura.halt-on-failure>
+
+        <!-- Checkstyle Settings -->
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <checkstyle.header.location>header.txt</checkstyle.header.location>
+        <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location>
+        <checkstyle.skip>false</checkstyle.skip>
+        <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+        <checkstyle.cacheFile>${project.build.directory}/checkstyle.cache</checkstyle.cacheFile>
+        <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+        <checkstyle.failsOnError>false</checkstyle.failsOnError>
+        <checkstyle.includes>**/*.java</checkstyle.includes>
+        <checkstyle.excludes>**/generated/**/*</checkstyle.excludes>
+
+        <!-- Testing Settings -->
+        <integration.test.package>itest</integration.test.package>
+        <integration.test.suffix>IntgTest.java</integration.test.suffix>
+        <ignored.test.suffix>ManualTest.java</ignored.test.suffix>
+    </properties>
 </project>
