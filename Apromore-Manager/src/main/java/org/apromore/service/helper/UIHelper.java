@@ -317,26 +317,26 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /**
-     * @see UserInterfaceHelper#createProcessSummary(String, Integer, String, Double, String, String, String, String, String)
+     * @see UserInterfaceHelper#createProcessSummary(java.lang.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String)
      */
-    public ProcessSummaryType createProcessSummary(String name, Integer processId, String branchName, Double versionNumber, String nativeType,
+    public ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv,  String nativeType,
             String domain, String created, String lastUpdate, String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
         AnnotationsType annType = new AnnotationsType();
 
-        proType.setId(processId);
-        proType.setName(name);
+        proType.setId(process.getId());
+        proType.setName(process.getName());
         proType.setDomain(domain);
         proType.setRanking("");
-        proType.setLastVersion(versionNumber.toString());
+        proType.setLastVersion(pmv.getVersionNumber());
         proType.setOriginalNativeType(nativeType);
         proType.setOwner(username);
 
-        verType.setName(branchName);
+        verType.setName(branch.getBranchName());
         verType.setCreationDate(created);
         verType.setLastUpdate(lastUpdate);
-        verType.setVersionNumber(versionNumber);
+        verType.setVersionNumber(pmv.getVersionNumber());
         verType.setRanking("");
 
         annType.setNativeType(nativeType);
@@ -448,7 +448,10 @@ public class UIHelper implements UserInterfaceHelper {
 
                 processSummary.getVersionSummaries().add(versionSummary);
 
-                processSummary.setLastVersion(branch.getCurrentProcessModelVersion().getVersionNumber().toString());
+                if (processSummary.getLastVersion() == null || processSummary.getLastVersion() < processModelVersion.getVersionNumber()) {
+                    processSummary.setLastVersion(processModelVersion.getVersionNumber());
+                }
+                //processSummary.setLastVersion(branch.getCurrentProcessModelVersion().getVersionNumber().toString());
             }
         }
     }

@@ -655,8 +655,8 @@ public class ManagerPortalEndpoint {
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
             ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
                     domain, "", creationDate, lastUpdate);
-            ProcessSummaryType process = uiHelper.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(),
-                    pmv.getProcessBranch().getBranchName(), pmv.getVersionNumber(), nativeType, domain, creationDate, lastUpdate, username);
+            ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+                    nativeType, domain, creationDate, lastUpdate, username);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {
@@ -1138,7 +1138,7 @@ public class ManagerPortalEndpoint {
         try {
             String nativeType = req.getValue().getNativeType();
             String processName = req.getValue().getProcessName();
-            String versionName = req.getValue().getVersionName();
+            Double versionName = req.getValue().getVersionName();
             String branchName = req.getValue().getBranchName();
             PluginParameters deploymentProperties = req.getValue().getDeploymentParameters();
             Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(deploymentProperties);
