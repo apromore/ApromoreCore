@@ -1129,7 +1129,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     @Override
-    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType,
+    public PluginMessages deployProcess(final String branchName, final String processName, final Double versionName, final String nativeType,
             final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties)
             throws Exception {
         LOGGER.debug("Preparing deployProcess ...");

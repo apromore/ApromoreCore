@@ -1,5 +1,8 @@
 package org.apromore.service.helper;
 
+import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionsType;
@@ -12,10 +15,9 @@ public interface UserInterfaceHelper {
 
     /**
      * Create a Process Summary record for the Front UI display.
-     * @param name          the process Name
-     * @param processId     the process Id
-     * @param branchName    the version number of this model
-     * @param versionNumber the process version number.
+     * @param process       the process
+     * @param branch        the process branch
+     * @param pmv           the process model version
      * @param nativeType    the native type of this model
      * @param domain        The domain of this model
      * @param created       the Date create
@@ -23,7 +25,7 @@ public interface UserInterfaceHelper {
      * @param username      the user who updated the
      * @return the created Process Summary
      */
-    ProcessSummaryType createProcessSummary(String name, Integer processId, String branchName, Double versionNumber, String nativeType,
+    ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv, String nativeType,
         String domain, String created, String lastUpdate, String username);
 
 
