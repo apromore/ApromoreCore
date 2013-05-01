@@ -110,7 +110,7 @@ public class DeployProcessEndpointTest {
         request.getValue().setBranchName(branchName);
         String processName = "test";
         request.getValue().setProcessName(processName);
-        String versionName = "1.0";
+        Double versionName = 1.0d;
         request.getValue().setVersionName(versionName);
         String nativeType = "Test 2.1";
         request.getValue().setNativeType(nativeType);

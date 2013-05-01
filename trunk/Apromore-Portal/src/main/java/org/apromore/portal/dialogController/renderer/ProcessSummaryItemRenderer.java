@@ -95,7 +95,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getLastVersion()));
+        return wrapIntoListCell(new Label(process.getLastVersion().toString()));
     }
 
     protected Listcell renderProcessDomain(final ProcessSummaryType process) {
@@ -130,7 +130,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         List<VersionSummaryType> processVersions = process.getVersionSummaries();
         // find the score of the latest version, if any: this a one which will  be displayed with the process
         int i = 0;
-        while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion()) != 0) {
+        while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion().toString()) != 0) {
             i++;
         }
 

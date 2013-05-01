@@ -314,7 +314,7 @@ public interface ManagerService {
      * @return any messages that the Deployment Plugin produced
      * @throws Exception in case of any error
      */
-    PluginMessages deployProcess(String branchName, String processName, String versionName, String nativeType, String pluginName,
+    PluginMessages deployProcess(String branchName, String processName, Double versionName, String nativeType, String pluginName,
             String pluginVersion, Set<RequestParameterType<?>> deploymentProperties) throws Exception;
 
     /**

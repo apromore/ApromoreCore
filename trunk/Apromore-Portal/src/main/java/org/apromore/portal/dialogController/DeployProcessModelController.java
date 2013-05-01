@@ -168,7 +168,7 @@ public class DeployProcessModelController extends BaseController {
     }
 
     private void deployProcess(final Event event) throws InterruptedException {
-        String lastVersion = selectedProcess.getKey().getLastVersion();
+        Double lastVersion = selectedProcess.getKey().getLastVersion();
         String name = selectedProcess.getKey().getName();
         String branch = "MAIN";
         Clients.showBusy(deployProcessW, "Deploying process...");

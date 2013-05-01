@@ -257,24 +257,19 @@
 
     <xs:complexType name="DeployProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="DeploymentParameters" type="tns:PluginParameters"
-                        minOccurs="1" maxOccurs="1" />
+            <xs:element name="DeploymentParameters" type="tns:PluginParameters" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="processName" type="xs:string" />
-        <xs:attribute name="versionName" type="xs:string" />
+        <xs:attribute name="versionName" type="xs:double" />
         <xs:attribute name="branchName" type="xs:string" />
         <xs:attribute name="nativeType" type="xs:string" />
-        <xs:attribute name="deploymentPluginName" type="xs:string"
-                      use="optional" />
-        <xs:attribute name="deploymentPluginVersion" type="xs:string"
-                      use="optional" />
+        <xs:attribute name="deploymentPluginName" type="xs:string" use="optional" />
+        <xs:attribute name="deploymentPluginVersion" type="xs:string" use="optional" />
     </xs:complexType>
     <xs:complexType name="DeployProcessOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1" />
-            <xs:element name="Message" type="tns:PluginMessages"
-                        minOccurs="1" maxOccurs="1" />
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -424,7 +419,7 @@
         <xs:attribute name="id" type="xs:int" />
         <xs:attribute name="domain" type="xs:string" />
         <xs:attribute name="ranking" type="xs:string" />
-        <xs:attribute name="last_version" type="xs:string" />
+        <xs:attribute name="last_version" type="xs:double" />
         <xs:attribute name="owner" type="xs:string" />
         <xs:attribute name="hasRead" type="xs:boolean" />
         <xs:attribute name="hasWrite" type="xs:boolean" />

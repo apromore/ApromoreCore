@@ -95,8 +95,8 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
 
             // This fails as we need to specify a native type and pass in the model.
-            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, 0.1d, null, cp, domain, "", created, created);
-            pst = ui.createProcessSummary(processName, pmv.getId(), pmv.getProcessBranch().getBranchName(), 0.1d, null, domain, created, created, username);
+            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created);
+            pst = ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException | JAXBException ie) {
