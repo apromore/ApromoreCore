@@ -8,83 +8,12 @@
         <groupId>org.apromore</groupId>
         <artifactId>apromore</artifactId>
         <version>1.1</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <artifactId>apromore-editor</artifactId>
     <packaging>pom</packaging>
-
-    <url>http://apromore.org/</url>
     <name>Apromore Editor (Signavio)</name>
-    <description>The editor used by Apromore to display and edit the models.</description>
-
-    <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Editor</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Editor</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Editor</developerConnection>
-    </scm>
-
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
-    </issueManagement>
-
-    <!--<distributionManagement>-->
-        <!--<site>-->
-            <!--<id>Apromore-site</id>-->
-            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Editor</url>-->
-        <!--</site>-->
-    <!--</distributionManagement>-->
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 
     <build>
         <plugins>
