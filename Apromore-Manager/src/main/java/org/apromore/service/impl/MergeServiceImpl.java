@@ -147,7 +147,7 @@ public class MergeServiceImpl implements MergeService {
 
     /* Does the merge. */
     private CanonicalProcessType performMerge(ToolboxData data) {
-        ArrayList<CanonicalProcessType> models = new ArrayList<CanonicalProcessType>(data.getModel().values());
+        ArrayList<CanonicalProcessType> models = new ArrayList<>(data.getModel().values());
         return MergeProcesses.mergeProcesses(models, data.isRemoveEntanglements(), data.getAlgorithm(),
                 data.getModelthreshold(), data.getLabelthreshold(), data.getContextthreshold(), data.getSkipnweight(),
                 data.getSubnweight(), data.getSkipeweight());

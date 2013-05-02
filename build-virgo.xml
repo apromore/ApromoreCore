@@ -142,10 +142,10 @@
     </target>
 
     <fileset id="3rdparty" dir=".">
-        <include name="Apromore-Manager/**/dependency/provided/*.jar"/>
-        <include name="Apromore-Clients/**/dependency/provided/*.jar"/>
-        <include name="Apromore-Schema/**/dependency/provided/*.jar"/>
-        <include name="Apromore-Plugins/**/dependency/provided/*.jar"/>
+        <include name="Apromore-Manager/**/repository/*.jar"/>
+        <include name="Apromore-Clients/**/repository/*.jar"/>
+        <include name="Apromore-Schema/**/repository/*.jar"/>
+        <include name="Apromore-Plugins/**/repository/*.jar"/>
         <!-- Do not include Apromore-Editor / Portal as they will be self contained -->
         <exclude name="**/*-sources.jar"/>
     </fileset>

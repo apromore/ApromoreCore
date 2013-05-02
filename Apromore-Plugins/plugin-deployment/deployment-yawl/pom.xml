@@ -23,11 +23,37 @@
                     <unpackBundle>true</unpackBundle>
                     <instructions>
                         <!-- All compile and runtime dependencies are directly embedded as JAR files, therefore not loaded trough OSGi -->
-                        <Embed-Dependency>*;scope=compile</Embed-Dependency>
+                        <Embed-Dependency>scope=!test;artifactId=fluent-hc|httpclient|httpcore</Embed-Dependency>
                         <!-- Also embed all transitive dependencies -->
                         <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.apromore</excludeGroupIds>
+                            <excludeArtifactIds>
+                                com.springsource.org.aopalliance,jcl-over-slf4j,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
+                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
+                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
+                                org.springframework.expression,commons-collections,commons-io,cglib-nodep,easymock,hamcrest-core,junit,objenesis,
+                                fluent-hc,httpclient,httpclient-test,httpcore
+                            </excludeArtifactIds>
+                            <excludeTypes>pom</excludeTypes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -105,9 +131,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <!--<httpcomponents.version>4.2.1</httpcomponents.version>-->
-    </properties>
 
 </project>
