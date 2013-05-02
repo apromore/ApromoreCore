@@ -91,11 +91,11 @@
                 <configuration>
                     <unpackBundle>true</unpackBundle>
                     <instructions>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <!--<Embed-Directory>WEB-INF/lib</Embed-Directory>-->
                         <!-- All compile and runtime dependencies are directly embedded as JAR files, therefore not loaded trough OSGi -->
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Dependency>artifactId=mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime</Embed-Dependency>
                         <!-- Also embed all transitive dependencies -->
-                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Transitive>false</Embed-Transitive>
                         <!-- 
                             Some Spring, Spring Data, EclipseLink indirect dependencies are
                             not picked up correctly by BND. Thus we need to maintain them
@@ -152,6 +152,56 @@
                     <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
                     <commandlineArgs>-classpath %classpath;${basedir}/target/dependency/compile;${basedir}/target/dependency/provided -loglevel FINE -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
                     <classpathScope>compile</classpathScope>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.apromore</excludeGroupIds>
+                            <excludeArtifactIds>
+                                com.springsource.javax.xml.bind,com.springsource.org.aopalliance,jcl-over-slf4j,jul-to-slf4j,
+                                jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
+                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
+                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
+                                org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
+                                jms,org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
+                                org.springframework.aspects,org.springframework.context.support,commons-httpclient,
+                                junit,hamcrest-core,hamcrest-all,asm,cglib,cglib-nodep,easymock,easymockclassextension,ipsedixit,javassist,objenesis,
+                                powermock-api-easymock,powermock-api-support,powermock-core,powermock-module-javaagent,powermock-module-junit4,
+                                powermock-module-junit4-common,powermock-module-junit4-rule-agent,powermock-reflect,spring-test,lpsolve,
+                                jaxb2-basics-runtime,mathCollection,taskmapping,javax.persistence
+                            </excludeArtifactIds>
+                            <excludeTypes>pom</excludeTypes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes>
+                        WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,WEB-INF/lib/manager*.jar,WEB-INF/lib/plugin*.jar,
+                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/com.*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,
+                        WEB-INF/lib/jbpt*.jar,WEB-INF/lib/jcl*.jar,WEB-INF/lib/joda-time*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/mysql-connector-java*.jar,WEB-INF/lib/org.*.jar,
+                        WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/spring-data-*.jar,WEB-INF/lib/XmlSchema*.jar,WEB-INF/lib/xpdl-schema*.jar
+                    </packagingExcludes>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
@@ -252,17 +302,10 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.googlecode.guava-osgi</groupId>-->
-            <!--<artifactId>guava-osgi</artifactId>-->
-            <!--<scope>provided</scope>-->
-            <!--<version>${google.guava.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${google.guava.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- logging -->
@@ -465,31 +508,16 @@
             <scope>test</scope>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.apromore.plugin</groupId>-->
-        <!--<artifactId>plugin-api</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apromore.plugin</groupId>-->
-        <!--<artifactId>canoniser-api</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apromore.plugin</groupId>-->
-        <!--<artifactId>deployment-api</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-api-provider</artifactId>
@@ -506,20 +534,6 @@
             <artifactId>epml-schema</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-        <!--<dependency>-->
-        <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
-        <!--<artifactId>gemini-blueprint-test</artifactId>-->
-        <!--<version>1.0.2.RELEASE</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.eclipse.gemini.blueprint</groupId>-->
-        <!--<artifactId>gemini-blueprint-mock</artifactId>-->
-        <!--<version>1.0.2.RELEASE</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
     </dependencies>
 
 </project>

@@ -11,33 +11,9 @@
     <groupId>org.apromore.plugin</groupId>
     <artifactId>plugin</artifactId>
     <packaging>pom</packaging>
-
     <url>http://www.apromore.org/</url>
     <name>Apromore - Core Plugins / API</name>
     <description>Apromore Plugin API's and core Plugins</description>
-    <inceptionYear>2012</inceptionYear>
-
-    <!--<distributionManagement>-->
-        <!--<site>-->
-            <!--<id>Apromore-site</id>-->
-            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Plugins</url>-->
-        <!--</site>-->
-    <!--</distributionManagement>-->
-
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
-    </issueManagement>
 
     <modules>
         <!-- Archetypes for new Plugin projects -->
@@ -101,19 +77,16 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>search-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Canonisers -->
@@ -121,43 +94,36 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-api</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-aris</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-bpmn</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-epml</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-pnml</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-xpdl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             
             <!--  Core Plugins -->
@@ -165,7 +131,6 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-graph</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Schema -->
@@ -173,55 +138,46 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>anf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>aris-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmn-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>cpf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>epml-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>pnml-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>rlf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>xpdl-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>yawl-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Extra Libraries -->
@@ -229,7 +185,6 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>org.springframework.core</artifactId>
@@ -255,6 +210,10 @@
                         <artifactId>org.springframework.aop</artifactId>
                         <groupId>org.springframework</groupId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <!-- Change to provided as deployed on Eclipse Virgo -->
@@ -262,11 +221,14 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>org.springframework.core</artifactId>
                         <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -275,7 +237,6 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>org.springframework.core</artifactId>
@@ -296,6 +257,10 @@
                     <exclusion>
                         <artifactId>org.springframework.aop</artifactId>
                         <groupId>org.springframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
