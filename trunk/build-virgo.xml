@@ -15,7 +15,7 @@
         URL of the automatically downloaded and installed Eclipse Virgo 
     -->
     <property name="virgo-url" value="http://www.eclipse.org/downloads/download.php?file=/virgo/release/VP/3.6.0.RELEASE/virgo-tomcat-server-3.6.0.RELEASE.zip&amp;r=1"/>
-    <property name="dir-deployment" location="${basedir}/Apromore-Deploy"/>
+    <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
     <property name="dir-target" location="${dir-deployment}/apromore-release"/>
 
