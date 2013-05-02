@@ -12,87 +12,10 @@
 
     <artifactId>anf-schema</artifactId>
     <packaging>jar</packaging>
-
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common ANF Generated Code</name>
-    <description>Apromore is an open and extensible repository to store and disclose business process models of a
-        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
-        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
-        re-use.
-    </description>
-
-    <scm>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Schema/anf-schema</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Schema/anf-schema</connection>
-        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Schema/anf-schema</url>
-    </scm>
-
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
-    </issueManagement>
-
-    <!--<distributionManagement>-->
-        <!--<site>-->
-            <!--<id>Apromore-site</id>-->
-            <!--<url>dav:http://apromore.qut.edu.au/projects/Apromore-Schema/anf-schema</url>-->
-        <!--</site>-->
-    <!--</distributionManagement>-->
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 
     <build>
-        <!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
-              <finalName>anf-schema</finalName> -->
         <plugins>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -141,6 +64,25 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.apromore</excludeGroupIds>
+                            <excludeTypes>pom</excludeTypes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

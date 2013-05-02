@@ -13,83 +13,8 @@
 
     <artifactId>bpmn-schema</artifactId>
     <packaging>jar</packaging>
-
     <url>http://apromore.org/</url>
     <name>Apromore Common BPMN Generated Code</name>
-    <description>Apromore is an open and extensible repository to store and disclose business process models of a
-        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
-        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
-        re-use.
-    </description>
-
-    <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</developerConnection>
-    </scm>
-
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
-    </issueManagement>
-
-    <distributionManagement>
-        <site>
-            <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Schema/bpmn-schema</url>
-        </site>
-    </distributionManagement>
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 
     <dependencies>
         <dependency>
@@ -168,13 +93,13 @@
                         <configuration>
                             <outputDirectory>${basedir}/target/generated-sources/src/</outputDirectory>
                             <overwrite>true</overwrite>
-							<includeEmptyDirs>true</includeEmptyDirs>
+                            <includeEmptyDirs>true</includeEmptyDirs>
                             <resources>
                                 <resource>
                                     <directory>src/main/overwrite</directory>
-									<includes>
-									  <include>**/*.properties</include>
-									</includes>
+                                    <includes>
+                                        <include>**/*.properties</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -184,6 +109,26 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.apromore</excludeGroupIds>
+                            <excludeArtifactIds>com.springsource.javax.xml.bind,cglib-nodep,easymock,hamcrest-core,junit,objenesis</excludeArtifactIds>
+                            <excludeTypes>pom</excludeTypes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

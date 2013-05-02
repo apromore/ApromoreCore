@@ -8,9 +8,38 @@
         <relativePath>../../../</relativePath>
     </parent>
 
-    <groupId>org.apromore.plugin</groupId>
     <artifactId>plugin-api-archetype</artifactId>
     <name>Apromore Plugin API Archetype</name>
     <url>http://www.apromore.org</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-deps</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
+                            <excludeScope>provided</excludeScope>
+                            <excludeGroupIds>org.apromore</excludeGroupIds>
+                            <excludeArtifactIds>
+                                com.springsource.org.aopalliance,jcl-over-slf4j,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
+                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
+                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
+                                org.springframework.expression,cglib-nodep,easymock,hamcrest-core,junit,objenesis
+                            </excludeArtifactIds>
+                            <excludeTypes>pom</excludeTypes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

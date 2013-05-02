@@ -35,7 +35,8 @@ public class MutableTreeConstructor {
             }
 
             for (CPFEdge e : root.getFragment()) {
-                rf.addEdge(e.getOriginalId(), e.getSource(), e.getTarget());
+                CPFEdge newEdge = rf.addEdge(e.getOriginalId(), e.getSource(), e.getTarget());
+                newEdge.setId(e.getId());
             }
 
             rf.setEntry(root.getEntry());

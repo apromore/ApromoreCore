@@ -102,6 +102,7 @@
                                         <exclude>javassist:javassist</exclude>
                                         <exclude>commons-digester</exclude>
                                         <exclude>commons-logging</exclude>
+                                        <exclude>org.apache.commons:com.springsource.org.apache.commons.logging</exclude>
                                         <exclude>aspectj:aspectj*</exclude>
                                         <exclude>hsqldb:hsqldb</exclude>
                                         <exclude>log4j:log4j</exclude>
@@ -231,78 +232,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven.dependency.plugin}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                    <!-- This is used by the Apromore ANT script to automatically copy dependencies to Eclipse Virgo -->
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <!-- We are only interested in "provided" dependencies, because these
-                                       have to be deployed in Eclipse Virgo -->
-                            <useSubDirectoryPerScope>true</useSubDirectoryPerScope>
-                            <!-- Exclude already in Eclipse Virgo included Libraries -->
-                            <excludeArtifactIds>logback-core,logback-classic,
-                                slf4j-api,jcl-over-slf4j,
-                                org.eclipse.gemini.blueprint.extender,
-                                org.eclipse.gemini.blueprint.io,
-                                org.eclipse.gemini.blueprint.core,
-                                org.eclipse.osgi,
-                                org.eclipse.osgi.services,
-                                com.springsource.org.aopalliance,
-                                antlr,
-                                servlet-api,
-                                jta,
-                                mail,
-                                javax.persistence,
-                                aopalliance,
-                                org.springframework.aop,
-                                org.springframework.asm,
-                                org.springframework.aspects,
-                                org.springframework.beans,
-                                org.springframework.batch,
-                                org.springframework.context,
-                                org.springframework.context.support,
-                                org.springframework.core,
-                                org.springframework.expression,
-                                org.springframework.jdbc,
-                                org.springframework.jms,
-                                org.springframework.orm,
-                                org.springframework.oxm,
-                                org.springframework.transaction,
-                                org.springframework.web,
-                                org.springframework.web.servlet,
-                                org.springframework.web.portlet,
-                                com.springsource.javax.xml.bind,
-                                com.springsource.org.apache.xmlcommons
-                            </excludeArtifactIds>
-                            <!-- Only 3rd party dependencies -->
-                            <excludeGroupIds>
-                                org.apromore,
-                                org.zkoss
-                            </excludeGroupIds>
-                            <excludeTransitive>
-                                false
-                            </excludeTransitive>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <verbose>true</verbose>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -494,8 +423,7 @@
                 <configuration>
                     <archive>
                         <forced>true</forced>
-                        <!-- dummy entry to stop bundleplugin from picking
-                                  up jar config -->
+                        <!-- dummy entry to stop bundle plugin from picking up jar config -->
                     </archive>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
@@ -647,13 +575,11 @@
                 <groupId>org.jbpt</groupId>
                 <artifactId>jbpt-core</artifactId>
                 <version>${jbpt.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jbpt</groupId>
                 <artifactId>jbpt-deco</artifactId>
                 <version>${jbpt.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>ee.ut</groupId>
@@ -686,7 +612,6 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>manager-client</artifactId>
                 <version>${manager-client.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!--  Core Plugins -->
@@ -694,7 +619,6 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-graph</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Plugin API -->
@@ -702,25 +626,21 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-api-provider</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-api</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-api-provider</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Deployment -->
@@ -728,7 +648,6 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-yawl</artifactId>
                 <version>${apromore.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Canonisers -->
@@ -736,49 +655,41 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-api</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-api-provider</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-aris</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-bpmn</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-epml</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-pnml</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-xpdl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Schema -->
@@ -786,55 +697,46 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>anf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>aris-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmn-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>cpf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>epml-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>pnml-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>rlf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>xpdl-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>yawl-schema</artifactId>
                 <version>${apromore.schema.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Logging -->
@@ -842,43 +744,42 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
                 <version>${logback.version}</version>
-                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>com.springsource.slf4j.api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>com.springsource.ch.qos.logback.core</artifactId>
                 <version>${logback.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.objectweb.asm</groupId>
                 <artifactId>com.springsource.org.objectweb.asm</artifactId>
                 <version>${asm.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.javassist</groupId>
                 <artifactId>com.springsource.javassist</artifactId>
                 <version>${javassist.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- AspectJ Runtime and Weaver -->
@@ -886,13 +787,11 @@
                 <groupId>org.aspectj</groupId>
                 <artifactId>com.springsource.org.aspectj.runtime</artifactId>
                 <version>${aspectj.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>com.springsource.org.aspectj.weaver</artifactId>
                 <version>${aspectj.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Eclipse Gemini Blueprint (former Spring DM) -->
@@ -900,13 +799,10 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
-                        <artifactId>
-                            com.springsource.org.apache.commons.logging
-                        </artifactId>
                         <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -914,13 +810,10 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
-                        <artifactId>
-                            com.springsource.org.apache.commons.logging
-                        </artifactId>
                         <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -928,24 +821,19 @@
                 <groupId>org.eclipse.gemini</groupId>
                 <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
                 <version>${gemini.blueprint.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
-                        <artifactId>
-                            com.springsource.org.apache.commons.logging
-                        </artifactId>
                         <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
-
 
             <!-- Spring Framework dependencies -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-jpa</artifactId>
                 <version>${spring.data.jpa.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>spring-beans</artifactId>
@@ -977,103 +865,89 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.beans</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.context</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.jdbc</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.aop</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.expression</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.transaction</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.core</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.asm</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.aspects</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.context.support</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.orm</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.jms</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.oxm</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.web</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.web.servlet</artifactId>
                 <version>${spring.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.ws</groupId>
                 <artifactId>org.springframework.xml</artifactId>
-                <scope>provided</scope>
                 <version>${spring-ws.version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>
-                            com.springsource.org.apache.commons.logging
-                        </artifactId>
                         <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.ws</groupId>
+                        <artifactId>com.springsource.org.apache.ws.commons.schema</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1081,13 +955,17 @@
                 <groupId>org.springframework.ws</groupId>
                 <artifactId>org.springframework.ws</artifactId>
                 <version>${spring-ws.version}</version>
-                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.ws</groupId>
                 <artifactId>org.springframework.ws.support</artifactId>
                 <version>${spring-ws.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>com.springsource.org.apache.commons.logging</artifactId>
@@ -1147,13 +1025,11 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>org.springframework.security.core</artifactId>
                 <version>${spring-security-crypto.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>org.springframework.ldap</artifactId>
                 <version>${spring-ldap.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <artifactId>
@@ -1169,13 +1045,11 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>com.springsource.javax.xml.bind</artifactId>
                 <version>${jaxb-api.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml</groupId>
                 <artifactId>com.springsource.com.sun.xml.bind</artifactId>
                 <version>${jaxb-impl.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -1186,7 +1060,6 @@
                 <groupId>com.sun.xml</groupId>
                 <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
                 <version>${jaxb-xjc.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>com.sun.xml</groupId>
@@ -1200,31 +1073,26 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons-collections.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.cglib</groupId>
                 <artifactId>com.springsource.net.sf.cglib</artifactId>
                 <version>${cglib.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
@@ -1248,31 +1116,26 @@
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.jpa</artifactId>
                 <version>${eclipselink.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.core</artifactId>
                 <version>${eclipselink.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.jolbox</groupId>
                 <artifactId>bonecp</artifactId>
                 <version>${bonecp.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>${joda-time.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- WSDL / WS dependencies -->
@@ -1280,13 +1143,11 @@
                 <groupId>javax.wsdl</groupId>
                 <artifactId>com.springsource.javax.wsdl</artifactId>
                 <version>${wsdl4j.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.schema</groupId>
                 <artifactId>XmlSchema</artifactId>
                 <version>${xmlSchema.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- JEE dependencies -->
@@ -1318,7 +1179,6 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>com.springsource.javax.inject</artifactId>
                 <version>${inject.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Test Scope Dependencies -->
