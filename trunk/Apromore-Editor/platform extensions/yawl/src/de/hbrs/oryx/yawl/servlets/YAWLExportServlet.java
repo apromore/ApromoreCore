@@ -99,7 +99,7 @@ public class YAWLExportServlet extends HttpServlet {
         // For the moment we don't get any subnets from Signavio, but the YAWLConverter expects the JSON 
         // to contain an array of subnets. So we just wrap the JSON into our own format here:
         String rewrittenJSONData = String.format("{subDiagrams: [], rootDiagram: %1$s}",jsonData);
-        YAWLResult yawlResult = yawlConverter.convertOryxToYAWL(jsonData);
+        YAWLResult yawlResult = yawlConverter.convertOryxToYAWL(rewrittenJSONData);
         return yawlResult.getYAWLAsXML();
     }
 

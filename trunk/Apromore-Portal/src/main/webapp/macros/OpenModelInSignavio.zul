@@ -78,7 +78,8 @@
                             model : {
                                 id : 'oryx-canvas123',
                                 stencilset : {
-                                    url : '${arg.url}'
+                                    url : '${arg.url}',
+                                    namespace : '${arg.url}'
                                 },
                             },
                             fullscreen : true
