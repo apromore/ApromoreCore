@@ -27,16 +27,13 @@ public class FormatServiceImplUnitTest {
 
     private FormatServiceImpl formatServiceImpl;
 
-    private AnnotationRepository annotationRepository;
-    private CanonicalRepository canonicalRepository;
-    private NativeRepository nativeRepository;
     private NativeTypeRepository nativeTypeRepository;
 
     @Before
     public void setUp() {
-        annotationRepository = createMock(AnnotationRepository.class);
-        canonicalRepository = createMock(CanonicalRepository.class);
-        nativeRepository = createMock(NativeRepository.class);
+        AnnotationRepository annotationRepository = createMock(AnnotationRepository.class);
+        CanonicalRepository canonicalRepository = createMock(CanonicalRepository.class);
+        NativeRepository nativeRepository = createMock(NativeRepository.class);
         nativeTypeRepository = createMock(NativeTypeRepository.class);
 
         formatServiceImpl = new FormatServiceImpl(annotationRepository, canonicalRepository, nativeRepository, nativeTypeRepository);
@@ -45,7 +42,7 @@ public class FormatServiceImplUnitTest {
 
     @Test
     public void getAllFormats() {
-        List<NativeType> natTypes = new ArrayList<NativeType>();
+        List<NativeType> natTypes = new ArrayList<>();
 
         expect(nativeTypeRepository.findAll()).andReturn(natTypes);
         replay(nativeTypeRepository);

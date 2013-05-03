@@ -7,32 +7,12 @@
         <groupId>org.apromore</groupId>
         <artifactId>apromore</artifactId>
         <version>1.1</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <artifactId>test-tools</artifactId>
     <packaging>jar</packaging>
     <name>Apromore Testing Tools</name>
-
-    <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Test-Tools</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Test-Tools</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Test-Tools</developerConnection>
-    </scm>
-
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
-    </issueManagement>
 
     <dependencies>
         <!-- Logging -->

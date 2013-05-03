@@ -1,8 +1,16 @@
 package org.apromore.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
+import javax.inject.Inject;
+import java.io.InputStream;
+import java.util.HashSet;
+
+import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
@@ -18,14 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.InputStream;
-import java.util.HashSet;
-import javax.inject.Inject;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the UserService Implementation.
@@ -46,6 +46,8 @@ public class CanonicalConvertorIntgTest {
     private CanoniserService canoniserService;
     @Inject
     private CanonicalConverter converter;
+
+
 
     @Test
     @Rollback(true)

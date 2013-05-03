@@ -60,11 +60,11 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-api</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-        </dependency>		
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
