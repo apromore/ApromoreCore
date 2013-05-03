@@ -40,7 +40,7 @@
         <property name="jpaProperties">
             <util:properties id="jpaProperties">
                 <prop key="showSql">false</prop>
-                <prop key="eclipselink.weaving">false</prop>
+                <prop key="eclipselink.weaving">static</prop>
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
                 <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
@@ -53,10 +53,9 @@
                 <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
 
-                <prop key="eclipselink.logging.file">output.log</prop>
                 <prop key="eclipselink.logging.level">OFF</prop>
                 <prop key="eclipselink.logging.level.sql">OFF</prop>
-                <prop key="eclipselink.logging.parameters">flase</prop>
+                <prop key="eclipselink.logging.parameters">false</prop>
             </util:properties>
         </property>
     </bean>

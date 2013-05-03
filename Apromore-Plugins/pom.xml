@@ -16,11 +16,6 @@
     <description>Apromore Plugin API's and core Plugins</description>
 
     <modules>
-        <!-- Archetypes for new Plugin projects -->
-        <module>plugin-core/archetype/plugin-archetype</module>
-        <module>plugin-core/archetype/plugin-api-archetype</module>
-        <module>plugin-core/archetype/plugin-api-provider-archetype</module>
-        
         <!-- Database Support Plugins -->
         <module>plugin-database/database-mysql</module>
         <module>plugin-database/database-postgresql</module>

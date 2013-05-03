@@ -110,12 +110,34 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Plugin Implementation Bundles -->
+
+        <!-- *** Plugin Implementation Bundles *** -->
+
+        <!-- MYSQL,Postgres and Oracle Bundles -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>database-mysql</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>database-postgresql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>database-oracle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Common Bundles -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-graph</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Canoniser Plugins -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-aris</artifactId>
@@ -146,13 +168,22 @@
             <artifactId>canoniser-yawl</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Deployment Plugins -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-yawl</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+
         <!-- Manager Bundles -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -192,27 +223,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>copy-ext-deps</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${deploy.dir}/ext</outputDirectory>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>
-                                org.junit,org.apromore,com.springsource.org.aopalliance,fluent-hc,httpclient,httpcore,jcl-over-slf4j,
-                                jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
-                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
-                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
-                                org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
-                                jms,org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
-                                org.springframework.aspects,org.springframework.context.support,commons-httpclient
-                            </excludeGroupIds>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>copy-dependencies</id>
                         <phase>package</phase>

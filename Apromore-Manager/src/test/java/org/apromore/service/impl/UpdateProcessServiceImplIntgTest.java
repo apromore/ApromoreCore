@@ -21,6 +21,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -39,6 +40,7 @@ import static org.hamcrest.Matchers.nullValue;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
@@ -58,12 +60,6 @@ public class UpdateProcessServiceImplIntgTest {
     @PersistenceContext
     private EntityManager em;
 
-    private String username = "james";
-    private String domain = "Tests";
-    private String created = "12/12/2011";
-    private String lastUpdate = "12/12/2011";
-
-
 
     @Test
     @Rollback(true)
@@ -77,6 +73,10 @@ public class UpdateProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
+        String username = "james";
+        String domain = "Tests";
+        String lastUpdate = "12/12/2011";
+        String created = "12/12/2011";
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate);
         assertThat(pst, notNullValue());
         em.flush();
@@ -89,7 +89,7 @@ public class UpdateProcessServiceImplIntgTest {
         em.flush();
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<NameValuePair>(0);
+        List<NameValuePair> deleteList = new ArrayList<>(0);
         deleteList.add(new NameValuePair(name, branch));
         pSrv.deleteProcessModel(deleteList);
         em.flush();

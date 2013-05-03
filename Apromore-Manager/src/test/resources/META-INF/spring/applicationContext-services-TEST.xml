@@ -21,10 +21,8 @@
 
     <sws:interceptors>
         <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
-        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor"
-              p:logRequest="true" p:logResponse="true"/>
-        <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
-              p:schemas-ref="schemasList" p:validateRequest="true" p:validateResponse="true"/>
+        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor" p:logRequest="true" p:logResponse="true"/>
+        <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor" p:schemas-ref="schemasList" p:validateRequest="true" p:validateResponse="true"/>
     </sws:interceptors>
 
     <!-- JAXB marshelling -->
@@ -66,9 +64,29 @@
     <bean id="canonicalToGraph" class="org.apromore.graph.canonical.converter.CanonicalToGraph" />
     <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
 
-    <!-- Just test the provider outside of OSGi (TODO: Integration test with OSGi framework) -->
+    <!-- Beans used for OSGi setup. -->
+    <bean id="arisCanoniser" class="org.apromore.canoniser.aris.ArisCanoniser" />
+    <bean id="bpmnCanoniser" class="org.apromore.canoniser.bpmn.BPMN20Canoniser" />
+    <bean id="epmlCanoniser" class="org.apromore.canoniser.epml.EPML20Canoniser" />
+    <bean id="pnmlCanoniser" class="org.apromore.canoniser.pnml.PNML132Canoniser" />
+    <bean id="xpdlCanoniser" class="org.apromore.canoniser.xpdl.XPDL21Canoniser" />
+    <bean id="yawlCanoniser" class="org.apromore.canoniser.yawl.YAWL22Canoniser" />
+
+    <util:set id="canonisers">
+        <ref bean="arisCanoniser" />
+        <ref bean="bpmnCanoniser" />
+        <ref bean="epmlCanoniser" />
+        <ref bean="pnmlCanoniser" />
+        <ref bean="xpdlCanoniser" />
+        <ref bean="yawlCanoniser" />
+    </util:set>
+
+    <!-- Just test the provider outside of OSGi -->
     <bean id="pluginProvider" class="org.apromore.plugin.provider.impl.PluginProviderImpl"/>
-    <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl"/>
+    <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl" p:canoniserSet-ref="canonisers"/>
     <bean id="deploymentProvider" class="org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl"/>
+
+    <!-- Mock Providers -->
+    <bean id="mockDeploymentProvider" class="org.apromore.plugin.deployment.MockDeploymentPluginProvider" />
 
 </beans>
