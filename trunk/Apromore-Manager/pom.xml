@@ -260,8 +260,8 @@
             <artifactId>com.springsource.ch.qos.logback.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.commons.schema</groupId>
-            <artifactId>XmlSchema</artifactId>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
         </dependency>
 
         <!-- AOP -->
@@ -459,13 +459,64 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-epml</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>aris-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>pnml-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>rlf-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>yawl-schema</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-aris</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-bpmn</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-epml</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-pnml</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-xpdl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-yawl</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

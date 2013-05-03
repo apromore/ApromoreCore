@@ -28,12 +28,11 @@ import org.springframework.stereotype.Service;
  * Providing the default CanoniserProvider implementation
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
  */
 @Service
 public class CanoniserProviderImpl implements CanoniserProvider {
 
-	@Resource
+    @Resource
     private Set<Canoniser> canoniserSet;
 
     public Set<Canoniser> getCanoniserSet() {
@@ -116,8 +115,8 @@ public class CanoniserProviderImpl implements CanoniserProvider {
      * Returns a List of Canonisers with matching parameters.
      *
      * @param nativeType can be NULL
-     * @param name can be NULL
-     * @param version can be NULL
+     * @param name       can be NULL
+     * @param version    can be NULL
      * @return List of Canonisers or empty List
      */
     private Set<Canoniser> findAllCanoniser(final String nativeType, final String name, final String version) {

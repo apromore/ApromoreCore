@@ -1,5 +1,15 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
@@ -24,18 +34,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 /**
  * Implementation of the Canoniser Service Contract.
@@ -93,7 +91,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
         LOGGER.info("Canonising process with native type {}", nativeType);
-        LOGGER.info(StreamUtil.convertStreamToString(processXml));
+        //LOGGER.info(StreamUtil.convertStreamToString(processXml));
 
         List<CanonicalProcessType> cpfList = new ArrayList<>();
         List<AnnotationsType> anfList = new ArrayList<>();
@@ -102,14 +100,14 @@ public class CanoniserServiceImpl implements CanoniserService {
         cp.setOriginal(processXml);
 
         try {
-            processXml.reset();
+            //processXml.reset();
             cp.setOriginal(processXml);
             Canoniser c = canProvider.findByNativeType(nativeType);
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
-        } catch (IOException | CanoniserException | PluginNotFoundException e) {
+        } catch (CanoniserException | PluginNotFoundException e) {  //IOException |
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 
