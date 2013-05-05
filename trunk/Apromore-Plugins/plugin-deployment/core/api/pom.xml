@@ -12,37 +12,17 @@
     <name>Apromore Deployment Plugin API</name>
     <description>Deployment Plugin API, an interface to allow process deployment from Apromore.</description>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <!-- Usage guide: http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html -->
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-deps</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>org.apromore</excludeGroupIds>
-                            <excludeArtifactIds>
-                                com.springsource.org.aopalliance,jcl-over-slf4j,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
-                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
-                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
-                                org.springframework.expression,commons-lang,cglib-nodep,easymock,hamcrest-core,junit,objenesis
-                            </excludeArtifactIds>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

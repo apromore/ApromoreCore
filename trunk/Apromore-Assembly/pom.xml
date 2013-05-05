@@ -18,6 +18,9 @@
     <properties>
         <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
+
+        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
     </properties>
 
     <dependencies>
@@ -119,16 +122,16 @@
             <artifactId>database-mysql</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>database-postgresql</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>database-oracle</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>database-postgresql</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
+         <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>database-oracle</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
 
         <!-- Common Bundles -->
         <dependency>
@@ -191,21 +194,103 @@
             <type>war</type>
         </dependency>
 
-        <!--&lt;!&ndash; Portal Bundles (not really yet) &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>apromore-portal</artifactId>-->
-            <!--<version>${project.version}</version>-->
-            <!--<type>war</type>-->
-        <!--</dependency>-->
-
-        <!--&lt;!&ndash; Editor Bundle (not really yet) &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>apromore-editor</artifactId>-->
-            <!--<version>${project.version}</version>-->
-            <!--<type>war</type>-->
-        <!--</dependency>-->
+        <!-- Required for the web bundle as dependancies are not propagated up from war build types -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-deco</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>com.springsource.org.aspectj.runtime</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>com.springsource.org.aspectj.weaver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.cglib</groupId>
+            <artifactId>com.springsource.net.sf.cglib</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.xml</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.ws</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.ws.support</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.wsdl</groupId>
+            <artifactId>com.springsource.javax.wsdl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>com.springsource.javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -232,15 +317,17 @@
                         <configuration>
                             <outputDirectory>${deploy.dir}/usr</outputDirectory>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <excludeGroupIds>
+                            <excludeTransitive>false</excludeTransitive>
+                            <excludeArtifactIds>
                                 org.junit,org.apromore,com.springsource.org.aopalliance,fluent-hc,httpclient,httpcore,jcl-over-slf4j,
                                 jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
                                 org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
                                 org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
                                 org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
                                 jms,org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
-                                org.springframework.aspects,org.springframework.context.support,commons-httpclient
-                            </excludeGroupIds>
+                                org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
+                                com.springsource.javax.xml.bind
+                            </excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

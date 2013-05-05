@@ -16,6 +16,11 @@
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common YAWL Generated Code</name>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -55,25 +60,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-deps</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>org.apromore</excludeGroupIds>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

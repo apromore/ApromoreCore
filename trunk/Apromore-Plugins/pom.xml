@@ -15,6 +15,19 @@
     <name>Apromore - Core Plugins / API</name>
     <description>Apromore Plugin API's and core Plugins</description>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+
+        <apromore.schema.version>1.1</apromore.schema.version>
+        <apromore.plugin.version>1.1</apromore.plugin.version>
+        <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
+
+        <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
+
+        <httpcomponents.version>4.2.1</httpcomponents.version>
+    </properties>
+
     <modules>
         <!-- Database Support Plugins -->
         <module>plugin-database/database-mysql</module>
@@ -334,15 +347,5 @@
             <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
-
-    <properties>
-        <apromore.schema.version>1.1</apromore.schema.version>
-        <apromore.plugin.version>1.1</apromore.plugin.version>
-        <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
-
-        <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
-
-        <httpcomponents.version>4.2.1</httpcomponents.version>
-    </properties>
 
 </project>
