@@ -16,6 +16,11 @@
     <url>http://apromore.org/</url>
     <name>Apromore Common BPMN Generated Code</name>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.sun.xml</groupId>
@@ -109,26 +114,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-deps</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>org.apromore</excludeGroupIds>
-                            <excludeArtifactIds>com.springsource.javax.xml.bind,cglib-nodep,easymock,hamcrest-core,junit,objenesis</excludeArtifactIds>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

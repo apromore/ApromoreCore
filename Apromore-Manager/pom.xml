@@ -15,6 +15,11 @@
     <packaging>war</packaging>
     <name>Apromore Manager</name>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+    </properties>
+
     <build>
         <finalName>manager</finalName>
         <plugins>
@@ -25,7 +30,7 @@
                 <configuration>
                     <unpackBundle>true</unpackBundle>
                     <instructions>
-                        <!--<Embed-Directory>WEB-INF/lib</Embed-Directory>-->
+                        <Web-ContextPath>/manager</Web-ContextPath>
                         <!-- All compile and runtime dependencies are directly embedded as JAR files, therefore not loaded trough OSGi -->
                         <Embed-Dependency>artifactId=mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime</Embed-Dependency>
                         <!-- Also embed all transitive dependencies -->
@@ -87,38 +92,6 @@
                     <commandlineArgs>-classpath %classpath;${basedir}/target/dependency/compile;${basedir}/target/dependency/provided -loglevel FINE -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
                     <classpathScope>compile</classpathScope>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-deps</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/repository/</outputDirectory>
-                            <excludeScope>provided</excludeScope>
-                            <excludeGroupIds>org.apromore</excludeGroupIds>
-                            <excludeArtifactIds>
-                                com.springsource.javax.xml.bind,com.springsource.org.aopalliance,jcl-over-slf4j,jul-to-slf4j,
-                                jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,
-                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
-                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
-                                org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
-                                jms,org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
-                                org.springframework.aspects,org.springframework.context.support,commons-httpclient,
-                                junit,hamcrest-core,hamcrest-all,asm,cglib,cglib-nodep,easymock,easymockclassextension,ipsedixit,javassist,objenesis,
-                                powermock-api-easymock,powermock-api-support,powermock-core,powermock-module-javaagent,powermock-module-junit4,
-                                powermock-module-junit4-common,powermock-module-junit4-rule-agent,powermock-reflect,spring-test,lpsolve,
-                                jaxb2-basics-runtime,mathCollection,taskmapping,javax.persistence
-                            </excludeArtifactIds>
-                            <excludeTypes>pom</excludeTypes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

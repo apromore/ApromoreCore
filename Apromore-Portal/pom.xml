@@ -16,6 +16,14 @@
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Portal</name>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+
+        <zk.version>5.0.9</zk.version>
+        <zk.spring.version>3.0</zk.spring.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>ZK EE Evaluation</id>
@@ -272,8 +280,4 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <zk.version>5.0.9</zk.version>
-        <zk.spring.version>3.0</zk.spring.version>
-    </properties>
 </project>
