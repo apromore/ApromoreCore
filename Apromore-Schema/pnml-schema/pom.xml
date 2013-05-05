@@ -16,6 +16,11 @@
     <url>http://apromore.org/</url>
     <name>Apromore Common PNML Generated Code</name>
 
+    <properties>
+        <maven-checkstyle-plugin.configLocation>../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
+        <maven-pmd-plugin.configLocation>../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
