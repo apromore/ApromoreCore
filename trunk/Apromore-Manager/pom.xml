@@ -16,6 +16,8 @@
     <name>Apromore Manager</name>
 
     <properties>
+        <h2.version>1.3.170</h2.version>
+
         <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
         <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
     </properties>
@@ -365,6 +367,12 @@
 
         <!-- Test Scope Dependencies -->
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -430,7 +438,6 @@
             <artifactId>deployment-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>aris-schema</artifactId>
@@ -461,7 +468,6 @@
             <artifactId>yawl-schema</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-aris</artifactId>
