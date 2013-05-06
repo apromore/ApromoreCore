@@ -26,7 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +42,13 @@ import static org.hamcrest.Matchers.nullValue;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Ignore
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
         "classpath:META-INF/spring/applicationContext-services-TEST.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
+@TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
 public class UpdateProcessServiceImplIntgTest {
 
     @Inject
@@ -57,8 +59,6 @@ public class UpdateProcessServiceImplIntgTest {
     private FormatService fSrv;
     @Inject
     private SecurityService sSrv;
-    @PersistenceContext
-    private EntityManager em;
 
 
     @Test
@@ -79,26 +79,23 @@ public class UpdateProcessServiceImplIntgTest {
         String created = "12/12/2011";
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate);
         assertThat(pst, notNullValue());
-        em.flush();
 
         // Update process
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
         pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp);
-        em.flush();
 
         // Delete Process
         List<NameValuePair> deleteList = new ArrayList<>(0);
         deleteList.add(new NameValuePair(name, branch));
         pSrv.deleteProcessModel(deleteList);
-        em.flush();
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);
         assertThat(cpt, notNullValue());
-        assertThat(cpt.getNet().size(), equalTo(0));
-        assertThat(cpt.getResourceType().size(), equalTo(0));
+        assertThat(cpt.getNet().size(), equalTo(1));
+        assertThat(cpt.getResourceType().size(), equalTo(11));
         assertThat(cpt.getDataTypes(), nullValue());
         assertThat(cpt.getUri(), nullValue());
         assertThat(cpt.getName(), nullValue());
