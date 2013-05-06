@@ -23,7 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
 public class CanonicalConvertorIntgTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConvertorIntgTest.class);

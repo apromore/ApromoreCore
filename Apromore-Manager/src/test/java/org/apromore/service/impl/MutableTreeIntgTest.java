@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ import static org.hamcrest.Matchers.nullValue;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
+@TestExecutionListeners(value = DependencyInjectionTestExecutionListener.class)
 public class MutableTreeIntgTest {
 
     @Autowired
