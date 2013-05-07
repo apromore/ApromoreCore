@@ -12,11 +12,6 @@
     <name>YAWL Deployment Plugin</name>
     <description>Deploys processes from Apromore to a running YAWL engine.</description>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

@@ -12,11 +12,6 @@
     <name>Apromore Deployment Plugin API</name>
     <description>Deployment Plugin API, an interface to allow process deployment from Apromore.</description>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

@@ -1,0 +1,10 @@
+<div>
+    <div class="panelHeader">
+        Navigation
+    </div>
+    <div class="leftTop" width="30%">
+        <vbox class="menuIcon" align="center" pack="center">
+            <image src="img/icons/tree.png" />
+        </vbox>
+    </div>
+</div>

@@ -15,11 +15,6 @@
     <name>Apromore Canoniser API Provider</name>
     <description>Provider for Canonisers using OSGi to dynamically discover available Canonisers</description>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

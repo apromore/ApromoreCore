@@ -17,9 +17,6 @@
 
     <properties>
         <h2.version>1.3.170</h2.version>
-
-        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
     </properties>
 
     <build>
