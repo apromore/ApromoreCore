@@ -24,9 +24,6 @@
     </scm>
 
     <modules>
-        <!-- Tools -->
-        <module>test-tools</module>
-
         <!-- Schema's -->
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/aris-schema</module>
