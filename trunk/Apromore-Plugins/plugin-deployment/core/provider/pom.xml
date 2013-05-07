@@ -12,6 +12,12 @@
     <name>Apromore Deployment Plugin API Provider</name>
     <description>Provider for Deployment Plugins</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/provider</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/provider</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/provider</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

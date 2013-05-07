@@ -12,6 +12,12 @@
     <name>YAWL Deployment Plugin</name>
     <description>Deploys processes from Apromore to a running YAWL engine.</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/deployment-yawl</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/deployment-yawl</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/deployment-yawl</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

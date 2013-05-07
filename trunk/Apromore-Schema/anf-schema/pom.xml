@@ -15,6 +15,12 @@
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common ANF Generated Code</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/anf-schema</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/anf-schema</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/anf-schema</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

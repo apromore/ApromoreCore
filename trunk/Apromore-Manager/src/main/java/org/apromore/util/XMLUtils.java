@@ -69,7 +69,7 @@ public class XMLUtils {
         try {
             // Otherwise return XML representation
             final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            return docBuilder.parse(new ByteArrayInputStream(value.getBytes())).getDocumentElement();
+            return docBuilder.parse(new ByteArrayInputStream(value.getBytes("UTF-8"))).getDocumentElement();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             LOGGER.warn("stringToAnyElement returning JAXBElement with plain String {} instead of XML", value);
             throw new IllegalArgumentException("Invalid Node in ANY!", e);

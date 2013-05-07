@@ -310,7 +310,7 @@ public class ManagerPortalEndpoint {
             String processName = payload.getProcessName();
             String version = payload.getVersionName();
             String domain = payload.getDomain();
-            Integer processId = payload.getProcessId();
+            //Integer processId = payload.getProcessId();
             Integer folderId = payload.getFolderId();
             String username = payload.getUsername();
             ParametersType parameters = new ParametersType();
@@ -383,7 +383,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload final JAXBElement<WriteAnnotationInputMsgType> req) {
         LOGGER.info("Executing operation writeAnnotation");
-        WriteAnnotationInputMsgType payload = req.getValue();
+        //WriteAnnotationInputMsgType payload = req.getValue();
         WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -412,14 +412,14 @@ public class ManagerPortalEndpoint {
     public void getAllClusters(@RequestPayload final JAXBElement<String> message) {
         LOGGER.info("Retrieving all clusters in the repository ...");
         String payload = message.getValue();
-        String res = "received: " + payload;
+        //String res = "received: " + payload;
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "ReadAllUsersRequest")
     @ResponsePayload
     public JAXBElement<ReadAllUsersOutputMsgType> readAllUsers(@RequestPayload final JAXBElement<ReadAllUsersInputMsgType> message) {
         LOGGER.info("Executing operation readAllUsers");
-        ReadAllUsersInputMsgType payload = message.getValue();
+        //ReadAllUsersInputMsgType payload = message.getValue();
         ReadAllUsersOutputMsgType res = new ReadAllUsersOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -723,7 +723,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<GetClusteringSummaryOutputMsgType> getClusteringSummary(@RequestPayload final JAXBElement<GetClusteringSummaryInputMsgType> req) {
         LOGGER.info("Executing operation getClusteringSummary");
-        GetClusteringSummaryInputMsgType payload = req.getValue();
+        //GetClusteringSummaryInputMsgType payload = req.getValue();
         GetClusteringSummaryOutputMsgType res = new GetClusteringSummaryOutputMsgType();
 
         ClusteringSummary summary = clusterService.getClusteringSummary();
@@ -1112,9 +1112,7 @@ public class ManagerPortalEndpoint {
         try {
             String nativeType = req.getValue().getNativeType();
             Set<DeploymentPlugin> dList = deploymentService.listDeploymentPlugin(nativeType);
-            Iterator<DeploymentPlugin> iter = dList.iterator();
-            while (iter.hasNext()) {
-                DeploymentPlugin d = iter.next();
+            for (DeploymentPlugin d : dList) {
                 res.getPluginInfo().add(PluginHelper.convertPluginInfo(d));
             }
             result.setCode(0);
@@ -1138,7 +1136,7 @@ public class ManagerPortalEndpoint {
         try {
             String nativeType = req.getValue().getNativeType();
             String processName = req.getValue().getProcessName();
-            Double versionName = req.getValue().getVersionName();
+            //Double versionName = req.getValue().getVersionName();
             String branchName = req.getValue().getBranchName();
             PluginParameters deploymentProperties = req.getValue().getDeploymentParameters();
             Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(deploymentProperties);

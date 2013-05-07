@@ -15,6 +15,12 @@
     <name>Apromore Canoniser EPML</name>
     <url>http://code.google.com/p/apromore/</url>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/epml</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/epml</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/epml</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
