@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?component name="header" macroURI="views/shared/header.zul" ?>
+<?component name="menu" macroURI="views/shared/menu.zul" ?>
+<?component name="leftTop" macroURI="views/shared/leftTop.zul" ?>
+<?component name="leftBottom" macroURI="views/shared/leftBottom.zul" ?>
+<?component name="folderTiles" macroURI="views/home/folderTiles.zul" ?>
+<?link rel="stylesheet" href="styles/main.css" type="text/css" ?>
+
+<zk xmlns:x="xhtml" xmlns:zk="zk">
+    <window class="mainWindow">
+        <header />
+        <menu />
+        <div class="content">
+            <hbox spacing="0" width="100%" height="100%" widths="20%,80%">
+                <vbox spacing="0" width="100%" heights="50%,50%">
+                    <leftTop />
+                    <splitter collapse="before"/>
+                    <leftBottom />
+                </vbox>
+                <splitter collapse="before"/>
+                <div class="rightMain">
+                    <folderTiles />
+                </div>
+            </hbox>
+        </div>
+        <div class="footer">
+        
+        </div>
+    </window>
+</zk>

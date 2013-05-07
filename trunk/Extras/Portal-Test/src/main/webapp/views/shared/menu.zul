@@ -1,0 +1,110 @@
+<div class="menu">
+    <tabbox id="tb" height="120px">
+        <tabs id="tabs">
+            <tab id="processTab" label="Process" />
+            <tab id="filteringTab" label="Filtering" />
+            <tab id="designTab" label="Design" />
+            <tab id="evaluationTab" label="Evaluation" />
+            <tab id="presentationTab" label="Presentation" />
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <hbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/create_model.png" width="48px" />
+                        <label>create model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/import_model.png" width="48px" />
+                        <label>import model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/export_model.png" width="48px" />
+                        <label>export model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/edit_model.png" width="48px" />
+                        <label>edit model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/edit_metadata.png" width="48px" />
+                        <label>edit meta</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/delete_model.png" width="48px" />
+                        <label>delete model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/copy.png" width="48px" />
+                        <label>copy model</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/paste.png" width="48px" />
+                        <label>paste model</label>
+                    </vbox>
+                </hbox>
+            </tabpanel>
+            <tabpanel>
+                <hbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/search_similarity.png" width="48px" />
+                        <label>similarity search</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/cluster.png" width="48px" />
+                        <label>similarity cluster</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/exact.png" width="48px" />
+                        <label>exact matching</label>
+                    </vbox>
+                </hbox>
+            </tabpanel>
+            <tabpanel>
+                <hbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/merge.png" width="48px" />
+                        <label>merging</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/patterns.png" width="48px" />
+                        <label>pattern composition</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/references.png" width="48px" />
+                        <label>reference composition</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/completion.png" width="48px" />
+                        <label>pattern completion</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/settings.png" width="48px" />
+                        <label>configurations</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/plugins.png" width="48px" />
+                        <label>extension control</label>
+                    </vbox>
+                </hbox>
+            </tabpanel>
+            <tabpanel>
+                <hbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/quality.png" width="48px" />
+                        <label>quality</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/correctness.png" width="48px" />
+                        <label>correctness</label>
+                    </vbox>
+                    <vbox class="menuIcon" align="center" pack="center">
+                        <image src="img/icons/performance.png" width="48px" />
+                        <label>performance</label>
+                    </vbox>
+                </hbox>
+            </tabpanel>
+            <tabpanel></tabpanel>
+        </tabpanels>
+    </tabbox>
+</div>

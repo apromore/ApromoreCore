@@ -15,11 +15,6 @@
     <description>Responsible for (de)canonising YAWL 2.2.</description>
     <inceptionYear>2012</inceptionYear>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <developers>
         <developer>
             <id>felix.mannhardt</id>
