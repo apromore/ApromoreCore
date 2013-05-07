@@ -1,0 +1,13 @@
+<div class="header">
+    <div class="headerTop">
+        <hbox class="logo" align="center" pack="center">
+            <image class="logoImage" src="img/apromore_logo.png" width="70px" />
+            <label class="logoText">Apromore Portal</label>
+        </hbox>
+        <hbox class="userOptions" align="center" pack="center" height="30px">
+            <image class="logoImage" src="img/user.png" width="20px" />
+            <label class="userText">user@test.com</label>
+            <button label="logout" />
+        </hbox>
+    </div>
+</div>

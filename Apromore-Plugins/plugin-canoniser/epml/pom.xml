@@ -15,11 +15,6 @@
     <name>Apromore Canoniser EPML</name>
     <url>http://code.google.com/p/apromore/</url>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

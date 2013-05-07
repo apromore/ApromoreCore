@@ -15,11 +15,6 @@
     <name>Apromore PostgreSQL Plugin</name>
     <description>This Plug-in is needed for PostgreSQL support in Apromore.</description>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

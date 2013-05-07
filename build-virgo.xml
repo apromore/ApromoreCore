@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
 
     <description>
         Supports deployment of Apromore to Eclipse Virgo.
     </description>
 
-    <!-- 
-        Change this property to select a different database plugin for Deployment!
-        You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available.
-    -->
+    <!-- Change this property to select a different database plugin for Deployment!
+         You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available. -->
     <property name="database-name" value="mysql"/>
-    <!-- 
-        URL of the automatically downloaded and installed Eclipse Virgo 
-    -->
-    <property name="virgo-url"
-              value="http://www.eclipse.org/downloads/download.php?file=/virgo/release/VP/3.6.0.RELEASE/virgo-tomcat-server-3.6.0.RELEASE.zip&amp;r=1"/>
+
+    <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
+    <property name="virgo-url" value="http://www.eclipse.org/downloads/download.php?file=/virgo/release/VP/3.6.0.RELEASE/virgo-tomcat-server-3.6.0.RELEASE.zip&amp;r=1"/>
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
     <property name="dir-target" location="${dir-deployment}/apromore-release"/>

@@ -12,11 +12,6 @@
     <name>Apromore Canonical Graph Plugin</name>
     <description>...</description>
 
-    <properties>
-        <maven-checkstyle-plugin.configLocation>../../../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../../../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

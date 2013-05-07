@@ -18,9 +18,6 @@
     <properties>
         <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
-
-        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
     </properties>
 
     <dependencies>

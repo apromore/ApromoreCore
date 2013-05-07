@@ -5,6 +5,8 @@ REQUIREMENTS
 
 Apromore has been successfully installed on the following platforms:
 - Windows 7
+- Linux (specifically ubuntu)
+- Mac OSX 10.8
 
 Ensure the following software is installed:
 - Java 1.7
@@ -20,8 +22,10 @@ CONFIGURATION
 
 Edit the following configuration properties:
 
-- Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root
+- Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root (Or something equivalent in non windows systems)
   This needs to reference an empty directory with write permission
+
+
 
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 

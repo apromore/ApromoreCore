@@ -16,9 +16,6 @@
     <description>Apromore Plugin API's and core Plugins</description>
 
     <properties>
-        <maven-checkstyle-plugin.configLocation>../Extras/code-analysis/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-        <maven-pmd-plugin.configLocation>../Extras/code-analysis/pmd.xml</maven-pmd-plugin.configLocation>
-
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
