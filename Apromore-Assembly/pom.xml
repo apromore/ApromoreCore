@@ -20,6 +20,12 @@
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
     </properties>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Assembly</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Assembly</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Assembly</developerConnection>
+    </scm>
+
     <dependencies>
         <!-- Schema Bundles -->
         <dependency>

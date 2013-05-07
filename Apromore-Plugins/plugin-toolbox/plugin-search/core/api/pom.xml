@@ -15,6 +15,12 @@
     <name>Apromore Search API</name>
     <description>API for Search Plugins</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/api</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/api</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/api</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

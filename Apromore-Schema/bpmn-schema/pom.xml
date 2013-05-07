@@ -16,6 +16,12 @@
     <url>http://apromore.org/</url>
     <name>Apromore Common BPMN Generated Code</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>com.sun.xml</groupId>

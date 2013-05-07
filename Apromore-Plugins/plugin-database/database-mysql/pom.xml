@@ -15,6 +15,12 @@
     <name>Apromore MySQL Plugin</name>
     <description>This Plug-in is needed for MySQL support in Apromore.</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-mysql</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-mysql</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-mysql</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

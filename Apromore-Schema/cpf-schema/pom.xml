@@ -16,6 +16,12 @@
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common CPF Generated Code</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

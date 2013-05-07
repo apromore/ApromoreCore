@@ -2,7 +2,6 @@ package org.apromore.aop;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -51,7 +50,7 @@ public class TimerStatsInterceptor {
     private void updateStats(String className, String methodName, long elapsedTime) {
         MethodStats stats = methodStats.get(methodName);
         if(stats == null) {
-            stats = new MethodStats(methodName);
+            stats = new MethodStats();
             methodStats.put(methodName,stats);
         }
         stats.count++;
@@ -81,17 +80,11 @@ public class TimerStatsInterceptor {
     /**
      * Private class for storing of the Method Stats.
      */
-    private class MethodStats {
-
-        public String methodName;
+    private static class MethodStats {
         public long count;
         public long totalTime;
         public long lastTotalTime;
         public long maxTime;
-
-        public MethodStats(String methodName) {
-            this.methodName = methodName;
-        }
     }
 
 }
