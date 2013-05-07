@@ -1,64 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-	Just a very simple ANT script doing everything of a complete Apromore build in a row.
-	This ANT script relies on a special directory structure and is only a temporary solution. 
-		
-	Added by Felix Mannhardt 
--->
-<project name="Apromore - Copy and Build all WAR" default="deploy-war">
+<project name="Apromore - Eclipse Virgo Deployment" default="deploy-virgo">
 
-    <import file="build-virgo.xml"/>
+    <description>
+        Supports deployment of Apromore to Eclipse Virgo.
+    </description>
 
-    <!--
-        Local properties for your developer machine. This will override whatever is defined in build.properties!
-        You should never check this into SVN.
-    -->
-    <property file="apromore-deploy/local.properties"/>
+    <!-- Change this property to select a different database plugin for Deployment!
+         You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available. -->
+    <property name="database-name" value="mysql"/>
 
-    <!-- Standard properties for the build enviroment -->
-    <property file="apromore-deploy/build.properties"/>
+    <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
+    <property name="virgo-url" value="http://apromore.googlecode.com/files/virgo-tomcat-server-3.6.0.RELEASE.zip"/>
+    <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
+    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
 
-    <!-- Delete all deployed WAR files -->
-    <target name="clean-war">
-        <delete file="${dir-tomcat-webapps}/manager.war"/>
-        <delete file="${dir-tomcat-webapps}/portal.war"/>
-        <delete file="${dir-tomcat-webapps}/editor.war"/>
-        <delete dir="${dir-tomcat-webapps}/manager"/>
-        <delete dir="${dir-tomcat-webapps}/portal"/>
-        <delete dir="${dir-tomcat-webapps}/editor"/>
+    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
+
+    <target name="check-virgo">
+        <condition property="virgo.installed">
+            <available file="${dir-virgo}" type="dir"/>
+        </condition>
     </target>
 
-    <!-- Build all WAR files using ANT and Maven -->
-    <target name="build-war" depends="clean-war">
-        <!-- Prepare Signavio Editor -->
-        <ant antfile="build.xml" target="build-all-in-one-war" dir="Apromore-Editor/" inheritall="false"/>
+    <target name="download-virgo" depends="check-virgo" unless="virgo.installed">
+        <mkdir dir="${dir-deployment}"/>
+        <get src="${virgo-url}" dest="${dir-deployment}/virgo.zip"/>
+        <unzip src="${dir-deployment}/virgo.zip" dest="${dir-deployment}"/>
+        <delete file="${dir-deployment}/virgo.zip"/>
+    </target>
 
-        <!--  Run Apromore Maven -->
-        <exec dir="." executable="cmd" osfamily="windows">
+    <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
+        <copy todir="${dir-virgo}/repository/ext" overwrite="true">
+            <fileset dir="Extras/Virgo">
+                <!--
+                        We need a compatibility mode for Apromore Editor vanilla WAR.
+                        See: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/html/ch13s08.html
+                -->
+                <filename name="org.eclipse.virgo.web.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/configuration" overwrite="true">
+            <fileset dir="Extras/Virgo">
+                <!--
+                        Change default port to 9000 in Eclipse Virgo
+                -->
+                <include name="tomcat-server.xml"/>
+                <!--
+                    Export Java standard classes according to our needs
+                -->
+                <include name="java6-server.profile"/>
+            </fileset>
+        </copy>
+        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
+    </target>
+
+    <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="repository/usr/*.jar"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
+                <include name="pickup/*.jar"/>
+                <include name="pickup/*.war"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.0.RELEASE.par"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.0.RELEASE.jar"/>
+                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.0.RELEASE.jar"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="dist-virgo" depends="clean-virgo, setup-virgo, copy-virgo, deploy-virgo">
+        <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
+    </target>
+
+    <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
+
+    <target name="set-permissions" depends="setup-virgo">
+        <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
+    </target>
+
+    <target name="start-virgo" depends="set-permissions">  <!-- deploy-virgo,  -->
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
-            <arg value="mvn"/>
-            <arg line="clean install cobertura:cobertura"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
         </exec>
-        <exec executable="mvn" osfamily="unix">
-            <arg value="clean"/>
-            <arg value="install"/>
-            <!--<arg value="cobertura:cobertura"/>-->
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
         </exec>
     </target>
 
-    <!-- Copy all WAR files to Tomcat -->
-    <target name="copy-war" depends="build-war">
-        <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
+    <target name="debug-virgo" depends="set-permissions"> <!-- deploy-virgo,  -->
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean -debug"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean -debug"/>
+        </exec>
     </target>
 
-    <target name="deploy-war" depends="copy-war"/>
-
-    <target name="copy-war-nodep">
-        <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
+    <target name="stop-virgo" depends="setup-virgo">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="shutdown.bat"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
+        </exec>
     </target>
+
+
+    <target name="copy-virgo" depends="clean-virgo">
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="usrRepo"/>
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="pickupRepo"/>
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="webAppRepo"/>
+        </copy>
+    </target>
+
+
+    <fileset id="pickupRepo" dir=".">
+        <include name="Apromore-Assembly/**/*.par"/>
+    </fileset>
+
+    <fileset id="usrRepo" dir=".">
+        <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
+
+    </fileset>
+
+    <fileset id="webAppRepo" dir=".">
+        <include name="Apromore-Editor/target/*.war"/>
+        <include name="Apromore-Portal/target/*.war"/>
+    </fileset>
 
 </project>

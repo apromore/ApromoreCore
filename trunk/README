@@ -1,12 +1,12 @@
-Apromore Build Instructions
-
+Apromore Build Instructions with Eclipse Virgo
 
 REQUIREMENTS
+============
 
 Apromore has been successfully installed on the following platforms:
 - Windows 7
-- Ubuntu 12.04 (32-bit)
-- Mac OS X 10.8
+- Linux (specifically ubuntu)
+- Mac OSX 10.8
 
 Ensure the following software is installed:
 - Java 1.7
@@ -14,25 +14,29 @@ Ensure the following software is installed:
 - Ant 1.8.3
 - MySQL 5.5
 - Subversion 1.6
-- Tomcat 7
+
+MySQL is the default db that we support but we do have plugins for Postgres and Oracle but some extra setup will be required. The manager
+application will need to be told about the change as well as the Assembely project. Also we only have sql scripts to create the database
+for H2 and MySQL.
 
 Check out the Apromore source tree from the Subversion repository at http://code.google.com/p/apromore/source/checkout
 
 
 CONFIGURATION
+=============
 
 Edit the following configuration properties:
 
-- Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root
+- Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root (Or something equivalent in non windows systems)
   This needs to reference an empty directory with write permission
 
-- Apromore-Deploy/build.properties: dir-tomcat-webapps = C:/Development/Apps/tomcat7/webapps
-  This needs to reference the Tomcat 7 installation
-
+At this point MySQL isn't required for the builds at it now uses H2. To run Apromore after the build you will need MySQL setup.
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
 
+
 DATABASE SETUP
+==============
 
 Start MySQL
 $ sudo mysqld_safe
@@ -43,23 +47,26 @@ $ mysqladmin -u root password MAcri
 Create a user named 'apromore' in your MySQL database.
 $ mysqladmin --user=root --password=MAcri create apromore
 
-Navigate to the directory Apromore-Manager/src/main/sql and execute createDB.sql in your MySQL database.
+Navigate to the directory Extras/database/ and execute db-mysql.sql in your MySQL database.
 This will create your database and setup the tables.
-$ mysql --user=root --password=MAcri < Apromore-Manager/src/main/sql/createDB.sql
+$ mysql --user=root --password=MAcri < Extras/database/db-mysql.sql
 
 
 BUILD IT
+========
 
-Navigate to the Build-Tools folder and run 'mvn clean install'
+Navigate to the Extras/Test-Tools folder and run 'mvn clean install'
+Navigate to the Extras/Build-Tools folder and run 'mvn clean install'
 
-Change the the Extras folder and run 'upload.bat' (Windows) or 'upload.sh' (Unix/Linux/Mac)
+Change the the Extras/libraries folder and run 'upload.bat' (Windows) or 'upload.sh' (Unix/Linux/Mac)
 This will place jars in the build that are needed for the next set.
 
-Change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
+Change to the root and run 'mvn clean install'. This will build the Apromore manager, portal and editor.
+
+while still in the root after a successful build 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
 
 
 TRY IT OUT
+==========
 
-Start up Tomcat.
-
-Preferably using Mozilla Firefox, browse http://localhost:9000/portal
+Currently Apromore onbly runs in Mozilla Firefox, browse http://localhost:9000/portal
