@@ -15,6 +15,12 @@
     <name>Apromore Canoniser PNML</name>
     <url>http://code.google.com/p/apromore/</url>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/pnml</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/pnml</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-canoniser/pnml</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

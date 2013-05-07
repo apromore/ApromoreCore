@@ -15,6 +15,12 @@
     <packaging>pom</packaging>
     <name>Apromore Editor (Signavio)</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Editor</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Editor</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Editor</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

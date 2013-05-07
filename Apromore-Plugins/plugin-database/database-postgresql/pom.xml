@@ -15,6 +15,12 @@
     <name>Apromore PostgreSQL Plugin</name>
     <description>This Plug-in is needed for PostgreSQL support in Apromore.</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-postgresql</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-postgresql</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-postgresql</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

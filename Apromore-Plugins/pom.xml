@@ -25,6 +25,12 @@
         <httpcomponents.version>4.2.1</httpcomponents.version>
     </properties>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins</developerConnection>
+    </scm>
+
     <modules>
         <!-- Database Support Plugins -->
         <module>plugin-database/database-mysql</module>

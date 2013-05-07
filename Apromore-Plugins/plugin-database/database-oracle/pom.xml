@@ -15,6 +15,12 @@
     <name>Apromore Oracle Plugin</name>
     <description>This Plug-in is needed for Oracle support in Apromore.</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-oracle</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-oracle</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-database/database-oracle</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

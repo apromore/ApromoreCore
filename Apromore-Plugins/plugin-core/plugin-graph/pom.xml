@@ -12,6 +12,12 @@
     <name>Apromore Canonical Graph Plugin</name>
     <description>...</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/plugin-graph</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/plugin-graph</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/plugin-graph</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

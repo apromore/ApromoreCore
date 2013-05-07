@@ -12,6 +12,12 @@
     <name>Apromore Deployment Plugin API</name>
     <description>Deployment Plugin API, an interface to allow process deployment from Apromore.</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/api</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/api</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-deployment/core/api</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

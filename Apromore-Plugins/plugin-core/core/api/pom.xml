@@ -14,6 +14,12 @@
     <artifactId>plugin-api</artifactId>
     <name>Apromore Plugin API</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/core/api</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/core/api</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/core/api</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

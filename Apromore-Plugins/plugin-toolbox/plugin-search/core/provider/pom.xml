@@ -15,6 +15,12 @@
     <name>Apromore Search API Provider</name>
     <description>Provider for Search Plugins using OSGi to dynamically discover available Search Plugins</description>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/provider</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/provider</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-toolbox/plugin-search/core/provider</developerConnection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>

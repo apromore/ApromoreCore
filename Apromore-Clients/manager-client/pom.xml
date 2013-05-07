@@ -16,6 +16,12 @@
     <url>http://apromore.org/</url>
     <name>Apromore Manager Client</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</developerConnection>
+    </scm>
+
     <dependencies>
         <!-- Plugin API -->
         <dependency>

@@ -16,6 +16,12 @@
     <url>http://apromore.org/</url>
     <name>Apromore Common EPML Generated Code</name>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/epml-schema</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/epml-schema</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/epml-schema</developerConnection>
+    </scm>
+
     <build>
         <finalName>epml-schema</finalName>
         <plugins>

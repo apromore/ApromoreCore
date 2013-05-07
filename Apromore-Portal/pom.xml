@@ -28,6 +28,12 @@
         </repository>
     </repositories>
 
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Portal</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Portal</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Portal</developerConnection>
+    </scm>
+
     <build>
         <finalName>portal</finalName>
         <plugins>
