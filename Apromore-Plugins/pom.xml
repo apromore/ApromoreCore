@@ -12,7 +12,7 @@
     <artifactId>plugin</artifactId>
     <packaging>pom</packaging>
     <url>http://www.apromore.org/</url>
-    <name>Apromore - Core Plugins / API</name>
+    <name>Apromore Plugins</name>
     <description>Apromore Plugin API's and core Plugins</description>
 
     <properties>

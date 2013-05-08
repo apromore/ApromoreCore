@@ -14,7 +14,7 @@
     <artifactId>yawl-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://code.google.com/p/apromore/</url>
-    <name>Apromore Common YAWL Generated Code</name>
+    <name>Apromore YAWL Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/yawl-schema</url>

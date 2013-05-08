@@ -24,15 +24,6 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
     @Query("SELECT fv FROM FragmentVersion fv WHERE fv.uri = ?1")
     FragmentVersion findFragmentVersionByUri(String uri);
 
-//    /**
-//     * find the matching fragment versions for the content and mapping code.
-//     * @param contentId the content id.
-//     * @param childMappingCode the child mapping code.
-//     * @return the fragment version that corresponds to the content and mapping code.
-//     */
-//    @Query("SELECT fv FROM FragmentVersion fv WHERE fv.content.id = ?1 AND fv.childMappingCode = ?2")
-//    FragmentVersion getMatchingFragmentVersionId(Integer contentId, String childMappingCode);
-
     /**
      * Return the parent fragment for a fragment.
      * @param childFragmentVersionId the child fragment id.
@@ -50,14 +41,6 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
             "AND fv.lockStatus = 1 AND fvd.childFragmentVersion = ?1")
     List<FragmentVersion> getLockedParentFragments(FragmentVersion childFragmentVersion);
 
-//    /**
-//     * Find all the fragments that have been used by a particular fragment.
-//     * @param contentId the fragment id we are searching for.
-//     * @return the list of fragments.
-//     */
-//    @Query("SELECT fv FROM FragmentVersion fv WHERE fv.content.id = ?1")
-//    List<FragmentVersion> getUsedFragments(Integer contentId);
-
     /**
      * the child Fragments from the fragment Version.
      * @param fragmentVersion the fragment version we are using to find it's children
@@ -65,14 +48,6 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
      */
     @Query("SELECT cfv FROM FragmentVersionDag fvd JOIN fvd.childFragmentVersion cfv JOIN fvd.fragmentVersion fv WHERE fv = ?1")
     List<FragmentVersion> getChildFragmentsByFragmentVersion(FragmentVersion fragmentVersion);
-
-    /**
-     * find a fragments of a cluster.
-     * @param clusterId the cluster id
-     * @return the list of fragments
-     */
-    @Query("SELECT fv FROM FragmentVersion fv JOIN fv.cluster c WHERE c.id = ?1")
-    List<FragmentVersion> findByClusterId(Integer clusterId);
 
     /**
      * find a fragments of a cluster.

@@ -14,7 +14,7 @@
     <artifactId>bpmn-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://apromore.org/</url>
-    <name>Apromore Common BPMN Generated Code</name>
+    <name>Apromore BPMN Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/bpmn-schema</url>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>canoniser-yawl</artifactId>
-    <name>Apromore Canoniser YAWL</name>
+    <name>Apromore YAWL Canoniser</name>
     <description>Responsible for (de)canonising YAWL 2.2.</description>
     <inceptionYear>2012</inceptionYear>
 

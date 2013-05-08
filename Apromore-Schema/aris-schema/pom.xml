@@ -14,7 +14,7 @@
     <artifactId>aris-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://code.google.com/p/apromore/</url>
-    <name>Apromore Common ARIS Generated Code</name>
+    <name>Apromore ARIS Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/aris-schema</url>

@@ -14,7 +14,7 @@
     <artifactId>rlf-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://apromore.org/</url>
-    <name>Apromore Common RLF Generated Code</name>
+    <name>Apromore RLF Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/rlf-schema</url>
