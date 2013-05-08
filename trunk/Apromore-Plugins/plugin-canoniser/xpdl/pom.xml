@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>canoniser-xpdl</artifactId>
-    <name>Apromore Canoniser XPDL</name>
+    <name>Apromore XPDL Canoniser</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <scm>

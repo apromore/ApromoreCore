@@ -14,7 +14,7 @@
     <artifactId>epml-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://apromore.org/</url>
-    <name>Apromore Common EPML Generated Code</name>
+    <name>Apromore EPML Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/epml-schema</url>

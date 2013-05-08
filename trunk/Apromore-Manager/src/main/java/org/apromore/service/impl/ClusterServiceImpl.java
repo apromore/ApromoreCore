@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.FragmentDistance;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
@@ -53,7 +52,6 @@ public class ClusterServiceImpl implements ClusterService {
 
     private ClusterRepository cRepository;
     private ClusterAssignmentRepository caRepository;
-    private FragmentVersionRepository fvRepository;
     private FragmentDistanceRepository fdRepository;
     private FragmentService fService;
 
@@ -67,19 +65,16 @@ public class ClusterServiceImpl implements ClusterService {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param clusterRepository Cluster Repository.
      * @param clusterAssignmentRepository Cluster Assignment Repository.
-     * @param fragmentVersionRepository Fragment Version Repository.
      * @param fragmentDistanceRepository Fragment Distance Repository.
      * @param fragmentService Fragment Repository.
      * @param inMemoryClusterer in Memory Clusterer.
      */
     @Inject
-    public ClusterServiceImpl(final ClusterRepository clusterRepository,
-            final ClusterAssignmentRepository clusterAssignmentRepository, final FragmentVersionRepository fragmentVersionRepository,
+    public ClusterServiceImpl(final ClusterRepository clusterRepository, final ClusterAssignmentRepository clusterAssignmentRepository,
             final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService,
             final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer, final DMatrix matrix) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
-        fvRepository = fragmentVersionRepository;
         fdRepository = fragmentDistanceRepository;
         dbscanClusterer = inMemoryClusterer;
         hacCluster = hacClusterer;
@@ -176,31 +171,34 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public org.apromore.service.model.Cluster getCluster(Integer clusterId) {
+        MemberFragment fragment;
+        ProcessAssociation pa;
+        FragmentDistance distance;
         Cluster cinfo = cRepository.findOne(clusterId);
 
         org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
         c.setCluster(cinfo);
-        List<FragmentVersion> fs = fvRepository.findByClusterId(clusterId);
-        for (FragmentVersion f : fs) {
-            MemberFragment fragment = new MemberFragment(f.getId());
-            fragment.setFragmentSize(f.getFragmentSize());
-            Set<ProcessModelVersion> pmap = f.getProcessModelVersions();
-            for (ProcessModelVersion m : pmap) {
-                Integer pmvid = m.getId();
-                Double pmvNumber = m.getVersionNumber();
-                String branchName = m.getProcessBranch().getBranchName();
-                Integer processId = m.getProcessBranch().getProcess().getId();
-                String processName = m.getProcessBranch().getProcess().getName();
 
-                ProcessAssociation pa = new ProcessAssociation();
-                pa.setProcessVersionId(pmvid);
-                pa.setProcessVersionNumber(pmvNumber);
-                pa.setProcessBranchName(branchName);
-                pa.setProcessId(processId);
-                pa.setProcessName(processName);
+        List<FragmentVersion> fs = caRepository.findFragmentVersionByClusterId(clusterId);
+        for (FragmentVersion f : fs) {
+            fragment = new MemberFragment(f.getId());
+            fragment.setFragmentSize(f.getFragmentSize());
+            for (ProcessModelVersion m : f.getProcessModelVersions()) {
+                pa = new ProcessAssociation();
+                pa.setProcessVersionId(m.getId());
+                pa.setProcessVersionNumber(m.getVersionNumber());
+                pa.setProcessBranchName(m.getProcessBranch().getBranchName());
+                pa.setProcessId(m.getProcessBranch().getProcess().getId());
+                pa.setProcessName(m.getProcessBranch().getProcess().getName());
                 fragment.getProcessAssociations().add(pa);
             }
-            fragment.setDistance(fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId()).getDistance());
+
+            distance = fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId());
+            if (distance != null) {
+                fragment.setDistance(distance.getDistance());
+            } else {
+                fragment.setDistance(-1d);
+            }
             c.addFragment(fragment);
         }
         return c;
@@ -221,32 +219,37 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public List<org.apromore.service.model.Cluster> getClusters(ClusterFilter filter) {
+        MemberFragment fragment;
+        ProcessAssociation pa;
+        FragmentDistance distance;
+        List<FragmentVersion> fs;
         List<org.apromore.service.model.Cluster> clusters = new ArrayList<>();
+
         List<Cluster> cinfos = cRepository.getFilteredClusters(filter);
         for (Cluster cinfo : cinfos) {
             org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
             c.setCluster(cinfo);
-            List<FragmentVersion> fs = fvRepository.findByClusterId(cinfo.getId());
-            for (FragmentVersion f : fs) {
-                MemberFragment fragment = new MemberFragment(f.getId());
-                fragment.setFragmentSize(f.getFragmentSize());
-                Set<ProcessModelVersion> pmap = f.getProcessModelVersions();
-                for (ProcessModelVersion m : pmap) {
-                    Integer pmvid = m.getId();
-                    Double pmvNumber = m.getVersionNumber();
-                    String branchName = m.getProcessBranch().getBranchName();
-                    Integer processId = m.getProcessBranch().getProcess().getId();
-                    String processName = m.getProcessBranch().getProcess().getName();
 
-                    ProcessAssociation pa = new ProcessAssociation();
-                    pa.setProcessVersionId(pmvid);
-                    pa.setProcessVersionNumber(pmvNumber);
-                    pa.setProcessBranchName(branchName);
-                    pa.setProcessId(processId);
-                    pa.setProcessName(processName);
+            fs = caRepository.findFragmentVersionByClusterId(cinfo.getId());
+            for (FragmentVersion f : fs) {
+                fragment = new MemberFragment(f.getId());
+                fragment.setFragmentSize(f.getFragmentSize());
+                for (ProcessModelVersion m : f.getProcessModelVersions()) {
+                    pa = new ProcessAssociation();
+                    pa.setProcessVersionId(m.getId());
+                    pa.setProcessVersionNumber(m.getVersionNumber());
+                    pa.setProcessBranchName(m.getProcessBranch().getBranchName());
+                    pa.setProcessId(m.getProcessBranch().getProcess().getId());
+                    pa.setProcessName(m.getProcessBranch().getProcess().getName());
                     fragment.getProcessAssociations().add(pa);
                 }
-                fragment.setDistance(fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId()).getDistance());
+
+                distance = fdRepository.findByFragmentVersionId1AndFragmentVersionId2(cinfo.getMedoidId(), f.getId());
+                if (distance != null) {
+                    fragment.setDistance(distance.getDistance());
+                } else {
+                    fragment.setDistance(-1d);
+                }
                 c.addFragment(fragment);
             }
             clusters.add(c);

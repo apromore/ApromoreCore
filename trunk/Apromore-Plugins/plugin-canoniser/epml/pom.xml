@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>canoniser-epml</artifactId>
-    <name>Apromore Canoniser EPML</name>
+    <name>Apromore EPML Canoniser</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <scm>

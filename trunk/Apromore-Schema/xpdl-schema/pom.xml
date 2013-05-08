@@ -14,7 +14,7 @@
     <artifactId>xpdl-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://apromore.org/</url>
-    <name>Apromore Common XPDL Generated Code</name>
+    <name>Apromore XPDL Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/xpdl-schema</url>

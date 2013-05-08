@@ -10,7 +10,6 @@
 
     <artifactId>plugin-graph</artifactId>
     <name>Apromore Canonical Graph Plugin</name>
-    <description>...</description>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-core/plugin-graph</url>

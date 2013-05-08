@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>canoniser-aris</artifactId>
-    <name>Apromore Canoniser ARIS</name>
+    <name>Apromore ARIS Canoniser</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <scm>
