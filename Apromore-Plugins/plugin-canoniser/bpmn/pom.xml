@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>canoniser-bpmn</artifactId>
-    <name>Apromore Canoniser BPMN</name>
+    <name>Apromore BPMN Canoniser</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <scm>

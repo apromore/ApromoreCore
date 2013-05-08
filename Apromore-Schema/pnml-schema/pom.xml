@@ -14,7 +14,7 @@
     <artifactId>pnml-schema</artifactId>
     <packaging>jar</packaging>
     <url>http://apromore.org/</url>
-    <name>Apromore Common PNML Generated Code</name>
+    <name>Apromore PNML Schema</name>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/pnml-schema</url>

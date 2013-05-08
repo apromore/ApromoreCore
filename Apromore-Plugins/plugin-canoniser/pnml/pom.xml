@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>canoniser-pnml</artifactId>
-    <name>Apromore Canoniser PNML</name>
+    <name>Apromore PNML Canoniser</name>
     <url>http://code.google.com/p/apromore/</url>
 
     <scm>
