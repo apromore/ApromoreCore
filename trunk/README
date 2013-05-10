@@ -69,4 +69,4 @@ while still in the root after a successful build 'ant start-virgo'. This will in
 TRY IT OUT
 ==========
 
-Currently Apromore onbly runs in Mozilla Firefox, browse http://localhost:9000/portal
+Currently Apromore only runs in Mozilla Firefox, browse http://localhost:9000/portal

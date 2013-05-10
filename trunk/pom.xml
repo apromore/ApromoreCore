@@ -27,7 +27,7 @@
         <site>
             <id>apromore.repo.googlecode</id>
             <name>Apromore Google Code Maven Site SCM</name>
-            <url>scm:svn:https://apromore-repo.googlecode.com/svn/site</url>
+            <url>file:///tmp/www/maven-site</url>
         </site>
         <repository>
             <id>apromore.repo.googlecode</id>
