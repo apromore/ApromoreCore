@@ -1138,6 +1138,11 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven.site.plugin}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -1369,7 +1374,6 @@
                     </filesets>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -1434,8 +1438,6 @@
                         <supportedProjectType>bundle</supportedProjectType>
                         <supportedProjectType>war</supportedProjectType>
                     </supportedProjectTypes>
-                    <!--<dumpClasspath>${project.build.directory}/classpath.txt</dumpClasspath>-->
-                    <!--<dumpInstructions>${project.build.directory}/instructions.txt</dumpInstructions>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -1459,34 +1461,13 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${maven.site.plugin}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-scm</artifactId>
-                        <version>${maven.wagon-scm.extension}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-api</artifactId>
-                        <version>1.8.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-svnexe</artifactId>
-                        <version>1.8.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-svn-commons</artifactId>
-                        <version>1.8.1</version>
-                    </dependency>
-                </dependencies>
+                <inherited>true</inherited>
                 <configuration>
-                    <stagingDirectory>${project.build.directory}/stage</stagingDirectory>
+                    <siteDirectory>${project.basedir}/src/site</siteDirectory>
                     <reportPlugins>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
@@ -1529,15 +1510,9 @@
                             <artifactId>maven-jxr-plugin</artifactId>
                             <reportSets>
                                 <reportSet>
-                                    <id>non-aggregate</id>
-                                    <reports>
-                                        <report>jxr</report>
-                                    </reports>
-                                </reportSet>
-                                <reportSet>
-                                    <id>aggregate</id>
                                     <reports>
                                         <report>aggregate</report>
+                                        <report>test-aggregate</report>
                                     </reports>
                                 </reportSet>
                             </reportSets>
@@ -1555,32 +1530,12 @@
                         </plugin>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-pmd-plugin</artifactId>
-                            <configuration>
-                                <skip>${pmd.skip}</skip>
-                                <targetJdk>${java.target.version}</targetJdk>
-                                <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                                <rulesets>
-                                    <ruleset>${pmd.ruleset.location}</ruleset>
-                                </rulesets>
-                                <failOnViolation>false</failOnViolation>
-                                <verbose>false</verbose>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <skip>${javadocs.skip}</skip>
                                 <failOnError>false</failOnError>
                             </configuration>
                             <reportSets>
-                                <reportSet>
-                                    <id>non-aggregate</id>
-                                    <reports>
-                                        <report>javadoc</report>
-                                    </reports>
-                                </reportSet>
                                 <reportSet>
                                     <id>aggregate</id>
                                     <reports>
@@ -1592,6 +1547,9 @@
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <aggregate>true</aggregate>
+                            </configuration>
                         </plugin>
                         <plugin>
                             <groupId>org.codehaus.mojo</groupId>
@@ -1618,7 +1576,6 @@
                             <artifactId>findbugs-maven-plugin</artifactId>
                             <configuration>
                                 <skip>${findbugs.skip}</skip>
-                                <xmlOutput>true</xmlOutput>
                             </configuration>
                         </plugin>
                         <plugin>
@@ -1681,24 +1638,6 @@
                 </executions>
             </plugin>
         </plugins>
-
-        <!--<extensions>-->
-            <!--<extension>-->
-                <!--<groupId>org.apache.maven.wagon</groupId>-->
-                <!--<artifactId>wagon-scm</artifactId>-->
-                <!--<version>${maven.wagon-scm.extension}</version>-->
-            <!--</extension>-->
-            <!--<extension>-->
-                <!--<groupId>org.apache.maven.scm</groupId>-->
-                <!--<artifactId>maven-scm-manager-plexus</artifactId>-->
-                <!--<version>${maven.wagon-scm-plexus.extension}</version>-->
-            <!--</extension>-->
-            <!--<extension>-->
-                <!--<groupId>org.apache.maven.scm</groupId>-->
-                <!--<artifactId>maven-scm-provider-svnexe</artifactId>-->
-                <!--<version>${maven.wagon-scm-svnexe.extension}</version>-->
-            <!--</extension>-->
-        <!--</extensions>-->
     </build>
 
 </project>
