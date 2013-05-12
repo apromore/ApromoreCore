@@ -978,16 +978,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.sonar</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>${maven.sonar.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-changelog-plugin</artifactId>
-                    <version>${maven.changelog.plugin}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven.assembly.plugin}</version>
@@ -1020,70 +1010,6 @@
                         <source>${java.source.version}</source>
                         <target>${java.target.version}</target>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven.surefire.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>${maven.project.info.reports.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>${maven.jxr.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${maven.checkstyle.plugin}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apromore</groupId>
-                            <artifactId>build-tools</artifactId>
-                            <version>${build-tools.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>${maven.pmd.plugin}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apromore</groupId>
-                            <artifactId>build-tools</artifactId>
-                            <version>${build-tools.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven.javadoc.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>${maven.versions.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${maven.jacoco.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${maven.findbugs.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>taglist-maven-plugin</artifactId>
-                    <version>${maven.taglist.plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1138,11 +1064,6 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${maven.site.plugin}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -1150,6 +1071,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin}</version>
                 <configuration>
                     <attach>true</attach>
                 </configuration>
@@ -1166,6 +1088,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven.jxr.plugin}</version>
                 <configuration>
                     <aggregate>true</aggregate>
                 </configuration>
@@ -1181,6 +1104,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin}</version>
                 <configuration>
                     <failOnError>false</failOnError>
                     <skip>${javadocs.skip}</skip>
@@ -1228,6 +1152,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin}</version>
                 <inherited>true</inherited>
                 <configuration>
                     <skip>${pmd.skip}</skip>
@@ -1253,6 +1178,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apromore</groupId>
+                        <artifactId>build-tools</artifactId>
+                        <version>${build-tools.version}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <skip>${checkstyle.skip}</skip>
                     <configLocation>${checkstyle.ruleset.location}</configLocation>
@@ -1302,7 +1235,7 @@
                                     <version>${maven.version.range}</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>${jdk.version}</version>
+                                    <version>${java.source.version}</version>
                                 </requireJavaVersion>
                             </rules>
                             <fail>true</fail>
@@ -1313,6 +1246,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
                 <configuration>
                     <verbose>true</verbose>
                     <fork>true</fork>
@@ -1418,6 +1352,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.bundle.plugin}</version>
                 <extensions>true</extensions>
                 <inherited>true</inherited>
                 <executions>
@@ -1443,6 +1378,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin}</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -1452,6 +1388,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.plugin}</version>
                 <configuration>
                     <archive>
                         <manifestFile>
@@ -1461,183 +1398,192 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>${maven.site.plugin}</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <siteDirectory>${project.basedir}/src/site</siteDirectory>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <configuration>
-                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                            <!-- simpler configuration without reportSets available for usual cases -->
-                            <!-- distribution-management, index, dependencies, help, issue-tracking, plugins, cim,
-                                    license, dependency-management, mailing-list, project-team, dependency-convergence,
-                                    scm, plugin-management, modules, summary -->
-                            <reports>
-                                <report>index</report>
-                                <report>summary</report>
-                                <report>license</report>
-                                <report>project-team</report>
-                                <report>dependencies</report>
-                                <report>issue-tracking</report>
-                                <report>scm</report>
-                                <report>modules</report>
-                                <report>plugins</report>
-                                <report>plugin-management</report>
-                                <report>dependency-management</report>
-                                <report>dependency-convergence</report>
-                            </reports>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-changelog-plugin</artifactId>
-                            <configuration>
-                                <type>range</type>
-                                <range>10</range>
-                                <headingDateFormat>MM-dd-yyyy</headingDateFormat>
-                                <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-jxr-plugin</artifactId>
-                            <reportSets>
-                                <reportSet>
-                                    <reports>
-                                        <report>aggregate</report>
-                                        <report>test-aggregate</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <configuration>
-                                <skip>${checkstyle.skip}</skip>
-                                <configLocation>${checkstyle.ruleset.location}</configLocation>
-                                <failsOnError>false</failsOnError>
-                                <enableRulesSummary>true</enableRulesSummary>
-                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <configuration>
-                                <skip>${javadocs.skip}</skip>
-                                <failOnError>false</failOnError>
-                            </configuration>
-                            <reportSets>
-                                <reportSet>
-                                    <id>aggregate</id>
-                                    <reports>
-                                        <report>aggregate</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <aggregate>true</aggregate>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>versions-maven-plugin</artifactId>
-                            <reportSets>
-                                <reportSet>
-                                    <reports>
-                                        <report>dependency-updates-report</report>
-                                        <report>plugin-updates-report</report>
-                                        <report>property-updates-report</report>
-                                    </reports>
-                                </reportSet>
-                            </reportSets>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.jacoco</groupId>
-                            <artifactId>jacoco-maven-plugin</artifactId>
-                            <configuration>
-                                <skip>${jacoco.skip}</skip>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                            <configuration>
-                                <skip>${findbugs.skip}</skip>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>taglist-maven-plugin</artifactId>
-                            <configuration>
-                                <encoding>${project.build.sourceEncoding}</encoding>
-                                <sourceFileLocale>en</sourceFileLocale>
-                                <tagListOptions>
-                                    <tagClasses>
-                                        <tagClass>
-                                            <displayName>Code sections needing review</displayName>
-                                            <tags>
-                                                <tag>
-                                                    <matchString>REVIEWREQUIRED</matchString>
-                                                    <matchType>exact</matchType>
-                                                </tag>
-                                            </tags>
-                                        </tagClass>
-                                        <tagClass>
-                                            <displayName>Todo Work</displayName>
-                                            <tags>
-                                                <tag>
-                                                    <matchString>todo</matchString>
-                                                    <matchType>ignoreCase</matchType>
-                                                </tag>
-                                                <tag>
-                                                    <matchString>@todo</matchString>
-                                                    <matchType>ignoreCase</matchType>
-                                                </tag>
-                                            </tags>
-                                        </tagClass>
-                                        <tagClass>
-                                            <displayName>Noted Bugs</displayName>
-                                            <tag>
-                                                <matchString>fixme</matchString>
-                                                <matchType>ignoreCase</matchType>
-                                            </tag>
-                                        </tagClass>
-                                        <tagClass>
-                                            <displayName>Deprecated Items</displayName>
-                                            <tag>
-                                                <matchString>@deprecated</matchString>
-                                                <matchType>ignoreCase</matchType>
-                                            </tag>
-                                        </tagClass>
-                                    </tagClasses>
-                                </tagListOptions>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-descriptor</id>
-                        <goals>
-                            <goal>attach-descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${maven.versions.plugin}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependency-updates-report</report>
+                            <report>plugin-updates-report</report>
+                            <report>property-updates-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.jacoco.version}</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <skip>${jacoco.skip}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${maven.findbugs.plugin}</version>
+                <configuration>
+                    <skip>${findbugs.skip}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>${maven.changelog.plugin}</version>
+                <configuration>
+                    <type>range</type>
+                    <range>10</range>
+                    <headingDateFormat>MM-dd-yyyy</headingDateFormat>
+                    <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.plugin}</version>
+                <configuration>
+                    <skip>${checkstyle.skip}</skip>
+                    <configLocation>${checkstyle.ruleset.location}</configLocation>
+                    <failsOnError>false</failsOnError>
+                    <enableRulesSummary>true</enableRulesSummary>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin}</version>
+                <configuration>
+                    <links>
+                        <link>http://math.nist.gov/javanumerics/jama/doc/</link>
+                        <link>http://kentbeck.github.com/junit/javadoc/latest/</link>
+                        <link>http://pholser.github.com/jopt-simple/apidocs/index.html</link>
+                        <link>http://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/</link>
+                        <link>http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/</link>
+                        <link>http://www.antlr.org/api/Java/index.html</link>
+                        <link>http://commons.apache.org/lang/api</link>
+                        <link>http://commons.apache.org/math/api-2.2/index.html</link>
+                    </links>
+                    <skip>${javadocs.skip}</skip>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven.jxr.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin}</version>
+                <configuration>
+                    <targetJdk>${java.target.version}</targetJdk>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven.project.info.reports.plugin}</version>
+                <configuration>
+                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+                <!-- simpler configuration without reportSets available for usual cases -->
+                <!-- distribution-management, index, dependencies, help, issue-tracking, plugins, cim,
+                        license, dependency-management, mailing-list, project-team, dependency-convergence,
+                        scm, plugin-management, modules, summary -->
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>help</report>
+                            <report>mailing-list</report>
+                            <report>project-team</report>
+                            <report>dependencies</report>
+                            <report>issue-tracking</report>
+                            <report>scm</report>
+                            <report>cim</report>
+                            <report>modules</report>
+                            <report>plugins</report>
+                            <report>plugin-management</report>
+                            <report>dependency-management</report>
+                            <report>dependency-convergence</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven.surefire.plugin}</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>${maven.taglist.plugin}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <sourceFileLocale>en</sourceFileLocale>
+                    <tagListOptions>
+                        <tagClasses>
+                            <tagClass>
+                                <displayName>Code sections needing review</displayName>
+                                <tags>
+                                    <tag>
+                                        <matchString>REVIEWREQUIRED</matchString>
+                                        <matchType>exact</matchType>
+                                    </tag>
+                                </tags>
+                            </tagClass>
+                            <tagClass>
+                                <displayName>Todo Work</displayName>
+                                <tags>
+                                    <tag>
+                                        <matchString>todo</matchString>
+                                        <matchType>ignoreCase</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>@todo</matchString>
+                                        <matchType>ignoreCase</matchType>
+                                    </tag>
+                                </tags>
+                            </tagClass>
+                            <tagClass>
+                                <displayName>Noted Bugs</displayName>
+                                <tag>
+                                    <matchString>fixme</matchString>
+                                    <matchType>ignoreCase</matchType>
+                                </tag>
+                            </tagClass>
+                            <tagClass>
+                                <displayName>Deprecated Items</displayName>
+                                <tag>
+                                    <matchString>@deprecated</matchString>
+                                    <matchType>ignoreCase</matchType>
+                                </tag>
+                            </tagClass>
+                        </tagClasses>
+                    </tagListOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
