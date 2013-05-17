@@ -949,31 +949,33 @@
             <url>http://download.eclipse.org/gemini/mvn/</url>
         </repository>
         <repository>
+            <id>com.springsource.repository.bundles.snapshot</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Snapshot</name>
+            <url>http://repository.springsource.com/maven/bundles/snapshot</url>
+        </repository>
+        <repository>
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/release</url>
         </repository>
         <repository>
-            <id>com.springsource.repository.bundles.external</id>
+            <id>com.springsource.repository.bundle.external</id>
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
         </repository>
         <repository>
-            <id>com.springsource.repository.libraries.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/release</url>
-        </repository>
-        <repository>
-            <id>com.springsource.repository.libraries.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/external</url>
-        </repository>
-        <repository>
-            <id>sonatype-oss-public</id>
-            <name>Sonatype OSS Maven Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+            <id>com.springsource.repository.bundle.milestone</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Milestones</name>
+            <url>http://repository.springsource.com/maven/bundles/milestone</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <pluginManagement>
