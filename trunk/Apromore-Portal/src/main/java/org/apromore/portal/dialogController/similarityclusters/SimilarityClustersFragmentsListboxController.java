@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.FragmentData;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseDetailController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.similarityclusters.renderer.SimilarityFragmentsItemRenderer;
