@@ -7,14 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
 import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.UsernamesType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -119,8 +117,14 @@ public final class Import {
         final String userName = "admin";
         final Set<RequestParameterType<?>> noCanoniserParameters = Collections.<RequestParameterType<?>>emptySet();
 
-        ImportProcessResultType result = manager.importProcess(
-            userName,
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            CreateFolder(parentFile);
+            int parentId = getFolderId(parentFile);
+            assert parentId != -1;
+
+            ImportProcessResultType result = manager.importProcess(
+            userName, parentId,
             "EPML 2.0",
             file.getName(),
             1.0D,
@@ -129,17 +133,17 @@ public final class Import {
             "documentation",
             "created",
             "lastUpdate",
-            noCanoniserParameters
-        );
-
-        // If the process was in a directory on the filesystem, move it to a corresponding one in Apromore
-        File parentFile = file.getParentFile();
-        if (parentFile != null) {
-            CreateFolder(parentFile);
-            int parentId = getFolderId(parentFile);
-            assert parentId != -1;
-            manager.addProcessToFolder(result.getProcessSummary().getId(), parentId);
+            noCanoniserParameters);
         }
+
+//        // If the process was in a directory on the filesystem, move it to a corresponding one in Apromore
+//        File parentFile = file.getParentFile();
+//        if (parentFile != null) {
+//            CreateFolder(parentFile);
+//            int parentId = getFolderId(parentFile);
+//            assert parentId != -1;
+//            manager.addProcessToFolder(result.getProcessSummary().getId(), parentId);
+//        }
     }
 
 }

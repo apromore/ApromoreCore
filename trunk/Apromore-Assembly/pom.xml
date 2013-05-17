@@ -16,7 +16,6 @@
     <name>Apromore Bundle Assembly</name>
 
     <properties>
-        <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
     </properties>
 
@@ -301,7 +300,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-par-plugin</artifactId>
-                <version>${maven.par.plugin}</version>
                 <configuration>
                     <applicationSymbolicName>apromore</applicationSymbolicName>
                     <applicationDescription>Advance Process Modelling Repository</applicationDescription>

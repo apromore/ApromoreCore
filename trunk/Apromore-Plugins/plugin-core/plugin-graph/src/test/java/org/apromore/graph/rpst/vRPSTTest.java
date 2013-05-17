@@ -3,9 +3,6 @@ package org.apromore.graph.rpst;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-
-import org.jbpt.algo.tree.rpst.IRPSTNode;
-import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.MultiDirectedGraph;
 import org.jbpt.hypergraph.abs.Vertex;
