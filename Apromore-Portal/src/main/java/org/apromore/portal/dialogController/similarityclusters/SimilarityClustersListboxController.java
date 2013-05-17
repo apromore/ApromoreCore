@@ -53,7 +53,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
                     List<ClusterSummaryType> selectedClusters = new ArrayList<ClusterSummaryType>(getListModel().getInnerList());
                     selectedClusters.retainAll(getListModel().getSelection());
                     setAttribute(ClusterVisualisationController.CLUSTER_RESULT_ATTRIBUTE_NAME, selectedClusters, SESSION_SCOPE);
-                    Clients.evalJavaScript("window.open('macros/similarityclusters/','ApromoreVisualisationWindow'+new Date().getTime(),"
+                    Clients.evalJavaScript("window.open('macros/similarityclusters/index.zul','ApromoreVisualisationWindow'+new Date().getTime(),"
                             + "'left=20,top=20,width=1000,height=800,toolbar=0,resizable=1,location=0');");
                 } else {
                     Messagebox.show("Please select at least one cluster!");

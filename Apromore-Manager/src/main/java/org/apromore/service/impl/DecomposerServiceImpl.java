@@ -107,7 +107,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Queue<FragmentNode> q = new LinkedList<>();
         q.add(root);
 
-        FragmentVersion rootfv = saveFragment(root);
+        FragmentVersion rootfv = saveFragment(pmv, root);
         op.setCurrentFragment(rootfv);
         addElements(root, rootfv, pmv, op);
 
@@ -119,7 +119,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             if (parent != null) {
                 // we don't have to save the root again, or to save parent relationship of root
                 preprocessFragment(f);
-                FragmentVersion fv = saveFragment(f);
+                FragmentVersion fv = saveFragment(pmv, f);
                 addElementMappings(fv, f, op);
 
                 FragmentVersion parentfv = fvRepository.findFragmentVersionByUri(parent.getUri());
@@ -196,11 +196,15 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
 
-    private FragmentVersion saveFragment(FragmentNode f) {
+    private FragmentVersion saveFragment(ProcessModelVersion pmv, FragmentNode f) {
         FragmentVersion fv = new FragmentVersion();
         fv.setUri(f.getUri());
         fv.setFragmentType(f.getType().toString());
         fv.setFragmentSize(f.getNodes().size());
+
+        pmv.addFragmentVersion(fv);
+        fv.addProcessModelVersion(pmv);
+
         return fvRepository.save(fv);
     }
 

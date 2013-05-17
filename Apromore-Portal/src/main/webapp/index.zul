@@ -28,10 +28,20 @@
                     <north id="leftNorthPanel" flex="true">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
-                    <center id="leftCenterPanel" title="My Workspace" vflex="1" >
-                        <div height="3000px" >
-                            <Navigation id="navigationcomp" vflex="min" />
-                        </div>
+                    <!--<center id="leftCenterPanel" title="My Workspace" vflex="1" >-->
+                        <!--<div height="3000px" >-->
+                            <!--<Navigation id="navigationcomp" vflex="min" />-->
+                        <!--</div>-->
+                    <!--</center>-->
+                    <center id="leftCenterPanel" flex="true" vflex="1">
+                        <borderlayout vflex="true">
+                            <center id="leftInnerCenterPanel" title="Tree" flex="true">
+                                <Navigation id="navigationcomp" vflex="min"/>
+                            </center>
+                            <south id="leftInnerSouthPanel" title="Refine Filter" flex="true" splittable="false" collapsible="true" open="false">
+                                <Filter id="baseFilter"/>
+                            </south>
+                        </borderlayout>
                     </center>
                     <south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
                         <DetailView id="baseDetail" />

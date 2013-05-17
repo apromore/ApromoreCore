@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController.similarityclusters.renderer;
 import java.text.NumberFormat;
 import java.util.List;
 
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import org.apromore.model.FragmentData;
 import org.apromore.model.ProcessAssociationsType;
 import org.zkoss.zk.ui.Component;
@@ -33,7 +32,7 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
 
     private void renderSimilarityFragment(Listitem listItem, final FragmentData fragment) {
         listItem.appendChild(renderFragmentId(fragment));
-        listItem.appendChild(renderFragmentLabel(fragment));
+//        listItem.appendChild(renderFragmentLabel(fragment));
         listItem.appendChild(renderFragmentSize(fragment));
         listItem.appendChild(renderFragmentDistance(fragment));
         listItem.appendChild(renderOriginalProcessName(fragment));
@@ -46,15 +45,14 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
             Listbox processReferences = new Listbox();
             processReferences.setMold("select");
             processReferences.setRows(1);
-            for (int i = 0; i < processAssociations.size(); i++) {
-                ProcessAssociationsType info = processAssociations.get(i);
+            for (ProcessAssociationsType info : processAssociations) {
                 String name = info.getProcessName();
                 Integer id = info.getProcessId();
                 String branch = info.getBranchName();
                 String version = info.getProcessVersionNumber();
                 Listitem processReferenceItem = new Listitem();
                 processReferences.appendChild(processReferenceItem);
-                processReferenceItem.setLabel(String.format("%i: %s (%s) v%s", id, name, branch, version));
+                processReferenceItem.setLabel(String.format("%d: %s (%s) v%s", id, name, branch, version));
             }
             processReferences.getItemAtIndex(0).setSelected(true);
             cell.appendChild(processReferences);
@@ -77,15 +75,14 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
         return new Listcell(String.valueOf(fragment.getFragmentSize()));
     }
 
-    private Component renderFragmentLabel(final FragmentData fragment) {
-        return new Listcell(fragment.getFragmentLabel());
-    }
+//    private Component renderFragmentLabel(final FragmentData fragment) {
+//        return new Listcell(fragment.getFragmentLabel());
+//    }
 
     private Component renderFragmentId(final FragmentData fragment) {
         Listcell listcell = new Listcell();
         A fragmentLink = new A(String.valueOf(fragment.getFragmentId()));
         fragmentLink.addEventListener("onClick", new EventListener() {
-
             @Override
             public void onEvent(Event event) throws Exception {
                 String openWindowJS = "window.open('macros/similarityclusters/fragment.zul?fragmentId="

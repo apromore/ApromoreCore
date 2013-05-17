@@ -16,15 +16,6 @@ import org.zkoss.zul.Grid;
  */
 public class SimilarityClustersFilterController extends BaseFilterController {
 
-    final class FilterScrollListener implements EventListener {
-        @Override
-        public void onEvent(final Event event) throws Exception {
-            if (event instanceof ScrollEvent) {
-                refreshListbox();
-            }
-        }
-    }
-
     private static final long serialVersionUID = 5542144067417950810L;
     private final SimilarityClustersFilterProperties propertiesController;
 
@@ -46,6 +37,16 @@ public class SimilarityClustersFilterController extends BaseFilterController {
 
     public ClusterFilterType getCurrentFilter() {
         return propertiesController.getCurrentFilter();
+    }
+
+
+    final class FilterScrollListener implements EventListener {
+        @Override
+        public void onEvent(final Event event) throws Exception {
+            if (event instanceof ScrollEvent) {
+                refreshListbox();
+            }
+        }
     }
 
 }
