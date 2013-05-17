@@ -139,7 +139,7 @@
 
         <build-tools.version>1.0</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
-        <jbpt.version>0.2.314</jbpt.version>
+        <jbpt.version>0.2.393</jbpt.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <rpsdag.version>0.1</rpsdag.version>
         <taskmapping.version>0.1</taskmapping.version>
@@ -172,6 +172,7 @@
         <maven.jaxws.plugin.version>1.10</maven.jaxws.plugin.version>
         <maven.jetty.plugin>8.1.5.v20120716</maven.jetty.plugin>
         <maven.jxr.plugin>2.3</maven.jxr.plugin>
+        <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
         <maven.plugin.plugin>3.2</maven.plugin.plugin>
         <maven.pmd.plugin>3.0</maven.pmd.plugin>
         <maven.project.info.reports.plugin>2.6</maven.project.info.reports.plugin>
@@ -1063,6 +1064,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-par-plugin</artifactId>
+                    <version>${maven.par.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
