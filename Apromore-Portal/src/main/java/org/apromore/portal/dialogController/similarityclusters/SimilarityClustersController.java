@@ -46,28 +46,18 @@ public class SimilarityClustersController extends BaseController {
      *
      * @param mainC
      * @throws org.zkoss.zk.ui.SuspendNotAllowedException
-     *
      * @throws InterruptedException
      */
-    public SimilarityClustersController(final MainController mainC)
-            throws SuspendNotAllowedException, InterruptedException {
-
+    public SimilarityClustersController(final MainController mainC) throws SuspendNotAllowedException, InterruptedException {
         this.mainController = mainC;
-
-        this.scWindow = (Window) Executions.createComponents(
-                "macros/similarityclusters.zul", null, null);
-
-        this.btnOK = (Button) this.scWindow
-                .getFellow("similarityclustersOKbutton");
-        this.btnCancel = (Button) this.scWindow
-                .getFellow("similarityclustersCancelbutton");
+        this.scWindow = (Window) Executions.createComponents("macros/similarityclusters.zul", null, null);
+        this.btnOK = (Button) this.scWindow.getFellow("similarityclustersOKbutton");
+        this.btnCancel = (Button) this.scWindow.getFellow("similarityclustersCancelbutton");
 
         // In-Memory Clustering
         this.algorithmListbox = (Listbox) this.scWindow.getFellow("algorithm");
         this.maxdistance = (Slider) this.scWindow.getFellow("maxdistance");
-
-        this.btnCreate = (Button) this.scWindow
-                .getFellow("similarityclustersCreateButton");
+        this.btnCreate = (Button) this.scWindow.getFellow("similarityclustersCreateButton");
 
         this.btnCreate.addEventListener("onClick", new EventListener() {
 

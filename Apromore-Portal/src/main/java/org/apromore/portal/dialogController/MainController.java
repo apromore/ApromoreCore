@@ -64,6 +64,8 @@ public class MainController extends BaseController {
     private List<SearchHistoriesType> searchHistory;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
+    private BaseFilterController baseFilterController;
+
     private NavigationController navigation;
 
     public Html breadCrumbs;
@@ -84,7 +86,6 @@ public class MainController extends BaseController {
 
             Window mainW = (Window) this.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
-            //Html folders = (Html) mainW.getFellow("folders");
 
             this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
@@ -96,8 +97,7 @@ public class MainController extends BaseController {
 
             switchToProcessSummaryView();
 
-            this.searchHistory = new ArrayList<SearchHistoriesType>();
-            //String msgWhenClose = null;
+            this.searchHistory = new ArrayList<>();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
 
             Properties properties = new Properties();
@@ -243,7 +243,6 @@ public class MainController extends BaseController {
         switchToProcessSummaryView();
         ((ProcessListboxController) this.baseListboxController).displayNewProcess(returnedProcess);
         this.displayMessage(this.baseListboxController.getListModel().getSize() + " processes.");
-        //loadWorkspace();
     }
 
     /**
@@ -432,7 +431,7 @@ public class MainController extends BaseController {
      * @throws org.apromore.portal.exception.ExceptionFormats
      */
     public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
-        HashMap<String, String> formats = new HashMap<String, String>();
+        HashMap<String, String> formats = new HashMap<>();
         NativeTypesType nativeTypesDB = getService().readNativeTypes();
         for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
             formats.put(nativeTypesDB.getNativeType().get(i).getExtension(), nativeTypesDB.getNativeType().get(i).getFormat());
@@ -459,10 +458,9 @@ public class MainController extends BaseController {
     public Set<ProcessSummaryType> getSelectedProcesses() {
         if (this.baseListboxController instanceof ProcessListboxController) {
             ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
-            //ZK returns untyped Set, but we can assume it is of type ProcessSummaryType here!
             return processController.getListModel().getSelection();
         } else {
-            return new HashSet<ProcessSummaryType>();
+            return new HashSet<>();
         }
     }
 
@@ -473,6 +471,7 @@ public class MainController extends BaseController {
     private void deattachDynamicUI() {
         getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
         getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
+        getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
 
@@ -482,6 +481,7 @@ public class MainController extends BaseController {
     private void reattachDynamicUI() {
         getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
         getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
+        getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
     }
 
     /**
@@ -500,6 +500,7 @@ public class MainController extends BaseController {
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
+        this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
 
@@ -513,10 +514,6 @@ public class MainController extends BaseController {
      * the listbox, detail and filter view
      */
     private void switchToSimilarityClusterView() {
-
-        // TODO should replace this with TabBox!! and without all these
-        // instanceof checks!
-
         if (this.baseListboxController != null) {
             if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
                 return;
@@ -526,13 +523,16 @@ public class MainController extends BaseController {
         }
 
         // Otherwise create new Listbox
-        SimilarityClustersFilterController simFilterController = new SimilarityClustersFilterController(this);
+        this.baseFilterController = new SimilarityClustersFilterController(this);
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseListboxController = new SimilarityClustersListboxController(this, simFilterController, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController,
+                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
 
+        // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
+        ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
     }
 
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
