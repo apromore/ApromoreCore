@@ -111,7 +111,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
         }
     }
 
-    // TODO wait until jbpt is ready
+    // TODO wait until rpst is ready
 
     // private boolean isSound(final NetSystem netSystem) {
     // return new SoundUnfoldingMSMS(netSystem).isSound();

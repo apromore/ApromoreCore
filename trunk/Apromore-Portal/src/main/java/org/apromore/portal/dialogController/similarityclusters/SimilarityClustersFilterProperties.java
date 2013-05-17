@@ -17,28 +17,8 @@ import org.zkoss.zul.Slider;
  */
 public class SimilarityClustersFilterProperties extends BaseController {
 
-    /**
-     * Event used onScroll
-     */
-    private final class FilterScrollListener implements EventListener {
-
-        /* (non-Javadoc)
-           * @see org.zkoss.zk.ui.event.EventListener#onEvent(org.zkoss.zk.ui.event.Event)
-           */
-        @Override
-        public void onEvent(final Event event) throws Exception {
-
-            if (event instanceof ScrollEvent) {
-                refreshLabelsFromFilter();
-            }
-
-        }
-    }
-
     private static final long serialVersionUID = 3023944678410096666L;
-
     private final Component filterWrapper;
-
     private final Slider minClusterSize;
     private final Slider maxClusterSize;
     private final Slider minAverageFragmentSize;
@@ -54,8 +34,7 @@ public class SimilarityClustersFilterProperties extends BaseController {
      * @param filterWrapper
      * @param externalScrollListener
      */
-    public SimilarityClustersFilterProperties(final Component filterWrapper,
-                                              final EventListener externalScrollListener) {
+    public SimilarityClustersFilterProperties(final Component filterWrapper, final EventListener externalScrollListener) {
         super();
         this.filterWrapper = filterWrapper;
 
@@ -218,4 +197,19 @@ public class SimilarityClustersFilterProperties extends BaseController {
         return clusterSize;
     }
 
+
+
+    /**
+     * Event used onScroll
+     */
+    private final class FilterScrollListener implements EventListener {
+        @Override
+        public void onEvent(final Event event) throws Exception {
+
+            if (event instanceof ScrollEvent) {
+                refreshLabelsFromFilter();
+            }
+
+        }
+    }
 }

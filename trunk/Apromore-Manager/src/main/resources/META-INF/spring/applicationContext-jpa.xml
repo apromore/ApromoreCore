@@ -51,7 +51,7 @@
                 <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
 
-                <prop key="eclipselink.logging.file">output.log</prop>
+                <!--<prop key="eclipselink.logging.file">output.log</prop>-->
                 <prop key="eclipselink.logging.level">OFF</prop>
                 <prop key="eclipselink.logging.level.sql">OFF</prop>
                 <prop key="eclipselink.logging.parameters">flase</prop>
