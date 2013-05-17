@@ -1,5 +1,5 @@
-call mvn install:install-file -Dfile=jbpt-core.jar -DgroupId=org.jbpt -DartifactId=jbpt-core -Dversion=0.2.314 -Dpackaging=jar -DgeneratePom=true
-call mvn install:install-file -Dfile=jbpt-deco.jar -DgroupId=org.jbpt -DartifactId=jbpt-deco -Dversion=0.2.314 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jbpt-core.jar -DgroupId=org.jbpt -DartifactId=jbpt-core -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jbpt-deco.jar -DgroupId=org.jbpt -DartifactId=jbpt-deco -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpstruct.jar -DgroupId=ee.ut -DartifactId=bpstruct -Dversion=0.1.117 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=rpsdag.jar -DgroupId=tu -DartifactId=rpsdag -Dversion=0.1 -Dpackaging=jar
 call mvn install:install-file -Dfile=taskmapping.jar -DgroupId=tu -DartifactId=taskmapping -Dversion=0.1 -Dpackaging=jar
