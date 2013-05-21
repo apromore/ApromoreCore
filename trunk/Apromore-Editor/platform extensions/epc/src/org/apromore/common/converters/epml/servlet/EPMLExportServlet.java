@@ -24,30 +24,21 @@
  */
 package org.apromore.common.converters.epml.servlet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import org.xml.sax.SAXException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import de.epml.EPMLSchema;
-import de.unihannover.se.infocup2008.bpmn.JsonErdfTransformation;
 import org.apromore.common.converters.epml.JSONToEPMLConverter;
-import org.json.JSONObject;
 import org.json.JSONException;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.json.JSONObject;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
+import org.xml.sax.SAXException;
 
 /**
  * Currently, we use client side processing to do the transformation from json to epml.
@@ -77,8 +68,6 @@ public class EPMLExportServlet extends HttpServlet {
             res.setStatus(500);
             if (e.getCause() != null) {
                 res.setContentType("text/plain");
-                assert res != null;
-                assert e != null;
                 assert e.getCause() != null;
                 assert e.getCause().getMessage() != null;
                 try {
@@ -95,7 +84,7 @@ public class EPMLExportServlet extends HttpServlet {
      * @param jsonString  an EPC represented in Signavio's serialized JSON, never <code>null</code>
      * @return an EPML serialization of the EPC
      */
-    private String jsonToEpml(/* final */ String jsonString) throws JAXBException, JSONException, SAXException {
+    private String jsonToEpml(String jsonString) throws JAXBException, JSONException, SAXException {
         ServletContext context = getServletConfig().getServletContext();
 
         /* The following commented-out code duplicates the original Javascript implementation, in which
@@ -158,8 +147,7 @@ public class EPMLExportServlet extends HttpServlet {
         JSONToEPMLConverter jsonToEpmlConverter = new JSONToEPMLConverter();
         context.log("TALISMAN-JSON: " + jsonString);
         EPMLSchema.marshalEPMLFormat(baos2, jsonToEpmlConverter.toEPML(BasicDiagramBuilder.parseJson(jsonString)), true /* is validating */);
-        String epmlString = baos2.toString();
 
-        return epmlString;
+        return baos2.toString();
     }
 }

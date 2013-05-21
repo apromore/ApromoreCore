@@ -63,32 +63,31 @@ public class EPMLToJSONConverter {
 
     public static final String EPML_CONTEXT = "de.epml";
 
+
     /**
-     * @param epmlStream
-     * @param jsonStream
+     * @param epmlStream The input EPML stream.
+     * @param jsonStream the JSON Output converted from the input stream.
      */
     public void convert(final InputStream epmlStream, final OutputStream jsonStream) {
         try {
             JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(epmlStream);
             convertEPML(nativeElement.getValue(), jsonStream);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JAXBException | JSONException | IOException e) {
             e.printStackTrace();
         }
     }
 
+
     /**
-     * @param epmlString
-     * @param encoding
-     * @param jsonStream
+     * @param epmlString the epml string to convert.
+     * @param encoding the encoding of the string.
+     * @param jsonStream the output convert json stream.
      * @throws UnsupportedEncodingException
      */
     public void convert(final String epmlString, final String encoding, final OutputStream jsonStream) throws UnsupportedEncodingException {
         convert(new ByteArrayInputStream(epmlString.getBytes(encoding)), jsonStream);
     }
+
 
     @SuppressWarnings("unchecked")
     private JAXBElement<TypeEPML> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
@@ -102,7 +101,7 @@ public class EPMLToJSONConverter {
         EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(context);
         context.setConverterFactory(converterFactory);
 
-        List<TExtensibleElements> extList = new ArrayList<TExtensibleElements>();
+        List<TExtensibleElements> extList = new ArrayList<>();
         if (epml.getDirectory() != null && !epml.getDirectory().isEmpty()) {
             extList.addAll(epml.getDirectory().get(0).getEpcOrDirectory());
         } else {
@@ -159,7 +158,7 @@ public class EPMLToJSONConverter {
      * Command line filter converting a EPML-formatted standard input stream into a Signavio JSON-formatted standard output stream.
      *
      * @param args  first argument names the input file
-     * @throw FileNotFoundException  if <code>args[0]</code> isn't the name of a file
+     * @throws FileNotFoundException  if <code>args[0]</code> isn't the name of a file
      */
     public static void main(String args[]) throws FileNotFoundException {
         new EPMLToJSONConverter().convert(new FileInputStream(args[0]), System.out);

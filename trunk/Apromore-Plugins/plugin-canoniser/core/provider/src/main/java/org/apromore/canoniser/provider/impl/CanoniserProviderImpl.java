@@ -120,8 +120,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
      * @return List of Canonisers or empty List
      */
     private Set<Canoniser> findAllCanoniser(final String nativeType, final String name, final String version) {
-
-        final Set<Canoniser> cList = new HashSet<Canoniser>();
+        final Set<Canoniser> cList = new HashSet<>();
 
         for (final Canoniser c : getCanoniserSet()) {
             if (PluginProviderHelper.compareNullable(nativeType, c.getNativeType()) && PluginProviderHelper.compareNullable(name, c.getName()) && PluginProviderHelper.compareNullable(version, c.getVersion())) {

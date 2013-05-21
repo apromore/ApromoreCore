@@ -1,11 +1,8 @@
 package org.apromore.canoniser.xpdl.internal;
 
 /**
- * Created by IntelliJ IDEA.
- * User: lappie
- * Date: 4/08/11
- * Time: 3:18 PM
- * To change this template use File | Settings | File Templates.
+ * Used in the post processing of the annotation data of size and location.
+ * eg. when transforming from EPC to BPMN the size of nodes and other elements change.
  */
 public class AnnData {
     String elementID;

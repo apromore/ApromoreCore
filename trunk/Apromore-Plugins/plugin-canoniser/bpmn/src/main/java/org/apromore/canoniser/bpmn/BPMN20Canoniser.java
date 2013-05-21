@@ -120,9 +120,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                            .marshal(bpmnOutput, false);
 
             // Return a result
-            PluginResultImpl result = new PluginResultImpl();
-            //result.addPluginMessage("BPMN 2.0 de-canonised OK");
-            return result;
+            return new PluginResultImpl();
 
         } catch (Exception e) {
             throw new CanoniserException("Could not decanonise from BPMN stream", e);

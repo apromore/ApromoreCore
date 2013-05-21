@@ -22,13 +22,23 @@
  **/
 package org.oryxeditor.server;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
 import de.hpi.layouting.grid.Grid;
 import de.hpi.layouting.model.LayoutingBounds;
 import de.hpi.layouting.model.LayoutingBoundsImpl;
 import de.hpi.layouting.model.LayoutingDockers.Point;
 import de.hpi.layouting.model.LayoutingElement;
-import de.unihannover.se.infocup2008.bpmn.JsonErdfTransformation;
-import de.unihannover.se.infocup2008.bpmn.dao.ERDFDiagramDao;
 import de.unihannover.se.infocup2008.bpmn.dao.JSONDiagramDao;
 import de.unihannover.se.infocup2008.bpmn.layouter.CatchingIntermediateEventLayouter;
 import de.unihannover.se.infocup2008.bpmn.layouter.EdgeLayouter;
@@ -41,51 +51,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
-
 public class BPMNLayouterServlet extends HttpServlet {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -5881072861254329384L;
 
     protected BPMNDiagram diagram;
-
-    protected ERDFDiagramDao dao;
-
     private Map<BPMNElement, Grid<BPMNElement>> grids;
-
     private List<BPMNElement> subprocessOrder;
 
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
 
-        grids = new HashMap<BPMNElement, Grid<BPMNElement>>();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        grids = new HashMap<>();
 
         request.setCharacterEncoding("UTF-8");
-        // String eRDF = request.getParameter("data");
-
         String jsonmodel = request.getParameter("data");
-        // String eRDF = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<div
-        // class=\"processdata\">"
-        // + jsonToErdf(jsonmodel) + "\n</div>";
-        //
-        // // readInput
-        // this.dao = new ERDFDiagramDao();
-        // this.diagram = dao.getBPMNDiagramFromString(eRDF);
 
         JSONObject jsonModel;
         try {
             jsonModel = new JSONObject(jsonmodel);
             this.diagram = new JSONDiagramDao().getDiagramFromJSON(jsonModel);
         } catch (JSONException e1) {
-            //throw new ServletException(e1);
             response.setStatus(500);
             response.getWriter().print("import of json failed:");
             e1.printStackTrace(response.getWriter());
@@ -121,15 +106,12 @@ public class BPMNLayouterServlet extends HttpServlet {
                     obj.put("id", id);
 
                     LayoutingBounds bounds = element.getGeometry();
-                    String boundsString = bounds.getX() + " " + bounds.getY() + " "
-                            + bounds.getX2() + " " + bounds.getY2();
+                    String boundsString = bounds.getX() + " " + bounds.getY() + " " + bounds.getX2() + " " + bounds.getY2();
                     obj.put("bounds", boundsString);
 
-                    if (BPMNType.isAConnectingElement(element.getType())
-                            || BPMNType.isACatchingIntermediateEvent(element
-                            .getType())) {
+                    if (BPMNType.isAConnectingElement(element.getType()) || BPMNType.isACatchingIntermediateEvent(element.getType())) {
                         if (element.getDockers() != null) {
-                            obj.put("dockers", buildDockersArray(element));//buildDokersString(element));
+                            obj.put("dockers", buildDockersArray(element));
                         } else {
                             obj.put("dockers", JSONObject.NULL);
                         }
@@ -148,10 +130,8 @@ public class BPMNLayouterServlet extends HttpServlet {
                 response.setStatus(500);
                 response.getWriter().print("json export failed:");
                 e.printStackTrace(response.getWriter());
-                return;
             }
         }
-
     }
 
     private JSONArray buildDockersArray(BPMNElement element) {
@@ -163,19 +143,11 @@ public class BPMNLayouterServlet extends HttpServlet {
                 point.put("y", p.y);
                 dockers.put(point);
             } catch (JSONException e) {
+                // Do nothing
             }
         }
         return dockers;
     }
-
-//	private String buildDokersString(BPMNElement element) {
-//		String dockersString = "";
-//		for (Point p : element.getDockers().getPoints()) {
-//			dockersString += p.x + " " + p.y + " ";
-//		}
-//		dockersString += " # ";
-//		return dockersString;
-//	}
 
     protected void doLayoutAlgorithm() {
         preprocessHeuristics();
@@ -183,14 +155,12 @@ public class BPMNLayouterServlet extends HttpServlet {
         // Layouting subprocesses
         calcLayoutOrder();
         for (BPMNElement subProcess : subprocessOrder) {
-
             LeftToRightGridLayouter lToRGridLayouter = layoutProcess(subProcess);
 
             // set bounds
             double subprocessWidth = lToRGridLayouter.getWidthOfDiagramm();
             double subprocessHeight = lToRGridLayouter.getHeightOfDiagramm();
-            subProcess.setGeometry(new LayoutingBoundsImpl(0, 0, subprocessWidth,
-                    subprocessHeight));
+            subProcess.setGeometry(new LayoutingBoundsImpl(0, 0, subprocessWidth,subprocessHeight));
             grids.putAll(lToRGridLayouter.getGridParentMap());
         }
 
@@ -199,8 +169,7 @@ public class BPMNLayouterServlet extends HttpServlet {
         grids.putAll(lToRGridLayouter.getGridParentMap());
         calcLayoutOrder();
 
-        CatchingIntermediateEventLayouter
-                .setCatchingIntermediateEvents(diagram);
+        CatchingIntermediateEventLayouter.setCatchingIntermediateEvents(diagram);
 
         // Setting edges
         List<LayoutingElement> flows = diagram.getConnectingElements();
@@ -211,20 +180,16 @@ public class BPMNLayouterServlet extends HttpServlet {
 
     private LeftToRightGridLayouter layoutProcess(BPMNElement parent) {
         // Sorting elements topologicaly
-        Queue<LayoutingElement> sortedElements = new TopologicalSorterBPMN(diagram,
-                parent).getSortedElements();
+        Queue<LayoutingElement> sortedElements = new TopologicalSorterBPMN(diagram, parent).getSortedElements();
 
         // Sorted
-        int count = 0;
-        List<String> sortedIds = new LinkedList<String>();
+        List<String> sortedIds = new LinkedList<>();
         for (LayoutingElement element : sortedElements) {
             sortedIds.add(element.getId());
-            count++;
         }
 
         // Layouting from left to right using grid
-        LeftToRightGridLayouter lToRGridLayouter = new LeftToRightGridLayouter(
-                sortedIds, parent);
+        LeftToRightGridLayouter lToRGridLayouter = new LeftToRightGridLayouter(sortedIds, parent);
         lToRGridLayouter.setDiagram(diagram);
         lToRGridLayouter.doLayout();
 
@@ -235,14 +200,13 @@ public class BPMNLayouterServlet extends HttpServlet {
      * calculates the nesting order of lanes and subprocesses
      */
     private void calcLayoutOrder() {
-        subprocessOrder = new LinkedList<BPMNElement>();
+        subprocessOrder = new LinkedList<>();
         processChilds(null);
         Collections.reverse(subprocessOrder);
     }
 
     /**
      * @param parent the element to process the childs from
-     * @see TopologicalAlgorithm.calcLayoutOrder()
      */
     private void processChilds(BPMNElement parent) {
         for (LayoutingElement c : this.diagram.getChildElementsOf(parent)) {
@@ -258,32 +222,24 @@ public class BPMNLayouterServlet extends HttpServlet {
     private void preprocessHeuristics() {
         // turn direction of associations to text annotations towards them
         // so that they are right of the elements
-        for (LayoutingElement textAnnotation : this.diagram
-                .getElementsOfType(BPMNType.TextAnnotation)) {
-            for (BPMNElement edge : textAnnotation.getOutgoingLinks().toArray(
-                    new BPMNElement[0])) {
-                BPMNElement target = (BPMNElement) edge.getOutgoingLinks().get(0);
+        for (LayoutingElement textAnnotation : this.diagram.getElementsOfType(BPMNType.TextAnnotation)) {
+            List<LayoutingElement> outgoingLinks = textAnnotation.getOutgoingLinks();
+            for (LayoutingElement edge : outgoingLinks.toArray(new LayoutingElement[outgoingLinks.size()])) {
+                LayoutingElement target = edge.getOutgoingLinks().get(0);
                 // remove old connection
                 textAnnotation.removeOutgoingLink(edge);
-                // edge.removeIncomingLink(textAnnotation);
-
-                // edge.removeOutgoingLink(target);
                 target.removeIncomingLink(edge);
 
                 // reconnect properly
                 target.addOutgoingLink(textAnnotation);
-                // edge.addIncomingLink(target);
-
-                // edge.addOutgoingLink(textAnnotation);
                 textAnnotation.addIncomingLink(target);
             }
         }
     }
 
 
-    protected static String jsonToErdf(String json) {
-        JsonErdfTransformation trans = new JsonErdfTransformation(json);
-
-        return trans.toString();
-    }
+//    protected static String jsonToErdf(String json) {
+//        JsonErdfTransformation trans = new JsonErdfTransformation(json);
+//        return trans.toString();
+//    }
 }

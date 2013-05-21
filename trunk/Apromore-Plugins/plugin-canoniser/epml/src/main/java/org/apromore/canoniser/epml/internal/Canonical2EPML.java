@@ -92,23 +92,22 @@ public class Canonical2EPML {
 
     private static ObjectFactory EPML_FACTORY = new ObjectFactory();
 
-    Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
-    List<String> event_list = new LinkedList<String>();
-    Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
-    Map<String, EdgeType> edgeRefMap = new HashMap<String, EdgeType>();
-    Set<String> objectSet = new HashSet<String>();
-    Set<String> arcSet = new HashSet<String>();
-    Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
-    Map<String, ObjectRefType> objectRefMap = new HashMap<String, ObjectRefType>();
-    List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
-    List<String> object_res_list = new LinkedList<String>();
-    Map<BigInteger, List<String>> role_map = new HashMap<BigInteger, List<String>>();
-    List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
-    List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
+    Map<String, BigInteger> id_map = new HashMap<>();
+    List<String> event_list = new LinkedList<>();
+    Map<String, NodeType> nodeRefMap = new HashMap<>();
+    Map<String, EdgeType> edgeRefMap = new HashMap<>();
+    Set<String> objectSet = new HashSet<>();
+    Set<String> arcSet = new HashSet<>();
+    Map<BigInteger, Object> epcRefMap = new HashMap<>();
+    Map<String, ObjectRefType> objectRefMap = new HashMap<>();
+    List<TEpcElement> eventFuncList = new LinkedList<>();
+    List<String> object_res_list = new LinkedList<>();
+    Map<BigInteger, List<String>> role_map = new HashMap<>();
+    List<TypeFunction> subnet_list = new LinkedList<>();
+    List<TypeProcessInterface> pi_list = new LinkedList<>();
 
-    List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
-
-    Map<String, BigInteger> cpfIdMap = new HashMap<String, BigInteger>();
+    List<TypeFlow> flow_list = new LinkedList<>();
+    Map<String, BigInteger> cpfIdMap = new HashMap<>();
 
     private final TypeEPML epml = new TypeEPML();
     private final TypeDirectory dir = new TypeDirectory();
@@ -152,7 +151,9 @@ public class Canonical2EPML {
                     }
                 }
                 if (events == 0 && funcs == 0) {
+                    // do nothing ???
                 } else if (events == 0) { // && funcs != 0
+                    // do nothing ???
                 } else if (funcs == 0) { // && events != 0
                     // Add fake function after the current event
                     TypeFunction func = new TypeFunction();
@@ -320,8 +321,7 @@ public class Canonical2EPML {
                 JAXBElement<?> obj = (JAXBElement<?>) object;
                 if (obj.getValue() instanceof TypeArc) {
                     TypeArc arc = (TypeArc) obj.getValue();            
-                    if (obj != null && arc.getFlow() != null && arc.getFlow().getSource() != null &&
-                            element != null) {
+                    if (arc.getFlow() != null && arc.getFlow().getSource() != null && element != null) {
                         if (arc.getFlow().getSource().equals(element.getId())) {
                             return arc;
                         }
@@ -340,8 +340,8 @@ public class Canonical2EPML {
      * @since 1.0
      */
     private List<TEpcElement> retrieve_successors(final TEpcElement element, final TypeEPC epc) {
-        List<Object> elements = new LinkedList<Object>();
-        List<TEpcElement> successors = new LinkedList<TEpcElement>();
+        List<Object> elements = new LinkedList<>();
+        List<TEpcElement> successors = new LinkedList<>();
         elements.add(element);
         boolean flag = false;
 
@@ -380,10 +380,8 @@ public class Canonical2EPML {
     /**
      * Constructor for de-canonizing CPF & ANF files. The fake feature will be set to false as a default value.
      * 
-     * @param cproc
-     *            the header for a CPF modelass
-     * @param annotations
-     *            the header for an ANF modelass
+     * @param cproc the header for a CPF modelass
+     * @param annotations the header for an ANF modelass
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations) throws CanoniserException {
@@ -395,8 +393,7 @@ public class Canonical2EPML {
     /**
      * Constructor for de-canonizing CPF file without annotations. The fake feature will be set to false as a default value.
      * 
-     * @param cproc
-     *            the header for a CPF modelass
+     * @param cproc the header for a CPF modelass
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc) throws CanoniserException {
@@ -406,12 +403,9 @@ public class Canonical2EPML {
     /**
      * Constructor for de-canonizing CPF & ANF files.
      * 
-     * @param cproc
-     *            The header for a CPF modelass
-     * @param annotations
-     *            The header for an ANF modelass
-     * @param addFakes
-     *            Boolean value to either add fake elements or not.
+     * @param cproc The header for a CPF modelass
+     * @param annotations The header for an ANF modelass
+     * @param addFakes Boolean value to either add fake elements or not.
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations, final boolean addFakes) throws CanoniserException {
@@ -423,10 +417,8 @@ public class Canonical2EPML {
     /**
      * Constructor for de-canonizing CPF file without annotations.
      * 
-     * @param cproc
-     *            the header for a CPF modelass
-     * @param addFakes
-     *            Boolean value to either add fake elements or not.
+     * @param cproc the header for a CPF modelass
+     * @param addFakes Boolean value to either add fake elements or not.
      * @throws CanoniserException
      */
     public Canonical2EPML(final CanonicalProcessType cproc, final Boolean addFakes) throws CanoniserException {
@@ -436,15 +428,12 @@ public class Canonical2EPML {
     /**
      * This main method to be reused by all the constructors for all cases.
      * 
-     * @param cproc
-     *            the header for a CPF modelass
-     * @param addFakes
-     *            Boolean value to either add fake elements or not.
+     * @param cproc the header for a CPF modelass
+     * @param addFakes Boolean value to either add fake elements or not.
      * @throws CanoniserException
      * @since 1.0
      */
     private void main(final CanonicalProcessType cproc, final boolean addFakes) throws CanoniserException {
-
         // Added as the EPML schema requires Coordinates
         TypeCoordinates coord = new TypeCoordinates();
         coord.setXOrigin("leftToRight");
@@ -515,7 +504,7 @@ public class Canonical2EPML {
                     object_res_list.add(ref.getObjectId());
                 }
 
-                List<String> ll = new LinkedList<String>();
+                List<String> ll = new LinkedList<>();
                 for (ResourceTypeRefType ref : ((WorkType) node).getResourceTypeRef()) {
                     object_res_list.add(ref.getResourceTypeId());
                     ll.add(ref.getResourceTypeId());
@@ -715,7 +704,7 @@ public class Canonical2EPML {
         epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCRole(role));
         epcRefMap.put(role.getId(), role);
 
-        List<TypeArc> arcs_list = new LinkedList<TypeArc>();
+        List<TypeArc> arcs_list = new LinkedList<>();
         for (Object obj : epc.getEventAndFunctionAndRole()) {
             List<String> ll;
             JAXBElement<?> element = (JAXBElement<?>) obj;

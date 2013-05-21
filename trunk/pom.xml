@@ -62,7 +62,7 @@
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <module>Apromore-Editor</module>
+        <!--<module>Apromore-Editor</module>-->
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly</module>
@@ -815,7 +815,6 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>${javamail.version}</version>
-                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.activation</groupId>
@@ -827,7 +826,6 @@
                 <groupId>javax.activation</groupId>
                 <artifactId>activation</artifactId>
                 <version>${activation.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
