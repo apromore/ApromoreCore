@@ -5,6 +5,7 @@ public interface Constants {
     public static final String XML_MIMETYPE = "text/xml";
 
     public static final String INITIAL_ANNOTATION = "Initial";
+    public static final String INITIAL_FORMAT = "IntialFormat";
     public static final String CANONICAL = "Canonical";
 
     public static final String TRUNK_NAME = "MAIN";

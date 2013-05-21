@@ -26,6 +26,7 @@ package org.apromore.common.converters.epml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -41,12 +42,11 @@ public class EPMLToJSONConverterTest {
     /**
      * Test the {@link EPMLToJSONConverter#convert} method.
      */
-    @Test public void testConvert() throws Exception {
-
+    @Test
+    public void testConvert() throws Exception {
         EPMLToJSONConverter   converter = new EPMLToJSONConverter();
-        InputStream           in        = new FileInputStream("tests/data/object.epml");
+        InputStream           in        = new FileInputStream("Apromore-Editor/tests/data/object.epml");
         ByteArrayOutputStream out       = new ByteArrayOutputStream();
-
         converter.convert(in, out);
 
         JSONToEPMLConverter   converter2 = new JSONToEPMLConverter();

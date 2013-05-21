@@ -79,19 +79,19 @@ import de.epml.TypeXOR;
 
 public class EPML2Canonical {
 
-    Map<BigInteger, String> id_map = new HashMap<BigInteger, String>();
-    List<String> flow_source_id_list = new LinkedList<String>();
-    List<TypeAND> and_list = new LinkedList<TypeAND>();
-    List<TypeOR> or_list = new LinkedList<TypeOR>();
-    List<TypeXOR> xor_list = new LinkedList<TypeXOR>();
-    Map<BigInteger, String> def_ref = new HashMap<BigInteger, String>();
-    Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
-    Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
-    List<TaskType> subnet_list = new LinkedList<TaskType>();
-    List<BigInteger> range_ids = new LinkedList<BigInteger>();
-    List<String> event_ids = new LinkedList<String>();
-    List<TypeArc> range_flow = new LinkedList<TypeArc>();
-    List<TypeArc> range_relation = new LinkedList<TypeArc>();
+    Map<BigInteger, String> id_map = new HashMap<>();
+    List<String> flow_source_id_list = new LinkedList<>();
+    List<TypeAND> and_list = new LinkedList<>();
+    List<TypeOR> or_list = new LinkedList<>();
+    List<TypeXOR> xor_list = new LinkedList<>();
+    Map<BigInteger, String> def_ref = new HashMap<>();
+    Map<BigInteger, TypeRole> role_ref = new HashMap<>();
+    Map<BigInteger, TypeObject> obj_ref = new HashMap<>();
+    List<TaskType> subnet_list = new LinkedList<>();
+    List<BigInteger> range_ids = new LinkedList<>();
+    List<String> event_ids = new LinkedList<>();
+    List<TypeArc> range_flow = new LinkedList<>();
+    List<TypeArc> range_relation = new LinkedList<>();
 
     private final CanonicalProcessType cproc = new CanonicalProcessType();
     private final AnnotationsType annotations = new AnnotationsType();
@@ -110,9 +110,8 @@ public class EPML2Canonical {
      * the canonical format. The user also will be able to retrieve the annotation element which stores the annotation data for the canonized modelass
      * isolated from the process flow.
      * 
-     * @param epml
-     *            the header for an EPML (EPC Markup Language) which is file format for EPC diagrams.
-     * @throws org.apromore.exception.CanoniserException
+     * @param epml the header for an EPML (EPC Markup Language) which is file format for EPC diagrams.
+     * @throws org.apromore.canoniser.exception.CanoniserException
      * @since 1.0
      */
     public EPML2Canonical(final TypeEPML epml) throws CanoniserException {
@@ -129,7 +128,7 @@ public class EPML2Canonical {
 
         TypeAttribute att = new TypeAttribute();
         att.setName("IntialFormat");
-        att.setValue("EPML");
+        att.setValue("EPML 2.0");
         cproc.getAttribute().add(att);
 
         if (epml.getDirectory() != null && epml.getDirectory().size() > 0) {
@@ -182,8 +181,8 @@ public class EPML2Canonical {
      * @since 1.0
      */
     private TypeEPML removeFakes(final TypeEPML epml) throws CanoniserException {
-        List<TEpcElement> remove_list = new LinkedList<TEpcElement>();
-        List<TypeArc> arc_remove_list = new LinkedList<TypeArc>();
+        List<TEpcElement> remove_list = new LinkedList<>();
+        List<TypeArc> arc_remove_list = new LinkedList<>();
 
         if (epml.getDirectory() != null && epml.getDirectory().size() > 0) {
             for (int i = 0; i < epml.getDirectory().size(); i++) {
@@ -264,7 +263,7 @@ public class EPML2Canonical {
 
     @SuppressWarnings("unchecked")
     private void translateEpc(final NetType net, final TypeEPC epc) throws CanoniserException {
-        Map<String, String> role_names = new HashMap<String, String>();
+        Map<String, String> role_names = new HashMap<>();
 
         for (Object obj : epc.getEventAndFunctionAndRole()) {
             if (obj instanceof JAXBElement) {
@@ -535,8 +534,8 @@ public class EPML2Canonical {
     // should be in the end
 
     private void processUnrequiredEvents(final NetType net, final BigInteger id) throws CanoniserException {
-        List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
-        List<NodeType> node_remove_list = new LinkedList<NodeType>();
+        List<EdgeType> edge_remove_list = new LinkedList<>();
+        List<NodeType> node_remove_list = new LinkedList<>();
         String event_id;
         boolean found = false;
         for (EdgeType edge : net.getEdge()) {

@@ -371,6 +371,7 @@ public class ProcessServiceImpl implements ProcessService {
             canonical.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
             canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
             canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
+            canonical.setProperty(Constants.INITIAL_FORMAT, pmv.getProcessBranch().getProcess().getNativeType().getNatType());
             if (lock) {
                 canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
             }
