@@ -24,15 +24,15 @@
  */
 package org.apromore.common.converters.epml.context;
 
-import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicShape;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicShape;
 
 public class EPMLConversionContext {
 
@@ -43,8 +43,8 @@ public class EPMLConversionContext {
 
     public EPMLConversionContext() {
         super();
-        this.epcDiagrams = new ArrayList<BasicDiagram>();
-        this.shapeMap = new HashMap<BigInteger, BasicShape>();
+        this.epcDiagrams = new ArrayList<>();
+        this.shapeMap = new HashMap<>();
     }
 
 

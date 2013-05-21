@@ -1,15 +1,9 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packges
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -27,19 +21,25 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.xml.sax.SAXException;
-
-// Local packages
 import org.apromore.anf.AnnotationsType;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.TaskType;
 import org.apromore.canoniser.bpmn.Constants;
 import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -51,8 +51,10 @@ import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
+import org.xml.sax.SAXException;
+
+// Local packages
 
 /**
  * BPMN 2.0 object model with canonisation methods.
@@ -60,7 +62,7 @@ import org.omg.spec.bpmn._20100524.model.TSubProcess;
  * To canonise a BPMN document, unmarshal the XML into an object of this class, and pass it to the constructor of
  * {@link CpfCanonicalProcessType}.
  * <p>
- * To decanonise a canonical model into BPMN, invoke the constructor {@link #BpmnDefinitions(CanonicalProcessType, AnnotationsType)}.
+ * To decanonise a canonical model into BPMN, invoke the constructor.
  * Only individual canonical models may be decanonised; there is no facility for generating a BPMN document containing
  * multiple top-level processes.
  *
@@ -72,6 +74,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
     /** Mapping from IDs to {@link TBaseElement}s within this document. */
     @XmlTransient
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();  // TODO - use diamond operator
+    private boolean fromEPML = false;
 
     /** JAXB context for BPMN. */
     //public static final JAXBContext BPMN_CONTEXT = newContext();
@@ -133,12 +136,12 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
     private BpmnDefinitions(final CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
-
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {
             throw new CanoniserException("Cannot create BPMN from null CPF");
         }
 
+        IsConvertedFromEPML(cpf);
         Initializer initializer = new Initializer(this, cpf, "http://www.apromore.org/bpmn/" + UUID.randomUUID() + "#");
 
         // Set attributes of the document root
@@ -194,9 +197,11 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
 
         // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
-            getBPMNDiagram().add(new BpmndiDiagram(anf, initializer));
+            getBPMNDiagram().add(new BpmndiDiagram(anf, initializer, fromEPML));
         }
     }
+
+
 
     /**
      * Construct a BPMN model from a canonical model.
@@ -459,5 +464,17 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         }
 
         return idMap.get(id.getLocalPart());
+    }
+
+
+    // TODO: Need to remove and setup a proper post processing.
+    private void IsConvertedFromEPML(CpfCanonicalProcessType cpf) {
+        for (TypeAttribute att : cpf.getAttribute()) {
+            if (att.getName().equals("IntialFormat")) {
+                if (att.getValue().equals("EPML 2.0")) {
+                    this.fromEPML = true;
+                }
+            }
+        }
     }
 }

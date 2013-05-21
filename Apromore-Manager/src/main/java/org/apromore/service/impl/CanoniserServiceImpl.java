@@ -91,45 +91,25 @@ public class CanoniserServiceImpl implements CanoniserService {
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
         LOGGER.info("Canonising process with native type {}", nativeType);
-        //LOGGER.info(StreamUtil.convertStreamToString(processXml));
 
         List<CanonicalProcessType> cpfList = new ArrayList<>();
         List<AnnotationsType> anfList = new ArrayList<>();
-        CanonisedProcess cp = new CanonisedProcess();
 
+        CanonisedProcess cp = new CanonisedProcess();
         cp.setOriginal(processXml);
 
         try {
-            //processXml.reset();
             cp.setOriginal(processXml);
             Canoniser c = canProvider.findByNativeType(nativeType);
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
-        } catch (CanoniserException | PluginNotFoundException e) {  //IOException |
+        } catch (CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 
-        ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
-        ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
-
-        if (cpfList.size() > 1 || anfList.size() > 1) {
-            throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
-        } else {
-            try {
-                ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
-                cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
-                cp.setAnt(anfList.get(0));
-
-                CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
-                cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
-                cp.setCpt(cpfList.get(0));
-
-            } catch (JAXBException | SAXException e) {
-                throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
-            }
-        }
+        marshal(cpfList, anfList, cp);
 
         return cp;
     }
@@ -144,11 +124,10 @@ public class CanoniserServiceImpl implements CanoniserService {
     public DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType,
             final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
             final Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException {
-
         LOGGER.info("DeCanonising process with native type {}", nativeType);
 
         ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
-        DecanonisedProcess decanonisedProces = new DecanonisedProcess();
+        DecanonisedProcess decanonisedProcess = new DecanonisedProcess();
 
         try {
             Canoniser c = canProvider.findByNativeType(nativeType);
@@ -156,14 +135,45 @@ public class CanoniserServiceImpl implements CanoniserService {
             canoniserRequest.addRequestProperty(canoniserProperties);            
             PluginResult pluginResult = c.deCanonise(canonicalFormat, annotationFormat, nativeXml, canoniserRequest);
             InputStream nativeXmlIs = new ByteArrayInputStream(nativeXml.toByteArray());
-            decanonisedProces.setNativeFormat(nativeXmlIs);
-            decanonisedProces.setMessages(pluginResult.getPluginMessage());
-            return decanonisedProces;
+            decanonisedProcess.setNativeFormat(nativeXmlIs);
+            decanonisedProcess.setMessages(pluginResult.getPluginMessage());
         } catch (PluginException e) {
             throw new CanoniserException("Could not deCanonise " + nativeType, e);
         }
 
+        return decanonisedProcess;
     }
+
+
+    /* Marshal the jaxb objects into the CPF */
+    private void marshal(List<CanonicalProcessType> cpfList, List<AnnotationsType> anfList, CanonisedProcess cp) throws CanoniserException {
+        ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
+
+        if (cpfList.size() > 1 || anfList.size() > 1) {
+            throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
+        } else {
+            try {
+                ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
+                cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
+                cp.setAnt(anfList.get(0));
+
+                CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
+                cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
+                cp.setCpt(cpfList.get(0));
+            } catch (JAXBException | SAXException e) {
+                throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
+            }
+        }
+    }
+//
+//    /* At the moment, we only post process EPC to XPDL/BPMN. but this will expand */
+//    private void postProcessing(String nativeType, CanonisedProcess cp) {
+//        if (nativeType.equals("EPML 2.0")) {
+//
+//        }
+//    }
+
 
     // TODO all the following methods do not really belong here
 

@@ -24,42 +24,39 @@
  */
 package org.apromore.common.converters.epml;
 
-import java.io.ByteArrayOutputStream;
+import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import org.xml.sax.SAXException;
-
-import org.apromore.common.converters.epml.context.EPMLConversionContext;
-import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
-import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
+import de.epml.EPMLSchema;
+import de.epml.ObjectFactory;
+import de.epml.TEpcElement;
+import de.epml.TypeArc;
+import de.epml.TypeCoordinates;
+import de.epml.TypeDirectory;
+import de.epml.TypeEPC;
+import de.epml.TypeEPML;
+import de.epml.TypeFlow;
+import de.epml.TypeGraphics;
+import de.epml.TypeMove;
+import de.epml.TypeMove2;
+import de.epml.TypePosition;
+import de.epml.TypeProcessInterface;
+import de.epml.TypeToProcess;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
-import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 import org.oryxeditor.server.diagram.basic.BasicShape;
-import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
-
-import de.epml.*;
+import org.xml.sax.SAXException;
 
 /**
  * Converts a Signavio JSON stream to an EPML 2.0 stream.

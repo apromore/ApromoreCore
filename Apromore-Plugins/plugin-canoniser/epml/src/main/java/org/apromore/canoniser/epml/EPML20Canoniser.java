@@ -1,12 +1,12 @@
 package org.apromore.canoniser.epml;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import de.epml.EPMLSchema;
 import de.epml.TypeCoordinates;
@@ -49,7 +49,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
     public EPML20Canoniser() {
         super();
-        this.fakeEventsProperty = new PluginParameterType<Boolean>(ADD_FAKE_PROPERTY_ID, "Add Fake Events?", "", false, Canoniser.CANONISE_PARAMETER, true);
+        this.fakeEventsProperty = new PluginParameterType<>(ADD_FAKE_PROPERTY_ID, "Add Fake Events?", "", false, Canoniser.CANONISE_PARAMETER, true);
         registerParameter(fakeEventsProperty);
     }
 
@@ -82,8 +82,8 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
      * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
      */
     @Override
-    public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput, final PluginRequest request) throws CanoniserException {
-
+    public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
+            final OutputStream nativeOutput, final PluginRequest request) throws CanoniserException {
         try {
             Canonical2EPML canonical2epml;
 
@@ -97,15 +97,9 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
             EPMLSchema.marshalEPMLFormat(nativeOutput, canonical2epml.getEPML(), true);
 
             return newPluginResult();
-
-        } catch (JAXBException e) {
-            throw new CanoniserException(e);
-        } catch (PluginPropertyNotFoundException e) {
-            throw new CanoniserException(e);
-        } catch (SAXException e) {
+        } catch (JAXBException | PluginPropertyNotFoundException | SAXException e) {
             throw new CanoniserException(e);
         }
-
     }
 
     /* (non-Javadoc)
@@ -113,7 +107,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
      */
     @Override
     public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
-                                                  final Date processCreated, final PluginRequest request) {
+            final Date processCreated, final PluginRequest request) {
         // create an empty epml process (see issue 129)
         // then just creation of an empty process.
         TypeEPML epml = new TypeEPML();
@@ -137,10 +131,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
         try {
             EPMLSchema.marshalEPMLFormat(nativeOutput, epml, true);
-        } catch (JAXBException e) {
-            LOGGER.error("Could not create initial EPML", e);
-            newPluginResult.addPluginMessage("Could not create initial EPML, reason: {0}", e.getMessage());
-        } catch (SAXException e) {
+        } catch (JAXBException | SAXException e) {
             LOGGER.error("Could not create initial EPML", e);
             newPluginResult.addPluginMessage("Could not create initial EPML, reason: {0}", e.getMessage());
         }

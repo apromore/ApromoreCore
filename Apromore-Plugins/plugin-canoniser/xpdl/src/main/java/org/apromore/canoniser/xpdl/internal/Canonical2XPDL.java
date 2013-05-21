@@ -100,6 +100,7 @@ public class Canonical2XPDL {
 
     /**
      * de-canonize data (canonical) into xpdl
+     *
      * @throws
      */
     public Canonical2XPDL(final CanonicalProcessType cpf) {
@@ -126,6 +127,7 @@ public class Canonical2XPDL {
 
     /**
      * de-canonize data (canonical) into xpdl using anf data
+     *
      * @param cpf the canonical format
      * @param anf the annotation
      * @throws CanoniserException
@@ -135,7 +137,7 @@ public class Canonical2XPDL {
         this.EPML_flag = true;
         for (TypeAttribute att : cpf.getAttribute()) {
             if (att.getName().equals("IntialFormat")) {
-                if (att.getValue().equals("EPML")) {
+                if (att.getValue().equals("EPML 2.0")) {
                     this.EPML_flag = true;
                 }
             }
@@ -664,8 +666,7 @@ public class Canonical2XPDL {
         return info;
     }
 
-    private void mapEdgeAnnotations(final ProcessType bpmnproc,
-            final AnnotationsType annotations) {
+    private void mapEdgeAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (edgeRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -715,7 +716,7 @@ public class Canonical2XPDL {
 
 
     private void mapAssociationAnnotations(final ProcessType bpmnproc,
-            final AnnotationsType annotations) {
+                                           final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (objectRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -794,7 +795,7 @@ public class Canonical2XPDL {
 
     private String convertConditionExpr(final ConditionExpressionType conditionExpr) {
         if (conditionExpr.getDescription() != null) {
-            return conditionExpr.getDescription();   
+            return conditionExpr.getDescription();
         } else if (conditionExpr.getExpression() != null) {
             return conditionExpr.getExpression();
         } else {

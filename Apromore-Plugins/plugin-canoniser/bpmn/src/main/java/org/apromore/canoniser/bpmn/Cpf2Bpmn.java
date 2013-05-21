@@ -30,7 +30,6 @@ public class Cpf2Bpmn {
      * @param arg  command line arguments, currently ignored
      */
     public static void main(String[] arg) throws CanoniserException, IOException, JAXBException, SAXException {
-
         CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(arg[0]), true);
         AnnotationsType      anf = null;
 

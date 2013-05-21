@@ -117,6 +117,11 @@
 
 
         <!-- *** Plugin Implementation Bundles *** -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${javamail.version}</version>
+        </dependency>
 
         <!-- MYSQL,Postgres and Oracle Bundles -->
         <dependency>
