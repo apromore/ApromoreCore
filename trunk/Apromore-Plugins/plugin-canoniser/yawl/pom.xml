@@ -61,21 +61,6 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-
-        <!-- Blueprint -->
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-        </dependency>
-
         <!-- Plugin APIs -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -102,14 +87,6 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-core</artifactId>
             <scope>test</scope>
@@ -119,7 +96,6 @@
             <artifactId>jbpt-deco</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>

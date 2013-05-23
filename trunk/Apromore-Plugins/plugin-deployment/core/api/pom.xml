@@ -44,15 +44,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
         </dependency>
-
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
-        <!-- Add your own Test dependencies here -->
-
     </dependencies>
 
 </project>

@@ -30,21 +30,6 @@
     </build>
 
     <dependencies>
-    
-        <!-- Blueprint -->
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-        </dependency>
-
         <!-- Plugin APIs -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -75,14 +60,6 @@
         </dependency>
 
         <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
         <dependency>  <!-- provides NullOutputStream -->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

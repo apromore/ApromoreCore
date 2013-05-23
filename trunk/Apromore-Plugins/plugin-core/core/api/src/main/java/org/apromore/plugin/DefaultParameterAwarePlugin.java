@@ -46,7 +46,7 @@ public abstract class DefaultParameterAwarePlugin extends DefaultPlugin implemen
      */
     public DefaultParameterAwarePlugin() {
         super();
-        availableParameters = new HashMap<String, ParameterType<?>>();
+        availableParameters = new HashMap<>();
     }
 
     /*
@@ -56,7 +56,7 @@ public abstract class DefaultParameterAwarePlugin extends DefaultPlugin implemen
      */
     @Override
     public Set<ParameterType<?>> getMandatoryParameters() {
-        Set<ParameterType<?>> mandatoryParams = new HashSet<ParameterType<?>>();
+        Set<ParameterType<?>> mandatoryParams = new HashSet<>();
         for (ParameterType<?> param : getAvailableParameters()) {
             if (param.isMandatory()) {
                 mandatoryParams.add(param);
@@ -88,7 +88,7 @@ public abstract class DefaultParameterAwarePlugin extends DefaultPlugin implemen
      */
     @Override
     public Set<ParameterType<?>> getAvailableParameters() {
-        Set<ParameterType<?>> allParams = new HashSet<ParameterType<?>>();
+        Set<ParameterType<?>> allParams = new HashSet<>();
         for (Entry<String, ParameterType<?>> param : availableParameters.entrySet()) {
             allParams.add(param.getValue());
         }

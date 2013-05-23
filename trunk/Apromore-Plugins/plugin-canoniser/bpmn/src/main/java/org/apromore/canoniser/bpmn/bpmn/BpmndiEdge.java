@@ -8,6 +8,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataAssociation;
 import org.omg.spec.bpmn._20100524.model.TMessageFlow;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -30,7 +31,6 @@ public class BpmndiEdge extends BPMNEdge {
 
     /**
      * Construct a BPMNDI Edge corresponding to an ANF Graphics annotation.
-     *
      * @param graphics  an ANF graphics annotation, never <code>null</code>
      * @param initializer  BPMN document construction state
      * @throws CanoniserException if the edge can't be constructed
@@ -54,16 +54,13 @@ public class BpmndiEdge extends BPMNEdge {
         }
 
         // Validate the cpfId: must reference a BPMN flow node or lane
-        if (!(initializer.findElement(graphics.getCpfId()) instanceof TDataAssociation ||
-                initializer.findElement(graphics.getCpfId()) instanceof TMessageFlow     ||
-                initializer.findElement(graphics.getCpfId()) instanceof TSequenceFlow)) {
-
+        TBaseElement bpmnElement = initializer.findElement(graphics.getCpfId());
+        if (!(bpmnElement instanceof TDataAssociation || bpmnElement instanceof TMessageFlow || bpmnElement instanceof TSequenceFlow)) {
             throw new CanoniserException(graphics.getCpfId() + " isn't a BPMN element with an Edge");
         }
 
         // Handle @bpmnElement
-        setBpmnElement(new QName(initializer.getTargetNamespace(),
-                initializer.findElement(graphics.getCpfId()).getId()));
+        setBpmnElement(new QName(initializer.getTargetNamespace(), bpmnElement.getId()));
 
         // add each ANF position as a BPMNDI waypoint
         for (PositionType position : graphics.getPosition()) {

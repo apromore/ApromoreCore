@@ -7,6 +7,7 @@
 
     <reference id="canoniserProvider" interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
+    <reference id="annotationProcessorProvider" interface="org.apromore.annotation.provider.AnnotationProcessorProvider"/>
     <reference id="deploymentProvider" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
 
 </beans:beans>

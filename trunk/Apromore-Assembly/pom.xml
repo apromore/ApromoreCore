@@ -96,6 +96,16 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-api-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-api</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -179,13 +189,19 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Annotation Pre Processor Plugins -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-bpmn</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Deployment Plugins -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-yawl</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
         <!-- Manager Bundles -->
         <dependency>

@@ -63,6 +63,8 @@
     <bean id="canonicalToGraph" class="org.apromore.graph.canonical.converter.CanonicalToGraph" />
     <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
 
+    <bean id="epml2bpmnPreAnnotationProcessor" class="org.apromore.annotation.epml2bpmn.Epml2BpmnPreProcessor" />
+
     <!-- Beans used for OSGi setup. -->
     <bean id="arisCanoniser" class="org.apromore.canoniser.aris.ArisCanoniser" />
     <bean id="bpmnCanoniser" class="org.apromore.canoniser.bpmn.BPMN20Canoniser" />
@@ -84,6 +86,7 @@
     <bean id="pluginProvider" class="org.apromore.plugin.provider.impl.PluginProviderImpl"/>
     <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl" p:canoniserSet-ref="canonisers"/>
     <bean id="deploymentProvider" class="org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl"/>
+    <bean id="annotationProcessorProvider" class="org.apromore.annotation.provider.impl.AnnotationProcessorProviderImpl"/>
 
     <!-- Mock Providers -->
     <bean id="mockDeploymentProvider" class="org.apromore.plugin.deployment.MockDeploymentPluginProvider" />
