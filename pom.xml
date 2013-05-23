@@ -81,6 +81,7 @@
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
+        <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <pax.runner.version>1.7.6</pax.runner.version>
@@ -288,6 +289,26 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-api</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>canoniser-api-provider</artifactId>
+                <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-api</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-api-provider</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
                 <artifactId>deployment-api</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
@@ -297,24 +318,7 @@
                 <version>${apromore.plugin.version}</version>
             </dependency>
 
-            <!-- Deployment -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>deployment-yawl</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
-
             <!-- Canonisers -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-api</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>canoniser-api-provider</artifactId>
-                <version>${apromore.canoniser.plugin.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-aris</artifactId>
@@ -344,6 +348,20 @@
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
+            </dependency>
+
+            <!-- Annotations PreProcessors -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-bpmn</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+
+            <!-- Deployment -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>deployment-yawl</artifactId>
+                <version>${apromore.plugin.version}</version>
             </dependency>
 
             <!-- Schema -->

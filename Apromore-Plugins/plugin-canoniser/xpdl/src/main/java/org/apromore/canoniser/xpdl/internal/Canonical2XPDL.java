@@ -689,7 +689,7 @@ public class Canonical2XPDL {
 
                     if (EPML_flag) {
                         if (mani_trans_list.contains(flow.getFrom()) || mani_trans_list.contains(flow.getTo())) {
-                            AnnData annData = null;
+                            AnnData annData;
                             for (AnnData ad : mani_trans) {
                                 if (ad.elementID.equals(flow.getFrom()) || ad.elementID.equals(flow.getTo())) {
                                     annData = ad;
@@ -715,8 +715,7 @@ public class Canonical2XPDL {
     }
 
 
-    private void mapAssociationAnnotations(final ProcessType bpmnproc,
-                                           final AnnotationsType annotations) {
+    private void mapAssociationAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (objectRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings

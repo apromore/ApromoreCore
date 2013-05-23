@@ -1,3 +1,19 @@
+/**
+ *  Copyright 2013
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.apromore.service.impl;
 
 import javax.activation.DataHandler;
@@ -59,6 +75,7 @@ import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.AnnotationService;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ComposerService;
@@ -105,6 +122,8 @@ public class ProcessServiceImpl implements ProcessService {
     private FragmentVersionDagRepository fragmentVersionDagRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
     private CanonicalConverter converter;
+
+    private AnnotationService annotationSrv;
     private CanoniserService canoniserSrv;
     private LockService lService;
     private UserService userSrv;
@@ -125,6 +144,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param fragmentVersionDagRepo Fragment Version Dag Repository.
      * @param processModelVersionRepo Process Model Version Repository.
      * @param converter Canonical Format Converter.
+     * @param annotationSrv Annotation Processing Service
      * @param canoniserSrv Canoniser Service.
      * @param lService Lock Service.
      * @param userSrv User Service
@@ -138,7 +158,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessServiceImpl(final AnnotationRepository annotationRepo,
             final NativeRepository nativeRepo, final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
-            final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter,
+            final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
             final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
@@ -150,6 +170,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.fragmentVersionDagRepo = fragmentVersionDagRepo;
         this.processModelVersionRepo = processModelVersionRepo;
         this.converter = converter;
+        this.annotationSrv = annotationSrv;
         this.canoniserSrv = canoniserSrv;
         this.lService = lService;
         this.fService = fService;
@@ -269,6 +290,8 @@ public class ProcessServiceImpl implements ProcessService {
                             ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
                             anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
                         }
+
+                        anf = annotationSrv.preProcess(format, cpt, anf);
                     }
                     dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
 

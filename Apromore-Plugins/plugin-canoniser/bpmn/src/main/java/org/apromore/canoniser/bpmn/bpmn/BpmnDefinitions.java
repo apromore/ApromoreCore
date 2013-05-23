@@ -39,7 +39,6 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -74,7 +73,6 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
     /** Mapping from IDs to {@link TBaseElement}s within this document. */
     @XmlTransient
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();  // TODO - use diamond operator
-    private boolean fromEPML = false;
 
     /** JAXB context for BPMN. */
     //public static final JAXBContext BPMN_CONTEXT = newContext();
@@ -141,7 +139,6 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
             throw new CanoniserException("Cannot create BPMN from null CPF");
         }
 
-        IsConvertedFromEPML(cpf);
         Initializer initializer = new Initializer(this, cpf, "http://www.apromore.org/bpmn/" + UUID.randomUUID() + "#");
 
         // Set attributes of the document root
@@ -197,7 +194,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
 
         // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
-            getBPMNDiagram().add(new BpmndiDiagram(anf, initializer, fromEPML));
+            getBPMNDiagram().add(new BpmndiDiagram(anf, initializer));
         }
     }
 
@@ -233,6 +230,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @throws JAXBException if the stream can't be parsed as BPMN
      * @return the parsed instance
      */
+    @SuppressWarnings("unchecked")
     public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
         Unmarshaller unmarshaller = /*BPMN_CONTEXT*/ newContext().createUnmarshaller();
         BpmnIDResolver resolver = new BpmnIDResolver();
@@ -253,12 +251,6 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      */
     public static JAXBContext newContext() {
         try {
-//            ClassLoader bpmnClassLoader = org.omg.spec.bpmn._20100524.model.ObjectFactory.class.getClassLoader();
-//            return JAXBContext.newInstance(
-//                    "org.omg.spec.bpmn._20100524.model:" +
-//                    "org.omg.spec.bpmn._20100524.di:" +
-//                    "org.omg.spec.dd._20100524.dc:" +
-//                    "org.omg.spec.dd._20100524.di", bpmnClassLoader);
             return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,
@@ -466,15 +458,4 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
         return idMap.get(id.getLocalPart());
     }
 
-
-    // TODO: Need to remove and setup a proper post processing.
-    private void IsConvertedFromEPML(CpfCanonicalProcessType cpf) {
-        for (TypeAttribute att : cpf.getAttribute()) {
-            if (att.getName().equals("IntialFormat")) {
-                if (att.getValue().equals("EPML 2.0")) {
-                    this.fromEPML = true;
-                }
-            }
-        }
-    }
 }

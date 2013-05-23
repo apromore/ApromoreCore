@@ -54,7 +54,6 @@
                             org.springframework.web;bundle-version="[3.1,4.0)",
                             org.springframework.beans;bundle-version="[3.1,4.0)"
                         </Require-Bundle>
-                        <!-- Mark all Import-Packages as optional -->
                         <Import-Package>
                             org.eclipse.virgo.web.dm, <!-- Is not picked up by maven-bundle-plugin from web.xml -->
                             org.springframework.beans.factory.aspectj,
@@ -142,6 +141,12 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
+        </dependency>
+
+        <!-- Annotation API -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-api</artifactId>
         </dependency>
 
         <!-- Deployment API -->
@@ -438,6 +443,11 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-api-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
@@ -499,6 +509,12 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-yawl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-bpmn</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

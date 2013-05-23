@@ -1,0 +1,118 @@
+/**
+ *  Copyright 2013
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.apromore.service.impl;
+
+import javax.inject.Inject;
+import java.util.Set;
+
+import org.apromore.anf.AnnotationsType;
+import org.apromore.annotation.AnnotationProcessor;
+import org.apromore.annotation.exception.AnnotationProcessorException;
+import org.apromore.annotation.provider.AnnotationProcessorProvider;
+import org.apromore.common.Constants;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.TypeAttribute;
+import org.apromore.plugin.exception.PluginNotFoundException;
+import org.apromore.service.AnnotationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Implementation of the Canoniser Service Contract.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ */
+@Service
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+public class AnnotationServiceImpl implements AnnotationService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationServiceImpl.class);
+
+    private AnnotationProcessorProvider annProvider;
+
+
+    /**
+     * Default Constructor allowing Spring to Autowire for testing and normal use.
+     * @param annotationProcessorProvider Annotation Processor Provider.
+     */
+    @Inject
+    public AnnotationServiceImpl(final @Qualifier("annotationProcessorProvider") AnnotationProcessorProvider annotationProcessorProvider) {
+        annProvider = annotationProcessorProvider;
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.service.AnnotationService#listBySourceAndTargetProcessType(java.lang.String)
+     */
+    @Override
+    public Set<AnnotationProcessor> listBySourceAndTargetProcessType(String processType) throws PluginNotFoundException {
+        return annProvider.listBySourceAndTargetProcessType(processType);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.apromore.service.AnnotationService#findBySourceAndTargetProcessType(java.lang.String)
+     */
+    @Override
+    public AnnotationProcessor findBySourceAndTargetProcessType(String processType) throws PluginNotFoundException {
+        return annProvider.findBySourceAndTargetProcessType(processType);
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.service.AnnotationService#findBySourceAndTargetProcessTypeAndNameAndVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public AnnotationProcessor findBySourceAndTargetProcessTypeAndNameAndVersion(String processType, String name, String version)
+            throws PluginNotFoundException {
+        return annProvider.findBySourceAndTargetProcessTypeAndNameAndVersion(processType, name, version);
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.service.AnnotationService#preProcess(java.lang.String, CanonicalProcessType, AnnotationsType)
+     */
+    @Override
+    public AnnotationsType preProcess(final String targetType, final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat) {
+        LOGGER.info("Pre Processing CPF and ANF");
+
+        if (canonicalFormat != null && annotationFormat != null) {
+            String sourceType = null;
+            for (TypeAttribute attribute : canonicalFormat.getAttribute()) {
+                if (attribute.getName().equals(Constants.INITIAL_FORMAT)) {
+                    sourceType = attribute.getValue();
+                    break;
+                }
+            }
+
+            try {
+                if (sourceType != null && targetType != null) {
+                    AnnotationProcessor preProcessor = findBySourceAndTargetProcessType(sourceType + " " +targetType);
+                    preProcessor.processAnnotation(canonicalFormat, annotationFormat);
+                }
+            } catch (PluginNotFoundException | AnnotationProcessorException e) {
+                LOGGER.error("Plugin not found for '" + sourceType + "' and '" + targetType + "'.", e);
+            }
+        }
+
+        return annotationFormat;
+    }
+
+}
