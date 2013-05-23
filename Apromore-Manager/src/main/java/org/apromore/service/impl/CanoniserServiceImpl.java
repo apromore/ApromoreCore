@@ -1,3 +1,19 @@
+/**
+ *  Copyright 2013
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.apromore.service.impl;
 
 import javax.inject.Inject;
@@ -109,9 +125,7 @@ public class CanoniserServiceImpl implements CanoniserService {
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 
-        marshal(cpfList, anfList, cp);
-
-        return cp;
+        return marshal(cpfList, anfList, cp);
     }
 
     /*
@@ -134,6 +148,9 @@ public class CanoniserServiceImpl implements CanoniserService {
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);            
             PluginResult pluginResult = c.deCanonise(canonicalFormat, annotationFormat, nativeXml, canoniserRequest);
+
+            // Do the Post Processing of the de-canonised process model.
+
             InputStream nativeXmlIs = new ByteArrayInputStream(nativeXml.toByteArray());
             decanonisedProcess.setNativeFormat(nativeXmlIs);
             decanonisedProcess.setMessages(pluginResult.getPluginMessage());
@@ -146,7 +163,7 @@ public class CanoniserServiceImpl implements CanoniserService {
 
 
     /* Marshal the jaxb objects into the CPF */
-    private void marshal(List<CanonicalProcessType> cpfList, List<AnnotationsType> anfList, CanonisedProcess cp) throws CanoniserException {
+    private CanonisedProcess marshal(List<CanonicalProcessType> cpfList, List<AnnotationsType> anfList, CanonisedProcess cp) throws CanoniserException {
         ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
         ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
 
@@ -165,14 +182,10 @@ public class CanoniserServiceImpl implements CanoniserService {
                 throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
             }
         }
+
+        return cp;
     }
-//
-//    /* At the moment, we only post process EPC to XPDL/BPMN. but this will expand */
-//    private void postProcessing(String nativeType, CanonisedProcess cp) {
-//        if (nativeType.equals("EPML 2.0")) {
-//
-//        }
-//    }
+
 
 
     // TODO all the following methods do not really belong here

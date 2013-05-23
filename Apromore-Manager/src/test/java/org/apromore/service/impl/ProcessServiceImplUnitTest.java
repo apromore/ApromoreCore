@@ -20,6 +20,7 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.AnnotationService;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ComposerService;
@@ -49,7 +50,6 @@ public class ProcessServiceImplUnitTest {
     private ProcessServiceImpl service;
 
     private NativeRepository natDao;
-    private ProcessRepository proDao;
     private ProcessModelVersionRepository pmvDao;
 
     @Before
@@ -57,12 +57,13 @@ public class ProcessServiceImplUnitTest {
         AnnotationRepository annDao = createMock(AnnotationRepository.class);
         natDao = createMock(NativeRepository.class);
         ProcessBranchRepository branchDao = createMock(ProcessBranchRepository.class);
-        proDao = createMock(ProcessRepository.class);
+        ProcessRepository proDao = createMock(ProcessRepository.class);
         FragmentVersionRepository fvDao = createMock(FragmentVersionRepository.class);
         FragmentVersionDagRepository fvdDao = createMock(FragmentVersionDagRepository.class);
         pmvDao = createMock(ProcessModelVersionRepository.class);
         UserService usrSrv = createMock(UserService.class);
         FormatService fmtSrv = createMock(FormatService.class);
+        AnnotationService annSrv = createMock(AnnotationService.class);
         CanoniserService canSrv = createMock(CanoniserService.class);
         LockService lSrv = createMock(LockService.class);
         CanonicalConverter convertor = createMock(CanonicalConverter.class);
@@ -72,7 +73,7 @@ public class ProcessServiceImplUnitTest {
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
 
-        service = new ProcessServiceImpl(annDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
+        service = new ProcessServiceImpl(annDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
 
 

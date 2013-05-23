@@ -34,33 +34,7 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
             <scope>compile</scope>
-            <!-- Change to provided as deployed on Eclipse Virgo -->
         </dependency>
-
-        <!-- Blueprint -->
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-        </dependency>
-
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>

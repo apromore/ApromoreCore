@@ -45,7 +45,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

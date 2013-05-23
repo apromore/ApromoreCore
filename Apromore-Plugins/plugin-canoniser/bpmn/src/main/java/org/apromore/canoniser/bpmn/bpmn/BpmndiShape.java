@@ -7,14 +7,11 @@ import javax.xml.namespace.QName;
 import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TDataObjectReference;
 import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
-import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
@@ -42,17 +39,6 @@ public class BpmndiShape extends BPMNShape {
      * @throws CanoniserException if the shape can't be constructed
      */
     public BpmndiShape(final GraphicsType graphics, final Initializer initializer) throws CanoniserException {
-        this(graphics, initializer, false);
-    }
-
-    /**
-     * Construct a BPMNDI Shape corresponding to an ANF Graphics annotation.
-     * @param graphics  an ANF graphics annotation, never <code>null</code>
-     * @param initializer  BPMN document construction state
-     * @param fromEPML to determine is we are converting from EPML    // TODO: Needs to be removed.
-     * @throws CanoniserException if the shape can't be constructed
-     */
-    public BpmndiShape(final GraphicsType graphics, final Initializer initializer, final boolean fromEPML) throws CanoniserException {
         initializer.populateDiagramElement(this, graphics);
 
         // Validate the graphics parameter: requires a bounding box, defined by a top-left position and a size (width and height)
@@ -72,7 +58,7 @@ public class BpmndiShape extends BPMNShape {
                     "ANF graphics " + graphics.getId() + " references CPF element " + graphics.getCpfId() + " which corresponds to a BPMN process " +
                             bpmnElement.getId()
             );
-        } else if (!(bpmnElement instanceof TDataObject          ||
+        } else if (!(bpmnElement instanceof TDataObject     ||
                 bpmnElement instanceof TDataObjectReference ||
                 bpmnElement instanceof TDataStoreReference  ||
                 bpmnElement instanceof TFlowNode            ||
@@ -94,24 +80,10 @@ public class BpmndiShape extends BPMNShape {
 
         // add the ANF position and size as a BPMNDI bounds
         Bounds bounds = new Bounds();
-        if (fromEPML) {
-            if (bpmnElement instanceof TEvent || bpmnElement instanceof TActivity) {
-                bounds.setHeight(30.0);
-                bounds.setWidth(30.0);
-                bounds.setX(graphics.getPosition().get(0).getX().doubleValue() + (graphics.getSize().getWidth().doubleValue() - 30.0) / 2);
-                bounds.setY(graphics.getPosition().get(0).getY().doubleValue() + (graphics.getSize().getHeight().doubleValue() - 30.0) / 2);
-            } else if (bpmnElement instanceof TGateway) {
-                bounds.setHeight(40.0);
-                bounds.setWidth(40.0);
-                bounds.setX(graphics.getPosition().get(0).getX().doubleValue() + (graphics.getSize().getWidth().doubleValue() - 40.0) / 2);
-                bounds.setY(graphics.getPosition().get(0).getY().doubleValue() + (graphics.getSize().getHeight().doubleValue() - 40.0) / 2);
-            }
-        } else {
-            bounds.setHeight(SCALE * graphics.getSize().getHeight().doubleValue());
-            bounds.setWidth(SCALE * graphics.getSize().getWidth().doubleValue());
-            bounds.setX(SCALE * graphics.getPosition().get(0).getX().doubleValue());
-            bounds.setY(SCALE * graphics.getPosition().get(0).getY().doubleValue());
-        }
+        bounds.setHeight(SCALE * graphics.getSize().getHeight().doubleValue());
+        bounds.setWidth(SCALE * graphics.getSize().getWidth().doubleValue());
+        bounds.setX(SCALE * graphics.getPosition().get(0).getX().doubleValue());
+        bounds.setY(SCALE * graphics.getPosition().get(0).getY().doubleValue());
         setBounds(bounds);
     }
 }

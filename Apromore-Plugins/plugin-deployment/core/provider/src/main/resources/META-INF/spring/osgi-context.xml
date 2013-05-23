@@ -13,6 +13,6 @@
     <context:component-scan base-package="org.apromore.plugin.deployment"/>
 
     <service ref="deploymentPluginProviderImpl" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
-    <list id="deploymentPluginSet" interface="org.apromore.plugin.deployment.DeploymentPlugin" availability="optional"/>
+    <set id="deploymentPluginSet" interface="org.apromore.plugin.deployment.DeploymentPlugin" availability="optional"/>
 
 </beans:beans>

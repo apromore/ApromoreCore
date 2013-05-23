@@ -19,6 +19,7 @@
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
+        <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 
@@ -45,6 +46,10 @@
         <module>plugin-canoniser/core/api</module>
         <module>plugin-canoniser/core/provider</module>
 
+        <!-- Annotation Post Processor Interface -->
+        <module>plugin-annotation/core/api</module>
+        <module>plugin-annotation/core/provider</module>
+
         <!-- Deployment Interface -->
         <module>plugin-deployment/core/api</module>
         <module>plugin-deployment/core/provider</module>
@@ -64,6 +69,9 @@
         <module>plugin-canoniser/pnml</module>
         <module>plugin-canoniser/xpdl</module>
         <module>plugin-canoniser/yawl</module>
+
+        <!-- Annotation Post Processor Plugins -->
+        <module>plugin-annotation/bpmn</module>
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
@@ -136,12 +144,24 @@
                 <artifactId>canoniser-yawl</artifactId>
                 <version>${apromore.canoniser.plugin.version}</version>
             </dependency>
+
+            <!-- Annotation Post Processor -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-api</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
             
             <!--  Core Plugins -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-graph</artifactId>
                 <version>${apromore.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-bpmn</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
             </dependency>
 
             <!-- Schema -->

@@ -92,16 +92,6 @@
             </exclusions>
         </dependency>
 
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-
         <!-- Add your own Test dependencies here -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
