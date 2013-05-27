@@ -94,7 +94,8 @@ public class Canonical2XPDL {
     List<AnnData> mani_trans = new LinkedList<AnnData>();
     List<String> mani_trans_list = new LinkedList<String>();
     int object_ids;
-    boolean split_process, EPML_flag;
+    boolean split_process;
+//    boolean EPML_flag;
 
     private final PackageType xpdl;
 
@@ -134,14 +135,14 @@ public class Canonical2XPDL {
      */
     public Canonical2XPDL(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
         //TODO A canoniser should never know about the source language, otherwise we start to to language to language mappings again!
-        this.EPML_flag = true;
-        for (TypeAttribute att : cpf.getAttribute()) {
-            if (att.getName().equals("IntialFormat")) {
-                if (att.getValue().equals("EPML 2.0")) {
-                    this.EPML_flag = true;
-                }
-            }
-        }
+//        this.EPML_flag = true;
+//        for (TypeAttribute att : cpf.getAttribute()) {
+//            if (att.getName().equals("IntialFormat")) {
+//                if (att.getValue().equals("EPML 2.0")) {
+//                    this.EPML_flag = true;
+//                }
+//            }
+//        }
 
         this.xpdl = new PackageType();
         this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
@@ -161,10 +162,10 @@ public class Canonical2XPDL {
             this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
         }
 
-        if (EPML_flag) {
-            enhance_annotation();
-            resize_lanes();
-        }
+//        if (EPML_flag) {
+//            enhance_annotation();
+//            resize_lanes();
+//        }
     }
 
     private void resize_lanes() {
@@ -230,12 +231,10 @@ public class Canonical2XPDL {
                                                 }
                                             }
                                         }
-                                        if (flow.getConnectorGraphicsInfos() != null &&
-                                                flow.getConnectorGraphicsInfos().getConnectorGraphicsInfo() != null) {
+                                        if (flow.getConnectorGraphicsInfos() != null && flow.getConnectorGraphicsInfos().getConnectorGraphicsInfo() != null) {
                                             for (ConnectorGraphicsInfo info : flow.getConnectorGraphicsInfos().getConnectorGraphicsInfo()) {
                                                 for (Coordinates coord : info.getCoordinates()) {
-                                                    if (!(coord.getXCoordinate() > x && coord.getXCoordinate() < x + w &&
-                                                            coord.getYCoordinate() > y && coord.getYCoordinate() < y + h)) {
+                                                    if (!(coord.getXCoordinate() > x && coord.getXCoordinate() < x + w && coord.getYCoordinate() > y && coord.getYCoordinate() < y + h)) {
                                                         coord.setXCoordinate(newX);
                                                         coord.setYCoordinate(newY);
                                                     }
@@ -619,15 +618,15 @@ public class Canonical2XPDL {
                         }
                     }
 
-                    if (EPML_flag) {
-                        for (Object obj : act.getContent()) {
-                            if (obj instanceof Event) {
-                                info = manipulateEPML(info, 'e', act.getId());
-                            } else if (obj instanceof Route) {
-                                info = manipulateEPML(info, 'r', act.getId());
-                            }
-                        }
-                    }
+//                    if (EPML_flag) {
+//                        for (Object obj : act.getContent()) {
+//                            if (obj instanceof Event) {
+//                                info = manipulateEPML(info, 'e', act.getId());
+//                            } else if (obj instanceof Route) {
+//                                info = manipulateEPML(info, 'r', act.getId());
+//                            }
+//                        }
+//                    }
 
                     infos.getNodeGraphicsInfo().add(info);
                     act.getContent().add(infos);
@@ -687,25 +686,25 @@ public class Canonical2XPDL {
                         info.getCoordinates().add(coords);
                     }
 
-                    if (EPML_flag) {
-                        if (mani_trans_list.contains(flow.getFrom()) || mani_trans_list.contains(flow.getTo())) {
-                            AnnData annData;
-                            for (AnnData ad : mani_trans) {
-                                if (ad.elementID.equals(flow.getFrom()) || ad.elementID.equals(flow.getTo())) {
-                                    annData = ad;
-                                    for (Coordinates coor : info.getCoordinates()) {
-                                        if (coor.getXCoordinate() >= annData.oldX
-                                                && coor.getXCoordinate() <= annData.oldX + annData.oldW
-                                                && coor.getYCoordinate() >= annData.oldY
-                                                && coor.getYCoordinate() <= annData.oldY + annData.oldH) {
-                                            coor.setXCoordinate(annData.newX + annData.newH / 2);
-                                            coor.setYCoordinate(annData.newY + annData.newH / 2);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+//                    if (EPML_flag) {
+//                        if (mani_trans_list.contains(flow.getFrom()) || mani_trans_list.contains(flow.getTo())) {
+//                            AnnData annData;
+//                            for (AnnData ad : mani_trans) {
+//                                if (ad.elementID.equals(flow.getFrom()) || ad.elementID.equals(flow.getTo())) {
+//                                    annData = ad;
+//                                    for (Coordinates coor : info.getCoordinates()) {
+//                                        if (coor.getXCoordinate() >= annData.oldX
+//                                                && coor.getXCoordinate() <= annData.oldX + annData.oldW
+//                                                && coor.getYCoordinate() >= annData.oldY
+//                                                && coor.getYCoordinate() <= annData.oldY + annData.oldH) {
+//                                            coor.setXCoordinate(annData.newX + (annData.newH / 2));
+//                                            coor.setYCoordinate(annData.newY + annData.newH / 2);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
 
                     infos.getConnectorGraphicsInfo().add(info);
                     flow.setConnectorGraphicsInfos(infos);

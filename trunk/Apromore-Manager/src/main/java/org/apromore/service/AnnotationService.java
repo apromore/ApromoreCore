@@ -44,11 +44,13 @@ public interface AnnotationService {
 
     /**
      * Run the Pre Processing for a canonical format and it's annotations. Updates only the ANF and returns the results.
+     * @param sourceType the source process format
      * @param targetType the target process format.
      * @param canonicalFormat the canonical process
      * @param annotationFormat the canonical annotations
      * @return AnnotationsType updated with the correct layout info for the target format.
      */
-    AnnotationsType preProcess(final String targetType, final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat);
+    AnnotationsType preProcess(final String sourceType, final String targetType, final CanonicalProcessType canonicalFormat,
+        final AnnotationsType annotationFormat);
 
 }
