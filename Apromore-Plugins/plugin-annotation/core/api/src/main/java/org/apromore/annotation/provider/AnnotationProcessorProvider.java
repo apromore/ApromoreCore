@@ -59,15 +59,6 @@ public interface AnnotationProcessorProvider {
     AnnotationProcessor findBySourceAndTargetProcessType(String processType) throws PluginNotFoundException;
 
     /**
-     * Return the first Annotation Post Processors that is found with the given parameters.
-     * @param processType for example "EPML 2.0" or "YAWL 2.2"
-     * @param name usually the full class name of the Annotation
-     * @return Annotation for given source and target type and name
-     * @throws PluginNotFoundException in case there is no Annotation Post Processors found
-     */
-    AnnotationProcessor findBySourceAndTargetProcessTypeAndName(String processType, String name) throws PluginNotFoundException;
-
-    /**
      * Return the first CanonAnnotation Post Processorsiser that is found with the given parameters.
      * @param processType for example "EPML 2.0" or "YAWL 2.2"
      * @param name usually the full class name of the Annotation

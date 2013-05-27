@@ -517,6 +517,11 @@
             <artifactId>annotation-bpmn</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-xpdl</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

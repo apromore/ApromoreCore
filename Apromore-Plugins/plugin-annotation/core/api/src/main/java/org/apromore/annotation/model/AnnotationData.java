@@ -9,13 +9,11 @@ import java.math.BigDecimal;
  */
 public class AnnotationData {
 
-    private String elementID;
     private BigDecimal oldX, oldY, newX, newY, oldH, oldW, newH, newW;
 
-    public AnnotationData(String id,
+    public AnnotationData(
             BigDecimal oldX, BigDecimal oldY, BigDecimal newX, BigDecimal newY,
             BigDecimal oldH, BigDecimal oldW, BigDecimal newH, BigDecimal newW) {
-        this.elementID = id;
         this.oldX = oldX;
         this.oldY = oldY;
         this.newX = newX;
@@ -24,10 +22,6 @@ public class AnnotationData {
         this.oldW = oldW;
         this.newH = newH;
         this.newW = newW;
-    }
-
-    public String getElementID() {
-        return elementID;
     }
 
     public BigDecimal getOldX() {

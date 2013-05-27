@@ -26,14 +26,14 @@ import org.apromore.annotation.AnnotationProcessor;
 import org.apromore.annotation.provider.AnnotationProcessorProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProviderHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Providing the default Annotation Processor Provider implementation
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Service
+@Component
 public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvider {
 
     @Resource
@@ -81,16 +81,6 @@ public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvi
     @Override
     public final AnnotationProcessor findBySourceAndTargetProcessType(String processType) throws PluginNotFoundException {
         return findBySourceAndTargetProcessTypeAndNameAndVersion(processType, null, null);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.apromore.annotation.provider.AnnotationProcessorProvider#
-     */
-    @Override
-    public final AnnotationProcessor findBySourceAndTargetProcessTypeAndName(String processType, String name)
-            throws PluginNotFoundException {
-        return findBySourceAndTargetProcessTypeAndNameAndVersion(processType, name, null);
     }
 
     /*
