@@ -1,4 +1,4 @@
-package org.apromore.annotation.epml2bpmn;
+package org.apromore.annotation.epml2xpdl;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -26,14 +26,14 @@ import org.apromore.plugin.message.PluginMessageImpl;
 import org.springframework.stereotype.Component;
 
 /**
- * EPML to BPMN Post Processor.
- * Used to manipulate the ANF of the BPMN output when the input process langauge was EPML.
+ * EPML to XPDL Post Processor.
+ * Used to manipulate the ANF of the XPDL output when the input process langauge was EPML.
  * Used to change the size of the shapes as each language has different sizes elements.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Component("epml2bpmnPreAnnotationProcessor")
-public class Epml2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
+@Component("epml2xpdlPreAnnotationProcessor")
+public class Epml2XpdlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
     private static final BigDecimal divisor = new BigDecimal(2.0);
     private static final BigDecimal newEventHeight = new BigDecimal(30.0);
@@ -186,9 +186,9 @@ public class Epml2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
                 index = 0;
                 for (PositionType targetEdgePos : targetEdgeAnn.getPosition()) {
                     if (!((targetEdgePos.getX().compareTo(oldX) > 0) &&
-                          (targetEdgePos.getX().compareTo(oldX.add(oldW)) < 0) &&
-                          (targetEdgePos.getY().compareTo(oldY) > 0) &&
-                          (targetEdgePos.getY().compareTo(oldY.add(oldH)) < 0))) {
+                            (targetEdgePos.getX().compareTo(oldX.add(oldW)) < 0) &&
+                            (targetEdgePos.getY().compareTo(oldY) > 0) &&
+                            (targetEdgePos.getY().compareTo(oldY.add(oldH)) < 0))) {
                         position = new PositionType();
                         position.setX(newX);
                         position.setY(newY);
@@ -202,7 +202,7 @@ public class Epml2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
     }
 
     private void changeShapeSize(GraphicsType annType, NodeType node, BigDecimal newHeight, BigDecimal newWidth,
-            Map<String, AnnotationData> annotations) {
+                                 Map<String, AnnotationData> annotations) {
         BigDecimal oldH = annType.getSize().getHeight();
         BigDecimal oldW = annType.getSize().getWidth();
         BigDecimal oldX = annType.getPosition().get(0).getX();
@@ -248,9 +248,9 @@ public class Epml2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
 
         for (PositionType pos : graphicsType.getPosition()) {
             if   ((pos.getX().compareTo(annData.getOldX()) >= 0) &&
-                  (pos.getX().compareTo(annData.getOldX().add(annData.getOldW())) <= 0) &&
-                  (pos.getY().compareTo(annData.getOldY()) >= 0) &&
-                  (pos.getY().compareTo(annData.getOldY().add(annData.getOldH())) <= 0)) {
+                    (pos.getX().compareTo(annData.getOldX().add(annData.getOldW())) <= 0) &&
+                    (pos.getY().compareTo(annData.getOldY()) >= 0) &&
+                    (pos.getY().compareTo(annData.getOldY().add(annData.getOldH())) <= 0)) {
                 newPos.setX(annData.getNewX().add(annData.getNewW().divide(divisor)));
                 newPos.setY(annData.getNewY().add(annData.getNewH().divide(divisor)));
                 graphicsType.getPosition().set(index, newPos);

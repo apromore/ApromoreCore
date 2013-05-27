@@ -291,7 +291,8 @@ public class ProcessServiceImpl implements ProcessService {
                             anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
                         }
 
-                        anf = annotationSrv.preProcess(format, cpt, anf);
+                        Process process = processRepo.findOne(processId);
+                        anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
                     }
                     dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
 

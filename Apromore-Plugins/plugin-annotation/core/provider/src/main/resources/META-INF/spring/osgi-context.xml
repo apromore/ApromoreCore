@@ -13,6 +13,6 @@
     <context:component-scan base-package="org.apromore.annotation" />
        
     <service ref="annotationProcessorProviderImpl" interface="org.apromore.annotation.provider.AnnotationProcessorProvider" />
-    <list id="annotationProcessorSet" interface="org.apromore.annotation.AnnotationProcessor" availability="optional" />
+    <set id="annotationProcessorSet" interface="org.apromore.annotation.AnnotationProcessor" availability="optional" />
 
 </beans:beans>

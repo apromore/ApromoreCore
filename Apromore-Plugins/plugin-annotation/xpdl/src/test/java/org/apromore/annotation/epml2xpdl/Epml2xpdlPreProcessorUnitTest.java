@@ -1,4 +1,4 @@
-package org.apromore.annotation.epml2bpmn;
+package org.apromore.annotation.epml2xpdl;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -21,7 +21,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class Epml2BpmnPreProcessorUnitTest {
+public class Epml2xpdlPreProcessorUnitTest {
 
     Epml2BpmnPreProcessor epml2BpmnPostProcessor;
 

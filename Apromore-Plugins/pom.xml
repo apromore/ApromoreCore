@@ -72,6 +72,7 @@
 
         <!-- Annotation Post Processor Plugins -->
         <module>plugin-annotation/bpmn</module>
+        <module>plugin-annotation/xpdl</module>
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
@@ -151,17 +152,22 @@
                 <artifactId>annotation-api</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-bpmn</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-xpdl</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
             
             <!--  Core Plugins -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>plugin-graph</artifactId>
                 <version>${apromore.plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>annotation-bpmn</artifactId>
-                <version>${apromore.annotation.plugin.version}</version>
             </dependency>
 
             <!-- Schema -->

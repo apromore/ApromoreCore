@@ -356,6 +356,11 @@
                 <artifactId>annotation-bpmn</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-xpdl</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
 
             <!-- Deployment -->
             <dependency>

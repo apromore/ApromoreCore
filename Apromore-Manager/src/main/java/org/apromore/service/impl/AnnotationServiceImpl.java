@@ -23,9 +23,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.annotation.AnnotationProcessor;
 import org.apromore.annotation.exception.AnnotationProcessorException;
 import org.apromore.annotation.provider.AnnotationProcessorProvider;
-import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.service.AnnotationService;
 import org.slf4j.Logger;
@@ -87,29 +85,22 @@ public class AnnotationServiceImpl implements AnnotationService {
     }
 
     /* (non-Javadoc)
-     * @see org.apromore.service.AnnotationService#preProcess(java.lang.String, CanonicalProcessType, AnnotationsType)
+     * @see org.apromore.service.AnnotationService#preProcess(java.lang.String, java.lang.String, CanonicalProcessType, AnnotationsType)
      */
     @Override
-    public AnnotationsType preProcess(final String targetType, final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat) {
+    public AnnotationsType preProcess(final String sourceType, final String targetType, final CanonicalProcessType canonicalFormat,
+            final AnnotationsType annotationFormat) {
         LOGGER.info("Pre Processing CPF and ANF");
 
-        if (canonicalFormat != null && annotationFormat != null) {
-            String sourceType = null;
-            for (TypeAttribute attribute : canonicalFormat.getAttribute()) {
-                if (attribute.getName().equals(Constants.INITIAL_FORMAT)) {
-                    sourceType = attribute.getValue();
-                    break;
-                }
-            }
-
-            try {
+        try {
+            if (canonicalFormat != null && annotationFormat != null) {
                 if (sourceType != null && targetType != null) {
-                    AnnotationProcessor preProcessor = findBySourceAndTargetProcessType(sourceType + " " +targetType);
+                    AnnotationProcessor preProcessor = findBySourceAndTargetProcessType(sourceType + " " + targetType);
                     preProcessor.processAnnotation(canonicalFormat, annotationFormat);
                 }
-            } catch (PluginNotFoundException | AnnotationProcessorException e) {
-                LOGGER.error("Plugin not found for '" + sourceType + "' and '" + targetType + "'.", e);
             }
+        } catch (PluginNotFoundException | AnnotationProcessorException e) {
+            LOGGER.error("Plugin not found for '" + sourceType + "' and '" + targetType + "'.", e);
         }
 
         return annotationFormat;

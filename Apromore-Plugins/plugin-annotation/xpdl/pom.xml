@@ -10,13 +10,13 @@
         <relativePath>../../</relativePath>
     </parent>
 
-    <artifactId>annotation-bpmn</artifactId>
-    <name>Apromore BPMN Annotation Pre Processor</name>
+    <artifactId>annotation-xpdl</artifactId>
+    <name>Apromore XPDL Annotation Pre Processor</name>
 
     <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/bpmn</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/bpmn</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/bpmn</developerConnection>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/xpdl</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/xpdl</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Plugins/plugin-annotation/xpdl</developerConnection>
     </scm>
 
     <build>
