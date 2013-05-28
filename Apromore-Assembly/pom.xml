@@ -200,6 +200,11 @@
             <artifactId>annotation-xpdl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-epml</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Deployment Plugins -->
         <dependency>
