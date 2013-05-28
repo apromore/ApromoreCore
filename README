@@ -63,7 +63,7 @@ This will place jars in the build that are needed for the next set.
 
 Change to the root and run 'mvn clean install'. This will build the Apromore manager, portal and editor.
 
-while still in the root after a successful build 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
+while still in the root after a successful build 'ant copy-virgo start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
 
 
 TRY IT OUT
