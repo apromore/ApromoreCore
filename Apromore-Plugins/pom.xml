@@ -73,6 +73,7 @@
         <!-- Annotation Post Processor Plugins -->
         <module>plugin-annotation/bpmn</module>
         <module>plugin-annotation/xpdl</module>
+        <module>plugin-annotation/epml</module>
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
@@ -160,6 +161,11 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>annotation-xpdl</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-epml</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
             

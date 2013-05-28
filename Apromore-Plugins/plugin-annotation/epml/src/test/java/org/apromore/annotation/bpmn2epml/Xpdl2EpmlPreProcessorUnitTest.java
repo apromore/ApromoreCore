@@ -1,4 +1,4 @@
-package org.apromore.annotation.epml2xpdl;
+package org.apromore.annotation.bpmn2epml;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -9,6 +9,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.annotation.xpdl2epml.Xpdl2EpmlPreProcessor;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -17,32 +18,32 @@ import org.apromore.cpf.TaskType;
 import org.junit.Test;
 
 /**
- * Test that the Epml2Bpmn Pre Processor does what it's suppose to.
+ * Test that the Bpmn2Epml Pre Processor does what it's suppose to.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class Epml2xpdlPreProcessorUnitTest {
+public class Xpdl2EpmlPreProcessorUnitTest {
 
-    Epml2XpdlPreProcessor epml2BpmnPostProcessor;
+    Xpdl2EpmlPreProcessor xpdl2EpmlPostProcessor;
 
     @Test
     public void testProcessAnnotation() throws Exception {
-        epml2BpmnPostProcessor = new Epml2XpdlPreProcessor();
+        xpdl2EpmlPostProcessor = new Xpdl2EpmlPreProcessor();
 
         CanonicalProcessType cpf = buildCPF();
         AnnotationsType anf = buildANF();
 
-        epml2BpmnPostProcessor.processAnnotation(cpf, anf);
+        xpdl2EpmlPostProcessor.processAnnotation(cpf, anf);
 
         assertThat(anf.getAnnotation().size(), equalTo(3));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(85.5));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(85.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(60.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(80.0));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(150.5));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(160.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(160.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(180.0));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().size(),  equalTo(2));
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().get(0).getX().doubleValue(),  equalTo(100.5));
