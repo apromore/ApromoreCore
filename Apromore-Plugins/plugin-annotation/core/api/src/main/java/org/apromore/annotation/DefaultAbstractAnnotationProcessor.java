@@ -16,11 +16,25 @@
  */
 package org.apromore.annotation;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apromore.anf.AnnotationType;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.GraphicsType;
+import org.apromore.anf.PositionType;
+import org.apromore.anf.SizeType;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 
 /**
  * Implements common functionality shared by all Annotation Post Processors and reads the supported native types from the Annotation 'plugin.config'
- * file. The key used is: 'annotation.sourceProcessType' and 'annotation.targetProcessType'.
+ * file. The key used is: 'annotation.processFormatProcessor'.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
@@ -33,6 +47,108 @@ public abstract class DefaultAbstractAnnotationProcessor extends DefaultParamete
     @Override
     public String getProcessFormatProcessor() {
         return getConfigurationByName("annotation.processFormatProcessor");
+    }
+
+
+    /**
+     * if the Annotation is null or empty we need to create an empty anf so we can process them.
+     * @param cpf the canonical format.
+     * @param anf the annotation format.
+     */
+    protected AnnotationsType createEmptyAnnotationFormat(CanonicalProcessType cpf, AnnotationsType anf) {
+        if (anf == null) {
+            anf = new AnnotationsType();
+        }
+
+        for (NetType net : cpf.getNet()) {
+            for (NodeType node : net.getNode()) {
+                anf.getAnnotation().add(createNodeAnnotation(node));
+            }
+            for (EdgeType edge : net.getEdge()) {
+                anf.getAnnotation().add(createEdgeAnnotation(edge));
+            }
+        }
+
+        return anf;
+    }
+
+
+    /* Find the Nodes that this node link. */
+    protected Map<EdgeType, NodeType> findSplitNodeTargets(CanonicalProcessType cpf, String cpfId) {
+        Map<EdgeType, NodeType> result = new HashMap<>();
+        for (NetType net : cpf.getNet()) {
+            for (EdgeType edge : net.getEdge()) {
+                if (edge.getSourceId().equals(cpfId)) {
+                    result.put(edge, findCPFNode(cpf, edge.getTargetId()));
+                }
+            }
+        }
+        return result;
+    }
+
+    /* Find an annotation that is a Graphics Annotation for this CPF Id. */
+    protected GraphicsType findGraphicsType(AnnotationsType anf, String id) {
+        GraphicsType graphicsType = null;
+        for (AnnotationType annType : anf.getAnnotation()) {
+            if (annType instanceof GraphicsType && annType.getCpfId().equals(id)) {
+                graphicsType = (GraphicsType) annType;
+                break;
+            }
+        }
+        return graphicsType;
+    }
+
+    /* Find a node in the CPF using the cpfId */
+    protected NodeType findCPFNode(CanonicalProcessType cpf, String cpfId) {
+        NodeType result = null;
+        for (NetType net : cpf.getNet()) {
+            for (NodeType node : net.getNode()) {
+                if (node.getId().equals(cpfId)) {
+                    result = node;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /* Create an anf graphic type for this node, Signavio doesn't display models without an annotation. */
+    private AnnotationType createNodeAnnotation(NodeType node) {
+        GraphicsType graphicsType = new GraphicsType();
+        graphicsType.setId(UUID.randomUUID().toString());
+        graphicsType.setCpfId(node.getId());
+
+        SizeType size = new SizeType();
+        size.setHeight(new BigDecimal(30.0));
+        size.setWidth(new BigDecimal(30.0));
+        graphicsType.setSize(size);
+
+        PositionType position = new PositionType();
+        position.setX(new BigDecimal(100.0));
+        position.setY(new BigDecimal(100.0));
+        graphicsType.getPosition().add(position);
+
+        return graphicsType;
+    }
+
+    /* Create an anf graphic type for this edge, Signavio doesn't display models without an annotation. */
+    private AnnotationType createEdgeAnnotation(EdgeType edge) {
+        GraphicsType graphicsType = new GraphicsType();
+        graphicsType.setId(UUID.randomUUID().toString());
+        graphicsType.setCpfId(edge.getId());
+
+        PositionType position = new PositionType();
+        position.setX(new BigDecimal(100.0));
+        position.setY(new BigDecimal(100.0));
+        graphicsType.getPosition().add(position);
+
+        position = new PositionType();
+        position.setX(new BigDecimal(110.0));
+        position.setY(new BigDecimal(110.0));
+        graphicsType.getPosition().add(position);
+
+        return graphicsType;
     }
 
 }
