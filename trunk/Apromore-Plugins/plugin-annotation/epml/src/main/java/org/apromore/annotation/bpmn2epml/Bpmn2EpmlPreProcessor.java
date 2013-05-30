@@ -105,46 +105,6 @@ public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
 
 
-    /* Find an annotation that is a Graphics Annotation for this CPF Id. */
-    private GraphicsType findGraphicsType(AnnotationsType anf, String id) {
-        GraphicsType graphicsType = null;
-        for (AnnotationType annType : anf.getAnnotation()) {
-            if (annType instanceof GraphicsType && annType.getCpfId().equals(id)) {
-                graphicsType = (GraphicsType) annType;
-                break;
-            }
-        }
-        return graphicsType;
-    }
-
-    /* Find a node in the CPF using the cpfId */
-    private NodeType findCPFNode(CanonicalProcessType cpf, String cpfId) {
-        NodeType result = null;
-        for (NetType net : cpf.getNet()) {
-            for (NodeType node : net.getNode()) {
-                if (node.getId().equals(cpfId)) {
-                    result = node;
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
-    /* Find the Nodes that this node link. */
-    private Map<EdgeType, NodeType> findSplitNodeTargets(CanonicalProcessType cpf, String cpfId) {
-        Map<EdgeType, NodeType> result = new HashMap<>();
-        for (NetType net : cpf.getNet()) {
-            for (EdgeType edge : net.getEdge()) {
-                if (edge.getSourceId().equals(cpfId)) {
-                    result.put(edge, findCPFNode(cpf, edge.getTargetId()));
-                }
-            }
-        }
-        return result;
-    }
-
-
 
     /* Changes the size of the Task Node. */
     private void manipulateTask(GraphicsType annType, NodeType node, Map<String, AnnotationData> annotations) {

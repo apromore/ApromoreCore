@@ -18,7 +18,6 @@ import org.xml.sax.SAXException;
  * Utilities for working with the CPF (Validation/Parsing)
  *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- *
  */
 public class ANFSchema {
 
