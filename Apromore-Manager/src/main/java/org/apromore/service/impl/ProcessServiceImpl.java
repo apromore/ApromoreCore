@@ -284,6 +284,7 @@ public class ProcessServiceImpl implements ProcessService {
                 } else {
                     DecanonisedProcess dp;
                     AnnotationsType anf = null;
+                    Process process = processRepo.findOne(processId);
                     if (withAnn) {
                         String annotation = annotationRepo.getAnnotation(processId, branch, version, annName).getContent();
                         if (annotation != null && !annotation.equals("")) {
@@ -291,9 +292,11 @@ public class ProcessServiceImpl implements ProcessService {
                             anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
                         }
 
-                        Process process = processRepo.findOne(processId);
                         anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
+                    } else if (annName == null && process.getNativeType() == null) {
+                        anf = annotationSrv.preProcess(null, format, cpt, anf);
                     }
+
                     dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
 
                     exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
@@ -395,7 +398,11 @@ public class ProcessServiceImpl implements ProcessService {
             canonical.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
             canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
             canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
-            canonical.setProperty(Constants.INITIAL_FORMAT, pmv.getProcessBranch().getProcess().getNativeType().getNatType());
+            if (pmv.getProcessBranch().getProcess().getNativeType() != null) {
+                canonical.setProperty(Constants.INITIAL_FORMAT, pmv.getProcessBranch().getProcess().getNativeType().getNatType());
+            } else {
+                canonical.setProperty(Constants.INITIAL_FORMAT, null);
+            }
             if (lock) {
                 canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
             }

@@ -72,7 +72,7 @@ public abstract class DefaultParameterAwarePlugin extends DefaultPlugin implemen
      */
     @Override
     public Set<ParameterType<?>> getOptionalParameters() {
-        Set<ParameterType<?>> optionalParam = new HashSet<ParameterType<?>>();
+        Set<ParameterType<?>> optionalParam = new HashSet<>();
         for (ParameterType<?> param : getAvailableParameters()) {
             if (!param.isMandatory()) {
                 optionalParam.add(param);
@@ -103,11 +103,7 @@ public abstract class DefaultParameterAwarePlugin extends DefaultPlugin implemen
      * @return true if parameter was added, false if parameter was already available or NULL
      */
     protected boolean registerParameter(final PluginParameterType<?> param) {
-        if (param != null) {
-            return this.availableParameters.put(param.getId(), param) == null;
-        } else {
-            return false;
-        }
+        return param != null && this.availableParameters.put(param.getId(), param) == null;
     }
 
 }

@@ -18,6 +18,7 @@ package org.apromore.annotation;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.annotation.exception.AnnotationProcessorException;
+import org.apromore.annotation.result.AnnotationPluginResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.PluginResult;

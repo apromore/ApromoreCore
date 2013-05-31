@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
@@ -12,6 +11,7 @@ import org.apromore.anf.SizeType;
 import org.apromore.annotation.DefaultAbstractAnnotationProcessor;
 import org.apromore.annotation.exception.AnnotationProcessorException;
 import org.apromore.annotation.model.AnnotationData;
+import org.apromore.annotation.result.AnnotationPluginResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -21,7 +21,6 @@ import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.SplitType;
 import org.apromore.cpf.TaskType;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.PluginResultImpl;
 import org.apromore.plugin.message.PluginMessageImpl;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +46,7 @@ public class Xpdl2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
     @SuppressWarnings("unchecked")
     public PluginResult processAnnotation(CanonicalProcessType canonisedFormat, AnnotationsType annotationFormat)
             throws AnnotationProcessorException {
-        PluginResult pluginResult = new PluginResultImpl();
+        AnnotationPluginResult pluginResult = new AnnotationPluginResult();
 
         if (canonisedFormat == null) {
             pluginResult.getPluginMessage().add(new PluginMessageImpl("Canonised model passed into the Post Processor is Empty."));
@@ -57,6 +56,8 @@ public class Xpdl2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
                 manipulateShapes(canonisedFormat, annotationFormat, annotations);
                 manipulateEdges(canonisedFormat, annotationFormat, annotations);
+
+                pluginResult.setAnnotationsType(annotationFormat);
             } catch (Exception e) {
                 throw new AnnotationProcessorException("Failed to execute the Post Processing.", e);
             }
