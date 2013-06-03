@@ -92,8 +92,6 @@ public class ClusterServiceImpl implements ClusterService {
     public void cluster(ClusterSettings settings) throws RepositoryException {
         clearClusters();
 
-//        computeGEDMatrix();
-
         if (DBSCAN.equals(settings.getAlgorithm())) {
             dbscanClusterer.clusterRepository(settings);
         } else if (HAC.equals(settings.getAlgorithm())) {
