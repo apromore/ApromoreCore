@@ -27,6 +27,7 @@ import org.apromore.model.CreateClustersInputMsgType;
 import org.apromore.model.CreateClustersOutputMsgType;
 import org.apromore.model.CreateFolderInputMsgType;
 import org.apromore.model.CreateFolderOutputMsgType;
+import org.apromore.model.CreateGEDMatrixInputMsgType;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteFolderInputMsgType;
@@ -516,6 +517,20 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<FragmentResponseType> response = (JAXBElement<FragmentResponseType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getFragment();
+    }
+
+    /**
+     * @see ManagerService#createGedMatrix()
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void createGedMatrix() {
+        LOGGER.debug("Invoking create GED Matrix method ...");
+
+        CreateGEDMatrixInputMsgType msg = new CreateGEDMatrixInputMsgType();
+        JAXBElement<CreateGEDMatrixInputMsgType> request = WS_CLIENT_FACTORY.createCreateGEDMatrixRequest(msg);
+        webServiceTemplate.marshalSendAndReceive(request);
     }
 
     /**
