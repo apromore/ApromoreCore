@@ -88,21 +88,28 @@ public class EditOneProcessController extends BaseController {
         // Build list of annotations associated with the process version
         annotationsLB.setDisabled(true);
         annotationOnlyCB.setDisabled(true);
-        for (int i = 0; i < version.getAnnotations().size(); i++) {
-            String native_type = version.getAnnotations().get(i).getNativeType();
-            for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
-                cbi = new Listitem();
-                annotationsLB.appendChild(cbi);
-                cbi.setLabel(version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + native_type + ")");
-                cbi.setValue(version.getAnnotations().get(i).getAnnotationName().get(k));
-                if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue()) == 0) {
-                    cbi.setSelected(true);
+        if (version.getAnnotations().size() > 0) {
+            for (int i = 0; i < version.getAnnotations().size(); i++) {
+                String native_type = version.getAnnotations().get(i).getNativeType();
+                for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
+                    cbi = new Listitem();
+                    annotationsLB.appendChild(cbi);
+                    cbi.setLabel(version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + native_type + ")");
+                    cbi.setValue(version.getAnnotations().get(i).getAnnotationName().get(k));
+                    if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue()) == 0) {
+                        cbi.setSelected(true);
+                    }
                 }
             }
+            noAnnotationI = new Listitem();
+            noAnnotationI.setLabel(Constants.NO_ANNOTATIONS);
+            annotationsLB.appendChild(noAnnotationI);
+        } else {
+            noAnnotationI = new Listitem();
+            noAnnotationI.setLabel(Constants.NO_ANNOTATIONS);
+            noAnnotationI.setSelected(true);
+            annotationsLB.appendChild(noAnnotationI);
         }
-        noAnnotationI = new Listitem();
-        noAnnotationI.setLabel(Constants.NO_ANNOTATIONS);
-        annotationsLB.appendChild(noAnnotationI);
 
         nativeTypesLB.addEventListener(Events.ON_SELECT,
                 new EventListener() {
