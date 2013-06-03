@@ -293,7 +293,7 @@ public class ProcessServiceImpl implements ProcessService {
                         }
 
                         anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
-                    } else if (annName == null && process.getNativeType() == null) {
+                    } else if (annName == null) {
                         anf = annotationSrv.preProcess(null, format, cpt, anf);
                     }
 
