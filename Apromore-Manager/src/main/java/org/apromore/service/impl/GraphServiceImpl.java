@@ -227,10 +227,11 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the State Node details. */
     private INode constructSpecialNode(final Node node, final NodeTypeEnum type, Canonical canonical) {
         INode cpfNode = new CPFNode();
+        addNodeDetails(node, cpfNode);
+
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(type);
-
-        addNodeDetails(node, cpfNode);
+        cpfNode.setName("");
 
         return cpfNode;
     }
