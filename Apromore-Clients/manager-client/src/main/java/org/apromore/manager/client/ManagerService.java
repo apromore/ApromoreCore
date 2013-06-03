@@ -115,6 +115,11 @@ public interface ManagerService {
     EditSessionType readEditSession(int code);
 
     /**
+     * Create a GED Matrix used in the Cluster Creation.
+     */
+    void createGedMatrix();
+
+    /**
      * Create a Cluster.
      * @param settings The settings
      */

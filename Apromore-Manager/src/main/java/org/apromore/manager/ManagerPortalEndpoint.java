@@ -43,6 +43,8 @@ import org.apromore.model.CreateClustersInputMsgType;
 import org.apromore.model.CreateClustersOutputMsgType;
 import org.apromore.model.CreateFolderInputMsgType;
 import org.apromore.model.CreateFolderOutputMsgType;
+import org.apromore.model.CreateGEDMatrixInputMsgType;
+import org.apromore.model.CreateGEDMatrixOutputMsgType;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteFolderInputMsgType;
@@ -676,6 +678,19 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         return WS_OBJECT_FACTORY.createImportProcessResponse(res);
     }
+
+    @PayloadRoot(localPart = "CreateGEDMatrixRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<CreateGEDMatrixOutputMsgType> createGedMatrix(@RequestPayload final JAXBElement<CreateGEDMatrixInputMsgType> req) {
+        LOGGER.info("Executing operation createGedMatrix");
+        CreateGEDMatrixInputMsgType payload = req.getValue();
+        CreateGEDMatrixOutputMsgType res = new CreateGEDMatrixOutputMsgType();
+
+        clusterService.computeGEDMatrix();
+
+        return WS_OBJECT_FACTORY.createCreateGEDMatrixResponse(res);
+    }
+
 
     @PayloadRoot(localPart = "CreateClustersRequest", namespace = NAMESPACE)
     @ResponsePayload

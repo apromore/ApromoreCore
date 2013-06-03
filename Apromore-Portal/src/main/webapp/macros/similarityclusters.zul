@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?component name="SimilarityClustersFilter" macroURI="filter/similarityClustersFilter.zul" ?>
 <!-- similarityclusters window has controller SimilarityClustersController -->
-<window width="360px" closable="false" position="center"
-	title="Similarity Clusters">
-	<grid>
-		<columns sizable="true">
-			<column width="50%"></column>
-			<column width="50%"></column>
-		</columns>
-		<rows>
-			<row>
-				<label value="Algorithm (please choose one)" width="100%" />
-				<listbox id="algorithm" width="100%">
-					<listitem value="DBSCAN" selected="true">
-						<listcell>DBSCAN</listcell>
-					</listitem>
-					<listitem value="HIERACHICAL">
-						<listcell>HAC</listcell>
-					</listitem>					
-				</listbox>
-			</row>
-			<row>
-				<label value="Max Distance" />
-				<slider id="maxdistance" curpos="50" maxpos="100" mold="scale" width="100%" />
-			</row>	
-			<row spans="2">
-				<div align="center">
-					<button id="similarityclustersCreateButton" label="Create Clusters"
-						image="img/ok.png">
-					</button>
-					<button id="similarityclustersOKbutton" label="Show Clusters"
-						image="img/search.png">
-					</button>	
-				</div>
-			</row>
-			<row spans="2">
-				<div align="center">
-					<button id="similarityclustersCancelbutton"
-						label="Cancel" image="img/cancel2.png">
-					</button>	
-				</div>
-			</row>				
-		</rows>
-	</grid>	
+<window width="400px" closable="false" position="center" title="Similarity Clusters">
+    <grid>
+        <columns sizable="true">
+            <column width="50%"></column>
+            <column width="50%"></column>
+        </columns>
+        <rows>
+            <row>
+                <label value="Algorithm (please choose one)" width="100%"/>
+                <listbox id="algorithm" width="100%">
+                    <listitem value="DBSCAN" selected="true">
+                        <listcell>DBSCAN</listcell>
+                    </listitem>
+                    <listitem value="HIERACHICAL">
+                        <listcell>HAC</listcell>
+                    </listitem>
+                </listbox>
+            </row>
+            <row>
+                <label value="Max Distance"/>
+                <slider id="maxdistance" curpos="50" maxpos="100" mold="scale" width="100%"/>
+            </row>
+            <row spans="2">
+                <div align="center">
+                    <button id="similarityclustersCreateGED" label="Create GED Matrix" image="img/ok.png" />
+                    <button id="similarityclustersCreateButton" label="Create Clusters" image="img/ok.png" />
+                    <button id="similarityclustersOKbutton" label="Show Clusters" image="img/search.png" />
+                </div>
+            </row>
+            <row spans="2">
+                <div align="center">
+                    <button id="similarityclustersCancelbutton" label="Cancel" image="img/cancel2.png">
+                    </button>
+                </div>
+            </row>
+        </rows>
+    </grid>
 </window>

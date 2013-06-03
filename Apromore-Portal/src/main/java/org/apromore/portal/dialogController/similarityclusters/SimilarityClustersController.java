@@ -37,6 +37,7 @@ public class SimilarityClustersController extends BaseController {
     private Button btnOK;
     private Button btnCancel;
     private Button btnCreate;
+    private Button btnGed;
 
     private Listbox algorithmListbox;
     private Slider maxdistance;
@@ -58,12 +59,18 @@ public class SimilarityClustersController extends BaseController {
         this.algorithmListbox = (Listbox) this.scWindow.getFellow("algorithm");
         this.maxdistance = (Slider) this.scWindow.getFellow("maxdistance");
         this.btnCreate = (Button) this.scWindow.getFellow("similarityclustersCreateButton");
+        this.btnGed = (Button) this.scWindow.getFellow("similarityclustersCreateGED");
 
         this.btnCreate.addEventListener("onClick", new EventListener() {
-
             @Override
             public void onEvent(final Event event) throws Exception {
                 doCreateSimilarityClusters();
+            }
+        });
+        this.btnGed.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                doCreateGedMatrix();
             }
         });
 
@@ -91,8 +98,9 @@ public class SimilarityClustersController extends BaseController {
         this.scWindow.doModal();
     }
 
+
     /**
-     *
+     * Start the create Clusters.
      */
     protected final void doCreateSimilarityClusters() {
         ClusterSettingsType settings = new ClusterSettingsType();
@@ -102,10 +110,23 @@ public class SimilarityClustersController extends BaseController {
         getService().createClusters(settings);
         //TODO show some kind of feedback
         try {
-            Messagebox.show("Clustering completed!");
+            Messagebox.show("Clustering Completed!");
         } catch (InterruptedException e) {
         }
     }
+
+
+    /**
+     * Create the GED Matrix so we can build the clusters.
+     */
+    protected void doCreateGedMatrix() {
+        getService().createGedMatrix();
+        try {
+            Messagebox.show("GED Matrix Construction Completed!");
+        } catch (InterruptedException e) {
+        }
+    }
+
 
     private void initAlgorithm(ClusterSettingsType settings) {
         settings.setAlgorithm(algorithmListbox.getSelectedItem().getValue().toString());
