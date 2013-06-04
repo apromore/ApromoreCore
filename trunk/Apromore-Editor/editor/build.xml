@@ -31,7 +31,7 @@
 	<!-- BuildApps *********************************************************************-->
 	<target name="com.signavio.editor.buildApps.compile">
 		<mkdir dir="buildApps/bin" />
-		<javac srcdir="buildApps/src" destdir="buildApps/bin" debug="on">
+		<javac srcdir="buildApps/src" destdir="buildApps/bin" debug="on" target="1.7" includeantruntime="false">
 			<classpath>
 				<fileset dir="buildApps/lib">
 					<include name="*.jar" />

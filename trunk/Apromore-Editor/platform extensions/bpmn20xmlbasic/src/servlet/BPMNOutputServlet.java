@@ -37,6 +37,8 @@ public class BPMNOutputServlet extends HttpServlet {
 
     private static final long serialVersionUID = 4651531154294830523L;
 
+    private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
+
 
     /* (non-Javadoc)
       * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -53,7 +55,7 @@ public class BPMNOutputServlet extends HttpServlet {
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else {
-                ByteArrayOutputStream bpmn = getBPMNfromJson(jsonData);
+                ByteArrayOutputStream bpmn = getBPMNfromJson(req, jsonData);
                 res.setContentType("application/xml; charset=UTF-8");
                 res.setStatus(200);
                 res.getWriter().write(bpmn.toString("UTF-8"));
@@ -61,6 +63,7 @@ public class BPMNOutputServlet extends HttpServlet {
         } catch (Exception e) {
             try {
                 e.printStackTrace();
+                System.out.println(e.toString());
                 res.setStatus(500);
                 res.setContentType("text/plain; charset=UTF-8");
                 if (e.getCause() != null) {
@@ -75,18 +78,21 @@ public class BPMNOutputServlet extends HttpServlet {
     }
 
     /* Does the conversion from JSON to BPMN */
-    private ByteArrayOutputStream getBPMNfromJson(String jsonData) throws JAXBException, SAXException, JSONException, BpmnConverterException {
+    private ByteArrayOutputStream getBPMNfromJson(HttpServletRequest req, String jsonData) throws JAXBException, SAXException, JSONException, BpmnConverterException {
         ByteArrayOutputStream bpmn = new ByteArrayOutputStream();
 
         BasicDiagram diagram = BasicDiagramBuilder.parseJson(jsonData);
         Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
         Definitions definitions = converter.getDefinitionsFromDiagram();
 
-        Marshaller marshaller = JAXBContext.newInstance(Definitions.class, ConfigurationAnnotationAssociation.class, ConfigurationAnnotationShape.class).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance(Definitions.class,
+                                                        ConfigurationAnnotationAssociation.class,
+                                                        ConfigurationAnnotationShape.class).createMarshaller();
         marshaller.setEventHandler(new ValidationEventCollector());
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
-        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("xml/BPMN20.xsd")));
+        marshaller.setProperty(PREFIX_MAPPER, new BPMNPrefixMapper());
+        String schemaFile = req.getSession().getServletContext().getRealPath("/") + "WEB-INF" + "/xml/BPMN20.xsd";
+        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File(schemaFile)));
         marshaller.marshal(definitions, bpmn);
 
         return bpmn;
