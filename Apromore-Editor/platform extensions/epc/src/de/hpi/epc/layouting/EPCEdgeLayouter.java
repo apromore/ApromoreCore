@@ -22,6 +22,9 @@
  **/
 package de.hpi.epc.layouting;
 
+import java.util.Iterator;
+import java.util.Random;
+
 import de.hpi.epc.layouting.model.EPCType;
 import de.hpi.layouting.grid.Grid;
 import de.hpi.layouting.grid.Grid.Cell;
@@ -29,9 +32,6 @@ import de.hpi.layouting.model.LayoutingBounds;
 import de.hpi.layouting.model.LayoutingBoundsImpl;
 import de.hpi.layouting.model.LayoutingDockers;
 import de.hpi.layouting.model.LayoutingElement;
-
-import java.lang.RuntimeException;
-import java.util.Random;
 
 /**
  * Simple layouting of edges based on the edge layouter of team Royal Fawn.
@@ -75,34 +75,62 @@ public class EPCEdgeLayouter {
     public EPCEdgeLayouter(Grid<LayoutingElement> grid, LayoutingElement edge) {
         this.edge = edge;
         this.grid = grid;
+
+        displayEdge(edge);
+        displayGrid(grid);
+
         calculateGlobals();
         pickLayoutForEdge();
+    }
+
+    private void displayEdge(LayoutingElement edge) {
+        System.out.println("Incoming: " + edge.getIncomingLinks().size() + " - Outgoing: " + edge.getOutgoingLinks().size());
+    }
+
+    private void displayGrid(Grid<LayoutingElement> grid) {
+        Cell<LayoutingElement> cell;
+        Iterator<Cell<LayoutingElement>> cells;
+
+        for (Grid.Row<LayoutingElement> row : grid) {
+            cells = row.iterator();
+            while (cells.hasNext()) {
+                cell = cells.next();
+
+                if (cell != null) {
+                    System.out.println("CELL: " + cell.getValue().getId() + " - " + cell.getValue().getType());
+                } else {
+                    System.out.println("Cell empty");
+                }
+            }
+        }
     }
 
     private void calculateGlobals() {
         // should both be only one !
         if (!edge.getIncomingLinks().isEmpty()) {
-            this.source = edge.getIncomingLinks().get(0);
-        } else
-            throw  new RuntimeException("edge hs no source : " + edge.getId());
+            source = edge.getIncomingLinks().get(0);
+        } else {
+            throw new RuntimeException("edge has no source : " + edge.getId());
+        }
         if (!edge.getOutgoingLinks().isEmpty()) {
-            this.target = edge.getOutgoingLinks().get(0);
-        }  else
-            throw  new RuntimeException("edge hs no target : " + edge.getId());
+            target = edge.getOutgoingLinks().get(0);
+        } else {
+            throw new RuntimeException("edge has no target : " + edge.getId());
+        }
 
-        this.sourceGeometry = source.getGeometry();
-        this.targetGeometry = target.getGeometry();
+        sourceGeometry = source.getGeometry();
+        targetGeometry = target.getGeometry();
 
         // get relative centers of elements
-        this.sourceRelativCenterX = this.sourceGeometry.getWidth() / 2;
-        this.sourceRelativCenterY = this.sourceGeometry.getHeight() / 2;
-        this.targetRelativCenterX = this.targetGeometry.getWidth() / 2;
-        this.targetRelativCenterY = this.targetGeometry.getHeight() / 2;
+        sourceRelativCenterX = sourceGeometry.getWidth() / 2;
+        sourceRelativCenterY = sourceGeometry.getHeight() / 2;
+        targetRelativCenterX = targetGeometry.getWidth() / 2;
+        targetRelativCenterY = targetGeometry.getHeight() / 2;
 
         // get parent adjustments
         double sourceParentAdjustmentX = 0;
         double sourceParentAdjustmentY = 0;
-        LayoutingElement parent = this.source.getParent();
+        LayoutingElement parent = source.getParent();
         while (parent != null) {
             sourceParentAdjustmentX += parent.getGeometry().getX();
             sourceParentAdjustmentY += parent.getGeometry().getY();
@@ -111,7 +139,7 @@ public class EPCEdgeLayouter {
 
         double targetParentAdjustmentX = 0;
         double targetParentAdjustmentY = 0;
-        parent = this.target.getParent();
+        parent = target.getParent();
         while (parent != null) {
             targetParentAdjustmentX += parent.getGeometry().getX();
             targetParentAdjustmentY += parent.getGeometry().getY();
@@ -119,30 +147,30 @@ public class EPCEdgeLayouter {
         }
 
         // get absolute coordinates
-        double sourceAbsoluteX = this.sourceGeometry.getX() + sourceParentAdjustmentX;
-        this.sourceAbsoluteY = this.sourceGeometry.getY() + sourceParentAdjustmentY;
-        this.sourceAbsoluteX2 = this.sourceGeometry.getX2() + sourceParentAdjustmentX;
-        this.sourceAbsoluteY2 = this.sourceGeometry.getY2() + sourceParentAdjustmentY;
+        double sourceAbsoluteX = sourceGeometry.getX() + sourceParentAdjustmentX;
+        sourceAbsoluteY = sourceGeometry.getY() + sourceParentAdjustmentY;
+        sourceAbsoluteX2 = sourceGeometry.getX2() + sourceParentAdjustmentX;
+        sourceAbsoluteY2 = sourceGeometry.getY2() + sourceParentAdjustmentY;
 
-        this.targetAbsoluteX = this.targetGeometry.getX() + targetParentAdjustmentX;
-        this.targetAbsoluteY = this.targetGeometry.getY() + targetParentAdjustmentY;
-        this.targetAbsoluteY2 = this.targetGeometry.getY2() + targetParentAdjustmentY;
+        targetAbsoluteX = targetGeometry.getX() + targetParentAdjustmentX;
+        targetAbsoluteY = targetGeometry.getY() + targetParentAdjustmentY;
+        targetAbsoluteY2 = targetGeometry.getY2() + targetParentAdjustmentY;
 
-        this.sourceAbsoluteCenterX = sourceAbsoluteX + this.sourceRelativCenterX;
-        this.sourceAbsoluteCenterY = this.sourceAbsoluteY + this.sourceRelativCenterY;
-        this.targetAbsoluteCenterX = this.targetAbsoluteX + this.targetRelativCenterX;
-        this.targetAbsoluteCenterY = this.targetAbsoluteY + this.targetRelativCenterY;
+        sourceAbsoluteCenterX = sourceAbsoluteX + sourceRelativCenterX;
+        sourceAbsoluteCenterY = sourceAbsoluteY + sourceRelativCenterY;
+        targetAbsoluteCenterX = targetAbsoluteX + targetRelativCenterX;
+        targetAbsoluteCenterY = targetAbsoluteY + targetRelativCenterY;
 
         // layout hints
-        this.sourceJoin = this.source.isJoin();
-        this.sourceSplit = this.source.isSplit();
-        this.targetJoin = this.target.isJoin();
-        this.target.isSplit();
-        this.backwards = this.sourceAbsoluteCenterX > this.targetAbsoluteCenterX;
+        sourceJoin = source.isJoin();
+        sourceSplit = source.isSplit();
+        targetJoin = target.isJoin();
+        target.isSplit();
+        backwards = sourceAbsoluteCenterX > targetAbsoluteCenterX;
     }
 
     private void pickLayoutForEdge() {
-        if (EPCType.ControlFlow.equals(this.edge.getType())) {
+        if (EPCType.ControlFlow.equals(edge.getType())) {
             pickLayoutForSequenceFlow();
         } else {
             pickLayoutForOtherConnection();
@@ -207,7 +235,7 @@ public class EPCEdgeLayouter {
     }
 
     private boolean areCellsHorizontalFree() {
-        if (this.grid == null || source.getParent() != target.getParent()) {
+        if (grid == null || source.getParent() != target.getParent()) {
             return (Math.abs(sourceAbsoluteCenterX - targetAbsoluteCenterX) < 210);
         }
 

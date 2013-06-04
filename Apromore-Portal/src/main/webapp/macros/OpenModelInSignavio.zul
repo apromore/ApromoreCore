@@ -41,15 +41,16 @@
 
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {
-                                        'data': json},
+                                    parameters: {'data': json},
                                     method: 'POST',
+
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
                                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', nativeFormat));
                                     }.bind(this),
+
                                     onFailure: function(transport) {
-                                        alert("Failed to save process as "+nativeFormat);
+                                        alert("Failed to save process as " + nativeFormat);
                                     }.bind(this)
                                 }
                             );
@@ -58,13 +59,14 @@
 
                         ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {
-                                        'data': json},
+                                    parameters: {'data': json},
                                     method: 'POST',
+
                                     onSuccess: function(transport) {
                                         var nativeFormat = transport.responseText;
                                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
                                     }.bind(this),
+
                                     onFailure: function(transport) {
                                         alert("Failed to save process!");
                                     }.bind(this)
@@ -115,7 +117,6 @@
                                             layouter.functionality();                                            
                                         } else {
                                             // Could be already layouted model (for example YAWL)
-                                            //alert("Did not find Layouter");
                                         }
 
                                         Ext.select('svg').setVisible(true);
