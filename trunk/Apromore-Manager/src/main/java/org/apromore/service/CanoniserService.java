@@ -59,9 +59,7 @@ public interface CanoniserService {
             throws CanoniserException;
 
     /**
-     * DeCanonise a process.
-     * @param processId           the processId of the Canonical format.
-     * @param version             the version of the canonical format
+     * DeCanonise a process or fragment.
      * @param nativeType          the processes original format
      * @param canonicalFormat     the Canonical format
      * @param annotationFormat    the annotation format data source
@@ -69,7 +67,7 @@ public interface CanoniserService {
      * @return DecanonisedProcess containing the native format and messages from the Canoniser
      * @throws CanoniserException something failed
      */
-    DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType, final CanonicalProcessType canonicalFormat,
+    DecanonisedProcess deCanonise(final String nativeType, final CanonicalProcessType canonicalFormat,
         final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
 
     /**

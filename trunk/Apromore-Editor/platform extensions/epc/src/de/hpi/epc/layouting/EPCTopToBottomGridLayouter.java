@@ -50,40 +50,8 @@ import java.util.Queue;
 public class EPCTopToBottomGridLayouter {
 
     private static final int CELL_MARGIN = 20; // calc biggest elements in row /
-    // column
     private static final int CELL_HEIGHT = 0;
     private static final int CELL_WIDTH = 0;
-
-    /**
-     * Compares the distance of two elements relative to a third <tt>center</tt>
-     * element
-     *
-     * @author Team Royal Fawn
-     */
-    private static class BackwardDistanceComperator implements
-            Comparator<LayoutingElement> {
-
-        private LayoutingElement ce;
-
-        /**
-         * @param center
-         */
-        private BackwardDistanceComperator(LayoutingElement center) {
-            super();
-            this.ce = center;
-        }
-
-        public int compare(LayoutingElement o1, LayoutingElement o2) {
-            return ce.backwardDistanceTo(o1) - ce.backwardDistanceTo(o2);
-
-        }
-
-    }
-
-    private static class GridContext {
-        private Grid<LayoutingElement> grid;
-        private Cell<LayoutingElement> startCell;
-    }
 
     private List<String> orderedIds;
     private LayoutingDiagram diagram;
@@ -98,9 +66,9 @@ public class EPCTopToBottomGridLayouter {
     public EPCTopToBottomGridLayouter(List<String> orderedIds) {
         this.orderedIds = orderedIds;
         context = new GridContext();
-        context.grid = new Grid<LayoutingElement>();
+        context.grid = new Grid<>();
         context.startCell = context.grid.getFirstRow().getFirstCell();
-        superGrid = new SuperGrid<LayoutingElement>();
+        superGrid = new SuperGrid<>();
         superGrid.add(context.grid);
     }
 
@@ -120,17 +88,13 @@ public class EPCTopToBottomGridLayouter {
         for (String id : this.orderedIds) {
             //System.out.println(id);
             LayoutingElement currentElement = this.diagram.getElement(id);
-            List<LayoutingElement> precedingElements = currentElement
-                    .getPrecedingElements();
+            List<LayoutingElement> precedingElements = currentElement.getPrecedingElements();
             GridContext context = getContextByElement(currentElement);
-            Cell<LayoutingElement> cellOfElement = null;
+            Cell<LayoutingElement> cellOfElement;
             cellOfElement = placeElement(currentElement, precedingElements, context);
 
-            boolean comesFromOtherGrid = precedingElements.size() == 1
-                    && precedingElements.get(0).getParent() != currentElement
-                    .getParent();
-            if (!currentElement.isJoin() && !comesFromOtherGrid
-                    && cellOfElement.getPrevCell() != null) {
+            boolean comesFromOtherGrid = precedingElements.size() == 1 && precedingElements.get(0).getParent() != currentElement.getParent();
+            if (!currentElement.isJoin() && !comesFromOtherGrid && cellOfElement.getPrevCell() != null) {
                 // there is an edge hitting us left, so lets forbid
                 // interleaving to use the left cell, if it's empty
                 cellOfElement.getPrevCell().setPackable(false);
@@ -147,19 +111,17 @@ public class EPCTopToBottomGridLayouter {
      * @param context
      * @param cellOfElement
      */
-    private void prelayoutSuccessors(LayoutingElement currentElement,
-                                     GridContext context, Cell<LayoutingElement> cellOfElement) {
+    private void prelayoutSuccessors(LayoutingElement currentElement, GridContext context, Cell<LayoutingElement> cellOfElement) {
         // preLayout following Elements
         Cell<LayoutingElement> baseCell = cellOfElement.after();
         Cell<LayoutingElement> topCell = baseCell;
-        List<LayoutingElement> followingElements = currentElement
-                .getFollowingElements();
+        List<LayoutingElement> followingElements = currentElement.getFollowingElements();
 
         // heuristic for direct connection to join
         LayoutingElement directJoin = null;
         for (LayoutingElement possibleJoin : followingElements) {
             if (possibleJoin.isJoin()) {
-                directJoin = (LayoutingElement) possibleJoin;
+                directJoin = possibleJoin;
             }
         }
         if (directJoin != null) {
@@ -186,7 +148,7 @@ public class EPCTopToBottomGridLayouter {
             if (newElem.getParent() != currentElement.getParent()) {
                 continue;
             }
-            context.grid.setCellOfItem((LayoutingElement) newElem, topCell); // prelayout
+            context.grid.setCellOfItem(newElem, topCell);
             topCell = topCell.beneath();
             if (topCell == baseCell && follow % 2 == 0) {
                 // skip baseCell if an even amount of elements is
@@ -202,35 +164,25 @@ public class EPCTopToBottomGridLayouter {
      * @param context
      * @return cellOfElement
      */
-    private Cell<LayoutingElement> placeElement(LayoutingElement currentElement,
-                                                List<LayoutingElement> precedingElements, GridContext context) {
+    private Cell<LayoutingElement> placeElement(LayoutingElement currentElement, List<LayoutingElement> precedingElements, GridContext context) {
         Cell<LayoutingElement> newCell;
         if (precedingElements.isEmpty()) {
-            // StartEvents
             context.startCell.setValue(currentElement);
             newCell = context.startCell;
             context.startCell = context.startCell.beneath();
         } else {
             Cell<LayoutingElement> leftCell;
-            newCell = context.grid.getCellOfItem(currentElement); // not
-            // null
-            // if
-            // join
+            newCell = context.grid.getCellOfItem(currentElement);
             if (currentElement.isJoin()) {
-
                 Point tmp;
                 boolean splitFound = false;
-                LayoutingElement split = (LayoutingElement) currentElement.prevSplit();
+                LayoutingElement split = currentElement.prevSplit();
                 if (split != null) {
                     // get all close splits
-                    Queue<LayoutingElement> splits = new PriorityQueue<LayoutingElement>(
-                            precedingElements.size() / 2, // should be a
-                            // good rule of
-                            // thumb
-                            new BackwardDistanceComperator(currentElement));
+                    Queue<LayoutingElement> splits = new PriorityQueue<>(precedingElements.size() / 2, new BackwardDistanceComperator(currentElement));
                     splits.add(split);
                     for (LayoutingElement elem : precedingElements) {
-                        split = (LayoutingElement) elem.prevSplit();
+                        split = elem.prevSplit();
                         if (split != null && !splits.contains(split)) {
                             splits.add(split);
                         }
@@ -242,8 +194,7 @@ public class EPCTopToBottomGridLayouter {
                         if (target == currentElement) {
                             // beeing my own splits only makes trouble
                             continue;
-                        } else if (target.getParent() != currentElement
-                                .getParent()) {
+                        } else if (target.getParent() != currentElement.getParent()) {
 
                             continue;
                         }
@@ -265,11 +216,10 @@ public class EPCTopToBottomGridLayouter {
                 int yAcc = 0;
                 int yCnt = 0;
                 for (LayoutingElement el : precedingElements) {
-                    LayoutingElement elem = (LayoutingElement) el;
-                    tmp = context.grid.find(context.grid.getCellOfItem(elem));
+                    tmp = context.grid.find(context.grid.getCellOfItem(el));
                     if (tmp == null) {
-                        Grid<LayoutingElement> preGrid = getContextByElement(elem).grid;
-                        tmp = preGrid.find(preGrid.getCellOfItem(elem));
+                        Grid<LayoutingElement> preGrid = getContextByElement(el).grid;
+                        tmp = preGrid.find(preGrid.getCellOfItem(el));
                         if (tmp == null) {
                             tmp = new Point(0, 0);
                         }
@@ -280,12 +230,9 @@ public class EPCTopToBottomGridLayouter {
                     x = Math.max(x, tmp.x);
                 }
                 if (splitFound) {
-
-                    leftCell = context.grid.getCellOfItem(split).getParent()
-                            .get(x);
+                    leftCell = context.grid.getCellOfItem(split).getParent().get(x);
                     // set path to split unpackable
-                    for (Cell<LayoutingElement> cCell = leftCell; cCell.getValue() != split; cCell = cCell
-                            .getPrevCell()) {
+                    for (Cell<LayoutingElement> cCell = leftCell; cCell.getValue() != split; cCell = cCell.getPrevCell()) {
                         cCell.setPackable(false);
                     }
 
@@ -303,23 +250,20 @@ public class EPCTopToBottomGridLayouter {
 
                 // set all incoming pathes unpackable
                 for (LayoutingElement e : precedingElements) {
-                    LayoutingElement el = (LayoutingElement) e;
-                    Cell<LayoutingElement> target = context.grid.getCellOfItem(el);
+                    Cell<LayoutingElement> target = context.grid.getCellOfItem(e);
                     if (target == null) {
-                        // don't set unpackable in other grids (other edge
-                        // layout)
+                        // don't set unpackable in other grids (other edge layout)
                         continue;
                     }
                     Cell<LayoutingElement> start = target.getParent().get(x + 1);
-                    for (Cell<LayoutingElement> cCell = start; cCell != target; cCell = cCell
-                            .getPrevCell()) {
+                    for (Cell<LayoutingElement> cCell = start; cCell != target; cCell = cCell.getPrevCell()) {
                         cCell.setPackable(false);
                     }
                 }
 
                 // if not prelayouted
             } else if (newCell == null) {
-                LayoutingElement preElem = (LayoutingElement) precedingElements.get(0);
+                LayoutingElement preElem = precedingElements.get(0);
                 leftCell = context.grid.getCellOfItem(preElem);
                 if (leftCell == null) {
                     Grid<LayoutingElement> preGrid = getContextByElement(preElem).grid;
@@ -329,19 +273,17 @@ public class EPCTopToBottomGridLayouter {
                     }
 
                     List<Grid<LayoutingElement>> grids = superGrid.getGrids();
-                    Row<LayoutingElement> newRow = null;
+                    Row<LayoutingElement> newRow;
                     if (grids.indexOf(preGrid) < grids.indexOf(context.grid)) {
                         newRow = context.grid.addFirstRow();
                     } else {
                         newRow = context.grid.addLastRow();
                     }
-                    leftCell = newRow.get(Math.max(0, preCell.getParent().find(
-                            preCell)));
+                    leftCell = newRow.get(Math.max(0, preCell.getParent().find(preCell)));
                 }
                 newCell = leftCell.after();
             }
-            if (newCell.isFilled()
-                    && !newCell.getValue().equals(currentElement)) {
+            if (newCell.isFilled() && !newCell.getValue().equals(currentElement)) {
                 newCell.getParent().insertRowBeneath();
                 newCell = newCell.beneath();
             }
@@ -362,18 +304,15 @@ public class EPCTopToBottomGridLayouter {
         Arrays.fill(widthOfColumn, CELL_WIDTH);
         // find biggest
         int row = 0;
-        int column = 0;
+        int column;
         for (Row<LayoutingElement> r : grids) {
             column = 0;
             for (Cell<LayoutingElement> c : r) {
                 if (c.isFilled()) {
                     LayoutingElement elem = c.getValue();
                     LayoutingBounds geom = elem.getGeometry();
-                    widthOfColumn[column] = Math.max(widthOfColumn[column],
-                            geom.getHeight() + CELL_MARGIN);
-                    heightOfRow[row] = Math.max(heightOfRow[row], geom
-                            .getWidth()
-                            + CELL_MARGIN);
+                    widthOfColumn[column] = Math.max(widthOfColumn[column], geom.getHeight() + CELL_MARGIN);
+                    heightOfRow[row] = Math.max(heightOfRow[row], geom.getWidth() + CELL_MARGIN);
                 }
                 column++;
             }
@@ -399,14 +338,7 @@ public class EPCTopToBottomGridLayouter {
         double x = 0;
         double y = 0;
         int row = 0;
-        int column = 0;
-
-        // reverse the rows in order to mirror the grid
-//			List<Row<LayoutingElement>> rows = new ArrayList<Row<LayoutingElement>>();
-//			for (Row<LayoutingElement> r : grids) {
-//				rows.add(r);
-//			}
-//			Collections.reverse(rows);
+        int column;
 
         for (Row<LayoutingElement> r : grids) {
             column = 0;
@@ -416,13 +348,10 @@ public class EPCTopToBottomGridLayouter {
                 if (c.isFilled()) {
                     LayoutingElement elem = c.getValue();
                     LayoutingBounds geom = elem.getGeometry();
-                    double newX = x + (cellWidth / 2.0)
-                            - (geom.getWidth() / 2.0);
-                    double newY = y + (cellHeight / 2.0)
-                            - (geom.getHeight() / 2.0);
+                    double newX = x + (cellWidth / 2.0) - (geom.getWidth() / 2.0);
+                    double newY = y + (cellHeight / 2.0) - (geom.getHeight() / 2.0);
 
-                    elem.setGeometry(new LayoutingBoundsImpl(newX, newY, geom
-                            .getWidth(), geom.getHeight()));
+                    elem.setGeometry(new LayoutingBoundsImpl(newX, newY, geom.getWidth(), geom.getHeight()));
                 }
                 y += cellHeight;
                 column++;
@@ -455,5 +384,37 @@ public class EPCTopToBottomGridLayouter {
     public Grid<LayoutingElement> getGrid() {
         return context.grid;
     }
+
+
+
+
+    /**
+     * Compares the distance of two elements relative to a third <tt>center</tt>
+     * element
+     *
+     * @author Team Royal Fawn
+     */
+    private static class BackwardDistanceComperator implements Comparator<LayoutingElement> {
+        private LayoutingElement ce;
+
+        /**
+         * @param center
+         */
+        private BackwardDistanceComperator(LayoutingElement center) {
+            super();
+            this.ce = center;
+        }
+
+        public int compare(LayoutingElement o1, LayoutingElement o2) {
+            return ce.backwardDistanceTo(o1) - ce.backwardDistanceTo(o2);
+
+        }
+    }
+
+    private static class GridContext {
+        private Grid<LayoutingElement> grid;
+        private Cell<LayoutingElement> startCell;
+    }
+
 }
 

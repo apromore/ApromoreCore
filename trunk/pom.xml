@@ -1183,32 +1183,32 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven.pmd.plugin}</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <skip>${pmd.skip}</skip>
-                    <targetJdk>${java.target.version}</targetJdk>
-                    <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                    <rulesets>
-                        <ruleset>${pmd.ruleset.location}</ruleset>
-                    </rulesets>
-                    <failOnViolation>false</failOnViolation>
-                    <verbose>true</verbose>
-                    <aggregate>true</aggregate>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                            <goal>cpd-check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-pmd-plugin</artifactId>-->
+                <!--<version>${maven.pmd.plugin}</version>-->
+                <!--<inherited>true</inherited>-->
+                <!--<configuration>-->
+                    <!--<skip>${pmd.skip}</skip>-->
+                    <!--<targetJdk>${java.target.version}</targetJdk>-->
+                    <!--<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>-->
+                    <!--<rulesets>-->
+                        <!--<ruleset>${pmd.ruleset.location}</ruleset>-->
+                    <!--</rulesets>-->
+                    <!--<failOnViolation>false</failOnViolation>-->
+                    <!--<verbose>true</verbose>-->
+                    <!--<aggregate>true</aggregate>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>verify</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>check</goal>-->
+                            <!--<goal>cpd-check</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -1518,14 +1518,14 @@
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven.jxr.plugin}</version>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven.pmd.plugin}</version>
-                <configuration>
-                    <targetJdk>${java.target.version}</targetJdk>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-pmd-plugin</artifactId>-->
+                <!--<version>${maven.pmd.plugin}</version>-->
+                <!--<configuration>-->
+                    <!--<targetJdk>${java.target.version}</targetJdk>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

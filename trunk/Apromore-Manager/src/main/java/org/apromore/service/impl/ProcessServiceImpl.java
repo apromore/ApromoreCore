@@ -297,7 +297,7 @@ public class ProcessServiceImpl implements ProcessService {
                         anf = annotationSrv.preProcess(null, format, cpt, anf);
                     }
 
-                    dp = canoniserSrv.deCanonise(processId, branch, format, cpt, anf, canoniserProperties);
+                    dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
 
                     exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
@@ -618,7 +618,12 @@ public class ProcessServiceImpl implements ProcessService {
             }
 
             processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
-            processModelVersion.getProcessBranch().setCurrentProcessModelVersion(pmVersion);
+            processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
+            processModelVersion.setOriginalId(cpf.getCpt().getUri());
+            processModelVersion.setNumEdges(graph.countEdges());
+            processModelVersion.setNumVertices(graph.countVertices());
+            processModelVersion.setLockStatus(Constants.NO_LOCK);
+            processModelVersion.setNativeType(nativeType);
         } else {
             LOGGER.error("unable to find the Process Model to update.");
         }

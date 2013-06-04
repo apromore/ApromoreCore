@@ -1,7 +1,6 @@
 package org.apromore.service.impl;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apromore.common.Constants;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.FragmentVersion;
@@ -17,10 +17,8 @@ import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
-import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.CanonicalConverter;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.ComposerService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
@@ -47,7 +45,6 @@ public class FragmentServiceImpl implements FragmentService {
     private FragmentVersionRepository fvRepository;
     private FragmentVersionDagRepository fvdRepository;
     private CanonicalConverter converter;
-    private CanoniserService canService;
     private ComposerService compService;
     private LockService lService;
 
@@ -56,19 +53,17 @@ public class FragmentServiceImpl implements FragmentService {
      * @param fragmentVersionRepository Fragment Version repository.
      * @param fragmentVersionDagRepository Fragment Version Dag repository.
      * @param canonicalConverter Canonical Converter.
-     * @param canoniserService Canoniser Service.
      * @param composerService The composer Service
      * @param lockService Lock Service.
      */
     @Inject
     public FragmentServiceImpl(final FragmentVersionRepository fragmentVersionRepository,
-            final FragmentVersionDagRepository fragmentVersionDagRepository, final CanoniserService canoniserService,
-            final LockService lockService, final @Qualifier("composerServiceImpl") ComposerService composerService,
+            final FragmentVersionDagRepository fragmentVersionDagRepository, final LockService lockService,
+            final @Qualifier("composerServiceImpl") ComposerService composerService,
             final CanonicalConverter canonicalConverter) {
         fvRepository = fragmentVersionRepository;
         fvdRepository = fragmentVersionDagRepository;
         converter = canonicalConverter;
-        canService = canoniserService;
         compService = composerService;
         lService = lockService;
     }
@@ -76,19 +71,28 @@ public class FragmentServiceImpl implements FragmentService {
 
 
     /**
-     * @see FragmentService#getFragmentAsEPML(Integer)
+     * @see FragmentService#getFragmentToCanonicalProcessType(Integer)
      * {@inheritDoc}
      */
     @Override
-    public String getFragmentAsEPML(Integer fragmentId) throws RepositoryException {
-        String xml;
+    public CanonicalProcessType getFragmentToCanonicalProcessType(Integer fragmentId) {
+        Canonical fragmentGraph;
+        CanonicalProcessType tmp;
+        CanonicalProcessType result = new CanonicalProcessType();
         try {
-            Canonical g = getFragment(fragmentId, false);
-            xml = canService.CPFtoString(converter.convert(g));
-        } catch (LockFailedException | JAXBException e) {
-            throw new RepositoryException(e);
+            fragmentGraph = getFragment(fragmentId, false);
+            fragmentGraph.setProperty(Constants.ROOT_FRAGMENT_ID, fragmentId.toString());
+
+            tmp = converter.convert(fragmentGraph);
+
+            result.getNet().addAll(tmp.getNet());
+            result.getResourceType().addAll(tmp.getResourceType());
+            result.getAttribute().addAll(tmp.getAttribute());
+        } catch (LockFailedException e) {
+            String msg = "Failed to retrieve the Fragment " + fragmentId;
+            LOGGER.error(msg, e);
         }
-        return xml;
+        return result;
     }
 
     /**
