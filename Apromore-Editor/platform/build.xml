@@ -9,18 +9,18 @@
     <property name="dir-metainf" value="${dir-webcontent}/META-INF"/>
     <property name="dir-lib" value="${dir-webinf}/lib"/>
     <property name="dir-lib-buildtime" value="lib"/>
-	<property name="dir-conf" value="conf"/>
-	<property name="dir-conf-classpath" value="${dir-conf}/classpath"/>
-      
+    <property name="dir-conf" value="conf"/>
+    <property name="dir-conf-classpath" value="${dir-conf}/classpath"/>
+
     <!-- TARGETS (alphabetized) -->
-    
-	<target name="com.signavio.platform.clean">
-	        <delete dir="${dir-target}"/>
-	</target>
-    
+
+    <target name="com.signavio.platform.clean">
+        <delete dir="${dir-target}"/>
+    </target>
+
     <target name="com.signavio.platform.compile" depends="com.signavio.platform.clean">
         <mkdir dir="${dir-classes}"/>
-		<javac srcdir="${dir-src}" destdir="${dir-classes}" debug="on" target="1.5">
+        <javac srcdir="${dir-src}" destdir="${dir-classes}" debug="on" target="1.7" source="1.7" includeantruntime="false">
             <classpath id="libs">
                 <fileset dir="${dir-lib}">
                     <include name="**/*.jar"/>
@@ -30,28 +30,28 @@
                 </fileset>
             </classpath>
         </javac>
-		
-		<copy todir="${dir-classes}">
-			<fileset dir="${dir-conf-classpath}" includes="**/*"/>
-		</copy>
+
+        <copy todir="${dir-classes}">
+            <fileset dir="${dir-conf-classpath}" includes="**/*"/>
+        </copy>
     </target>
-	
+
     <target name="com.signavio.platform.war" depends="com.signavio.platform.compile">
         <war destfile="${dir-target}/${file-war}.war"
-         webxml="${dir-webinf}/web.xml"
-         update="true">
-            
+             webxml="${dir-webinf}/web.xml"
+             update="true">
+
             <fileset dir="${dir-webcontent}">
                 <exclude name="WEB-INF/"/>
                 <exclude name="META-INF/"/>
             </fileset>
-            
-			<webinf dir="${dir-webinf}" />
-            
+
+            <webinf dir="${dir-webinf}"/>
+
             <classes dir="${dir-classes}"/>
-            
+
             <metainf dir="${dir-metainf}"/>
-            
+
         </war>
     </target>
 </project>
