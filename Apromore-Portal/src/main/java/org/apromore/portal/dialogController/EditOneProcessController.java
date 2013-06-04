@@ -96,7 +96,7 @@ public class EditOneProcessController extends BaseController {
                     annotationsLB.appendChild(cbi);
                     cbi.setLabel(version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + native_type + ")");
                     cbi.setValue(version.getAnnotations().get(i).getAnnotationName().get(k));
-                    if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue()) == 0) {
+                    if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue()) == 0 || version.getAnnotations().size() == 1) {
                         cbi.setSelected(true);
                     }
                 }

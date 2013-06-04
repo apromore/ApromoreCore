@@ -131,11 +131,10 @@ public class CanoniserServiceImpl implements CanoniserService {
     /*
      * (non-Javadoc)
      *
-     * @see org.apromore.service.CanoniserService#deCanonise(java.lang.Integer, java.lang.String, java.lang.String,
-     * org.apromore.cpf.CanonicalProcessType, javax.activation.DataSource, java.util.Set)
+     * @see org.apromore.service.CanoniserService#deCanonise(java.lang.String, org.apromore.cpf.CanonicalProcessType, javax.activation.DataSource, java.util.Set)
      */
     @Override
-    public DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType,
+    public DecanonisedProcess deCanonise(final String nativeType,
             final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
             final Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException {
         LOGGER.info("DeCanonising process with native type {}", nativeType);
@@ -148,9 +147,6 @@ public class CanoniserServiceImpl implements CanoniserService {
             PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);            
             PluginResult pluginResult = c.deCanonise(canonicalFormat, annotationFormat, nativeXml, canoniserRequest);
-
-            // Do the Post Processing of the de-canonised process model.
-
             InputStream nativeXmlIs = new ByteArrayInputStream(nativeXml.toByteArray());
             decanonisedProcess.setNativeFormat(nativeXmlIs);
             decanonisedProcess.setMessages(pluginResult.getPluginMessage());

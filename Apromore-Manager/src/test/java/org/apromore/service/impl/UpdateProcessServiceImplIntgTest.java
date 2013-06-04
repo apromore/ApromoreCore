@@ -1,13 +1,15 @@
 package org.apromore.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -21,7 +23,6 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -31,11 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Unit test the ProcessService Implementation.
@@ -93,13 +89,7 @@ public class UpdateProcessServiceImplIntgTest {
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);
-        assertThat(cpt, notNullValue());
-        assertThat(cpt.getNet().size(), equalTo(1));
-        assertThat(cpt.getResourceType().size(), equalTo(11));
-        assertThat(cpt.getDataTypes(), nullValue());
-        assertThat(cpt.getUri(), nullValue());
-        assertThat(cpt.getName(), nullValue());
-        assertThat(cpt.getVersion(), nullValue());
+        assertThat(cpt, nullValue());
     }
 
 }

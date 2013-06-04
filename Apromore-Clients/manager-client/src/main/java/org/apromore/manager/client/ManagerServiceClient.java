@@ -1,5 +1,8 @@
 package org.apromore.manager.client;
 
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -7,9 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
 
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
@@ -45,8 +45,6 @@ import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.FragmentIdsType;
-import org.apromore.model.FragmentResponseType;
-import org.apromore.model.FragmentType;
 import org.apromore.model.GetBreadcrumbsInputMsgType;
 import org.apromore.model.GetBreadcrumbsOutputMsgType;
 import org.apromore.model.GetClusterInputMsgType;
@@ -59,7 +57,8 @@ import org.apromore.model.GetClustersRequestType;
 import org.apromore.model.GetClustersResponseType;
 import org.apromore.model.GetFolderUsersInputMsgType;
 import org.apromore.model.GetFolderUsersOutputMsgType;
-import org.apromore.model.GetFragmentRequestType;
+import org.apromore.model.GetFragmentInputMsgType;
+import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.GetProcessUsersInputMsgType;
@@ -507,16 +506,16 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentType getFragment(final Integer fragmentId) {
+    public GetFragmentOutputMsgType getFragment(final Integer fragmentId) {
         LOGGER.debug("Invoking getFragment method to retreive fragment content...");
 
-        GetFragmentRequestType msg = new GetFragmentRequestType();
+        GetFragmentInputMsgType msg = new GetFragmentInputMsgType();
         msg.setFragmentId(fragmentId);
 
-        JAXBElement<GetFragmentRequestType> request = WS_CLIENT_FACTORY.createGetFragmentRequest(msg);
+        JAXBElement<GetFragmentInputMsgType> request = WS_CLIENT_FACTORY.createGetFragmentRequest(msg);
 
-        JAXBElement<FragmentResponseType> response = (JAXBElement<FragmentResponseType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getFragment();
+        JAXBElement<GetFragmentOutputMsgType> response = (JAXBElement<GetFragmentOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue();
     }
 
     /**
