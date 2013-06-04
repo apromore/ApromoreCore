@@ -96,7 +96,7 @@
                                 method: 'POST',
                                 onSuccess: function(transport) {
                                     var editorConfig = Ext.decode(transport.responseText);
-                                    oryxEditor.importJSON(editorConfig);
+                                    oryxEditor.importJSON(editorConfig, true);
 
                                     // Call Auto-Layout if everything is available
                                     window.setTimeout(function() {

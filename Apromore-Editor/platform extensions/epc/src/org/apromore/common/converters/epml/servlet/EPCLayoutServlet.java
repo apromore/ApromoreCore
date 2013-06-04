@@ -73,8 +73,7 @@ public class EPCLayoutServlet extends HttpServlet {
                 obj.put("id", id);
 
                 LayoutingBounds bounds = element.getGeometry();
-                String boundsString = bounds.getX() + " " + bounds.getY() + " "
-                        + bounds.getX2() + " " + bounds.getY2();
+                String boundsString = bounds.getX() + " " + bounds.getY() + " " + bounds.getX2() + " " + bounds.getY2();
                 obj.put("bounds", boundsString);
 
                 if (EPCType.isAConnectingElement(element.getType())) {
@@ -132,7 +131,7 @@ public class EPCLayoutServlet extends HttpServlet {
         Queue<LayoutingElement> sortedElements = new TopologicalSorterEPC(diagram, null).getSortedElements();
 
         // Sorted
-        List<String> sortedIds = new LinkedList<String>();
+        List<String> sortedIds = new LinkedList<>();
         for (LayoutingElement element : sortedElements) {
             sortedIds.add(element.getId());
         }
@@ -149,7 +148,7 @@ public class EPCLayoutServlet extends HttpServlet {
         // so that they are right of the elements
         for (LayoutingElement textNote : this.diagram.getElementsOfType(EPCType.TextNote)) {
             List<LayoutingElement> outgoingLinks = textNote.getOutgoingLinks();
-            for (EPCElement edge : outgoingLinks.toArray(new EPCElement[outgoingLinks.size()])) {
+            for (LayoutingElement edge : outgoingLinks.toArray(new LayoutingElement[outgoingLinks.size()])) {
                 EPCElement target = (EPCElement) edge.getOutgoingLinks().get(0);
                 // remove old connection
                 textNote.removeOutgoingLink(edge);

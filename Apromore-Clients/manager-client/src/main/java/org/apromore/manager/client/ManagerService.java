@@ -18,6 +18,7 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.FragmentType;
+import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
@@ -157,7 +158,7 @@ public interface ManagerService {
      * @param fragmentId the id of the fragment we want
      * @return the found fragment
      */
-    FragmentType getFragment(Integer fragmentId);
+    GetFragmentOutputMsgType getFragment(Integer fragmentId);
 
     /**
      * get the distance between two fragments.

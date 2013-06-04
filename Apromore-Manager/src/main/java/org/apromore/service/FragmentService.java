@@ -3,10 +3,10 @@ package org.apromore.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
-import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 
@@ -18,17 +18,14 @@ import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentDataObject;
 public interface FragmentService {
 
     /**
-     * Gets the Fragment as Epml.
-     *
-     * @param fragmentId the fragment Id
-     * @return the fragment as an EPML.
-     * @throws RepositoryException
+     * Finds a fragment and returns the Canonical process type for that so we can decanonise into a native language.
+     * @param fragmentId the fragment id
+     * @return the canonical process type.
      */
-    String getFragmentAsEPML(Integer fragmentId) throws RepositoryException;
+    CanonicalProcessType getFragmentToCanonicalProcessType(Integer fragmentId);
 
     /**
      * Get a particular Fragment based on fragmentId.
-     *
      * @param fragmentId the fragment to return
      * @param lock       do we lock the table or not.
      * @return the found processModel.

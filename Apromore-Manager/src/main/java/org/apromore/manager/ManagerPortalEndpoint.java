@@ -6,6 +6,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -60,9 +63,8 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.ExportFragmentResultType;
 import org.apromore.model.FolderType;
-import org.apromore.model.FragmentResponseType;
-import org.apromore.model.FragmentType;
 import org.apromore.model.GetBreadcrumbsInputMsgType;
 import org.apromore.model.GetBreadcrumbsOutputMsgType;
 import org.apromore.model.GetClusterInputMsgType;
@@ -75,7 +77,8 @@ import org.apromore.model.GetClustersRequestType;
 import org.apromore.model.GetClustersResponseType;
 import org.apromore.model.GetFolderUsersInputMsgType;
 import org.apromore.model.GetFolderUsersOutputMsgType;
-import org.apromore.model.GetFragmentRequestType;
+import org.apromore.model.GetFragmentInputMsgType;
+import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.GetProcessUsersInputMsgType;
@@ -181,6 +184,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
+import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.service.model.NameValuePair;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
@@ -576,23 +580,39 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "GetFragmentRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<FragmentResponseType> getFragment(@RequestPayload final JAXBElement<GetFragmentRequestType> req) {
+    public JAXBElement<GetFragmentOutputMsgType> getFragment(@RequestPayload final JAXBElement<GetFragmentInputMsgType> req) {
         LOGGER.info("Executing operation getFragment");
 
-        Integer fragmentId = req.getValue().getFragmentId();
-        FragmentResponseType res = new FragmentResponseType();
-        FragmentType fragment = new FragmentType();
-        fragment.setFragmentId(fragmentId);
+        String defaultFormat = "EPML 2.0";
+
+        ResultType result = new ResultType();
+        GetFragmentInputMsgType payload = req.getValue();
+        GetFragmentOutputMsgType res = new GetFragmentOutputMsgType();
+
+        Integer fragmentId = payload.getFragmentId();
 
         try {
-            String epmlString = fragmentSrv.getFragmentAsEPML(fragmentId);
-            fragment.setContent(epmlString);
-        } catch (RepositoryException e) {
-            LOGGER.error("getFragment failed.");
+            AnnotationsType anf = null;
+            CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
+            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, anf, new HashSet<RequestParameterType<?>>());
+
+            ExportFragmentResultType exportResult = new ExportFragmentResultType();
+            exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
+            exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
+
+            res.setFragmentResult(exportResult);
+            res.setNativeType(defaultFormat);
+
+            result.setCode(0);
+            result.setMessage("");
+        } catch (CanoniserException | IOException e) {
+            LOGGER.error("Failed to load Fragment with Id: " + fragmentId);
+            result.setCode(-1);
+            result.setMessage(e.getMessage());
         }
 
-        res.setFragment(fragment);
-        return WS_OBJECT_FACTORY.createFragmentResponse(res);
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createGetFragmentResponse(res);
     }
 
     @PayloadRoot(localPart = "ExportFormatRequest", namespace = NAMESPACE)

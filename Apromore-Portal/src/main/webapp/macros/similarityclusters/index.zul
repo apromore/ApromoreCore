@@ -63,7 +63,7 @@
                    data: '${arg.visualisationJSON}',
                    onNodeClick: function(data, onClose) {
                        var windowReference = window.open('fragment.zul?fragmentId='+data.id,'ApromoreFragmentWindow'+new Date().getTime(),
-                       'left=20,top=20,width=500,height=600,toolbar=0,resizable=1,location=0');
+                       'left=20,top=20,width=800,height=600,toolbar=0,resizable=1,location=0');
                        windowReference.onunload = function() {
                            if (windowReference.location != 'about:blank') {                       
                                onClose();

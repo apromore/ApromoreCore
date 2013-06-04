@@ -42,8 +42,6 @@ public class ClusterVisualisationController extends BaseController {
         NUMBER_INSTANCE.setMaximumFractionDigits(3);
     }
 
-    private static final long serialVersionUID = -5547578253057872613L;
-
     public static final String CLUSTER_RESULT_ATTRIBUTE_NAME = "org.apromore.portal.clusterResult";
     public static final String PAIRWISE_FILTER_ATTRIBUTE_NAME = "org.apromore.portal.pairwiseFilter";
 
@@ -63,12 +61,12 @@ public class ClusterVisualisationController extends BaseController {
         Session session = Sessions.getCurrent();
 
         this.clusterResult = (List<ClusterSummaryType>) session.getAttribute(CLUSTER_RESULT_ATTRIBUTE_NAME);
-        this.indexMap = new HashMap<Integer, Long>();
+        this.indexMap = new HashMap<>();
         this.addEventListener("onShowSelection", new EventListener() {
 
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                Set<String> pairwiseFilter = new HashSet<String>();
+                Set<String> pairwiseFilter = new HashSet<>();
                 pairwiseFilter.clear();
                 if (event.getData() != null) {
                     Object[] idList = (Object[]) event.getData();

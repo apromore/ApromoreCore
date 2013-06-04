@@ -1,28 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?page title="Apromore: Process Fragment ${param.fragmentId}"?>
-<zk>
-
-<window id="win" 
-    xmlns:n="http://www.zkoss.org/2005/zk/native" 
-    use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationFragmentController">
-
-    <n:style type="text/css">
-        #feedback {
-            display: none;
-        }
-
-        .x-panel-editor-north {
-            display: none;
-        }
-
-        .x-panel-editor-west {
-            display: none;
-        }
-
-        .x-layout-split-west {
-            display: none !important;
-        }
-    </n:style>
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationFragmentController">
 
     <n:style media="screen" type="text/css">
         @import url("/editor/libs/ext-2.0.2/resources/css/ext-all.css");
@@ -42,7 +18,7 @@
                 if (!ORYX.CONFIG) {
                     ORYX.CONFIG = {};
                 }
-                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../editor";
+                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../../editor";
             ]]>
         </n:script>
 
@@ -56,76 +32,74 @@
         <n:script src="/editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></n:script>
         <n:script src="/editor/libs/utils.js" type="text/javascript"></n:script>
         <n:script src="/editor/editor/oryx.debug.js" type="text/javascript"></n:script>
-        
+
         <n:span id="oryxstartupcode">
             <n:script>    
-            <![CDATA[
-                ORYX.CONFIG.PANEL_RIGHT_COLLAPSED = true;                        
+                <![CDATA[
+                    ORYX.CONFIG.PANEL_RIGHT_COLLAPSED = true;
+                    ORYX.CONFIG.PANEL_LEFT_COLLAPSED = true;
                                                                 
-                // This function is called upon load of all Oryx dependencies
-                window.onOryxResourcesLoaded = function() {
-
-                    var urlData = '${arg.url}'
-                    var oryxEditor = new ORYX.Editor({
-                        model : {
-                            id : 'oryx-canvas123',
-                            stencilset : {
-                                url : '${arg.url}'
+                    // This function is called upon load of all Oryx dependencies
+                    window.onOryxResourcesLoaded = function() {
+                        var urlData = '${arg.url}'
+                        var oryxEditor = new ORYX.Editor({
+                            model : {
+                                id : 'oryx-canvas123',
+                                stencilset : {
+                                    url : '${arg.url}',
+                                    namespace : '${arg.url}'
+                                },
                             },
-                        },
-                        fullscreen : true
-                    });
-                    
-                    // Initially hide SVG
-                    Ext.select('svg').setVisible(false);
-                                                                                                        
-                    //Import new process model
-                    new Ajax.Request('${arg.importPath}', {
-                        parameters: {
-                            'data': '${arg.fragmentData}'},
-                            method: 'POST',
-                            onSuccess: function(transport) {
-                                var editorConfig = Ext.decode(transport.responseText);
-                                oryxEditor.importJSON(editorConfig);
-                            
-                                // Call Auto-Layout if everything is available
-                                window.setTimeout(function() {
-                                    var layouter
-                                    if (urlData == 'http://b3mn.org/stencilset/epc#') {
-                                        layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                            return pluginData.name === "Layout-EPC";
-                                        });
-                                    } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
-                                        layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                            return pluginData.name === "Layout-BPMN";
-                                        });
-                                    }
-
-                                    var doAutoLayout = '${arg.doAutoLayout}' === 'true';
-
-                                    if (layouter && doAutoLayout) {
-                                        layouter.functionality();
-                                    } else {
-                                        // Could be already layouted model (for example YAWL)
-                                        //alert("Did not find Layouter");
-                                    }
-
-                                    Ext.select('svg').setVisible(true);
-                                    window.onbeforeunload = null;
-                                }, 1000);
-                            }.bind(this),
-
-                            onFailure: function(transport) {
-                                alert("Failed to load process fragment!");
-                            }.bind(this)
+                            fullscreen : true
                         });
+
+                        Ext.select('svg').setVisible(false);
+
+                        // Import new process model
+                        new Ajax.Request('${arg.importPath}', {
+                            parameters: {
+                                'data': '${arg.jsonData}'},
+                                method: 'POST',
+                                onSuccess: function(transport) {
+                                    var editorConfig = Ext.decode(transport.responseText);
+                                    oryxEditor.importJSON(editorConfig, true);
+
+                                    // Call Auto-Layout if everything is available
+                                    window.setTimeout(function() {
+                                        var layouter
+                                        if (urlData == 'http://b3mn.org/stencilset/epc#') {
+                                            layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                                return pluginData.name === "Layout-EPC";
+                                            });
+                                        } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
+                                            layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                                return pluginData.name === "Layout-BPMN";
+                                            });
+                                        }
+
+                                        var doAutoLayout = '${arg.doAutoLayout}' === 'true';
+
+                                        if (layouter && doAutoLayout) {
+                                            layouter.functionality();
+                                        } else {
+                                            // Could be already layouted model (for example YAWL)
+                                        }
+
+                                        Ext.select('svg').setVisible(true);
+                                        window.onbeforeunload = null;
+                                    }, 1000);
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    alert("Failed to load process fragment!");
+                                }.bind(this)
+                            }
+                        );
                     };
                 ]]>
-            </n:script>    
+            </n:script>
         </n:span>
     </n:div>
-    
-    <n:div id="oryx-canvas123"></n:div>
 
+    <n:div id="oryx-canvas123"/>
 </window>
-</zk>
