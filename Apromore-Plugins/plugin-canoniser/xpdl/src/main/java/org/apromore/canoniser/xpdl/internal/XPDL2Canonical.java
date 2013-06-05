@@ -213,24 +213,28 @@ public class XPDL2Canonical {
                     try {
                         if (xpdlRefMap.get(source) != null) {
                             Activity act = xpdlRefMap.get(source);
-                            WorkType node = (WorkType) xpdl2canon.get(act);
-                            ObjectRefType ref = new ObjectRefType();
-                            ObjectType o = object_map.get(target);
-                            if (o != null) {
-                                ref.setObjectId(o.getId());
+                            if (xpdl2canon.get(act) instanceof WorkType) {
+                                WorkType node = (WorkType) xpdl2canon.get(act);
+                                ObjectRefType ref = new ObjectRefType();
+                                ObjectType o = object_map.get(target);
+                                if (o != null) {
+                                    ref.setObjectId(o.getId());
+                                }
+                                ref.setType(InputOutputType.OUTPUT);
+                                node.getObjectRef().add(ref);
                             }
-                            ref.setType(InputOutputType.OUTPUT);
-                            node.getObjectRef().add(ref);
                         } else if (xpdlRefMap.get(target) != null) {
                             Activity act = xpdlRefMap.get(target);
-                            WorkType node = (WorkType) xpdl2canon.get(act);
-                            ObjectRefType ref = new ObjectRefType();
-                            ObjectType o = object_map.get(source);
-                            if (o != null) {
-                                ref.setObjectId(o.getId());
+                            if (xpdl2canon.get(act) instanceof WorkType) {
+                                WorkType node = (WorkType) xpdl2canon.get(act);
+                                ObjectRefType ref = new ObjectRefType();
+                                ObjectType o = object_map.get(source);
+                                if (o != null) {
+                                    ref.setObjectId(o.getId());
+                                }
+                                ref.setType(InputOutputType.INPUT);
+                                node.getObjectRef().add(ref);
                             }
-                            ref.setType(InputOutputType.INPUT);
-                            node.getObjectRef().add(ref);
                         }
                     } catch (ClassCastException e) {
                         String msg = "Not Supported: Gateways in Canonical Format don't have a connection with an Object Type.";

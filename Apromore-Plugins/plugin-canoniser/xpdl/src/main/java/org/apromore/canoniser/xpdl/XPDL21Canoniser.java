@@ -31,7 +31,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
 import org.wfmc._2008.xpdl2.Version;
 
-
 /**
  * XPDL 2.1 Canoniser Plugin
  *
