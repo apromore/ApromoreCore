@@ -77,8 +77,8 @@ public class ComposerServiceImpl implements ComposerService {
         Canonical canonical = cache.getIfPresent(fv.getId());
         if (canonical == null) {
             canonical = new Canonical();
-            gService.fillNodesByFragment(canonical, fv.getUri());
-            gService.fillEdgesByFragmentURI(canonical, fv.getUri());
+            canonical = gService.fillNodesByFragment(canonical, fv.getUri());
+            canonical = gService.fillEdgesByFragmentURI(canonical, fv.getUri());
             cache.put(fv.getId(), canonical);
         }
         return canonical;

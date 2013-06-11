@@ -15,12 +15,12 @@ public interface GraphService {
      * @param procModelGraph the graph we are building.
      * @param fragmentURI the fragment URI.
      */
-    void fillNodesByFragment(Canonical procModelGraph, String fragmentURI);
+    Canonical fillNodesByFragment(Canonical procModelGraph, String fragmentURI);
 
     /**
      * Fill the Nodes by Fragment.
      * @param procModelGraph the graph we are building.
      * @param fragmentURI the fragment URI.
      */
-    void fillEdgesByFragmentURI(Canonical procModelGraph, String fragmentURI);
+    Canonical fillEdgesByFragmentURI(Canonical procModelGraph, String fragmentURI);
 }

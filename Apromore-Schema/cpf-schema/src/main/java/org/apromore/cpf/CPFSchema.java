@@ -13,6 +13,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apromore.cpf.cache.CachedJaxbContext;
 import org.xml.sax.SAXException;
 
 /**
@@ -75,8 +76,7 @@ public class CPFSchema {
      */
     public static Schema getCPFSchema() throws SAXException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(CPFSchema.class.getResource(CPF_SCHEMA_LOCATION));
-        return schema;
+        return sf.newSchema(CPFSchema.class.getResource(CPF_SCHEMA_LOCATION));
     }
 
     /**
@@ -99,7 +99,8 @@ public class CPFSchema {
      * @throws SAXException
      */
     public static void marshalCanonicalFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext context = CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -120,7 +121,8 @@ public class CPFSchema {
      */
     @SuppressWarnings("unchecked")
     public static JAXBElement<CanonicalProcessType> unmarshalCanonicalFormat(final InputStream canonicalFormat, final boolean isValidating) throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext jc = CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getCPFSchema());
@@ -131,7 +133,7 @@ public class CPFSchema {
     /**
      * Creates a valid output expression taking the target Object and the actual expression in an arbitrary language.
      *
-     * @param netObject the result of the expression will be assigned to
+     * @param netObjectName the result of the expression will be assigned to
      * @param expression a String with an arbitrary expression
      * @return a new expression in the form of 'netObjectName = expression'
      */

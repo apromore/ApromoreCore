@@ -169,10 +169,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     /* Computes the Dissimilarity for the two fragments. */
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
-            int fid1Index = crel.getFragmentIndex(fid1);
-            int fid2Index = crel.getFragmentIndex(fid2);
-
-            if (!crel.areInContainmentRelation(fid1Index, fid2Index)) {
+            if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
                 double dissim = compute(fid1, fid2);
                 if (dissim <= dissThreshold) {
                     dissimmap.put(fid1, fid2, dissim);
@@ -182,8 +179,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             reportingInterval++;
             processedPairs++;
             if (reportingInterval == 1000) {
-                long duration = (System.currentTimeMillis() - startedTime) / 1000;
                 reportingInterval = 0;
+                long duration = (System.currentTimeMillis() - startedTime) / 1000;
                 double percentage = (double) processedPairs * 100 / totalPairs;
                 percentage = (double) Math.round((percentage * 1000)) / 1000d;
                 LOGGER.info(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + dissimmap.size());
@@ -193,7 +190,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         } catch (Exception e) {
             LOGGER.error("Failed to compute GED between {} and {} due to {}. " +
                     "GED computation between other fragments will proceed normally.",
-                    new Object[]{fid1, fid2, e.getMessage()});
+                    fid1, fid2, e.getMessage());
         }
     }
 
@@ -237,7 +234,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             }
         }
 
-        return new SimpleGraph(graph);
+        return new SimpleGraph(graph);  // graph;
     }
 
 }

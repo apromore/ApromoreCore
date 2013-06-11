@@ -111,6 +111,8 @@ public class CanoniserServiceImpl implements CanoniserService {
         List<CanonicalProcessType> cpfList = new ArrayList<>();
         List<AnnotationsType> anfList = new ArrayList<>();
 
+        ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
         CanonisedProcess cp = new CanonisedProcess();
         cp.setOriginal(processXml);
 
@@ -121,11 +123,27 @@ public class CanoniserServiceImpl implements CanoniserService {
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
+
+            if (cpfList.size() > 1 || anfList.size() > 1) {
+                throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
+            } else {
+                try {
+                    ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
+                    cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
+                    cp.setAnt(anfList.get(0));
+
+                    CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
+                    cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
+                    cp.setCpt(cpfList.get(0));
+                } catch (JAXBException | SAXException e) {
+                    throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
+                }
+            }
         } catch (CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 
-        return marshal(cpfList, anfList, cp);
+        return cp;
     }
 
     /*
@@ -155,31 +173,6 @@ public class CanoniserServiceImpl implements CanoniserService {
         }
 
         return decanonisedProcess;
-    }
-
-
-    /* Marshal the jaxb objects into the CPF */
-    private CanonisedProcess marshal(List<CanonicalProcessType> cpfList, List<AnnotationsType> anfList, CanonisedProcess cp) throws CanoniserException {
-        ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
-        ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
-
-        if (cpfList.size() > 1 || anfList.size() > 1) {
-            throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
-        } else {
-            try {
-                ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
-                cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
-                cp.setAnt(anfList.get(0));
-
-                CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
-                cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
-                cp.setCpt(cpfList.get(0));
-            } catch (JAXBException | SAXException e) {
-                throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
-            }
-        }
-
-        return cp;
     }
 
 
