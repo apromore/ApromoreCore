@@ -13,6 +13,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import de.epml.cache.CachedJaxbContext;
 import org.xml.sax.SAXException;
 
 /**
@@ -35,8 +36,7 @@ public class EPMLSchema {
      */
     public static Schema getEPMLSchema() throws SAXException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(EPMLSchema.class.getResource(EPML_SCHEMA_LOCATION));
-        return schema;
+        return sf.newSchema(EPMLSchema.class.getResource(EPML_SCHEMA_LOCATION));
     }
 
     /**
@@ -45,7 +45,7 @@ public class EPMLSchema {
      * @return
      * @throws SAXException
      */
-    public static Validator getYAWLValidator() throws SAXException {
+    public static Validator getEPMLValidator() throws SAXException {
         return getEPMLSchema().newValidator();
     }
 
@@ -60,7 +60,8 @@ public class EPMLSchema {
      */
     public static void marshalEPMLFormat(final OutputStream epmlFormat, final TypeEPML epmlSpec, final boolean isValidating)
             throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext context = CachedJaxbContext.getJaxbContext(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, EXPORTED_SCHEMA_LOCATION);
@@ -82,7 +83,8 @@ public class EPMLSchema {
     @SuppressWarnings("unchecked")
     public static JAXBElement<TypeEPML> unmarshalEPMLFormat(final InputStream epmlFormat, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext jc = CachedJaxbContext.getJaxbContext(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(EPML_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getEPMLSchema());

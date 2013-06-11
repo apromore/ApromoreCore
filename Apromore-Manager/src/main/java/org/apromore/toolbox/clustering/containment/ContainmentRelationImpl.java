@@ -2,7 +2,6 @@ package org.apromore.toolbox.clustering.containment;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,13 +155,15 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
     /* Initialise the Containment Matrix. */
     private void initContainmentMatrix() throws Exception {
+        Integer parentIndex;
+        Integer childIndex;
         contmatrix = new boolean[idIndexMap.size()][idIndexMap.size()];
 
         // Initialize the containment matrix using the parent-child relation
         List<FragmentVersionDagDO> dags = fragmentVersionDagRepository.getAllDAGEntriesBySize(minSize);
         for (FragmentVersionDagDO fdag : dags) {
-            Integer parentIndex = idIndexMap.get(fdag.getFragmentVersionId());
-            Integer childIndex = idIndexMap.get(fdag.getChildFragmentVersionId());
+            parentIndex = idIndexMap.get(fdag.getFragmentVersionId());
+            childIndex = idIndexMap.get(fdag.getChildFragmentVersionId());
             if (parentIndex != null && childIndex != null) {
                 contmatrix[parentIndex][childIndex] = true;
             }
@@ -192,17 +193,18 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
     /* Initialise the Hierarchies. */
     private void initHierarchies() throws Exception {
+        Integer rootIndex;
+        List<Integer> hierarchy;
         rootIds = queryRoots();
         LOGGER.debug("Total roots: " + rootIds.size());
 
         for (Integer rootId : rootIds) {
-            List<Integer> hierarchy = new ArrayList<>();
+            hierarchy = new ArrayList<>();
             hierarchies.put(rootId, hierarchy);
             hierarchy.add(rootId);
 
-            Integer rootIndex = getFragmentIndex(rootId);
-            Collection<Integer> fragmentIndecies = indexIdMap.keySet();
-            for (Integer fIndex : fragmentIndecies) {
+            rootIndex = getFragmentIndex(rootId);
+            for (Integer fIndex : indexIdMap.keySet()) {
                 if (!fIndex.equals(rootIndex) && areInContainmentRelation(rootIndex, fIndex)) {
                     hierarchy.add(getFragmentId(fIndex));
                 }

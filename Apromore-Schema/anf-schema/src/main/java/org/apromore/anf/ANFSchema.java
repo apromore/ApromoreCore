@@ -1,8 +1,5 @@
 package org.apromore.anf;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -11,7 +8,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import java.io.InputStream;
+import java.io.OutputStream;
 
+import org.apromore.anf.cache.CachedJaxbContext;
 import org.xml.sax.SAXException;
 
 /**
@@ -33,8 +33,7 @@ public class ANFSchema {
      */
     public static Schema getANFSchema() throws SAXException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(ANFSchema.class.getResource(ANF_SCHEMA_LOCATION));
-        return schema;
+        return sf.newSchema(ANFSchema.class.getResource(ANF_SCHEMA_LOCATION));
     }
 
     /**
@@ -58,7 +57,8 @@ public class ANFSchema {
      */
     public static void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext context = JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext context = CachedJaxbContext.getJaxbContext(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -80,7 +80,8 @@ public class ANFSchema {
     @SuppressWarnings("unchecked")
     public static JAXBElement<AnnotationsType> unmarshalAnnotationFormat(final InputStream annotationsFormat, final boolean isValidating)
             throws JAXBException, SAXException {
-        final JAXBContext jc = JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext jc = CachedJaxbContext.getJaxbContext(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
+                //JAXBContext.newInstance(ANF_CONTEXT, ObjectFactory.class.getClassLoader());
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getANFSchema());

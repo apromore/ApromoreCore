@@ -252,6 +252,8 @@ CREATE TABLE fragment_version
    uri varchar(40),
    fragmentId int,
    clusterId int,
+   entryNodeId int,
+   exitNodeId int,
    child_mapping_code text,
    derived_from_fragment int,
    lock_status int,
@@ -914,6 +916,16 @@ ALTER TABLE fragment_version
 ADD CONSTRAINT fk_cluster_version
 FOREIGN KEY (clusterId)
 REFERENCES cluster(id) ON DELETE CASCADE ON UPDATE CASCADE
+;
+ALTER TABLE fragment_version
+ADD CONSTRAINT fk_entry_node
+FOREIGN KEY (entryNodeId)
+REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
+;
+ALTER TABLE fragment_version
+ADD CONSTRAINT fk_exit_node
+FOREIGN KEY (exitNodeId)
+REFERENCES node(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
 CREATE INDEX fk_cluster_version ON fragment_version(clusterId)
 ;

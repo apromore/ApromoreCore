@@ -232,6 +232,8 @@ CREATE TABLE `fragment_version` (
   `uri` varchar(40),
   `fragmentId` int(11) DEFAULT NULL,
   `clusterId` int(11) DEFAULT NULL,
+  `entryNodeId` int(11) DEFAULT NULL,
+  `exitNodeId` int(11) DEFAULT NULL,
   `child_mapping_code` varchar(20000),
   `derived_from_fragment` int(11),
   `lock_status` int,
@@ -240,9 +242,9 @@ CREATE TABLE `fragment_version` (
   `fragment_type` varchar(10),
   `newest_neighbor` varchar(40),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_fragments_version` FOREIGN KEY (`fragmentId`)
-  REFERENCES `fragment` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_fragments_version` FOREIGN KEY (`fragmentId`) REFERENCES `fragment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_entry_node` FOREIGN KEY (`entryNodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_exit_node` FOREIGN KEY (`exitNodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_fragment_map` (

@@ -138,7 +138,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
         // Each process should have at least one version. So it should have a legal value which
         // is the index of the process latest version. But some are faulty!!!
-        if (i < processVersions.size() && processVersions.get(i).getScore() != null) {
+        if (i >= 0 && i < processVersions.size() && processVersions.get(i).getScore() != null) {
             processScoreLb.setValue(roundToDecimals(processVersions.get(i).getScore(), 4).toString());
         } else {
             processScoreLb.setValue("1.0");

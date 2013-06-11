@@ -23,6 +23,8 @@
     <jdbc:embedded-database id="dataSource" type="H2">
         <jdbc:script location="file:../Extras/database/db-h2.sql"/>
         <jdbc:script location="file:../Extras/database/db-data.sql"/>
+        <!--<jdbc:script location="file:Extras/database/db-h2.sql"/>-->
+        <!--<jdbc:script location="file:Extras/database/db-data.sql"/>-->
     </jdbc:embedded-database>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

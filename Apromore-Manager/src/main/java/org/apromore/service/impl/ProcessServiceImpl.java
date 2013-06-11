@@ -388,8 +388,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     public CanonicalProcessType getCanonicalFormat(final ProcessModelVersion pmv, final String processName, final String branchName, final boolean lock) {
         Canonical canonical;
-        CanonicalProcessType tmp;
-        CanonicalProcessType result = new CanonicalProcessType();
+        CanonicalProcessType tmp = new CanonicalProcessType();
         try {
             canonical = composerSrv.compose(pmv.getRootFragmentVersion());
             canonical.setProperty(Constants.PROCESS_NAME, processName);
@@ -408,15 +407,11 @@ public class ProcessServiceImpl implements ProcessService {
             }
 
             tmp = converter.convert(canonical);
-
-            result.getNet().addAll(tmp.getNet());
-            result.getResourceType().addAll(tmp.getResourceType());
-            result.getAttribute().addAll(tmp.getAttribute());
         } catch (ExceptionDao e) {
             String msg = "Failed to retrieve the current version of the process model " + processName + " - " + branchName;
             LOGGER.error(msg, e);
         }
-        return result;
+        return tmp;
     }
 
 
