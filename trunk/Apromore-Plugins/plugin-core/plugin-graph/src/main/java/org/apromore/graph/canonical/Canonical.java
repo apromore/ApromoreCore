@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
-    public static DirectedGraphAlgorithms<CPFEdge, CPFNode> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<CPFEdge, CPFNode>();
+    public static DirectedGraphAlgorithms<CPFEdge, CPFNode> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<>();
 
     private CPFNode entry = null;
     private CPFNode exit = null;
@@ -24,11 +24,11 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     private String creationDate;
     private String modifiedDate;
 
-    private Set<ICPFObject> objects = new HashSet<ICPFObject>(0);
-    private Set<ICPFResource> resources = new HashSet<ICPFResource>(0);
-    private Map<String, IAttribute> properties = new HashMap<String, IAttribute>(0);
-    private final Map<String, Map<String, String>> nodeProperties = new HashMap<String, Map<String, String>>(0);
-    private final Map<String, String> originalNodeMapping = new HashMap<String, String>(0);
+    private Set<ICPFObject> objects = new HashSet<>(0);
+    private Set<ICPFResource> resources = new HashSet<>(0);
+    private Map<String, IAttribute> properties = new HashMap<>(0);
+    private final Map<String, Map<String, String>> nodeProperties = new HashMap<>(0);
+    private final Map<String, String> originalNodeMapping = new HashMap<>(0);
 
 
     @Override
@@ -143,8 +143,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public CPFEdge addEdge(CPFEdge newEdge) {
-        Collection<CPFNode> ss = new ArrayList<CPFNode>();
-        Collection<CPFNode> ts = new ArrayList<CPFNode>();
+        Collection<CPFNode> ss = new ArrayList<>();
+        Collection<CPFNode> ts = new ArrayList<>();
 
         ss.add(newEdge.getSource());
         ts.add(newEdge.getTarget());
@@ -162,8 +162,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
             return null;
         }
 
-        Collection<CPFNode> ss = new ArrayList<CPFNode>();
-        Collection<CPFNode> ts = new ArrayList<CPFNode>();
+        Collection<CPFNode> ss = new ArrayList<>();
+        Collection<CPFNode> ts = new ArrayList<>();
 
         ss.add(from);
         ts.add(to);
@@ -181,8 +181,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
             return null;
         }
 
-        Collection<CPFNode> ss = new ArrayList<CPFNode>();
-        Collection<CPFNode> ts = new ArrayList<CPFNode>();
+        Collection<CPFNode> ss = new ArrayList<>();
+        Collection<CPFNode> ts = new ArrayList<>();
 
         ss.add(from);
         ts.add(to);
@@ -239,18 +239,18 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Collection<CPFNode> getAllPredecessors(CPFNode fn) {
-        Set<CPFNode> result = new HashSet<CPFNode>();
+        Set<CPFNode> result = new HashSet<>();
 
-        Set<CPFNode> temp = new HashSet<CPFNode>();
+        Set<CPFNode> temp = new HashSet<>();
         temp.addAll(getDirectPredecessors(fn));
         result.addAll(temp);
         while(!(temp.isEmpty())) {
-            Set<CPFNode> temp2 = new HashSet<CPFNode>();
+            Set<CPFNode> temp2 = new HashSet<>();
             for (CPFNode flowNode : temp) {
                 temp2.addAll(getDirectPredecessors(flowNode));
             }
             temp = temp2;
-            Set<CPFNode> temp3 = new HashSet<CPFNode>();
+            Set<CPFNode> temp3 = new HashSet<>();
             for (CPFNode flowNode : temp) {
                 if(!(result.contains(flowNode))) {
                     result.add(flowNode);
@@ -268,18 +268,18 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Collection<CPFNode> getAllSuccessors(CPFNode fn) {
-        Set<CPFNode> result = new HashSet<CPFNode>();
+        Set<CPFNode> result = new HashSet<>();
 
-        Set<CPFNode> temp = new HashSet<CPFNode>();
+        Set<CPFNode> temp = new HashSet<>();
         temp.addAll(getDirectSuccessors(fn));
         result.addAll(temp);
         while(!(temp.isEmpty())) {
-            Set<CPFNode> temp2 = new HashSet<CPFNode>();
+            Set<CPFNode> temp2 = new HashSet<>();
             for (CPFNode flowNode : temp) {
                 temp2.addAll(getDirectSuccessors(flowNode));
             }
             temp = temp2;
-            Set<CPFNode> temp3 = new HashSet<CPFNode>();
+            Set<CPFNode> temp3 = new HashSet<>();
             for (CPFNode flowNode : temp) {
                 if(!(result.contains(flowNode))) {
                     result.add(flowNode);
@@ -297,7 +297,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Collection<CPFNode> getDirectPredecessors(CPFNode node) {
-        Set<CPFNode> result = new HashSet<CPFNode>();
+        Set<CPFNode> result = new HashSet<>();
 
         Collection<CPFEdge> es = this.getIncomingEdges(node);
         for (CPFEdge e : es) {
@@ -309,7 +309,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Collection<CPFNode> getDirectPredecessors(Collection<CPFNode> vs) {
-        Set<CPFNode> result = new HashSet<CPFNode>();
+        Set<CPFNode> result = new HashSet<>();
 
         Collection<CPFEdge> es = this.getEdgesWithTargets(vs);
         for (CPFEdge e : es) {
@@ -324,7 +324,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     public void setNodeProperty(final String nodeId, final String propertyName, final String propertyValue) {
         Map<String, String> properties = nodeProperties.get(nodeId);
         if (properties == null) {
-            properties = new HashMap<String, String>(0);
+            properties = new HashMap<>(0);
             nodeProperties.put(nodeId, properties);
         }
         properties.put(propertyName, propertyValue);
@@ -367,7 +367,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Map<String, CPFNode> getNodeMap() {
-        Map<String, CPFNode> map = new HashMap<String, CPFNode>(0);
+        Map<String, CPFNode> map = new HashMap<>(0);
         for (CPFNode node : getNodes()) {
             map.put(node.getId(), node);
         }
@@ -401,8 +401,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     /* Used to find the dominant relationships. */
     private HashSet<String> performFullDominanceSearch(CPFNode nodes) {
-        LinkedList<CPFNode> toProcess = new LinkedList<CPFNode>(nodes.getChildren());
-        HashSet<String> domList = new HashSet<String>();
+        LinkedList<CPFNode> toProcess = new LinkedList<>(nodes.getChildren());
+        HashSet<String> domList = new HashSet<>();
 
         while (toProcess.size() > 0) {
             CPFNode node = toProcess.removeFirst();

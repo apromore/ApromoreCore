@@ -8,7 +8,7 @@ public interface DissimilarityMatrix {
     public static final Double GED_THRESHOLD = 0.45D;
     public static final Double LED_CUTOFF = 0.6D;
     public static final int LARGE_FRAGMENTS = 60;
-    public static final int SMALL_FRAGMENTS = 4;
+    public static final int SMALL_FRAGMENTS = 6;
 
     /**
      * Computer the Dissimilarity matrix for the repo.

@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
-import org.apromore.model.ImportProcessResultType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,8 @@ public final class Import {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Import.class.getName());
 
-    private ApplicationContext ctx;
     private AutowireCapableBeanFactory fac;
+    private ManagerService manager;
 
     /* The Canonical Process Importer Starting point. */
     public static void main(String[] args) throws Exception {
@@ -37,42 +36,62 @@ public final class Import {
      * Default Constructor.
      */
     public Import(final String arg0) throws Exception {
-        ctx = new ClassPathXmlApplicationContext("classpath*:spring/applicationContext-managerClient.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:spring/applicationContext-managerClient.xml");
         fac = ctx.getAutowireCapableBeanFactory();
+        manager = (ManagerService) getBean("managerClient");
 
-        UploadProcess(new File(arg0));
-    }
-
-    /**
-     * Finds a Spring bean with the passed in name.
-     * @param name the Bean name we want.
-     * @return the Spring Bean or null.
-     */
-    public Object getBean(final String name) {
-        return fac.getBean(name);
-    }
-
-
-    /* Test method to show we connect to the server. */
-    /*
-    private void ShowAllUsers() {
-        ManagerService manager = (ManagerService) getBean("managerClient");
-
-        UsernamesType users = manager.readAllUsers();
-        for (String user : users.getUsername()) {
-            System.out.println("User Found: " + user);
+        File fileArg = new File(arg0);
+        if (fileArg.isFile()) {
+            uploadProcess(new File(arg0));
+        } else {
+            processDirectory(fileArg);
         }
     }
-    */
 
-    private void CreateFolder(final File file) throws Exception {
-        final ManagerService manager = (ManagerService) getBean("managerClient");
+
+    private void processDirectory(File directory) {
+        try {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        processDirectory(file);
+                    } else {
+                        uploadProcess(file);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("failed to process files or directories. ", e);
+        }
+    }
+
+
+    /* upload a single process into apromore. */
+    private void uploadProcess(final File file) throws Exception {
+        final String userName = "admin";
+        final Set<RequestParameterType<?>> noCanoniserParameters = Collections.emptySet();
+
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            createFolder(parentFile);
+            int parentId = getFolderId(parentFile);
+            assert parentId != -1;
+
+            manager.importProcess(userName, parentId, "EPML 2.0", file.getName(),
+                    1.0D, new FileInputStream(file),
+                    "", "", "", "", noCanoniserParameters);
+        }
+    }
+
+    /* creates a folder in apromore. */
+    private void createFolder(final File file) throws Exception {
         final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
         File parentFile = file.getParentFile();
         int parentId = 0;
         if (parentFile != null) {
-            CreateFolder(parentFile);
+            createFolder(parentFile);
             parentId = getFolderId(parentFile);
         }
         if (getFolderId(file) == -1) {
@@ -84,15 +103,14 @@ public final class Import {
     }
 
     private int getFolderId(final File file) {
-        final ManagerService manager = (ManagerService) getBean("managerClient");
         final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
         List<FolderType> tree = manager.getWorkspaceFolderTree(user);
         Path path = file.toPath();
 
-        FolderType folder = null;
+        FolderType folder;
         int id = 0;
-        for (int i=0; i < path.getNameCount(); i++) {
+        for (int i = 0; i < path.getNameCount(); i++) {
             folder = findFolderByName(path.getName(i).toString(), tree);
             if (folder == null) {
                 return -1;  // folder has a nonexistent parent
@@ -112,38 +130,13 @@ public final class Import {
         return null;
     }
 
-    private void UploadProcess(final File file) throws Exception {
-        final ManagerService manager = (ManagerService) getBean("managerClient");
-        final String userName = "admin";
-        final Set<RequestParameterType<?>> noCanoniserParameters = Collections.<RequestParameterType<?>>emptySet();
 
-        File parentFile = file.getParentFile();
-        if (parentFile != null) {
-            CreateFolder(parentFile);
-            int parentId = getFolderId(parentFile);
-            assert parentId != -1;
 
-            ImportProcessResultType result = manager.importProcess(
-            userName, parentId,
-            "EPML 2.0",
-            file.getName(),
-            1.0D,
-            new FileInputStream(file),
-            "domain",
-            "documentation",
-            "created",
-            "lastUpdate",
-            noCanoniserParameters);
-        }
 
-//        // If the process was in a directory on the filesystem, move it to a corresponding one in Apromore
-//        File parentFile = file.getParentFile();
-//        if (parentFile != null) {
-//            CreateFolder(parentFile);
-//            int parentId = getFolderId(parentFile);
-//            assert parentId != -1;
-//            manager.addProcessToFolder(result.getProcessSummary().getId(), parentId);
-//        }
+
+    /* Finds a Spring bean with the passed in name. */
+    private Object getBean(final String name) {
+        return fac.getBean(name);
     }
 
 }

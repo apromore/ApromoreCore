@@ -96,10 +96,12 @@ public class EPCEdgeLayouter {
             while (cells.hasNext()) {
                 cell = cells.next();
 
-                if (cell != null) {
-                    System.out.println("CELL: " + cell.getValue().getId() + " - " + cell.getValue().getType());
-                } else {
-                    System.out.println("Cell empty");
+                if (cell != null && cell.getValue() != null) {
+                    if (cell != null) {
+                        System.out.println("CELL: " + cell.getValue().getId() + " - " + cell.getValue().getType());
+                    } else {
+                        System.out.println("Cell empty");
+                    }
                 }
             }
         }

@@ -120,7 +120,7 @@ public class DecomposerServiceImpl implements DecomposerService {
                 // we don't have to save the root again, or to save parent relationship of root
                 preprocessFragment(f);
                 FragmentVersion fv = saveFragment(pmv, f);
-                addElementMappings(fv, f, op);
+                addElementMappings(f, fv, op);
 
                 FragmentVersion parentfv = fvRepository.findFragmentVersionByUri(parent.getUri());
                 FragmentVersionDag dag = new FragmentVersionDag();
@@ -140,7 +140,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         return op;
     }
 
-    private void addElementMappings(FragmentVersion fv, FragmentNode f, OperationContext op) {
+    private void addElementMappings(FragmentNode f, FragmentVersion fv, OperationContext op) {
         Set<CPFNode> nodes = f.getNodes();
         for (CPFNode node : nodes) {
             Node pNode = op.getPersistedNodes().get(node.getId());
@@ -160,6 +160,14 @@ public class DecomposerServiceImpl implements DecomposerService {
             edgeMapping.setEdge(pEdge);
             emRepository.save(edgeMapping);
         }
+
+        if (f.getEntry() != null) {
+            fv.setEntry(op.getPersistedNodes().get(f.getEntry().getId()));
+        }
+        if (f.getExit() != null) {
+            fv.setExit(op.getPersistedNodes().get(f.getExit().getId()));
+        }
+        fvRepository.save(fv);
     }
 
 
@@ -187,6 +195,14 @@ public class DecomposerServiceImpl implements DecomposerService {
             edgeMapping.setEdge(pEdge);
             emRepository.save(edgeMapping);
         }
+
+        if (f.getEntry() != null) {
+            fv.setEntry(op.getPersistedNodes().get(f.getEntry().getId()));
+        }
+        if (f.getExit() != null) {
+            fv.setExit(op.getPersistedNodes().get(f.getExit().getId()));
+        }
+        fvRepository.save(fv);
     }
 
 
