@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
@@ -28,7 +27,8 @@ import org.apromore.toolbox.clustering.DMatrix;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.apromore.toolbox.clustering.algorithm.dbscan.InMemoryClusterer;
 import org.apromore.toolbox.clustering.algorithm.hac.HACClusterer;
-import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SimpleGEDDeterministicGreedyCalc;
+import org.apromore.toolbox.clustering.dissimilarity.model.SimpleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -270,29 +270,33 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException {
+        FragmentDistance fragmentDistance;
         Map<FragmentPair, Double> pairDistances = new HashMap<>(0);
+        double distance;
         Integer fid1;
         Integer fid2;
         SimpleGraph sg1;
         SimpleGraph sg2;
-        GEDDissimCalc calc;
+        SimpleGEDDeterministicGreedyCalc calc;
 
         for (int i = 0; i < fragmentIds.size() - 1; i++) {
             for (int j = i + 1; j < fragmentIds.size(); j++) {
                 fid1 = fragmentIds.get(i);
                 fid2 = fragmentIds.get(j);
-                double distance = fdRepository.findByFragmentVersionId1AndFragmentVersionId2(fid1, fid2).getDistance();
+                fragmentDistance = fdRepository.findByFragmentVersionId1AndFragmentVersionId2(fid1, fid2);
 
-                if (distance < 0) {
+                if (fragmentDistance == null || fragmentDistance.getDistance() < 0) {
                     try {
                         sg1 = new SimpleGraphWrapper(fService.getFragment(fid1, false));
                         sg2 = new SimpleGraphWrapper(fService.getFragment(fid2, false));
 
-                        calc = new GEDDissimCalc(1, 0.4);
+                        calc = new SimpleGEDDeterministicGreedyCalc(1, 0.4);
                         distance = calc.compute(sg1, sg2);
                     } catch (LockFailedException e) {
                         throw new RepositoryException(e);
                     }
+                } else {
+                    distance = fragmentDistance.getDistance();
                 }
 
                 FragmentPair pair = new FragmentPair(fid1, fid2);

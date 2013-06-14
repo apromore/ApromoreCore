@@ -64,6 +64,11 @@ public class DissimilarityMatrixReader implements DissimilarityMatrix {
     }
 
     @Override
+    public void addGedCalc(GEDMatrixCalc calc) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void setDissThreshold(double dissThreshold) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

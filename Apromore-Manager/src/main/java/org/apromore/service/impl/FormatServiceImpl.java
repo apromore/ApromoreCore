@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
 
+import org.apromore.anf.AnnotationsType;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.CanonicalRepository;
 import org.apromore.dao.NativeRepository;
@@ -95,24 +96,30 @@ public class FormatServiceImpl implements FormatService {
             nat = createNative(pmv, nativeType, nativeString);
         }
 
-        String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
         String canonicalString = StreamUtil.inputStream2String(cp.getCpf()).trim();
-
         Canonical can = createCanonical(pmv, canonicalString);
 
         pmv.setNativeDocument(nat);
         pmv.setCanonicalDocument(can);
 
-        if (annString != null && !annString.equals("")) {
-            Annotation annotation = new Annotation();
-            annotation.setContent(annString);
-            annotation.setName(annVersion);
-            annotation.setNatve(nat);
-            annotation.setProcessModelVersion(pmv);
-            annotation = annotationRepo.save(annotation);
+        if (!isEmptyANF(cp.getAnt())) {
+            String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
+            if (annString != null && !annString.equals("")) {
+                Annotation annotation = new Annotation();
+                annotation.setContent(annString);
+                annotation.setName(annVersion);
+                annotation.setNatve(nat);
+                annotation.setProcessModelVersion(pmv);
+                annotation = annotationRepo.save(annotation);
 
-            pmv.getAnnotations().add(annotation);
+                pmv.getAnnotations().add(annotation);
+            }
         }
+    }
+
+
+    private boolean isEmptyANF(AnnotationsType ant) {
+        return ant.getAnnotation().isEmpty();
     }
 
     private Canonical createCanonical(ProcessModelVersion pmv, String canonicalString) {

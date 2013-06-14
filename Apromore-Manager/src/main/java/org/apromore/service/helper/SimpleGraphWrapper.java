@@ -3,11 +3,11 @@
  */
 package org.apromore.service.helper;
 
-import nl.tue.tm.is.graph.SimpleGraph;
-import nl.tue.tm.is.graph.TwoVertices;
 import org.apromore.common.Constants;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.toolbox.clustering.dissimilarity.model.SimpleGraph;
+import org.apromore.toolbox.clustering.dissimilarity.model.TwoVertices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +33,8 @@ public class SimpleGraphWrapper extends SimpleGraph {
     public SimpleGraphWrapper(Canonical pg) {
         super();
 
+        Set<Integer> incomingCurrent;
+        Set<Integer> outgoingCurrent;
         Map<String, Integer> nodeId2vertex = new HashMap<>(0);
         Map<Integer, String> vertex2nodeId = new HashMap<>(0);
 
@@ -69,20 +71,21 @@ public class SimpleGraphWrapper extends SimpleGraph {
             } else if (Constants.CONNECTOR.equals(pg.getNodeProperty(n.getId(), Constants.TYPE))) {
                 connectors.add(vertexId);
             }
+
             vertexId++;
         }
 
         for (Integer v = 0; v < vertexId; v++) {
             CPFNode pgv = pg.getNode(vertex2nodeId.get(v));
 
-            Set<Integer> incomingCurrent = new HashSet<>(0);
-            for (CPFNode preV : pg.getAllPredecessors(pgv)) {
+            incomingCurrent = new HashSet<>(0);
+            for (CPFNode preV : pg.getDirectPredecessors(pgv)) {
                 incomingCurrent.add(nodeId2vertex.get(preV.getId()));
             }
             incomingEdges.put(v, incomingCurrent);
 
-            Set<Integer> outgoingCurrent = new HashSet<>(0);
-            for (CPFNode postV : pg.getAllSuccessors(pgv)) {
+            outgoingCurrent = new HashSet<>(0);
+            for (CPFNode postV : pg.getDirectSuccessors(pgv)) {
                 outgoingCurrent.add(nodeId2vertex.get(postV.getId()));
                 TwoVertices edge = new TwoVertices(v, nodeId2vertex.get(postV.getId()));
                 edges.add(edge);

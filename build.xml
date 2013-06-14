@@ -62,6 +62,11 @@
         </delete>
         <delete includeemptydirs="true">
             <fileset dir="${dir-virgo}">
+                <include name="logs/*"/>
+            </fileset>
+        </delete>
+        <delete includeemptydirs="true">
+            <fileset dir="${dir-virgo}">
                 <include name="pickup/*.jar"/>
                 <include name="pickup/*.war"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.0.RELEASE.par"/>

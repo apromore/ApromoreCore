@@ -4,8 +4,10 @@ import javax.inject.Inject;
 
 import org.apromore.toolbox.clustering.containment.ContainmentRelation;
 import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
-import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
-import org.apromore.toolbox.clustering.dissimilarity.measure.SizeBasedDissimCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.CanonicalGEDDeterministicGreedyCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SimpleGEDDeterministicGreedyCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SizeBasedSimpleDissimilarityCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SizeBasedCanonicalDissimilarityCalc;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -60,8 +62,12 @@ public class DMatrix {
         // a particularly sparse matrix. That is way, the matrix is stored
         // as list of tuples in the form of a MultiKeyMap.
         generator.setDissThreshold(DissimilarityMatrix.GED_THRESHOLD);
-        generator.addDissimCalc(new SizeBasedDissimCalc(DissimilarityMatrix.GED_THRESHOLD));
-        generator.addDissimCalc(new GEDDissimCalc(DissimilarityMatrix.GED_THRESHOLD, DissimilarityMatrix.LED_CUTOFF));
+        generator.addDissimCalc(new SizeBasedSimpleDissimilarityCalc(DissimilarityMatrix.GED_THRESHOLD));
+        generator.addDissimCalc(new SimpleGEDDeterministicGreedyCalc(DissimilarityMatrix.GED_THRESHOLD, DissimilarityMatrix.LED_CUTOFF));
+
+        generator.addGedCalc(new SizeBasedCanonicalDissimilarityCalc(DissimilarityMatrix.GED_THRESHOLD));
+        generator.addGedCalc(new CanonicalGEDDeterministicGreedyCalc(DissimilarityMatrix.GED_THRESHOLD, DissimilarityMatrix.LED_CUTOFF));
+        //generator.addGedCalc(new jBPTGEDCalc(DissimilarityMatrix.GED_THRESHOLD));
 
         long start = System.currentTimeMillis();
         generator.computeDissimilarity();
