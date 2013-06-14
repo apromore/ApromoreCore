@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.graph.canonical.Canonical;
@@ -15,8 +14,9 @@ import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.apromore.toolbox.clustering.containment.ContainmentRelation;
 import org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc;
-import org.apromore.toolbox.clustering.dissimilarity.measure.GEDDissimCalc;
-import org.apromore.toolbox.clustering.dissimilarity.measure.SizeBasedDissimCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SimpleGEDDeterministicGreedyCalc;
+import org.apromore.toolbox.clustering.dissimilarity.measure.SizeBasedSimpleDissimilarityCalc;
+import org.apromore.toolbox.clustering.dissimilarity.model.SimpleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,8 +69,8 @@ public class GEDSimilaritySearcher {
             containmentRelation.initialize();
 
             this.chain.clear();
-            this.addDissimCalc(new SizeBasedDissimCalc(dissThreshold));
-            this.addDissimCalc(new GEDDissimCalc(dissThreshold, dissThreshold));
+            this.addDissimCalc(new SizeBasedSimpleDissimilarityCalc(dissThreshold));
+            this.addDissimCalc(new SimpleGEDDeterministicGreedyCalc(dissThreshold, dissThreshold));
         } catch (Exception e) {
             String msg = "Failed to initialize the GEDSimilaritySearcher for distance threshold: " + dissThreshold;
             LOGGER.error(msg, e);
@@ -163,8 +163,8 @@ public class GEDSimilaritySearcher {
 
         for (DissimilarityCalc calc : chain) {
             disim = calc.compute(g1, g2);
-            if (calc instanceof GEDDissimCalc) {
-                if (!((GEDDissimCalc) calc).isDeterministicGED() && !calc.isAboveThreshold(disim))
+            if (calc instanceof SimpleGEDDeterministicGreedyCalc) {
+                if (!((SimpleGEDDeterministicGreedyCalc) calc).isDeterministicGED() && !calc.isAboveThreshold(disim))
                     LOGGER.info("Incurs in at least one non-deterministic mapping (cf. Greedy algorithm) with " + frag1);
             }
             if (calc.isAboveThreshold(disim)) {

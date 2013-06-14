@@ -298,7 +298,7 @@
 
         nodes.on("click", function (d) {
 
-            if (d3.event.ctrlKey) {
+            if (d3.event.ctrlKey || d3.event.altKey) {
 
                 if (d3.select(this).datum().isMedoid) {
                     d3.select(this).classed("selected",
