@@ -45,8 +45,6 @@ public class FragmentVersion implements Serializable {
     private String fragmentType;
     private String newestNeighbor;
 
-    private Node entry;
-    private Node exit;
     private Cluster cluster;
     private Fragment fragment;
 
@@ -190,27 +188,6 @@ public class FragmentVersion implements Serializable {
         this.processModelVersions.add(processModelVersion);
     }
 
-
-
-    @ManyToOne
-    @JoinColumn(name = "entryNodeId", nullable = true)
-    public Node getEntry() {
-        return this.entry;
-    }
-
-    public void setEntry(Node entry) {
-        this.entry = entry;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "exitNodeId", nullable = true)
-    public Node getExit() {
-        return this.exit;
-    }
-
-    public void setExit(Node exit) {
-        this.exit = exit;
-    }
 
 
     @ManyToOne

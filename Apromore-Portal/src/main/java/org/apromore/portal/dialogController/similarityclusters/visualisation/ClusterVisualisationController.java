@@ -70,8 +70,8 @@ public class ClusterVisualisationController extends BaseController {
                 pairwiseFilter.clear();
                 if (event.getData() != null) {
                     Object[] idList = (Object[]) event.getData();
-                    for (int i = 0; i < idList.length; i++) {
-                        pairwiseFilter.add((String) idList[i]);
+                    for (Object anIdList : idList) {
+                        pairwiseFilter.add(((Integer) anIdList).toString());
                     }
                     try {
                         Clients.evalJavaScript("clusterVisualisation.refreshData(" + writeUpdatedEdges(pairwiseFilter) + ");");
@@ -83,7 +83,7 @@ public class ClusterVisualisationController extends BaseController {
         });
 
         if (this.clusterResult != null) {
-            Map<String, String> param = new HashMap<String, String>();
+            Map<String, String> param = new HashMap<>();
             try {
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 writeVisualisationJSON(os);
@@ -156,15 +156,19 @@ public class ClusterVisualisationController extends BaseController {
             List<FragmentData> fragments = getService().getCluster(clusterInfo.getClusterId()).getFragments();
             for (FragmentData fragmentData : fragments) {
                 if (!isMedoid(medoidId, fragmentData.getFragmentId())) {
-                    writeNode(jsonWriter, clusterId, fragmentData.getFragmentId(), fragmentData.getFragmentLabel(), false,
+
+                    // TODO: MAKE SURE
+                    if (fragmentData.getDistance() > 0) {
+                        writeNode(jsonWriter, clusterId, fragmentData.getFragmentId(), fragmentData.getFragmentLabel(), false,
                             fragmentData.getFragmentSize());
 
-                    // Omit all negative distances, as they are the medoids
-                    if (fragmentData.getDistance() > 0) {
-                        JSONObject edgeObject = buildEdgeObject(indexMap.get(medoidId), index, fragmentData.getDistance(), false);
-                        edgesArray.put(edgeObject);
+                        // Omit all negative distances, as they are the medoids
+//                      if (fragmentData.getDistance() > 0) {
+                            JSONObject edgeObject = buildEdgeObject(indexMap.get(medoidId), index, fragmentData.getDistance(), false);
+                            edgesArray.put(edgeObject);
+//                      }
+                        index++;
                     }
-                    index++;
                 }
             }
 

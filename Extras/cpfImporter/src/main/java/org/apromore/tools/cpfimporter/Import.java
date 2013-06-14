@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -68,19 +69,27 @@ public final class Import {
 
 
     /* upload a single process into apromore. */
-    private void uploadProcess(final File file) throws Exception {
-        final String userName = "admin";
-        final Set<RequestParameterType<?>> noCanoniserParameters = Collections.emptySet();
+    private void uploadProcess(final File file) {
+        try {
+            final String userName = "admin";
+            final Set<RequestParameterType<?>> noCanoniserParameters = Collections.emptySet();
 
-        File parentFile = file.getParentFile();
-        if (parentFile != null) {
-            createFolder(parentFile);
-            int parentId = getFolderId(parentFile);
-            assert parentId != -1;
+            File parentFile = file.getParentFile();
+            String ext = FilenameUtils.getExtension(file.getName());
+            if (parentFile != null) {
+                createFolder(parentFile);
+                int parentId = getFolderId(parentFile);
+                assert parentId != -1;
 
-            manager.importProcess(userName, parentId, "EPML 2.0", file.getName(),
-                    1.0D, new FileInputStream(file),
-                    "", "", "", "", noCanoniserParameters);
+                manager.importProcess(userName, parentId, getNativeFormat(ext), file.getName(),
+                        1.0D, new FileInputStream(file),
+                        "domain",
+                        "documentation",
+                        "created",
+                        "lastUpdate", noCanoniserParameters);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to load file {} due to {}" , file.getName(), e.getMessage());
         }
     }
 
@@ -130,7 +139,22 @@ public final class Import {
         return null;
     }
 
-
+    private String getNativeFormat(String ext) {
+        if (ext.equalsIgnoreCase("epml")) {
+            return "EPML 2.0";
+        } else if (ext.equalsIgnoreCase("bpmn")) {
+            return "BPMN 2.0";
+        } else if (ext.equalsIgnoreCase("xpdl")) {
+            return "XPDL 2.1";
+        } else if (ext.equalsIgnoreCase("yawl")) {
+            return "YAWL 2.2";
+        } else if (ext.equalsIgnoreCase("pnml")) {
+            return "PNML 1.3.2";
+        } else if (ext.equalsIgnoreCase("aml")) {
+            return "AML fragment";
+        }
+        return null;
+    }
 
 
 

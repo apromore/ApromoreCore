@@ -111,6 +111,7 @@
            function reset() {
                d3.selectAll("circle.selected").classed("selected",false);
                jq('#btnToggleInterMedoid').attr('disabled', 'disabled');
+               jq('#btnComputInterMedoid').attr('disabled', 'disabled');
                showSelection();
            }
     </n:script>

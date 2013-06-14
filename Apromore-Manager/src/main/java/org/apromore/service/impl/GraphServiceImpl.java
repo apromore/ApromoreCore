@@ -7,11 +7,9 @@ import java.util.UUID;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.EdgeRepository;
-import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.NodeRepository;
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.Expression;
-import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeAttribute;
 import org.apromore.dao.model.ObjectAttribute;
@@ -59,7 +57,6 @@ public class GraphServiceImpl implements GraphService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphServiceImpl.class);
 
-    private FragmentVersionRepository fragmentRepo;
     private EdgeRepository edgeRepo;
     private NodeRepository nodeRepo;
 
@@ -68,14 +65,11 @@ public class GraphServiceImpl implements GraphService {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param edgeRepository Edge Repository.
      * @param nodeRepository Node repository.
-     * @param fragmentVersionRepository Fragment Version Repository.
      */
     @Inject
-    public GraphServiceImpl(final EdgeRepository edgeRepository, final NodeRepository nodeRepository,
-            final FragmentVersionRepository fragmentVersionRepository) {
+    public GraphServiceImpl(final EdgeRepository edgeRepository, final NodeRepository nodeRepository) {
         edgeRepo = edgeRepository;
         nodeRepo = nodeRepository;
-        fragmentRepo = fragmentVersionRepository;
     }
 
 
@@ -84,19 +78,11 @@ public class GraphServiceImpl implements GraphService {
     @Transactional(readOnly = true)
     public Canonical fillNodesByFragment(final Canonical procModelGraph, final String fragmentURI) {
         INode v;
-        FragmentVersion fragmentVersion = fragmentRepo.findFragmentVersionByUri(fragmentURI);
         List<Node> nodes = nodeRepo.getNodesByFragmentURI(fragmentURI);
         for (Node node : nodes) {
             v = buildNodeByType(node, procModelGraph);
             procModelGraph.addNode((CPFNode) v);
             procModelGraph.setNodeProperty(node.getUri(), Constants.TYPE, FragmentUtil.getType(v));
-
-            if (fragmentVersion.getEntry().getUri().equals(v.getId())) {
-                procModelGraph.setEntry((CPFNode) v);
-            }
-            if (fragmentVersion.getExit().getUri().equals(v.getId())) {
-                procModelGraph.setExit((CPFNode) v);
-            }
         }
         return procModelGraph;
     }

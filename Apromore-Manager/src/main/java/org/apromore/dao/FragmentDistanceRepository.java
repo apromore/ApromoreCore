@@ -23,7 +23,7 @@ public interface FragmentDistanceRepository extends JpaRepository<FragmentDistan
      * @param fragmentVersionId2 second fragment version id
      * @return the found fragment distance or null.
      */
-    @Query("SELECT fd FROM FragmentDistance fd WHERE fd.fragmentVersionId1.id = ?1 AND fd.fragmentVersionId2.id = ?2")
+    @Query("SELECT fd FROM FragmentDistance fd WHERE (fd.fragmentVersionId1.id = ?1 AND fd.fragmentVersionId2.id = ?2) OR (fd.fragmentVersionId1.id = ?2 AND fd.fragmentVersionId2.id = ?1)")
     FragmentDistance findByFragmentVersionId1AndFragmentVersionId2(Integer fragmentVersionId1, Integer fragmentVersionId2);
 
     /**

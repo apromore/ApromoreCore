@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.FragmentDistanceRepository;
@@ -17,6 +16,8 @@ import org.apromore.service.helper.SimpleGraphWrapper;
 import org.apromore.toolbox.clustering.containment.ContainmentRelation;
 import org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc;
 import org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix;
+import org.apromore.toolbox.clustering.dissimilarity.GEDMatrixCalc;
+import org.apromore.toolbox.clustering.dissimilarity.model.SimpleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,10 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ComposerService composerService;
 
     private Map<Integer, SimpleGraph> models = new HashMap<>();
+    private Map<Integer, Canonical> canModels = new HashMap<>();
+
     private List<DissimilarityCalc> chain = new LinkedList<>();
+    private List<GEDMatrixCalc> chain2 = new LinkedList<>();
     private MultiKeyMap dissimmap = null;
 
     private double dissThreshold;
@@ -46,7 +50,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-            final ComposerService compSrv) {
+                final ComposerService compSrv) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
@@ -86,10 +90,19 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         chain.add(calc);
     }
 
+    /**
+     * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#addGedCalc(org.apromore.toolbox.clustering.dissimilarity.GEDMatrixCalc)
+     *      {@inheritDoc}
+     */
+    @Override
+    public void addGedCalc(GEDMatrixCalc calc) {
+        chain2.add(calc);
+    }
+
 
     /**
      * @see org
-     * .apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
+     *      .apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
      *      {@inheritDoc}
      */
     @Override
@@ -142,6 +155,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         processedFragmentIds.addAll(h1);
         for (Integer fragmentId : h1) {
             models.remove(fragmentId);
+            canModels.remove(fragmentId);
         }
     }
 
@@ -170,7 +184,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
             if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
-                double dissim = compute(fid1, fid2);
+                double dissim = computeFromDissimilarityCalc(fid1, fid2); //computeFromGEDMatrixCalc(fid1, fid2);
                 if (dissim <= dissThreshold) {
                     dissimmap.put(fid1, fid2, dissim);
                 }
@@ -195,8 +209,32 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     }
 
 
-    /* Asks each of the Calculators to it's thing. */
-    private double compute(Integer frag1, Integer frag2) {
+    /* Asks each of the Calculators to do it's thing. */
+    public double computeFromGEDMatrixCalc(Integer frag1, Integer frag2) {
+        double disim = 1.0;
+
+        // a filter for very large fragment
+        if (crel.getFragmentSize(frag1) > DissimilarityMatrix.LARGE_FRAGMENTS || crel.getFragmentSize(frag2) > DissimilarityMatrix.LARGE_FRAGMENTS) {
+            return disim;
+        } else if (crel.getFragmentSize(frag1) < DissimilarityMatrix.SMALL_FRAGMENTS || crel.getFragmentSize(frag2) < DissimilarityMatrix.SMALL_FRAGMENTS) {
+            return disim;
+        }
+
+        Canonical g1 = getCanonicalGraph(frag1);
+        Canonical g2 = getCanonicalGraph(frag2);
+        for (GEDMatrixCalc calc : chain2) {
+            disim = calc.compute(g1, g2);
+            if (calc.isAboveThreshold(disim)) {
+                disim = 1.0;
+                break;
+            }
+        }
+
+        return disim;
+    }
+
+    /* Asks each of the Calculators to do it's thing. */
+    private double computeFromDissimilarityCalc(Integer frag1, Integer frag2) {
         double disim = 1.0;
 
         // a filter for very large fragment
@@ -208,7 +246,6 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
         SimpleGraph g1 = getSimpleGraph(frag1);
         SimpleGraph g2 = getSimpleGraph(frag2);
-
         for (DissimilarityCalc calc : chain) {
             disim = calc.compute(g1, g2);
             if (calc.isAboveThreshold(disim)) {
@@ -217,6 +254,26 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             }
         }
         return disim;
+    }
+
+
+
+
+    /* Finds the Canonical Graph used in the GED Matrix computations. */
+    private Canonical getCanonicalGraph(Integer frag) {
+        Canonical graph = canModels.get(frag);
+
+        if (graph == null) {
+            try {
+                graph = composerService.compose(frag);
+                canModels.put(frag, graph);
+            } catch (Exception e) {
+                LOGGER.error("Failed to get graph of fragment {}", frag);
+                e.printStackTrace();
+            }
+        }
+
+        return graph;
     }
 
     /* Finds the Simple graph used in the GED Matrix computations. */
@@ -234,7 +291,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             }
         }
 
-        return new SimpleGraph(graph);  // graph;
+        return graph; //new SimpleGraph(graph);
     }
 
 }

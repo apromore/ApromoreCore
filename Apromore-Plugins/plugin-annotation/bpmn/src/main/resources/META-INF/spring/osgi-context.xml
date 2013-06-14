@@ -10,10 +10,12 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <!-- enable classpath scanning -->
-    <context:component-scan base-package="org.apromore.annotation.epml2bpmn"/>
+    <context:component-scan base-package="org.apromore.annotation.aml2bpmn"/>
     <context:component-scan base-package="org.apromore.annotation.cpf2bpmn"/>
+    <context:component-scan base-package="org.apromore.annotation.epml2bpmn"/>
 
-    <service ref="epml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
+    <service ref="aml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
     <service ref="cpf2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
+    <service ref="epml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
 
 </beans:beans>

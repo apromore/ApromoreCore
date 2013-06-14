@@ -161,12 +161,6 @@ public class DecomposerServiceImpl implements DecomposerService {
             emRepository.save(edgeMapping);
         }
 
-        if (f.getEntry() != null) {
-            fv.setEntry(op.getPersistedNodes().get(f.getEntry().getId()));
-        }
-        if (f.getExit() != null) {
-            fv.setExit(op.getPersistedNodes().get(f.getExit().getId()));
-        }
         fvRepository.save(fv);
     }
 
@@ -196,12 +190,6 @@ public class DecomposerServiceImpl implements DecomposerService {
             emRepository.save(edgeMapping);
         }
 
-        if (f.getEntry() != null) {
-            fv.setEntry(op.getPersistedNodes().get(f.getEntry().getId()));
-        }
-        if (f.getExit() != null) {
-            fv.setExit(op.getPersistedNodes().get(f.getExit().getId()));
-        }
         fvRepository.save(fv);
     }
 

@@ -30,6 +30,12 @@ public interface DissimilarityMatrix {
     void addDissimCalc(DissimilarityCalc calc);
 
     /**
+     * Add a GED Calculator to help with the process.
+     * @param calc a calculator that implements the GEDMatrixCalc.
+     */
+    void addGedCalc(GEDMatrixCalc calc);
+
+    /**
      * Sets the dissimilarity threshold. within this threshold we store the value. outside we disregard.
      * @param dissThreshold the threshold.
      */
