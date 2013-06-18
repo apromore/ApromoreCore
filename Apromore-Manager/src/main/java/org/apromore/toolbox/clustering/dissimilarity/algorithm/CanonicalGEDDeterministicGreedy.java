@@ -61,6 +61,7 @@ public class CanonicalGEDDeterministicGreedy extends AbstractCanonicalDistanceAl
                 newMapping = new HashSet<>(mapping);
                 newMapping.add(oCouple);
                 newEditDistance = this.editDistance(newMapping);
+                LOGGER.debug("Couple Distance: " + newEditDistance + " - " + oCouple.getSource().getId() + " * " + oCouple.getTarget().getId());
 
                 if (newEditDistance < newShortestEditDistance) {
                     bestCandidates = new Vector<>();
@@ -89,6 +90,7 @@ public class CanonicalGEDDeterministicGreedy extends AbstractCanonicalDistanceAl
                         tmap.put(label1 + label2, pair);
                     }
                     firstkey = tmap.keySet().first();
+                    LOGGER.debug("firstkey: " + firstkey);
 
                     if (tmap.get(firstkey).size() == 1) {
                         couple = tmap.get(firstkey).first();
@@ -144,23 +146,23 @@ public class CanonicalGEDDeterministicGreedy extends AbstractCanonicalDistanceAl
                         deterministic = false;
                         couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                     }
-
                 }
 
                 newOpenCouples = new HashSet<>();
                 for (GEDEdge p : openCouples) {
-                    if (!p.getSource().equals(couple.getSource()) &&
-                        !p.getTarget().equals(couple.getTarget())) {
+                    if (!p.getSource().getId().equalsIgnoreCase(couple.getSource().getId()) && !p.getTarget().getId().equalsIgnoreCase(couple.getTarget().getId())) {
                         newOpenCouples.add(p);
                     }
                 }
                 openCouples = newOpenCouples;
+                LOGGER.debug("openCouples: " + openCouples.size());
 
                 mapping.add(couple);
                 shortestEditDistance = newShortestEditDistance;
                 doStep = true;
             }
         }
+        LOGGER.debug("Mappings: " + mapping.size());
 
         return shortestEditDistance;
     }

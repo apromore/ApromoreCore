@@ -25,25 +25,6 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
 
     boolean deterministic = true;
 
-    public void resetDeterminismFlag() {
-        deterministic = true;
-    }
-
-    public boolean isDeterministic() {
-        return deterministic;
-    }
-
-    private Set<TwoVertices> times(Set<Integer> a, Set<Integer> b) {
-        Set<TwoVertices> result = new HashSet<>();
-        for (Integer ea : a) {
-            for (Integer eb : b) {
-                if (StringEditDistance.similarity(sg1.getLabel(ea), sg2.getLabel(eb)) >= this.ledcutoff) {
-                    result.add(new TwoVertices(ea, eb));
-                }
-            }
-        }
-        return result;
-    }
 
     public double compute(SimpleGraph sg1, SimpleGraph sg2) {
         init(sg1, sg2);
@@ -53,7 +34,7 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
         Set<TwoVertices> newMapping;
         Set<TwoVertices> newOpenCouples;
         Set<TwoVertices> mapping = new HashSet<>();
-        Set<TwoVertices> openCouples = times(sg1.getVertices(), sg2.getVertices());
+        Set<TwoVertices> openCouples = findCouples(sg1.getVertices(), sg2.getVertices());
 
         String tmp, label1, label2, contextkey, firstkey;
         double newEditDistance;
@@ -75,6 +56,8 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                 newMapping = new HashSet<>(mapping);
                 newMapping.add(oCouple);
                 newEditDistance = this.editDistance(newMapping);
+                LOGGER.debug("Couple Distance: " + newEditDistance + " - " + oCouple.v1 + " * " + oCouple.v2);
+
                 if (newEditDistance < newShortestEditDistance) {
                     bestCandidates = new Vector<>();
                     bestCandidates.add(oCouple);
@@ -100,33 +83,36 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                         tmap.put(label1 + label2, pair);
                     }
                     firstkey = tmap.keySet().first();
+                    LOGGER.debug("firstkey: " + firstkey);
 
-                    if (tmap.get(firstkey).size() == 1)
+                    if (tmap.get(firstkey).size() == 1) {
                         couple = tmap.get(firstkey).first();
-                    else if (tmap.get(firstkey).size() > 1) {
-                        Set<TwoVertices> set = tmap.get(firstkey);
+                    } else if (tmap.get(firstkey).size() > 1) {
                         tmapp = TreeMultimap.create();
-
                         mset = TreeMultiset.create();
-                        for (TwoVertices pair : set) {
+                        for (TwoVertices pair : tmap.get(firstkey)) {
                             label1 = sg1.getLabel(pair.v1);
                             mset.clear();
-                            for (Integer n : sg1.preSet(pair.v1))
+                            for (Integer n : sg1.preSet(pair.v1)) {
                                 mset.add(sg1.getLabel(n));
+                            }
                             label1 += mset.toString();
                             mset.clear();
-                            for (Integer n : sg1.postSet(pair.v1))
+                            for (Integer n : sg1.postSet(pair.v1)) {
                                 mset.add(sg1.getLabel(n));
+                            }
                             label1 += mset.toString();
 
                             label2 = sg2.getLabel(pair.v2);
                             mset.clear();
-                            for (Integer n : sg2.preSet(pair.v2))
+                            for (Integer n : sg2.preSet(pair.v2)) {
                                 mset.add(sg2.getLabel(n));
+                            }
                             label2 += mset.toString();
                             mset.clear();
-                            for (Integer n : sg2.postSet(pair.v2))
+                            for (Integer n : sg2.postSet(pair.v2)) {
                                 mset.add(sg2.getLabel(n));
+                            }
                             label2 += mset.toString();
 
                             if (label1.compareTo(label2) > 0) {
@@ -138,9 +124,9 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                         }
                         contextkey = tmapp.keySet().first();
 
-                        if (tmapp.get(contextkey).size() == 1)
+                        if (tmapp.get(contextkey).size() == 1) {
                             couple = tmapp.get(contextkey).first();
-                        else {
+                        } else {
                             deterministic = false;
                             couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                         }
@@ -149,7 +135,6 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                         deterministic = false;
                         couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                     }
-
                 }
 
                 newOpenCouples = new HashSet<>();
@@ -159,13 +144,38 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                     }
                 }
                 openCouples = newOpenCouples;
+                LOGGER.debug("openCouples: " + openCouples.size());
 
                 mapping.add(couple);
                 shortestEditDistance = newShortestEditDistance;
                 doStep = true;
             }
         }
+        LOGGER.debug("Mappings: " + mapping.size());
 
         return shortestEditDistance;
+    }
+
+    /*  */
+    private Set<TwoVertices> findCouples(Set<Integer> a, Set<Integer> b) {
+        Set<TwoVertices> result = new HashSet<>();
+        for (Integer ea : a) {
+            for (Integer eb : b) {
+                if (StringEditDistance.similarity(sg1.getLabel(ea), sg2.getLabel(eb)) >= this.ledcutoff) {
+                    result.add(new TwoVertices(ea, eb));
+                }
+            }
+        }
+        return result;
+    }
+
+    /* Reset the Deterministic flag. */
+    public void resetDeterminismFlag() {
+        deterministic = true;
+    }
+
+    /* Is the Deterministic flag currently set on? */
+    public boolean isDeterministic() {
+        return deterministic;
     }
 }

@@ -50,7 +50,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-                final ComposerService compSrv) {
+            final ComposerService compSrv) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
@@ -59,7 +59,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#setDissThreshold(double)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void setDissThreshold(double dissThreshold) {
@@ -69,7 +69,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#getDissimilarity(Integer, Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Double getDissimilarity(Integer frag1, Integer frag2) {
@@ -83,7 +83,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#addDissimCalc(org.apromore.toolbox.clustering.dissimilarity.DissimilarityCalc)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void addDissimCalc(DissimilarityCalc calc) {
@@ -92,7 +92,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     /**
      * @see org.apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#addGedCalc(org.apromore.toolbox.clustering.dissimilarity.GEDMatrixCalc)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void addGedCalc(GEDMatrixCalc calc) {
@@ -101,9 +101,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
 
     /**
-     * @see org
-     *      .apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
-     *      {@inheritDoc}
+     * @see org .apromore.toolbox.clustering.dissimilarity.DissimilarityMatrix#computeDissimilarity()
+     * {@inheritDoc}
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
@@ -244,10 +243,20 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             return disim;
         }
 
-        SimpleGraph g1 = getSimpleGraph(frag1);
-        SimpleGraph g2 = getSimpleGraph(frag2);
-        for (DissimilarityCalc calc : chain) {
+        Canonical g1 = getCanonicalGraph(frag1);
+        Canonical g2 = getCanonicalGraph(frag2);
+        for (GEDMatrixCalc calc : chain2) {
             disim = calc.compute(g1, g2);
+            if (calc.isAboveThreshold(disim)) {
+                disim = 1.0;
+                break;
+            }
+        }
+
+        SimpleGraph sg1 = getSimpleGraph(frag1);
+        SimpleGraph sg2 = getSimpleGraph(frag2);
+        for (DissimilarityCalc calc : chain) {
+            disim = calc.compute(sg1, sg2);
             if (calc.isAboveThreshold(disim)) {
                 disim = 1.0;
                 break;
@@ -255,8 +264,6 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         }
         return disim;
     }
-
-
 
 
     /* Finds the Canonical Graph used in the GED Matrix computations. */

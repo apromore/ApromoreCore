@@ -526,14 +526,19 @@ public class ProcessServiceImpl implements ProcessService {
 
                 if (pvid != null) {
                     Process process = pvid.getProcessBranch().getProcess();
-                    Set<ProcessBranch> branch = process.getProcessBranches();
+                    Set<ProcessBranch> branches = process.getProcessBranches();
 
                     // Only delete the version selected, but if there is only a single version then remove all of the process
-                    if (branch.size() > 1 || (branch.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
+                    if (branches.size() > 1 || (branches.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
+                        ProcessBranch branch = pvid.getProcessBranch();
+                        List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
+                        branch.setCurrentProcessModelVersion(getPreviousVersion(pmvs, pvid));
+                        branch.getProcessModelVersions().remove(pvid);
                         deleteProcessModelVersion(pvid);
+                        processBranchRepo.save(branch);
                     } else {
-                        processRepo.delete(process);
                         deleteProcessModelVersion(pvid);
+                        processRepo.delete(process);
                     }
                 }
             } catch (Exception e) {
@@ -543,6 +548,18 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+    private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid) {
+        ProcessModelVersion result = null;
+        for (ProcessModelVersion pmv : pmvs) {
+            if (result == null) {
+                result = pmv;
+            }
+            if (pmv.getId() < pvid.getId() && pmv.getId() > result.getId()) {
+                result = pmv;
+            }
+        }
+        return result;
+    }
 
 
     /* Does the processing of ImportProcess. */
@@ -634,10 +651,7 @@ public class ProcessServiceImpl implements ProcessService {
             if (processBranchRepo.countProcessModelBeenForked(pmv) > 0) {
                 LOGGER.error("There are other branches forked from this Process Model.");
             } else {
-                FragmentVersion fragmentVersion = pmv.getRootFragmentVersion();
-
-                // Delete the FragmentVersions
-                deleteFragmentVersion(fragmentVersion, true);
+                deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
             }
         } catch (Exception e) {
             String msg = "Failed to delete the process model version " + pmv.getId();
@@ -653,10 +667,8 @@ public class ProcessServiceImpl implements ProcessService {
         if ((rootFragmentVersion && processCount == 1 && fragmentCount == 0) ||
                 (!rootFragmentVersion && processCount == 0 && fragmentCount == 0)) {
             List<FragmentVersion> children = fragmentVersionRepo.getChildFragmentsByFragmentVersion(fragmentVersion);
-            //Content content = fragmentVersion.getContent();
             fragmentVersionDagRepo.deleteChildRelationships(fragmentVersion);
             fragmentVersionRepo.delete(fragmentVersion);
-            //contentRepo.delete(content);
             for (FragmentVersion child : children) {
                 deleteFragmentVersion(child, false);
             }
