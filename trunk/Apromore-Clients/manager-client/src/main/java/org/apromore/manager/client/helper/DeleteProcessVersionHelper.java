@@ -28,7 +28,7 @@ public class DeleteProcessVersionHelper {
         List<VersionSummaryType> versionSummaries;
         Set<ProcessSummaryType> keys = selectedProcessVersions.keySet();
 
-        Collection<ProcessVersionIdentifierType> payload = new ArrayList<ProcessVersionIdentifierType>();
+        Collection<ProcessVersionIdentifierType> payload = new ArrayList<>();
 
         for (ProcessSummaryType processSummary : keys) {
             versionSummaries = selectedProcessVersions.get(processSummary);
@@ -37,6 +37,7 @@ public class DeleteProcessVersionHelper {
             processVersionId.setProcessName(processSummary.getName());
             for (VersionSummaryType versionSummary : versionSummaries) {
                 processVersionId.setBranchName(versionSummary.getName());
+                processVersionId.setVersionNumber(versionSummary.getVersionNumber());
             }
 
             payload.add(processVersionId);

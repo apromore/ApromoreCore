@@ -1,7 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,9 +198,7 @@ public class MenuController extends Menubar {
         this.mainC.eraseMessage();
         try {
             new CreateProcessController(this.mainC, this.mainC.getNativeTypes());
-        } catch (SuspendNotAllowedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (InterruptedException e) {
+        } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
             String message;
@@ -298,19 +294,18 @@ public class MenuController extends Menubar {
      */
     @SuppressWarnings("unchecked")
     protected HashMap<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() throws ParseException {
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
         Double versionNumber;
-        NumberFormat numberFormat = new DecimalFormat("##.#");
         mainC.eraseMessage();
 
         if (mainC.getBaseListboxController() instanceof ProcessListboxController) {
             ArrayList<VersionSummaryType> versionList;
-            HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
 
             VersionSummaryType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
             Set<Object> selectedProcesses = (Set<Object>) mainC.getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
-                    versionList = new ArrayList<VersionSummaryType>();
+                    versionList = new ArrayList<>();
                     if (selectedVersion != null) {
                         versionList.add(selectedVersion);
                     } else {
@@ -324,10 +319,8 @@ public class MenuController extends Menubar {
                     processVersions.put((ProcessSummaryType) obj, versionList);
                 }
             }
-            return processVersions;
-        } else {
-            return new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
         }
+        return processVersions;
     }
 
     /**

@@ -177,7 +177,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "branchId")
     public ProcessBranch getProcessBranch() {
         return this.processBranch;
@@ -188,7 +188,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "rootFragmentVersionId")
     public FragmentVersion getRootFragmentVersion() {
         return this.rootFragmentVersion;

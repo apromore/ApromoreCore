@@ -118,7 +118,7 @@ public class ProcessBranch implements Serializable {
         this.sourceProcessModelVersion = newSourceProcessModelVersion;
     }
 
-    @OneToMany(mappedBy = "processBranch", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "processBranch")
     @OrderBy("versionNumber ASC")
     public List<ProcessModelVersion> getProcessModelVersions() {
         return this.processModelVersions;
