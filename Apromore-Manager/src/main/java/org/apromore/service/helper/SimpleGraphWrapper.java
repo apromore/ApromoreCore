@@ -33,6 +33,7 @@ public class SimpleGraphWrapper extends SimpleGraph {
     public SimpleGraphWrapper(Canonical pg) {
         super();
 
+        setId(pg.getId());
         Set<Integer> incomingCurrent;
         Set<Integer> outgoingCurrent;
         Map<String, Integer> nodeId2vertex = new HashMap<>(0);

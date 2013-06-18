@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -316,7 +315,6 @@ public class ManagerPortalEndpoint {
             String processName = payload.getProcessName();
             String version = payload.getVersionName();
             String domain = payload.getDomain();
-            //Integer processId = payload.getProcessId();
             Integer folderId = payload.getFolderId();
             String username = payload.getUsername();
             ParametersType parameters = new ParametersType();
@@ -425,7 +423,6 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadAllUsersOutputMsgType> readAllUsers(@RequestPayload final JAXBElement<ReadAllUsersInputMsgType> message) {
         LOGGER.info("Executing operation readAllUsers");
-        //ReadAllUsersInputMsgType payload = message.getValue();
         ReadAllUsersOutputMsgType res = new ReadAllUsersOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -467,9 +464,9 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            List<NameValuePair> processVersions = new ArrayList<NameValuePair>(0);
+            List<NameValuePair> processVersions = new ArrayList<>(0);
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
-                processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName()));
+                processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName(), p.getVersionNumber()));
             }
             procSrv.deleteProcessModel(processVersions);
 
@@ -1035,9 +1032,7 @@ public class ManagerPortalEndpoint {
         try {
             String nativeType = req.getValue().getNativeType();
             Set<Canoniser> cList = canoniserService.listByNativeType(nativeType);
-            Iterator<Canoniser> iter = cList.iterator();
-            while (iter.hasNext()) {
-                Canoniser c = iter.next();
+            for (Canoniser c : cList) {
                 res.getPluginInfo().add(PluginHelper.convertPluginInfo(c));
             }
             result.setCode(0);
@@ -1059,7 +1054,7 @@ public class ManagerPortalEndpoint {
         ReadNativeMetaDataOutputMsgType res = new ReadNativeMetaDataOutputMsgType();
         ResultType result = new ResultType();
         try {
-            Canoniser c = null;
+            Canoniser c;
             String nativeType = req.getValue().getNativeType();
             String canoniserName = req.getValue().getCanoniserName();
             String canoniserVersion = req.getValue().getCanoniserVersion();
@@ -1092,8 +1087,7 @@ public class ManagerPortalEndpoint {
         ReadInitialNativeFormatOutputMsgType res = new ReadInitialNativeFormatOutputMsgType();
         ResultType result = new ResultType();
         try {
-
-            Canoniser c = null;
+            Canoniser c;
             String nativeType = req.getValue().getNativeType();
             String canoniserName = req.getValue().getCanoniserName();
             String canoniserVersion = req.getValue().getCanoniserVersion();
@@ -1171,7 +1165,6 @@ public class ManagerPortalEndpoint {
         try {
             String nativeType = req.getValue().getNativeType();
             String processName = req.getValue().getProcessName();
-            //Double versionName = req.getValue().getVersionName();
             String branchName = req.getValue().getBranchName();
             PluginParameters deploymentProperties = req.getValue().getDeploymentParameters();
             Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestParameters(deploymentProperties);
@@ -1212,7 +1205,6 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         try {
             UserType user = UserMapper.convertUserTypes(secSrv.login(payload.getUsername(), payload.getPassword()));
-            //secSrv.login(payload.getUsername(), payload.getPassword());
             res.setUser(user);
             result.setCode(0);
             result.setMessage("");

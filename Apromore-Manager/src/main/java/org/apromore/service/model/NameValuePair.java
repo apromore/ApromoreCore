@@ -9,6 +9,7 @@ public class NameValuePair {
 
     private String name;
     private String value;
+    private Double version;
 
     /**
      * Default Constructor.
@@ -18,7 +19,6 @@ public class NameValuePair {
 
     /**
      * Public Constructor.
-     *
      * @param name  the name
      * @param value the value
      */
@@ -27,9 +27,21 @@ public class NameValuePair {
         this.value = value;
     }
 
+
+    /**
+     * Public Constructor.
+     * @param name  the name
+     * @param value the value
+     * @param version the version
+     */
+    public NameValuePair(final String name, final String value, final Double version) {
+        this.name = name;
+        this.value = value;
+        this.version = version;
+    }
+
     /**
      * return the name.
-     *
      * @return the name
      */
     public String getName() {
@@ -38,7 +50,6 @@ public class NameValuePair {
 
     /**
      * set the name.
-     *
      * @param newName the name
      */
     public void setName(final String newName) {
@@ -47,7 +58,6 @@ public class NameValuePair {
 
     /**
      * return the value.
-     *
      * @return the value
      */
     public String getValue() {
@@ -56,10 +66,17 @@ public class NameValuePair {
 
     /**
      * set the value.
-     *
      * @param newValue the value
      */
     public void setValue(final String newValue) {
         this.value = newValue;
+    }
+
+    public Double getVersion() {
+        return version;
+    }
+
+    public void setVersion(Double version) {
+        this.version = version;
     }
 }

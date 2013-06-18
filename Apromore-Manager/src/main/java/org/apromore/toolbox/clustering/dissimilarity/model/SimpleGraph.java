@@ -9,14 +9,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import nl.tue.tm.is.epc.EPC;
-import nl.tue.tm.is.ptnet.PTNet;
-
 /**
  * Efficient implementation of a simple graph: (Vertices, Edges, labels)
  * Only for reading, cannot be modified
  */
 public class SimpleGraph {
+
+    public String id;
     public Set<Integer> vertices;
     public Set<TwoVertices> edges = null;
     public Set<Integer> connectors;
@@ -34,46 +33,45 @@ public class SimpleGraph {
     }
 
     public SimpleGraph(SimpleGraph g) {
-
-        vertices = new HashSet<Integer>();
+        vertices = new HashSet<>();
         for (Integer v : g.getVertices()) {
-            vertices.add(v.intValue());
+            vertices.add(v);
         }
 
-        edges = new HashSet<TwoVertices>();
+        edges = new HashSet<>();
         for (TwoVertices gtw : g.getEdges()) {
             TwoVertices tw = new TwoVertices(gtw.v1, gtw.v2);
             edges.add(tw);
         }
 
-        connectors = new HashSet<Integer>();
+        connectors = new HashSet<>();
         for (Integer c : g.getConnectors()) {
-            connectors.add(c.intValue());
+            connectors.add(c);
         }
 
-        events = new HashSet<Integer>();
+        events = new HashSet<>();
         for (Integer e : g.getEvents()) {
-            events.add(e.intValue());
+            events.add(e);
         }
 
-        functions = new HashSet<Integer>();
+        functions = new HashSet<>();
         for (Integer f : g.getFunctions()) {
-            functions.add(f.intValue());
+            functions.add(f);
         }
 
-        outgoingEdges = new HashMap<Integer, Set<Integer>>();
+        outgoingEdges = new HashMap<>();
         outgoingEdges.putAll(g.getOutgoingEdges());
 
-        incomingEdges = new HashMap<Integer, Set<Integer>>();
+        incomingEdges = new HashMap<>();
         incomingEdges.putAll(g.getIncomingEdges());
 
-        labels = new HashMap<Integer, String>();
+        labels = new HashMap<>();
         labels.putAll(g.getLabelsAsMap());
 
-        functionLabels = new HashSet<String>();
+        functionLabels = new HashSet<>();
         functionLabels.addAll(g.getFunctionLabels());
 
-        eventLabels = new HashSet<String>();
+        eventLabels = new HashSet<>();
         eventLabels.addAll(g.getEventLabels());
     }
 
@@ -84,122 +82,12 @@ public class SimpleGraph {
         this.labels = labels;
     }
 
-    /**
-     * Initializes a simple graph from an EPC.
-     */
-    public SimpleGraph(EPC epc) {
-        Map<String, Integer> nodeId2vertex = new HashMap<String, Integer>();
-        Map<Integer, String> vertex2nodeId = new HashMap<Integer, String>();
-
-        vertices = new HashSet<Integer>();
-        edges = new HashSet<TwoVertices>();
-        connectors = new HashSet<Integer>();
-        events = new HashSet<Integer>();
-        ;
-        functions = new HashSet<Integer>();
-
-        outgoingEdges = new HashMap<Integer, Set<Integer>>();
-        incomingEdges = new HashMap<Integer, Set<Integer>>();
-        labels = new HashMap<Integer, String>();
-        functionLabels = new HashSet<String>();
-        eventLabels = new HashSet<String>();
-
-
-        int vertexId = 0;
-        for (nl.tue.tm.is.epc.Node n : epc.getNodes()) {
-            vertices.add(vertexId);
-//			System.out.println("adding "+ vertexId+ " "+n.getName()+" "+n.getName().replace('\n', ' ').replace("\\n", " "));
-            labels.put(vertexId, n.getName().replace('\n', ' ').replace("\\n", " "));
-
-            nodeId2vertex.put(n.getId(), vertexId);
-            vertex2nodeId.put(vertexId, n.getId());
-
-            if (n instanceof nl.tue.tm.is.epc.Function && n.getName() != null) {
-                functionLabels.add(n.getName().replace('\n', ' '));
-                functions.add(vertexId);
-            } else if (n instanceof nl.tue.tm.is.epc.Event && n.getName() != null) {
-                eventLabels.add(n.getName().replace('\n', ' '));
-                events.add(vertexId);
-            } else if (n instanceof nl.tue.tm.is.epc.Connector) {
-                connectors.add(vertexId);
-            }
-
-            vertexId++;
-        }
-
-        for (Integer v = 0; v < vertexId; v++) {
-            nl.tue.tm.is.epc.Node n = epc.findNode(vertex2nodeId.get(v));
-
-            Set<Integer> incomingCurrent = new HashSet<Integer>();
-            for (nl.tue.tm.is.epc.Node s : epc.getPre(n)) {
-                if (s != null) {
-                    incomingCurrent.add(nodeId2vertex.get(s.getId()));
-                } else {
-//					System.out.println("Null preset node.");
-                }
-            }
-            incomingEdges.put(v, incomingCurrent);
-
-            Set<Integer> outgoingCurrent = new HashSet<Integer>();
-            for (nl.tue.tm.is.epc.Node t : epc.getPost(n)) {
-                if (t != null) {
-                    outgoingCurrent.add(nodeId2vertex.get(t.getId()));
-                    TwoVertices edge = new TwoVertices(v, nodeId2vertex.get(t.getId()));
-                    edges.add(edge);
-                } else {
-//					System.out.println("Null postset node.");
-                }
-            }
-            outgoingEdges.put(v, outgoingCurrent);
-        }
-//		System.out.println(functionLabels.size() + " "+ eventLabels.size());
+    public void setId(String id) {
+        this.id = id;
     }
 
-    /**
-     * Initializes a simple graph from a Petri net.
-     */
-    public SimpleGraph(PTNet ptnet) {
-        Map<String, Integer> transId2vertex = new HashMap<String, Integer>();
-        Map<Integer, String> vertex2transId = new HashMap<Integer, String>();
-
-        vertices = new HashSet<Integer>();
-        outgoingEdges = new HashMap<Integer, Set<Integer>>();
-        incomingEdges = new HashMap<Integer, Set<Integer>>();
-        labels = new HashMap<Integer, String>();
-
-        int vertexId = 0;
-        for (nl.tue.tm.is.ptnet.Transition t : ptnet.transitions()) {
-            vertices.add(vertexId);
-            if (!t.getName().equals(nl.tue.tm.is.ptnet.Transition.SILENT_LABEL)) {
-                labels.put(vertexId, t.getName());
-            } else {
-                labels.put(vertexId, "");
-            }
-            transId2vertex.put(t.getId(), vertexId);
-            vertex2transId.put(vertexId, t.getId());
-
-            vertexId++;
-        }
-
-        for (nl.tue.tm.is.ptnet.Transition t : ptnet.transitions()) {
-            int corrVertex = transId2vertex.get(t.getId());
-
-            Set<Integer> outgoingCurrent = new HashSet<Integer>();
-            for (nl.tue.tm.is.ptnet.Node n : ptnet.getPost(t)) {
-                for (nl.tue.tm.is.ptnet.Node n2 : ptnet.getPost(n)) {
-                    outgoingCurrent.add(transId2vertex.get(n2.getId()));
-                }
-            }
-            outgoingEdges.put(corrVertex, outgoingCurrent);
-
-            Set<Integer> incomingCurrent = new HashSet<Integer>();
-            for (nl.tue.tm.is.ptnet.Node n : ptnet.getPre(t)) {
-                for (nl.tue.tm.is.ptnet.Node n2 : ptnet.getPre(n)) {
-                    incomingCurrent.add(transId2vertex.get(n2.getId()));
-                }
-            }
-            incomingEdges.put(corrVertex, incomingCurrent);
-        }
+    public String getId() {
+        return id;
     }
 
     public Set<Integer> getVertices() {
@@ -207,23 +95,11 @@ public class SimpleGraph {
     }
 
     public Collection<TwoVertices> getEdgesAsCollection() {
-        return new ArrayList<TwoVertices>(edges);
+        return new ArrayList<>(edges);
     }
 
     public Set<TwoVertices> getEdges() {
-//		if (edges == null){
-//			Set<TwoVertices> result = new HashSet<TwoVertices>();
-//			for (Integer src: vertices){
-//				for (Integer tgt: outgoingEdges.get(src)){
-//					result.add(new TwoVertices(src,tgt));
-//				}
-//			}
-//			edges = result;
-//		}
-
-        return new HashSet<TwoVertices>(edges);
-//		return edges;
-//		return result;
+        return new HashSet<>(edges);
     }
 
     public Set<Integer> getConnectors() {
@@ -263,7 +139,7 @@ public class SimpleGraph {
     }
 
     public LinkedList<String> getLabels() {
-        return new LinkedList<String>(labels.values());
+        return new LinkedList<>(labels.values());
     }
 
     public Map<Integer, String> getLabelsAsMap() {
@@ -275,7 +151,7 @@ public class SimpleGraph {
     }
 
     public Set<String> getLabels(Set<Integer> nodes) {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
 
         for (Integer node : nodes) {
             result.add(getLabel(node));
@@ -297,7 +173,7 @@ public class SimpleGraph {
      * @return vertices that do not have an incoming edge.
      */
     public Set<Integer> sourceVertices() {
-        Set<Integer> result = new HashSet<Integer>();
+        Set<Integer> result = new HashSet<>();
         for (Integer i : vertices) {
             if (incomingEdges.get(i).isEmpty()) {
                 result.add(i);
@@ -310,7 +186,7 @@ public class SimpleGraph {
      * @return vertices that do not have an outgoing edge.
      */
     public Set<Integer> sinkVertices() {
-        Set<Integer> result = new HashSet<Integer>();
+        Set<Integer> result = new HashSet<>();
         for (Integer i : vertices) {
             if (outgoingEdges.get(i).isEmpty()) {
                 result.add(i);
@@ -325,13 +201,13 @@ public class SimpleGraph {
             result += i + "(" + labels.get(i) + ") {";
             for (Iterator<Integer> j = incomingEdges.get(i).iterator(); j.hasNext(); ) {
                 int vertex = j.next();
-                result += vertex;// + "(" + labels.get(vertex) + ")";
+                result += vertex;
                 result += j.hasNext() ? "," : "";
             }
             result += "} {";
             for (Iterator<Integer> j = outgoingEdges.get(i).iterator(); j.hasNext(); ) {
                 int vertex = j.next();
-                result += vertex;// + "(" + labels.get(vertex) + ")";
+                result += vertex;
                 result += j.hasNext() ? "," : "";
             }
             result += "}\n";
@@ -349,8 +225,8 @@ public class SimpleGraph {
     }
 
     private Set<Integer> nonSilentPostSetHelper(Integer vertex, Set<Integer> silent, Set<Integer> visited) {
-        Set<Integer> result = new HashSet<Integer>();
-        Set<Integer> visitedP = new HashSet<Integer>(visited);
+        Set<Integer> result = new HashSet<>();
+        Set<Integer> visitedP = new HashSet<>(visited);
         visitedP.add(vertex);
 
         for (Integer post : postSet(vertex)) {
@@ -375,8 +251,8 @@ public class SimpleGraph {
     }
 
     private Set<Integer> nonSilentPreSetHelper(Integer vertex, Set<Integer> silent, Set<Integer> visited) {
-        Set<Integer> result = new HashSet<Integer>();
-        Set<Integer> visitedP = new HashSet<Integer>(visited);
+        Set<Integer> result = new HashSet<>();
+        Set<Integer> visitedP = new HashSet<>(visited);
         visitedP.add(vertex);
 
         for (Integer pre : preSet(vertex)) {
@@ -401,13 +277,12 @@ public class SimpleGraph {
      * U {(v1, v2)|v \in vertices, (v1,v) \in E \land (v,v2) \in E}
      */
     public SimpleGraph removeVertices(Set<Integer> toRemove) {
-        Set<Integer> newVertices = new HashSet<Integer>(vertices);
+        Set<Integer> newVertices = new HashSet<>(vertices);
         newVertices.removeAll(toRemove);
 
-        Map<Integer, Set<Integer>> newOutgoingEdges = new HashMap<Integer, Set<Integer>>();
-        Map<Integer, Set<Integer>> newIncomingEdges = new HashMap<Integer, Set<Integer>>();
-        ;
-        Map<Integer, String> newLabels = new HashMap<Integer, String>();
+        Map<Integer, Set<Integer>> newOutgoingEdges = new HashMap<>();
+        Map<Integer, Set<Integer>> newIncomingEdges = new HashMap<>();
+        Map<Integer, String> newLabels = new HashMap<>();
 
         for (Integer newVertex : newVertices) {
             newOutgoingEdges.put(newVertex, nonSilentPostSet(newVertex, toRemove));
@@ -425,22 +300,21 @@ public class SimpleGraph {
      * @return The subgraph
      */
     public SimpleGraph subgraph(Set<Integer> _vertices) {
-        Set<Integer> newVertices = new HashSet<Integer>(vertices);
+        Set<Integer> newVertices = new HashSet<>(vertices);
         newVertices.removeAll(_vertices);
 
-        Map<Integer, Set<Integer>> newOutgoingEdges = new HashMap<Integer, Set<Integer>>();
-        Map<Integer, Set<Integer>> newIncomingEdges = new HashMap<Integer, Set<Integer>>();
-        ;
-        Map<Integer, String> newLabels = new HashMap<Integer, String>();
+        Map<Integer, Set<Integer>> newOutgoingEdges = new HashMap<>();
+        Map<Integer, Set<Integer>> newIncomingEdges = new HashMap<>();
+        Map<Integer, String> newLabels = new HashMap<>();
 
         for (Integer newVertex : newVertices) {
-            HashSet<Integer> vertexSet = new HashSet<Integer>();
+            HashSet<Integer> vertexSet = new HashSet<>();
             for (Integer source : preSet(newVertex))
                 if (newVertices.contains(source))
                     vertexSet.add(source);
             newIncomingEdges.put(newVertex, vertexSet);
 
-            vertexSet = new HashSet<Integer>();
+            vertexSet = new HashSet<>();
             for (Integer target : postSet(newVertex))
                 if (newVertices.contains(target))
                     vertexSet.add(target);
