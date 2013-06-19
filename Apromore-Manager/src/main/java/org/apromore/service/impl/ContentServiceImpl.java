@@ -74,7 +74,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     public Node addNode(final INode cpfNode, final String graphType, Set<org.apromore.dao.model.Object> objects, Set<Resource> resources) {
-        LOGGER.info("Adding new Node: " + cpfNode.getId());
+        LOGGER.debug("Adding new Node: " + cpfNode.getId());
 
         try {
             Node node = new Node();
@@ -112,7 +112,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     public Edge addEdge(final CPFEdge cpfEdge, FragmentVersion fv, OperationContext op) {
-        LOGGER.info("Adding new Edge: " + cpfEdge.getId());
+        LOGGER.debug("Adding new Edge: " + cpfEdge.getId());
 
         try {
             Edge edge = new Edge();

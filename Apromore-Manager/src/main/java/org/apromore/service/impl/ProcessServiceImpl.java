@@ -215,7 +215,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName, final Double versionNumber,
             final String natType, final CanonisedProcess cpf, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
-        LOGGER.info("Executing operation canoniseProcess");
+        LOGGER.debug("Executing operation canoniseProcess");
         ProcessModelVersion pmv;
 
         try {
@@ -321,7 +321,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
             final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException {
-        LOGGER.info("Executing operation update process meta data.");
+        LOGGER.debug("Executing operation update process meta data.");
         try {
             Process process = processRepo.findOne(processId);
             process.setDomain(domain);
@@ -483,14 +483,14 @@ public class ProcessServiceImpl implements ProcessService {
         }
 
         // unlock the fragment
-        LOGGER.info("Unlocking the original fragment: " + originalFragment);
+        LOGGER.debug("Unlocking the original fragment: " + originalFragment);
         lService.unlockFragment(originalFragment);
 
         // release locks of all descendant fragments of the original fragment
         lService.unlockDescendantFragments(originalFragment);
 
         // create new version for all ascendant fragments
-        LOGGER.info("Propagating to parent fragments of fragment: " + originalFragment);
+        LOGGER.debug("Propagating to parent fragments of fragment: " + originalFragment);
         List<FragmentVersion> lockedParents = fragmentVersionRepo.getLockedParentFragments(originalFragment);
 
         for (FragmentVersion parent : lockedParents) {
@@ -578,7 +578,7 @@ public class ProcessServiceImpl implements ProcessService {
         OperationContext rootFragment;
         ProcessModelVersion pmv;
         try {
-            LOGGER.info("Starting to process: " + cpf.getCpt().getUri() + " - " + cpf.getCpt().getName());
+            LOGGER.info("Starting to process: " + processName);
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());
@@ -693,7 +693,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Inserts a new process into the DB. */
     private Process insertProcess(final String processName, final User user, final NativeType nativeType, final String domain,
             final Integer folderId) throws ImportException {
-        LOGGER.info("Executing operation Insert Process");
+        LOGGER.debug("Executing operation Insert Process");
         Process process = new Process();
 
         try {
@@ -724,7 +724,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* inserts a new branch into the DB. */
     private ProcessBranch insertProcessBranch(final Process process, final String created, final String lastUpdated, final String name) throws ImportException {
-        LOGGER.info("Executing operation Insert Branch");
+        LOGGER.debug("Executing operation Insert Branch");
         ProcessBranch branch = new ProcessBranch();
 
         try {
@@ -906,7 +906,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
             Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException {
-        LOGGER.info("Propagating - fragment: " + originalFragment + ", parent: " + parent);
+        LOGGER.debug("Propagating - fragment: " + originalFragment + ", parent: " + parent);
         FragmentVersion newParent = createNewFragmentVersionByReplacingChild(parent, originalFragment, updatedFragment);
         composingFragments.add(newParent);
         fillUnchangedDescendants(newParent, updatedFragment, composingFragments);

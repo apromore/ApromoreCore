@@ -77,7 +77,7 @@
     <logger name="javax.xml" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="console"/>
         <appender-ref ref="everythinglogfile"/>
     </root>

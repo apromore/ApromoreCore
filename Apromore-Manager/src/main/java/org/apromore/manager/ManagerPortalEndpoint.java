@@ -275,7 +275,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
     @ResponsePayload
     public JAXBElement<EditProcessDataOutputMsgType> editProcessData(@RequestPayload final JAXBElement<EditProcessDataInputMsgType> req) {
-        LOGGER.info("Executing operation editDataProcess");
+        LOGGER.debug("Executing operation editDataProcess");
         EditProcessDataInputMsgType payload = req.getValue();
         EditProcessDataOutputMsgType res = new EditProcessDataOutputMsgType();
         ResultType result = new ResultType();
@@ -304,7 +304,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "MergeProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<MergeProcessesOutputMsgType> mergeProcesses(@RequestPayload final JAXBElement<MergeProcessesInputMsgType> req) {
-        LOGGER.info("Executing operation mergeProcesses");
+        LOGGER.debug("Executing operation mergeProcesses");
         MergeProcessesInputMsgType payload = req.getValue();
         MergeProcessesOutputMsgType res = new MergeProcessesOutputMsgType();
         ResultType result = new ResultType();
@@ -354,7 +354,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<SearchForSimilarProcessesOutputMsgType> searchForSimilarProcesses(
             @RequestPayload final JAXBElement<SearchForSimilarProcessesInputMsgType> req) {
-        LOGGER.info("Executing operation searchForSimilarProcesses");
+        LOGGER.debug("Executing operation searchForSimilarProcesses");
         SearchForSimilarProcessesInputMsgType payload = req.getValue();
         SearchForSimilarProcessesOutputMsgType res = new SearchForSimilarProcessesOutputMsgType();
         ResultType result = new ResultType();
@@ -386,7 +386,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteAnnotationRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload final JAXBElement<WriteAnnotationInputMsgType> req) {
-        LOGGER.info("Executing operation writeAnnotation");
+        LOGGER.debug("Executing operation writeAnnotation");
         //WriteAnnotationInputMsgType payload = req.getValue();
         WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
         ResultType result = new ResultType();
@@ -414,7 +414,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "GetAllClustersRequest")
     public void getAllClusters(@RequestPayload final JAXBElement<String> message) {
-        LOGGER.info("Retrieving all clusters in the repository ...");
+        LOGGER.debug("Retrieving all clusters in the repository ...");
         String payload = message.getValue();
         //String res = "received: " + payload;
     }
@@ -422,7 +422,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(namespace = NAMESPACE, localPart = "ReadAllUsersRequest")
     @ResponsePayload
     public JAXBElement<ReadAllUsersOutputMsgType> readAllUsers(@RequestPayload final JAXBElement<ReadAllUsersInputMsgType> message) {
-        LOGGER.info("Executing operation readAllUsers");
+        LOGGER.debug("Executing operation readAllUsers");
         ReadAllUsersOutputMsgType res = new ReadAllUsersOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -436,7 +436,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "DeleteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeleteEditSessionOutputMsgType> deleteEditSession(@RequestPayload final JAXBElement<DeleteEditSessionInputMsgType> req) {
-        LOGGER.info("Executing operation deleteEditSession");
+        LOGGER.debug("Executing operation deleteEditSession");
         DeleteEditSessionInputMsgType payload = req.getValue();
         DeleteEditSessionOutputMsgType res = new DeleteEditSessionOutputMsgType();
         ResultType result = new ResultType();
@@ -458,7 +458,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<DeleteProcessVersionsOutputMsgType> deleteProcessVersions(
             @RequestPayload final JAXBElement<DeleteProcessVersionsInputMsgType> req) {
-        LOGGER.info("Executing operation deleteProcessVersions");
+        LOGGER.debug("Executing operation deleteProcessVersions");
         DeleteProcessVersionsInputMsgType payload = req.getValue();
         DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
         ResultType result = new ResultType();
@@ -483,7 +483,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "UpdateProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<UpdateProcessOutputMsgType> updateProcess(@RequestPayload final JAXBElement<UpdateProcessInputMsgType> req) {
-        LOGGER.info("Executing operation updateProcess");
+        LOGGER.debug("Executing operation updateProcess");
         UpdateProcessInputMsgType payload = req.getValue();
         UpdateProcessOutputMsgType res = new UpdateProcessOutputMsgType();
         ResultType result = new ResultType();
@@ -514,7 +514,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadEditSessionOutputMsgType> readEditSession(@RequestPayload final JAXBElement<ReadEditSessionInputMsgType> req) {
-        LOGGER.info("Executing operation readEditSession");
+        LOGGER.debug("Executing operation readEditSession");
         ReadEditSessionInputMsgType payload = req.getValue();
         ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
         int code = payload.getEditSessionCode();
@@ -556,7 +556,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteEditSessionOutputMsgType> writeEditSession(@RequestPayload final JAXBElement<WriteEditSessionInputMsgType> req) {
-        LOGGER.info("Executing operation writeEditSession");
+        LOGGER.debug("Executing operation writeEditSession");
         WriteEditSessionInputMsgType payload = req.getValue();
         WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
         ResultType result = new ResultType();
@@ -578,7 +578,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetFragmentRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetFragmentOutputMsgType> getFragment(@RequestPayload final JAXBElement<GetFragmentInputMsgType> req) {
-        LOGGER.info("Executing operation getFragment");
+        LOGGER.debug("Executing operation getFragment");
 
         String defaultFormat = "EPML 2.0";
 
@@ -615,7 +615,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ExportFormatRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ExportFormatOutputMsgType> exportFormat(@RequestPayload final JAXBElement<ExportFormatInputMsgType> req) {
-        LOGGER.info("Executing operation exportFormat");
+        LOGGER.debug("Executing operation exportFormat");
 
         ResultType result = new ResultType();
         ExportFormatInputMsgType payload = req.getValue();
@@ -650,7 +650,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ImportProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ImportProcessOutputMsgType> importProcess(@RequestPayload final JAXBElement<ImportProcessInputMsgType> req) {
-        LOGGER.info("Executing operation importProcess");
+        LOGGER.debug("Executing operation importProcess");
 
         ResultType result = new ResultType();
         ImportProcessInputMsgType payload = req.getValue();
@@ -699,7 +699,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "CreateGEDMatrixRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<CreateGEDMatrixOutputMsgType> createGedMatrix(@RequestPayload final JAXBElement<CreateGEDMatrixInputMsgType> req) {
-        LOGGER.info("Executing operation createGedMatrix");
+        LOGGER.debug("Executing operation createGedMatrix");
         CreateGEDMatrixInputMsgType payload = req.getValue();
         CreateGEDMatrixOutputMsgType res = new CreateGEDMatrixOutputMsgType();
 
@@ -712,7 +712,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "CreateClustersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<CreateClustersOutputMsgType> createClusters(@RequestPayload final JAXBElement<CreateClustersInputMsgType> req) {
-        LOGGER.info("Executing operation createClusters");
+        LOGGER.debug("Executing operation createClusters");
         CreateClustersInputMsgType payload = req.getValue();
         CreateClustersOutputMsgType res = new CreateClustersOutputMsgType();
 
@@ -735,7 +735,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "PairwiseDistancesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetPairwiseDistancesOutputMsgType> getPairwiseDistances(@RequestPayload final JAXBElement<GetPairwiseDistancesInputMsgType> req) {
-        LOGGER.info("Executing operation getPairwiseDistances");
+        LOGGER.debug("Executing operation getPairwiseDistances");
         GetPairwiseDistancesInputMsgType payload = req.getValue();
         GetPairwiseDistancesOutputMsgType res = new GetPairwiseDistancesOutputMsgType();
 
@@ -754,7 +754,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetClusteringSummaryRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetClusteringSummaryOutputMsgType> getClusteringSummary(@RequestPayload final JAXBElement<GetClusteringSummaryInputMsgType> req) {
-        LOGGER.info("Executing operation getClusteringSummary");
+        LOGGER.debug("Executing operation getClusteringSummary");
         //GetClusteringSummaryInputMsgType payload = req.getValue();
         GetClusteringSummaryOutputMsgType res = new GetClusteringSummaryOutputMsgType();
 
@@ -768,7 +768,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetClusterSummariesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetClusterSummariesOutputMsgType> getClusterSummaries(@RequestPayload final JAXBElement<GetClusterSummariesInputMsgType> req) {
-        LOGGER.info("Executing operation getClusterSummaries");
+        LOGGER.debug("Executing operation getClusterSummaries");
         GetClusterSummariesInputMsgType payload = req.getValue();
         GetClusterSummariesOutputMsgType res = new GetClusterSummariesOutputMsgType();
 
@@ -784,7 +784,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetClusterRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetClusterOutputMsgType> getCluster(@RequestPayload final JAXBElement<GetClusterInputMsgType> req) {
-        LOGGER.info("Executing operation getCluster");
+        LOGGER.debug("Executing operation getCluster");
         GetClusterInputMsgType payload = req.getValue();
         GetClusterOutputMsgType res = new GetClusterOutputMsgType();
 
@@ -798,7 +798,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetClustersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetClustersResponseType> getClusters(@RequestPayload final JAXBElement<GetClustersRequestType> req) {
-        LOGGER.info("Executing operation getClusters");
+        LOGGER.debug("Executing operation getClusters");
         GetClustersRequestType payload = req.getValue();
         GetClustersResponseType res = new GetClustersResponseType();
 
@@ -814,7 +814,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteUserOutputMsgType> writeUser(@RequestPayload final JAXBElement<WriteUserInputMsgType> req) {
-        LOGGER.info("Executing operation writeUser");
+        LOGGER.debug("Executing operation writeUser");
         WriteUserInputMsgType payload = req.getValue();
         WriteUserOutputMsgType res = new WriteUserOutputMsgType();
         ResultType result = new ResultType();
@@ -835,7 +835,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadNativeTypesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadNativeTypesOutputMsgType> readNativeTypes(@RequestPayload final JAXBElement<ReadNativeTypesInputMsgType> req) {
-        LOGGER.info("Executing operation readFormats");
+        LOGGER.debug("Executing operation readFormats");
         ReadNativeTypesOutputMsgType res = new ReadNativeTypesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -860,7 +860,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadDomainsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload final JAXBElement<ReadDomainsInputMsgType> req) {
-        LOGGER.info("Executing operation readDomains");
+        LOGGER.debug("Executing operation readDomains");
         ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -885,7 +885,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload final JAXBElement<ReadUserInputMsgType> req) {
-        LOGGER.info("Executing operation readUser");
+        LOGGER.debug("Executing operation readUser");
         ReadUserInputMsgType payload = req.getValue();
         ReadUserOutputMsgType res = new ReadUserOutputMsgType();
         ResultType result = new ResultType();
@@ -909,7 +909,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "SearchUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SearchUserOutputMsgType> searchUsers(@RequestPayload final JAXBElement<SearchUserInputMsgType> req) {
-        LOGGER.info("Executing operation searchUser");
+        LOGGER.debug("Executing operation searchUser");
         SearchUserInputMsgType payload = req.getValue();
         SearchUserOutputMsgType res = new SearchUserOutputMsgType();
         ResultType result = new ResultType();
@@ -938,7 +938,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadProcessSummariesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadProcessSummariesOutputMsgType> readProcessSummaries(@RequestPayload final JAXBElement<ReadProcessSummariesInputMsgType> req) {
-        LOGGER.info("Executing operation readProcessSummaries");
+        LOGGER.debug("Executing operation readProcessSummaries");
         ReadProcessSummariesInputMsgType payload = req.getValue();
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
         ResultType result = new ResultType();
@@ -960,7 +960,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadInstalledPluginsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadInstalledPluginsOutputMsgType> readInstalledPlugins(@RequestPayload final JAXBElement<ReadInstalledPluginsInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadInstalledPlugins'");
+        LOGGER.debug("Executing operation 'ReadInstalledPlugins'");
         ReadInstalledPluginsOutputMsgType res = new ReadInstalledPluginsOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -992,7 +992,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadPluginInfoRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadPluginInfoOutputMsgType> readPluginInfo(@RequestPayload final JAXBElement<ReadPluginInfoInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadPluginInfo'");
+        LOGGER.debug("Executing operation 'ReadPluginInfo'");
         ReadPluginInfoOutputMsgType res = new ReadPluginInfoOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1026,7 +1026,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadCanoniserInfoRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadCanoniserInfoOutputMsgType> readCanoniserInfo(@RequestPayload final JAXBElement<ReadCanoniserInfoInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadCanoniserInfo'");
+        LOGGER.debug("Executing operation 'ReadCanoniserInfo'");
         ReadCanoniserInfoOutputMsgType res = new ReadCanoniserInfoOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1050,7 +1050,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadNativeMetaDataRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadNativeMetaDataOutputMsgType> readNativeMetaData(@RequestPayload final JAXBElement<ReadNativeMetaDataInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadNativeMetaData'");
+        LOGGER.debug("Executing operation 'ReadNativeMetaData'");
         ReadNativeMetaDataOutputMsgType res = new ReadNativeMetaDataOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1083,7 +1083,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadInitialNativeFormatOutputMsgType> readInitialNativeFormat(
             @RequestPayload final JAXBElement<ReadInitialNativeFormatInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadInitialNativeFormat'");
+        LOGGER.debug("Executing operation 'ReadInitialNativeFormat'");
         ReadInitialNativeFormatOutputMsgType res = new ReadInitialNativeFormatOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1135,7 +1135,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadDeploymentPluginInfoOutputMsgType> readDeploymentPluginInfo(
             @RequestPayload final JAXBElement<ReadDeploymentPluginInfoInputMsgType> req) {
-        LOGGER.info("Executing operation 'ReadDeploymentPluginInfo'");
+        LOGGER.debug("Executing operation 'ReadDeploymentPluginInfo'");
         ReadDeploymentPluginInfoOutputMsgType res = new ReadDeploymentPluginInfoOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1159,7 +1159,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "DeployProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeployProcessOutputMsgType> deployProcess(@RequestPayload final JAXBElement<DeployProcessInputMsgType> req) {
-        LOGGER.info("Executing operation 'DeployProcess'");
+        LOGGER.debug("Executing operation 'DeployProcess'");
         DeployProcessOutputMsgType res = new DeployProcessOutputMsgType();
         ResultType result = new ResultType();
         try {
@@ -1198,7 +1198,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "LoginRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<LoginOutputMsgType> login(@RequestPayload final JAXBElement<LoginInputMsgType> req) {
-        LOGGER.info("Executing operation login");
+        LOGGER.debug("Executing operation login");
         LoginInputMsgType payload = req.getValue();
         LoginOutputMsgType res = new LoginOutputMsgType();
         ResultType result = new ResultType();
@@ -1219,7 +1219,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetWorkspaceFolderTreeRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetWorkspaceFolderTreeOutputMsgType> getWorkspaceFolderTree(@RequestPayload final JAXBElement<GetWorkspaceFolderTreeInputMsgType> req) {
-        LOGGER.info("Executing operation getWorkspaceFolderTree");
+        LOGGER.debug("Executing operation getWorkspaceFolderTree");
         GetWorkspaceFolderTreeInputMsgType payload = req.getValue();
         GetWorkspaceFolderTreeOutputMsgType res = new GetWorkspaceFolderTreeOutputMsgType();
         ResultType result = new ResultType();
@@ -1235,7 +1235,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetSubFoldersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetSubFoldersOutputMsgType> getSubFolders(@RequestPayload final JAXBElement<GetSubFoldersInputMsgType> req) {
-        LOGGER.info("Executing operation getSubFolders");
+        LOGGER.debug("Executing operation getSubFolders");
         GetSubFoldersInputMsgType payload = req.getValue();
         GetSubFoldersOutputMsgType res = new GetSubFoldersOutputMsgType();
         ResultType result = new ResultType();
@@ -1251,7 +1251,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetBreadcrumbsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetBreadcrumbsOutputMsgType> getBreadcrumbs(@RequestPayload final JAXBElement<GetBreadcrumbsInputMsgType> req) {
-        LOGGER.info("Executing operation getBreadcrumbs");
+        LOGGER.debug("Executing operation getBreadcrumbs");
         GetBreadcrumbsInputMsgType payload = req.getValue();
         GetBreadcrumbsOutputMsgType res = new GetBreadcrumbsOutputMsgType();
         ResultType result = new ResultType();
@@ -1267,7 +1267,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetFolderUsersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetFolderUsersOutputMsgType> getFolderUsers(@RequestPayload final JAXBElement<GetFolderUsersInputMsgType> req) {
-        LOGGER.info("Executing operation getFolderUsers");
+        LOGGER.debug("Executing operation getFolderUsers");
         GetFolderUsersInputMsgType payload = req.getValue();
         GetFolderUsersOutputMsgType res = new GetFolderUsersOutputMsgType();
         ResultType result = new ResultType();
@@ -1283,7 +1283,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "SaveFolderPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SaveFolderPermissionsOutputMsgType> saveFolderPermissions(@RequestPayload final JAXBElement<SaveFolderPermissionsInputMsgType> req) {
-        LOGGER.info("Executing operation getFolderUsers");
+        LOGGER.debug("Executing operation getFolderUsers");
         SaveFolderPermissionsInputMsgType payload = req.getValue();
         SaveFolderPermissionsOutputMsgType res = new SaveFolderPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1297,7 +1297,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "SaveProcessPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SaveProcessPermissionsOutputMsgType> saveProcessPermissions(@RequestPayload final JAXBElement<SaveProcessPermissionsInputMsgType> req) {
-        LOGGER.info("Executing operation getFolderUsers");
+        LOGGER.debug("Executing operation getFolderUsers");
         SaveProcessPermissionsInputMsgType payload = req.getValue();
         SaveProcessPermissionsOutputMsgType res = new SaveProcessPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1311,7 +1311,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "RemoveFolderPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<RemoveFolderPermissionsOutputMsgType> removeFolderPermissions(@RequestPayload final JAXBElement<RemoveFolderPermissionsInputMsgType> req) {
-        LOGGER.info("Executing operation removeFolderPermissions");
+        LOGGER.debug("Executing operation removeFolderPermissions");
         RemoveFolderPermissionsInputMsgType payload = req.getValue();
         RemoveFolderPermissionsOutputMsgType res = new RemoveFolderPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1325,7 +1325,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "RemoveProcessPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<RemoveProcessPermissionsOutputMsgType> removeProcessPermissions(@RequestPayload final JAXBElement<RemoveProcessPermissionsInputMsgType> req) {
-        LOGGER.info("Executing operation removeProcessPermissions");
+        LOGGER.debug("Executing operation removeProcessPermissions");
         RemoveProcessPermissionsInputMsgType payload = req.getValue();
         RemoveProcessPermissionsOutputMsgType res = new RemoveProcessPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1339,7 +1339,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetProcessUsersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetProcessUsersOutputMsgType> getProcessUsers(@RequestPayload final JAXBElement<GetProcessUsersInputMsgType> req) {
-        LOGGER.info("Executing operation getProcessUsers");
+        LOGGER.debug("Executing operation getProcessUsers");
         GetProcessUsersInputMsgType payload = req.getValue();
         GetProcessUsersOutputMsgType res = new GetProcessUsersOutputMsgType();
         ResultType result = new ResultType();
@@ -1355,7 +1355,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetProcessesOutputMsgType> getProcesses(@RequestPayload final JAXBElement<GetProcessesInputMsgType> req) {
-        LOGGER.info("Executing operation getProcesses");
+        LOGGER.debug("Executing operation getProcesses");
         GetProcessesInputMsgType payload = req.getValue();
         GetProcessesOutputMsgType res = new GetProcessesOutputMsgType();
         ResultType result = new ResultType();
@@ -1371,7 +1371,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "CreateFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<CreateFolderOutputMsgType> createFolder(@RequestPayload final JAXBElement<CreateFolderInputMsgType> req) {
-        LOGGER.info("Executing operation createFolder");
+        LOGGER.debug("Executing operation createFolder");
         CreateFolderInputMsgType payload = req.getValue();
         CreateFolderOutputMsgType res = new CreateFolderOutputMsgType();
         ResultType result = new ResultType();
@@ -1385,7 +1385,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "AddProcessToFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<AddProcessToFolderOutputMsgType> addProcessToFolder(@RequestPayload final JAXBElement<AddProcessToFolderInputMsgType> req) {
-        LOGGER.info("Executing operation addProcessToFolder");
+        LOGGER.debug("Executing operation addProcessToFolder");
         AddProcessToFolderInputMsgType payload = req.getValue();
         AddProcessToFolderOutputMsgType res = new AddProcessToFolderOutputMsgType();
         ResultType result = new ResultType();
@@ -1399,7 +1399,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "UpdateFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<UpdateFolderOutputMsgType> updateFolder(@RequestPayload final JAXBElement<UpdateFolderInputMsgType> req) {
-        LOGGER.info("Executing operation updateFolder");
+        LOGGER.debug("Executing operation updateFolder");
         UpdateFolderInputMsgType payload = req.getValue();
         UpdateFolderOutputMsgType res = new UpdateFolderOutputMsgType();
         ResultType result = new ResultType();
@@ -1413,7 +1413,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "DeleteFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeleteFolderOutputMsgType> deleteFolder(@RequestPayload final JAXBElement<DeleteFolderInputMsgType> req) {
-        LOGGER.info("Executing operation deleteFolder");
+        LOGGER.debug("Executing operation deleteFolder");
         DeleteFolderInputMsgType payload = req.getValue();
         DeleteFolderOutputMsgType res = new DeleteFolderOutputMsgType();
         ResultType result = new ResultType();

@@ -90,6 +90,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Transactional(readOnly = false)
     public void cluster(ClusterSettings settings) throws RepositoryException {
+        LOGGER.debug("Create the Clusters");
         clearClusters();
 
         if (DBSCAN.equals(settings.getAlgorithm())) {
@@ -97,6 +98,7 @@ public class ClusterServiceImpl implements ClusterService {
         } else if (HAC.equals(settings.getAlgorithm())) {
             hacCluster.clusterRepository(settings);
         }
+        LOGGER.debug("Completed the creation the Clusters.");
     }
 
     /**
