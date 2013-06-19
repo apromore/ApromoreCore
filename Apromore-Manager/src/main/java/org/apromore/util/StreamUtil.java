@@ -139,47 +139,6 @@ public class StreamUtil {
     }
 
 
-//    /**
-//     * Generate a new npf which is the result of writing parameters in process_xml.
-//     *
-//     * @param process_xml  the given npf to be synchronised
-//     * @param nativeType   npf native type
-//     * @param processName  the process name
-//     * @param version      the process version
-//     * @param username     the user doing the change
-//     * @param creationDate the date created
-//     * @param lastUpdate   the updated date
-//     * @return The modified input stream.
-//     * @throws javax.xml.bind.JAXBException if it fails
-//     */
-//    @SuppressWarnings("unchecked")
-//    public static InputStream copyParam2NPF(final InputStream process_xml, final String nativeType, final String processName, final Double version,
-//            final String username, final String creationDate, final String lastUpdate) throws JAXBException {
-//        InputStream res = process_xml;
-//
-//        //TODO why should that be done? was the native format changed? if yes then it was result of decanonisation so the canoniser should care about this
-//
-////        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
-////            JAXBContext jc = JAXBContext.newInstance(XPDL_URI);
-////            Unmarshaller u = jc.createUnmarshaller();
-////            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
-////            copyParam2XPDL(rootElement.getValue(), processName, version, username, creationDate, lastUpdate);
-////
-////            Marshaller m = jc.createMarshaller();
-////            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-////            ByteArrayOutputStream xml = new ByteArrayOutputStream();
-////            m.marshal(rootElement, xml);
-////            res = new ByteArrayInputStream(xml.toByteArray());
-////        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
-////            res = process_xml;
-////        } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
-////            res = process_xml;
-////        }
-//
-//
-//        return res;
-//    }
-
     /**
      * Modify pkg (npf of type xpdl) with parameters values if not null.
      * @param pkg          the package to change to

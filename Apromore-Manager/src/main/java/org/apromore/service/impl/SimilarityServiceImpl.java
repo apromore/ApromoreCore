@@ -78,7 +78,7 @@ public class SimilarityServiceImpl implements SimilarityService {
             data = getParametersForSearch(data, method, params);
             similarProcesses = performSearch(data);
             if (similarProcesses.getProcessVersion().size() == 0) {
-                LOGGER.error("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
+                LOGGER.info("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
                         query.getVersionNumber() + " probably faulty");
             }
         } catch (Exception se) {
@@ -99,13 +99,8 @@ public class SimilarityServiceImpl implements SimilarityService {
         for (ProcessModelVersion pmv : models) {
             data.addModel(pmv, canoniserSrv.XMLtoCPF(pmv.getCanonicalDocument().getContent()));
         }
-//        data.setOrigin(processSrv.getCanonicalFormat(query));
-//        for (ProcessModelVersion pmv : models) {
-//            data.addModel(pmv, processSrv.getCanonicalFormat(pmv));
-//        }
 
         LOGGER.debug("Data Loaded for all models!");
-
         return data;
     }
 
