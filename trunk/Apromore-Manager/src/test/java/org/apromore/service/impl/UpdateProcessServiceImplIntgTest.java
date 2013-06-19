@@ -89,7 +89,7 @@ public class UpdateProcessServiceImplIntgTest {
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);
-        assertThat(cpt, nullValue());
+        assertThat(cpt, notNullValue());
     }
 
 }

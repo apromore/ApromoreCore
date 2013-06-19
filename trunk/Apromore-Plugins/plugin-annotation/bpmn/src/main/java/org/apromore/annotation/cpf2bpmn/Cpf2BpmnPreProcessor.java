@@ -55,8 +55,8 @@ public class Cpf2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
                 Map<String, AnnotationData> annotations = new HashMap<>();
                 annotationFormat = createEmptyAnnotationFormat(canonisedFormat, annotationFormat);
 
-                manipulateBPMNShapes(canonisedFormat, annotationFormat, annotations);
-                manipulateBPMNEdges(canonisedFormat, annotationFormat, annotations);
+                manipulateShapes(canonisedFormat, annotationFormat, annotations);
+                manipulateEdges(canonisedFormat, annotationFormat, annotations);
 
                 pluginResult.setAnnotationsType(annotationFormat);
             } catch (Exception e) {
@@ -69,7 +69,7 @@ public class Cpf2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
 
 
     /* loop through the list of nodes and process each one. */
-    private void manipulateBPMNShapes(CanonicalProcessType cpf, AnnotationsType anf, Map<String, AnnotationData> annotations) {
+    private void manipulateShapes(CanonicalProcessType cpf, AnnotationsType anf, Map<String, AnnotationData> annotations) {
         GraphicsType annotation;
         for (NetType net : cpf.getNet()) {
             for (NodeType node : net.getNode()) {
@@ -91,7 +91,7 @@ public class Cpf2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
     }
 
     /* loop through the list of edges and process each one. */
-    private void manipulateBPMNEdges(CanonicalProcessType cpf, AnnotationsType anf, Map<String, AnnotationData> annotations) {
+    private void manipulateEdges(CanonicalProcessType cpf, AnnotationsType anf, Map<String, AnnotationData> annotations) {
         GraphicsType annotation;
         for (NetType net : cpf.getNet()) {
             for (EdgeType edge : net.getEdge()) {
@@ -149,8 +149,8 @@ public class Cpf2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
                         position = new PositionType();
                         position.setX(newX);
                         position.setY(newY);
-                        targetEdgeAnn.getPosition().remove(index);
-                        targetEdgeAnn.getPosition().add(position);
+
+                        targetEdgeAnn.getPosition().set(index, position);
                     }
                     index++;
                 }
