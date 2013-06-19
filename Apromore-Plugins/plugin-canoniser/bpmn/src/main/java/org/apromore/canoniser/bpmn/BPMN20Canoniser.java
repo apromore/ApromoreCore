@@ -20,6 +20,7 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.PluginResultImpl;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
+import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.springframework.stereotype.Component;
 
 /**
@@ -93,11 +94,20 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
         try {
             // Construct an empty BPMN model
             BpmnDefinitions definitions = new BpmnDefinitions();
-            definitions.setId("dummy-id");
+            String id = UUID.randomUUID().toString();
+            definitions.setId(id);
             definitions.setName(processName);
             definitions.setExporter(getClass().getCanonicalName());
             definitions.setExporterVersion("1.0");
-            definitions.setTargetNamespace("http://apromore.org/" + UUID.randomUUID() + "#");
+            definitions.setTargetNamespace("http://apromore.org/" + id + "#");
+
+            BPMNDiagram diagram = new BPMNDiagram();
+            diagram.setId(UUID.randomUUID().toString());
+
+            BPMNPlane plane = new BPMNPlane();
+            plane.setId(id);
+            diagram.setBPMNPlane(plane);
+            definitions.getBPMNDiagram().add(diagram);
 
             // Serialize out the BPMN model
             definitions.marshal(bpmnOutput, false);

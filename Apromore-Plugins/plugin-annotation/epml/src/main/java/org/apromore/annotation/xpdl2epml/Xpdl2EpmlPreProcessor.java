@@ -153,8 +153,8 @@ public class Xpdl2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
                         position = new PositionType();
                         position.setX(newX);
                         position.setY(newY);
-                        targetEdgeAnn.getPosition().remove(index);
-                        targetEdgeAnn.getPosition().add(position);
+
+                        targetEdgeAnn.getPosition().set(index, position);
                     }
                     index++;
                 }
