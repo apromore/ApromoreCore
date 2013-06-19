@@ -188,7 +188,7 @@ public class FragmentServiceImpl implements FragmentService {
                 fvd.setChildFragmentVersion(fvRepository.findFragmentVersionByUri(childId));
 
                 if (fvd.getChildFragmentVersion() == null) {
-                    LOGGER.debug("FragmentVersionDAG without a Child fragment version.....");
+                    LOGGER.info("FragmentVersionDAG without a Child fragment version.....");
                 }
 
                 fvdRepository.save(fvd);

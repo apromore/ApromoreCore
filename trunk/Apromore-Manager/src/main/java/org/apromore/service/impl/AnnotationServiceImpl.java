@@ -91,7 +91,6 @@ public class AnnotationServiceImpl implements AnnotationService {
     @Override
     public AnnotationsType preProcess(final String sourceType, final String targetType, final CanonicalProcessType canonicalFormat,
             final AnnotationsType annotationFormat) {
-        LOGGER.info("Pre Processing CPF and ANF");
         AnnotationPluginResult result = null;
 
         try {

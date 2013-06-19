@@ -106,7 +106,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Override
     public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
-        LOGGER.info("Canonising process with native type {}", nativeType);
+        LOGGER.debug("Canonising process with native type {}", nativeType);
 
         List<CanonicalProcessType> cpfList = new ArrayList<>();
         List<AnnotationsType> anfList = new ArrayList<>();
@@ -155,7 +155,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     public DecanonisedProcess deCanonise(final String nativeType,
             final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
             final Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException {
-        LOGGER.info("DeCanonising process with native type {}", nativeType);
+        LOGGER.debug("DeCanonising process with native type {}", nativeType);
 
         ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
         DecanonisedProcess decanonisedProcess = new DecanonisedProcess();
