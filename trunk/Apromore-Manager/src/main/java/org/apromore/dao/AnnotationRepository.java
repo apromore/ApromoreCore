@@ -36,4 +36,15 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Integer>
             "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3 AND a.name = ?4")
     Annotation getAnnotation(Integer processId, String branchName, Double versionNumber, String annName);
 
+    /**
+     * Find the native record by the branch it is associated with.
+     * @param processId   the processId
+     * @param versionNumber the processModelVersion version
+     * @return the native, a list of them for all the different canonical versions.
+     */
+    @Query("SELECT a FROM Annotation a JOIN a.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+            "WHERE p.id = ?1 AND pmv.versionNumber = ?2")
+    List<Annotation> findAnnotationByCanonical(final Integer processId, final Double versionNumber);
+
+
 }
