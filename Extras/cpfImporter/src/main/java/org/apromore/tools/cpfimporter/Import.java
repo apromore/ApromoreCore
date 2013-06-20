@@ -76,12 +76,12 @@ public final class Import {
 
             File parentFile = file.getParentFile();
             String ext = FilenameUtils.getExtension(file.getName());
-            if (parentFile != null) {
+            if (getNativeFormat(ext) != null && parentFile != null) {
                 createFolder(parentFile);
                 int parentId = getFolderId(parentFile);
                 assert parentId != -1;
 
-                manager.importProcess(userName, parentId, getNativeFormat(ext), file.getName(),
+                manager.importProcess(userName, parentId, getNativeFormat(ext), FilenameUtils.getBaseName(file.getName()),
                         1.0D, new FileInputStream(file),
                         "domain",
                         "documentation",
