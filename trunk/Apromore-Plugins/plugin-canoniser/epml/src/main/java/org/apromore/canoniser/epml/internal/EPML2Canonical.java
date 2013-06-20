@@ -399,7 +399,7 @@ public class EPML2Canonical {
                 orS.setId(String.valueOf(or.getId()));
                 orS.setName(or.getName());
                 net.getNode().add(orS);
-                processUnrequiredEvents(net, or.getId()); // after creating the split node ,, delete the event
+                //processUnrequiredEvents(net, or.getId()); // after creating the split node ,, delete the event
             }
         }
         or_list.clear();
@@ -422,7 +422,7 @@ public class EPML2Canonical {
                 xorS.setId(String.valueOf(xor.getId()));
                 xorS.setName(xor.getName());
                 net.getNode().add(xorS);
-                processUnrequiredEvents(net, xor.getId());
+                //processUnrequiredEvents(net, xor.getId());
             }
         }
         xor_list.clear();
@@ -604,7 +604,7 @@ public class EPML2Canonical {
             }
             return true;
         } else {
-            throw new IllegalArgumentException("Could not find Node "+nodeId + "in isExitNode!");
+            throw new IllegalArgumentException("Could not find Node "+nodeId + " in isExitNode!");
         }
     }
 
@@ -613,6 +613,7 @@ public class EPML2Canonical {
         for (NodeType n: net.getNode()) {
             if (nodeId.equals(n.getId())) {
                 node = n;
+                break;
             }
         }
         return node;

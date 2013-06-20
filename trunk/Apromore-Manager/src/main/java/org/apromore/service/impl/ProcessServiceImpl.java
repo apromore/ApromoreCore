@@ -578,7 +578,6 @@ public class ProcessServiceImpl implements ProcessService {
         OperationContext rootFragment;
         ProcessModelVersion pmv;
         try {
-            LOGGER.info("Starting to process: " + processName);
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());

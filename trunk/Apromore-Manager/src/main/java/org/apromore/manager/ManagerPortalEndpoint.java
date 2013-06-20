@@ -670,6 +670,8 @@ public class ManagerPortalEndpoint {
             DataHandler handler = payload.getProcessDescription();
             PluginParameters xmlCanoniserProperties = payload.getCanoniserParameters();
 
+            LOGGER.info("Importing process: " + processName);
+
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
             ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
