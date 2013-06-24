@@ -58,7 +58,9 @@ public class SignavioController extends BaseController {
             param.put("importPath", getImportPath(editSession.getNativeType()));
             param.put("exportPath", getExportPath(editSession.getNativeType()));
 
-            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession.getNativeType())) {
+            if (editSession.getAnnotation() == null) {
+                param.put("doAutoLayout", "true");
+            } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession.getNativeType())) {
                 param.put("doAutoLayout", "false");
             } else {
                 if (editSession.isWithAnnotation()) {
