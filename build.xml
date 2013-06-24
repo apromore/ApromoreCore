@@ -86,7 +86,7 @@
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
-    <target name="start-virgo" depends="set-permissions">  <!-- deploy-virgo,  -->
+    <target name="start-virgo" depends="set-permissions,copy-virgo">  <!-- deploy-virgo,  -->
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -97,7 +97,7 @@
         </exec>
     </target>
 
-    <target name="debug-virgo" depends="set-permissions"> <!-- deploy-virgo,  -->
+    <target name="debug-virgo" depends="set-permissions,copy-virgo"> <!-- deploy-virgo,  -->
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
