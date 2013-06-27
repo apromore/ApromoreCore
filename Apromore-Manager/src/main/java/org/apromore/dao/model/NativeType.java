@@ -31,8 +31,8 @@ public class NativeType implements Serializable {
     private String natType;
     private String extension;
 
-    private Set<Native> natives = new HashSet<>(0);
-    private Set<Process> processes = new HashSet<>(0);
+    private Set<Native> natives = new HashSet<>();
+    private Set<Process> processes = new HashSet<>();
 
 
     /**

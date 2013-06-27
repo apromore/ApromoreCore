@@ -60,19 +60,19 @@ public class Node implements Serializable {
     private Expression resourceDataExpression;
     private Expression resourceRunExpression;
 
-    private Set<NodeMapping> nodeMappings = new HashSet<>(0);
+    private Set<NodeMapping> nodeMappings = new HashSet<>();
 
-    private Set<Expression> inputExpressions = new HashSet<>(0);
-    private Set<Expression> outputExpressions = new HashSet<>(0);
+    private Set<Expression> inputExpressions = new HashSet<>();
+    private Set<Expression> outputExpressions = new HashSet<>();
 
-    private Set<Edge> sourceNodes = new HashSet<>(0);
-    private Set<Edge> targetNodes = new HashSet<>(0);
-    private Set<Node> cancelNodes = new HashSet<>(0);
-    private Set<Edge> cancelEdges = new HashSet<>(0);
+    private Set<Edge> sourceNodes = new HashSet<>();
+    private Set<Edge> targetNodes = new HashSet<>();
+    private Set<Node> cancelNodes = new HashSet<>();
+    private Set<Edge> cancelEdges = new HashSet<>();
 
-    private Set<ObjectRef> objectRefs = new HashSet<>(0);
-    private Set<ResourceRef> resourceRefs = new HashSet<>(0);
-    private Set<NodeAttribute> attributes = new HashSet<>(0);
+    private Set<ObjectRef> objectRefs = new HashSet<>();
+    private Set<ResourceRef> resourceRefs = new HashSet<>();
+    private Set<NodeAttribute> attributes = new HashSet<>();
 
 
 

@@ -43,7 +43,7 @@ public class Workspace implements Serializable {
 
     private User createdBy;
 
-    private Set<Folder> folders = new HashSet<>(0);
+    private Set<Folder> folders = new HashSet<>();
 
     /**
      * Default Constructor.

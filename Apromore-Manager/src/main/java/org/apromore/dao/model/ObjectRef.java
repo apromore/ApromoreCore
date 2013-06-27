@@ -38,7 +38,7 @@ public class ObjectRef implements java.io.Serializable {
 
     private Node node;
     private Object object;
-    private Set<ObjectRefAttribute> objectRefAttributes = new HashSet<>(0);
+    private Set<ObjectRefAttribute> objectRefAttributes = new HashSet<>();
 
     /**
      * Public Constructor.

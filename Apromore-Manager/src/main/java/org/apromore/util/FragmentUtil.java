@@ -58,7 +58,7 @@ public class FragmentUtil {
 
 
     public static List<CPFNode> getPreset(final CPFNode v, final Collection<CPFEdge> es) {
-        List<CPFNode> preset = new ArrayList<>(0);
+        List<CPFNode> preset = new ArrayList<>();
         if (v != null) {
             for (CPFEdge e: es) {
                 if (e.getTarget().getId().equals(v.getId())) {
@@ -70,7 +70,7 @@ public class FragmentUtil {
     }
 
     public static List<CPFNode> getPostset(final CPFNode v, final Collection<CPFEdge> es) {
-        List<CPFNode> postset = new ArrayList<>(0);
+        List<CPFNode> postset = new ArrayList<>();
         if (v != null) {
             for (CPFEdge e: es) {
                 if (e.getSource().getId().equals(v.getId())) {

@@ -24,11 +24,11 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     private String creationDate;
     private String modifiedDate;
 
-    private Set<ICPFObject> objects = new HashSet<>(0);
-    private Set<ICPFResource> resources = new HashSet<>(0);
-    private Map<String, IAttribute> properties = new HashMap<>(0);
-    private final Map<String, Map<String, String>> nodeProperties = new HashMap<>(0);
-    private final Map<String, String> originalNodeMapping = new HashMap<>(0);
+    private Set<ICPFObject> objects = new HashSet<>();
+    private Set<ICPFResource> resources = new HashSet<>();
+    private Map<String, IAttribute> properties = new HashMap<>();
+    private final Map<String, Map<String, String>> nodeProperties = new HashMap<>();
+    private final Map<String, String> originalNodeMapping = new HashMap<>();
 
 
     @Override
@@ -324,7 +324,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     public void setNodeProperty(final String nodeId, final String propertyName, final String propertyValue) {
         Map<String, String> properties = nodeProperties.get(nodeId);
         if (properties == null) {
-            properties = new HashMap<>(0);
+            properties = new HashMap<>();
             nodeProperties.put(nodeId, properties);
         }
         properties.put(propertyName, propertyValue);
@@ -367,7 +367,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Map<String, CPFNode> getNodeMap() {
-        Map<String, CPFNode> map = new HashMap<>(0);
+        Map<String, CPFNode> map = new HashMap<>();
         for (CPFNode node : getNodes()) {
             map.put(node.getId(), node);
         }

@@ -28,7 +28,7 @@ public interface ClusterService {
     /**
      * Computes the GED Matrix used by the clusterers.
      */
-    void computeGEDMatrix();
+    void computeGEDMatrix() throws RepositoryException;
 
     /**
      * Gets the clustering summary.

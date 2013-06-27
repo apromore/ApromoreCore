@@ -44,8 +44,8 @@ public class Edge implements Serializable {
     private Node targetNode;
     private Node cancelNode;
 
-    private Set<EdgeMapping> edgeMappings = new HashSet<>(0);
-    private Set<EdgeAttribute> attributes = new HashSet<>(0);
+    private Set<EdgeMapping> edgeMappings = new HashSet<>();
+    private Set<EdgeAttribute> attributes = new HashSet<>();
 
     /**
      * Public Constructor.

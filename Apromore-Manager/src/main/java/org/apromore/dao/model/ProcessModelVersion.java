@@ -48,16 +48,16 @@ public class ProcessModelVersion implements Serializable {
     private FragmentVersion rootFragmentVersion;
     private NativeType nativeType;
 
-    private Set<FragmentVersion> fragmentVersions = new HashSet<>(0);
+    private Set<FragmentVersion> fragmentVersions = new HashSet<>();
 
-    private Set<Annotation> annotations = new HashSet<>(0);
-    private Set<EditSession> editSessions = new HashSet<>(0);
-    private Set<Node> parentProcesses = new HashSet<>(0);
-    private Set<ProcessBranch> currentProcessModelVersion = new HashSet<>(0);
-    private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<>(0);
-    private Set<ProcessModelAttribute> processModelAttributes = new HashSet<>(0);
-    private Set<Object> objects = new HashSet<>(0);
-    private Set<Resource> resources = new HashSet<>(0);
+    private Set<Annotation> annotations = new HashSet<>();
+    private Set<EditSession> editSessions = new HashSet<>();
+    private Set<Node> parentProcesses = new HashSet<>();
+    private Set<ProcessBranch> currentProcessModelVersion = new HashSet<>();
+    private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<>();
+    private Set<ProcessModelAttribute> processModelAttributes = new HashSet<>();
+    private Set<Object> objects = new HashSet<>();
+    private Set<Resource> resources = new HashSet<>();
 
 
     /**

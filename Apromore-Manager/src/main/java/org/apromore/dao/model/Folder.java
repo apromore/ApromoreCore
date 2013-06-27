@@ -49,12 +49,12 @@ public class Folder implements Serializable {
     private Workspace workspace;
     private Folder parentFolder;
 
-    private Set<Process> processes = new HashSet<>(0);
-    private Set<Folder> subFolders = new HashSet<>(0);
-    private Set<Process> folderProcesses = new HashSet<>(0);
-    private Set<FolderUser> folderUsers = new HashSet<>(0);
-//    private Set<Folder> foldersForChildId = new HashSet<>(0);
-//    private Set<Folder> foldersForParentId = new HashSet<>(0);
+    private Set<Process> processes = new HashSet<>();
+    private Set<Folder> subFolders = new HashSet<>();
+    private Set<Process> folderProcesses = new HashSet<>();
+    private Set<FolderUser> folderUsers = new HashSet<>();
+//    private Set<Folder> foldersForChildId = new HashSet<>();
+//    private Set<Folder> foldersForParentId = new HashSet<>();
 
 
     /**

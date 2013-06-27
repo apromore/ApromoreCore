@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -38,7 +40,9 @@ public class Cluster implements Serializable {
     private double BCR = 0;
     private int refactoringGain = 0;
 
-    private Set<ClusterAssignment> clusterAssignments = new HashSet<>(0);
+//    private Folder folder;
+
+    private Set<ClusterAssignment> clusterAssignments = new HashSet<>();
 
     /**
      * Public Constructor.
@@ -120,6 +124,17 @@ public class Cluster implements Serializable {
     public void setRefactoringGain(final int newRefactoringGain) {
         this.refactoringGain = newRefactoringGain;
     }
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "folderId")
+//    public Folder getFolder() {
+//        return this.folder;
+//    }
+//
+//    public void setFolder(final Folder newFolder) {
+//        this.folder = newFolder;
+//    }
 
 
     @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, orphanRemoval = true)

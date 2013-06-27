@@ -40,8 +40,8 @@ public class Object implements java.io.Serializable {
     private ObjectTypeEnum type;
 
     private ProcessModelVersion processModelVersion;
-    private Set<ObjectAttribute> objectAttributes = new HashSet<>(0);
-    private Set<ObjectRef> objectRefs = new HashSet<>(0);
+    private Set<ObjectAttribute> objectAttributes = new HashSet<>();
+    private Set<ObjectRef> objectRefs = new HashSet<>();
 
 
     /**

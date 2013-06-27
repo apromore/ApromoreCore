@@ -36,7 +36,7 @@ public class Native implements Serializable {
 
     private NativeType nativeType;
     private ProcessModelVersion processModelVersion;
-    private Set<Annotation> annotations = new HashSet<>(0);
+    private Set<Annotation> annotations = new HashSet<>();
 
 
     /**
