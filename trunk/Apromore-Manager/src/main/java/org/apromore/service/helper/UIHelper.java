@@ -486,7 +486,7 @@ public class UIHelper implements UserInterfaceHelper {
             return null;
         }
 
-        List<Integer> proIds = new ArrayList<>(0);
+        List<Integer> proIds = new ArrayList<>();
         for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
             proIds.add(pvt.getProcessId());
         }

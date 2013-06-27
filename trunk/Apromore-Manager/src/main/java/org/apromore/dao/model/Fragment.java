@@ -27,8 +27,8 @@ public class Fragment implements Serializable {
     private Integer id;
     private Integer propagationPolicy;
 
-    private Set<FragmentVersion> fragmentVersions = new HashSet<>(0);
-    private Set<FragmentUser> fragmentUsers = new HashSet<>(0);
+    private Set<FragmentVersion> fragmentVersions = new HashSet<>();
+    private Set<FragmentUser> fragmentUsers = new HashSet<>();
 
 
     /**

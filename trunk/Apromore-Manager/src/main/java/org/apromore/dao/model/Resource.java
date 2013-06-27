@@ -42,9 +42,9 @@ public class Resource implements java.io.Serializable {
 
     private ProcessModelVersion processModelVersion;
 
-    private Set<Resource> specialisations = new HashSet<>(0);
-    private Set<ResourceAttribute> resourceAttributes = new HashSet<>(0);
-    private Set<ResourceRef> resourceRefs = new HashSet<>(0);
+    private Set<Resource> specialisations = new HashSet<>();
+    private Set<ResourceAttribute> resourceAttributes = new HashSet<>();
+    private Set<ResourceRef> resourceRefs = new HashSet<>();
 
 
     /**

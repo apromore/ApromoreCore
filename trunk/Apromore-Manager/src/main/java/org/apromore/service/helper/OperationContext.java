@@ -24,14 +24,14 @@ public class OperationContext {
     private Map<String, Integer> processedFragmentTypes;
 
     private FragmentVersion currentFragment;
-    private Set<Node> nodes = new HashSet<>(0);
-    private Set<CPFNode> cpfNodes = new HashSet<>(0);
-    private Set<Edge> edges = new HashSet<>(0);
-    private Set<CPFEdge> cpfEdges = new HashSet<>(0);
-    private Set<FragmentVersion> fragmentVersions = new HashSet<>(0);
+    private Set<Node> nodes = new HashSet<>();
+    private Set<CPFNode> cpfNodes = new HashSet<>();
+    private Set<Edge> edges = new HashSet<>();
+    private Set<CPFEdge> cpfEdges = new HashSet<>();
+    private Set<FragmentVersion> fragmentVersions = new HashSet<>();
 
-    private Map<String, Node> persistedNodes = new HashMap<>(0);
-    private Map<String, Edge> persistedEdges = new HashMap<>(0);
+    private Map<String, Node> persistedNodes = new HashMap<>();
+    private Map<String, Edge> persistedEdges = new HashMap<>();
 
 
     public OperationContext() {

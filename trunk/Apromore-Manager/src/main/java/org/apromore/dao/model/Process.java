@@ -41,9 +41,9 @@ public class Process implements Serializable {
     private Folder folder;
     private NativeType nativeType;
 
-    private Set<EditSession> editSessions = new HashSet<>(0);
-    private Set<ProcessBranch> processBranches = new HashSet<>(0);
-    private Set<ProcessUser> processUsers = new HashSet<>(0);
+    private Set<EditSession> editSessions = new HashSet<>();
+    private Set<ProcessBranch> processBranches = new HashSet<>();
+    private Set<ProcessUser> processUsers = new HashSet<>();
 
 
     /**

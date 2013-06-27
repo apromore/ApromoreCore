@@ -37,7 +37,7 @@ public class ProcessBranch implements Serializable {
     private Process process;
     private ProcessModelVersion currentProcessModelVersion;
     private ProcessModelVersion sourceProcessModelVersion;
-    private List<ProcessModelVersion> processModelVersions = new ArrayList<>(0);
+    private List<ProcessModelVersion> processModelVersions = new ArrayList<>();
 
 
     /**

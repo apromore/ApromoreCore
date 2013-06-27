@@ -35,7 +35,7 @@ public class Expression implements java.io.Serializable {
 
     private Node inputNode;
     private Node outputNode;
-    private Set<Edge> edges = new HashSet<>(0);
+    private Set<Edge> edges = new HashSet<>();
 
 
     public Expression() { }

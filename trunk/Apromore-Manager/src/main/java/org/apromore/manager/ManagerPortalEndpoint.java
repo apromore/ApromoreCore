@@ -464,7 +464,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            List<NameValuePair> processVersions = new ArrayList<>(0);
+            List<NameValuePair> processVersions = new ArrayList<>();
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
                 processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName(), p.getVersionNumber()));
             }
@@ -702,10 +702,14 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<CreateGEDMatrixOutputMsgType> createGedMatrix(@RequestPayload final JAXBElement<CreateGEDMatrixInputMsgType> req) {
         LOGGER.debug("Executing operation createGedMatrix");
-        CreateGEDMatrixInputMsgType payload = req.getValue();
+        //CreateGEDMatrixInputMsgType payload = req.getValue();
         CreateGEDMatrixOutputMsgType res = new CreateGEDMatrixOutputMsgType();
 
-        clusterService.computeGEDMatrix();
+        try {
+            clusterService.computeGEDMatrix();
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to create GED Matrix - " + e.getMessage());
+        }
 
         return WS_OBJECT_FACTORY.createCreateGEDMatrixResponse(res);
     }

@@ -84,7 +84,7 @@ public class InMemoryClusterer {
         LOGGER.debug("Starting the clustering process...");
         long t1 = System.currentTimeMillis();
         while (!unprocessedFragments.isEmpty()) {
-            //LOGGER.debug("Still to process: " + unprocessedFragments.size());
+            LOGGER.info("Still to process: " + unprocessedFragments.size());
             FragmentDataObject unclassifiedFragment = unprocessedFragments.remove(0);
             if (unclassifiedFragment != null) {
                 if (2 < unclassifiedFragment.getSize() && unclassifiedFragment.getSize() < settings.getMaxClusteringFragmentSize()) {
@@ -97,21 +97,18 @@ public class InMemoryClusterer {
         }
 
         if (settings.isEnableClusterOverlapping()) {
-            // excluded core objects are always overlapped. so cluster overlapping has to be enabled to perform
-            // clustering based on excluded core objects.
             Map<Integer, InMemoryCluster> excludedClusters = inMemoryExcludedObjectClusterer.clusterRepository(excluded);
             LOGGER.debug("Excluded object clusters: " + excludedClusters.size());
             clusters.putAll(excludedClusters);
         }
+
         long t2 = System.currentTimeMillis();
         long duration = t2 - t1;
-        LOGGER.debug("Time for clustering: " + duration);
+        LOGGER.info("Time for clustering: " + duration);
+        LOGGER.info("Clusters: " + clusters.size() + ", Excluded core objects: " + excluded.size());
 
-        LOGGER.debug("Clusters: " + clusters.size() + ", Excluded core objects: " + excluded.size());
-
-        // now persist clusters
         long pt1 = System.currentTimeMillis();
-        LOGGER.debug("Analyzing and persisting " + clusters.size() + " clusters in the database...");
+        LOGGER.info("Analyzing and persisting " + clusters.size() + " clusters in the database...");
 
         clusterAnalyzer.loadFragmentSizes();
         List<Cluster> cds = new ArrayList<>();
@@ -124,11 +121,9 @@ public class InMemoryClusterer {
             Set<Cluster> toBeRemovedCDs = new HashSet<>();
             for (Cluster cd : cds) {
                 if (cd.getStandardizingEffort() == 0) {
-                    // this is a cluster with exact clones (i.e. inter-fragment distances and std effort are zero)
                     toBeRemovedCDs.add(cd);
                     clusters.remove(cd.getId());
-                    LOGGER.debug("Removed cluster: " + cd.getId() +
-                            " from results as it only contains identical fragments (i.e. exact clones)");
+                    LOGGER.info("Removed cluster: " + cd.getId() + " from results as it only contains identical fragments (i.e. exact clones)");
                 }
             }
             cds.removeAll(toBeRemovedCDs);
@@ -137,10 +132,10 @@ public class InMemoryClusterer {
         buildClusters(cds, clusters.values());
         long pt2 = System.currentTimeMillis();
         long pduration = pt2 - pt1;
-        LOGGER.debug("Time for persisting clusters: " + pduration);
-
-        LOGGER.debug("Cluster persistance completed.");
+        LOGGER.info("Time for persisting clusters: " + pduration);
+        LOGGER.debug("Cluster persistence completed.");
     }
+
 
     @Transactional(readOnly = false)
     private void buildClusters(final List<Cluster> cds, final Collection<InMemoryCluster> values) {
@@ -178,7 +173,7 @@ public class InMemoryClusterer {
             unprocessedFragments = fragmentService.getUnprocessedFragments();
         } else {
             unprocessedFragments = fragmentService.getUnprocessedFragmentsOfProcesses(settings.getConstrainedProcessIds());
-            allowedFragmentIds = new ArrayList<>(0);
+            allowedFragmentIds = new ArrayList<>();
             for (FragmentDataObject f : unprocessedFragments) {
                 allowedFragmentIds.add(f.getFragmentId());
             }

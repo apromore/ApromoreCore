@@ -32,7 +32,7 @@ public class ResourceRef implements java.io.Serializable {
 
     private Node node;
     private Resource resource;
-    private Set<ResourceRefAttribute> resourceRefAttributes = new HashSet<>(0);
+    private Set<ResourceRefAttribute> resourceRefAttributes = new HashSet<>();
 
 
     /**

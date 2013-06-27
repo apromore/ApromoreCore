@@ -279,12 +279,13 @@ public class ProcessServiceImpl implements ProcessService {
                         "text/xml")));
             } else {
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
+                Process process = null;
                 if (format.equals(Constants.CANONICAL)) {
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(canoniserSrv.CPFtoString(cpt), Constants.XML_MIMETYPE)));
                 } else {
                     DecanonisedProcess dp;
                     AnnotationsType anf = null;
-                    Process process = processRepo.findOne(processId);
+                    process = processRepo.findOne(processId);
                     if (withAnn) {
                         String annotation = annotationRepo.getAnnotation(processId, branch, version, annName).getContent();
                         if (annotation != null && !annotation.equals("")) {
@@ -297,7 +298,11 @@ public class ProcessServiceImpl implements ProcessService {
                         anf = annotationSrv.preProcess(null, format, cpt, anf);
                     }
 
-                    dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
+                    if (process != null && format.startsWith("Annotations")) {
+                        dp = canoniserSrv.deCanonise(process.getNativeType().getNatType(), cpt, anf, canoniserProperties);
+                    } else {
+                        dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
+                    }
 
                     exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
@@ -936,7 +941,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
         }
 
-        Map<String, String> childMappings = new HashMap<>(0);
+        Map<String, String> childMappings = new HashMap<>();
         Set<FragmentVersionDag> childFragmentVersionDags = fragmentVersion.getChildFragmentVersionDags();
         for (FragmentVersionDag childFragment : childFragmentVersionDags) {
             childMappings.put(childFragment.getPocketId(), childFragment.getChildFragmentVersion().getId().toString());
