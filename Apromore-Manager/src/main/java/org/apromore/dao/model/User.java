@@ -50,15 +50,15 @@ public class User implements Serializable {
     private Membership membership = new Membership();
 
     private Set<Role> roles = new HashSet<>();
-    private Set<ProcessUser> processUsers = new HashSet<>(0);
-    private Set<Workspace> workspaces = new HashSet<>(0);
-    private Set<FragmentUser> fragmentUsers = new HashSet<>(0);
-    private Set<FolderUser> folderUsers = new HashSet<>(0);
-    private Set<Folder> foldersForCreatorId = new HashSet<>(0);
-    private Set<EditSession> editSessionMappings = new HashSet<>(0);
-    private Set<Folder> foldersForModifiedById = new HashSet<>(0);
-    private Set<Process> processes = new HashSet<>(0);
-    private Set<SearchHistory> searchHistories = new HashSet<>(0);
+    private Set<ProcessUser> processUsers = new HashSet<>();
+    private Set<Workspace> workspaces = new HashSet<>();
+    private Set<FragmentUser> fragmentUsers = new HashSet<>();
+    private Set<FolderUser> folderUsers = new HashSet<>();
+    private Set<Folder> foldersForCreatorId = new HashSet<>();
+    private Set<EditSession> editSessionMappings = new HashSet<>();
+    private Set<Folder> foldersForModifiedById = new HashSet<>();
+    private Set<Process> processes = new HashSet<>();
+    private Set<SearchHistory> searchHistories = new HashSet<>();
 
 
     /**

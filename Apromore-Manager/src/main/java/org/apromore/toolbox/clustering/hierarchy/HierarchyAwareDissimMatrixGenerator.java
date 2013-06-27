@@ -183,7 +183,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
             if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
-                double dissim = computeFromDissimilarityCalc(fid1, fid2); //computeFromGEDMatrixCalc(fid1, fid2);
+                double dissim = computeFromDissimilarityCalc(fid1, fid2);  //computeFromGEDMatrixCalc(fid1, fid2);
                 if (dissim <= dissThreshold) {
                     dissimmap.put(fid1, fid2, dissim);
                 }
@@ -241,16 +241,6 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
             return disim;
         } else if (crel.getFragmentSize(frag1) < DissimilarityMatrix.SMALL_FRAGMENTS || crel.getFragmentSize(frag2) < DissimilarityMatrix.SMALL_FRAGMENTS) {
             return disim;
-        }
-
-        Canonical g1 = getCanonicalGraph(frag1);
-        Canonical g2 = getCanonicalGraph(frag2);
-        for (GEDMatrixCalc calc : chain2) {
-            disim = calc.compute(g1, g2);
-            if (calc.isAboveThreshold(disim)) {
-                disim = 1.0;
-                break;
-            }
         }
 
         SimpleGraph sg1 = getSimpleGraph(frag1);

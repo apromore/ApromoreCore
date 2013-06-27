@@ -240,19 +240,16 @@ CREATE TABLE `fragment_version` (
   `fragment_type` varchar(10),
   `newest_neighbor` varchar(40),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_fragments_version` FOREIGN KEY (`fragmentId`) REFERENCES `fragment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_fragments_version` FOREIGN KEY (`fragmentId`) REFERENCES `fragment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_cluster_version` FOREIGN KEY (`clusterId`) REFERENCES `cluster` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_fragment_map` (
   `processModelVersionId` int(11) NOT NULL,
   `fragmentVersionId` int(11) NOT NULL,
   PRIMARY KEY (`processModelVersionId` , `fragmentVersionId`),
-  CONSTRAINT `fk_process_model_versions_map` FOREIGN KEY (`processModelVersionId`)
-  REFERENCES `process_model_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_fragment_versions_map` FOREIGN KEY (`fragmentVersionId`)
-  REFERENCES `fragment_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_process_model_versions_map` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_fragment_versions_map` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `fragment_version_dag` (
@@ -262,12 +259,8 @@ CREATE TABLE `fragment_version_dag` (
   `pocketId` varchar(40),
   PRIMARY KEY (`id`),
   UNIQUE KEY `un_fragment_version_dag` (`fragmentVersionId` , `childFragmentVersionId` , `pocketId`),
-  CONSTRAINT `fk_fragment_version_dag` FOREIGN KEY (`fragmentVersionId`)
-  REFERENCES `fragment_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_child_fragment_version_dag` FOREIGN KEY (`childFragmentVersionId`)
-  REFERENCES `fragment_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_fragment_version_dag` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_child_fragment_version_dag` FOREIGN KEY (`childFragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `node` (
@@ -739,15 +732,14 @@ CREATE TABLE `process_model_attribute` (
   `value` longtext,
   `any` longtext NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_pmv_att_pmv` FOREIGN KEY (`processModelVersionId`)
-  REFERENCES `process_model_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_pmv_att_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
 CREATE TABLE `cluster` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+-- `folderId` int(11) NOT NULL,
   `size` int,
   `avg_fragment_size` float,
   `medoid_id` varchar(40),
@@ -755,9 +747,8 @@ CREATE TABLE `cluster` (
   `std_effort` double,
   `refactoring_gain` int,
   PRIMARY KEY (`id`)
+-- CONSTRAINT `fk_clusterfolder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `fragment_version` ADD CONSTRAINT `fk_cluster_version` FOREIGN KEY (`clusterId`) REFERENCES `cluster` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE `fragment_distance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -35,7 +35,7 @@ public class ToolboxData {
 
 
     public ToolboxData() {
-        model = new HashMap<>(0);
+        model = new HashMap<>();
     }
 
 

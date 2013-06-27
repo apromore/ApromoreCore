@@ -102,20 +102,20 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
     /**
-     * @see org.apromore.service.ClusterService#cluster(org.apromore.service.model.ClusterSettings)
+     * @see org.apromore.service.ClusterService#computeGEDMatrix()
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public void computeGEDMatrix() {
+    public void computeGEDMatrix() throws RepositoryException {
         LOGGER.debug("Computing the GED Matrix....");
+        clearGEDMatrix();
+
         try {
-            fdRepository.deleteAll();
-            fdRepository.flush();
             dmatrix.compute();
         } catch (Exception e) {
             LOGGER.error("An error occurred while computing the GED matrix for the first time. This could result in lesser number of clusters. PLEASE RERUN THE COMPUTATION.", e);
-            e.printStackTrace();
+            throw new RepositoryException(e);
         }
         LOGGER.debug("Completed computing the GED Matrix....");
     }
@@ -273,7 +273,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     public Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException {
         FragmentDistance fragmentDistance;
-        Map<FragmentPair, Double> pairDistances = new HashMap<>(0);
+        Map<FragmentPair, Double> pairDistances = new HashMap<>();
         double distance;
         Integer fid1;
         Integer fid2;
@@ -317,6 +317,11 @@ public class ClusterServiceImpl implements ClusterService {
         caRepository.deleteAll();
     }
 
+    /* Delete the previous GED MATRIX run. */
+    @Transactional(readOnly = false)
+    private void clearGEDMatrix() {
+        fdRepository.deleteAll();
+    }
 
 
 }

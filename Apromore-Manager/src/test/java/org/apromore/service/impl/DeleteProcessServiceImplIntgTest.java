@@ -68,7 +68,7 @@ public class DeleteProcessServiceImplIntgTest {
         assertThat(pst, notNullValue());
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>(0);
+        List<NameValuePair> deleteList = new ArrayList<>();
         deleteList.add(new NameValuePair(name, branch));
         pSrv.deleteProcessModel(deleteList);
 
@@ -96,7 +96,7 @@ public class DeleteProcessServiceImplIntgTest {
         cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>(0);
+        List<NameValuePair> deleteList = new ArrayList<>();
         deleteList.add(new NameValuePair(name, branch));
         pSrv.deleteProcessModel(deleteList);
 

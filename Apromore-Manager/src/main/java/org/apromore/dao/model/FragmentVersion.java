@@ -48,9 +48,9 @@ public class FragmentVersion implements Serializable {
     private Cluster cluster;
     private Fragment fragment;
 
-    private Set<ProcessModelVersion> processModelVersions = new HashSet<>(0);
-    private Set<ProcessModelVersion> rootProcessModelVersions = new HashSet<>(0);
-    private Set<FragmentVersionDag> childFragmentVersionDags = new HashSet<>(0);
+    private Set<ProcessModelVersion> processModelVersions = new HashSet<>();
+    private Set<ProcessModelVersion> rootProcessModelVersions = new HashSet<>();
+    private Set<FragmentVersionDag> childFragmentVersionDags = new HashSet<>();
 
 
 

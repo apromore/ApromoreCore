@@ -83,7 +83,7 @@ public class UpdateProcessServiceImplIntgTest {
         pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp);
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>(0);
+        List<NameValuePair> deleteList = new ArrayList<>();
         deleteList.add(new NameValuePair(name, branch));
         pSrv.deleteProcessModel(deleteList);
 
