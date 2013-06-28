@@ -180,7 +180,7 @@
         <maven.release.plugin>2.4</maven.release.plugin>
         <maven.resources.plugin>2.6</maven.resources.plugin>
         <maven.site.plugin>3.2</maven.site.plugin>
-        <maven.sonar.plugin>3.3</maven.sonar.plugin>
+        <maven.sonar.plugin>3.5.1</maven.sonar.plugin>
         <maven.source.plugin>2.2.1</maven.source.plugin>
         <maven.surefire.plugin>2.14.1</maven.surefire.plugin>
         <maven.taglist.plugin>2.4</maven.taglist.plugin>
@@ -1098,6 +1098,11 @@
                     <artifactId>maven-par-plugin</artifactId>
                     <version>${maven.par.plugin}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.sonar</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${maven.sonar.plugin}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -1431,6 +1436,11 @@
                     </archive>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.sonar</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${maven.sonar.plugin}</version>
             </plugin>
         </plugins>
     </build>
