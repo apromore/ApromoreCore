@@ -39,7 +39,7 @@ public interface AnnotationProcessorProvider {
      * @param processType for example "EPML 2.0" or "YAWL 2.2"
      * @return Set of Annotations
      */
-    Set<AnnotationProcessor> listBySourceAndTargetProcessType(String processType);
+    Set<AnnotationProcessor> listBySourceAndTargetProcessType(String processType) throws PluginNotFoundException;
 
     /**
      * List all available Annotation Post Processors converting the specified native type with the exact name.
@@ -48,7 +48,7 @@ public interface AnnotationProcessorProvider {
      * @param name usually the full class name of the Annotation
      * @return Set of Annotations
      */
-    Set<AnnotationProcessor> listBySourceAndTargetProcessTypeAndName(String processType, String name);
+    Set<AnnotationProcessor> listBySourceAndTargetProcessTypeAndName(String processType, String name) throws PluginNotFoundException;
 
     /**
      * Return the first Annotation Post Processors that is found with the given parameters.
