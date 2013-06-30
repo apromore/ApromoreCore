@@ -10,7 +10,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultAbstractAnnotationProcessorTest {
+public class DefaultAnnotationProcessorUnitTest {
 
     private DefaultAbstractAnnotationProcessor defaultAbstractAnnotationProcessor;
 
