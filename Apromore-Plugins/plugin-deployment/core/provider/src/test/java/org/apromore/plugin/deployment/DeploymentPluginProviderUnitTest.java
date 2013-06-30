@@ -13,7 +13,7 @@ import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DeploymentPluginProviderTest {
+public class DeploymentPluginProviderUnitTest {
 
     private DeploymentPluginProviderImpl provider;
     private MockDeploymentPlugin mockPlugin;

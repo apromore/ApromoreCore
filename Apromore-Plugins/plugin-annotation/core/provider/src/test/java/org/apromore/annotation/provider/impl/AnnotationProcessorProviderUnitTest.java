@@ -38,7 +38,7 @@ import org.junit.rules.ExpectedException;
  * Tests for the annotation post processor Provider
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class AnnotationProcessorProviderTest {
+public class AnnotationProcessorProviderUnitTest {
 
     private AnnotationProcessorProviderImpl provider;
 
