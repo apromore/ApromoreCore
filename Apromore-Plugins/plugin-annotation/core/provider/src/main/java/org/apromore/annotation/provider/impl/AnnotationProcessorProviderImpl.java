@@ -61,7 +61,7 @@ public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvi
      * @see org.apromore.annotation.provider.AnnotationProcessorProvider#
      */
     @Override
-    public final Set<AnnotationProcessor> listBySourceAndTargetProcessType(String processType) {
+    public final Set<AnnotationProcessor> listBySourceAndTargetProcessType(String processType) throws PluginNotFoundException {
         return Collections.unmodifiableSet(findAllAnnotationProcessors(processType, null, null));
     }
 
@@ -70,7 +70,7 @@ public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvi
      * @see org.apromore.annotation.provider.AnnotationProcessorProvider#
      */
     @Override
-    public final Set<AnnotationProcessor> listBySourceAndTargetProcessTypeAndName(String processType, String name) {
+    public final Set<AnnotationProcessor> listBySourceAndTargetProcessTypeAndName(String processType, String name) throws PluginNotFoundException {
         return Collections.unmodifiableSet(findAllAnnotationProcessors(processType, name, null));
     }
 
@@ -107,7 +107,8 @@ public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvi
      * @param version    can be NULL
      * @return List of Canonisers or empty List
      */
-    private Set<AnnotationProcessor> findAllAnnotationProcessors(String processType, final String name, final String version) {
+    private Set<AnnotationProcessor> findAllAnnotationProcessors(String processType, final String name, final String version)
+            throws PluginNotFoundException {
         final Set<AnnotationProcessor> cList = new HashSet<>();
 
         for (final AnnotationProcessor c : getAnnotationProcessorSet()) {
@@ -116,6 +117,10 @@ public class AnnotationProcessorProviderImpl implements AnnotationProcessorProvi
                     PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 cList.add(c);
             }
+        }
+        if (cList.isEmpty()) {
+            throw new PluginNotFoundException("Could not find plugin with name: " + ((name != null) ? name : "null") + " version: "
+                    + ((version != null) ? version : "null") + " processType: " + ((processType != null) ? processType : "null"));
         }
         return cList;
     }
