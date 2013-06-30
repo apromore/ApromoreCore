@@ -10,7 +10,7 @@ import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.junit.Test;
 
-public class DefaultDeploymentPluginTest {
+public class DefaultDeploymentPluginUnitTest {
 
     @Test
     public void testGetNativeType() {

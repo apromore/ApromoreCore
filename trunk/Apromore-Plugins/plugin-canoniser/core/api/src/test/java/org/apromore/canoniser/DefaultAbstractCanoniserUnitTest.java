@@ -17,7 +17,7 @@ import org.apromore.plugin.PluginResult;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultAbstractCanoniserTest {
+public class DefaultAbstractCanoniserUnitTest {
 
     private DefaultAbstractCanoniser defaultAbstractCanoniser;
 

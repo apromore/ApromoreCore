@@ -40,7 +40,7 @@ import org.junit.rules.ExpectedException;
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  *
  */
-public class CanoniserProviderTest {
+public class CanoniserProviderUnitTest {
 
 	private CanoniserProviderImpl provider;
 
