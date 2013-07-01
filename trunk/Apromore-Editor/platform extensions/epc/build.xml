@@ -62,6 +62,6 @@
     <target name="com.signavio.extension.copy2Platform"
             depends="com.signavio.extension.jar, com.signavio.extension.jar, com.signavio.extension.copy2Platform.lib">
         <copy file="${target}/${jar-file}.jar" todir="${platform-lib}"/>
-        <copy file="../../../Apromore-Schema/epml-schema/target/epml-schema.jar" todir="${platform-lib}"/>
+        <copy file="../../target/dependencies/*.jar" todir="${platform-lib}"/>
     </target>
 </project>
