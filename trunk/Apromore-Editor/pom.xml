@@ -92,7 +92,6 @@
                                 <copy todir="target/dependencies">
                                     <fileset refid="mydeps.org.apromore:epml-schema:jar"/>
                                 </copy>
-                                <!--<copy file="${PlatformDepends}" todir="target/dependencies" />-->
 
                                 <ant target="build-all" dir="platform extensions" />
 

@@ -26,6 +26,7 @@ public class ResourceRefAttribute implements java.io.Serializable {
     private Integer id;
     private String name;
     private String value;
+    private String any;
 
     private ResourceRef resourceRef;
 
@@ -75,6 +76,15 @@ public class ResourceRefAttribute implements java.io.Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Column(name = "any")
+    public String getAny() {
+        return this.any;
+    }
+
+    public void setAny(String any) {
+        this.any = any;
     }
 
 

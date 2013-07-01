@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -300,6 +301,17 @@ public class ProcessModelVersion implements Serializable {
         this.resources = resourceTypes;
     }
 
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(originalId)
+                .append(versionNumber)
+                .append(numVertices)
+                .append(numEdges)
+                .toHashCode();
+    }
 
     @Override
     public boolean equals(java.lang.Object obj) {

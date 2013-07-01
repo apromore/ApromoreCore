@@ -26,6 +26,7 @@ public class NodeAttribute {
     private Integer id;
     private String name;
     private String value;
+    private String any;
 
     private Node node;
 
@@ -74,6 +75,15 @@ public class NodeAttribute {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Column(name = "any")
+    public String getAny() {
+        return this.any;
+    }
+
+    public void setAny(String any) {
+        this.any = any;
     }
 
 

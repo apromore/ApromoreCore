@@ -605,6 +605,7 @@ CREATE TABLE `object_attribute` (
   `objectId` int(11) DEFAULT NULL,
   `name` varchar(255),
   `value` longtext,
+  `any` longtext NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_obj_att_obj` FOREIGN KEY (`objectId`)
   REFERENCES `object` (`id`)
@@ -632,6 +633,7 @@ CREATE TABLE `object_ref_attribute` (
   `objectRefId` int(11) DEFAULT NULL,
   `name` varchar(255),
   `value` longtext,
+  `any` longtext NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_objref_att` FOREIGN KEY (`objectRefId`)
   REFERENCES `object_ref` (`id`)
@@ -670,6 +672,7 @@ CREATE TABLE `resource_attribute` (
   `resourceId` int(11) DEFAULT NULL,
   `name` varchar(255),
   `value` longtext,
+  `any` longtext NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_res_att_res` FOREIGN KEY (`resourceId`)
   REFERENCES `resource` (`id`)
@@ -695,6 +698,7 @@ CREATE TABLE `resource_ref_attribute` (
   `resourceRefId` int(11) DEFAULT NULL,
   `name` varchar(255),
   `value` longtext,
+  `any` longtext NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_resref_att` FOREIGN KEY (`resourceRefId`)
   REFERENCES `resource_ref` (`id`)

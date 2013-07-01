@@ -68,6 +68,7 @@
                             javax.wsdl.extensions,
                             com.google.common.base,
                             org.springframework.ws.transport.http,
+                            com.sun.org.apache.xerces.internal.dom,
                             com.sun.xml.bind.v2, <!-- JAXB RI implementation from SUN for BPMN Canoniser -->
                             !edu.sussex.nlp.jws,
                             !junit*,
