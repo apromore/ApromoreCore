@@ -39,6 +39,7 @@ import org.apromore.graph.canonical.ObjectTypeEnum;
 import org.apromore.graph.canonical.ResourceTypeEnum;
 import org.apromore.service.GraphService;
 import org.apromore.util.FragmentUtil;
+import org.apromore.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -332,7 +333,7 @@ public class GraphServiceImpl implements GraphService {
     private void addNodeAttributes(final Node node, INode cpfNode) {
         if (node.getAttributes() != null) {
             for (NodeAttribute n : node.getAttributes()) {
-                cpfNode.addAttribute(n.getName(), n.getValue());
+                cpfNode.addAttribute(n.getName(), n.getValue(), XMLUtils.stringToAnyElement(n.getAny()));
             }
         }
     }
@@ -368,8 +369,7 @@ public class GraphServiceImpl implements GraphService {
                     }
 
                     for (ObjectAttribute attrib : object.getObjectAttributes()) {
-                        // TODO: cpfObject.setAttribute(attrib.getName(), attrib.getValue(), attrib.getAny());
-                        cpfObject.setAttribute(attrib.getName(), attrib.getValue());
+                        cpfObject.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
                     }
 
                     canonical.addObject(cpfObject);
@@ -415,8 +415,7 @@ public class GraphServiceImpl implements GraphService {
                         cpfResource.getSpecializationIds().add(specialRes.getUri());
                     }
                     for (ResourceAttribute attrib : resource.getResourceAttributes()) {
-                        // TODO: cpfResource.setAttribute(attrib.getName(), attrib.getValue(), attrib.getAny());
-                        cpfResource.setAttribute(attrib.getName(), attrib.getValue());
+                        cpfResource.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
                     }
 
                     canonical.addResource(cpfResource);
@@ -425,6 +424,7 @@ public class GraphServiceImpl implements GraphService {
         }
     }
 
+    // Add Object References to the graph.
     private void addObjectReferences(final Node node, INode cpfNode) {
         ICPFObjectReference objectReference;
         if (node.getObjectRefs() != null) {
@@ -441,8 +441,7 @@ public class GraphServiceImpl implements GraphService {
                 objectReference.setObjectRefType(objectRef.getType());
 
                 for (ObjectRefAttribute type : objectRef.getObjectRefAttributes()) {
-                    // TODO: objectReference.setAttribute(type.getName(), type.getValue(), type.getAny());
-                    objectReference.setAttribute(type.getName(), type.getValue());
+                    objectReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
                 }
 
                 cpfNode.addObjectReference(objectReference);
@@ -464,8 +463,7 @@ public class GraphServiceImpl implements GraphService {
                 resourceReference.setQualifier(resourceRef.getQualifier());
 
                 for (ResourceRefAttribute type : resourceRef.getResourceRefAttributes()) {
-                    // TODO: resourceReference.setAttribute(type.getName(), type.getValue(), type.getAny());
-                    resourceReference.setAttribute(type.getName(), type.getValue());
+                    resourceReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
                 }
 
                 cpfNode.addResourceReference(resourceReference);

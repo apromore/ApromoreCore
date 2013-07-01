@@ -28,6 +28,7 @@ public class ObjectAttribute implements java.io.Serializable {
     private Integer id;
     private String name;
     private String value;
+    private String any;
 
     private Object object;
 
@@ -76,6 +77,15 @@ public class ObjectAttribute implements java.io.Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Column(name = "any")
+    public String getAny() {
+        return this.any;
+    }
+
+    public void setAny(String any) {
+        this.any = any;
     }
 
 

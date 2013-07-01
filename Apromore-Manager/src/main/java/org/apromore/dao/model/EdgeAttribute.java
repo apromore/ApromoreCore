@@ -26,6 +26,7 @@ public class EdgeAttribute {
     private Integer id;
     private String name;
     private String value;
+    private String any;
 
     private Edge edge;
 
@@ -76,6 +77,16 @@ public class EdgeAttribute {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Column(name = "any")
+    public String getAny() {
+        return this.any;
+    }
+
+    public void setAny(String any) {
+        this.any = any;
+    }
+
 
 
     @ManyToOne

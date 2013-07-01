@@ -356,7 +356,8 @@ CREATE TABLE object_attribute
    id int auto_increment PRIMARY KEY NOT NULL,
    objectId int,
    name varchar(255),
-   value longtext
+   value longtext,
+   any longtext
 )
 ;
 CREATE TABLE object_ref
@@ -374,7 +375,8 @@ CREATE TABLE object_ref_attribute
    id int auto_increment PRIMARY KEY NOT NULL,
    objectRefId int,
    name varchar(255),
-   value longtext
+   value longtext,
+   any longtext
 )
 ;
 CREATE TABLE permission
@@ -469,7 +471,8 @@ CREATE TABLE resource_attribute
    id int auto_increment PRIMARY KEY NOT NULL,
    resourceId int,
    name varchar(255),
-   value longtext
+   value longtext,
+   any longtext
 )
 ;
 CREATE TABLE resource_ref
@@ -485,7 +488,8 @@ CREATE TABLE resource_ref_attribute
    id int auto_increment PRIMARY KEY NOT NULL,
    resourceRefId int,
    name varchar(255),
-   value longtext
+   value longtext,
+   any longtext
 )
 ;
 CREATE TABLE resource_specialisations
