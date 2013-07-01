@@ -21,6 +21,13 @@
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Editor</developerConnection>
     </scm>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -69,6 +76,9 @@
                     <execution>
                         <id>package</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                         <configuration>
                             <target>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
@@ -76,14 +86,18 @@
                                 <property name="test_classpath" refid="maven.test.classpath"/>
                                 <property name="plugin_classpath" refid="maven.plugin.classpath"/>
 
-                                <ant target="build-all" dir="platform extensions" inheritall="false"/>
+                                <dependencyfilesets prefix="mydeps."/>
+                                <mkdir dir="target/dependencies" />
+                                <copy todir="target/dependencies">
+                                    <fileset refid="mydeps.org.apromore:epml-schema:jar"/>
+                                </copy>
+                                <!--<copy file="${PlatformDepends}" todir="target/dependencies" />-->
+
+                                <ant target="build-all" dir="platform extensions" />
 
                                 <ant target="build-all-in-one-war" inheritall="false" />
                             </target>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                     <execution>
                         <id>test</id>
