@@ -22,9 +22,6 @@
         <mkdir dir="${build}"/>
         <javac srcdir="${src}" destdir="${build}" debug="on" target="1.7" includeantruntime="false">
             <classpath id="libs">
-                <!--<fileset dir="../../../Apromore-Schema/epml-schema/target">-->
-                    <!--<include name="epml-schema.jar"/>-->
-                <!--</fileset>-->
                 <fileset dir="${platform-lib}">
                     <include name="**/*.jar"/>
                 </fileset>
