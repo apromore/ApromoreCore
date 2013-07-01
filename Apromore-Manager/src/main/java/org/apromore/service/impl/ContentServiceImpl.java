@@ -31,12 +31,14 @@ import org.apromore.graph.canonical.ICPFResourceReference;
 import org.apromore.graph.canonical.INode;
 import org.apromore.service.ContentService;
 import org.apromore.service.helper.OperationContext;
+import org.apromore.util.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of the FormatService Contract.
@@ -158,10 +160,14 @@ public class ContentServiceImpl implements ContentService {
             nAtt = new NodeAttribute();
             nAtt.setName(e.getKey());
             nAtt.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                nAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             nAtt.setNode(node);
             node.getAttributes().add(nAtt);
         }
     }
+
 
     /* Add the Object References to the Node. */
     private void addObjectReferences(Node node, INode cpfNode, Set<Object> objects) {
@@ -197,6 +203,9 @@ public class ContentServiceImpl implements ContentService {
             oAtt = new ObjectRefAttribute();
             oAtt.setName(e.getKey());
             oAtt.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                oAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             oAtt.setObjectRef(obj);
 
             obj.getObjectRefAttributes().add(oAtt);
@@ -235,6 +244,9 @@ public class ContentServiceImpl implements ContentService {
             resourceAttribute = new ResourceRefAttribute();
             resourceAttribute.setName(e.getKey());
             resourceAttribute.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                resourceAttribute.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             resourceAttribute.setResourceRef(resourceRef);
 
             resourceRef.getResourceRefAttributes().add(resourceAttribute);
@@ -300,6 +312,9 @@ public class ContentServiceImpl implements ContentService {
             edgeAttribute = new EdgeAttribute();
             edgeAttribute.setName(e.getKey());
             edgeAttribute.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                edgeAttribute.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             edgeAttribute.setEdge(edge);
             edge.getAttributes().add(edgeAttribute);
         }

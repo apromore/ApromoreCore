@@ -279,7 +279,7 @@ public class ProcessServiceImpl implements ProcessService {
                         "text/xml")));
             } else {
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
-                Process process = null;
+                Process process;
                 if (format.equals(Constants.CANONICAL)) {
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(canoniserSrv.CPFtoString(cpt), Constants.XML_MIMETYPE)));
                 } else {
@@ -780,7 +780,7 @@ public class ProcessServiceImpl implements ProcessService {
                 pmvAtt.setName(obj.getKey());
                 pmvAtt.setValue(obj.getValue().getValue());
                 if (obj.getValue().getAny() instanceof Element) {
-                    pmvAtt.setValue(XMLUtils.anyElementToString((Element) obj.getValue().getAny()));
+                    pmvAtt.setAny(XMLUtils.anyElementToString((Element) obj.getValue().getAny()));
                 }
                 pmvAtt.setProcessModelVersion(process);
                 process.getProcessModelAttributes().add(pmvAtt);
@@ -820,6 +820,9 @@ public class ProcessServiceImpl implements ProcessService {
             objAtt = new ObjectAttribute();
             objAtt.setName(e.getKey());
             objAtt.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                objAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             objAtt.setObject(object);
 
             object.getObjectAttributes().add(objAtt);
@@ -865,6 +868,9 @@ public class ProcessServiceImpl implements ProcessService {
             resAtt = new ResourceAttribute();
             resAtt.setName(e.getKey());
             resAtt.setValue(e.getValue().getValue());
+            if (e.getValue().getAny() instanceof Element) {
+                resAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            }
             resAtt.setResource(resource);
 
             resource.getResourceAttributes().add(resAtt);

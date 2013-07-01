@@ -1,5 +1,7 @@
 package org.apromore.toolbox.similaritySearch.graph;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apromore.toolbox.similaritySearch.common.Settings;
 
 import java.math.BigInteger;
@@ -284,14 +286,11 @@ public class Vertex {
             parentNodes.add(parent);
     }
 
-    public boolean equals(Vertex v2) {
-        if (this.ID.equals(v2.getID())
-                ) {
-            return true;
-        }
-        return false;
-
-    }
+//
+//    public boolean equals(Vertex v2) {
+//        return this.ID.equals(v2.getID());
+//
+//    }
 
     public Vertex(String gwTypeString, String ID) {
         vertexType = Type.gateway;
@@ -408,5 +407,29 @@ public class Vertex {
             return "CpfGateway(" + getID() + ", " + getGWType()/*+ "P("+printList(parentNodes)+"), CH("+printList(childNodes)+"))"*/;
         }
         return "Node(" + getID() + ", " + getLabel() + ")";
+    }
+
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(ID)
+                .append(vertexType)
+                .append(label)
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object obj) {
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Vertex rhs = (Vertex) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(ID, rhs.ID)
+                .isEquals();
     }
 }
