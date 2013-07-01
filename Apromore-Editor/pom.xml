@@ -25,6 +25,7 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 
