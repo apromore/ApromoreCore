@@ -42,10 +42,8 @@
     <target name="com.signavio.extension.jar" depends="com.signavio.extension.compile">
         <mkdir dir="${target}"/>
         <jar destfile="${target}/${jar-file}.jar" update="false">
-
             <fileset dir="${build}">
             </fileset>
-
         </jar>
     </target>
 
@@ -62,6 +60,10 @@
     <target name="com.signavio.extension.copy2Platform"
             depends="com.signavio.extension.jar, com.signavio.extension.jar, com.signavio.extension.copy2Platform.lib">
         <copy file="${target}/${jar-file}.jar" todir="${platform-lib}"/>
-        <copy file="../../target/dependencies/epml-schema-1.1.jar" todir="${platform-lib}"/>
+        <copy todir="${platform-lib}">
+            <fileset dir="../../target/dependencies" >
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
     </target>
 </project>
