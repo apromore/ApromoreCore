@@ -117,7 +117,7 @@ public class GraphToCanonical {
     /* Builds a list of Nodes and Edges corresponding to a Net Id. */
     private Map<String, NetData> buildNetNodeEdgeMap(Canonical graph) {
         NetData netData;
-        Map<String, NetData> data = new HashMap<String, NetData>(0);
+        Map<String, NetData> data = new HashMap<>();
         for (CPFEdge edge : graph.getEdges()) {
             if (!data.containsKey(edge.getSource().getNetId())) {
                 netData = new NetData();
@@ -277,7 +277,7 @@ public class GraphToCanonical {
 
     private List<TypeAttribute> buildAttributeList(final Map<String, IAttribute> attributes) {
         TypeAttribute typAtt;
-        List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
+        List<TypeAttribute> atts = new ArrayList<>();
         for (Entry<String, IAttribute> e : attributes.entrySet()) {
             typAtt = new TypeAttribute();
             typAtt.setName(e.getKey());
@@ -477,6 +477,7 @@ public class GraphToCanonical {
         updateOutputExpressions(output, node);
         updateObjectReferences(output, node);
         updateResourceReferences(output, node);
+        updateAttributes(output, node);
     }
 
     /* Updates the List of Cancel Nodes for a Work Node. */
@@ -551,13 +552,24 @@ public class GraphToCanonical {
         }
     }
 
+    private void updateAttributes(WorkType output, CPFNode node) {
+        TypeAttribute typeAttribute;
+        for (Entry<String, IAttribute> attribute : node.getAttributes().entrySet()) {
+            typeAttribute = new TypeAttribute();
+            typeAttribute.setName(attribute.getKey());
+            typeAttribute.setValue(attribute.getValue().getValue());
+            typeAttribute.setAny(attribute.getValue().getAny());
+            output.getAttribute().add(typeAttribute);
+        }
+    }
+
 
     /**
      * Class to store the Nodes and Edges for a particular Net.
      */
     public class NetData {
-        Set<CPFNode> nodes = new HashSet<CPFNode>(0);
-        Set<CPFEdge> edges = new HashSet<CPFEdge>(0);
+        Set<CPFNode> nodes = new HashSet<>();
+        Set<CPFEdge> edges = new HashSet<>();
 
         public Set<CPFNode> getNodes() {
             return nodes;
