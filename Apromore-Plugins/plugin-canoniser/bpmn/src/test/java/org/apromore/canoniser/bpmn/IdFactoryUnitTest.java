@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
-public class IdFactoryTest {
+public class IdFactoryUnitTest {
 
     /**
      * Test {@link IdFactory#NCNAME} regular expression.

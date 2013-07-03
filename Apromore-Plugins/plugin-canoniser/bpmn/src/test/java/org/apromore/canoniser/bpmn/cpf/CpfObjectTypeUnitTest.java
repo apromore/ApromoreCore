@@ -15,7 +15,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfObjectTypeTest {
+public class CpfObjectTypeUnitTest {
 
     /** Test instance. */
     CpfObjectTypeImpl object;
