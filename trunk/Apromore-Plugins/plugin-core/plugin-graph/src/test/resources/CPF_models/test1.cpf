@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="basic" version="1.0" name="Basic" rootIds="c6">
+    <Net id="c6">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c1">
+            <name>E1</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c2">
+            <name>E2</name>
+        </Node>
+        <Edge id="c4" sourceId="c1" targetId="c2"/>
+    </Net>
+</ns2:CanonicalProcess>

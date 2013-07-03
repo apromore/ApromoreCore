@@ -1,5 +1,10 @@
 package org.apromore.graph.canonical.converter;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.AllocationStrategyEnum;
@@ -31,6 +36,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
@@ -368,12 +374,34 @@ public class GraphToCanonical {
     private NodeType constructTimerType(final CPFNode node) {
         TimerType type = new TimerType();
         updateWorkNodeData(type, node);
-        //        if (node.getTimeDate() != null) {
-        //            XMLGregorianCalendar date = new XMLGregorianCalendar();
-        //            type.setTimeDate(new XMLGregorianCalendar().setMillisecond(node.getTimeDate().getTime().getTime()));
-        //        }
-        //        type.setTimeDuration();
-        //        type.setTimeExpression();
+
+        if (node.getTimeDate() != null) {
+            XMLGregorianCalendar date;
+            try {
+                date = DatatypeFactory.newInstance().newXMLGregorianCalendar(node.getTimeDate());
+            } catch (DatatypeConfigurationException e) {
+                date = null;
+            }
+            type.setTimeDate(date);
+        }
+        if (node.getTimeDuration() != null && !node.getTimeDuration().equals("")) {
+            Duration duration;
+            try {
+                duration = DatatypeFactory.newInstance().newDuration(node.getTimeDuration());
+            } catch (DatatypeConfigurationException e) {
+                duration = null;
+            }
+            type.setTimeDuration(duration);
+        }
+        if (node.getTimeExpression() != null) {
+            TimerExpressionType timeExpr = new TimerExpressionType();
+            timeExpr.setDescription(node.getTimeExpression().getDescription());
+            timeExpr.setExpression(node.getTimeExpression().getExpression());
+            timeExpr.setLanguage(node.getTimeExpression().getLanguage());
+            timeExpr.setReturnType(node.getTimeExpression().getReturnType());
+            type.setTimeExpression(timeExpr);
+        }
+
         return type;
     }
 
