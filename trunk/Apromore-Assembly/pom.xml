@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>apromore-assembly</artifactId>
-    <packaging>par</packaging>
+    <packaging>pom</packaging>
     <name>Apromore Bundle Assembly</name>
 
     <properties>
@@ -81,17 +81,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-api-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -101,12 +91,28 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api-provider</artifactId>
+            <artifactId>deployment-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api</artifactId>
+            <artifactId>search-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -116,15 +122,9 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>search-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
             <artifactId>search-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-
 
         <!-- *** Plugin Implementation Bundles *** -->
         <dependency>
@@ -144,62 +144,6 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-graph</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Canoniser Plugins -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-aris</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-bpmn</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-epml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-pnml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-xpdl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-yawl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Annotation Pre Processor Plugins -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-bpmn</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-xpdl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-epml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Deployment Plugins -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-yawl</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -323,14 +267,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-par-plugin</artifactId>
-                <configuration>
-                    <applicationSymbolicName>apromore</applicationSymbolicName>
-                    <applicationDescription>Advance Process Modelling Repository</applicationDescription>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

@@ -15,9 +15,10 @@
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
 
     <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
-    <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/" />
-    <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/" />
-    <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/" />
+    <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
+    <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/"/>
+    <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
+    <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
 
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
 
@@ -64,6 +65,7 @@
             <fileset dir="${dir-virgo}">
                 <include name="pickup/*.jar"/>
                 <include name="pickup/*.war"/>
+                <include name="pickup/*.plan"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.0.RELEASE.par"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.0.RELEASE.jar"/>
                 <exclude name="pickup/org.eclipse.virgo.management.console_3.6.0.RELEASE.jar"/>
@@ -118,39 +120,31 @@
             <fileset refid="usrRepo"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="webAppRepo"/>
             <fileset refid="pickupRepo"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
-            <fileset refid="webAppRepo"/>
+            <fileset dir="${dir-annotation}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-deploy}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
         </copy>
-
-        <!-- Plugins -->
-        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
-            <!--<fileset dir="${dir-annotation}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="core/**/*.jar"/>-->
-            <!--</fileset>-->
-        <!--</copy>-->
-        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
-            <!--<fileset dir="${dir-canoniser}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="core/**/*.jar"/>-->
-            <!--</fileset>-->
-        <!--</copy>-->
-        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
-            <!--<fileset dir="${dir-deploy}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="core/**/*.jar"/>-->
-            <!--</fileset>-->
-        <!--</copy>-->
     </target>
 
 
     <fileset id="pickupRepo" dir=".">
-        <include name="Apromore-Assembly/**/*.par"/>
+        <include name="Apromore-Assembly/**/*.plan"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">

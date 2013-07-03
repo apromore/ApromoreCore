@@ -200,6 +200,7 @@ org.osgi.framework.system.packages = \
  org.xml.sax;version="1.3",\
  org.xml.sax.ext;version="1.3",\
  org.xml.sax.helpers;version="1.3",\
+ com.sun.org.apache.xerces.internal.dom,\
  sun.misc
 org.osgi.framework.bootdelegation = \
  org.eclipse.virgo.nano.authentication,\
