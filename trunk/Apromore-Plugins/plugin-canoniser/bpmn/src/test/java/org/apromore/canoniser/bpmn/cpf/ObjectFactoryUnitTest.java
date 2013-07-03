@@ -48,7 +48,7 @@ import org.apromore.cpf.XORSplitType;
  * @see <a href="http://apromore.org/wp-content/uploads/2010/12/AProMoReCanonization_v1.0.pdf">Canonization
  *     Service for AProMoRe</a>, page 24-25
  */
-public class ObjectFactoryTest implements TestConstants {
+public class ObjectFactoryUnitTest implements TestConstants {
 
     /**
      * Test CPF convenience methods.

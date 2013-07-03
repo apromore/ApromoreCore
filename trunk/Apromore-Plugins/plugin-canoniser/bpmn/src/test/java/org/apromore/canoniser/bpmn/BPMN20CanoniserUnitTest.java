@@ -1,83 +1,53 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import org.xml.sax.SAXException;
 
-// Third party packages
-import org.apache.commons.io.output.NullOutputStream;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-// Local packages
-import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventTypeImpl;
-import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
-import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
-import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
-import org.apromore.canoniser.bpmn.cpf.CpfXORJoinType;
-import org.apromore.canoniser.bpmn.cpf.CpfXORSplitType;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TaskType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.omg.spec.bpmn._20100524.model.TStartEvent;
-import org.omg.spec.bpmn._20100524.model.TTask;
-import org.omg.spec.dd._20100524.di.Plane;
+import org.junit.Ignore;
+import org.junit.Test;
+
+// Third party packages
+// Local packages
 
 /**
  * Test suite for {@link BPMN20Canoniser}.
- *
+ * <p/>
  * A number of these tests are from <cite>Canonization Service for AProMoRe</cite>.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @since 0.4
  * @see <a href="http://apromore.org/wp-content/uploads/2010/12/AProMoReCanonization_v1.0.pdf">Canonization
- *     Service for AProMoRe</a>, page 24-25
+ *      Service for AProMoRe</a>, page 24-25
+ * @since 0.4
  */
-public class BPMN20CanoniserTest implements TestConstants {
+public class BPMN20CanoniserUnitTest implements TestConstants {
 
     // Tests
 
@@ -91,9 +61,9 @@ public class BPMN20CanoniserTest implements TestConstants {
         BPMN20Canoniser canoniser = new BPMN20Canoniser();
         PluginRequest request = null;
         InputStream bpmnInput = new FileInputStream(new File(BPMN_MODELS_DIR, "Case 1.bpmn"));
-        List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
-        List<CanonicalProcessType> cpfs = new ArrayList<CanonicalProcessType>();
-        PluginResult result = canoniser.canonise(bpmnInput, anfs, cpfs, request);
+        List<AnnotationsType> anfs = new ArrayList<>();
+        List<CanonicalProcessType> cpfs = new ArrayList<>();
+        canoniser.canonise(bpmnInput, anfs, cpfs, request);
 
         // Inspect the result
         assertEquals(1, anfs.size());
@@ -139,6 +109,7 @@ public class BPMN20CanoniserTest implements TestConstants {
      * Test {@link BPMN20Canoniser#createInitialNativeFormat}.
      */
     @Test
+    @Ignore
     public final void testCreateInitialNativeFormat() throws Exception {
 
         // Construct test instance
@@ -146,12 +117,12 @@ public class BPMN20CanoniserTest implements TestConstants {
         BPMN20Canoniser canoniser = new BPMN20Canoniser();
         Date now = new Date();
         PluginRequest request = null;
-        PluginResult result = canoniser.createInitialNativeFormat(initialBPMN,
-                                                                  "Test",                         // process name
-                                                                  "0.0",                          // process version
-                                                                  getClass().getCanonicalName(),  // process author
-                                                                  now,                            // creation timestamp
-                                                                  request);
+        canoniser.createInitialNativeFormat(initialBPMN,
+                "Test",                         // process name
+                "0.0",                          // process version
+                getClass().getCanonicalName(),  // process author
+                now,                            // creation timestamp
+                request);
         initialBPMN.close();
 
         // Serialize out the empty BPMN model for offline inspection
@@ -160,12 +131,12 @@ public class BPMN20CanoniserTest implements TestConstants {
         out.close();
 
         // Validate the empty BPMN model
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()), true);
+        BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()), true);
     }
 
     /**
      * Test {@link BPMN20Canoniser#deCanonise}.
-     *
+     * <p/>
      * The most important thing this test does is pass a {@link CanonicalProcessType} rather than a {@link CpfCanonicalProcessType},
      * so that the remarshalling of the CPF classes from {@link org.apromore.cpf} into instrumented classes from
      * {@link org.apromore.canoniser.bpmn.cpf} is exercised.
@@ -174,8 +145,8 @@ public class BPMN20CanoniserTest implements TestConstants {
     public final void testDeCanonise() throws Exception {
 
         CanonicalProcessType cpf = ((JAXBElement<CanonicalProcessType>) JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
-                                                                                   .createUnmarshaller()
-                                                                                   .unmarshal(new File(CANONICAL_MODELS_DIR, "Basic.cpf"))).getValue();
+                .createUnmarshaller()
+                .unmarshal(new File(CANONICAL_MODELS_DIR, "Basic.cpf"))).getValue();
         AnnotationsType anf = null;
         ByteArrayOutputStream bpmnOutput = new ByteArrayOutputStream();
         PluginRequest request = null;
@@ -191,6 +162,6 @@ public class BPMN20CanoniserTest implements TestConstants {
         new FileOutputStream(new File(OUTPUT_DIR, "Basic.bpmn")).write(bpmnOutput.toByteArray());
 
         // Validate BPMN output
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(bpmnOutput.toByteArray()), true);
+        BpmnDefinitions.newInstance(new ByteArrayInputStream(bpmnOutput.toByteArray()), true);
     }
 }

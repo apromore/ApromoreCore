@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class JarLSResourceResolverTest {
+public class JarLSResourceResolverUnitTest {
 
     /**
      * Test {@link JarLSResourceResolver#resolveResource} on <code>DC.xsd</code>.

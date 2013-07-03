@@ -31,7 +31,7 @@ import org.apromore.cpf.*;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfCanonicalProcessTypeTest implements TestConstants {
+public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
 
     // Tests
 
