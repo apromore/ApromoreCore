@@ -1,5 +1,10 @@
 package org.apromore.graph.canonical.converter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CancellationRefType;
@@ -30,7 +35,6 @@ import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.graph.canonical.AllocationStrategyEnum;
-import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.CPFObject;
@@ -53,11 +57,6 @@ import org.apromore.graph.util.GraphConstants;
 import org.apromore.graph.util.GraphUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * GraphToCanonicalHelper. Used to help build and deconstruct a Graph from the CPF format.
@@ -171,7 +170,7 @@ public class CanonicalToGraph {
 
     /* Add a node to the graph, could be of any of the types */
     private void constructNodeAndEdges(final CanonicalProcessType cpf, final Canonical g) {
-        Map<String, CPFNode> flow = new HashMap<String, CPFNode>(0);
+        Map<String, CPFNode> flow = new HashMap<>();
         for (NetType net : cpf.getNet()) {
             flow.putAll(buildNodeListFromNet(net.getId(), net.getNode(), g));
             buildEdges(net.getEdge(), g, flow);
@@ -182,7 +181,7 @@ public class CanonicalToGraph {
     /* Build the Node list for a single Net */
     private Map<String, CPFNode> buildNodeListFromNet(final String netId, final List<NodeType> nodes, final Canonical g) {
         CPFNode output;
-        Map<String, CPFNode> flow = new HashMap<String, CPFNode>(0);
+        Map<String, CPFNode> flow = new HashMap<>();
         for (NodeType node : nodes) {
             output = new CPFNode();
             output.setGraph(g);
@@ -425,21 +424,13 @@ public class CanonicalToGraph {
     private void buildEdges(final List<EdgeType> edgeTypes, final Canonical graph, final Map<String, CPFNode> nodes) {
         CPFNode source;
         CPFNode target;
-        CPFEdge newEdge;
-        CPFExpression expr = null;
+        CPFExpression expr;
 
         for (EdgeType edge : edgeTypes) {
             source = nodes.get(edge.getSourceId());
             target = nodes.get(edge.getTargetId());
             if (source != null && target != null) {
-                newEdge = graph.addEdge(edge.getId(), source, target);
-
-//                newEdge.setId(edge.getId());
-//                if (edge.getOriginalID() != null) {
-//                    newEdge.setOriginalId(edge.getOriginalID());
-//                } else {
-//                    newEdge.setOriginalId(edge.getId());
-//                }
+                graph.addEdge(edge.getId(), source, target);
 
                 if (edge.getConditionExpr() != null) {
                     expr = new CPFExpression();
@@ -449,7 +440,6 @@ public class CanonicalToGraph {
                     expr.setReturnType(edge.getConditionExpr().getReturnType());
                 }
 
-                //graph.updateEdge(newEdge, edge, expr);
                 graph.setNodeProperty(source.getId(), GraphConstants.TYPE, GraphUtil.getType(source));
                 graph.setNodeProperty(target.getId(), GraphConstants.TYPE, GraphUtil.getType(target));
             } else {

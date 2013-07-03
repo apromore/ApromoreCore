@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="1" version="1.0" name="orderfulfillment" author="james" creationDate="2013/01/30 16:33:04" modificationDate="" rootIds="N-Payment">
+    <Net id="N-Payment">
+        <Node xsi:type="cpf:TaskType" id="C-Approve-Shipment-Payment-Order" originalID="Approve_Shipment_Payment_Order">
+            <name>Approve Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_17" objectId="D-N-Payment-ShipmentPaymentOrderApproval" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_1" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrderApproval = {cpf:getTaskObjectValue('ShipmentPaymentOrderApproval')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="e329742b-c2ec-4459-b828-b24f2947ee10">
+            <name>AndSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Update-Shipment-Payment-Order" originalID="Update_Shipment_Payment_Order">
+            <name>Update Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_12" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_20" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getTaskObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </outputExpr>
+            <filterByDataExpr>
+                <language>http://www.apromore.org/expressions/resources/runtime</language>
+                <expression></expression>
+            </filterByDataExpr>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Produce-Freight-Invoice" originalID="Produce_Freight_Invoice">
+            <name>Produce Freight Invoice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_6" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_14" objectId="D-N-Payment-FreightInvoice" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>FreightInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt; &lt;FreightCost&gt;{cpf:getObjectValue('POrder')/FreightCost/text()}&lt;/FreightCost&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>FreightInvoice = {cpf:getTaskObjectValue('FreightInvoice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-unnamed-1" originalID="unnamed_1">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-unnamed-2" originalID="unnamed_2">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-unnamed-3" originalID="unnamed_3">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Credit-Adjustment" originalID="Issue_Credit_Adjustment">
+            <name>Issue Credit Adjustment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_10" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_16" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_22" objectId="D-N-Payment-CreditAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_9" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CreditAdjustment = &lt;Reimbursement&gt;{cpf:getObjectValue('ShipmentPayment')/Balance/text()}&lt;/Reimbursement&gt; &lt;Beneficiary&gt;{cpf:getObjectValue('ShipmentPaymentOrder')/Beneficiary/*}&lt;/Beneficiary&gt;</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>CreditAdjustment = {cpf:getTaskObjectValue('CreditAdjustment')/*}</expression>
+            </outputExpr>
+            <allocationStrategy>ShortestQueue</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-unnamed-4" originalID="unnamed_4">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="bc8ed96b-053f-4191-ad95-34db1f2cffd2">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Process-Freight-Payment" originalID="Process_Freight_Payment">
+            <name>Process Freight Payment</name>
+            <configurable>false</configurable>
+            <allocationStrategy>Other</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Invoice" originalID="Issue_Shipment_Invoice">
+            <name>Issue Shipment Invoice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_13" objectId="D-N-Payment-ShipmentInvoice" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_21" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_19" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInvoice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt;&lt;Company&gt;{cpf:getObjectValue('POrder')/Company/*}&lt;/Company&gt;&lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentInvoice = {cpf:getTaskObjectValue('ShipmentInvoice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:ANDJoinType" id="id9f17ae74-71bc-46c0-8269-6a7179f7c3b0">
+            <name>AndJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Process-Shipment-Payment" originalID="Process_Shipment_Payment">
+            <name>Process Shipment Payment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_18" objectId="D-N-Payment-ShipmentPayment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_7" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPayment = {cpf:getTaskObjectValue('ShipmentPayment')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Payment-Order" originalID="Issue_Shipment_Payment_Order">
+            <name>Issue Shipment Payment Order</name>
+            <configurable>false</configurable>
+            <objectRef id="O_8" objectId="D-N-Payment-TransportationQuote" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_15" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_11" objectId="D-N-Payment-ShipmentPaymentOrder" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = &lt;ShipmentPaymentOrderNumber/&gt; &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;ShipmentNumber&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentNumber/text()}&lt;/ShipmentNumber&gt; &lt;ShipmentCost&gt;{cpf:getObjectValue('TransportationQuote')/ShipmentCost/text()}&lt;/ShipmentCost&gt; &lt;Beneficiary&gt; &lt;Beneficiary&gt; &lt;Name/&gt; &lt;Address/&gt; &lt;City/&gt; &lt;State/&gt; &lt;PostCode/&gt; &lt;Phone/&gt; &lt;Fax/&gt; &lt;BusinessNumber/&gt; &lt;/Beneficiary&gt; &lt;Bank/&gt; &lt;BankCode/&gt; &lt;AccountName/&gt; &lt;AccountNumber/&gt; &lt;/Beneficiary&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getTaskObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="id76223c59-1bf3-4cdf-b9bf-b11fbd4e9052">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="3fd4f004-91ce-4d68-8a9b-05c5d639331e">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="ide8bf5642-2f43-4083-af36-e746d005c38f">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-unnamed" originalID="unnamed">
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="id528fd636-8c8e-4ec8-8aff-1427c326fe92">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Debit-Adjustment" originalID="Issue_Debit_Adjustment">
+            <name>Issue Debit Adjustment</name>
+            <configurable>false</configurable>
+            <objectRef id="O_2" objectId="D-N-Payment-DebitAdjustment" type="output" optional="false" consumed="true"/>
+            <objectRef id="O_3" objectId="D-N-Payment-ShipmentPayment" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_5" objectId="D-N-Payment-ShipmentPaymentOrder" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentPaymentOrder = {cpf:getObjectValue('ShipmentPaymentOrder')/*}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DebitAdjustment = &lt;StillDue&gt;{abs(cpf:getObjectValue('ShipmentPayment')/Balance/text())}&lt;/StillDue&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>DebitAdjustment = {cpf:getTaskObjectValue('DebitAdjustment')/*}</expression>
+            </outputExpr>
+            <allocationStrategy>ShortestQueue</allocationStrategy>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="idc95944bb-afa0-4e47-82cc-6c0ee9ba8b5e">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="idfc145c6f-e3a8-422e-b562-0f2e5a080d6a">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORSplitType" id="db327ad0-c4f1-4973-91a2-0874a8b68441">
+            <name>XOrSplit</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="C-Issue-Shipment-Remittance-Advice" originalID="Issue_Shipment_Remittance_Advice">
+            <name>Issue Shipment Remittance Advice</name>
+            <configurable>false</configurable>
+            <objectRef id="O_23" objectId="D-N-Payment-POrder" type="input" optional="false" consumed="true"/>
+            <objectRef id="O_4" objectId="D-N-Payment-ShipmentRemittanceAdvice" type="output" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentRemittanceAdvice = &lt;OrderNumber&gt;{cpf:getObjectValue('POrder')/Order/OrderNumber/text()}&lt;/OrderNumber&gt; &lt;AmountDebited&gt;0.00&lt;/AmountDebited&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>ShipmentRemittanceAdvice = {cpf:getTaskObjectValue('ShipmentRemittanceAdvice')/*}</expression>
+            </outputExpr>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="c2fa9a32-37b8-4add-a2a5-8487794e2b9a">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="99b6b7e6-cad2-4e66-8545-b5c553a771b5">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="bf4f5ae4-9628-406a-b2e4-b0fb55e1df34">
+            <name>XOrJoin</name>
+            <configurable>false</configurable>
+        </Node>
+        <Edge id="fb756791-6c25-4b45-b9f6-3b5a3c8a64c0" default="false" sourceId="id76223c59-1bf3-4cdf-b9bf-b11fbd4e9052" targetId="99b6b7e6-cad2-4e66-8545-b5c553a771b5"/>
+        <Edge id="403c15e9-5033-4eba-9926-de4457a90dc9" default="false" sourceId="bc8ed96b-053f-4191-ad95-34db1f2cffd2" targetId="C-unnamed"/>
+        <Edge id="1e024b73-83de-4477-95a2-088dc0fbaf08" default="false" sourceId="C-Update-Shipment-Payment-Order" targetId="c2fa9a32-37b8-4add-a2a5-8487794e2b9a"/>
+        <Edge id="7e41aa8e-ce20-4f87-bf49-8766038e8657" default="false" sourceId="c2fa9a32-37b8-4add-a2a5-8487794e2b9a" targetId="bf4f5ae4-9628-406a-b2e4-b0fb55e1df34"/>
+        <Edge id="e9194b16-801c-4854-9013-d629ce215582" default="false" sourceId="C-Process-Shipment-Payment" targetId="db327ad0-c4f1-4973-91a2-0874a8b68441"/>
+        <Edge id="80997b4d-6c71-4a0b-8fae-883763e5a88a" default="false" sourceId="db327ad0-c4f1-4973-91a2-0874a8b68441" targetId="bc8ed96b-053f-4191-ad95-34db1f2cffd2"/>
+        <Edge id="d814c80d-b15b-41c6-8059-cae246694d43" default="false" sourceId="e329742b-c2ec-4459-b828-b24f2947ee10" targetId="C-unnamed-2"/>
+        <Edge id="fa28234b-54cb-4f1c-a02e-6457bdd9406f" default="false" sourceId="C-unnamed" targetId="id9f17ae74-71bc-46c0-8269-6a7179f7c3b0"/>
+        <Edge id="00a2e152-b9df-4c39-bcdb-6550e6ffd061" default="false" sourceId="C-Issue-Credit-Adjustment" targetId="3fd4f004-91ce-4d68-8a9b-05c5d639331e"/>
+        <Edge id="b646cec1-be2b-494e-93ff-19becabb226c" default="false" sourceId="C-Process-Freight-Payment" targetId="id9f17ae74-71bc-46c0-8269-6a7179f7c3b0"/>
+        <Edge id="5ba2273d-10ca-4b89-9219-b10bbd9e24aa" default="false" sourceId="e329742b-c2ec-4459-b828-b24f2947ee10" targetId="C-Issue-Shipment-Invoice"/>
+        <Edge id="da828b4f-822a-4d01-9bb6-d4e2e9f658fd" default="false" sourceId="id528fd636-8c8e-4ec8-8aff-1427c326fe92" targetId="C-unnamed-4"/>
+        <Edge id="97b9b5d3-7d63-4cab-9310-fd7e4ed41e70" default="false" sourceId="bf4f5ae4-9628-406a-b2e4-b0fb55e1df34" targetId="C-Approve-Shipment-Payment-Order"/>
+        <Edge id="359669a6-d55f-4c2a-a7c9-e7bf324507a0" default="false" sourceId="db327ad0-c4f1-4973-91a2-0874a8b68441" targetId="3fd4f004-91ce-4d68-8a9b-05c5d639331e"/>
+        <Edge id="5f80e190-5d29-4c35-a0d2-30813b547839" default="false" sourceId="C-InputCondition" targetId="C-unnamed-1"/>
+        <Edge id="342d9a73-3454-4919-8b9f-002527984ae0" default="false" sourceId="C-Issue-Shipment-Remittance-Advice" targetId="bc8ed96b-053f-4191-ad95-34db1f2cffd2"/>
+        <Edge id="ef713ff8-8517-4dce-8093-1b0178ac1dd6" default="false" sourceId="idfc145c6f-e3a8-422e-b562-0f2e5a080d6a" targetId="C-Produce-Freight-Invoice"/>
+        <Edge id="3163cf51-a039-470d-a58f-8e2565127d3a" default="false" sourceId="C-unnamed-2" targetId="idfc145c6f-e3a8-422e-b562-0f2e5a080d6a"/>
+        <Edge id="3ac84fba-65e1-460f-a37d-92d4c97be8a7" default="false" sourceId="idc95944bb-afa0-4e47-82cc-6c0ee9ba8b5e" targetId="C-Issue-Shipment-Remittance-Advice"/>
+        <Edge id="34973445-71dc-4c4d-a9be-558813ffc262" default="false" sourceId="C-unnamed-1" targetId="e329742b-c2ec-4459-b828-b24f2947ee10"/>
+        <Edge id="20063ef0-84a6-406d-9510-692c70b67b7a" default="false" sourceId="db327ad0-c4f1-4973-91a2-0874a8b68441" targetId="C-Issue-Debit-Adjustment"/>
+        <Edge id="a6210d08-3a72-4541-b5d9-67c92b270b7e" default="false" sourceId="id9f17ae74-71bc-46c0-8269-6a7179f7c3b0" targetId="C-unnamed-3"/>
+        <Edge id="23b4c040-344b-411d-9d4d-bb443233b981" default="false" sourceId="C-Produce-Freight-Invoice" targetId="id528fd636-8c8e-4ec8-8aff-1427c326fe92"/>
+        <Edge id="1f15ca41-f276-4b21-b5e2-b8ecf3c5e4b0" default="false" sourceId="C-Issue-Shipment-Payment-Order" targetId="c2fa9a32-37b8-4add-a2a5-8487794e2b9a"/>
+        <Edge id="0c13c863-bda9-4c17-9524-fc9b01b340fe" default="false" sourceId="C-unnamed-4" targetId="C-Process-Freight-Payment"/>
+        <Edge id="25d6fd23-9a5b-4a8e-8171-125fac3c3500" default="false" sourceId="db327ad0-c4f1-4973-91a2-0874a8b68441" targetId="C-Issue-Credit-Adjustment"/>
+        <Edge id="19cde034-2660-4f64-854c-6ed9482e2467" default="false" sourceId="C-Issue-Shipment-Invoice" targetId="idc95944bb-afa0-4e47-82cc-6c0ee9ba8b5e"/>
+        <Edge id="0f7ebcd1-65e3-4e06-9bbe-7285e4ba3240" default="false" sourceId="99b6b7e6-cad2-4e66-8545-b5c553a771b5" targetId="C-Process-Shipment-Payment"/>
+        <Edge id="c3caf528-92c3-4927-9545-8cf1cad6de6f" default="false" sourceId="C-Issue-Debit-Adjustment" targetId="id76223c59-1bf3-4cdf-b9bf-b11fbd4e9052"/>
+        <Edge id="c089eb3b-cc78-4b22-b292-8d71e7739318" default="false" sourceId="idc95944bb-afa0-4e47-82cc-6c0ee9ba8b5e" targetId="C-Issue-Shipment-Payment-Order"/>
+        <Edge id="c0d20125-7382-4c62-a1d5-6e98dbbdc11a" default="false" sourceId="C-Approve-Shipment-Payment-Order" targetId="ide8bf5642-2f43-4083-af36-e746d005c38f"/>
+        <Edge id="e904bbf5-ae73-474b-9f22-1c95209a1f4b" default="false" sourceId="C-unnamed-3" targetId="C-OutputCondition"/>
+        <Edge id="74985265-e179-472b-8f85-22705c557891" default="false" sourceId="idfc145c6f-e3a8-422e-b562-0f2e5a080d6a" targetId="id528fd636-8c8e-4ec8-8aff-1427c326fe92"/>
+        <Edge id="4bca16c9-580f-4101-a1bc-878b758f6b94" default="false" sourceId="ide8bf5642-2f43-4083-af36-e746d005c38f" targetId="C-Update-Shipment-Payment-Order"/>
+        <Edge id="3f28436c-9c0c-4e6a-87ec-098d0938faca" default="false" sourceId="ide8bf5642-2f43-4083-af36-e746d005c38f" targetId="id76223c59-1bf3-4cdf-b9bf-b11fbd4e9052"/>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPaymentOrderApproval" originalID="D-N-Payment-ShipmentPaymentOrderApproval">
+            <name>ShipmentPaymentOrderApproval</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentOrderApprovalType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPaymentOrder" originalID="D-N-Payment-ShipmentPaymentOrder">
+            <name>ShipmentPaymentOrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-POrder" originalID="D-N-Payment-POrder">
+            <name>POrder</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>PurchaseOrderType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-FreightInvoice" originalID="D-N-Payment-FreightInvoice">
+            <name>FreightInvoice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>FreightInvoiceType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-CreditAdjustment" originalID="D-N-Payment-CreditAdjustment">
+            <name>CreditAdjustment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>CreditAdjustmentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentPayment" originalID="D-N-Payment-ShipmentPayment">
+            <name>ShipmentPayment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentPaymentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentInvoice" originalID="D-N-Payment-ShipmentInvoice">
+            <name>ShipmentInvoice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentInvoiceType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-TransportationQuote" originalID="D-N-Payment-TransportationQuote">
+            <name>TransportationQuote</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable"/>
+            <type>TransportationQuoteType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-DebitAdjustment" originalID="D-N-Payment-DebitAdjustment">
+            <name>DebitAdjustment</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>DebitAdjustmentType</type>
+        </Object>
+        <Object xsi:type="cpf:SoftType" id="D-N-Payment-ShipmentRemittanceAdvice" originalID="D-N-Payment-ShipmentRemittanceAdvice">
+            <name>ShipmentRemittanceAdvice</name>
+            <configurable>false</configurable>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable"/>
+            <type>ShipmentRemittanceAdviceType</type>
+        </Object>
+    </Net>
+    <attribute name="RootFragmentId" value="7"/>
+    <attribute name="BranchName" value="MAIN"/>
+    <attribute name="ProcessName" value="orderfulfillment"/>
+    <attribute name="VersionNumber" value="1.0"/>
+    <attribute name="PMVID" value="1"/>
+    <attribute name="BranchID" value="1"/>
+</cpf:CanonicalProcess>

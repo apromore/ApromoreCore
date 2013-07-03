@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import javax.inject.Inject;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -191,9 +192,11 @@ public class GraphServiceImpl implements GraphService {
         if (node.getTimeDuration() != null) {
             cpfNode.setTimeDuration(node.getTimeDuration());
         }
-//        if (node.getTimeDate() != null) {
-//            cpfNode.setTimeDate(node.getTimeDate().toGregorianCalendar());
-//        }
+        if (node.getTimeDate() != null) {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(node.getTimeDate());
+            cpfNode.setTimeDate(cal);
+        }
         if (node.getTimerExpression() != null) {
             CPFExpression expr = new CPFExpression();
             expr.setDescription(node.getTimerExpression().getDescription());
