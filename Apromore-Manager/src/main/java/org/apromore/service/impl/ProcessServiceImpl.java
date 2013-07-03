@@ -277,6 +277,9 @@ public class ProcessServiceImpl implements ProcessService {
             if (isRequestForNativeFormat(processId, version, format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, version, format).getContent(),
                         "text/xml")));
+            } else if (isRequestForAnnotationsOnly(format)) {
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch, version, annName).
+                        getContent(), "text/xml")));
             } else {
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
                 Process process;
@@ -298,11 +301,7 @@ public class ProcessServiceImpl implements ProcessService {
                         anf = annotationSrv.preProcess(null, format, cpt, anf);
                     }
 
-                    if (process != null && format.startsWith("Annotations")) {
-                        dp = canoniserSrv.deCanonise(process.getNativeType().getNatType(), cpt, anf, canoniserProperties);
-                    } else {
-                        dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
-                    }
+                    dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
 
                     exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
                     exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(), Constants.XML_MIMETYPE)));
@@ -997,4 +996,8 @@ public class ProcessServiceImpl implements ProcessService {
         return pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 
+    /* Did the request ask for the Annotations for this model without the actual model? */
+    private boolean isRequestForAnnotationsOnly(String format) {
+        return format.startsWith("Annotations") ;
+    }
 }
