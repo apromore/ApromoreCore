@@ -2,10 +2,10 @@ package org.apromore.canoniser.yawl.yawl2cpf.patterns.controlflow;
 
 import java.io.File;
 
-import org.apromore.canoniser.yawl.BaseYAWL2CPFTest;
+import org.apromore.canoniser.yawl.BaseYAWL2CPFUnitTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 
-public class MEMEInputOutput extends BaseYAWL2CPFTest {
+public class MEMEInputOutput extends BaseYAWL2CPFUnitTest {
 
     @Override
     protected File getYAWLFile() {

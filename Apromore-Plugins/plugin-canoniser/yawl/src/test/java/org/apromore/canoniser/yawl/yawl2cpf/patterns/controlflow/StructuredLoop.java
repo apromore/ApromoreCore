@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
+import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternUnitTest;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
@@ -16,12 +16,12 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.junit.Test;
 
-public class StructuredLoop extends BasePatternTest {
+public class StructuredLoop extends BasePatternUnitTest {
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
+     * @see org.apromore.canoniser.yawl.BaseYAWL2CPFUnitTest#getYAWLFile()
      */
     @Override
     protected File getYAWLFile() {

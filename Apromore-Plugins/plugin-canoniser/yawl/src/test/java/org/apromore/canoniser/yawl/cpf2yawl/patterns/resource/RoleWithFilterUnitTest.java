@@ -9,7 +9,7 @@ import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class RoleWithDataDistributionSet extends BaseCPF2YAWLUnitTest {
+public class RoleWithFilterUnitTest extends BaseCPF2YAWLUnitTest {
 
     /*
      * (non-Javadoc)
@@ -18,7 +18,7 @@ public class RoleWithDataDistributionSet extends BaseCPF2YAWLUnitTest {
      */
     @Override
     protected File getCPFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/RoleWithDataDistributionSet.yawl.cpf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/RoleWithFilter.yawl.cpf");
     }
 
     /*
@@ -28,12 +28,12 @@ public class RoleWithDataDistributionSet extends BaseCPF2YAWLUnitTest {
      */
     @Override
     protected File getANFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/RoleWithDataDistributionSet.yawl.anf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/RoleWithFilter.yawl.anf");
     }
 
     @Ignore
     @Test
-    public void testWithDataDistributionSet() {
+    public void testWithFilter() {
         fail();
     }
 
