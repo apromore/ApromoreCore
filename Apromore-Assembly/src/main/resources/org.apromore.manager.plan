@@ -18,10 +18,6 @@
     <artifact type="bundle" name="org.apromore.yawl-schema" version="[1.1, 2)"/>
 
     <!-- Load the plugin Api's and Providers for the plugins -->
-    <!--<artifact type="bundle" name="org.apromore.plugin.plugin-api" version="[1.1, 2)"/>-->
-    <!--<artifact type="bundle" name="org.apromore.plugin.annotation-api" version="[1.1, 2)"/>-->
-    <!--<artifact type="bundle" name="org.apromore.plugin.canoniser-api" version="[1.1, 2)"/>-->
-    <!--<artifact type="bundle" name="org.apromore.plugin.deployment-api" version="[1.1, 2)"/>-->
     <artifact type="bundle" name="org.apromore.plugin.api-provider" version="[1.1, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.annotation-api-provider" version="[1.1, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.canoniser-api-provider" version="[1.1, 2)"/>
