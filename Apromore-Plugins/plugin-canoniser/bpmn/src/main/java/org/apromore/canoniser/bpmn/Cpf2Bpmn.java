@@ -34,7 +34,7 @@ public class Cpf2Bpmn {
         AnnotationsType      anf = null;
 
         // If there's a command line argument, treat it as the filename of an ANF file
-        if (arg.length > 0) {
+        if (arg.length > 1) {
             anf = AnfAnnotationsType.newInstance(new FileInputStream(arg[1]), true);
         }
 

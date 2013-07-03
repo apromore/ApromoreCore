@@ -59,11 +59,43 @@ ORYX.Plugins.PropertyWindow = {
 		this.shapeSelection.shapes = new Array();
 		this.shapeSelection.commonProperties = new Array();
 		this.shapeSelection.commonPropertiesValues = new Hash();
-		
+
+		this.suppressedProperties = new Hash();
 		this.updaterFlag = false;
 
+		// creating the store for the model.
+        	this.dataSource = new Ext.data.GroupingStore({
+			proxy: new Ext.data.MemoryProxy(this.properties),
+			reader: new Ext.data.ArrayReader({}, [
+				{name: 'popular'},
+				{name: 'name'},
+				{name: 'value'},
+				{name: 'icons'},
+				{name: 'gridProperties'}
+			]),
+			sortInfo: {field: 'popular', direction: "ASC"},
+			sortData : function(f, direction){
+		        direction = direction || 'ASC';
+		        var st = this.fields.get(f).sortType;
+		        var fn = function(r1, r2){
+		            var v1 = st(r1.data[f]), v2 = st(r2.data[f]);
+					var p1 = r1.data['popular'], p2  = r2.data['popular'];
+		            return p1 < p2 ? -1 : (p1 > p2 ? 1 : (v1 > v2 ? 1 : (v1 < v2 ? -1 : 0)));
+		        };
+		        this.data.sort(direction, fn);
+		        if(this.snapshot && this.snapshot != this.data){
+		            this.snapshot.sort(direction, fn);
+				}
+		    },
+			groupField: 'popular'
+        	});
+		this.dataSource.load();
+		var dataSource = this.dataSource;
+		var parent = this;
+		
 		// creating the column model of the grid.
-		this.columnModel = new Ext.grid.ColumnModel([
+		this.columnModel = new Ext.grid.ColumnModel({
+		    columns: [
 			{
 				//id: 'name',
 				header: ORYX.I18N.PropertyWindow.name,
@@ -88,36 +120,14 @@ ORYX.Plugins.PropertyWindow = {
 				hidden: true,
 				sortable: true
 			}
-		]);
+		    ],
+		    isCellEditable: function(col,row) {
+			var record = dataSource.getAt(row);
+			if (parent.suppressedProperties[record.data.gridProperties.propId]) { return false; }
+			return Ext.grid.ColumnModel.prototype.isCellEditable.call(this, col, row);
+		    }
+		});
 
-		// creating the store for the model.
-        this.dataSource = new Ext.data.GroupingStore({
-			proxy: new Ext.data.MemoryProxy(this.properties),
-			reader: new Ext.data.ArrayReader({}, [
-				{name: 'popular'},
-				{name: 'name'},
-				{name: 'value'},
-				{name: 'icons'},
-				{name: 'gridProperties'}
-			]),
-			sortInfo: {field: 'popular', direction: "ASC"},
-			sortData : function(f, direction){
-		        direction = direction || 'ASC';
-		        var st = this.fields.get(f).sortType;
-		        var fn = function(r1, r2){
-		            var v1 = st(r1.data[f]), v2 = st(r2.data[f]);
-					var p1 = r1.data['popular'], p2  = r2.data['popular'];
-		            return p1 && !p2 ? -1 : (!p1 && p2 ? 1 : (v1 > v2 ? 1 : (v1 < v2 ? -1 : 0)));
-		        };
-		        this.data.sort(direction, fn);
-		        if(this.snapshot && this.snapshot != this.data){
-		            this.snapshot.sort(direction, fn);
-				}
-		    },
-			groupField: 'popular'
-        });
-		this.dataSource.load();
-		
 		this.grid = new Ext.grid.EditorGridPanel({
 			clicksToEdit: 1,
 			stripeRows: true,
@@ -128,7 +138,7 @@ ORYX.Plugins.PropertyWindow = {
 			enableHdMenu: false,
 			view: new Ext.grid.GroupingView({
 				forceFit: true,
-				groupTextTpl: '{[values.rs.first().data.popular ? ORYX.I18N.PropertyWindow.oftenUsed : ORYX.I18N.PropertyWindow.moreProps]}'
+				groupTextTpl: '{[values.rs.first().data.popular == 1 ? ORYX.I18N.PropertyWindow.oftenUsed : values.rs.first().data.popular == 2 ? "Configuration attributes" : ORYX.I18N.PropertyWindow.moreProps]}'
 			}),
 			
 			// the data store
@@ -181,13 +191,13 @@ ORYX.Plugins.PropertyWindow = {
 	tooltipRenderer: function(value, p, record) {
 		/* Prepare tooltip */
 		p.cellAttr = 'title="' + record.data.gridProperties.tooltip + '"';
-		return value;
+		return this.suppressedProperties[record.data.gridProperties.propId] ? ('<div style="opacity: 0.5">' + value + '</div>') : value;
 	},
 	
 	renderer: function(value, p, record) {
 		
-		this.tooltipRenderer(value, p, record);
-				
+		p.cellAttr = 'title="' + record.data.gridProperties.tooltip + '"';
+
 		if(value instanceof Date) {
 			// TODO: Date-Schema is not generic
 			value = value.dateFormat(ORYX.I18N.PropertyWindow.dateFormat);
@@ -201,6 +211,20 @@ ORYX.Plugins.PropertyWindow = {
 			if(record.data.gridProperties.type == ORYX.CONFIG.TYPE_COLOR) {
 				value = "<div class='prop-background-color' style='background-color:" + value + "' />";
 			}			
+			else if (record.data.gridProperties.type == ORYX.CONFIG.TYPE_COMPLEX) {
+                                try {
+                                        var formattedValue = "";
+                                        var json = value.evalJSON();
+                                        for (var i = 0; i < json.totalCount; i++) {
+                                                if (i > 0) { formattedValue += ", "; }
+                                                formattedValue += json.items[i].id;
+                                        }
+                                        value = formattedValue;
+                                }
+                                catch (err) {
+                                        // usually this occurs if value is empty
+                                }
+                        }
 
 			record.data.icons.each(function(each) {
 				if(each.name == value) {
@@ -211,7 +235,7 @@ ORYX.Plugins.PropertyWindow = {
 			});
 		}
 
-		return value;
+		return this.suppressedProperties[record.data.gridProperties.propId] ? ('<div style="opacity: 0.5">' + value + '</div>') : value;
 	},
 
 	beforeEdit: function(option) {
@@ -256,6 +280,64 @@ ORYX.Plugins.PropertyWindow = {
 		var newValue	= option.value;
 		var facade		= this.facade;
 		
+		var isEmptyConfigurations = function(prop) {
+                        return (!prop) || (prop == "");
+                }
+
+		var maintainConfigurationAnnotation = function(shape,that,oldValue,newValue) {
+			if (that.key != "oryx-variants") { return; }
+			if (shape.getStencil().type() == "edge") { return; }
+                        if (isEmptyConfigurations(oldValue)) {
+                                if (!isEmptyConfigurations(newValue)) {
+                                        that.configurationAnnotationShape = facade.createShape({
+                                                type:"http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation",
+                                                position:{x:shape.bounds.upperLeft().x - 50, y:shape.bounds.upperLeft().y - 40},
+                                                namespace:shape.getStencil().namespace(),
+                                                parent:shape.getParentShape()
+                                        });
+
+                                        that.configurationAnnotationAssociation = facade.createShape({
+                                                type:"http://b3mn.org/stencilset/bpmn2.0#Association_Undirected",
+                                                position:{x:shape.bounds.upperLeft().x, y:shape.bounds.upperLeft().y + 100},
+                                                namespace:shape.getStencil().namespace(),
+                                                parent:shape.getParentShape()
+                                        });
+
+                                        var source = that.configurationAnnotationAssociation.getDockers()[0];
+                                        source.setDockedShape(shape);
+                                        source.setReferencePoint({x:shape.bounds.width()/2,
+                                                                  y:shape.bounds.height()/2});
+
+                                        var target = that.configurationAnnotationAssociation.getDockers()[1];
+                                        target.setDockedShape(that.configurationAnnotationShape);
+                                        target.setReferencePoint({x:that.configurationAnnotationShape.bounds.width()/2,
+                                                                  y:that.configurationAnnotationShape.bounds.height()/2});
+                                }
+                        }
+			else {
+                                if (isEmptyConfigurations(newValue)) {
+					// Search for the annotation shapes
+					var f = function(method) {
+                                               	shape[method]().each(function(association) {
+                                                       	if (association.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#Association_Undirected") {
+                                                               	association[method]().each(function(annotation) {
+                                                                       	if (annotation.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation") {
+                                                                               	that.configurationAnnotationShape = annotation;
+                                                                               	that.configurationAnnotationAssociation = association;
+                                                                       	}
+                                                               	});
+                                                      		}
+                                               	});
+					};
+					f("getIncomingShapes");
+					f("getOutgoingShapes");
+
+					// Delete the annotation shapes
+                                        that.facade.deleteShape(that.configurationAnnotationAssociation);
+                                        that.facade.deleteShape(that.configurationAnnotationShape);
+                                }
+                        }
+                };
 
 		// Implement the specific command for property change
 		var commandClass = ORYX.Core.Command.extend({
@@ -270,6 +352,7 @@ ORYX.Plugins.PropertyWindow = {
 				this.selectedElements.each(function(shape){
 					if(!shape.getStencil().property(this.key).readonly()) {
 						shape.setProperty(this.key, this.newValue);
+                                                maintainConfigurationAnnotation(shape,this,this.oldValues[shape.getId()],this.newValue);
 					}
 				}.bind(this));
 				this.facade.setSelection(this.selectedElements);
@@ -279,6 +362,7 @@ ORYX.Plugins.PropertyWindow = {
 			rollback: function(){
 				this.selectedElements.each(function(shape){
 					shape.setProperty(this.key, this.oldValues[shape.getId()]);
+                                        maintainConfigurationAnnotation(shape,this,this.newValue,this.oldValues[shape.getId()]);
 				}.bind(this));
 				this.facade.setSelection(this.selectedElements);
 				this.facade.getCanvas().update();
@@ -395,59 +479,74 @@ ORYX.Plugins.PropertyWindow = {
 	},
 	
 	/**
-	 * Returns the set of stencils used by the passed shapes.
-	 */
-	getStencilSetOfSelection: function() {
-		var stencils = new Hash();
-		
-		this.shapeSelection.shapes.each(function(shape) {
-			stencils[shape.getStencil().id()] = shape.getStencil();
-		})
-		return stencils;
-	},
-	
-	/**
 	 * Identifies the common Properties of the selected shapes.
 	 */
 	identifyCommonProperties: function() {
 		this.shapeSelection.commonProperties.clear();
 		
-		/* 
-		 * A common property is a property, that is part of 
-		 * the stencil definition of the first and all other stencils.
-		 */
-		var stencils = this.getStencilSetOfSelection();
-		var firstStencil = stencils.values().first();
-		var comparingStencils = stencils.values().without(firstStencil);
-		
-		
-		if(comparingStencils.length == 0) {
-			this.shapeSelection.commonProperties = firstStencil.properties();
-		} else {
-			var properties = new Hash();
-			
-			/* put all properties of on stencil in a Hash */
-			firstStencil.properties().each(function(property){
-				properties[property.namespace() + '-' + property.id() 
-							+ '-' + property.type()] = property;
-			});
-			
-			/* Calculate intersection of properties. */
-			
-			comparingStencils.each(function(stencil){
-				var intersection = new Hash();
-				stencil.properties().each(function(property){
-					if(properties[property.namespace() + '-' + property.id()
-									+ '-' + property.type()]){
-						intersection[property.namespace() + '-' + property.id()
-										+ '-' + property.type()] = property;
-					}
-				});
-				properties = intersection;	
-			});
-			
-			this.shapeSelection.commonProperties = properties.values();
-		}
+                /*
+                 * A common property is a property, that is part of
+                 * the stencil definition of the first and all other stencils.
+                 */
+                var firstShape = this.shapeSelection.shapes.first();
+                var comparingShapes = this.shapeSelection.shapes.without(firstShape);
+
+                var isPropertySuppressed = function(property, shape) {
+                        if (property.id() == "absentinconfiguration") {
+
+                                var countSequenceFlows = function(shapes) {
+                                        var n = 0;
+                                        shapes.each(function(s) {
+                                                if (s.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#SequenceFlow") { n++; }
+                                        });
+                                        return n;
+                                };
+
+                                // If this is one of several outgoing flows from a configurable gateway, may be absentinconfiguration
+                                var source = shape.getSource();
+                                if (source.properties["oryx-configurable"] && countSequenceFlows(source.getOutgoingShapes()) > 1) { return false; }
+
+                                // If this is one of several incoming flows to a configurable gateway, may be absentinconfiguration
+                                var target = shape.getTarget();
+                                if (target.properties["oryx-configurable"] && countSequenceFlows(target.getIncomingShapes()) > 1) { return false; }
+
+                                // Otherwise, cannot be absentinconfiguration
+                                return true;
+                        }
+
+                        // Other properties are not suppressed
+                        return false;
+                }
+
+                var properties = new Hash();
+		this.suppressedProperties = new Hash();
+
+                firstShape.getStencil().properties().each((function(property){
+                        if (isPropertySuppressed(property, firstShape)) {
+				this.suppressedProperties["oryx-" + property.id()] = true;
+			}
+                        properties[property.namespace() + '-' + property.id()
+                                                + '-' + property.type()] = property;
+                }).bind(this));
+
+                // Calculate intersection of properties.
+
+                comparingShapes.each(function(shape){
+                        var intersection = new Hash();
+                        shape.getStencil().properties().each(function(property){
+                                if (!isPropertySuppressed(property, shape)) {
+					this.suppressedProperties["oryx-" + property.id()] = true;
+				}
+                                if(properties[property.namespace() + '-' + property.id()
+                                                                + '-' + property.type()]){
+                                        intersection[property.namespace() + '-' + property.id()
+                                                                        + '-' + property.type()] = property;
+                                }
+                        });
+                        properties = intersection;
+                });
+
+                this.shapeSelection.commonProperties = properties.values();
 	},
 	
 	onSelectionChanged: function(event) {
@@ -644,7 +743,8 @@ ORYX.Plugins.PropertyWindow = {
 						// extended by Kerstin (start)
 						case ORYX.CONFIG.TYPE_COMPLEX:
 							
-							var cf = new Ext.form.ComplexListField({ allowBlank: pair.optional()}, pair.complexItems(), key, this.facade);
+							var title = pair._jsonProp.editortitle ? pair._jsonProp.editortitle : ORYX.I18N.PropertyWindow.complex;
+							var cf = new Ext.form.ComplexListField({ allowBlank: pair.optional()}, pair.complexItems(), key, this.facade, title);
 							cf.on('dialogClosed', this.dialogClosed, {scope:this, row:index, col:1,field:cf});							
 							editorGrid = new Ext.Editor(cf);
 							break;
@@ -692,7 +792,7 @@ ORYX.Plugins.PropertyWindow = {
 				// Push to the properties-array
 				if(pair.visible()) {
 					// Popular Properties are those with a refToView set or those which are set to be popular
-					if (pair.refToView()[0] || refToViewFlag || pair.popular()) {
+					if (pair.refToView()[0] || refToViewFlag || pair.popular() == 1) {
 						pair.setPopular();
 					} 
 					
@@ -759,11 +859,12 @@ ORYX.Plugins.PropertyWindow = Clazz.extend(ORYX.Plugins.PropertyWindow);
  */
 
 
-Ext.form.ComplexListField = function(config, items, key, facade){
+Ext.form.ComplexListField = function(config, items, key, facade, title){
     Ext.form.ComplexListField.superclass.constructor.call(this, config);
-	this.items 	= items;
-	this.key 	= key;
+	this.items  = items;
+	this.key    = key;
 	this.facade = facade;
+	this.title  = title
 };
 
 /**
@@ -1124,7 +1225,7 @@ Ext.extend(Ext.form.ComplexListField, Ext.form.TriggerField,  {
 			this.dialog = new Ext.Window({ 
 				autoCreate: true, 
 				layout: "anchor",
-				title: ORYX.I18N.PropertyWindow.complex, 
+				title: this.title, 
 				height: 350, 
 				width: dialogWidth, 
 				modal:true,

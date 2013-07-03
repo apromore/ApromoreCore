@@ -95,17 +95,17 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
             // Construct an empty BPMN model
             BpmnDefinitions definitions = new BpmnDefinitions();
             String id = UUID.randomUUID().toString();
-            definitions.setId(id);
+            definitions.setId("bpmn-" + id);
             definitions.setName(processName);
             definitions.setExporter(getClass().getCanonicalName());
             definitions.setExporterVersion("1.0");
             definitions.setTargetNamespace("http://apromore.org/" + id + "#");
 
             BPMNDiagram diagram = new BPMNDiagram();
-            diagram.setId(UUID.randomUUID().toString());
+            diagram.setId("diagram-" + id);
 
             BPMNPlane plane = new BPMNPlane();
-            plane.setId(id);
+            plane.setId("plane-" + id);
             diagram.setBPMNPlane(plane);
             definitions.getBPMNDiagram().add(diagram);
 

@@ -75,217 +75,217 @@ import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
  */
 public class BPMN2DiagramConverter {
 
-	private static final Logger logger = Logger.getLogger(BPMN2DiagramConverter.class.getCanonicalName());
-	
-	private String rootDir;
-	
-	public BPMN2DiagramConverter(String rootDir) {
-		this.rootDir = rootDir;
-	}
-	
-	public List<BasicDiagram> getDiagramFromBpmn20(Definitions definitions) {
+    private static final Logger logger = Logger.getLogger(BPMN2DiagramConverter.class.getCanonicalName());
+    
+    private String rootDir;
+    
+    public BPMN2DiagramConverter(String rootDir) {
+        this.rootDir = rootDir;
+    }
+    
+    public List<BasicDiagram> getDiagramFromBpmn20(Definitions definitions) {
 
-		// Reverse mapping for the bpmnElement attribute
-		final Map<BaseElement,DiagramElement> bpmndiMap = new HashMap<BaseElement,DiagramElement>();
+        // Reverse mapping for the bpmnElement attribute
+        final Map<BaseElement,DiagramElement> bpmndiMap = new HashMap<BaseElement,DiagramElement>();
 
-		// ResourceIDs of all Messages which are decorators on a MessageFlow rather than residing on the canvas
-		final Set<String> messageRefSet = new HashSet<String>();
+        // ResourceIDs of all Messages which are decorators on a MessageFlow rather than residing on the canvas
+        final Set<String> messageRefSet = new HashSet<String>();
 
-		// Populate bpmndiMap and messageRefSet
-		logger.fine("Populating id map");
-		for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
-			for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-				element.acceptVisitor(new AbstractVisitor() {
-					DiagramElement bpmndiElement = null;
+        // Populate bpmndiMap and messageRefSet
+        logger.fine("Populating id map");
+        for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
+            for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
+                element.acceptVisitor(new AbstractVisitor() {
+                    DiagramElement bpmndiElement = null;
 
-					// Populate bpmndiMap
-					@Override public void visitBaseElement(BaseElement that) {
-						that._diagramElement = bpmndiElement;
-						logger.finer(that.getId() + " -> " + bpmndiElement.getId());
-						bpmndiMap.put(that, bpmndiElement);
-					}
+                    // Populate bpmndiMap
+                    @Override public void visitBaseElement(BaseElement that) {
+                        that._diagramElement = bpmndiElement;
+                        logger.finer(that.getId() + " -> " + bpmndiElement.getId());
+                        bpmndiMap.put(that, bpmndiElement);
+                    }
 
-					@Override public void visitMessageFlow(MessageFlow that) {
-						if (that.getMessageRef() != null) {
-							messageRefSet.add(that.getMessageRef().getId());
-						}
-					}
+                    @Override public void visitMessageFlow(MessageFlow that) {
+                        if (that.getMessageRef() != null) {
+                            messageRefSet.add(that.getMessageRef().getId());
+                        }
+                    }
 
-					// The next two methods traverse via bpmnElement attributes from the BPMNDI part to the BPMN part of the document
-					// Note that BPMNPlane also has a bpmnElement attribute; traversal of this is not implemented
+                    // The next two methods traverse via bpmnElement attributes from the BPMNDI part to the BPMN part of the document
+                    // Note that BPMNPlane also has a bpmnElement attribute; traversal of this is not implemented
 
-					@Override public void visitBpmnEdge(BPMNEdge that) {
-						super.visitBpmnEdge(that);
-						bpmndiElement = that;
-						assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
-						that.getBpmnElement().acceptVisitor(this);
-					}
+                    @Override public void visitBpmnEdge(BPMNEdge that) {
+                        super.visitBpmnEdge(that);
+                        bpmndiElement = that;
+                        assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
 
-					@Override public void visitBpmnShape(BPMNShape that) {
-						super.visitBpmnShape(that);
-						bpmndiElement = that;
-						assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
-						that.getBpmnElement().acceptVisitor(this);
-					}
-				});
-			}
-		}
+                    @Override public void visitBpmnShape(BPMNShape that) {
+                        super.visitBpmnShape(that);
+                        bpmndiElement = that;
+                        assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
+                });
+            }
+        }
 
-		// Populate the transient JAXB fields
-		logger.fine("Populating transient JAXB fields");
-		for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
-			for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-				logger.finer("Scanning " + element.getId());
-				element.acceptVisitor(new AbstractVisitor() {
-					BPMNEdge precedingEdge = null;
+        // Populate the transient JAXB fields
+        logger.fine("Populating transient JAXB fields");
+        for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
+            for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
+                logger.finer("Scanning " + element.getId());
+                element.acceptVisitor(new AbstractVisitor() {
+                    BPMNEdge precedingEdge = null;
 
-					@Override public void visitBpmnEdge(BPMNEdge that) {
-						precedingEdge = that;
-						that.getBpmnElement().acceptVisitor(this);
-					}
+                    @Override public void visitBpmnEdge(BPMNEdge that) {
+                        precedingEdge = that;
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
 
-					@Override public void visitBpmnShape(BPMNShape that) {
-						that.getBpmnElement().acceptVisitor(this);
-					}
+                    @Override public void visitBpmnShape(BPMNShape that) {
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
 
-					@Override public void visitEdge(Edge that) {
-						logger.finer(that.getId() + ": " + that.getSourceRef() + " -> " + that.getTargetRef());
+                    @Override public void visitEdge(Edge that) {
+                        logger.finer(that.getId() + ": " + that.getSourceRef() + " -> " + that.getTargetRef());
 
-						// In a valid BPMN document, edges must be connected to both a source and a target.
-						// Half-edited JSON diagrams break this constraint, so we warn about them.
+                        // In a valid BPMN document, edges must be connected to both a source and a target.
+                        // Half-edited JSON diagrams break this constraint, so we warn about them.
 
-						if (that.getSourceRef() == null) {
-							logger.warning(that.getId() + " has no sourceRef attribute");
-						}
-						else {
-							that.getSourceRef().getOutgoing().add(that);
-							precedingEdge.setSourceElement(bpmndiMap.get(that.getSourceRef()));
-						}
+                        if (that.getSourceRef() == null) {
+                            logger.warning(that.getId() + " has no sourceRef attribute");
+                        }
+                        else {
+                            that.getSourceRef().getOutgoing().add(that);
+                            precedingEdge.setSourceElement(bpmndiMap.get(that.getSourceRef()));
+                        }
 
-						if (that.getTargetRef() == null) {
-							logger.warning(that.getId() + " has no targetRef attribute");
-						}
-						else {
-							that.getTargetRef().getIncoming().add(that);
-							precedingEdge.setTargetElement(bpmndiMap.get(that.getTargetRef()));
-						}
-					}
+                        if (that.getTargetRef() == null) {
+                            logger.warning(that.getId() + " has no targetRef attribute");
+                        }
+                        else {
+                            that.getTargetRef().getIncoming().add(that);
+                            precedingEdge.setTargetElement(bpmndiMap.get(that.getTargetRef()));
+                        }
+                    }
 
-					@Override public void visitBoundaryEvent(BoundaryEvent that) {
-						if (that.getAttachedToRef() == null) {
-							throw new IllegalArgumentException(that.getId() + " has no attachedToRef attribute");
-						}
-						logger.info(that.getId() + " attachedTo " + that.getAttachedToRef().getId());
-						logger.info(that.getId() + " boundary event refs: " + that.getAttachedToRef().getBoundaryEventRefs());
-						logger.info(that.getId() + " attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
-						that.getAttachedToRef().getAttachedBoundaryEvents().addAll(that.getAttachedToRef().getBoundaryEventRefs());
-						logger.info(that.getId() + " new attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
-						logger.info(that.getAttachedToRef().getId() + " outgoing " + that.getOutgoing());
-					}
-				});
-			}
-		}
+                    @Override public void visitBoundaryEvent(BoundaryEvent that) {
+                        if (that.getAttachedToRef() == null) {
+                            throw new IllegalArgumentException(that.getId() + " has no attachedToRef attribute");
+                        }
+                        logger.info(that.getId() + " attachedTo " + that.getAttachedToRef().getId());
+                        logger.info(that.getId() + " boundary event refs: " + that.getAttachedToRef().getBoundaryEventRefs());
+                        logger.info(that.getId() + " attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
+                        that.getAttachedToRef().getAttachedBoundaryEvents().addAll(that.getAttachedToRef().getBoundaryEventRefs());
+                        logger.info(that.getId() + " new attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
+                        logger.info(that.getAttachedToRef().getId() + " outgoing " + that.getOutgoing());
+                    }
+                });
+            }
+        }
 
-		// Create a set of IDs for sequence flows which are configured to be absent
-		final Set<SequenceFlow> absentInConfiguration = new HashSet<SequenceFlow>();
+        // Create a set of IDs for sequence flows which are configured to be absent
+        final Set<SequenceFlow> absentInConfiguration = new HashSet<SequenceFlow>();
 
-		for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
-			for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-				logger.finer("Re-scanning " + element.getId());
-				element.acceptVisitor(new AbstractVisitor() {
-					BPMNEdge precedingEdge = null;
+        for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
+            for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
+                logger.finer("Re-scanning " + element.getId());
+                element.acceptVisitor(new AbstractVisitor() {
+                    BPMNEdge precedingEdge = null;
 
-					@Override public void visitBpmnEdge(BPMNEdge that) {
-						that.getBpmnElement().acceptVisitor(this);
-					}
+                    @Override public void visitBpmnEdge(BPMNEdge that) {
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
 
-					@Override public void visitBpmnShape(BPMNShape that) {
-						that.getBpmnElement().acceptVisitor(this);
-					}
+                    @Override public void visitBpmnShape(BPMNShape that) {
+                        that.getBpmnElement().acceptVisitor(this);
+                    }
 
-					@Override public void visitGateway(Gateway that) {
-						ExtensionElements extensionElements = that.getExtensionElements();
-						if (extensionElements == null) { return; }
-						Configurable configurable = extensionElements.getFirstExtensionElementOfType(Configurable.class);
-						if (configurable == null || configurable.getConfiguration() == null) { return; }
+                    @Override public void visitGateway(Gateway that) {
+                        ExtensionElements extensionElements = that.getExtensionElements();
+                        if (extensionElements == null) { return; }
+                        Configurable configurable = extensionElements.getFirstExtensionElementOfType(Configurable.class);
+                        if (configurable == null || configurable.getConfiguration() == null) { return; }
 
-						// Source references
-						switch (that.getGatewayDirection()) {
-						case CONVERGING:
-						case MIXED:
-							List absentInflows = new ArrayList(that.getIncomingSequenceFlows());
-							absentInflows.removeAll(configurable.getConfiguration().getSourceRefs());
-							absentInConfiguration.addAll(absentInflows);
-							break;
-						}
+                        // Source references
+                        switch (that.getGatewayDirection()) {
+                        case CONVERGING:
+                        case MIXED:
+                            List absentInflows = new ArrayList(that.getIncomingSequenceFlows());
+                            absentInflows.removeAll(configurable.getConfiguration().getSourceRefs());
+                            absentInConfiguration.addAll(absentInflows);
+                            break;
+                        }
 
-						// Target references
-						switch (that.getGatewayDirection()) {
-						case DIVERGING:
-						case MIXED:
-							List absentOutflows = new ArrayList(that.getOutgoingSequenceFlows());
-							absentOutflows.removeAll(configurable.getConfiguration().getTargetRefs());
-							absentInConfiguration.addAll(absentOutflows);
-							break;
-						}
-					}
-				});
-			}
-		}
+                        // Target references
+                        switch (that.getGatewayDirection()) {
+                        case DIVERGING:
+                        case MIXED:
+                            List absentOutflows = new ArrayList(that.getOutgoingSequenceFlows());
+                            absentOutflows.removeAll(configurable.getConfiguration().getTargetRefs());
+                            absentInConfiguration.addAll(absentOutflows);
+                            break;
+                        }
+                    }
+                });
+            }
+        }
 
-		// This will be our return value
-		List<BasicDiagram> diagrams = new ArrayList<BasicDiagram>();
-		
-		logger.fine("Generating JSON diagram from BPMN JAXB");
-		for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
-			logger.fine("BPMN diagram=" + bpmnDiagram + " class=" + bpmnDiagram.getClass());
+        // This will be our return value
+        List<BasicDiagram> diagrams = new ArrayList<BasicDiagram>();
+        
+        logger.fine("Generating JSON diagram from BPMN JAXB");
+        for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
+            logger.fine("BPMN diagram=" + bpmnDiagram + " class=" + bpmnDiagram.getClass());
 
-			BasicDiagram diagram = new BasicDiagram(
-				"canvas",						// id
-				"BPMNDiagram",						// type
-				new StencilSetReference(
-					"http://b3mn.org/stencilset/bpmn2.0#",		// stencilSet.ns
-					rootDir + "stencilsets//bpmn2.0/bpmn2.0.json"	// stencilSet.url
-				)
-			);
+            BasicDiagram diagram = new BasicDiagram(
+                "canvas",                        // id
+                "BPMNDiagram",                        // type
+                new StencilSetReference(
+                    "http://b3mn.org/stencilset/bpmn2.0#",        // stencilSet.ns
+                    rootDir + "stencilsets//bpmn2.0/bpmn2.0.json"    // stencilSet.url
+                )
+            );
 
-			// Additional properties
-			diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
-			diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
-			diagram.setProperty("documentation",      bpmnDiagram.getDocumentation());
-			diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
-			diagram.setProperty("name",               bpmnDiagram.getName());
-			diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
-			diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
-			diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
+            // Additional properties
+            diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
+            diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
+            diagram.setProperty("documentation",      bpmnDiagram.getDocumentation());
+            diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
+            diagram.setProperty("name",               bpmnDiagram.getName());
+            diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
+            diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
+            diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
 
-			/*
-			// Handle extension elements
-			if (bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements() != null) {
-                        	for (AbstractExtensionElement extensionElement : bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements().getAny()) {
-					if (extensionElement instanceof Variants) {
-						for (Variants.Variant variant : ((Variants) extensionElement).getVariant()) {
-							logger.fine("Variant " + variant.getId() + " name=" + variant.getName());
-						}
-					}
-				}
-			}
-			*/
+            /*
+            // Handle extension elements
+            if (bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements() != null) {
+                            for (AbstractExtensionElement extensionElement : bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements().getAny()) {
+                    if (extensionElement instanceof Variants) {
+                        for (Variants.Variant variant : ((Variants) extensionElement).getVariant()) {
+                            logger.fine("Variant " + variant.getId() + " name=" + variant.getName());
+                        }
+                    }
+                }
+            }
+            */
 
-			// Child elements
-			for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-				BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
-				element.acceptVisitor(visitor);
-				if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
-					diagram.addChildShape(visitor.getShape());
-				}
-			}
+            // Child elements
+            for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
+                BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+                element.acceptVisitor(visitor);
+                if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
+                    diagram.addChildShape(visitor.getShape());
+                }
+            }
 
-			diagrams.add(diagram);
-		}
+            diagrams.add(diagram);
+        }
 
-		return diagrams;
-	}
+        return diagrams;
+    }
     
     public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
 
@@ -293,74 +293,78 @@ public class BPMN2DiagramConverter {
         Unmarshaller unmarshaller = null;
         try {
             StreamSource source = new StreamSource(new StringReader(bpmnString));
-            unmarshaller = JAXBContext.newInstance(Definitions.class,
-                    ConfigurationAnnotationAssociation.class,
-                    ConfigurationAnnotationShape.class)
-                    .createUnmarshaller();
+            unmarshaller = newContext().createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
             Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
             
             //return definitions;
 
+            logger.fine("Parsed BPMN");
 
+            // Convert BPMN to JSON
+            BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
+            List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
-        logger.fine("Parsed BPMN");
-
-        // Convert BPMN to JSON
-        BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
-        List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
-
-        logger.fine("Diagrams=" + diagrams);
-        String data = "";
-        for(BasicDiagram diagram : diagrams) {
+            logger.fine("Diagrams=" + diagrams);
+            String data = "";
+            for(BasicDiagram diagram : diagrams) {
                 data = diagram.getString();
                 writeJson(data, jsonStream);
                 break;
             }
-            }catch (JSONException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }  catch (JAXBException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (JAXBException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
-	/**
-         * Take a BPMN XML file as input and generate an equivalent Signavio JSON file as output.
-         *
-         * Synergia extensions for configurable BPMN are additionally supported in the input file.
-         *
-         * @param args  first argument is the path of a BPMN XML file
-         */
-        public static void main(String[] args) throws JAXBException, JSONException {
-            try {
-                logger.info("Starting test for " + args[0]);
+    /**
+     * @return a JAXB context for BPMN 2.0 with the C-BPMN extensions
+     * @throws JAXBException if the context can't be instantiated
+     */
+    private static JAXBContext newContext() throws JAXBException {
+        return JAXBContext.newInstance(Definitions.class,
+                                       Configurable.class,
+                                       ConfigurationAnnotationAssociation.class,
+                                       ConfigurationAnnotationShape.class,
+                                       Variants.class);
+    }
 
-                // Parse BPMN from XML to JAXB
-                Unmarshaller unmarshaller = JAXBContext.newInstance(Definitions.class,
-                                                                    ConfigurationAnnotationAssociation.class,
-                                                                    ConfigurationAnnotationShape.class)
-                                                       .createUnmarshaller();
-                unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-                Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class)
-                                                      .getValue();
+    /**
+     * Take a BPMN XML file as input and generate an equivalent Signavio JSON file as output.
+     *
+     * Synergia extensions for configurable BPMN are additionally supported in the input file.
+     *
+     * @param args  first argument is the path of a BPMN XML file
+     */
+    public static void main(String[] args) throws JAXBException, JSONException {
+        try {
+            logger.info("Starting test for " + args[0]);
 
-                logger.fine("Parsed BPMN");
+            // Parse BPMN from XML to JAXB
+            Unmarshaller unmarshaller = newContext().createUnmarshaller();
+            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+            Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class)
+                                                  .getValue();
 
-                // Convert BPMN to JSON
-                BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
-                List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
+            logger.fine("Parsed BPMN");
 
-                logger.fine("Diagrams=" + diagrams);
-                for(BasicDiagram diagram : diagrams) System.out.println(diagram.getString());
+            // Convert BPMN to JSON
+            BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
+            //converter.getBPMN(bpmnData, "UTF-8", res.getOutputStream());
+            List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
-                logger.info("Completed test for " + args[0]);
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+            logger.fine("Diagrams=" + diagrams);
+            for(BasicDiagram diagram : diagrams) System.out.println(diagram.getString());
+
+            logger.info("Completed test for " + args[0]);
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
+    }
 
     private void writeJson(String json, OutputStream jsonStream) throws JSONException, IOException {
         //BasicDiagram diagram = context.getDiagram(0);
