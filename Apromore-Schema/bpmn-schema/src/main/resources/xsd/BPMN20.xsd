@@ -10,6 +10,8 @@
 	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
 
 	<xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/DI" schemaLocation="BPMNDI.xsd"/>
+	<xsd:import namespace="http://www.processconfiguration.com" schemaLocation="pc.xsd"/>
+	<xsd:import namespace="http://www.signavio.com" schemaLocation="signavio.xsd"/>
 	<xsd:include schemaLocation="Semantic.xsd"/>
 
 	<xsd:element name="definitions" type="tDefinitions"/>

@@ -452,7 +452,7 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
 	},
 	
 	popular: function() {
-		return this._jsonProp.popular || false;
+		return this._jsonProp.configurationExtension ? 2 : this._jsonProp.popular ? 1 : 3;
 	},
 	
 	setPopular: function() {

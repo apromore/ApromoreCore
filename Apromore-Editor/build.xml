@@ -187,6 +187,7 @@
     
     <path id="executable.path">
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-bpmn2_0.jar"/>
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/jaxb-impl.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/org.json.jar"/>
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>

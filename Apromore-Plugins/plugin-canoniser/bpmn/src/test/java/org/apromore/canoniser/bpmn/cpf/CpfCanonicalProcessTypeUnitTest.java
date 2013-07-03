@@ -712,4 +712,29 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
     public void testError() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Error.bpmn");
     }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Vanilla.c.bpmn">a model with no configuration extensions</a>.
+     */
+    @Test
+    public void testVanilla() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Vanilla.c.bpmn");
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Caramel.c.bpmn">a model with a configurable XOR gateway</a>.
+     */
+    @Test
+    public void testCaramel() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Caramel.c.bpmn");
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Chocolate.c.bpmn">a model with various configuration extensions</a>.
+     */
+    @Test
+    @Ignore
+    public void testChocolate() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Chocolate.c.bpmn");
+    }
 }
