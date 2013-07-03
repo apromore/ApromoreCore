@@ -109,7 +109,6 @@ public class BPMN20CanoniserUnitTest implements TestConstants {
      * Test {@link BPMN20Canoniser#createInitialNativeFormat}.
      */
     @Test
-    @Ignore
     public final void testCreateInitialNativeFormat() throws Exception {
 
         // Construct test instance

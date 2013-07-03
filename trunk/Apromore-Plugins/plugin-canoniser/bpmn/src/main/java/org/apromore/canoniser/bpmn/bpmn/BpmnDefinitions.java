@@ -232,6 +232,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      */
     @SuppressWarnings("unchecked")
     public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
+        assert in != null;
         Unmarshaller unmarshaller = /*BPMN_CONTEXT*/ newContext().createUnmarshaller();
         BpmnIDResolver resolver = new BpmnIDResolver();
         BpmnUnmarshallerListener listener = new BpmnUnmarshallerListener(resolver);
@@ -254,7 +255,9 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
             return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                           org.omg.spec.dd._20100524.di.ObjectFactory.class);
+                                           org.omg.spec.dd._20100524.di.ObjectFactory.class,
+                                           com.processconfiguration.ObjectFactory.class,
+                                           com.signavio.ObjectFactory.class);
         } catch (JAXBException e) {
             throw new RuntimeException("Unable to create JAXB context for BPMN", e);
         }
@@ -331,6 +334,7 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
                                                 final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
+                                                      com.processconfiguration.ObjectFactory.class,
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                                       org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
