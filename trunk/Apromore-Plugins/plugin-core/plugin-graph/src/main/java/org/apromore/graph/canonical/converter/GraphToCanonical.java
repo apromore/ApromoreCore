@@ -447,6 +447,8 @@ public class GraphToCanonical {
         output.setOriginalID(node.getOriginalId());
         output.setName(node.getName());
         output.setConfigurable(node.isConfigurable());
+
+        updateAttributes(output, node);
     }
 
     private void updateWorkNodeData(WorkType output, final CPFNode node) {
@@ -477,7 +479,6 @@ public class GraphToCanonical {
         updateOutputExpressions(output, node);
         updateObjectReferences(output, node);
         updateResourceReferences(output, node);
-        updateAttributes(output, node);
     }
 
     /* Updates the List of Cancel Nodes for a Work Node. */
@@ -552,7 +553,7 @@ public class GraphToCanonical {
         }
     }
 
-    private void updateAttributes(WorkType output, CPFNode node) {
+    private void updateAttributes(NodeType output, CPFNode node) {
         TypeAttribute typeAttribute;
         for (Entry<String, IAttribute> attribute : node.getAttributes().entrySet()) {
             typeAttribute = new TypeAttribute();
