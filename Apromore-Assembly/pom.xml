@@ -139,16 +139,6 @@
             <artifactId>database-mysql</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>database-postgresql</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
-         <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>database-oracle</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
 
         <!-- Common Bundles -->
         <dependency>
@@ -255,6 +245,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.ws.xmlschema</groupId>
             <artifactId>xmlschema-core</artifactId>
             <scope>provided</scope>
@@ -356,7 +351,7 @@
                                 org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
                                 org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
                                 org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
-                                jms,org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
+                                org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
                                 org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
                                 com.springsource.javax.xml.bind
                             </excludeArtifactIds>
