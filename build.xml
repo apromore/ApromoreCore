@@ -14,6 +14,11 @@
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
 
+    <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
+    <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/" />
+    <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/" />
+    <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/" />
+
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
 
     <target name="check-virgo">
@@ -32,22 +37,12 @@
     <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Extras/Virgo">
-                <!--
-                        We need a compatibility mode for Apromore Editor vanilla WAR.
-                        See: http://www.eclipse.org/virgo/documentation/virgo-documentation-3.5.0.RELEASE/docs/virgo-user-guide/html/ch13s08.html
-                -->
                 <filename name="org.eclipse.virgo.web.properties"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/configuration" overwrite="true">
             <fileset dir="Extras/Virgo">
-                <!--
-                        Change default port to 9000 in Eclipse Virgo
-                -->
                 <include name="tomcat-server.xml"/>
-                <!--
-                    Export Java standard classes according to our needs
-                -->
                 <include name="java6-server.profile"/>
             </fileset>
         </copy>
@@ -86,7 +81,7 @@
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
-    <target name="start-virgo" depends="set-permissions,copy-virgo">  <!-- deploy-virgo,  -->
+    <target name="start-virgo" depends="set-permissions,copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -97,7 +92,7 @@
         </exec>
     </target>
 
-    <target name="debug-virgo" depends="set-permissions,copy-virgo"> <!-- deploy-virgo,  -->
+    <target name="debug-virgo" depends="set-permissions,copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -128,6 +123,29 @@
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="webAppRepo"/>
         </copy>
+
+        <!-- Plugins -->
+        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
+            <!--<fileset dir="${dir-annotation}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="core/**/*.jar"/>-->
+            <!--</fileset>-->
+        <!--</copy>-->
+        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
+            <!--<fileset dir="${dir-canoniser}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="core/**/*.jar"/>-->
+            <!--</fileset>-->
+        <!--</copy>-->
+        <!--<copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">-->
+            <!--<fileset dir="${dir-deploy}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="core/**/*.jar"/>-->
+            <!--</fileset>-->
+        <!--</copy>-->
     </target>
 
 
@@ -137,7 +155,7 @@
 
     <fileset id="usrRepo" dir=".">
         <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
-
+        <include name="Apromore-Assembly/**/repository/usr/*.war"/>
     </fileset>
 
     <fileset id="webAppRepo" dir=".">

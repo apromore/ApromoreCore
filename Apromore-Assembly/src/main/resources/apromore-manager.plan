@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plan name="greenpages.db.plan" version="2.4.3.RELEASE" scoped="false" atomic="true"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+    <attributes>
+        <attribute name="web.context.path" value="manager"/>
+    </attributes>
+
+    <!-- Database properties file (minus file extension) to be deployed -->
+    <artifact type="configuration" name="greenpages.db.config"/>
+    <artifact type="bundle" name="greenpages" version="[2.4, 2.5)"/>
+    <artifact type="bundle" name="greenpages.db" version="[2.4, 2.5)"/>
+    <artifact type="bundle" name="greenpages.jpa" version="[2.4, 2.5)"/>
+    <artifact type="bundle" name="greenpages.web" version="[2.4, 2.5)">
+        <property name="header:Web-ContextPath" value="${web.context.path}"/>
+    </artifact>
+</plan>
