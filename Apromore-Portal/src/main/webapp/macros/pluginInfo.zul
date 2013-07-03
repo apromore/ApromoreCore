@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window id="pluginInfo" height="400px" width="800px" sizable="true">
+<window id="pluginInfo" height="450px" width="800px" sizable="true">
 	<listbox id="pluginInfoListBox" vflex="true" span="true"
 		autopaging="true" mold="paging">
 		<listhead sizable="true" >	
