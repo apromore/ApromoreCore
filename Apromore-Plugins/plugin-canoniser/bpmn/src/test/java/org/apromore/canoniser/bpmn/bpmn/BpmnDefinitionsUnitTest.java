@@ -74,7 +74,7 @@ import org.omg.spec.dd._20100524.di.Plane;
  * @see <a href="http://apromore.org/wp-content/uploads/2010/12/AProMoReCanonization_v1.0.pdf">Canonization
  *     Service for AProMoRe</a>, page 24-25
  */
-public class BpmnDefinitionsTest implements TestConstants {
+public class BpmnDefinitionsUnitTest implements TestConstants {
 
     /**
      * Common code for decanonisation tests.

@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfEventTypeTest {
+public class CpfEventTypeUnitTest {
 
     /** Test instance. */
     CpfEventType event;

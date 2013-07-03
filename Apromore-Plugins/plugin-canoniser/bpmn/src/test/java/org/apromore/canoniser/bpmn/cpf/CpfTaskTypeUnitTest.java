@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfTaskTypeTest {
+public class CpfTaskTypeUnitTest {
 
     /** Test instance. */
     CpfTaskType task;
