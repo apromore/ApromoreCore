@@ -2,10 +2,10 @@ package org.apromore.canoniser.yawl.cpf2yawl.patterns.controlflow;
 
 import java.io.File;
 
-import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
+import org.apromore.canoniser.yawl.BaseCPF2YAWLUnitTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 
-public class TimerOnEnablement extends BaseCPF2YAWLTest {
+public class TimerOnEnablement extends BaseCPF2YAWLUnitTest {
     
     public TimerOnEnablement() {
         super();

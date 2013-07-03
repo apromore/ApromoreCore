@@ -5,17 +5,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.apromore.canoniser.yawl.BaseYAWL2CPFTest;
+import org.apromore.canoniser.yawl.BaseYAWL2CPFUnitTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
 import org.junit.Test;
 
-public class RoleWithDataDistributionSet extends BaseYAWL2CPFTest {
+public class RoleWithDataDistributionSet extends BaseYAWL2CPFUnitTest {
 
     /* (non-Javadoc)
-     * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
+     * @see org.apromore.canoniser.yawl.BaseYAWL2CPFUnitTest#getYAWLFile()
      */
     @Override
     protected File getYAWLFile() {

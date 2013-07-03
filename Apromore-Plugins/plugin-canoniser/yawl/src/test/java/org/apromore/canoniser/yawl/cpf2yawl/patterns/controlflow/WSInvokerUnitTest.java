@@ -5,17 +5,16 @@ import java.io.File;
 import org.apromore.canoniser.yawl.BaseCPF2YAWLUnitTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 
-public class MEMEInputOutput extends BaseCPF2YAWLUnitTest {
+public class WSInvokerUnitTest extends BaseCPF2YAWLUnitTest {
 
     @Override
     protected File getCPFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/MEMEInputOutput.yawl.cpf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WSInvokerTest.yawl.cpf");
     }
 
     @Override
     protected File getANFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/MEMEInputOutput.yawl.anf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WSInvokerTest.yawl.anf");
     }
-    
 
 }
