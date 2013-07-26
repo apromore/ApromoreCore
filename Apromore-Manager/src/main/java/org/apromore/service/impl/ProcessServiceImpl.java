@@ -71,7 +71,7 @@ import org.apromore.graph.canonical.ICPFObject;
 import org.apromore.graph.canonical.ICPFResource;
 import org.apromore.graph.canonical.ObjectTypeEnum;
 import org.apromore.graph.canonical.ResourceTypeEnum;
-import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.helper.PluginHelper;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;

@@ -32,6 +32,15 @@
                         <Embed-Dependency>scope=!test;artifactId=fluent-hc|httpclient|httpcore</Embed-Dependency>
                         <!-- Also embed all transitive dependencies -->
                         <Embed-Transitive>true</Embed-Transitive>
+                        <Import-Bundle>
+                            org.apache.commons.codec;version="[1.7.0,2.0.0]"
+                        </Import-Bundle>
+                        <Import-Package>
+                            org.apache.commons.codec.binary,
+                            com.sun.jndi.ldap,
+                            javassist,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

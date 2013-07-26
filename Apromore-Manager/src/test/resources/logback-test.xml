@@ -11,15 +11,40 @@
         </encoder>
     </appender>
 
-    <include resource="logJpaToFile-test.xml" />
+    <appender name="jpalogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./target/apromore-test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>./target/apromore-test.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>3</maxIndex>
+        </rollingPolicy>
 
-    <logger name="org.apromore" level="debug" />
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>1MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date %level | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="org.apromore" level="INFO" />
     <logger name="com.jolbox.bonecp" level="ERROR" />
     <logger name="org.eclipse.persistence" level="ERROR" />
     <logger name="org.springframework" level="ERROR"/>
     <logger name="org.springframework.beans.factory" level="ERROR" />
 
-    <root level="DEBUG">
+    <logger name="org.springframework.orm" level="ERROR">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+    <logger name="org.springframework.jdbc" level="ERROR">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+    <logger name="org.springframework.transaction" level="ERROR">
+        <appender-ref ref="jpalogfile" />
+    </logger>
+
+    <root level="INFO">
         <appender-ref ref="console"/>
     </root>
 

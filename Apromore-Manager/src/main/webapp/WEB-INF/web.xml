@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-    <display-name>Apromore</display-name>
-	
-	<!-- Addition for OSGi -->
-	<context-param>
-		<param-name>contextClass</param-name>
-		<param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
-	</context-param>
+    <display-name>Apromore-Manager</display-name>
+
+    <!-- Addition for OSGi -->
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
+    </context-param>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>

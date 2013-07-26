@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apromore.helper.PluginHelper;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.PluginParameter;
 import org.apromore.model.PluginParameters;

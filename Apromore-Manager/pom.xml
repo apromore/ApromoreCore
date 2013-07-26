@@ -33,29 +33,39 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <unpackBundle>true</unpackBundle>
+                    <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Web-ContextPath>/manager</Web-ContextPath>
-                        <!-- All compile and runtime dependencies are directly embedded as JAR files, therefore not loaded trough OSGi -->
                         <Embed-Dependency>artifactId=mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime</Embed-Dependency>
-                        <!-- Also embed all transitive dependencies -->
                         <Embed-Transitive>false</Embed-Transitive>
-                        <!-- 
-                            Some Spring, Spring Data, EclipseLink indirect dependencies are
-                            not picked up correctly by BND. Thus we need to maintain them
-                            here manually.
-                        -->
+                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Require-Bundle>
                             org.springframework.data.jpa;bundle-version="[1.1,1.2)",
                             org.springframework.data.core;bundle-version="[1.3,1.4)",
                             org.eclipse.persistence.jpa;bundle-version="[2.4,3.0)",
                             org.eclipse.persistence.core;bundle-version="[2.4,3.0)",
-                            org.springframework.aop;bundle-version="[3.1,4.0)",
-                            org.springframework.web;bundle-version="[3.1,4.0)",
-                            org.springframework.beans;bundle-version="[3.1,4.0)"
+                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
+                            org.springframework.web;bundle-version="[3.1.0,4.0)",
+                            org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
+                        <Import-Bundle>
+                            org.springframework.data.jpa;bundle-version="[1.1,1.2)",
+                            org.springframework.data.core;bundle-version="[1.3,1.4)",
+                            org.eclipse.persistence.jpa;bundle-version="[2.4,3.0)",
+                            org.eclipse.persistence.core;bundle-version="[2.4,3.0)",
+                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
+                            org.springframework.web;bundle-version="[3.1.0,4.0)",
+                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
+                            <!--org.springframework.ws.soap.security;version="[2.1.0.RELEASE,2.1.0.RELEASE]",-->
+                            <!--org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",-->
+                            <!--com.springsource.com.sun.xml.wss;version="[2.0.0.FCS,2.0.0.FCS]",-->
+                            <!--com.springsource.com.sun.xml.messaging.saaj;version="[1.3.2,1.3.2]"-->
+                        </Import-Bundle>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm, <!-- Is not picked up by maven-bundle-plugin from web.xml -->
+                            org.eclipse.virgo.web.dm,
                             org.springframework.beans.factory.aspectj,
                             org.aopalliance.aop,
                             javax.persistence,
@@ -67,15 +77,18 @@
                             net.sf.cglib.reflect,
                             javax.wsdl.extensions,
                             com.google.common.base,
+                            <!--com.sun.org.apache.xml.internal.security.algorithms,-->
                             org.springframework.ws.transport.http,
+                            org.springframework.ws,
                             com.sun.org.apache.xerces.internal.dom,
-                            com.sun.xml.bind.v2, <!-- JAXB RI implementation from SUN for BPMN Canoniser -->
+                            com.sun.xml.bind.v2,
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
                             *
                         </Import-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
+                        <Web-ContextPath>/manager</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>
@@ -94,7 +107,7 @@
                 </executions>
                 <configuration>
                     <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
-                    <commandlineArgs>-classpath %classpath;${basedir}/target/dependency/compile;${basedir}/target/dependency/provided -loglevel FINE -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
+                    <commandlineArgs>-classpath %classpath; -loglevel OFF -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
                     <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>
@@ -105,10 +118,9 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes>
                         WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,WEB-INF/lib/manager*.jar,WEB-INF/lib/plugin*.jar,
-                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/com.*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,
+                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,
                         WEB-INF/lib/jbpt*.jar,WEB-INF/lib/jcl*.jar,WEB-INF/lib/joda-time*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/mysql-connector-java*.jar,WEB-INF/lib/org.*.jar,
-                        WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/spring-data-*.jar,WEB-INF/lib/XmlSchema*.jar,WEB-INF/lib/xpdl-schema*.jar
-                    </packagingExcludes>
+                        WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/spring-data-*.jar,WEB-INF/lib/XmlSchema*.jar,WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/logback*.jar                    </packagingExcludes>
                     <archive>
                         <manifestFile>
                             ${project.build.outputDirectory}/META-INF/MANIFEST.MF
@@ -123,7 +135,7 @@
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
+            <artifactId>manager-ws-model</artifactId>
         </dependency>
 
         <!-- Core Plugins -->
@@ -223,7 +235,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${google.guava.version}</version>
         </dependency>
 
         <!-- logging -->
@@ -237,11 +248,11 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.core</artifactId>
+            <artifactId>logback-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.xmlschema</groupId>
@@ -264,38 +275,18 @@
             <artifactId>bonecp</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.cglib</groupId>
-            <artifactId>com.springsource.net.sf.cglib</artifactId>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
+            <groupId>org.joda</groupId>
+            <artifactId>com.springsource.org.joda.time</artifactId>
         </dependency>
 
         <!-- Spring dependencies -->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.beans</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.oxm</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -307,7 +298,19 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.transaction</artifactId>
+            <artifactId>org.springframework.beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -315,7 +318,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.jdbc</artifactId>
+            <artifactId>org.springframework.oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.transaction</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -325,12 +332,22 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.web.servlet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring security -->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.security</groupId>-->
+            <!--<artifactId>org.springframework.security.core</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.ws</groupId>-->
+        <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
+        <!--</dependency>-->
 
         <!-- Spring-WS dependencies -->
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.xml</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>org.springframework.ws</artifactId>
@@ -339,6 +356,12 @@
             <groupId>org.springframework.ws</groupId>
             <artifactId>org.springframework.ws.support</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.xml</artifactId>
+        </dependency>
+
+        <!-- WebServices WSDL -->
         <dependency>
             <groupId>javax.wsdl</groupId>
             <artifactId>com.springsource.javax.wsdl</artifactId>

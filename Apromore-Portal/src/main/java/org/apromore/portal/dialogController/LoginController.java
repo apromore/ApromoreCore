@@ -2,11 +2,6 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.model.UserType;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.ldap.LDAPUser;
-import org.apromore.portal.ldap.LDAPUserService;
-import org.apromore.portal.ldap.LDAPUserServiceImpl;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
@@ -46,9 +41,6 @@ public class LoginController extends BaseController {
     private Button cancelWindowButton;
     private Textbox username;
     private Textbox passwd;
-    private Checkbox chkAD;
-
-    private LDAPUserService userService;
 
     public void onCreate() throws InterruptedException {
         try {
@@ -151,7 +143,6 @@ public class LoginController extends BaseController {
             }
 
             this.signinWindow = (Window) this.getFellow("signinWindow");
-            this.chkAD = (Checkbox) this.getFellow("chkAD");
             this.username = (Textbox) this.getFellow("username");
             this.passwd = (Textbox) this.getFellow("passwd");
             this.okWindowButton = (Button) this.getFellow("okWindowButton");
@@ -209,45 +200,8 @@ public class LoginController extends BaseController {
             String username = this.username.getValue();
             String password = this.passwd.getValue();//hashPassword(this.passwd.getValue());
 
-            UserType user = null;
-            if (chkAD.isChecked()) {
-                try {
-
-                    LdapContextSource contextSource = new LdapContextSource();
-                    contextSource.setUrl("ldap://localhost:10389");
-                    contextSource.setUserDn("cn=Tom Hanks,ou=users,o=apromoread");
-                    contextSource.setBase("o=apromoread");
-                    contextSource.setPassword("testing");
-                    contextSource.afterPropertiesSet();
-                    LdapTemplate template = new LdapTemplate(contextSource);
-                    userService = new LDAPUserServiceImpl();
-
-                    userService.setLdapTemplate(template);
-                    if (userService == null) {
-                        Messagebox.show("LDAP service error", "Attention", Messagebox.OK, Messagebox.ERROR);
-                        return;
-                    } else {
-                        if (userService.authenticate(username, password)) {
-                            LDAPUser ldapUser = userService.getUser(username);
-                            user = new UserType();
-                            user.setUsername(ldapUser.getUserName());
-                            user.setFirstName(ldapUser.getFirstName());
-                            user.setLastName(ldapUser.getLastName());
-
-                            UserType existingUser = getService().readUser(ldapUser.getUserName());
-                            if (existingUser == null) {
-                                existingUser = getService().writeUser(user);
-                            }
-                            user.setId(existingUser.getId());
-                        }
-                    }
-                } catch (Exception ex) {
-                    user = null;
-                }
-            } else {
-                password = hashPassword(password);
-                user = getService().login(username, password);
-            }
+            password = hashPassword(password);
+            UserType user = getService().login(username, password);
             if (user == null) {
                 Messagebox.show("Invalid username/password", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
