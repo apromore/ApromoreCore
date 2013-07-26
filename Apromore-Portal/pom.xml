@@ -56,9 +56,9 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
                             org.springframework.oxm;bundle-version="[3.1.0,4.0)",
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            <!--org.springframework.ws.soap.security;version="[2.1.0.RELEASE,2.1.0.RELEASE]",-->
                             org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            <!--org.springframework.ws.soap.security;version="[2.1.0.RELEASE,2.1.0.RELEASE]",-->
                             <!--org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",-->
                             <!--com.springsource.com.sun.xml.wss;version="[2.0.0.FCS,2.0.0.FCS]",-->
                             <!--com.springsource.com.sun.xml.messaging.saaj;version="[1.3.2,1.3.2]",-->
