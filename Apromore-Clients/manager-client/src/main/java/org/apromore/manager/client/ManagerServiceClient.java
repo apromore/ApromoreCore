@@ -3,7 +3,6 @@ package org.apromore.manager.client;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.helper.PluginHelper;
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
-import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.AddProcessToFolderInputMsgType;
@@ -24,7 +23,6 @@ import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.ClusterType;
 import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.CreateClustersInputMsgType;
-import org.apromore.model.CreateClustersOutputMsgType;
 import org.apromore.model.CreateFolderInputMsgType;
 import org.apromore.model.CreateFolderOutputMsgType;
 import org.apromore.model.CreateGEDMatrixInputMsgType;
@@ -113,7 +111,6 @@ import org.apromore.model.RemoveFolderPermissionsInputMsgType;
 import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
 import org.apromore.model.RemoveProcessPermissionsInputMsgType;
 import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
-import org.apromore.model.ResultType;
 import org.apromore.model.SaveFolderPermissionsInputMsgType;
 import org.apromore.model.SaveFolderPermissionsOutputMsgType;
 import org.apromore.model.SaveProcessPermissionsInputMsgType;
@@ -398,7 +395,7 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<CreateFolderInputMsgType> request = WS_CLIENT_FACTORY.createCreateFolderRequest(msg);
 
         JAXBElement<CreateFolderOutputMsgType> response = (JAXBElement<CreateFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        ResultType result = response.getValue().getResult();
+        response.getValue().getResult();
     }
 
     @Override
@@ -413,7 +410,7 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<AddProcessToFolderInputMsgType> request = WS_CLIENT_FACTORY.createAddProcessToFolderRequest(msg);
 
         JAXBElement<AddProcessToFolderOutputMsgType> response = (JAXBElement<AddProcessToFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        ResultType result = response.getValue().getResult();
+        response.getValue().getResult();
     }
 
     @Override
@@ -428,7 +425,7 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
 
         JAXBElement<UpdateFolderOutputMsgType> response = (JAXBElement<UpdateFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        ResultType result = response.getValue().getResult();
+        response.getValue().getResult();
     }
 
     @Override
@@ -442,7 +439,7 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<DeleteFolderInputMsgType> request = WS_CLIENT_FACTORY.createDeleteFolderRequest(msg);
 
         JAXBElement<DeleteFolderOutputMsgType> response = (JAXBElement<DeleteFolderOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        ResultType result = response.getValue().getResult();
+        response.getValue().getResult();
     }
 
     /**
@@ -502,7 +499,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getFragment(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -520,7 +517,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#createGedMatrix()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -534,7 +531,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#createClusters(org.apromore.model.ClusterSettingsType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -546,12 +543,12 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<CreateClustersInputMsgType> request = WS_CLIENT_FACTORY.createCreateClustersRequest(msg);
 
-        JAXBElement<CreateClustersOutputMsgType> response = (JAXBElement<CreateClustersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        webServiceTemplate.marshalSendAndReceive(request);
     }
 
     /**
      * @see ManagerService#getPairwiseDistances(java.util.List)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -571,7 +568,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusteringSummary()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -589,7 +586,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusterSummaries(org.apromore.model.ClusterFilterType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -607,7 +604,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getCluster(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -625,7 +622,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusters(org.apromore.model.ClusterFilterType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -643,7 +640,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#readProcessSummaries(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -685,17 +682,15 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-
-
     /**
      * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, double, double, double, double, double, double)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ProcessSummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
-            final Boolean latestVersions, final double modelThreshold, final double labelThreshold, final double contextThreshold,
-            final double skipnWeight, final double subnWeight, final double skipeWeight) {
+                                                          final Boolean latestVersions, final double modelThreshold, final double labelThreshold, final double contextThreshold,
+                                                          final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing SearchForSimilarProcessesRequest.....");
 
         SearchForSimilarProcessesInputMsgType msg = new SearchForSimilarProcessesInputMsgType();
@@ -714,14 +709,14 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#mergeProcesses(java.util.Map, String, String, String, String, Integer, String, boolean, double, double, double, double, double, double)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ProcessSummaryType mergeProcesses(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
-            final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
-            final Integer folderId, final String method, final boolean removeEntanglements, final double mergeThreshold, final double labelThreshold,
-            final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
+                                             final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
+                                             final Integer folderId, final String method, final boolean removeEntanglements, final double mergeThreshold, final double labelThreshold,
+                                             final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing MergeProcessesRequest.....");
 
         MergeProcessesInputMsgType msg = new MergeProcessesInputMsgType();
@@ -743,13 +738,13 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#exportFormat(int, String, String, Double, String, String, Boolean, String, java.util.Set)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ExportFormatResultType exportFormat(final int processId, final String processName, final String branchName, final Double versionNumber,
-            final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
-            final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+                                               final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
+                                               final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
@@ -777,13 +772,13 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#importProcess(String, java.lang.Integer, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, java.util.Set)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ImportProcessResultType importProcess(final String username, final Integer folderId, final String nativeType, final String processName,
             final Double versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
-            final String lastUpdate, final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
+            final String lastUpdate, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -813,14 +808,14 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Double, Boolean, String, java.io.InputStream)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final  Integer processId,
+    public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
             final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
             final Double originalVersionNumber, final Boolean createNewBranch, final String preVersion, final InputStream native_is)
-            throws IOException, Exception {
+            throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -850,16 +845,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-
-
     /**
      * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
-            final Double preVersion, final Double newVersion, final String ranking) throws Exception {
+                                final Double preVersion, final Double newVersion, final String ranking) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -882,7 +875,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#writeUser(org.apromore.model.UserType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -909,7 +902,7 @@ public class ManagerServiceClient implements ManagerService {
     @Override
     @SuppressWarnings("unchecked")
     public void writeAnnotation(final Integer editSessionCode, final String annName, final boolean isNew, final Integer processId,
-            final String version, final String nat_type, final InputStream native_is) throws IOException, Exception {
+            final String version, final String nat_type, final InputStream native_is) throws Exception {
         LOGGER.debug("Preparing WriteAnnotationRequest.....");
 
         WriteAnnotationInputMsgType msg = new WriteAnnotationInputMsgType();
@@ -932,7 +925,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#writeEditSession(org.apromore.model.EditSessionType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -955,7 +948,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#deleteEditSession(int)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -975,7 +968,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#deleteProcessVersions(java.util.Map)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -1053,8 +1046,8 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
-            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
-            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
+            Set<PluginInfo> infoSet = new HashSet<>();
+            for (PluginInfo pluginInfo : response.getValue().getPluginInfo()) {
                 infoSet.add(pluginInfo);
             }
             return infoSet;
@@ -1065,9 +1058,8 @@ public class ManagerServiceClient implements ManagerService {
      * @see org.apromore.manager.client.ManagerService#readNativeMetaData(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
      */
     @Override
-    public NativeMetaData readNativeMetaData(final String nativeType, final String canoniserName, final String canoniserVersion, final InputStream nativeProcess)
-            throws Exception {
-
+    public NativeMetaData readNativeMetaData(final String nativeType, final String canoniserName, final String canoniserVersion,
+            final InputStream nativeProcess) throws Exception {
         ReadNativeMetaDataInputMsgType msg = new ReadNativeMetaDataInputMsgType();
         msg.setCanoniserName(canoniserName);
         msg.setCanoniserVersion(canoniserVersion);
@@ -1092,7 +1084,6 @@ public class ManagerServiceClient implements ManagerService {
     @Override
     public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner,
             final String processName, final String versionName, final String creationDate) throws Exception {
-
         ReadInitialNativeFormatInputMsgType msg = new ReadInitialNativeFormatInputMsgType();
         msg.setCanoniserName(canoniserName);
         msg.setCanoniserVersion(canoniserVersion);
@@ -1134,8 +1125,8 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
-            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
-            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
+            Set<PluginInfo> infoSet = new HashSet<>();
+            for (PluginInfo pluginInfo : response.getValue().getPluginInfo()) {
                 infoSet.add(pluginInfo);
             }
             return infoSet;
@@ -1144,8 +1135,7 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     public PluginMessages deployProcess(final String branchName, final String processName, final Double versionName, final String nativeType,
-            final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties)
-            throws Exception {
+            final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
         LOGGER.debug("Preparing deployProcess ...");
 
         DeployProcessInputMsgType msg = new DeployProcessInputMsgType();

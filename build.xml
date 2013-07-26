@@ -10,9 +10,9 @@
     <property name="database-name" value="mysql"/>
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
-    <property name="virgo-url" value="http://apromore.googlecode.com/files/virgo-tomcat-server-3.6.0.RELEASE.zip"/>
+    <property name="virgo-url" value="http://apromore.googlecode.com/files/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
-    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.0.RELEASE"/>
+    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.2.RELEASE"/>
 
     <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
     <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
@@ -65,10 +65,10 @@
             <fileset dir="${dir-virgo}">
                 <include name="pickup/*.jar"/>
                 <include name="pickup/*.war"/>
-                <include name="pickup/*.plan"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.0.RELEASE.par"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.0.RELEASE.jar"/>
-                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.0.RELEASE.jar"/>
+                <include name="pickup/*.par"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.2.RELEASE.par"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.2.RELEASE.jar"/>
+                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.2.RELEASE.jar"/>
             </fileset>
         </delete>
     </target>
@@ -83,6 +83,17 @@
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
+    <target name="clean-start-virgo" depends="set-permissions">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
     <target name="start-virgo" depends="set-permissions,copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
@@ -95,6 +106,17 @@
     </target>
 
     <target name="debug-virgo" depends="set-permissions,copy-virgo">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean -debug"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean -debug"/>
+        </exec>
+    </target>
+
+    <target name="debug" depends="set-permissions">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -154,7 +176,6 @@
 
     <fileset id="webAppRepo" dir=".">
         <include name="Apromore-Editor/target/*.war"/>
-        <include name="Apromore-Portal/target/*.war"/>
     </fileset>
 
 </project>

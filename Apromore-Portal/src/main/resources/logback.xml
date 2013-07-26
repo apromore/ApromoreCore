@@ -1,26 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true" scan="true" scanPeriod="30 seconds">
+<configuration scan="true" scanPeriod="30 seconds">
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <!-- To enable JMX Management -->
     <jmxConfigurator/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%-5level %logger{0} - %msg%n</pattern>
+            <pattern>[%date] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="everythinglogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/Portal.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.home}/logs/Portal.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>50MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>[%date] %level %logger{0} | %msg%n</pattern>
         </encoder>
     </appender>
 
 
-    <logger name="org.springframework" level="WARN" />
+    <logger name="org.springframework.ws.client.MessageTracing.sent">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+    <logger name="org.springframework.ws.client.MessageTracing.received">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+
+    <logger name="org.apromore" level="DEBUG"/>
+    <logger name="org.springframework" level="WARN"/>
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />
 
     <root level="INFO">
         <appender-ref ref="console"/>
+        <appender-ref ref="everythinglogfile"/>
     </root>
 
 </configuration>

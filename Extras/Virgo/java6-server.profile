@@ -201,6 +201,21 @@ org.osgi.framework.system.packages = \
  org.xml.sax.ext;version="1.3",\
  org.xml.sax.helpers;version="1.3",\
  com.sun.org.apache.xerces.internal.dom,\
+ com.sun.org.apache.xml.internal.security.algorithms,\
+ com.sun.org.apache.xml.internal.security.c14n,\
+ com.sun.org.apache.xml.internal.security.c14n.helper,\
+ com.sun.org.apache.xml.internal.security.encryption,\
+ com.sun.org.apache.xml.internal.security.exceptions,\
+ com.sun.org.apache.xml.internal.security.keys,\
+ com.sun.org.apache.xml.internal.security.keys.content,\
+ com.sun.org.apache.xml.internal.security.keys.content.keyvalues,\
+ com.sun.org.apache.xml.internal.security.keys.content.x509,\
+ com.sun.org.apache.xml.internal.security.signature,\
+ com.sun.org.apache.xml.internal.security.transforms,\
+ com.sun.org.apache.xml.internal.security.transforms.params,\
+ com.sun.org.apache.xml.internal.security.utils,\
+ com.sun.org.apache.xml.internal.security.utils.resolver,\
+ com.sun.jndi.ldap,\
  sun.misc
 org.osgi.framework.bootdelegation = \
  org.eclipse.virgo.nano.authentication,\

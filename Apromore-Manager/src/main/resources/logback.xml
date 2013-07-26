@@ -13,42 +13,42 @@
         </encoder>
     </appender>
 
-    <appender name="timerlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/ApromoreJPA.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/ApromoreJPA.%i.log.zip</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
-        </rollingPolicy>
+    <!--<appender name="timerlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<file>${catalina.home}/logs/ApromoreJPA.log</file>-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+            <!--<fileNamePattern>${catalina.home}/logs/ApromoreJPA.%i.log.zip</fileNamePattern>-->
+            <!--<minIndex>1</minIndex>-->
+            <!--<maxIndex>5</maxIndex>-->
+        <!--</rollingPolicy>-->
 
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>5MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>[%date] %level %logger{0} | %msg%n</pattern>
-        </encoder>
-    </appender>
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+            <!--<maxFileSize>5MB</maxFileSize>-->
+        <!--</triggeringPolicy>-->
+        <!--<encoder>-->
+            <!--<pattern>[%date] %level %logger{0} | %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
 
-    <appender name="methodlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/ApromoreMethod.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/ApromoreMethod.%i.log.zip</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
-        </rollingPolicy>
+    <!--<appender name="methodlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<file>${catalina.home}/logs/ApromoreMethod.log</file>-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+            <!--<fileNamePattern>${catalina.home}/logs/ApromoreMethod.%i.log.zip</fileNamePattern>-->
+            <!--<minIndex>1</minIndex>-->
+            <!--<maxIndex>5</maxIndex>-->
+        <!--</rollingPolicy>-->
 
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>5MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>[%date] %level %logger{0} | %msg%n</pattern>
-        </encoder>
-    </appender>
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+            <!--<maxFileSize>5MB</maxFileSize>-->
+        <!--</triggeringPolicy>-->
+        <!--<encoder>-->
+            <!--<pattern>[%date] %level %logger{0} | %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
 
     <appender name="everythinglogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/Apromore.log</file>
+        <file>${catalina.home}/logs/Manager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/Apromore.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${catalina.home}/logs/Manager.%i.log.zip</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>5</maxIndex>
         </rollingPolicy>
@@ -62,16 +62,30 @@
     </appender>
 
 
-    <logger name="org.apromore.aop.TimerStatsInterceptor" level="DEBUG">
-        <appender-ref ref="timerlogfile"/>
+    <!--<logger name="org.apromore.aop.TimerStatsInterceptor" level="DEBUG">-->
+        <!--<appender-ref ref="timerlogfile"/>-->
+    <!--</logger>-->
+    <!--<logger name="org.apromore.aop.TimerInterceptor" level="DEBUG">-->
+        <!--<appender-ref ref="timerlogfile"/>-->
+    <!--</logger>-->
+    <!--<logger name="org.apromore.aop.LoggingInterceptor" level="DEBUG">-->
+        <!--<appender-ref ref="methodlogfile"/>-->
+    <!--</logger>-->
+
+    <logger name="org.springframework.ws.server.MessageTracing">
+        <level value="TRACE"/>
+        <appender-ref ref="everythinglogfile"/>
     </logger>
-    <logger name="org.apromore.aop.TimerInterceptor" level="DEBUG">
-        <appender-ref ref="timerlogfile"/>
+    <logger name="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor">
+        <level value="TRACE"/>
+        <appender-ref ref="everythinglogfile"/>
     </logger>
-    <logger name="org.apromore.aop.LoggingInterceptor" level="DEBUG">
-        <appender-ref ref="methodlogfile"/>
+    <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
+        <level value="TRACE"/>
+        <appender-ref ref="everythinglogfile"/>
     </logger>
 
+    <logger name="org.apromore" level="DEBUG"/>
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.eclipse.persistence" level="WARN"/>
     <logger name="javax.xml" level="WARN"/>
