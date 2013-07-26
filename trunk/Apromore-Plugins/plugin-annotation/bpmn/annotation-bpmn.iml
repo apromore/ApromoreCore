@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/META-INF/spring/osgi-context.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -14,11 +23,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="plugin-api" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.4" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.4" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.4" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:com.springsource.ch.qos.logback.classic:0.9.28" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:com.springsource.ch.qos.logback.core:0.9.28" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.0.7" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.beans:3.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.core:3.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.asm:3.1.0.RELEASE" level="project" />

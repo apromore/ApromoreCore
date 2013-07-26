@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Date;
 
 import org.apromore.canoniser.result.CanoniserMetadataResult;
+import org.apromore.helper.CanoniserHelper;
 import org.apromore.model.NativeMetaData;
 import org.junit.Test;
 

@@ -8,7 +8,7 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.manager.client.ManagerService;
-import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.helper.PluginHelper;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
 import org.apromore.model.PluginParameter;

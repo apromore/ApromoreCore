@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID"
          version="2.5">
-    <display-name>Apromore-portal</display-name>
+
+    <display-name>Apromore-Portal</display-name>
+
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.eclipse.virgo.web.dm.ServerOsgiBundleXmlWebApplicationContext</param-value>
+    </context-param>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-			classpath:spring/applicationContext.xml
-			classpath:spring/applicationContext-services.xml
-            classpath:spring/applicationContext-managerClient.xml
+            classpath:**/applicationContext.xml
+            classpath:**/applicationContext-services.xml
+            classpath:**/osgi-context.xml
+            classpath*:META-INF/spring/applicationContext.xml
         </param-value>
     </context-param>
 

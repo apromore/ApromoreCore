@@ -341,11 +341,11 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>com.springsource.ch.qos.logback.core</artifactId>
+            <artifactId>logback-core</artifactId>
         </dependency>
         
         <!-- Spring -->

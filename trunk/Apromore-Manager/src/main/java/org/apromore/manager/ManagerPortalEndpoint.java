@@ -29,8 +29,8 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.manager.client.helper.CanoniserHelper;
-import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.helper.CanoniserHelper;
+import org.apromore.helper.PluginHelper;
 import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
@@ -494,7 +494,7 @@ public class ManagerPortalEndpoint {
             InputStream native_is = payload.getNative().getInputStream();
             NativeType natType = frmSrv.findNativeType(editType.getNativeType());
 
-            Set<RequestParameterType<?>> canoniserProperties = new HashSet<RequestParameterType<?>>(0);
+            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
             CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
