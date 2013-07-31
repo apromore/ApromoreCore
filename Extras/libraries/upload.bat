@@ -8,3 +8,4 @@ call mvn install:install-file -Dfile=edu.mit.jwi_2.1.4.jar -DgroupId=edu.mit -Da
 call mvn install:install-file -Dfile=edu.sussex.nlp.jws.beta.11.jar -DgroupId=edu.sussex -DartifactId=edu.sussex.nlp.jws -Dversion=0.11-beta -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=lpsolve55j.jar -DgroupId=lpsolve -DartifactId=lpsolve -Dversion=55j -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=jwnl.jar -DgroupId=jwnl -DartifactId=jwnl -Dversion=0.1 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar -DgeneratePom=true
