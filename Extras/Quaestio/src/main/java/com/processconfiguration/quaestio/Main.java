@@ -79,6 +79,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -1921,13 +1922,30 @@ public class Main extends JFrame implements ListSelectionListener,
 	}
 
 	/**
+         * Application entry point.
+         *
+         * If command line arguments are passed, the first is considered to be the QML file.
+         *
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JAXBException {
 		Main application = new Main();
 		application.setVisible(true);
 
+		// Parse command line arguments
+               	for (int i=0; i< args.length; i++) {
+			switch (args[i]) {
+			case "-qml":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-qml without filename");
+				}
+				application.openQuestionnaireModel(new File(args[i]));
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown parameter: " + args[i]);
+			}
+		}
 	}
 
 	/**
@@ -3014,14 +3032,7 @@ public class Main extends JFrame implements ListSelectionListener,
 						getJText_log().append(
 								"Opening: " + fIn.getName() + ".\n");
 						try {
-							JAXBContext jc = JAXBContext
-									.newInstance("com.processconfiguration.qml");
-							Unmarshaller u = jc.createUnmarshaller();
-							JAXBElement qmlElement = (JAXBElement) u
-									.unmarshal(fIn); // creates the root element
-														// from XML file
-							qml = (QMLType) qmlElement.getValue();
-							readModel();
+							openQuestionnaireModel(fIn);
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -3037,6 +3048,20 @@ public class Main extends JFrame implements ListSelectionListener,
 			});
 		}
 		return openCMMenuItem;
+	}
+
+	/**
+	 * Attempt to open a QML file.
+	 *
+	 * @param fIn  an input file in QML format
+	 * @throws JAXBException if the QML file can't be processed
+	 */
+	void openQuestionnaireModel(final File fIn) throws JAXBException {
+		JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.qml");
+		Unmarshaller u = jc.createUnmarshaller();
+		JAXBElement qmlElement = (JAXBElement) u.unmarshal(fIn); // creates the root element from XML file
+		qml = (QMLType) qmlElement.getValue();
+		readModel();
 	}
 
 	private void readModel() {
