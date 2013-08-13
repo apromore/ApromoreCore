@@ -26,6 +26,16 @@
             <property><baseType name="TSequenceFlow"/></property>
         </bindings>
 
+	<!--
+        <bindings node="xsd:complexType[@name='tFlowNode']//xsd:element[@name='incoming']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tFlowNode']//xsd:element[@name='outgoing']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+	-->
+
         <bindings node="xsd:complexType[@name='tInclusiveGateway']//xsd:attribute[@name='default']">
             <property><baseType name="TSequenceFlow"/></property>
         </bindings>
