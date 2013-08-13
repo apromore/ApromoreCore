@@ -94,10 +94,10 @@ public class ParserTest {
      assertEquals(parser.findVariable("f1").or(parser.findVariable("f2")), bdd);
   }
 
-  @Ignore
   @Test
   public void testXorFunction() throws Exception {
     Parser parser = new Parser(new StringBufferInputStream("xor(f1, f2)"));
+    parser.init();
     Parser.XorFunction xorFunction = parser.new XorFunction();
     List<BDD> parameterList = new ArrayList<>(2);
     parameterList.add(parser.findVariable("f1"));
@@ -107,7 +107,24 @@ public class ParserTest {
     assertEquals(parser.findVariable("f1").xor(parser.findVariable("f2")), bdd);
   }
 
-  @Ignore
+  @Test
+  public void testXor() throws Exception {
+    Parser parser = new Parser(new StringBufferInputStream("xor"));
+    parser.init();
+    Parser.NaryFunction function = parser.Function();
+    assertTrue(function.getClass().equals(Parser.XorFunction.class));
+  }
+
+  @Test
+  public void testParameterList() throws Exception {
+    Parser parser = new Parser(new StringBufferInputStream("(f1, f2)"));
+    parser.init();
+    List<BDD> parameterList = parser.ParameterList();
+    assertEquals(2, parameterList.size());
+    assertEquals(parser.findVariable("f1"), parameterList.get(0));
+    assertEquals(parser.findVariable("f2"), parameterList.get(1));
+  }
+
   @Test
   public void testXXorY() throws Exception {
      Parser parser = new Parser(new StringBufferInputStream("xor(f1, f2)"));

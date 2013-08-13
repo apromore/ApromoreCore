@@ -38,13 +38,15 @@ import net.sf.javabdd.JFactory;
 /** Parse propositional logic of configuration conditions, based on BDDC's format. */
 public class Parser {
 
+  private static final int MAX_VARIABLES = 100;
+
   private BDDFactory factory = null;
   private Map<String, Integer> variableMap = new HashMap<String, Integer>();
   private int nextVariableIndex = 0;
 
   public void init() {
-    factory = JFactory.init(100, 100);
-    factory.setVarNum(10);
+    factory = JFactory.init(1000, 1000);
+    factory.setVarNum(MAX_VARIABLES);
   }
 
   /** Main entry point. */
@@ -61,7 +63,7 @@ public class Parser {
       BDD newVariable = factory.ithVar(nextVariableIndex);
       variableMap.put(s, nextVariableIndex);
       nextVariableIndex++;
-      assert nextVariableIndex < 10 : "Exceeded allocated number of variables";
+      assert nextVariableIndex < MAX_VARIABLES : "Exceeded allocated number of variables";
       return newVariable;
     }
   }
@@ -123,9 +125,9 @@ PARSER_END(Parser)
 
 SKIP : { " " | "\t" | "\n" | "\r" }
 
-TOKEN : { <VARIABLE:          ["a"-"z"] ( ["a"-"z","0"-"9"] )* > }
 TOKEN : { <NOR:               "nor" > }
 TOKEN : { <XOR:               "xor" > }
+TOKEN : { <VARIABLE:          ["a"-"z"] ( ["a"-"z","0"-"9"] )* > }
 TOKEN : { <NOT:               "-" > }
 TOKEN : { <AND:               "." > }
 TOKEN : { <OR:                "+" > }
