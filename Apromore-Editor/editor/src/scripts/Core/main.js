@@ -198,6 +198,7 @@ ORYX.Editor = {
 		
 		// Do Layout for viewport
 		this.layout.doLayout();
+
 		// Generate a drop target
 		new Ext.dd.DropTarget(this.getCanvas().rootNode.parentNode);
 		
@@ -213,7 +214,113 @@ ORYX.Editor = {
 		// Raise Loaded Event
 		this.handleEvents( {type:ORYX.CONFIG.EVENT_LOADED} )
 		
+		// Rescale viewport to show the entire model
+		this.zoomFitToModel();
 	},
+
+	// BEGIN Egregious cut'n'pasted functions from view.js
+
+	zoomFitToModel: function() {
+
+                /* Get the size of the visible area of the canvas */
+                var scrollNode  = this.getCanvas().getHTMLContainer().parentNode.parentNode;
+                var visibleHeight = scrollNode.getHeight() - 30;
+                var visibleWidth = scrollNode.getWidth() - 30;
+
+                var nodes = this.getCanvas().getChildShapes();
+
+                if(!nodes || nodes.length < 1) {
+                        return false;
+                }
+
+                /* Calculate size of canvas to fit the model */
+                var bounds = nodes[0].absoluteBounds().clone();
+                nodes.each(function(node) {
+                        bounds.include(node.absoluteBounds().clone());
+                });
+
+
+                /* Set new Zoom Level */
+                var scaleFactorWidth =  visibleWidth / bounds.width();
+                var scaleFactorHeight = visibleHeight / bounds.height();
+
+                /* Choose the smaller zoom level to fit the whole model */
+                var zoomFactor = scaleFactorHeight < scaleFactorWidth ? scaleFactorHeight : scaleFactorWidth;
+
+                /*Test if maximum zoom is reached*/
+                if(zoomFactor>this.maxFitToScreenLevel){zoomFactor=this.maxFitToScreenLevel}
+                /* Do zooming */
+                this.setAFixZoomLevel(zoomFactor);
+
+                /* Set scroll bar position */
+                scrollNode.scrollTop = Math.round(bounds.upperLeft().y * this.zoomLevel) - 5;
+                scrollNode.scrollLeft = Math.round(bounds.upperLeft().x * this.zoomLevel) - 5;
+
+        },
+
+	// CONTINUE Egregious cut'n'pasted functions from view.js
+
+        setAFixZoomLevel : function(zoomLevel) {
+                this.zoomLevel = zoomLevel;
+                this._checkZoomLevelRange();
+                this.zoom(1);
+        },
+
+	// CONTINUE Egregious cut'n'pasted functions from view.js
+
+	_checkZoomLevelRange: function() {
+                /*var canvasParent=this.facade.getCanvas().getHTMLContainer().parentNode;
+                var maxForCanvas= Math.max((canvasParent.parentNode.getWidth()/canvasParent.getWidth()),(canvasParent.parentNode.getHeight()/canvasParent.getHeight()));
+                if(this.zoomLevel > maxForCanvas) {
+                        this.zoomLevel = maxForCanvas;                  
+                }*/
+                if(this.zoomLevel < this.minZoomLevel) {
+                        this.zoomLevel = this.minZoomLevel;
+                }
+
+                if(this.zoomLevel > this.maxZoomLevel) {
+                        this.zoomLevel = this.maxZoomLevel;
+                }
+        },
+
+	// CONTINUE Egregious cut'n'pasted functions from view.js
+
+        zoom: function(factor) {
+                // TODO: Zoomen auf allen Objekten im SVG-DOM
+
+                this.zoomLevel *= factor;
+                var scrollNode  = this.getCanvas().getHTMLContainer().parentNode.parentNode;
+                var canvas              = this.getCanvas();
+                var newWidth    = canvas.bounds.width()  * this.zoomLevel;
+                var newHeight   = canvas.bounds.height() * this.zoomLevel;
+
+                /* Set new top offset */
+                var offsetTop = (canvas.node.parentNode.parentNode.parentNode.offsetHeight - newHeight) / 2.0;
+                offsetTop = offsetTop > 20 ? offsetTop - 20 : 0;
+                canvas.node.parentNode.parentNode.style.marginTop = offsetTop + "px";
+                offsetTop += 5;
+                canvas.getHTMLContainer().style.top = offsetTop + "px";
+
+                /*readjust scrollbar*/
+                var newScrollTop=       scrollNode.scrollTop - Math.round((canvas.getHTMLContainer().parentNode.getHeight()-newHeight) / 2)+this.diff;
+                var newScrollLeft=      scrollNode.scrollLeft - Math.round((canvas.getHTMLContainer().parentNode.getWidth()-newWidth) / 2)+this.diff;
+
+                /* Set new Zoom-Level */
+                canvas.setSize({width: newWidth, height: newHeight}, true);
+
+                /* Set Scale-Factor */
+                canvas.node.setAttributeNS(null, "transform", "scale(" +this.zoomLevel+ ")");
+
+                /* Refresh the Selection */
+                this.updateSelection();
+                scrollNode.scrollTop=newScrollTop;
+                scrollNode.scrollLeft=newScrollLeft;
+
+                /* Update the zoom-level*/
+                canvas.zoomLevel = this.zoomLevel;
+        },
+
+	// END Egregious cut'n'pasted functions from view.js
 	
 	_initEventListener: function(){
 

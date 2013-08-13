@@ -29,6 +29,14 @@
        style="stroke-width:1" />
        
     <path
+       d="M -4.5,16 L 16,-4.5 L 35.5,16 L 16,35.5z"
+       id="thick_bg_frame"
+       class="configuration-extension"
+       fill="url(#background) white"
+       stroke="black"
+       style="stroke-width:5" />
+       
+    <path
        d="M 6.25,16 L 25.75,16 M 16,6.25 L 16,25.75 M 8.85,8.85 L 23.15,23.15 M 8.85,23.15 L 23.15,8.85"
        id="path9"
        stroke="black"
