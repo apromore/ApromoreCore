@@ -46,7 +46,9 @@
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/aris-schema</module>
         <module>Apromore-Schema/bpmn-schema</module>
+        <module>Apromore-Schema/cmap-schema</module>
         <module>Apromore-Schema/cpf-schema</module>
+        <module>Apromore-Schema/dcl-schema</module>
         <module>Apromore-Schema/epml-schema</module>
         <module>Apromore-Schema/pnml-schema</module>
         <module>Apromore-Schema/rlf-schema</module>
