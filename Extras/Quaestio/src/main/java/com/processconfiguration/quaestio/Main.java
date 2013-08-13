@@ -35,8 +35,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +103,7 @@ import com.processconfiguration.utils.EPMLFilter;
 import com.processconfiguration.utils.QMLFilter;
 import com.processconfiguration.utils.TXTFilter;
 import com.processconfiguration.utils.YAWLFilter;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 
 public class Main extends JFrame implements ListSelectionListener,
 		ItemListener, MouseListener, ActionListener {
@@ -1601,7 +1604,7 @@ public class Main extends JFrame implements ListSelectionListener,
 		FactType factQML;
 		try {
 
-			DCL dcl = new DCL();
+			DCL dcl = getDCL();  /* new DCL();
 			dcl.setAuthor(qml.getAuthor());
 			dcl.setName(qml.getName());
 			dcl.setReference(qml.getReference());
@@ -1618,8 +1621,12 @@ public class Main extends JFrame implements ListSelectionListener,
 					factDCL.setDeviates(true);
 				dcl.getFact().add(factDCL);
 			}
+			*/
+
 			// create temporary file
-			fInConf = File.createTempFile("temp", ".dcl");
+			if (fInConf == null) {
+				fInConf = File.createTempFile("temp", ".dcl");
+			}
 			JAXBContext jaxbcontext = JAXBContext
 					.newInstance("com.processconfiguration.dcl");
 			Marshaller marshaller = jaxbcontext.createMarshaller();
@@ -1628,6 +1635,31 @@ public class Main extends JFrame implements ListSelectionListener,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return a configuration
+	 */
+	private DCL getDCL() {
+		DCL dcl = new DCL();
+		dcl.setAuthor(qml.getAuthor());
+		dcl.setName(qml.getName());
+		dcl.setReference(qml.getReference());
+		for (Entry<String, String> fact : currentS.vs.entrySet()) {
+			FactType factQML = FactsMap.get(fact.getKey());
+			com.processconfiguration.dcl.FactType factDCL = new com.processconfiguration.dcl.FactType();
+			factDCL.setDescription(factQML.getDescription());
+			factDCL.setId(factQML.getId());
+			factDCL.setValue(Boolean.parseBoolean(fact.getValue()));
+			if (factQML.isDefault() == Boolean
+					.parseBoolean(fact.getValue()))
+				factDCL.setDeviates(false);
+			else
+				factDCL.setDeviates(true);
+			dcl.getFact().add(factDCL);
+		}
+
+		return dcl;
 	}
 
 	/**
@@ -1921,6 +1953,16 @@ public class Main extends JFrame implements ListSelectionListener,
 		return jTextArea_QDep;
 	}
 
+	private void openConfiguration(final File file) {
+		fInConf = file;
+
+		/// Hack for AotF demo
+		if (fInConf != null) {
+			exportConfiguration(true);
+		}
+		/// End hack for AotF demo
+	}
+
 	/**
          * Application entry point.
          *
@@ -1929,13 +1971,31 @@ public class Main extends JFrame implements ListSelectionListener,
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws JAXBException {
+	public static void main(String[] args) throws Exception {
 		Main application = new Main();
 		application.setVisible(true);
 
 		// Parse command line arguments
                	for (int i=0; i< args.length; i++) {
 			switch (args[i]) {
+			case "-cmap":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-cmap without filename");
+				}
+				application.setLinkedCmap(new File(args[i]));
+				break;
+			case "-dcl":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-dcl without filename");
+				}
+				application.openConfiguration(new File(args[i]));
+				break;
+			case "-model":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-model without filename");
+				}
+				application.setLinkedProcessModel(new File(args[i]));
+				break;
 			case "-qml":
 				if (++i >= args.length) {
 					throw new IllegalArgumentException("-qml without filename");
@@ -3771,6 +3831,41 @@ public class Main extends JFrame implements ListSelectionListener,
 														// result
 			}
 		}
+
+		/// Hack for AotF demo
+		if (fInConf != null) {
+			exportConfiguration(true);
+/*
+			try {
+				Process process = Runtime.getRuntime().exec("../bpmncmap/animate.sh");
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+*/
+		}
+		System.out.println("ALPHA fInMap:" + fInMap + " fInModel:" + fInModel);
+		if (fInMap != null && fInModel != null) {
+			System.out.println("BETA");
+			try {
+				BpmnDefinitions bpmn = BpmnDefinitions.newInstance(new FileInputStream(fInModel), true);
+				CMAP cmap = (CMAP) JAXBContext.newInstance("com.processconfiguration.cmap").createUnmarshaller().unmarshal(fInMap);
+				DCL dcl = getDCL();
+
+				// Apply the configuration mapping for the facts provided so far from the questionnaire
+				org.apromore.bpmncmap.Main.configure(bpmn, cmap, dcl);
+
+				// Tidy up the configured model to remove trivial gates, etc
+				com.processconfiguration.ConfigurationAlgorithm.configure(bpmn);
+
+				// Serialize the individualized BPMN
+				bpmn.marshal(new FileOutputStream("/tmp/out.bpmn"), true);
+
+			} catch (IOException|JAXBException je) {
+				je.printStackTrace();
+			}
+			System.out.println("GAMMA");
+		}
+		/// End hack for AotF demo
 	}
 
 	private void checkMandatoryF() {
@@ -4092,39 +4187,17 @@ public class Main extends JFrame implements ListSelectionListener,
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
 						fInMap = fileChooser.getSelectedFile();
 						try {
-							// schema verification
-							schemaValidation.validate(
-									getClass().getResource("/schema/CMAP.xsd"),
-									fInMap);
-							// validate CMAP format
-							//checks that conditions in the CMAP file are in the correct format, i.e. they don't contain symbols like \u2227
-							reader = new BufferedReader(new FileReader(fInMap));
-							while ((str = reader.readLine()) != null) {
-								fStr = str.indexOf("condition=");
-								lStr = str.indexOf("/", fStr);
-								if (fStr != -1 && lStr != -1) {
-									cond = str.substring(fStr + 11, lStr - 1);
-									cStr = cond.length();
-									if (cond.indexOf("\u2228") == 1
-											|| cond.indexOf("\u2227") == 1
-											|| cond.indexOf("\u00ac") == 1
-											|| cond.indexOf("\u22bb") == 1) {
-										JOptionPane
-												.showMessageDialog(
-														null,
-														"Wrong condition format, please use \"+,-,.,xor,nor,=,=>\"",
-														"Error",
-														JOptionPane.ERROR_MESSAGE);
-										fInMap = null;
-										getJButton_ok().setEnabled(false);
-										break;
-									}
-								}
-							}
-							reader.close();
+							setLinkedCmap(fInMap);
 
-							getJTextField_map().setText(
-									fInMap.getAbsolutePath());
+						} catch (IllegalArgumentException iae) {
+                                        		JOptionPane.showMessageDialog(
+                                                           	null,
+                                                                iae.getMessage(),
+                                                                "Error",
+                                                                JOptionPane.ERROR_MESSAGE);
+							fInMap = null;
+							getJButton_ok().setEnabled(false);
+
 						} catch (Exception ev) {
 							getJTextField_map().setText(
 									"Format not valid! Please check.");
@@ -4137,6 +4210,44 @@ public class Main extends JFrame implements ListSelectionListener,
 		}
 		return jButton_map;
 	}
+
+        /**
+         * Link a configuration map.
+	 *
+         * @param file  a file in CMAP format
+         * @throws IllegalArgumentException if <var>file</var> contains the characters \u2228, \u2227, \u00ac or \u22bb.
+         */
+        void setLinkedCmap(final File file) throws Exception {
+                String str, cond;
+                int fStr, lStr, cStr;
+
+                // schema verification
+                schemaValidation.validate(
+                                getClass().getResource("/xsd/CMAP.xsd"),
+                                file);
+
+                // validate CMAP format
+                //checks that conditions in the CMAP file are in the correct format, i.e. they don't contain symbols like \u2227
+                reader = new BufferedReader(new FileReader(file));
+                while ((str = reader.readLine()) != null) {
+                        fStr = str.indexOf("condition=");
+                        lStr = str.indexOf("/", fStr);
+                        if (fStr != -1 && lStr != -1) {
+                                cond = str.substring(fStr + 11, lStr - 1);
+                                cStr = cond.length();
+                                if (cond.indexOf("\u2228") == 1
+                                                || cond.indexOf("\u2227") == 1
+                                                || cond.indexOf("\u00ac") == 1
+                                                || cond.indexOf("\u22bb") == 1) {
+                                        throw new IllegalArgumentException("Wrong condition format, please use \"+,-,.,xor,nor,=,=>\"");
+                                }
+                        }
+                }
+                reader.close();
+
+                getJTextField_map().setText(file.getAbsolutePath());
+		this.fInMap = file;
+        }
 
 	protected void enableCommitButton() {
 		if ((fInModel != null) && (fInMap != null)){
@@ -4288,24 +4399,8 @@ public class Main extends JFrame implements ListSelectionListener,
 							if (returnVal == JFileChooser.APPROVE_OPTION) {
 								fInModel = fileChooser.getSelectedFile();
 								try {
-									if (fInModel.toString().endsWith(".epml")) {
-										schemaValidation
-												.validate(
-														getClass()
-																.getResource(
-																		"/schema/EPML_2.0.xsd"),
-														fInModel);
-									} else if (fInModel.toString().endsWith(
-											".yawl")) {
-										schemaValidation
-												.validate(
-														getClass()
-																.getResource(
-																		"/schema/YAWL_Schema2.2.xsd"),
-														fInModel);
-									}
-									getJTextField_model().setText(
-											fInModel.getAbsolutePath());
+									setLinkedProcessModel(fInModel);
+
 								} catch (Exception ev) {
 									getJTextField_model().setText(
 											"Format not valid! Please check.");
@@ -4317,6 +4412,27 @@ public class Main extends JFrame implements ListSelectionListener,
 					});
 		}
 		return jButton_model;
+	}
+
+	/**
+	 * Link a process model to be configured.
+	 *
+	 * @param file  a file in C-BPMN format with the <code>.bpmn</code> extension,
+         *              EPML format with a <code>.epml</code> extension,
+         *              or in YAWL format with a <code>.yawl</code> extension
+	 * @throws Exception if <var>fInModel</var> doesn't validate against the indicated XML schema
+	 */
+	void setLinkedProcessModel(final File file) throws Exception {
+		if (file.toString().endsWith(".bpmn")) {
+			schemaValidation.validate(getClass().getResource("/xsd/BPMN20.xsd"), file);
+		} else if (fInModel.toString().endsWith(".epml")) {
+			schemaValidation.validate(getClass().getResource("/schema/EPML_2.0.xsd"), file);
+		} else if (fInModel.toString().endsWith(".yawl")) {
+			schemaValidation.validate(getClass().getResource("/schema/YAWL_Schema2.2.xsd"), file);
+		}
+		getJTextField_model().setText(file.getAbsolutePath());
+
+		this.fInModel = file;
 	}
 
 	/**
