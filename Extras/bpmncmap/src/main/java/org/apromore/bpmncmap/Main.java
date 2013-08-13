@@ -63,7 +63,7 @@ public class Main {
         System.exit(0);  // indicate successful termination
     }
 
-    static void configure(final BpmnDefinitions bpmn, CMAP cmap, DCL dcl) {
+    public static void configure(final BpmnDefinitions bpmn, CMAP cmap, DCL dcl) {
 
         final Parser parser = new Parser(new StringBufferInputStream("1"));
         parser.init();
@@ -74,7 +74,7 @@ public class Main {
                                                                       new com.processconfiguration.dcl.BaseVisitor() {
             @Override
             public void visit(FactType fact) {
-                System.err.println("Fact " + fact.getId() + " is " + fact.isValue());
+                //System.err.println("Fact " + fact.getId() + " is " + fact.isValue());
                 BDD gTerm = parser.findVariable(fact.getId());
                 if (!fact.isValue()) {
                   gTerm = gTerm.not();
@@ -100,20 +100,20 @@ public class Main {
                                                                         new com.processconfiguration.cmap.BaseVisitor() {
             @Override
             public void visit(CBpmnType.Configurable configurable) {
-                System.err.println("Configure BPMN element " + configurable.getBpmnid());
+                //System.err.println("Configure BPMN element " + configurable.getBpmnid());
                 int validConfigurationCount = 0;
                 for (CBpmnType.Configurable.Configuration configuration: configurable.getConfiguration()) {
-                    System.err.println("  Condition " + configuration.getCondition());
+                    //System.err.println("  Condition " + configuration.getCondition());
 
                     BDD bdd = null;
                     BDD bdd2 = null;
                     try {
                         parser.ReInit(new StringBufferInputStream(configuration.getCondition()));
                         bdd = parser.AdditiveExpression();
-                        System.err.println("  BDD " + bdd);
-                        System.err.println("  G " + g);
+                        //System.err.println("  BDD " + bdd);
+                        //System.err.println("  G " + g);
                         bdd2 = bdd.restrict(g);
-                        System.err.println("  BDD[G] " + bdd2);
+                        //System.err.println("  BDD[G] " + bdd2);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -133,11 +133,11 @@ public class Main {
                              System.err.println(configurable.getBpmnid() + " not found in BPMN model");
                          }
                          for (Object object: base.getExtensionElements().getAny()) {
-                             System.err.println("Checking " + object);
+                             //System.err.println("Checking " + object);
                              if (object instanceof com.processconfiguration.Configurable) {
-                                 System.err.println("Accepting " + object);
+                                 //System.err.println("Accepting " + object);
                                  ((com.processconfiguration.Configurable) object).setConfiguration(newConfiguration(configuration, bpmnIdMap));
-                                 System.err.println("Accepted " + object);
+                                 //System.err.println("Accepted " + object);
                              }
                          }
                     }
@@ -159,8 +159,6 @@ public class Main {
                                                                                 final  Map<String, TFlowElement> bpmnIdMap ) {
         com.processconfiguration.Configurable.Configuration target = new com.processconfiguration.Configurable.Configuration();
 
-        System.err.println("  Constructing, sources:" + source.getSourceRefs() + " targets:" + source.getTargetRefs());
-
         for (String nmtoken: source.getSourceRefs()) {
             System.err.println("Source " + nmtoken);
             target.getSourceRefs().add(bpmnIdMap.get(nmtoken));
@@ -176,8 +174,6 @@ public class Main {
         } else {
             target.setType(com.processconfiguration.TGatewayType.EVENT_BASED_EXCLUSIVE);
         }
-
-        System.err.println("  Constructed");
 
         return target;
     }
