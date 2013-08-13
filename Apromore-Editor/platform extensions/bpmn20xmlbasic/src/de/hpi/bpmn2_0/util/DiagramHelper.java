@@ -81,8 +81,12 @@ public class DiagramHelper {
     public static List<GenericEdge> getAllEdges(GenericDiagram<?, ?> diagram) {
         List<GenericEdge> list = new ArrayList<GenericEdge>();
         for (GenericShape shape : diagram.getAllShapesReadOnly()) {
-            if (shape instanceof GenericEdge)
+            if (shape instanceof GenericEdge) {
+                GenericEdge edge = (GenericEdge) shape;
+                if (edge.getSource() != null && "ConfigurationAnnotationShape".equals(edge.getSource().getStencilId())) { continue; }
+                if (edge.getTarget() != null && "ConfigurationAnnotationShape".equals(edge.getTarget().getStencilId())) { continue; }
                 list.add((GenericEdge) shape);
+            }
         }
         return list;
     }
