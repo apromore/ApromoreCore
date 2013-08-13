@@ -3,6 +3,8 @@ package de.hpi.bpmn2_0.transformation;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import de.hpi.bpmn2_0.ExportValidationEventCollector;
 import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -47,7 +49,9 @@ public class Bpmn2XmlConverter {
 
         final Map<String, Object> properties = new HashMap<String, Object>();
 
-        Class[] classes = {Definitions.class};
+        Class[] classes = { Definitions.class,
+                            ConfigurationAnnotationAssociation.class,
+                            ConfigurationAnnotationShape.class };
 
         /* Perform XML creation */
         JAXBContext context = JAXBContext.newInstance(classes, properties);

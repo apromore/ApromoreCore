@@ -56,6 +56,8 @@ import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.model.event.SignalEventDefinition;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.signavio.SignavioMessageName;
+import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
+import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.model.gateway.GatewayWithDefaultFlow;
 import de.hpi.bpmn2_0.model.misc.ProcessType;
@@ -122,6 +124,11 @@ public class Diagram2BpmnConverter {
     public final static HashSet<String> dataObjectIds = new HashSet<String>(
             Arrays.asList(dataObjectIdsArray));
 
+    private final AbstractBpmnFactory.State state = new AbstractBpmnFactory.State();
+
+    /**
+     * Constructor.
+     */
     public Diagram2BpmnConverter(GenericDiagram diagram,
                                  List<Class<? extends AbstractBpmnFactory>> factoryClasses) {
         this.factories = new HashMap<String, AbstractBpmnFactory>();
@@ -322,9 +329,9 @@ public class Diagram2BpmnConverter {
         BPMNElement bpmnElement = null;
         if (this.configuration == null) {
             bpmnElement = factory.createBpmnElement(shape, new BPMNElement(
-                    null, null, null));
+                    null, null, null), this.state);
         } else {
-            bpmnElement = factory.createBpmnElement(shape, this.configuration);
+            bpmnElement = factory.createBpmnElement(shape, this.configuration, this.state);
         }
 
         if (bpmnElement != null) {
@@ -374,6 +381,11 @@ public class Diagram2BpmnConverter {
             /* Retrieve connector element */
             BPMNElement bpmnConnector = this.bpmnElements.get(edge
                     .getResourceId());
+
+            if (bpmnConnector == null) {
+                // This can happen in the case of unserialized edges, like the ones attached to a configuration annotation
+                continue;
+            }
 
             BPMNElement source = null;
 
@@ -1835,6 +1847,22 @@ public class Diagram2BpmnConverter {
                     "Error while converting to BPMN model", e);
         }
 
+        // Populate Synergia <configurable/configuration/@sourceRefs> extension attribute
+        for (Map.Entry<Configurable.Configuration,Set> entry : this.state.configurableGatewaySourceMap.entrySet()) {
+            assert entry.getValue().size() > 0;
+            for (Object element : entry.getValue()) {
+                entry.getKey().getSourceRefs().add(this.state.shapeToXMLObjectMap.get(element));
+            }
+        }
+
+        // Populate Synergia <configurable/configuration/@targetRefs> extension attribute
+        for (Map.Entry<Configurable.Configuration,Set> entry : this.state.configurableGatewayTargetMap.entrySet()) {
+            assert entry.getValue().size() > 0;
+            for (Object element : entry.getValue()) {
+                entry.getKey().getTargetRefs().add(this.state.shapeToXMLObjectMap.get(element));
+            }
+        }
+
         this.detectBoundaryEvents();
         this.detectConnectors();
         this.setInitiatingParticipant();
@@ -1873,6 +1901,18 @@ public class Diagram2BpmnConverter {
         this.insertEdgeDiagramElements();
 
         this.insertDiagramsForLinkedSubprocesses();
+
+        // Insert Synergia <variants> extension element if variants are present
+        if (!this.state.variantMap.isEmpty()) {
+            Variants variants = new Variants();
+            for (Map.Entry<String,Variants.Variant> entry : this.state.variantMap.entrySet()) {
+                Variants.Variant variant = new Variants.Variant();
+                variant.setId(entry.getValue().getId());
+                variant.setName(entry.getKey());
+                variants.getVariant().add(variant);
+            }
+            this.definitions.getFirstPlane().getBpmnElement().getOrCreateExtensionElements().getAny().add(variants);
+        }
 
         this.determineUnusedNamespaceDeclarations();
 
