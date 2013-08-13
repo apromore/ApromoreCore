@@ -58,7 +58,7 @@ new function(){
 	 */
 	Signavio.Helper.ShowMask = function(force, parent){
 		
-		if (!force && ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY === true){
+		if (/* !force && */ ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY === true){
 			return;
 		}		
 		
