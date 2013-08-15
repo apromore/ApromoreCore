@@ -162,6 +162,7 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
+    @Ignore
     @Test public final void testFindAbsentSequenceFlows1() throws FileNotFoundException, JAXBException {
 
         // Obtain the test set
