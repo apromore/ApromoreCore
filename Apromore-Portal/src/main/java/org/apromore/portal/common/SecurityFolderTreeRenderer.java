@@ -7,7 +7,13 @@ import org.apromore.portal.dialogController.PermissionsController;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.TreeitemRenderer;
+import org.zkoss.zul.Treerow;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +42,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
     }
     
     @Override
-    public void render(final Treeitem treeItem, Object treeNode) throws Exception {
+    public void render(final Treeitem treeItem, Object treeNode, int i) throws Exception {
         FolderTreeNode ctn = (FolderTreeNode)treeNode;
                     
         Treerow dataRow = new Treerow();

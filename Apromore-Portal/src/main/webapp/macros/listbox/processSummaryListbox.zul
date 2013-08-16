@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <listbox id="processSummariesListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="true">
-    <listhead sizable="true" >    
+    <listhead sizable="true" >
         <listheader hflex="min" label="" visible="true" />
         <listheader hflex="min" id="columnScore" label="Score" visible="true" />
         <listheader hflex="min" label="Id" sort="auto(id)" />

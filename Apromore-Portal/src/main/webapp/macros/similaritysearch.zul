@@ -8,8 +8,7 @@
             </columns>
             <rows>
                 <row id="similaritySearchAlgoChoice">
-                    <label value="Algorithm (please choose one)"
-                        width="100%" />
+                    <label value="Algorithm (please choose one)" width="100%" />
                     <listbox width="100%" />
                 </row>
                 <row id="modelthreshold" visible="false">

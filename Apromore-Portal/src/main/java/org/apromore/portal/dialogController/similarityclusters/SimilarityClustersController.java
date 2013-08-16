@@ -109,10 +109,7 @@ public class SimilarityClustersController extends BaseController {
         initConstrainedProcessIds(settings);
         getService().createClusters(settings);
         //TODO show some kind of feedback
-        try {
-            Messagebox.show("Clustering Completed!");
-        } catch (InterruptedException e) {
-        }
+        Messagebox.show("Clustering Completed!");
     }
 
 
@@ -121,10 +118,7 @@ public class SimilarityClustersController extends BaseController {
      */
     protected void doCreateGedMatrix() {
         getService().createGedMatrix();
-        try {
-            Messagebox.show("GED Matrix Construction Completed!");
-        } catch (InterruptedException e) {
-        }
+        Messagebox.show("GED Matrix Construction Completed!");
     }
 
 

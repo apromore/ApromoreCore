@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Stores the process in apromore.

@@ -32,9 +32,6 @@ public class ProcessDetailsController extends BaseController {
     private Datebox lastUpdateD; // version last update
     private Listbox exportL; // choice of export formats
     private Window graphicW; // the window where to display process graphical
-//    // view
-//    private Menuitem asPopupM; // button to make previous window as a popup
-//    private Menuitem backM; // button to embed the previous windows when it is a
     // popup
     private Image processImage; // the actual image to display in the window
     private Label pushToSign; // the message displayed when no user connected
@@ -89,13 +86,13 @@ public class ProcessDetailsController extends BaseController {
         this.processImage = (Image) graphicW.getFellow("processImage");
         this.pushToSign = (Label) graphicW.getFellow("pushToSign");
 
-        processNameH = new Vector<HistoryElement>();
-        originalLanguageH = new Vector<HistoryElement>();
-        domainH = new Vector<HistoryElement>();
-        versionNameH = new Vector<HistoryElement>();
-        creationDateH = new Vector<HistoryElement>();
-        lastUpdateH = new Vector<HistoryElement>();
-        rankingH = new Vector<HistoryElement>();
+        processNameH = new Vector<>();
+        originalLanguageH = new Vector<>();
+        domainH = new Vector<>();
+        versionNameH = new Vector<>();
+        creationDateH = new Vector<>();
+        lastUpdateH = new Vector<>();
+        rankingH = new Vector<>();
 
         NativeTypesType formats = getService().readNativeTypes();
         for (int i = 0; i < formats.getNativeType().size(); i++) {

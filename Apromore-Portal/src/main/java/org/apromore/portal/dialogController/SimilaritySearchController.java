@@ -179,7 +179,7 @@ public class SimilaritySearchController extends BaseController {
         res.setOriginalNativeType(process.getOriginalNativeType());
         res.setOwner(process.getOwner());
         res.setRanking(process.getRanking());
-        List<VersionSummaryType> versions = new ArrayList<VersionSummaryType>();
+        List<VersionSummaryType> versions = new ArrayList<>();
 
         for (int j = 0; j < process.getVersionSummaries().size(); j++) {
             int i = 0;

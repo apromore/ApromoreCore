@@ -32,10 +32,10 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     }
 
     /* (non-Javadoc)
-      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object)
+      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object, int)
       */
     @Override
-    public void render(Listitem listItem, Object obj) {
+    public void render(Listitem listItem, Object obj, int index) {
         if (obj instanceof ProcessSummaryType) {
             renderProcessSummary(listItem, (ProcessSummaryType) obj);
         } else if (obj instanceof FolderType) {

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <listbox id="similarityClustersListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="true">
     <listhead sizable="true" >
         <listheader hflex="min" label="" visible="true" />

@@ -1,4 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- VFlex needs to be set as explained here: http://books.zkoss.org/wiki/ZK%20Developer%27s%20Reference/UI%20Patterns/Hflex%20and%20Vflex  -->
-<div id="tablecomp" height="100%" width="100%">
-</div>
+<vlayout id="tablecomp" height="100%" width="100%">
+</vlayout>

@@ -1,0 +1,96 @@
+<?page title="AProMoRe" contentType="text/html;charset=UTF-8" cacheable="false" ?>
+
+<?component name="Header" macroURI="macros/header.zul" ?>
+<?component name="Menu" macroURI="macros/menu.zul" ?>
+<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
+<?component name="Navigation" macroURI="macros/navigation.zul" ?>
+<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>
+<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
+<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
+<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
+<?link rel="stylesheet" href="/css/apromoreOld.css" type="text/css" ?>
+<?link rel="stylesheet" href="/css/site.css" type="text/css" ?>
+
+<zk xmlns:x="xhtml" xmlns:zk="zk">
+
+    <style dynamic="true">
+        .z-label {font-size: ${fontSizeMS}} .z-list-item {font-size:
+        ${fontSizeMS}} .z-list-item a {font-size: ${fontSizeMS}}
+        .z-list-item a:visited {font-size: ${fontSizeMS}}
+    </style>
+
+    <window id="mainW" border="none" height="100%" width="100%" vflex="true" use="org.apromore.portal.dialogController.MainController">
+        <Header id="headercomp" />
+
+        <borderlayout vflex="true">
+            <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" flex="true" splittable="true">
+                <borderlayout vflex="true" height="100%">
+                    <north id="leftNorthPanel" flex="true">
+                        <SimpleSearch id="simplesearchcomp"/>
+                    </north>
+                    <center id="leftCenterPanel" flex="true" vflex="1">
+                        <borderlayout vflex="true">
+                            <center id="leftInnerCenterPanel" title="Tree" flex="true">
+                                <Navigation id="navigationcomp" vflex="min"/>
+                            </center>
+                            <south id="leftInnerSouthPanel" title="Refine Filter" flex="true" splittable="false" collapsible="true" open="false">
+                                <Filter id="baseFilter"/>
+                            </south>
+                        </borderlayout>
+                    </center>
+                    <south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
+                        <DetailView id="baseDetail" />
+                    </south>
+                </borderlayout>
+            </west>
+            <center id="mainPanel" flex="true" vflex="true">
+                <div vflex="true">
+                    <Menu id="menucomp" />
+                    <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="true">
+                        <paging id="pg" />
+                        <hbox id="buttons" align="center" height="100%">
+                            <button id="revertSelectionB" label="" image="img/invertselection.png" style="background: transparent; border:none" tooltiptext="Invert selection" />
+                            <button id="selectAllB" label="" style="background: transparent; border:none" image="img/select.png" tooltiptext="Select all" />
+                            <button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselect.png" tooltiptext="Unselect all" />
+                            <button id="refreshB" label="" style="background: transparent; border:none" image="img/reload.png" tooltiptext="Reload data" />
+                            <button id="showVisualisation" label="" style="background: transparent; border:none" image="img/cluster.png" tooltiptext="Show Clustering" />
+
+                            <button id="btnAddFolder" label="" image="img/folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button id="btnAddProcess" label="" image="img/process.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
+                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
+                            <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/lock.png" tooltiptext="Security"/>
+                        </hbox>
+                    </hbox>
+
+                    <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
+                        <html>
+                            <![CDATA[
+                            <script type="text/javascript">
+                                function bindBreadcrumbs() {
+                                    jq('a.breadCrumbLink').unbind("click");
+                                    jq('a.breadCrumbLink').click(function(e){
+                                        payload = jq(this).attr('id');
+                                        zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
+                                    });
+                                }
+
+                                jq(function() {
+                                    bindBreadcrumbs();
+                                });
+                            </script>
+                            ]]>
+                        </html>
+                    </window>
+
+                    <html id="breadCrumbs" vflex="true" width="100%" height="10"/>
+                    <html id="folders" width="100%" visible="false" height="0"/>
+
+                    <BaseListbox id="baseListbox" />
+                </div>
+            </center>
+        </borderlayout>
+
+        <ShortMessages id="shortmessagescomp" />
+    </window>
+</zk>

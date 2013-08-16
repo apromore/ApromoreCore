@@ -74,7 +74,7 @@
     </dependencies>
 
     <build>
-        <finalName>manager-ws-client</finalName>
+        <finalName>manager-ws-model</finalName>
         <plugins>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -89,6 +89,7 @@
                             <schemaIncludes>
                                 <schemaInclude>**/*.xsd</schemaInclude>
                             </schemaIncludes>
+                            <bindingDirectory>src/main/xjb</bindingDirectory>
                             <generatePackage>org.apromore.model</generatePackage>
                             <args>
                                 <arg>-XtoString</arg>

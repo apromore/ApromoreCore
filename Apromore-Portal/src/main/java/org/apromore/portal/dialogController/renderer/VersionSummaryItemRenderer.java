@@ -3,8 +3,6 @@ package org.apromore.portal.dialogController.renderer;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -14,13 +12,11 @@ import org.zkoss.zul.ListitemRenderer;
 public class VersionSummaryItemRenderer implements ListitemRenderer {
 
     /*
-      * (non-Javadoc)
-      *
-      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem,
-      * java.lang.Object)
-      */
+     * (non-Javadoc)
+     * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object, int)
+     */
     @Override
-    public void render(Listitem listItem, Object obj) {
+    public void render(Listitem listItem, Object obj, int index) {
         renderVersionSummary(listItem, (VersionSummaryType) obj);
     }
 
@@ -31,16 +27,6 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderVersionAnnotations(version));
     }
 
-    private Component renderVersionRanking(VersionSummaryType version) {
-        Hbox versionRanking = new Hbox();
-        if (version.getRanking() != null && version.getRanking().compareTo("") != 0) {
-            displayRanking(versionRanking, version.getRanking());
-        } else {
-            displayRanking(versionRanking, "0");
-        }
-        return wrapIntoListCell(versionRanking);
-    }
-
     private Component renderVersionVersion(VersionSummaryType version) {
         return wrapIntoListCell(new Label(version.getVersionNumber().toString()));
     }
@@ -49,6 +35,7 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         Listbox annotationLB = new Listbox();
         annotationLB.setMold("select");
         annotationLB.setRows(1);
+        annotationLB.setWidth("100%");
         annotationLB.setStyle(Constants.UNSELECTED_VERSION);
         for (int i = 0; i < version.getAnnotations().size(); i++) {
             String language = version.getAnnotations().get(i).getNativeType();
@@ -81,39 +68,39 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         return lc;
     }
 
-    /**
-     * Display in hbox versionRanking, 5 stars according to ranking (0...5).
-     * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
-     * process version directly by interacting with the stars displayed.
-     *
-     * @param ranking
-     */
-    private void displayRanking(Hbox rankingHb, String ranking) {
-        String imgFull = Constants.STAR_FULL_ICON;
-        String imgMid = Constants.STAR_MID_ICON;
-        String imgBlank = Constants.STAR_BLK_ICON;
-        Image star;
-        Float rankingF = Float.parseFloat(ranking);
-        int fullStars = rankingF.intValue();
-        int i;
-        for (i = 1; i <= fullStars; i++) {
-            star = new Image();
-            rankingHb.appendChild(star);
-            star.setSrc(imgFull);
-        }
-        if (i <= 5) {
-            if (Math.floor(rankingF) != rankingF) {
-                star = new Image();
-                star.setSrc(imgMid);
-                rankingHb.appendChild(star);
-                i = i + 1;
-            }
-            for (int j = i; j <= 5; j++) {
-                star = new Image();
-                star.setSrc(imgBlank);
-                rankingHb.appendChild(star);
-            }
-        }
-    }
+//    /**
+//     * Display in hbox versionRanking, 5 stars according to ranking (0...5).
+//     * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
+//     * process version directly by interacting with the stars displayed.
+//     *
+//     * @param ranking
+//     */
+//    private void displayRanking(Hbox rankingHb, String ranking) {
+//        String imgFull = Constants.STAR_FULL_ICON;
+//        String imgMid = Constants.STAR_MID_ICON;
+//        String imgBlank = Constants.STAR_BLK_ICON;
+//        Image star;
+//        Float rankingF = Float.parseFloat(ranking);
+//        int fullStars = rankingF.intValue();
+//        int i;
+//        for (i = 1; i <= fullStars; i++) {
+//            star = new Image();
+//            rankingHb.appendChild(star);
+//            star.setSrc(imgFull);
+//        }
+//        if (i <= 5) {
+//            if (Math.floor(rankingF) != rankingF) {
+//                star = new Image();
+//                star.setSrc(imgMid);
+//                rankingHb.appendChild(star);
+//                i = i + 1;
+//            }
+//            for (int j = i; j <= 5; j++) {
+//                star = new Image();
+//                star.setSrc(imgBlank);
+//                rankingHb.appendChild(star);
+//            }
+//        }
+//    }
 
 }

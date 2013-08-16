@@ -94,18 +94,12 @@ public class FileController extends BaseController {
             this.modelUploadB.addEventListener("onUpload", new EventListener() {
                 public void onEvent(Event event) throws Exception {
                     uploadSpecification((UploadEvent) event);
-                }
+             }
             });
 
         } catch (SuspendNotAllowedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-//        } catch (ExceptionDao e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
         }
 
     }

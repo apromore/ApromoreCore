@@ -1,0 +1,13 @@
+<zk>
+    <borderlayout hflex="1" vflex="1">
+        <center id="mainContent" autoscroll="true">
+            <vbox vflex="1" hflex="1" align="center" spacing="20px" sclass="demo-main">
+                <label value="UIDemo" sclass="head1"/>
+                <label value="Login Page" sclass="head2"/>
+                <hlayout>
+                    <a href="/login/">Login</a>
+                </hlayout>
+            </vbox>
+        </center>
+    </borderlayout>
+</zk>

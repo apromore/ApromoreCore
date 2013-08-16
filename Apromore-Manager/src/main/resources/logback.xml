@@ -72,26 +72,32 @@
         <!--<appender-ref ref="methodlogfile"/>-->
     <!--</logger>-->
 
-    <logger name="org.springframework.ws.server.MessageTracing">
-        <level value="TRACE"/>
-        <appender-ref ref="everythinglogfile"/>
-    </logger>
-    <logger name="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor">
-        <level value="TRACE"/>
-        <appender-ref ref="everythinglogfile"/>
-    </logger>
-    <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
-        <level value="TRACE"/>
+    <logger name="org.apromore">
+        <level value="DEBUG"/>
         <appender-ref ref="everythinglogfile"/>
     </logger>
 
-    <logger name="org.apromore" level="DEBUG"/>
-    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.ws.server.MessageTracing">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+    <logger name="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+    <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+    <logger name="org.springframework">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
     <logger name="org.eclipse.persistence" level="WARN"/>
     <logger name="javax.xml" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="console"/>
         <appender-ref ref="everythinglogfile"/>
     </root>

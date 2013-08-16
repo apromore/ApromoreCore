@@ -8,6 +8,7 @@ import org.apromore.model.UserType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -64,7 +65,7 @@ public class FindUsersController extends BaseController {
                         if (items.size() > 0){
                             List<Listitem> processedItems = new ArrayList<>();
                             for (Listitem item : items){
-                                List<Listcell> cells = item.getChildren();
+                                List<Component> cells = item.getChildren();
                                 if (cells.size() == 6){
                                     Checkbox chkWrite = (Checkbox)cells.get(3).getChildren().get(0);
                                     Checkbox chkOwner = (Checkbox)cells.get(4).getChildren().get(0);
@@ -82,8 +83,7 @@ public class FindUsersController extends BaseController {
                                             processedItems.add(item);
                                         }
                                         else{
-                                            Messagebox.show(message, "Error", Messagebox.OK,
-                                                    Messagebox.ERROR);
+                                            Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
                                         }
                                     }
                                 }

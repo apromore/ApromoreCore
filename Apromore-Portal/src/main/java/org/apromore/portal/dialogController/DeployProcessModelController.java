@@ -88,7 +88,7 @@ public class DeployProcessModelController extends BaseController {
 
         try {
             deployProcessW.doModal();
-        } catch (SuspendNotAllowedException | InterruptedException e) {
+        } catch (SuspendNotAllowedException e) {
             LOGGER.error("Error showing Deploy Process window", e);
         }
     }

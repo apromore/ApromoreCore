@@ -48,8 +48,8 @@ public class FolderController extends GenericForwardComposer {
 //                } else {
 //                    btnRenameFolder.setVisible(false);
 //                }
-                List<Integer> folderIds = new ArrayList<Integer>();
-                List<Integer> processIds = new ArrayList<Integer>();
+                List<Integer> folderIds = new ArrayList<>();
+                List<Integer> processIds = new ArrayList<>();
                 boolean canDelete = true;
                 boolean canRename = true;
                 for (String id : ids) {
@@ -94,9 +94,8 @@ public class FolderController extends GenericForwardComposer {
 
     public void getData(Event event, boolean isFolder) {
         ForwardEvent eventx = (ForwardEvent) event;
-        try {
-            int selectedFolderId = Integer.parseInt(eventx.getOrigin().getData().toString());
-            Html html = (Html) eventx.getOrigin().getTarget().getParent().getFellow("folders");
+        int selectedFolderId = Integer.parseInt(eventx.getOrigin().getData().toString());
+        Html html = (Html) eventx.getOrigin().getTarget().getParent().getFellow("folders");
 
 //            Hbox folderOptions = (Hbox) eventx.getOrigin().getTarget().getParent().getFellow("workspaceOptionsPanel").getFellow("folderOptions");
 //            Button btnRenameFolder = (Button) folderOptions.getFellow("btnRenameFolder");
@@ -104,56 +103,53 @@ public class FolderController extends GenericForwardComposer {
 //            btnRenameFolder.setVisible(false);
 //            btnRemoveFolder.setVisible(false);
 
-            if (html != null) {
-                FolderType selectedFolder = null;
-                List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
-                //List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        if (html != null) {
+            FolderType selectedFolder = null;
+            List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
+            //List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
-                if (isFolder) {
-                    for (FolderType folder : availableFolders) {
-                        if (folder.getId() == selectedFolderId) {
-                            selectedFolder = folder;
-                            break;
-                        }
+            if (isFolder) {
+                for (FolderType folder : availableFolders) {
+                    if (folder.getId() == selectedFolderId) {
+                        selectedFolder = folder;
+                        break;
                     }
-                } else {
-                    FolderType folderType = new FolderType();
-                    folderType.setId(0);
-                    for (FolderType folder : UserSessionManager.getTree()) {
-                        folderType.getFolders().add(folder);
-                    }
-                    findFolder(folderType, selectedFolderId);
-                    selectedFolder = searchedFolder;
                 }
-
-                if (selectedFolder != null) {
-                    List<FolderType> breadcrumbFolders = UserSessionManager.getMainController().getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-                    Collections.reverse(breadcrumbFolders);
-                    String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
-
-                    int i = 0;
-                    for (FolderType breadcrumb : breadcrumbFolders) {
-                        if (i > 0) {
-                            content += "<td style='font-size: 9pt;'>&gt;</td>";
-                        }
-                        content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
-                        i++;
-                    }
-
-                    content += "</tr></table>";
-                    UserSessionManager.getMainController().breadCrumbs.setContent(content);
-                    Clients.evalJavaScript("bindBreadcrumbs();");
-
-                    UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
-                    UserSessionManager.setCurrentFolder(selectedFolder);
-
-                    UserSessionManager.getMainController().reloadProcessSummaries();
-                    //loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
-                    //Clients.evalJavaScript("bindTiles();");
+            } else {
+                FolderType folderType = new FolderType();
+                folderType.setId(0);
+                for (FolderType folder : UserSessionManager.getTree()) {
+                    folderType.getFolders().add(folder);
                 }
+                findFolder(folderType, selectedFolderId);
+                selectedFolder = searchedFolder;
             }
-        } catch (Exception ex) {
 
+            if (selectedFolder != null) {
+                List<FolderType> breadcrumbFolders = UserSessionManager.getMainController().getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+                Collections.reverse(breadcrumbFolders);
+                String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
+
+                int i = 0;
+                for (FolderType breadcrumb : breadcrumbFolders) {
+                    if (i > 0) {
+                        content += "<td style='font-size: 9pt;'>&gt;</td>";
+                    }
+                    content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
+                    i++;
+                }
+
+                content += "</tr></table>";
+                UserSessionManager.getMainController().breadCrumbs.setContent(content);
+                Clients.evalJavaScript("bindBreadcrumbs();");
+
+                UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
+                UserSessionManager.setCurrentFolder(selectedFolder);
+
+                UserSessionManager.getMainController().reloadProcessSummaries();
+                //loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
+                //Clients.evalJavaScript("bindTiles();");
+            }
         }
     }
 

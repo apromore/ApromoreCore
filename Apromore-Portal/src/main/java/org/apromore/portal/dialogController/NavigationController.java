@@ -10,18 +10,16 @@ import org.zkoss.zul.Window;
 public class NavigationController extends BaseController {
 
     private MainController mainC;
-    private Panel navigationP;
     private Tree tree;
-    private Window treeW;
 
     public NavigationController(MainController newMainC) throws Exception {
         mainC = newMainC;
-        this.navigationP = (Panel) mainC.getFellow("navigationcomp").getFellow("navigationPanel");
+        Panel navigationP = (Panel) mainC.getFellow("navigationcomp").getFellow("navigationPanel");
 
-        this.treeW = (Window) this.navigationP.getFellow("treeW");
-        this.treeW.setContentStyle("background-image: none; background-color: white");
+        Window treeW = (Window) navigationP.getFellow("treeW");
+        treeW.setContentStyle("background-image: none; background-color: white");
 
-        this.tree = (Tree) this.navigationP.getFellow("treeW").getFellow("tree");
+        this.tree = (Tree) navigationP.getFellow("treeW").getFellow("tree");
         this.tree.setStyle("background-image: none; background-color: white");
     }
 
