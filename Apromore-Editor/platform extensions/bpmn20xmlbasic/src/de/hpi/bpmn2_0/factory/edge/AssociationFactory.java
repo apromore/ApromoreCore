@@ -109,7 +109,7 @@ public class AssociationFactory extends AbstractEdgesFactory {
 
 		/* Set common attributes */
 		dataAssociation.setId(shape.getResourceId());
-		dataAssociation.setName(shape.getProperty("name"));
+		//dataAssociation.setName(shape.getProperty("name"));  In BPMN 2.0, DataAssociation shouldn't inherit @name from FlowNode
 
 		/* Set data association specific attributes */
 		this.setDataAssociationAttributes(dataAssociation, shape);
