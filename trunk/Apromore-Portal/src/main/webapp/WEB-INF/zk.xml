@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <zk>
     <log>
         <log-base>org.zkoss</log-base>
     </log>
-
+    <client-config>
+        <debug-js>true</debug-js>
+    </client-config>
+    <library-property>
+        <name>org.zkoss.web.classWebResource.cache</name>
+        <value>false</value>
+    </library-property>
     <device-config>
         <device-type>ajax</device-type>
-        <timeout-uri>/timeout.zul</timeout-uri>
-        <!-- An empty URL can cause the browser to reload the same URL -->
+        <timeout-uri>/login.zul?error=2</timeout-uri>
     </device-config>
 </zk>

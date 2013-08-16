@@ -1,45 +1,217 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?page title="Apromore"?>
-<?script src="http://connect.facebook.net/en_US/all.js"?>
-
+<?page title="AProMoRe" contentType="text/html;charset=UTF-8"?>
 <zk>
-    <window id="signinWindow" position="center" width="307px" mode="overlapped" title="Please sign in" use="org.apromore.portal.dialogController.LoginController">
-        <vbox>
-            <grid width="300px">
-                <rows>
-                    <row>
-                        <label value="Username" width="150px" />
-                        <textbox id="username" width="150px" />
-                    </row>
-                    <row>
-                        <label value="Password" />
-                        <textbox id="passwd" type="password" width="150px" />
-                    </row>
-                    <row spans="2">
-                        <div align="center">
-                            <button id="okWindowButton" label="OK"
-                                image="img/ok.png">
-                            </button>
-                            <button id="cancelWindowButton" label="Clear"
-                                image="img/cancel2.png">
-                            </button>
-                        </div>
-                    </row>
-                    <row spans="2">
-                        <div align="center">
-                            <checkbox id="chkAD" label="Active directory login" />
-                        </div>
-                    </row>
-                    <row spans="2">
-                        <div align="center">
-                            <button id="btnTwitter" image="img/twitter-icon.png" width="45px" style="background: transparent; border:none">
-                            </button>
-                            <button id="btnFacebook" image="img/facebook-icon.png" width="45px" style="background: transparent; border:none">
-                            </button>
-                        </div>
-                    </row>
-                </rows>
-            </grid>
-        </vbox>
+
+    <style src="css/apromore.css"/>
+    <style src="css/login.css"/>
+    <style src="css/bootstrap.css"/>
+    <style src="css/bootstrap-responsive.css"/>
+    <style src="css/font-awesome.css"/>
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+
+    <window title="AProMoRe" border="none" contentStyle="overflow:auto;">
+
+        <html>
+        <h:body class="signin signin-horizontal" xmlns:h="http://www.w3.org/1999/xhtml">
+
+            <h:div class="page-container">
+                <h:div id="header-container">
+                    <h:div id="header">
+                        <h:div class="navbar-inverse navbar-fixed-top">
+                            <h:div class="navbar-inner">
+                                <h:div class="container"> </h:div>
+                            </h:div>
+                        </h:div>
+
+                        <h:div class="header-drawer" style="height:3px"> </h:div>
+                    </h:div>
+                </h:div>
+
+                <h:div id="main-content" class="main-content container">
+                    <h:div id="page-content" class="page-content">
+
+                        <h:div if="${param['error']=='1'}">
+                            <![CDATA[
+                              <div class="offset2 span5">
+                                <div class="alert alert-error">
+                                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                  <i class="icon-remove-circle"></i> Login or password was incorrect. Please try again.
+                                </div>
+                              </div>
+                            ]]>
+                        </h:div>
+
+                        <h:div if="${param['error']=='2'}">
+                            <![CDATA[
+                              <div class="offset2 span5">
+                                <div class="alert alert-error">
+                                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                  <i class="icon-remove-circle"></i> The page or component you request is no longer available.
+                                     This is normally caused by timeout, opening too many Web pages, or rebooting
+                                     the server.
+                                </div>
+                              </div>
+                            ]]>
+                        </h:div>
+
+                        <h:div class="row">
+                            <h:div class="tab-content overflow form-dark">
+
+                                <h:div class="tab-pane fade in active" id="login">
+                                    <h:div class="span5">
+                                        <h:h4 class="welcome">
+                                            <h:small>
+                                                <h:i class="icon-user" />
+                                                Login in
+                                            </h:small>
+                                        </h:h4>
+                                        <h:form method="post" action="j_spring_security_check" name="login_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                            <h:fieldset>
+                                                <h:div class="controls">
+                                                    <h:input class="span5" type="text" name="j_username" placeholder="Your Login or Email"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="span3" type="password" name="j_password" placeholder="password"/>
+                                                    <h:button type="submit" class="span2 btn btn-primary btn-large">SIGN IN</h:button>
+                                                </h:div>
+                                                <h:hr class="margin-xm"/>
+                                                <h:label class="checkbox" for="_spring_security_remember_me">
+                                                    <h:input name="_spring_security_remember_me" class="checkbox" type="checkbox"/>
+                                                    Remember me
+                                                </h:label>
+                                                <h:hr class="margin-mm "/>
+                                                <h:a href="#forgot" class="btn" data-toggle="tab">Forgot Password?</h:a>
+                                                <h:a href="#register" class="btn" data-toggle="tab">No account yet? Register now for free!</h:a>
+                                            </h:fieldset>
+                                        </h:form>
+                                    </h:div>
+
+                                    <h:div class="span7">
+                                        <h:h4 class="welcome">
+                                            <h:small>Advanced Process Modelling Repository</h:small>
+                                        </h:h4>
+                                        <h:p><small>Apromore is an open and extensible repository to store and disclose business process models of a variety
+                                            of types and languages, such as BPMN, eEPCs, BPEL, YAWL, Workflow nets. Beyond that, Apromore provides
+                                            state-of-the-art features to facilitate the management of large process model collections.</small>
+                                        </h:p>
+                                        <h:br class="margin-mm "/>
+                                        <h:p>
+                                            <h:ol>
+                                                <h:li><small>Evaluation, concerned with establishing the adherence of process models to various quality notions. It will be possible to evaluate process models with respect to correctness criteria (syntactic quality), to usability issues such as understandability and maintainability (pragmatic quality), or assess them against well-know benchmarking frameworks.</small></h:li>
+                                                <h:li><small>Filtering, offering capabilities to determine similarities between processes. This is an essential task as part of the increased focus on services that can be re-used in multiple processes (e.g. fraud detection in multiple claims processes). It will be possible to check the conformance of a process model to given industry standards, represented in the form of reference models or business patterns for specific domains (e.g. approval), and to track extensions to a model over time and their relations with the originating reference models.</small></h:li>
+                                                <h:li><small>Clever Design, supporting the creation, modification and completion of process models, on the basis of existing content. For example, it will be possible to individualize a reference model to a specific context, such as a new organization or project; to create a new process model from the merge of a collection of similar models (e.g. as part of an integration project that results from a merger or an acquisition); or to complete a process model based on a collection of business patterns.</small></h:li>
+                                                <h:li><small>Presentation, providing support for improving the understanding of large process models and collections thereof. For example, it will be possible to highlight the most followed process flow depending on the user context, or zoom out from a process model while abstracting away irrelevant details. Moreover, advanced reports on process model statistics, such as number of users and density of decisions, will enrich the more traditional visual representation of process models.</small></h:li>
+                                            </h:ol>
+                                        </h:p>
+                                        <!--<h:br class="margin-mm "/>-->
+                                        <!--<h:p>-->
+                                            <!--<h:a id="btnTwitter" class="btn link"><i class="icon-twitter-sign icon-2x"/> Signin with Twitter</h:a>-->
+                                            <!--<h:a id="btnFacebook" class="btn link"><i class="icon-facebook-sign icon-2x"/> Signin with Facebook</h:a>-->
+                                        <!--</h:p>-->
+                                    </h:div>
+                                </h:div>
+
+                                <h:div class="tab-pane fade" id="forgot">
+                                    <h:div class="span5">
+                                        <h:h4 class="welcome">
+                                            <h:small>
+                                                <h:i class="icon-question" />
+                                                Forgot your password?
+                                            </h:small>
+                                        </h:h4>
+                                        <h:form method="post" action="j_spring_reset" name="reset_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                            <h:fieldset>
+                                                <h:div class="controls">
+                                                    <h:input class="span5" type="text" name="j_username" placeholder="Your Email Address"/>
+                                                </h:div>
+                                                <h:hr class="margin-xm"/>
+                                                <h:button type="submit" class="btn-block btn btn-primary btn-larg">Submit</h:button>
+                                                <h:hr class="margin-mm"/>
+                                                <h:p>Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
+                                            </h:fieldset>
+                                        </h:form>
+                                    </h:div>
+
+                                    <h:div class="span7">
+                                        <h:h4 class="welcome">
+                                            <h:small>Advanced Process Modelling Repository</h:small>
+                                        </h:h4>
+                                        <h:hr class="margin-mm "/>
+                                        <h:p><small>Apromore is an open and extensible repository to store and disclose business process models of a variety
+                                            of types and languages, such as BPMN, eEPCs, BPEL, YAWL, Workflow nets. Beyond that, Apromore provides
+                                            state-of-the-art features to facilitate the management of large process model collections.</small>
+                                        </h:p>
+                                        <h:br class="margin-mm "/>
+                                        <h:p>
+                                            <h:ol>
+                                                <h:li><small>Evaluation, concerned with establishing the adherence of process models to various quality notions. It will be possible to evaluate process models with respect to correctness criteria (syntactic quality), to usability issues such as understandability and maintainability (pragmatic quality), or assess them against well-know benchmarking frameworks.</small></h:li>
+                                                <h:li><small>Filtering, offering capabilities to determine similarities between processes. This is an essential task as part of the increased focus on services that can be re-used in multiple processes (e.g. fraud detection in multiple claims processes). It will be possible to check the conformance of a process model to given industry standards, represented in the form of reference models or business patterns for specific domains (e.g. approval), and to track extensions to a model over time and their relations with the originating reference models.</small></h:li>
+                                                <h:li><small>Clever Design, supporting the creation, modification and completion of process models, on the basis of existing content. For example, it will be possible to individualize a reference model to a specific context, such as a new organization or project; to create a new process model from the merge of a collection of similar models (e.g. as part of an integration project that results from a merger or an acquisition); or to complete a process model based on a collection of business patterns.</small></h:li>
+                                                <h:li><small>Presentation, providing support for improving the understanding of large process models and collections thereof. For example, it will be possible to highlight the most followed process flow depending on the user context, or zoom out from a process model while abstracting away irrelevant details. Moreover, advanced reports on process model statistics, such as number of users and density of decisions, will enrich the more traditional visual representation of process models.</small></h:li>
+                                            </h:ol>
+                                        </h:p>
+                                    </h:div>
+                                </h:div>
+
+                                <h:div class="tab-pane fade" id="register">
+                                    <h:div class="offset3 span6">
+                                        <h:h4 class="welcome">
+                                            <h:small>
+                                                <h:i class="icon-user" />
+                                                New User Registration?
+                                            </h:small>
+                                        </h:h4>
+                                        <h:form method="post" action="j_spring_new" name="newuser_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                            <h:fieldset>
+                                                <h:legend class="two"><h:span>Account information</h:span></h:legend>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="id_firstname" placeholder="first name"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="id_surname" placeholder="surname"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="id_username" placeholder="username"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="id_email_address" placeholder="email address"/>
+                                                </h:div>
+                                            </h:fieldset>
+                                            <h:fieldset>
+                                                <h:legend class="two"><h:span>Password</h:span></h:legend>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="span3" type="password" name="password" placeholder="password"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="span3" type="password" name="confirm_password" placeholder="confirm password"/>
+                                                </h:div>
+                                                <h:hr class="margin-xx"/>
+                                                <h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>
+                                                <h:hr class="margin-xm"/>
+                                                <h:p class="text-right">Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
+                                            </h:fieldset>
+                                        </h:form>
+                                    </h:div>
+                                </h:div>
+
+                            </h:div>
+
+                        </h:div>
+                    </h:div>
+                </h:div>
+            </h:div>
+
+            <h:footer class="footer">
+                <h:div class="web-description span12">
+                    <h:h5><![CDATA[ &copy; ]]> 2009-2013, The Apromore Initiative.</h:h5>
+                    <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
+                    <h:p class="cc-logo"/>
+                </h:div>
+            </h:footer>
+
+        </h:body>
+        </html>
+
     </window>
 </zk>

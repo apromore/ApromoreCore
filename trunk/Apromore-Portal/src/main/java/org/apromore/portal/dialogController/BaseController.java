@@ -1,12 +1,6 @@
 package org.apromore.portal.dialogController;
 
-import java.util.List;
-
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.UserType;
-import org.apromore.portal.common.FolderTreeNodeTypes;
-import org.apromore.portal.common.UserSessionManager;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Window;
 

@@ -15,10 +15,10 @@ import org.zkoss.zul.ListitemRenderer;
 public class SimilarityClustersItemRenderer implements ListitemRenderer {
 
     /* (non-Javadoc)
-      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object)
+      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object, int)
       */
     @Override
-    public void render(Listitem listItem, Object obj) {
+    public void render(Listitem listItem, Object obj, int index) {
         renderSimilarityCluster(listItem, (ClusterSummaryType) obj);
     }
 

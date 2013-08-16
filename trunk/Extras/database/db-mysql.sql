@@ -909,10 +909,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'80da507e-cdd7-40f4-a9f8-b2d2edb12856','Administrator','Testing description 2');
-INSERT INTO `role` VALUES (2,'0ecd70b4-a204-41cd-a246-e3fcef88f6fe','User','Testing');
-INSERT INTO `role` VALUES (3,'72503ce0-d7cd-47b3-a33c-1b741d7599a1','Manaager','Middle role');
-INSERT INTO `role` VALUES (4,'f8b91579-f061-47e8-9f73-e2691884058f','Manager','Middle role');
+INSERT INTO `role` VALUES (1,'80da507e-cdd7-40f4-a9f8-b2d2edb12856','ROLE_ADMIN','Testing description 2');
+INSERT INTO `role` VALUES (2,'0ecd70b4-a204-41cd-a246-e3fcef88f6fe','ROLE_USER','Testing');
+INSERT INTO `role` VALUES (3,'72503ce0-d7cd-47b3-a33c-1b741d7599a1','ROLE_MANAGER','Middle role');
+INSERT INTO `role` VALUES (4,'f8b91579-f061-47e8-9f73-e2691884058f','ROLE_MANAGER','Middle role');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 

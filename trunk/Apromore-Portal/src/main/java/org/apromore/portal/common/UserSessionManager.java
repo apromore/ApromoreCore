@@ -1,17 +1,18 @@
 package org.apromore.portal.common;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.UserType;
-import org.apromore.portal.dialogController.MainController;
-import org.zkoss.zk.ui.Executions;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apromore.model.FolderType;
+import org.apromore.model.UserType;
+import org.apromore.portal.dialogController.MainController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.zkoss.zk.ui.Executions;
+
 public class UserSessionManager {
 
-    private static final String USER_ID = "USER_ID";
-    private static final String USER_NAME = "USER_NAME";
+//    private static final String USER_ID = "USER_ID";
+//    private static final String USER_NAME = "USER_NAME";
     private static final String USER = "USER";
     private static final String CURRENT_FOLDER = "CURRENT_FOLDER";
     private static final String CURRENT_SECURITY_ITEM = "CURRENT_SECURITY_ITEM";
@@ -23,17 +24,9 @@ public class UserSessionManager {
     private static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     private static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
-    private UserSessionManager() {
-    }
 
-    public static boolean isLoggedIn() {
-        try {
-            UserType user = getCurrentUser();
-            return user != null && user.getId() != "" && !user.getId().equals("");
-        } catch (Exception ex) {
-            return false;
-        }
-    }
+    private UserSessionManager() { }
+
 
     public static void setCurrentUser(UserType user) {
         Executions.getCurrent().getSession().setAttribute(USER, user);
@@ -42,8 +35,10 @@ public class UserSessionManager {
     public static UserType getCurrentUser() {
         if (Executions.getCurrent().getSession().getAttribute(USER) != null) {
             return (UserType) Executions.getCurrent().getSession().getAttribute(USER);
+        } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            setCurrentUser((UserType) SecurityContextHolder.getContext().getAuthentication().getDetails());
+            return (UserType) Executions.getCurrent().getSession().getAttribute(USER);
         }
-
         return null;
     }
 
@@ -69,7 +64,7 @@ public class UserSessionManager {
             return (List<Integer>) Executions.getCurrent().getSession().getAttribute(SELECTED_FOLDER_IDS);
         }
 
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
     }
 
     public static void setSelectedProcessIds(List<Integer> processIds) {
@@ -82,7 +77,7 @@ public class UserSessionManager {
             return (List<Integer>) Executions.getCurrent().getSession().getAttribute(SELECTED_PROCESS_IDS);
         }
 
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
     }
 
     public static void setPreviousFolder(FolderType folder) {

@@ -1,5 +1,8 @@
 package org.apromore.portal.common;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.portal.dialogController.MainController;
@@ -8,10 +11,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
-
-import java.util.Collections;
-import java.util.List;
+import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.TreeitemRenderer;
+import org.zkoss.zul.Treerow;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +44,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
     }
     
     @Override
-    public void render(final Treeitem treeItem, Object treeNode) throws Exception {
+    public void render(final Treeitem treeItem, Object treeNode, int index) throws Exception {
         FolderTreeNode ctn = (FolderTreeNode)treeNode;
         FolderType folder = (FolderType)ctn.getData();
         Treerow dataRow = new Treerow();

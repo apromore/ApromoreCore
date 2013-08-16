@@ -23,10 +23,10 @@ import org.zkoss.zul.ListitemRenderer;
 public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
 
     /* (non-Javadoc)
-      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object)
+      * @see org.zkoss.zul.ListitemRenderer#render(org.zkoss.zul.Listitem, java.lang.Object, int)
       */
     @Override
-    public void render(Listitem item, Object obj) throws Exception {
+    public void render(Listitem item, Object obj, int index) throws Exception {
         renderSimilarityFragment(item, (FragmentData) obj);
     }
 

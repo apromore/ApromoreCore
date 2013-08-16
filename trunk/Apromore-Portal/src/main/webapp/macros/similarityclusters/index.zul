@@ -50,9 +50,9 @@
         }
     </n:style>    
     
-    <n:script src="../../js/similarityclusters/json2.js"></n:script>
-    <n:script src="../../js/similarityclusters/d3.v2.min.js"></n:script>
-    <n:script src="../../js/similarityclusters/clustervisualisation.js"></n:script>
+    <n:script src="../../js/similarityclusters/json2.js"/>
+    <n:script src="../../js/similarityclusters/d3.v2.min.js"/>
+    <n:script src="../../js/similarityclusters/clustervisualisation.js"/>
    
     
     <n:script type="text/javascript">

@@ -148,6 +148,11 @@
             <artifactId>manager-ws-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apromore</groupId>
@@ -268,11 +273,27 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.security</groupId>-->
-        <!--<artifactId>org.springframework.security.core</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.config</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.remoting</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!--<dependency>-->
         <!--<groupId>org.springframework.ws</groupId>-->
         <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->

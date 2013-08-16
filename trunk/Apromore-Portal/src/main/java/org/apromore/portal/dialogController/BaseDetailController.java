@@ -9,8 +9,8 @@ public class BaseDetailController extends BaseController {
     public BaseDetailController(MainController mainController) {
         super();
         this.mainController = mainController;
-        setHflex("true");
-        setVflex("true");
+//        setHflex("true");
+//        setVflex("true");
     }
 
     public MainController getMainController() {

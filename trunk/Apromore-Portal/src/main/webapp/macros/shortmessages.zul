@@ -1,15 +1,15 @@
 <!-- controller is ShortMessageController -->
 <window id="shortmessage" style="background: #DAE7F6">
-	<grid>
-		<columns>
-			<column width="30px"></column>
-			<column></column>
-		</columns>
-		<rows>
-			<row style="background-color:#CDE6F5">
-				<image id="image" src="img/info.png" visible="false" />
-				<label id="message" value="no messages" />
-			</row>
-		</rows>
-	</grid>
+    <grid>
+        <columns>
+            <column width="80px"></column>
+            <column></column>
+        </columns>
+        <rows>
+            <row style="background-color:#CDE6F5">
+                <image id="image" src="img/info.png" visible="false"/>
+                <label id="message" value="no messages"/>
+            </row>
+        </rows>
+    </grid>
 </window>

@@ -1,5 +1,5 @@
 <!-- Controller is  MenuController-->
-<menubar id="operationMenu" vflex="true">
+<menubar id="operationMenu" width="100%">
     <menu id="process" label="Process">
         <menupopup>
             <menuitem id="createProcess" label="Create model" disabled="true"/>

@@ -18,30 +18,26 @@ public class ProcessVersionDetailController extends BaseDetailController {
     public ProcessVersionDetailController(MainController mainController) {
         super(mainController);
 
-        this.listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", getMainController(), null));
+        listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", getMainController(), null));
+        listBox.setItemRenderer(new VersionSummaryItemRenderer());
+        listBox.setModel(new ListModelList());
 
-        getListBox().setItemRenderer(new VersionSummaryItemRenderer());
-        getListBox().setModel(new ListModelList());
-
-        appendChild(getListBox());
+        appendChild(listBox);
     }
 
+    @SuppressWarnings("unchecked")
     public void displayProcessVersions(ProcessSummaryType data) {
         getListModel().clearSelection();
         getListModel().clear();
         List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
         getListModel().addAll(versionSummaries);
         if (versionSummaries.size() > 0) {
-            getListModel().addSelection(versionSummaries.get(versionSummaries.size() - 1));
+            getListModel().addToSelection(versionSummaries.get(versionSummaries.size() - 1));
         }
     }
 
     protected ListModelList getListModel() {
         return (ListModelList) listBox.getListModel();
-    }
-
-    protected Listbox getListBox() {
-        return listBox;
     }
 
     public void clearProcessVersions() {

@@ -13,25 +13,35 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:**/applicationContext.xml
-            classpath:**/applicationContext-services.xml
-            classpath:**/osgi-context.xml
-            classpath*:META-INF/spring/applicationContext.xml
+            classpath:META-INF/spring/portalContext.xml
+            classpath*:META-INF/spring/managerClient-osgi-context.xml
         </param-value>
     </context-param>
 
     <listener>
-        <description>Used to cleanup when a session is destroyed</description>
-        <display-name>ZK Session cleaner</display-name>
         <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
 
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <servlet>
-        <description>The ZK loader for ZUML pages</description>
+        <description>ZK loader for ZUML pages</description>
         <servlet-name>zkLoader</servlet-name>
         <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
         <init-param>
@@ -53,7 +63,6 @@
             <param-value>true</param-value>
         </init-param>
     </servlet>
-
 
     <servlet-mapping>
         <servlet-name>zkLoader</servlet-name>
@@ -80,13 +89,69 @@
         <url-pattern>*.xsd</url-pattern>
     </servlet-mapping>
 
-
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>
 
+    <mime-mapping>
+        <extension>doc</extension>
+        <mime-type>application/vnd.ms-word</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gif</extension>
+        <mime-type>image/gif</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>htm</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpeg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>js</extension>
+        <mime-type>text/javascript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pdf</extension>
+        <mime-type>application/pdf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>png</extension>
+        <mime-type>image/png</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>txt</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xls</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xml</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>zhtml</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>zul</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+
     <welcome-file-list>
-        <welcome-file>login.zul</welcome-file>
+        <welcome-file>index.zul</welcome-file>
     </welcome-file-list>
 
 </web-app>
