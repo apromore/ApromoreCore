@@ -21,7 +21,7 @@ public final class Constants {
     public static final String UNSELECTED_ODD = "background-color:#F0FAFF" + ";" + TOOLBARBUTTON_STYLE;
 
     public static final String NO_ANNOTATIONS = "-- no annotations --";
-    public static final String INITIAL_ANNOTATION = "Initial";
+    public static final String INITIAL_ANNOTATION = "Original";
     public static final String ANNOTATIONS = "Annotations";
     public static final String CANONICAL = "Canonical";
     public static final String CANONICAL_EXT = "cpf";

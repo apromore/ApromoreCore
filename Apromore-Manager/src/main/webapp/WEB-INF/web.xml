@@ -13,8 +13,18 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:**/spring/applicationContext.xml</param-value>
+        <param-value>classpath:META-INF/spring/managerContext.xml</param-value>
     </context-param>
+
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 
     <listener>
@@ -23,26 +33,36 @@
 
 
     <servlet>
-        <servlet-name>spring-ws</servlet-name>
+        <servlet-name>ws</servlet-name>
         <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
         <init-param>
             <param-name>transformWsdlLocations</param-name>
             <param-value>true</param-value>
         </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>remoting</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
     </servlet>
 
 
     <servlet-mapping>
-        <servlet-name>spring-ws</servlet-name>
+        <servlet-name>ws</servlet-name>
         <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>spring-ws</servlet-name>
+        <servlet-name>ws</servlet-name>
         <url-pattern>*.wsdl</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>spring-ws</servlet-name>
+        <servlet-name>ws</servlet-name>
         <url-pattern>*.xsd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>remoting</servlet-name>
+        <url-pattern>/remoting/*</url-pattern>
     </servlet-mapping>
 
 

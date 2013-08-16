@@ -30,6 +30,11 @@
     </appender>
 
 
+    <logger name="org.apromore">
+        <level value="TRACE"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
+
     <logger name="org.springframework.ws.client.MessageTracing.sent">
         <level value="DEBUG"/>
         <appender-ref ref="everythinglogfile"/>
@@ -38,9 +43,10 @@
         <level value="DEBUG"/>
         <appender-ref ref="everythinglogfile"/>
     </logger>
-
-    <logger name="org.apromore" level="DEBUG"/>
-    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework">
+        <level value="DEBUG"/>
+        <appender-ref ref="everythinglogfile"/>
+    </logger>
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />
 

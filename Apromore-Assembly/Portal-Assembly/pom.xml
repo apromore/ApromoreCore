@@ -61,6 +61,11 @@
             <artifactId>manager-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apromore</groupId>
@@ -95,11 +100,26 @@
             <artifactId>org.springframework.ws.support</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.security</groupId>-->
-        <!--<artifactId>org.springframework.security.core</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.config</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.remoting</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>org.springframework.ws</groupId>-->
             <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
@@ -176,6 +196,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-lgpl</artifactId>
             <scope>provided</scope>
@@ -190,6 +215,36 @@
             <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zkbind</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zul</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zkplus</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zhtml</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zkspring-core</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.zkoss.zk</groupId>-->
+            <!--<artifactId>zkspring-security</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -224,8 +279,9 @@
                                 org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
                                 org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
                                 org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
-                                com.springsource.javax.xml.bind,breeze,zkmax,zkplus,zhtml,zkspring-core
+                                com.springsource.javax.xml.bind
                             </excludeArtifactIds>
+                            <!--,breeze,zkmax,zkplus,zhtml,zkspring-core-->
                         </configuration>
                     </execution>
                 </executions>

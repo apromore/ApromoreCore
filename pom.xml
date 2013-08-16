@@ -61,6 +61,7 @@
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
+        <module>Apromore-Clients/manager-security</module>
 
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
@@ -93,7 +94,7 @@
         <spring.version>3.1.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.1.2.RELEASE</spring.data.jpa.version>
         <spring-ws.version>2.1.0.RELEASE</spring-ws.version>
-        <!--<spring-security.version>3.1.4.RELEASE</spring-security.version>-->
+        <spring-security.version>3.1.4.RELEASE</spring-security.version>
 
         <spring-social.version>1.0.2.RELEASE</spring-social.version>
         <spring-social-facebook.version>1.0.3.RELEASE</spring-social-facebook.version>
@@ -132,7 +133,10 @@
         <google.guava.version>14.0.1</google.guava.version>
         <json.version>20090211</json.version>
         <inject.version>1.0.0</inject.version>
-        <zk.version>1.0.0</zk.version>
+
+        <zk.version>6.5.3</zk.version>
+        <zk.spring.version>3.0</zk.spring.version>
+        <zk.security.version>3.0</zk.security.version>
 
         <xmlSchema.version>2.0.2</xmlSchema.version>
         <wsdl4j.version>1.6.1</wsdl4j.version>
@@ -283,6 +287,11 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>manager-client</artifactId>
+                <version>${manager-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>manager-security</artifactId>
                 <version>${manager-client.version}</version>
             </dependency>
 
@@ -657,43 +666,77 @@
             </dependency>
 
             <!-- Spring Security -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>org.springframework.security.core</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                        <groupId>org.apache.commons</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>org.springframework.security.config</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                        <groupId>org.apache.commons</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>org.springframework.security.web</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                        <groupId>org.apache.commons</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>org.springframework.security.remoting</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                        <groupId>org.apache.commons</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!--<dependency>-->
-                <!--<groupId>org.springframework.security</groupId>-->
-                <!--<artifactId>org.springframework.security.core</artifactId>-->
-                <!--<version>${spring-security.version}</version>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
-                        <!--<groupId>org.apache.commons</groupId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
+            <!--<groupId>net.java.dev.xwss</groupId>-->
+            <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
+            <!--<version>${xwss.version}</version>-->
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+            <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--</exclusion>-->
+            <!--</exclusions>-->
             <!--</dependency>-->
             <!--<dependency>-->
-                <!--<groupId>net.java.dev.xwss</groupId>-->
-                <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
-                <!--<version>${xwss.version}</version>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
-                        <!--<groupId>org.apache.commons</groupId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
+            <!--<groupId>com.sun.xml</groupId>-->
+            <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
+            <!--<version>${saaj.version}</version>-->
             <!--</dependency>-->
             <!--<dependency>-->
-                <!--<groupId>com.sun.xml</groupId>-->
-                <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
-                <!--<version>${saaj.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.ws</groupId>-->
-                <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
-                <!--<version>${spring-ws.version}</version>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
-                        <!--<groupId>org.apache.commons</groupId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
+            <!--<groupId>org.springframework.ws</groupId>-->
+            <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
+            <!--<version>${spring-ws.version}</version>-->
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+            <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--</exclusion>-->
+            <!--</exclusions>-->
             <!--</dependency>-->
 
 
@@ -938,8 +981,33 @@
             <!-- zk libraries -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
-                <artifactId>zk-osgi</artifactId>
-                <version>5.0.12</version>
+                <artifactId>zkbind</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zul</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkplus</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zhtml</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkspring-core</artifactId>
+                <version>${zk.spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkspring-security</artifactId>
+                <version>${zk.security.version}</version>
             </dependency>
 
 
@@ -1068,6 +1136,11 @@
             <id>com.springsource.repository.bundle.milestone</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Milestones</name>
             <url>http://repository.springsource.com/maven/bundles/milestone</url>
+        </repository>
+        <repository>
+            <id>ZK EE Repo</id>
+            <url>https://maven.zkoss.org/repo/zk/ee</url>
+            <name>ZK Enterprise Edition Repository (USER/PASS not available)</name>
         </repository>
     </repositories>
     <pluginRepositories>

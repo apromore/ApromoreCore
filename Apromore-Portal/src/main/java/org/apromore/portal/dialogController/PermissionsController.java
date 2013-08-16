@@ -77,7 +77,7 @@ public class PermissionsController extends BaseController {
                                 public void onEvent(Event event) throws Exception {
                                     Component target = event.getTarget();
                                     Listitem listItem = (Listitem)target.getParent().getParent();
-                                    List<Listcell> cells = listItem.getChildren();
+                                    List<Component> cells = listItem.getChildren();
                                     FolderTreeNodeTypes selectedType = UserSessionManager.getCurrentSecurityType();
                                     if (cells.size() == 5){
                                         Checkbox chkWrite = (Checkbox)cells.get(2).getChildren().get(0);
@@ -110,7 +110,7 @@ public class PermissionsController extends BaseController {
                                 public void onEvent(Event event) throws Exception {
                                     Component target = event.getTarget();
                                     Listitem listItem = (Listitem)target.getParent().getParent();
-                                    List<Listcell> cells = listItem.getChildren();
+                                    List<Component> cells = listItem.getChildren();
                                     FolderTreeNodeTypes selectedType = UserSessionManager.getCurrentSecurityType();
                                     String message = "";
                                     if (cells.size() == 5){

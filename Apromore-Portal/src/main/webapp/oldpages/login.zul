@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Apromore"?>
+<?script src="http://connect.facebook.net/en_US/all.js"?>
+
+<zk>
+    <window id="signinWindow" position="center" width="307px" mode="overlapped" title="Please sign in" use="org.apromore.portal.dialogController.LoginController">
+        <vbox>
+            <grid width="300px">
+                <rows>
+                    <row>
+                        <label value="Username" width="150px" />
+                        <textbox id="username" width="150px" />
+                    </row>
+                    <row>
+                        <label value="Password" />
+                        <textbox id="passwd" type="password" width="150px" />
+                    </row>
+                    <row spans="2">
+                        <div align="center">
+                            <button id="okWindowButton" label="OK"
+                                image="img/ok.png">
+                            </button>
+                            <button id="cancelWindowButton" label="Clear"
+                                image="img/cancel2.png">
+                            </button>
+                        </div>
+                    </row>
+                    <row spans="2">
+                        <div align="center">
+                            <checkbox id="chkAD" label="Active directory login" />
+                        </div>
+                    </row>
+                    <row spans="2">
+                        <div align="center">
+                            <button id="btnTwitter" image="img/twitter-icon.png" width="45px" style="background: transparent; border:none">
+                            </button>
+                            <button id="btnFacebook" image="img/facebook-icon.png" width="45px" style="background: transparent; border:none">
+                            </button>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+        </vbox>
+    </window>
+</zk>

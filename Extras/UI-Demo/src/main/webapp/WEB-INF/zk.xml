@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk>
+    <device-config>
+        <device-type>ajax</device-type>
+        <timeout-uri>/login.zul?error=2</timeout-uri>
+    </device-config>
+</zk>

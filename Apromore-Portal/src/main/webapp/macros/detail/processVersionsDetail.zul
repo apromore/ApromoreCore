@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<listbox id="processVersionsListbox" vflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process!">
+<listbox id="processVersionsListbox" height="100%" vflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process!">
     <listhead sizable="true">
         <listheader hflex="min" label="Name" sort="auto(name)"/>
         <listheader hflex="min" label="Version" sort="auto(name)"/>

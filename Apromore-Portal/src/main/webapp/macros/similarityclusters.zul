@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <?component name="SimilarityClustersFilter" macroURI="filter/similarityClustersFilter.zul" ?>
-<!-- similarityclusters window has controller SimilarityClustersController -->
+
 <window width="400px" closable="false" position="center" title="Similarity Clusters">
     <grid>
         <columns sizable="true">

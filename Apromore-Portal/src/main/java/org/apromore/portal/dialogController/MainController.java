@@ -16,6 +16,7 @@ import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.FolderType;
 import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginMessage;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummariesType;
@@ -34,15 +35,25 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.ClientInfoEvent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelArray;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 /**
@@ -55,11 +66,9 @@ public class MainController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private HeaderController header;
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
-    private Window shortmessageW;
     private String host;
     private List<SearchHistoriesType> searchHistory;
     private BaseListboxController baseListboxController;
@@ -79,21 +88,19 @@ public class MainController extends BaseController {
      */
     public void onCreate() throws InterruptedException {
         try {
-            // if client browser is not gecko3 based (such as firefox) raise an exception
-            if (!Executions.getCurrent().isGecko() && !Executions.getCurrent().isGecko3()) {
-                throw new Exception("Sorry, we currently support firefox only.");
-            }
-
             Window mainW = (Window) this.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
-            this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
+            Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.shortmessageC = new ShortMessageController(shortmessageW);
-            this.header = new HeaderController(this);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
             this.navigation = new NavigationController(this);
+            Toolbarbutton moreButton = (Toolbarbutton) this.getFellow("moreButton");
+            Toolbarbutton releaseNotes = (Toolbarbutton) this.getFellow("releaseNotes");
+            Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
+            Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
 
             switchToProcessSummaryView();
 
@@ -105,6 +112,33 @@ public class MainController extends BaseController {
             this.host = properties.getProperty("Host");
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
+
+            moreButton.addEventListener("onClick",
+                    new EventListener() {
+                        public void onEvent(Event event) throws Exception {
+                            moreInfo();
+                        }
+                    });
+            signoutButton.addEventListener("onClick",
+                    new EventListener() {
+                        public void onEvent(Event event) throws Exception {
+                            signout();
+                        }
+                    });
+            releaseNotes.addEventListener("onClick",
+                    new EventListener() {
+                        public void onEvent(Event event) throws Exception {
+                            displayReleaseNotes();
+                        }
+                    });
+            installedPluginsButton.addEventListener("onClick",
+                    new EventListener() {
+                        @Override
+                        public void onEvent(final Event event) throws Exception {
+                            displayInstalledPlugins();
+                        }
+                    });
+
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {
@@ -141,13 +175,13 @@ public class MainController extends BaseController {
         this.navigation.loadWorkspace();
     }
 
-
-    /**
-     * register an event listener for the clientInfo event (to prevent user to close the browser window)
-     */
-    public void onClientInfo(final ClientInfoEvent event) {
-        Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
-    }
+//
+//    /**
+//     * register an event listener for the clientInfo event (to prevent user to close the browser window)
+//     */
+//    public void onClientInfo(final ClientInfoEvent event) {
+//        Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
+//    }
 
     /**
      * Display version processes in processSummaries: if isQueryResult, the
@@ -180,7 +214,7 @@ public class MainController extends BaseController {
 
         // disable/enable menu items in menu bar
         @SuppressWarnings("unchecked")
-        Iterator<Component> itC = (Iterator<Component>) this.menu.getMenuB().getFellows().iterator();
+        Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
         while (itC.hasNext()) {
             Component C = itC.next();
             if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
@@ -225,15 +259,15 @@ public class MainController extends BaseController {
         loadWorkspace();
     }
 
-    /**
-     * reset displayed informations: - short message - process summaries -
-     * simple search
-     * @throws Exception
-     */
-    public void resetUserInformation() throws Exception {
-        eraseMessage();
-        this.simplesearch.clearSearches();
-    }
+//    /**
+//     * reset displayed informations: - short message - process summaries -
+//     * simple search
+//     * @throws Exception
+//     */
+//    public void resetUserInformation() throws Exception {
+//        eraseMessage();
+//        this.simplesearch.clearSearches();
+//    }
 
     /**
      * Forward to the controller ProcessListBoxController the request to add the
@@ -291,7 +325,6 @@ public class MainController extends BaseController {
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
             final String readOnly) throws InterruptedException {
         String instruction = "";
-        String url = getHost();
         int offsetH = 100, offsetV = 200;
 
         EditSessionType editSession = new EditSessionType();
@@ -327,7 +360,7 @@ public class MainController extends BaseController {
             SignavioController.process = process;
             SignavioController.version = version;            
 
-            url = "macros/OpenModelInSignavio.zul";
+            String url = "macros/OpenModelInSignavio.zul";
             
             instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'); ";
 
@@ -345,21 +378,13 @@ public class MainController extends BaseController {
         this.shortmessageC.eraseMessage();
     }
 
-    public HeaderController getHeader() {
-        return header;
-    }
-
-    public void setHeader(final HeaderController header) {
-        this.header = header;
-    }
-
     public MenuController getMenu() {
         return menu;
     }
 
-    public void setMenu(final MenuController menu) {
-        this.menu = menu;
-    }
+//    public void setMenu(final MenuController menu) {
+//        this.menu = menu;
+//    }
 
     public BaseListboxController getBaseListboxController() {
         return baseListboxController;
@@ -369,34 +394,34 @@ public class MainController extends BaseController {
         return baseDetailController;
     }
 
-    public SimpleSearchController getSimplesearch() {
-        return simplesearch;
-    }
-
-    public void setSimplesearch(final SimpleSearchController simplesearch) {
-        this.simplesearch = simplesearch;
-    }
-
-
-    public ShortMessageController getShortmessageC() {
-        return shortmessageC;
-    }
-
-    public void setShortmessageC(final ShortMessageController shortmessageC) {
-        this.shortmessageC = shortmessageC;
-    }
-
-    public Window getShortmessageW() {
-        return shortmessageW;
-    }
-
-    public void setShortmessageW(final Window shortmessageW) {
-        this.shortmessageW = shortmessageW;
-    }
-
-    public Logger getLOG() {
-        return LOGGER;
-    }
+//    public SimpleSearchController getSimplesearch() {
+//        return simplesearch;
+//    }
+//
+//    public void setSimplesearch(final SimpleSearchController simplesearch) {
+//        this.simplesearch = simplesearch;
+//    }
+//
+//
+//    public ShortMessageController getShortmessageC() {
+//        return shortmessageC;
+//    }
+//
+//    public void setShortmessageC(final ShortMessageController shortmessageC) {
+//        this.shortmessageC = shortmessageC;
+//    }
+//
+//    public Window getShortmessageW() {
+//        return shortmessageW;
+//    }
+//
+//    public void setShortmessageW(final Window shortmessageW) {
+//        this.shortmessageW = shortmessageW;
+//    }
+//
+//    public Logger getLOG() {
+//        return LOGGER;
+//    }
 
     public String getHost() {
         return host;
@@ -469,9 +494,9 @@ public class MainController extends BaseController {
      * Removes the currently displayed listbox, detail and filter view
      */
     private void deattachDynamicUI() {
-        getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
-        getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
+        this.getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
+        this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
+        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
 
@@ -479,9 +504,9 @@ public class MainController extends BaseController {
      * Attaches the the listbox, detail and filter view
      */
     private void reattachDynamicUI() {
-        getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
-        getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
-        getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
+        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
+        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
+        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
     }
 
     /**
@@ -504,7 +529,7 @@ public class MainController extends BaseController {
 
         reattachDynamicUI();
 
-        ((South) getFellow("leftSouthPanel")).setTitle("Process Details");
+        ((South) this.getFellow("leftSouthPanel")).setTitle("Process Details");
 
         reloadProcessSummaries();
     }
@@ -531,8 +556,8 @@ public class MainController extends BaseController {
         reattachDynamicUI();
 
         // TODO this should be done in ZUL or elsewhere
-        ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
-        ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
+        ((South) this.getFellow("leftSouthPanel")).setTitle("Cluster Details");
+        ((South) this.getFellow("leftInnerSouthPanel")).setOpen(true);
     }
 
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
@@ -567,6 +592,86 @@ public class MainController extends BaseController {
                 }
                 displayProcessVersions((ProcessSummaryType) getBaseListboxController().getListModel().getSelection().iterator().next());
             }
+        }
+    }
+
+    public void moreInfo() {
+        String instruction;
+        int offsetH = 100, offsetV = 200;
+        instruction = "window.open('" + Constants.MORE_INFO + "','','top=" + offsetH + ",left=" + offsetV
+                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+        Clients.evalJavaScript(instruction);
+
+    }
+
+    public void displayReleaseNotes() {
+        String instruction;
+        int offsetH = 100, offsetV = 200;
+        instruction = "window.open('" + Constants.RELEASE_NOTES + "','','top=" + offsetH + ",left=" + offsetV
+                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+        Clients.evalJavaScript(instruction);
+    }
+
+    private void signout() throws Exception {
+        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
+                new EventListener() {
+                    public void onEvent(Event evt) {
+                        switch (((Integer)evt.getData()).intValue()) {
+                            case Messagebox.YES:
+                                UserSessionManager.setCurrentFolder(null);
+                                UserSessionManager.setCurrentSecurityItem(0);
+                                UserSessionManager.setMainController(null);
+                                UserSessionManager.setPreviousFolder(null);
+                                UserSessionManager.setSelectedFolderIds(null);
+                                UserSessionManager.setTree(null);
+                                Executions.sendRedirect("/j_spring_security_logout");
+                                break;
+                            case Messagebox.NO:
+                                break;
+                        }
+                    }
+                }
+        );
+    }
+
+    @Command
+    protected void displayInstalledPlugins() throws InterruptedException {
+        final Window pluginWindow = (Window) Executions.createComponents("macros/pluginInfo.zul", this, null);
+        Listbox infoListBox = (Listbox) pluginWindow.getFellow("pluginInfoListBox");
+        try {
+            Collection<PluginInfo> installedPlugins = getService().readInstalledPlugins(null);
+            infoListBox.setModel(new ListModelArray(installedPlugins.toArray(), false));
+            infoListBox.setItemRenderer(new ListitemRenderer() {
+
+                @Override
+                public void render(final Listitem item, final Object data, final int index) throws Exception {
+                    if (data != null && data instanceof PluginInfo) {
+                        PluginInfo info = (PluginInfo) data;
+                        item.appendChild(new Listcell(info.getName()));
+                        item.appendChild(new Listcell(info.getVersion()));
+                        item.appendChild(new Listcell(info.getType()));
+                        Listcell dCell = new Listcell();
+                        Label dLabel = new Label(info.getDescription());
+                        dLabel.setWidth("100px");
+                        dLabel.setMultiline(true);
+                        dCell.appendChild(dLabel);
+                        item.appendChild(dCell);
+                        item.appendChild(new Listcell(info.getAuthor()));
+                        item.appendChild(new Listcell(info.getEmail()));
+                    }
+                }
+            });
+            Button buttonOk = (Button) pluginWindow.getFellow("ok");
+            buttonOk.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    pluginWindow.detach();
+                }
+            });
+            pluginWindow.doModal();
+        } catch (Exception e) {
+            Messagebox.show("Error retrieving installed Plugins: "+e.getMessage(), "Error", Messagebox.OK,
+                    Messagebox.ERROR);
         }
     }
 

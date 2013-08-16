@@ -1,0 +1,1 @@
+keytool -import -noprompt -trustcacerts -alias ZKOSS_root_CA -file maven.zkoss.org.pem -keystore "c:/Program Files/Java/jdk1.7.0_10.jdk/jre/lib/security/cacerts" -storepass changeit

@@ -45,8 +45,6 @@ public abstract class BaseListboxController extends BaseController {
     private CreateProcessController createController;
     private SecuritySetupController securitySetupController;
 
-    private final Paging pg;
-
     private final Button revertSelectionB;
     private final Button selectAllB;
     private final Button unselectAllB;
@@ -60,13 +58,12 @@ public abstract class BaseListboxController extends BaseController {
 
     public BaseListboxController(MainController mainController, String componentId, ListitemRenderer itemRenderer) {
         super();
-        setHflex("true");
-        setVflex("true");
+        setHflex("100%");
+        setVflex("100%");
 
         this.mainController = mainController;
         this.listBox = createListbox(componentId);
-        this.pg = (Paging) mainController.getFellow("pg");
-        getListBox().setPaginal(pg);
+        getListBox().setPaginal((Paging) mainController.getFellow("pg"));
 
         this.revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
         this.unselectAllB = (Button) mainController.getFellow("unselectAllB");
