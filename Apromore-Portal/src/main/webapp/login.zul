@@ -126,7 +126,8 @@
                                                     <h:input class="span5" type="text" name="j_username" placeholder="Your Email Address"/>
                                                 </h:div>
                                                 <h:hr class="margin-xm"/>
-                                                <h:button type="submit" class="btn-block btn btn-primary btn-larg">Submit</h:button>
+                                                <!--<h:button type="submit" class="btn-block btn btn-primary btn-larg">Submit</h:button>-->
+                                                <a href="#resetPassword" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Reset Password</a>
                                                 <h:hr class="margin-mm"/>
                                                 <h:p>Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>
@@ -187,11 +188,38 @@
                                                     <h:input class="span3" type="password" name="confirm_password" placeholder="confirm password"/>
                                                 </h:div>
                                                 <h:hr class="margin-xx"/>
-                                                <h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>
+                                                <!--<h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>-->
+                                                <a href="#newUser" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Register</a>
                                                 <h:hr class="margin-xm"/>
                                                 <h:p class="text-right">Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>
                                         </h:form>
+                                    </h:div>
+                                </h:div>
+
+
+                                <h:div id="newUser" class="modal hide fade">
+                                    <h:div class="modal-header">
+                                        <h:button type="button" class="close" data-dismiss="modal" aria-hidden="true"><![CDATA[ &times; ]]></h:button>
+                                        <h:h3>Function Not Available!</h:h3>
+                                    </h:div>
+                                    <h:div class="modal-body">
+                                        <h:p>Sorry, The register a new user function hasn't been completed yet. Please check back soon.</h:p>
+                                    </h:div>
+                                    <h:div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                    </h:div>
+                                </h:div>
+                                <h:div id="resetPassword" class="modal hide fade">
+                                    <h:div class="modal-header">
+                                        <h:button type="button" class="close" data-dismiss="modal" aria-hidden="true"><![CDATA[ &times; ]]></h:button>
+                                        <h:h3>Function Not Available!</h:h3>
+                                    </h:div>
+                                    <h:div class="modal-body">
+                                        <h:p>Sorry, The reset password function hasn't been completed yet. Please check back soon.</h:p>
+                                    </h:div>
+                                    <h:div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                                     </h:div>
                                 </h:div>
 
