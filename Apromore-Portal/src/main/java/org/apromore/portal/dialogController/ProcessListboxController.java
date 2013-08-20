@@ -1,30 +1,23 @@
 package org.apromore.portal.dialogController;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
 
 public class ProcessListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class.getName());
 
     private Listheader columnScore; // column to display process score for the purpose of answering query
-
-    private Boolean isQueryResult; // says whether the data to be displayed have been produced by a query
 
     public ProcessListboxController(MainController mainController) {
         super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
@@ -32,7 +25,7 @@ public class ProcessListboxController extends BaseListboxController {
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
 
         // TODO should be replaced by ListModel listener in zk 6
-        getListBox().addEventListener(Events.ON_SELECT, new EventListener() {
+        getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 if (getListBox().getSelectedItems().size() == 1) {
@@ -62,16 +55,18 @@ public class ProcessListboxController extends BaseListboxController {
     /**
      * Display process versions given in processSummaries. If isQueryResult this
      * results from a search whose query is versionQ, given processQ
-     * @param subFolders list of folders to display as well in the list.
-     * @param processSummaries
-     * @param isQueryResult
+     * @param subFolders list of folders to display.
+     * @param processSummaries the list of processes to display.
+     * @param isQueryResult is this a query result from a search or process.
      */
+    @SuppressWarnings("unchecked")
     public void displayProcessSummaries(List<FolderType> subFolders, ProcessSummariesType processSummaries, Boolean isQueryResult) {
-        this.isQueryResult = isQueryResult;
         this.columnScore.setVisible(isQueryResult);
 
         getListBox().clearSelection();
-        getListModel().clear();
+        getListBox().setCheckmark(true);
+        getListBox().setModel(new ListModelList<>());
+        getListModel().setMultiple(true);
         getListModel().addAll(subFolders);
         getListModel().addAll(processSummaries.getProcessSummary());
 
@@ -91,32 +86,9 @@ public class ProcessListboxController extends BaseListboxController {
     /**
      * Add the process to the table
      */
+    @SuppressWarnings("unchecked")
     public void displayNewProcess(ProcessSummaryType process) {
         getListModel().add(process);
-    }
-
-    public void unDisplay(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
-        // Workaround until better solution
-        refreshContent();
-        // for (Map.Entry<ProcessSummaryType, List<VersionSummaryType>> entry :
-        // processVersions
-        // .entrySet()) {
-        //
-        // ProcessSummaryType deletedProcess = entry.getKey();
-        //
-        // for (VersionSummaryType deletedVersion : entry.getValue()) {
-        //
-        // }
-        //
-        // }
-    }
-
-    public Listbox getProcessSummariesGrid() {
-        return getListBox();
-    }
-
-    public Boolean getIsQueryResult() {
-        return isQueryResult;
     }
 
 }

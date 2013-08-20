@@ -1,5 +1,16 @@
 package org.apromore.portal.dialogController;
 
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -18,81 +29,66 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import javax.xml.bind.JAXBException;
-
 public class ImportListProcessesController extends BaseController {
 
-    private MenuController menuC;
     private MainController mainC;
     private Window importProcessesWindow;
     private Button okButton;
-    private Button uploadButton;
-    private Button cancelButton;
     private Label filenameLabel;
-    private Label supportedExtL;
     private String extension;
     private String fileOrArchive;
     private String nativeType;
     private String ignoredFiles;
     private Media media;
-    private List<ImportOneProcessController> toImportList; // List of imports to be done
-    private List<ImportOneProcessController> importedList; // List of imports successfully completed
+    private List<ImportOneProcessController> toImportList = new ArrayList<>();
+    private List<ImportOneProcessController> importedList = new ArrayList<>();
 
-    public ImportListProcessesController(MenuController menuC, MainController mainC) throws DialogException {
+    public ImportListProcessesController(MainController mainC) throws DialogException {
         this.ignoredFiles = "";
         this.mainC = mainC;
-        this.menuC = menuC;
-        this.toImportList = new ArrayList<ImportOneProcessController>();
-        this.importedList = new ArrayList<ImportOneProcessController>();
 
         try {
             final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
             this.importProcessesWindow = (Window) win.getFellow("importProcessesWindow");
             this.okButton = (Button) this.importProcessesWindow.getFellow("okButtonImportProcesses");
-            this.uploadButton = (Button) this.importProcessesWindow.getFellow("uploadButton");
-            this.cancelButton = (Button) this.importProcessesWindow.getFellow("cancelButtonImportProcesses");
+            Button uploadButton = (Button) this.importProcessesWindow.getFellow("uploadButton");
+            Button cancelButton = (Button) this.importProcessesWindow.getFellow("cancelButtonImportProcesses");
             this.filenameLabel = (Label) this.importProcessesWindow.getFellow("filenameLabel");
-            this.supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
+            Label supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
+
             // build the list of supported extensions to display
             String supportedExtS = "zip";
             Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
             for (String aSupportedExt : supportedExt) {
                 supportedExtS += ", " + aSupportedExt;
             }
-            this.supportedExtL.setValue(supportedExtS);
+            supportedExtL.setValue(supportedExtS);
+
+
             // event listeners
-            importProcessesWindow.addEventListener("onLater", new EventListener() {
+            importProcessesWindow.addEventListener("onLater", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     extractArchiveOrFile();
                     Clients.clearBusy();
                 }
             });
-            uploadButton.addEventListener("onUpload", new EventListener() {
+            uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
                 }
             });
-            okButton.addEventListener("onClick", new EventListener() {
+            okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Processing...");
                     Events.echoEvent("onLater", importProcessesWindow, null);
                 }
             });
-            cancelButton.addEventListener("onClick", new EventListener() {
+            cancelButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     cancel();
                 }
             });
+
             win.doModal();
         } catch (Exception e) {
             throw new DialogException("Error in importProcesses controller: " + e.getMessage());
@@ -105,7 +101,7 @@ public class ImportListProcessesController extends BaseController {
 
     /**
      * Upload file: an archive or an xml file
-     * @param event
+     * @param event the event to process.
      * @throws InterruptedException
      */
     private void uploadFile(UploadEvent event) throws InterruptedException {
@@ -142,16 +138,15 @@ public class ImportListProcessesController extends BaseController {
      * zip or tar: extract files and import each if possible
      * file: import
      * @throws InterruptedException
-     * @throws java.io.IOException
      */
     private void extractArchiveOrFile() throws InterruptedException {
         try {
             if (this.extension.compareTo("zip") == 0) {
-                String extension = null;
-                String entryName = null;
-                String nativeType = null;
+                String extension;
+                String entryName;
+                String nativeType;
                 this.ignoredFiles = "";
-                String defaultProcessName = null;
+                String defaultProcessName;
                 ZipInputStream zipIS = new ZipInputStream(this.media.getStreamData());
                 ZipEntry zipEntry;
                 while ((zipEntry = zipIS.getNextEntry()) != null) {
@@ -213,14 +208,14 @@ public class ImportListProcessesController extends BaseController {
 
     public List<ImportOneProcessController> getImportedList() {
         if (importedList == null) {
-            importedList = new ArrayList<ImportOneProcessController>();
+            importedList = new ArrayList<>();
         }
         return this.importedList;
     }
 
     public List<ImportOneProcessController> getToImportList() {
         if (toImportList == null) {
-            toImportList = new ArrayList<ImportOneProcessController>();
+            toImportList = new ArrayList<>();
         }
         return this.toImportList;
     }
@@ -258,7 +253,7 @@ public class ImportListProcessesController extends BaseController {
       * - domain
       */
     public void importAllProcess(String domain) throws InterruptedException, IOException {
-        List<ImportOneProcessController> importAll = new ArrayList<ImportOneProcessController>();
+        List<ImportOneProcessController> importAll = new ArrayList<>();
         importAll.addAll(this.toImportList);
         for (ImportOneProcessController importOneProcess : importAll) {
             try {

@@ -65,7 +65,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listitem.appendChild(renderFolderName(folder));
 
         listitem.setStyle(Constants.FOLDER);
-        listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener() {
+        listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);

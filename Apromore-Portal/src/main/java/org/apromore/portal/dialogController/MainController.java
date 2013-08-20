@@ -33,8 +33,6 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -45,7 +43,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelArray;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -64,7 +62,7 @@ public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private MenuController menu;
     private SimpleSearchController simplesearch;
@@ -82,8 +80,7 @@ public class MainController extends BaseController {
     /**
      * onCreate is executed after the main window has been created it is
      * responsible for instantiating all necessary controllers (one for each
-     * window defined in the interface)
-     * see description in index.zul
+     * window defined in the interface) see description in index.zul
      * @throws InterruptedException
      */
     public void onCreate() throws InterruptedException {
@@ -114,25 +111,25 @@ public class MainController extends BaseController {
             pagingandbuttons.setVisible(true);
 
             moreButton.addEventListener("onClick",
-                    new EventListener() {
+                    new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             moreInfo();
                         }
                     });
             signoutButton.addEventListener("onClick",
-                    new EventListener() {
+                    new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             signout();
                         }
                     });
             releaseNotes.addEventListener("onClick",
-                    new EventListener() {
+                    new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             displayReleaseNotes();
                         }
                     });
             installedPluginsButton.addEventListener("onClick",
-                    new EventListener() {
+                    new EventListener<Event>() {
                         @Override
                         public void onEvent(final Event event) throws Exception {
                             displayInstalledPlugins();
@@ -186,9 +183,8 @@ public class MainController extends BaseController {
     /**
      * Display version processes in processSummaries: if isQueryResult, the
      * query is given by version of process
-     * @param processSummaries
-     * @param isQueryResult
-     * @throws Exception
+     * @param processSummaries the list of process summaries to display
+     * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
     public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult) {
         int folderId;
@@ -213,10 +209,7 @@ public class MainController extends BaseController {
         Boolean connected = UserSessionManager.getCurrentUser() != null;
 
         // disable/enable menu items in menu bar
-        @SuppressWarnings("unchecked")
-        Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
-        while (itC.hasNext()) {
-            Component C = itC.next();
+        for (Component C : this.menu.getMenuB().getFellows()) {
             if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
                 if (C.getId().equals("designPatternCr")) {
                     ((Menuitem) C).setDisabled(true);
@@ -288,7 +281,7 @@ public class MainController extends BaseController {
         try {
             getService().deleteProcessVersions(processVersions);
             switchToProcessSummaryView();
-            ((ProcessListboxController) this.baseListboxController).unDisplay(processVersions);
+            this.baseListboxController.refreshContent();
             String message;
             int nb = 0;
 
@@ -315,12 +308,12 @@ public class MainController extends BaseController {
      * to be used to edit the process version. If annotation is instantiated, it
      * identifies the annotation file to be used. If readOnly=1, annotations
      * only are editable.
-     * @param version
-     * @param nativeType
-     * @param annotation
-     * @param readOnly
+     * @param process the process summary
+     * @param version the version of the process
+     * @param nativeType the native type of the process
+     * @param annotation the annotation of that process
+     * @param readOnly is this model readonly or not
      * @throws InterruptedException
-     * @throws Exception
      */
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
             final String readOnly) throws InterruptedException {
@@ -339,12 +332,11 @@ public class MainController extends BaseController {
 
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
-        // todo: Work out is new are forcing a new branch or not.
-        if (true) {
-            editSession.setCreateNewBranch(false);
-        } else {
-            editSession.setCreateNewBranch(true);
-        }
+//        if (true) {
+//            editSession.setCreateNewBranch(false);
+//        } else {
+//            editSession.setCreateNewBranch(true);
+//        }
         if (annotation == null) {
             editSession.setWithAnnotation(false);
         } else {
@@ -354,7 +346,7 @@ public class MainController extends BaseController {
 
         try {
             // create and store an edit session
-            int editSessionCode = getService().writeEditSession(editSession);            
+            getService().writeEditSession(editSession);
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             SignavioController.process = process;
@@ -442,7 +434,7 @@ public class MainController extends BaseController {
 
     /**
      * get list of users' names
-     * @return
+     * @return the list of user names
      * @throws org.apromore.portal.exception.ExceptionAllUsers
      */
     public List<String> getUsers() throws ExceptionAllUsers {
@@ -586,7 +578,7 @@ public class MainController extends BaseController {
                 for (ProcessSummaryType pst : (List<ProcessSummaryType>) baseListBoxController.getListModel()) {
                     for (Integer i : processIds) {
                         if (pst != null && pst.getId().equals(i)) {
-                            baseListBoxController.getListModel().addSelection(pst);
+                            baseListBoxController.getListModel().addToSelection(pst);
                         }
                     }
                 }
@@ -614,9 +606,9 @@ public class MainController extends BaseController {
 
     private void signout() throws Exception {
         Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event evt) {
-                        switch (((Integer)evt.getData()).intValue()) {
+                        switch ((Integer) evt.getData()) {
                             case Messagebox.YES:
                                 UserSessionManager.setCurrentFolder(null);
                                 UserSessionManager.setCurrentSecurityItem(0);
@@ -639,10 +631,9 @@ public class MainController extends BaseController {
         final Window pluginWindow = (Window) Executions.createComponents("macros/pluginInfo.zul", this, null);
         Listbox infoListBox = (Listbox) pluginWindow.getFellow("pluginInfoListBox");
         try {
-            Collection<PluginInfo> installedPlugins = getService().readInstalledPlugins(null);
-            infoListBox.setModel(new ListModelArray(installedPlugins.toArray(), false));
+            List<PluginInfo> installedPlugins = new ArrayList<>(getService().readInstalledPlugins(null));
+            infoListBox.setModel(new ListModelList<>(installedPlugins, false));
             infoListBox.setItemRenderer(new ListitemRenderer() {
-
                 @Override
                 public void render(final Listitem item, final Object data, final int index) throws Exception {
                     if (data != null && data instanceof PluginInfo) {
@@ -662,7 +653,7 @@ public class MainController extends BaseController {
                 }
             });
             Button buttonOk = (Button) pluginWindow.getFellow("ok");
-            buttonOk.addEventListener("onClick", new EventListener() {
+            buttonOk.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     pluginWindow.detach();
