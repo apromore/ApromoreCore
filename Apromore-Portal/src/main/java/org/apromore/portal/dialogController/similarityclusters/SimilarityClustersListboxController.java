@@ -13,6 +13,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -43,8 +44,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
 
         Button btnShowVisualisation = (Button) getMainController().getFellow("showVisualisation");
         btnShowVisualisation.setVisible(true);
-        btnShowVisualisation.addEventListener("onClick", new EventListener() {
-
+        btnShowVisualisation.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 if (getListModel().getSelection().size() > 0) {
@@ -62,8 +62,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
         });
 
         // TODO should be replaced by ListModel listener in zk 6
-        getListBox().addEventListener("onSelect", new EventListener() {
-
+        getListBox().addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 if (getListBox().getSelectedItems().size() == 1) {
@@ -79,9 +78,14 @@ public class SimilarityClustersListboxController extends BaseListboxController {
       * @see org.apromore.portal.dialogController.BaseListboxController#refreshContent()
       */
     @Override
+    @SuppressWarnings("unchecked")
     protected final void refreshContent() {
+
         getListBox().clearSelection();
-        getListModel().clear();
+        getListBox().setCheckmark(true);
+        getListBox().setModel(new ListModelList<>());
+        getListModel().setMultiple(true);
+
         List<ClusterSummaryType> summary = getService().getClusterSummaries(this.filterController.getCurrentFilter());
         if (summary!= null && !summary.isEmpty()) {
             getListModel().addAll(summary);

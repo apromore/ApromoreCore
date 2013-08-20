@@ -15,21 +15,6 @@
     <style src="css/site.css"/>
 
     <script type="text/javascript" src="js/jquery.js"></script>
-
-    <!--<style dynamic="true">-->
-        <!--.z-label {-->
-            <!--font-size: ${fontSizeMS}-->
-        <!--}-->
-        <!--.z-list-item {-->
-            <!--font-size: ${fontSizeMS}-->
-        <!--}-->
-        <!--.z-list-item a {-->
-            <!--font-size: ${fontSizeMS}-->
-        <!--}-->
-        <!--.z-list-item a:visited {-->
-            <!--font-size: ${fontSizeMS}-->
-        <!--}-->
-    <!--</style>-->
     <style dynamic="true">
         .z-listbox-autopaging {
             height: 20px;
