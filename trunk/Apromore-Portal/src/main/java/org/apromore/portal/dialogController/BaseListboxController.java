@@ -41,9 +41,6 @@ public abstract class BaseListboxController extends BaseController {
     private final Listbox listBox;
 
     private final MainController mainController;
-    private AddFolderController addFolderController;
-    private CreateProcessController createController;
-    private SecuritySetupController securitySetupController;
 
     private final Button revertSelectionB;
     private final Button selectAllB;
@@ -62,21 +59,19 @@ public abstract class BaseListboxController extends BaseController {
         setVflex("100%");
 
         this.mainController = mainController;
-        this.listBox = createListbox(componentId);
-        getListBox().setPaginal((Paging) mainController.getFellow("pg"));
+        listBox = createListbox(componentId);
+        listBox.setPaginal((Paging) mainController.getFellow("pg"));
+        listBox.setItemRenderer(itemRenderer);
 
-        this.revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
-        this.unselectAllB = (Button) mainController.getFellow("unselectAllB");
-        this.selectAllB = (Button) mainController.getFellow("selectAllB");
-        this.refreshB = (Button) mainController.getFellow("refreshB");
-        this.btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
-        this.btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
-        this.btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
-        this.btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
-        this.btnSecurity = (Button) mainController.getFellow("btnSecurity");
-
-        getListBox().setItemRenderer(itemRenderer);
-        getListBox().setModel(new ListModelList());
+        revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
+        unselectAllB = (Button) mainController.getFellow("unselectAllB");
+        selectAllB = (Button) mainController.getFellow("selectAllB");
+        refreshB = (Button) mainController.getFellow("refreshB");
+        btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
+        btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
+        btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
+        btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
+        btnSecurity = (Button) mainController.getFellow("btnSecurity");
 
         attachEvents();
 
@@ -84,59 +79,59 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void attachEvents() {
-        this.revertSelectionB.addEventListener("onClick", new EventListener() {
+        this.revertSelectionB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 revertSelection();
             }
         });
 
-        this.selectAllB.addEventListener("onClick", new EventListener() {
+        this.selectAllB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 selectAll();
             }
         });
 
-        this.unselectAllB.addEventListener("onClick", new EventListener() {
+        this.unselectAllB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 unselectAll();
             }
         });
 
-        this.refreshB.addEventListener("onClick", new EventListener() {
+        this.refreshB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 refreshContent();
             }
         });
 
-        this.btnAddFolder.addEventListener("onClick", new EventListener() {
+        this.btnAddFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 addFolder();
             }
         });
 
-        this.btnAddProcess.addEventListener("onClick", new EventListener() {
+        this.btnAddProcess.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 addProcess();
             }
         });
 
-        this.btnRenameFolder.addEventListener("onClick", new EventListener() {
+        this.btnRenameFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 renameFolder();
             }
         });
 
-        this.btnRemoveFolder.addEventListener("onClick", new EventListener() {
+        this.btnRemoveFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 removeFolder();
             }
         });
 
-        this.btnSecurity.addEventListener("onClick", new EventListener() {
+        this.btnSecurity.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 security();
             }
@@ -184,7 +179,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            this.addFolderController = new AddFolderController(getMainController(), 0, "");
+            new AddFolderController(getMainController(), 0, "");
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -193,7 +188,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addProcess() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            this.createController = new CreateProcessController(getMainController(), getMainController().getNativeTypes());
+            new CreateProcessController(getMainController(), getMainController().getNativeTypes());
         } catch (SuspendNotAllowedException | InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
@@ -239,7 +234,7 @@ public abstract class BaseListboxController extends BaseController {
                     }
                 }
 
-                this.addFolderController = new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName);
+                new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
@@ -271,7 +266,7 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageProcessesDelete(final MainController mainController) throws Exception {
-        Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+        Messagebox.show(PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -285,7 +280,7 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
-        Messagebox.show(FOLDER_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+        Messagebox.show(FOLDER_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -300,7 +295,7 @@ public abstract class BaseListboxController extends BaseController {
 
     /* Show a message tailored to deleting a combo of folders and processes */
     private void showMessageFoldersAndProcessesDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
-        Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+        Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
@@ -318,7 +313,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void security() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            this.securitySetupController = new SecuritySetupController(getMainController());
+            new SecuritySetupController(getMainController());
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

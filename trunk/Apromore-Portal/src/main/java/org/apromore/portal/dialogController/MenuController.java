@@ -280,7 +280,7 @@ public class MenuController extends Menubar {
     protected void importModel() throws InterruptedException {
         this.mainC.eraseMessage();
         try {
-            new ImportListProcessesController(this, mainC);
+            new ImportListProcessesController(mainC);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
