@@ -101,7 +101,7 @@
                     <html id="breadCrumbs" width="100%" height="10"/>
                     <html id="folders" width="100%" visible="false" height="0"/>
 
-                    <BaseListbox id="baseListbox" vflex="true" hflex="true"/>
+                    <BaseListbox id="baseListbox" vflex="true"/>
                 </div>
             </center>
         </borderlayout>
