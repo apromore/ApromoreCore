@@ -1,33 +1,30 @@
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
 <window id="importProcessesWindow" position="center" title="Import process models"
-	visible="true" sizable="true" width="550px">
-	<vbox vflex="1">
-		<grid >
-		<columns sizable="true">
-		<column width="25%"></column>
-		<column width="15%"></column>
-		<column width="60%"></column>
-		</columns>
-			<rows>
-				<row>
-					<label value="File to upload" />
-					<button id="uploadButton" label="Browse" upload="true"/>
-					<label id="filenameLabel" value=""/>
-				</row>
-				<row spans="1,2">
-					<label value="Supported extensions"/>
-					<label id="supportedExt" value=""/>
-				</row>
-				<row spans="3">
-					<div align="center">
-						<button id="okButtonImportProcesses" label="OK"  image="img/ok.png" disabled="true">
-						</button>
-						<button id="cancelButtonImportProcesses" label="Cancel"
-							image="img/cancel2.png">
-						</button>
-					</div>
-				</row>
-			</rows>
-		</grid>
-	</vbox>
+        visible="true" sizable="true" width="550px">
+    <vbox vflex="1">
+        <grid>
+            <columns sizable="true">
+                <column width="25%"></column>
+                <column width="15%"></column>
+                <column width="60%"></column>
+            </columns>
+            <rows>
+                <row>
+                    <label value="File to upload"/>
+                    <button id="uploadButton" label="Browse" upload="true"/>
+                    <label id="filenameLabel" value=""/>
+                </row>
+                <row spans="1,2">
+                    <label value="Supported extensions"/>
+                    <label id="supportedExt" value=""/>
+                </row>
+                <row spans="3">
+                    <div align="center">
+                        <button id="okButtonImportProcesses" label="OK" image="img/ok.png" disabled="true" />
+                        <button id="cancelButtonImportProcesses" label="Cancel" image="img/cancel2.png" />
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
 </window>

@@ -125,6 +125,9 @@ public class ImportListProcessesController extends BaseController {
             // now the file is uploaded, Ok button could be enabled
             this.okButton.setDisabled(false);
             this.filenameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
+
+            //Simulate the ok button ?? I don't think this is correct.
+            Events.postEvent("onClick", okButton, null);
         } catch (ExceptionImport e) {
             Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {

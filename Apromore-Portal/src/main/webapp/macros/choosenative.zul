@@ -15,15 +15,11 @@
                 </row>
                 <row>
                     <label value="Available native types" />
-                    <listbox width="100%" multiple="false" mold="select" rows="1">
-                        <!-- listbox implemented by controller -->
-                    </listbox>
+                    <listbox width="100%" multiple="false" mold="select" rows="1"></listbox>
                 </row>
                 <row >
                     <label value="Annotation" />
-                    <listbox width="100%" multiple="false" mold="select" rows="1">
-                        <!-- listbox implemented in controller -->
-                    </listbox>
+                    <listbox width="100%" multiple="false" mold="select" rows="1"></listbox>
                 </row>
                 <row>
                     <label value="Edit annotation only" />

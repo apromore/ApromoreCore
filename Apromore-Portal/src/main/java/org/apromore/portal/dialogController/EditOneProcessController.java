@@ -112,43 +112,43 @@ public class EditOneProcessController extends BaseController {
         }
 
         nativeTypesLB.addEventListener(Events.ON_SELECT,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        syncAnnotationLB(event);
+                        syncAnnotationLB();
                     }
                 });
         annotationsLB.addEventListener(Events.ON_SELECT,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        syncReadOnlyR(event);
+                        syncReadOnlyR();
                     }
                 });
         annotationOnlyCB.addEventListener(Events.ON_CHECK,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        syncListboxe(event);
+                        syncListboxe();
                     }
                 });
         okB.addEventListener(Events.ON_CLICK,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         editProcess();
                     }
                 });
         chooseNativeW.addEventListener(Events.ON_OK,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         editProcess();
                     }
                 });
         cancelB.addEventListener(Events.ON_CLICK,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancel();
                     }
                 });
         cancelAllB.addEventListener(Events.ON_CLICK,
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancelAll();
                     }
@@ -159,26 +159,22 @@ public class EditOneProcessController extends BaseController {
     /**
      * If "no annotation" has been selected in the list box, the row
      * with checkbox "annotation only" has to be disabled.
-     * @param event the event that triggered this method.
      */
-    protected void syncReadOnlyR(Event event) {
+    protected void syncReadOnlyR() {
         annotationOnlyCB.setDisabled(noAnnotationI.isSelected());
     }
 
     /**
      * If check box "Annotation only" is checked item "- no annotation" has to be disabled
-     * @param event the event that triggered this method.
      */
-    protected void syncListboxe(Event event) {
-        // if users tick "annotation only", disable "no annotation" in the list
+    protected void syncListboxe() {
         noAnnotationI.setDisabled(annotationOnlyCB.isChecked());
     }
 
     /**
      * If the native type is selected is the same as process original type then disable the annotations lb.
-     * @param event the on select event.
      */
-    protected void syncAnnotationLB(Event event) {
+    protected void syncAnnotationLB() {
         if (nativeTypesLB.getSelectedItem() != null) {
             String selected = nativeTypesLB.getSelectedItem().getLabel();
             if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(selected)) {
@@ -216,7 +212,7 @@ public class EditOneProcessController extends BaseController {
             String annotation = null;
             if (annotationsLB.getSelectedItem() != null
                     && Constants.NO_ANNOTATIONS.compareTo(annotationsLB.getSelectedItem().getLabel()) != 0) {
-                annotation = (String) annotationsLB.getSelectedItem().getValue();
+                annotation = annotationsLB.getSelectedItem().getValue();
             }
             if (annotationOnlyCB.isChecked()) {
                 readOnly = TRUE;

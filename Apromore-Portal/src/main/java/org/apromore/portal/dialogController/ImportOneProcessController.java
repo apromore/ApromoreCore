@@ -76,7 +76,6 @@ public class ImportOneProcessController extends BaseController {
     public ImportOneProcessController(final MainController mainC, final ImportListProcessesController importProcessesC, final InputStream xml_is,
             final String processName, final String nativeType, final String fileName) throws SuspendNotAllowedException, InterruptedException,
             ExceptionDomains, ExceptionAllUsers, IOException {
-
         this.importProcessesC = importProcessesC;
         this.mainC = mainC;
         this.username = UserSessionManager.getCurrentUser().getUsername();
@@ -100,6 +99,7 @@ public class ImportOneProcessController extends BaseController {
         this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
         this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
         this.documentationTb = (Textbox) documentationR.getChildren().get(1);
+
         Div buttonsD = (Div) domainR.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getFirstChild();
         this.okButton = (Button) buttonsD.getFirstChild();
         this.okForAllButton = (Button) buttonsD.getChildren().get(1);
@@ -137,38 +137,34 @@ public class ImportOneProcessController extends BaseController {
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.importOneProcessWindow.getFellow("canoniserPropertiesGrid"));
 
         if (readCanoniserInfos(nativeType)) {
-            this.importOneProcessWindow.addEventListener("onLater", new EventListener() {
+            this.importOneProcessWindow.addEventListener("onLater", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     importAllProcess();
                     Clients.clearBusy();
                 }
             });
-
-            this.ownerCB.addEventListener("onChange", new EventListener() {
+            this.ownerCB.addEventListener("onChange", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
                     updateOwner(cb.getValue());
                 }
             });
-
-            this.okButton.addEventListener("onClick", new EventListener() {
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     importProcess(domainCB.getValue(), username);
                 }
             });
-
-            this.okForAllButton.addEventListener("onClick", new EventListener() {
+            this.okForAllButton.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     Clients.showBusy("Processing...");
                     Events.echoEvent("onLater", importOneProcessWindow, null);
                 }
             });
-
-            this.importOneProcessWindow.addEventListener("onOK", new EventListener() {
+            this.importOneProcessWindow.addEventListener("onOK", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     if (processNameTb.getValue().compareTo("") == 0) {
@@ -178,19 +174,19 @@ public class ImportOneProcessController extends BaseController {
                     }
                 }
             });
-            this.cancelButton.addEventListener("onClick", new EventListener() {
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     cancel();
                 }
             });
-            this.cancelAllButton.addEventListener("onClick", new EventListener() {
+            this.cancelAllButton.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     cancelAll();
                 }
             });
-            this.resetButton.addEventListener("onClick", new EventListener() {
+            this.resetButton.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(final Event event) throws Exception {
                     reset();
@@ -208,8 +204,7 @@ public class ImportOneProcessController extends BaseController {
             Clients.clearBusy(canoniserSelectionRow);
 
             if (canoniserInfos.size() >= 1) {
-
-                List<String> canoniserNames = new ArrayList<String>();
+                List<String> canoniserNames = new ArrayList<>();
                 for (PluginInfo cInfo: canoniserInfos) {
                     canoniserNames.add(cInfo.getName());
                 }
@@ -222,8 +217,7 @@ public class ImportOneProcessController extends BaseController {
                 canoniserCB.setSelectedIndex(0);
                 canoniserSelectionRow.appendChild(canoniserCB);
 
-                canoniserCB.addEventListener("onSelect", new EventListener() {
-
+                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         if (event instanceof SelectEvent) {
@@ -252,12 +246,10 @@ public class ImportOneProcessController extends BaseController {
     }
 
     private void readMetaData(final String nativeType, final List<String> ownerNames) throws InterruptedException {
-
         try {
             NativeMetaData readNativeMetaData = getService().readNativeMetaData(nativeType, null, null, getNativeProcess());
-            // Reset Input Stream because, we'll need it later for the "real" conversion!
             this.nativeProcess.reset();
-            this.processNameTb.setValue(readNativeMetaData.getProcessName());
+            this.processNameTb.setValue(this.processName);
             this.documentationTb.setValue(readNativeMetaData.getProcessDocumentation());
             if (readNativeMetaData.getProcessCreated() != null) {
                 this.creationDateTb.setValue(readNativeMetaData.getProcessCreated().toString());
@@ -281,9 +273,9 @@ public class ImportOneProcessController extends BaseController {
     }
 
     private void reset() {
-        this.readProcessName = this.processName; // default value if not found
+        this.readProcessName = this.processName;
         this.readDocumentation = "";
-        this.readCreated = Utils.getDateTime(); // default value for creationDate if not found
+        this.readCreated = Utils.getDateTime();
         this.readLastupdate = "";
         this.readAuthor = UserSessionManager.getCurrentUser().getUsername();
         this.processNameTb.setValue(readProcessName);
@@ -294,7 +286,6 @@ public class ImportOneProcessController extends BaseController {
     }
 
     private void cancel() throws InterruptedException, IOException {
-        // delete process from the list of processes still to be imported
         this.importProcessesC.deleteFromToBeImported(this);
         closePopup();
     }
@@ -321,13 +312,12 @@ public class ImportOneProcessController extends BaseController {
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
                     version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
                     this.lastUpdateTb.getValue(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
-            // process successfully imported
+
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);
             this.mainC.displayNewProcess(importResult.getProcessSummary());
-            /* keep list of domains update */
+
             this.domainCB.addItem(domain);
-            // delete process from the list of processes still to be imported
             this.importProcessesC.deleteFromToBeImported(this);
         } catch (Exception e) {
             LOGGER.error("Import failed!", e);
@@ -362,20 +352,8 @@ public class ImportOneProcessController extends BaseController {
         return fileName;
     }
 
-    public String getDocumentation() {
-        return documentationTb.getValue();
-    }
-
     public String getNativeType() {
         return nativeType;
-    }
-
-    public String getLastUpdate() {
-        return lastUpdateTb.getValue();
-    }
-
-    public String getCreated() {
-        return creationDateTb.getValue();
     }
 
     public InputStream getNativeProcess() throws IOException {
