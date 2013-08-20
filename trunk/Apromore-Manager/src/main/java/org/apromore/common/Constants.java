@@ -13,7 +13,6 @@ public interface Constants {
     public static final String CONNECTOR = "Connector";
     public static final String FUNCTION = "Function";
     public static final String EVENT = "Event";
-    public static final String POCKET = "Pocket";
 
     public static final String PROCESS_NAME = "ProcessName";
     public static final String BRANCH_NAME = "BranchName";
@@ -26,13 +25,10 @@ public interface Constants {
     public static final String LOCKED = "Locked";
     public static final String UNLOCKED = "Unlocked";
 
-    public static final String ANF_CONTEXT = "org.apromore.anf";
     public static final String CPF_CONTEXT = "org.apromore.cpf";
     public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
-    public static final String EPML_CONTEXT = "de.epml";
-    public static final String PNML_CONTEXT = "org.apromore.pnml";
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     public static final int NO_LOCK = 0;
     public static final int INDIRECT_LOCK = 1;
