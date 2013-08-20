@@ -33,10 +33,12 @@
 
                         <h:div if="${param['error']=='1'}">
                             <![CDATA[
-                              <div class="offset3 span6">
-                                <div class="alert alert-error">
-                                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                  <i class="icon-remove-circle"></i> Login or password was incorrect. Please try again.
+                              <div class="row">
+                                <div class="span6 offset3">
+                                  <div class="alert alert-error">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <i class="icon-remove-circle"></i> Login or password was incorrect. Please try again.
+                                  </div>
                                 </div>
                               </div>
                             ]]>
@@ -44,12 +46,14 @@
 
                         <h:div if="${param['error']=='2'}">
                             <![CDATA[
-                              <div class="offset3 span6">
-                                <div class="alert alert-error">
-                                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                  <i class="icon-remove-circle"></i> The page or component you request is no longer available.
-                                     This is normally caused by timeout, opening too many Web pages, or rebooting
-                                     the server.
+                              <div class="row">
+                                <div class="span6 offset3">
+                                  <div class="alert alert-error">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                      <i class="icon-remove-circle"></i> The page or component you request is no longer available.
+                                       This is normally caused by timeout, opening too many Web pages, or rebooting
+                                       the server.
+                                  </div>
                                 </div>
                               </div>
                             ]]>
