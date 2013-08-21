@@ -20,7 +20,7 @@
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button id="okButtonImportProcesses" label="OK" image="img/ok.png" disabled="true" />
+                        <!--<button id="okButtonImportProcesses" label="OK" image="img/ok.png" disabled="true" />-->
                         <button id="cancelButtonImportProcesses" label="Cancel" image="img/cancel2.png" />
                     </div>
                 </row>
