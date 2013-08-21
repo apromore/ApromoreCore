@@ -33,7 +33,6 @@ public class ImportListProcessesController extends BaseController {
 
     private MainController mainC;
     private Window importProcessesWindow;
-    private Button okButton;
     private Label filenameLabel;
     private String extension;
     private String fileOrArchive;
@@ -50,7 +49,6 @@ public class ImportListProcessesController extends BaseController {
         try {
             final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
             this.importProcessesWindow = (Window) win.getFellow("importProcessesWindow");
-            this.okButton = (Button) this.importProcessesWindow.getFellow("okButtonImportProcesses");
             Button uploadButton = (Button) this.importProcessesWindow.getFellow("uploadButton");
             Button cancelButton = (Button) this.importProcessesWindow.getFellow("cancelButtonImportProcesses");
             this.filenameLabel = (Label) this.importProcessesWindow.getFellow("filenameLabel");
@@ -75,12 +73,6 @@ public class ImportListProcessesController extends BaseController {
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
-                }
-            });
-            okButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    Clients.showBusy("Processing...");
-                    Events.echoEvent("onLater", importProcessesWindow, null);
                 }
             });
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
@@ -122,12 +114,11 @@ public class ImportListProcessesController extends BaseController {
                 this.nativeType = fileType;
             }
 
-            // now the file is uploaded, Ok button could be enabled
-            this.okButton.setDisabled(false);
             this.filenameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
 
-            //Simulate the ok button ?? I don't think this is correct.
-            Events.postEvent("onClick", okButton, null);
+            // Simulate the ok button ?? I don't think this is correct.
+            Clients.showBusy("Processing...");
+            Events.echoEvent("onLater", importProcessesWindow, null);
         } catch (ExceptionImport e) {
             Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
