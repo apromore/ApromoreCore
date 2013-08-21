@@ -331,6 +331,8 @@ public abstract class BaseListboxController extends BaseController {
         for (FolderType folderId : folders) {
             mainController.getService().deleteFolder(folderId.getId());
         }
+        //mainController.baseListboxController.refreshContent();
+        mainController.reloadProcessSummaries();
     }
 
     /* Does the selection in the main detail list contain folders and processes. */
