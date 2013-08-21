@@ -60,61 +60,61 @@ public class MenuController extends Menubar {
         mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
         //Menu presentationM = (Menu) this.menuB.getFellow("presentation");
 
-        createMI.addEventListener("onClick", new EventListener() {
+        createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createModel();
             }
         });
-        importMI.addEventListener("onClick", new EventListener() {
+        importMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 importModel();
             }
         });
-        editModelMI.addEventListener("onClick", new EventListener() {
+        editModelMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 editNative();
             }
         });
-        editDataMI.addEventListener("onClick", new EventListener() {
+        editDataMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 editData();
             }
         });
-        exportMI.addEventListener("onClick", new EventListener() {
+        exportMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 exportNative();
             }
         });
-        deleteMI.addEventListener("onClick", new EventListener() {
+        deleteMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 deleteSelectedProcessVersions();
             }
         });
-        similaritySearchMI.addEventListener("onClick", new EventListener() {
+        similaritySearchMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 searchSimilarProcesses();
             }
         });
-        similarityClustersMI.addEventListener("onClick", new EventListener() {
+        similarityClustersMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 clusterSimilarProcesses();
             }
         });
-        mergeMI.addEventListener("onClick", new EventListener() {
+        mergeMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 mergeSelectedProcessVersions();
             }
         });
-        deployMI.addEventListener("onClick", new EventListener() {
+        deployMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 deployProcessModel();

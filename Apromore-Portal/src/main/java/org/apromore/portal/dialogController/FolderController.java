@@ -23,6 +23,7 @@ public class FolderController extends GenericForwardComposer {
     private FolderType searchedFolder = null;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
     }

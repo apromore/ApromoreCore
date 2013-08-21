@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,13 +63,14 @@ public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    private static final String HOST_NAME = "Host";
+    private static final String VERSION_NUMBER = "version.number";
+    private static final String BUILD_DATE = "build.date";
 
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
-    private String host;
-    private List<SearchHistoriesType> searchHistory;
+    private List<SearchHistoriesType> searchHistory = new ArrayList<>();
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
     private BaseFilterController baseFilterController;
@@ -76,6 +78,10 @@ public class MainController extends BaseController {
     private NavigationController navigation;
 
     public Html breadCrumbs;
+
+    private String host;
+    private String versionNumber;
+    private String buildDate;
 
     /**
      * onCreate is executed after the main window has been created it is
@@ -100,13 +106,8 @@ public class MainController extends BaseController {
             Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
 
             switchToProcessSummaryView();
+            loadProperties();
 
-            this.searchHistory = new ArrayList<>();
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
-
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            this.host = properties.getProperty("Host");
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
@@ -130,7 +131,6 @@ public class MainController extends BaseController {
                     });
             installedPluginsButton.addEventListener("onClick",
                     new EventListener<Event>() {
-                        @Override
                         public void onEvent(final Event event) throws Exception {
                             displayInstalledPlugins();
                         }
@@ -147,6 +147,7 @@ public class MainController extends BaseController {
             Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+
 
     public void loadWorkspace() {
         updateActions();
@@ -171,14 +172,6 @@ public class MainController extends BaseController {
         UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
     }
-
-//
-//    /**
-//     * register an event listener for the clientInfo event (to prevent user to close the browser window)
-//     */
-//    public void onClientInfo(final ClientInfoEvent event) {
-//        Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
-//    }
 
     /**
      * Display version processes in processSummaries: if isQueryResult, the
@@ -252,15 +245,6 @@ public class MainController extends BaseController {
         loadWorkspace();
     }
 
-//    /**
-//     * reset displayed informations: - short message - process summaries -
-//     * simple search
-//     * @throws Exception
-//     */
-//    public void resetUserInformation() throws Exception {
-//        eraseMessage();
-//        this.simplesearch.clearSearches();
-//    }
 
     /**
      * Forward to the controller ProcessListBoxController the request to add the
@@ -370,59 +354,6 @@ public class MainController extends BaseController {
         this.shortmessageC.eraseMessage();
     }
 
-    public MenuController getMenu() {
-        return menu;
-    }
-
-//    public void setMenu(final MenuController menu) {
-//        this.menu = menu;
-//    }
-
-    public BaseListboxController getBaseListboxController() {
-        return baseListboxController;
-    }
-
-    public BaseDetailController getDetailListbox() {
-        return baseDetailController;
-    }
-
-//    public SimpleSearchController getSimplesearch() {
-//        return simplesearch;
-//    }
-//
-//    public void setSimplesearch(final SimpleSearchController simplesearch) {
-//        this.simplesearch = simplesearch;
-//    }
-//
-//
-//    public ShortMessageController getShortmessageC() {
-//        return shortmessageC;
-//    }
-//
-//    public void setShortmessageC(final ShortMessageController shortmessageC) {
-//        this.shortmessageC = shortmessageC;
-//    }
-//
-//    public Window getShortmessageW() {
-//        return shortmessageW;
-//    }
-//
-//    public void setShortmessageW(final Window shortmessageW) {
-//        this.shortmessageW = shortmessageW;
-//    }
-//
-//    public Logger getLOG() {
-//        return LOGGER;
-//    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public List<SearchHistoriesType> getSearchHistory() {
-        return searchHistory;
-    }
-
     /**
      * get list of domains
      */
@@ -481,77 +412,11 @@ public class MainController extends BaseController {
         }
     }
 
-
     /**
-     * Removes the currently displayed listbox, detail and filter view
+     * Show the messages we get back from plugins.
+     * @param messages the messages to display to the user.
+     * @throws InterruptedException if the communication was interrupted for any reason.
      */
-    private void deattachDynamicUI() {
-        this.getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
-        this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
-    }
-
-
-    /**
-     * Attaches the the listbox, detail and filter view
-     */
-    private void reattachDynamicUI() {
-        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
-        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
-        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
-    }
-
-    /**
-     * Switches all dynamic UI elements to the ProcessSummaryView. Affects the
-     * listbox, detail and filter view
-     */
-    private void switchToProcessSummaryView() {
-        if (this.baseListboxController != null) {
-            if ((this.baseListboxController instanceof ProcessListboxController)) {
-                return;
-            } else {
-                deattachDynamicUI();
-            }
-        }
-
-        // Otherwise create new Listbox
-        this.baseListboxController = new ProcessListboxController(this);
-        this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
-
-        reattachDynamicUI();
-
-        ((South) this.getFellow("leftSouthPanel")).setTitle("Process Details");
-
-        reloadProcessSummaries();
-    }
-
-    /**
-     * Switches all dynamic UI elements to the SimilarityClusterView. Affects
-     * the listbox, detail and filter view
-     */
-    private void switchToSimilarityClusterView() {
-        if (this.baseListboxController != null) {
-            if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
-                return;
-            } else {
-                deattachDynamicUI();
-            }
-        }
-
-        // Otherwise create new Listbox
-        this.baseFilterController = new SimilarityClustersFilterController(this);
-        this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController,
-                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
-
-        reattachDynamicUI();
-
-        // TODO this should be done in ZUL or elsewhere
-        ((South) this.getFellow("leftSouthPanel")).setTitle("Cluster Details");
-        ((South) this.getFellow("leftInnerSouthPanel")).setOpen(true);
-    }
-
     public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
         if (messages != null) {
             StringBuilder sb = new StringBuilder();
@@ -568,7 +433,10 @@ public class MainController extends BaseController {
         }
     }
 
-    /* Update the List box from the folder view with what is selected and what isn't. */
+    /**
+     * Update the List box from the folder view with what is selected and what isn't.
+     * @param processIds update the list box of processes with these processes.
+     */
     @SuppressWarnings("unchecked")
     public void updateSelectedListBox(List<Integer> processIds) {
         BaseListboxController baseListBoxController = getBaseListboxController();
@@ -587,7 +455,11 @@ public class MainController extends BaseController {
         }
     }
 
-    public void moreInfo() {
+
+
+
+    @Command
+    protected void moreInfo() {
         String instruction;
         int offsetH = 100, offsetV = 200;
         instruction = "window.open('" + Constants.MORE_INFO + "','','top=" + offsetH + ",left=" + offsetV
@@ -596,7 +468,8 @@ public class MainController extends BaseController {
 
     }
 
-    public void displayReleaseNotes() {
+    @Command
+    protected void displayReleaseNotes() {
         String instruction;
         int offsetH = 100, offsetV = 200;
         instruction = "window.open('" + Constants.RELEASE_NOTES + "','','top=" + offsetH + ",left=" + offsetV
@@ -604,7 +477,9 @@ public class MainController extends BaseController {
         Clients.evalJavaScript(instruction);
     }
 
-    private void signout() throws Exception {
+
+    @Command
+    protected void signout() throws Exception {
         Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {
                     public void onEvent(Event evt) {
@@ -625,6 +500,7 @@ public class MainController extends BaseController {
                 }
         );
     }
+
 
     @Command
     protected void displayInstalledPlugins() throws InterruptedException {
@@ -666,5 +542,121 @@ public class MainController extends BaseController {
         }
     }
 
+
+
+
+    /* Removes the currently displayed listbox, detail and filter view */
+    private void deattachDynamicUI() {
+        this.getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
+        this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
+        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
+    }
+
+    /* Attaches the the listbox, detail and filter view */
+    private void reattachDynamicUI() {
+        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
+        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
+        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
+    }
+
+    /* Switches all dynamic UI elements to the ProcessSummaryView. Affects the listbox, detail and filter view */
+    private void switchToProcessSummaryView() {
+        if (this.baseListboxController != null) {
+            if ((this.baseListboxController instanceof ProcessListboxController)) {
+                return;
+            } else {
+                deattachDynamicUI();
+            }
+        }
+
+        // Otherwise create new Listbox
+        this.baseListboxController = new ProcessListboxController(this);
+        this.baseDetailController = new ProcessVersionDetailController(this);
+        this.baseFilterController = new BaseFilterController(this);
+
+        reattachDynamicUI();
+
+        ((South) this.getFellow("leftSouthPanel")).setTitle("Process Details");
+
+        reloadProcessSummaries();
+    }
+
+    /* Switches all dynamic UI elements to the SimilarityClusterView. Affects the listbox, detail and filter view */
+    private void switchToSimilarityClusterView() {
+        if (this.baseListboxController != null) {
+            if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
+                return;
+            } else {
+                deattachDynamicUI();
+            }
+        }
+
+        // Otherwise create new Listbox
+        this.baseFilterController = new SimilarityClustersFilterController(this);
+        this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
+        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController,
+                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+
+        reattachDynamicUI();
+
+        // TODO this should be done in ZUL or elsewhere
+        ((South) this.getFellow("leftSouthPanel")).setTitle("Cluster Details");
+        ((South) this.getFellow("leftInnerSouthPanel")).setOpen(true);
+    }
+
+    /* Load the props for this app. */
+    private void loadProperties() throws IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
+
+        Properties properties = new Properties();
+        properties.load(inputStream);
+
+        setHost(properties.getProperty(HOST_NAME));
+        setVersionNumber(properties.getProperty(VERSION_NUMBER));
+        setBuildDate(properties.getProperty(BUILD_DATE));
+    }
+
+
+
+
+    public MenuController getMenu() {
+        return menu;
+    }
+
+    public BaseListboxController getBaseListboxController() {
+        return baseListboxController;
+    }
+
+    public BaseDetailController getDetailListbox() {
+        return baseDetailController;
+    }
+
+    public List<SearchHistoriesType> getSearchHistory() {
+        return searchHistory;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(final String newHost) {
+        host = newHost;
+    }
+
+    public String getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(final String newVersionNumber) {
+        versionNumber = newVersionNumber;
+    }
+
+    public String getBuildDate() {
+        return buildDate;
+    }
+
+    public void setBuildDate(final String newBuildDate) {
+        buildDate = newBuildDate;
+    }
 }
 
