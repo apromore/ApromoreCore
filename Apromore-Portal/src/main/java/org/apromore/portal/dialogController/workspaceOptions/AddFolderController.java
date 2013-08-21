@@ -40,20 +40,19 @@ public class AddFolderController extends BaseController {
                 txtName.setValue(name);
             }
 
-            folderEditWindow.addEventListener("onLater", new EventListener() {
+            folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     save();
                     Clients.clearBusy();
                 }
             });
-
-            btnSave.addEventListener("onClick", new EventListener() {
+            btnSave.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     Clients.showBusy("Processing...");
                     Events.echoEvent("onLater", folderEditWindow, null);
                 }
             });
-            btnCancel.addEventListener("onClick", new EventListener() {
+            btnCancel.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     cancel();
                 }

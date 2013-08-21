@@ -67,9 +67,12 @@ public class ProcessListboxController extends BaseListboxController {
         getListBox().setCheckmark(true);
         getListBox().setModel(new ListModelList<>());
         getListModel().setMultiple(true);
-        getListModel().addAll(subFolders);
-        getListModel().addAll(processSummaries.getProcessSummary());
 
+        if (!isQueryResult) {
+            // Never show any folders in a query result.
+            getListModel().addAll(subFolders);
+        }
+        getListModel().addAll(processSummaries.getProcessSummary());
         if (isQueryResult) {
             // Highlight the first row as this will be the original search model.
             getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
