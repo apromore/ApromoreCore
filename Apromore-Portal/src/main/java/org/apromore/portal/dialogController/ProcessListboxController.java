@@ -1,11 +1,13 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -17,7 +19,7 @@ public class ProcessListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
 
-    private Listheader columnScore; // column to display process score for the purpose of answering query
+    private Listheader columnScore;
 
     public ProcessListboxController(MainController mainController) {
         super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
@@ -32,21 +34,32 @@ public class ProcessListboxController extends BaseListboxController {
                     Object obj = getListModel().getSelection().iterator().next();
                     if (obj instanceof ProcessSummaryType) {
                         getMainController().displayProcessVersions((ProcessSummaryType) obj);
+                    } else if (obj instanceof FolderType) {
+                        List<Integer> folders = UserSessionManager.getSelectedFolderIds();
+                        folders.add(((FolderType) obj).getId());
+                        UserSessionManager.setSelectedFolderIds(folders);
                     }
+                } else if (getListBox().getSelectedItems().size() == 0) {
+                    getMainController().clearProcessVersions();
+                    UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                 } else {
                     getMainController().clearProcessVersions();
+                    List<Integer> folders = new ArrayList<>();
+                    for (Object obj : getListModel().getSelection()) {
+                       if (obj instanceof FolderType) {
+                           folders.add(((FolderType) obj).getId());
+                       }
+                    }
+                    UserSessionManager.setSelectedFolderIds(folders);
                 }
             }
         });
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see
-      * org.apromore.portal.dialogController.BaseListboxController#refreshContent
-      * ()
-      */
+     * (non-Javadoc)
+     * @see org.apromore.portal.dialogController.BaseListboxController#refreshContent ()
+     */
     @Override
     protected void refreshContent() {
         getMainController().reloadProcessSummaries();
