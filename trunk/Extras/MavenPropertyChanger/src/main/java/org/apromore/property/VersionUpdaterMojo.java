@@ -17,10 +17,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Very specific maven plugin to update the values in a property file
@@ -29,8 +29,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  * @author Cameron James
  */
-@Mojo(name = "VersionUpdater", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, threadSafe = true,
-        requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Mojo(name = "update", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true)
+@Execute(phase = LifecyclePhase.PREPARE_PACKAGE, goal = "update")
 public class VersionUpdaterMojo extends AbstractMojo {
 
     private static final String INVALID_MISSING_FILE_MESSAGE = "<propertyFile> can not be empty!";
@@ -43,72 +43,82 @@ public class VersionUpdaterMojo extends AbstractMojo {
 
     /**
      * This base directory we are looking for the property file in.
+     *
      * @since 1.0
      */
-    @Parameter(property = "basedir", defaultValue = "." )
+    @Parameter(property = "basedir", defaultValue = ".")
     protected String basedir = ".";
 
     /**
      * This versions build date property name.
+     *
      * @since 1.0
      */
-    @Parameter(property = "propertyfile", required = true )
+    @Parameter(property = "propertyFile", required = true)
     protected String propertyFile;
 
     /**
      * This versions version number property name.
+     *
      * @since 1.0
      */
-    @Parameter(property = "versionname", required = true, defaultValue = "version.number" )
+    @Parameter(property = "versionName", required = true, defaultValue = "version.number")
     protected String versionName;
 
     /**
      * This versions build date property name.
+     *
      * @since 1.0
      */
-    @Parameter(property = "builddatename", required = true, defaultValue = "version.builddate" )
+    @Parameter(property = "buildDateName", required = true, defaultValue = "version.builddate")
     protected String buildDateName;
 
     /**
      * The Date format we are using for the build date property.
+     *
      * @since 1.0
      */
-    @Parameter(property = "dateformat", required = true, defaultValue = "dd-MM-yyyy" )
+    @Parameter(property = "dateFormat", required = true, defaultValue = "dd-MM-yyyy")
     protected String dateFormat;
 
     /**
      * the Time format we are using for the build date property.
+     *
      * @since 1.0
      */
-    @Parameter(property = "timeformat", defaultValue = "HH:mm:ss" )
+    @Parameter(property = "timeFormat", defaultValue = "HH:mm:ss")
     protected String timeFormat;
 
     /**
      * Are we going to add the time to date format.
+     *
      * @since 1.0
      */
-    @Parameter(property = "addTime", defaultValue = "false" )
+    @Parameter(property = "addTime", defaultValue = "false")
     protected boolean addTime;
 
     /**
      * Are we going to add the time to date format.
+     *
      * @since 1.0
      */
-    @Parameter(property = "increment", defaultValue = "1" )
+    @Parameter(property = "increment", defaultValue = "1")
     protected int increment;
 
     /**
      * This versions build date property name.
+     *
      * @since 1.0
      */
-    @Parameter(property = "skip", defaultValue = "false" )
+    @Parameter(property = "skip", defaultValue = "false")
     protected boolean skip;
 
     /**
      * This versions build date property name.
+     *
      * @since 1.0
      */
-    @Parameter(property = "quiet", defaultValue = "false" )
+    @Parameter(property = "quiet", defaultValue = "false")
     protected boolean quiet;
 
 
@@ -131,6 +141,7 @@ public class VersionUpdaterMojo extends AbstractMojo {
 
     /**
      * The entry point for the maven plugin.
+     *
      * @throws MojoExecutionException
      * @throws MojoFailureException
      */
@@ -140,7 +151,7 @@ public class VersionUpdaterMojo extends AbstractMojo {
             getLog().info("Skipping");
             return;
         }
-        if (!checkFileExists()) {
+        if (checkFileExists()) {
             getLog().info("Ignoring missing file");
             return;
         }
@@ -161,7 +172,6 @@ public class VersionUpdaterMojo extends AbstractMojo {
             getLog();
         }
     }
-
 
 
     /* With the data given build the new version number and return the result. */
@@ -203,10 +213,10 @@ public class VersionUpdaterMojo extends AbstractMojo {
     /* Build new version number. */
     private String buildVersionNumber(DefaultArtifactVersion version, int changed) {
         StringBuilder buf = new StringBuilder();
-        buf.append( version.getMajorVersion() ).append( "." );
-        buf.append( version.getMinorVersion() ).append( "." );
-        buf.append( version.getIncrementalVersion() ).append( "-" );
-        buf.append( changed );
+        buf.append(version.getMajorVersion()).append(".");
+        buf.append(version.getMinorVersion()).append(".");
+        buf.append(version.getIncrementalVersion()).append("-");
+        buf.append(changed);
         return buf.toString();
     }
 
@@ -233,9 +243,6 @@ public class VersionUpdaterMojo extends AbstractMojo {
         }
         return getBasedir() + File.separator + file;
     }
-
-
-
 
 
     public String getBasedir() {

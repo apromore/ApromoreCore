@@ -1,6 +1,5 @@
 package org.apromore.property;
 
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
@@ -11,7 +10,6 @@ import static org.powermock.api.easymock.PowerMock.replay;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -35,15 +33,13 @@ public class VersionUpdaterMojoTest {
     public ExpectedException exception = ExpectedException.none();
 
     private FileUtil fileUtils;
-    private Properties props;
     private Log log;
 
     private VersionUpdaterMojo mojo;
 
     @Before
     public void setUp() throws Exception {
-        fileUtils = createMock(FileUtil.class);
-        props = createMock(Properties.class);
+        fileUtils = new FileUtil();
         log = createMock(Log.class);
         mojo = new VersionUpdaterMojo(fileUtils) {
             @Override
@@ -100,15 +96,13 @@ public class VersionUpdaterMojoTest {
         mojo.setSkip(false);
         mojo.setPropertyFile("someFileThatDoesntExist.properties");
 
-        expect(fileUtils.isAbsolutePath("someFileThatDoesntExist.properties")).andReturn(false);
-        expect(fileUtils.fileNotExists("./someFileThatDoesntExist.properties")).andReturn(false);
         log.info("Ignoring missing file");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
     }
 
     @Test
@@ -117,15 +111,13 @@ public class VersionUpdaterMojoTest {
         mojo.setSkip(false);
         mojo.setPropertyFile("someFileThatDoesntExist.properties");
 
-        expect(fileUtils.isAbsolutePath("someFileThatDoesntExist.properties")).andReturn(false);
-        expect(fileUtils.fileNotExists("./somePlace/someFileThatDoesntExist.properties")).andReturn(false);
         log.info("Ignoring missing file");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
     }
 
     @Test
@@ -134,14 +126,13 @@ public class VersionUpdaterMojoTest {
         mojo.setSkip(false);
         mojo.setPropertyFile("someFileThatDoesntExist.properties");
 
-        expect(fileUtils.fileNotExists("someFileThatDoesntExist.properties")).andReturn(false);
         log.info("Ignoring missing file");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
     }
 
     @Test
@@ -153,15 +144,13 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat("dd-MM-yyyy");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/empty.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/empty.properties")).andReturn(true);
         log.info("Properties updates successfully");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyFilePopulated("src/test/resources/empty.properties");
     }
 
@@ -175,13 +164,11 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat("dd-MM-yyyy");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/empty.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/empty.properties")).andReturn(true);
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyFilePopulated("src/test/resources/empty.properties");
     }
 
@@ -195,15 +182,13 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat("dd-MM-yyyy");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.info("Properties updates successfully");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyUpdatedFieldValue("src/test/resources/populated.properties", "version.number", "1.0.0-5");
     }
 
@@ -216,16 +201,14 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat("dd-MM-yyyy");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.error("<increment> must be a positive integer value!");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         exception.expect(MojoExecutionException.class);
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyUpdatedFieldValue("src/test/resources/populated.properties", "version.number", "1.1");
     }
 
@@ -240,15 +223,13 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat("dd-MM-yyyy");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.info("Properties updates successfully");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyUpdatedFieldValue("src/test/resources/populated.properties", "version.builddate", dateFormat);
     }
 
@@ -265,15 +246,13 @@ public class VersionUpdaterMojoTest {
         mojo.setAddTime(true);
         mojo.setTimeFormat("HH:mm a");
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.info("Properties updates successfully");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
         verifyUpdatedFieldValue("src/test/resources/populated.properties", "version.builddate", dateFormat);
     }
 
@@ -286,16 +265,14 @@ public class VersionUpdaterMojoTest {
         mojo.setBuildDateName("version.builddate");
         mojo.setDateFormat(null);
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.error("<dateFormat> must be populated with a correct date format!");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         exception.expect(MojoExecutionException.class);
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
     }
 
     @Test
@@ -309,16 +286,14 @@ public class VersionUpdaterMojoTest {
         mojo.setAddTime(true);
         mojo.setTimeFormat(null);
 
-        expect(fileUtils.isAbsolutePath("src/test/resources/populated.properties")).andReturn(false).times(2);
-        expect(fileUtils.fileNotExists("./src/test/resources/populated.properties")).andReturn(true);
         log.error("<timeFormat> must be populated with a correct time format!");
         expectLastCall().anyTimes();
-        replay(log, fileUtils);
+        replay(log);
 
         exception.expect(MojoExecutionException.class);
         mojo.execute();
 
-        verify(log, fileUtils);
+        verify(log);
     }
 
 
