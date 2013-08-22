@@ -99,6 +99,27 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apromore</groupId>
+                <artifactId>version-updater-maven-plugin</artifactId>
+                <configuration>
+                    <propertyFile>src/main/resources/apromore.properties</propertyFile>
+                    <versionName>version.number</versionName>
+                    <buildDateName>version.builddate</buildDateName>
+                    <increment>1</increment>
+                    <dateFormat>dd-MM-yyyy</dateFormat>
+                    <addTime>false</addTime>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>update-build-info</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
