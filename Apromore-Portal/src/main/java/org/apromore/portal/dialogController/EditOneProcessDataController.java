@@ -25,12 +25,8 @@ public class EditOneProcessDataController extends BaseController {
 
     private Window editDataWindow;
 
-    private MainController mainC;
+    private MainController mainController;
     private EditListProcessDataController editDataListProcessesC;
-    private Button okB;
-    private Button cancelB;
-    private Button cancelAllB;
-    private Button resetB;
     private Radio r0;
     private Radio r1;
     private Radio r2;
@@ -41,34 +37,32 @@ public class EditOneProcessDataController extends BaseController {
     private ProcessSummaryType process;
     private VersionSummaryType preVersion;
     private Textbox processNameT;
-    private Textbox versionNameT;
+    private Textbox versionNumberT;
     private Radiogroup rankingRG;
-    private Row domainR;
-    private Row ownerR;
-    private Row nativeTypesR;
     private SelectDynamicListController ownerCB;
     private SelectDynamicListController domainCB;
 
-    public EditOneProcessDataController(MainController mainC,
-                                        EditListProcessDataController editListProcessDataController,
-                                        ProcessSummaryType process, VersionSummaryType version)
+    public EditOneProcessDataController(MainController mainC, EditListProcessDataController editListProcessDataController,
+            ProcessSummaryType process, VersionSummaryType version)
             throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
-        this.mainC = mainC;
+        this.mainController = mainC;
         this.editDataListProcessesC = editListProcessDataController;
         this.process = process;
         this.preVersion = version;
 
         this.editDataWindow = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
         this.editDataWindow.setTitle("Edit process model meta-data");
+
         Rows rows = (Rows) this.editDataWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
         Row processNameR = (Row) rows.getFirstChild();
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
-        Row versionNameR = (Row) processNameR.getNextSibling();
-        this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
-        this.domainR = (Row) versionNameR.getNextSibling();
-        this.ownerR = (Row) this.domainR.getNextSibling();
-        this.nativeTypesR = (Row) this.ownerR.getNextSibling();
-        Row rankingR = (Row) this.nativeTypesR.getNextSibling();
+        Row versionNumberR = (Row) processNameR.getNextSibling();
+        this.versionNumberT = (Textbox) versionNumberR.getFirstChild().getNextSibling();
+
+        Row domainR = (Row) versionNumberR.getNextSibling();
+        Row ownerR = (Row) domainR.getNextSibling();
+        Row nativeTypesR = (Row) ownerR.getNextSibling();
+        Row rankingR = (Row) nativeTypesR.getNextSibling();
         this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
         this.r0 = (Radio) this.rankingRG.getFirstChild();
         this.r1 = (Radio) this.r0.getNextSibling();
@@ -77,21 +71,23 @@ public class EditOneProcessDataController extends BaseController {
         this.r4 = (Radio) this.r3.getNextSibling();
         this.r5 = (Radio) this.r4.getNextSibling();
         this.r6 = (Radio) this.r5.getNextSibling();
+
         Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
         Div buttonsD = (Div) buttonsR.getFirstChild();
-        this.okB = (Button) buttonsD.getFirstChild();
-        this.cancelB = (Button) this.okB.getNextSibling();
-        this.cancelAllB = (Button) this.cancelB.getNextSibling();
-        this.resetB = (Button) this.cancelAllB.getNextSibling();
-        List<String> domains = this.mainC.getDomains();
+        Button okB = (Button) buttonsD.getFirstChild();
+        Button cancelB = (Button) okB.getNextSibling();
+        Button cancelAllB = (Button) cancelB.getNextSibling();
+        Button resetB = (Button) cancelAllB.getNextSibling();
+
+        List<String> domains = mainC.getDomains();
         this.domainCB = new SelectDynamicListController(domains);
         this.domainCB.setReference(domains);
         this.domainCB.setAutodrop(true);
         this.domainCB.setWidth("85%");
         this.domainCB.setHeight("100%");
         this.domainCB.setAttribute("hflex", "1");
-        this.domainR.appendChild(domainCB);
-        List<String> usernames = this.mainC.getUsers();
+        domainR.appendChild(domainCB);
+        List<String> usernames = mainC.getUsers();
         this.ownerCB = new SelectDynamicListController(usernames);
         this.ownerCB.setReference(usernames);
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
@@ -99,43 +95,38 @@ public class EditOneProcessDataController extends BaseController {
         this.ownerCB.setWidth("85%");
         this.ownerCB.setHeight("100%");
         this.ownerCB.setAttribute("hflex", "1");
-        this.ownerR.appendChild(ownerCB);
+        ownerR.appendChild(ownerCB);
 
-        // enable cancelAll button if at least 1 process versions left.
-        this.cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size() > 0);
-        //set default values
+        cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size() > 0);
         this.r6.setChecked(true);
-        // set values to those of the process version
         reset();
 
-        this.okB.addEventListener("onClick",
-                new EventListener() {
+        okB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         editDataProcess();
                     }
                 });
-
         this.editDataWindow.addEventListener("onOK",
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         editDataProcess();
                     }
                 });
-
-        this.cancelB.addEventListener("onClick",
-                new EventListener() {
+        cancelB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancel();
                     }
                 });
-        this.cancelAllB.addEventListener("onClick",
-                new EventListener() {
+        cancelAllB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancelAll();
                     }
                 });
-        this.resetB.addEventListener("onClick",
-                new EventListener() {
+        resetB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         reset();
                     }
@@ -148,13 +139,13 @@ public class EditOneProcessDataController extends BaseController {
         String processName = this.processNameT.getValue();
         String domain = this.domainCB.getValue();
         String username = this.ownerCB.getValue();
-        Double preVersion = Double.valueOf(this.preVersion.getName());
-        Double newVersion = Double.valueOf(this.versionNameT.getValue());
+        Double preVersion = this.preVersion.getVersionNumber();
+        Double newVersion = Double.valueOf(this.versionNumberT.getValue());
         String ranking = null;
         if (this.rankingRG.getSelectedItem() != null && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
             ranking = this.rankingRG.getSelectedItem().getLabel();
         }
-        if (this.processNameT.getValue().compareTo("") == 0 || this.versionNameT.getValue().compareTo("") == 0) {
+        if (this.processNameT.getValue().compareTo("") == 0 || this.versionNumberT.getValue().compareTo("") == 0) {
             Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
         } else {
             getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking);
@@ -165,12 +156,12 @@ public class EditOneProcessDataController extends BaseController {
     }
 
     protected void cancel() throws Exception {
-        // delete process from the list of processes still to be edited
         this.editDataListProcessesC.deleteFromToBeEdited(this);
         closePopup();
     }
 
     private void closePopup() {
+        mainController.clearProcessVersions();
         this.editDataWindow.detach();
     }
 
@@ -180,7 +171,7 @@ public class EditOneProcessDataController extends BaseController {
 
     protected void reset() {
         this.processNameT.setValue(this.process.getName());
-        this.versionNameT.setValue(this.preVersion.getName());
+        this.versionNumberT.setValue(this.preVersion.getVersionNumber().toString());
         this.domainCB.setValue(this.process.getDomain());
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
         if (this.preVersion.getRanking() != null) {
@@ -202,14 +193,6 @@ public class EditOneProcessDataController extends BaseController {
 
     public Window getEditDataOneProcessWindow() {
         return editDataWindow;
-    }
-
-    public ProcessSummaryType getProcess() {
-        return process;
-    }
-
-    public VersionSummaryType getPreVersion() {
-        return preVersion;
     }
 
 }
