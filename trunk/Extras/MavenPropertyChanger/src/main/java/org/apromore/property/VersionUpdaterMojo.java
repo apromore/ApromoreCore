@@ -17,10 +17,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Very specific maven plugin to update the values in a property file
@@ -29,8 +29,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @author Cameron James
  */
-@Mojo(name = "VersionUpdater", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
-@Execute(goal = "packager", phase = LifecyclePhase.PACKAGE)
+@Mojo(name = "VersionUpdater", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, threadSafe = true,
+        requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class VersionUpdaterMojo extends AbstractMojo {
 
     private static final String INVALID_MISSING_FILE_MESSAGE = "<propertyFile> can not be empty!";
