@@ -65,7 +65,8 @@ public class MainController extends BaseController {
 
     private static final String HOST_NAME = "Host";
     private static final String VERSION_NUMBER = "version.number";
-    private static final String BUILD_DATE = "build.date";
+    private static final String BUILD_DATE = "version.builddate";
+    private static final String WELCOME_TEXT = "Welcome to AProMoRe (%s %s)";
 
     private MenuController menu;
     private SimpleSearchController simplesearch;
@@ -91,6 +92,8 @@ public class MainController extends BaseController {
      */
     public void onCreate() throws InterruptedException {
         try {
+            loadProperties();
+
             Window mainW = (Window) this.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
@@ -105,9 +108,8 @@ public class MainController extends BaseController {
             Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
             Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
 
+            setHeaderText(releaseNotes);
             switchToProcessSummaryView();
-            loadProperties();
-
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
@@ -615,6 +617,12 @@ public class MainController extends BaseController {
         setVersionNumber(properties.getProperty(VERSION_NUMBER));
         setBuildDate(properties.getProperty(BUILD_DATE));
     }
+
+    /* From the data in the properties automagically update the label in the header. */
+    private void setHeaderText(Toolbarbutton releaseNotes) {
+        releaseNotes.setLabel(String.format(WELCOME_TEXT, versionNumber, buildDate));
+    }
+
 
 
 

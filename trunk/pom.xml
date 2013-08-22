@@ -203,6 +203,7 @@
         <maven.tomcat.plugin>2.0-beta-1</maven.tomcat.plugin>
         <maven.versions.plugin>2.0</maven.versions.plugin>
         <maven.war.plugin>2.1.1</maven.war.plugin>
+        <maven.version.updater.plugin>1.0</maven.version.updater.plugin>
         <maven.version.range>[3.0.3,3.1.0)</maven.version.range>
 
         <maven.wagon.svn.plugin>1.4</maven.wagon.svn.plugin>
@@ -1242,15 +1243,15 @@
                     <version>${maven.war.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-par-plugin</artifactId>
-                    <version>${maven.par.plugin}</version>
+                    <groupId>org.apromore</groupId>
+                    <artifactId>version-updater-maven-plugin</artifactId>
+                    <version>${maven.version.updater.plugin}</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>sonar-maven3-plugin</artifactId>
-                    <version>${maven.sonar.plugin}</version>
-                </plugin>
+                <!--<plugin>-->
+                    <!--<groupId>org.codehaus.mojo</groupId>-->
+                    <!--<artifactId>sonar-maven3-plugin</artifactId>-->
+                    <!--<version>${maven.sonar.plugin}</version>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
 
@@ -1583,11 +1584,11 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sonar-maven3-plugin</artifactId>
-                <version>${maven.sonar.plugin}</version>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>sonar-maven3-plugin</artifactId>-->
+                <!--<version>${maven.sonar.plugin}</version>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
