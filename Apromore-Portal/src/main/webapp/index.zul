@@ -1,6 +1,5 @@
 <?page title="AProMoRe" contentType="text/html;charset=UTF-8" ?>
 
-<?component name="Header" macroURI="macros/header.zul" ?>
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
@@ -26,7 +25,7 @@
 
         <div height="40px">
             <div style="float:left; margin-top: 5px;" >
-                <toolbarbutton id="releaseNotes" label="Welcome to AProMoRe (v2.1.150 25/07/2013)"/>
+                <toolbarbutton id="releaseNotes"/>
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="moreButton" label="More info.."/>
                 <separator orient="vertical" bar="true"/>

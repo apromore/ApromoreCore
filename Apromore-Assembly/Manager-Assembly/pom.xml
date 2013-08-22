@@ -313,14 +313,14 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-par-plugin</artifactId>
-                <configuration>
-                    <applicationSymbolicName>apromore-manager</applicationSymbolicName>
-                    <applicationDescription>Advance Process Modelling Repository</applicationDescription>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-par-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<applicationSymbolicName>apromore-manager</applicationSymbolicName>-->
+                    <!--<applicationDescription>Advance Process Modelling Repository</applicationDescription>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
