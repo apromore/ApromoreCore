@@ -55,8 +55,12 @@ $ mysql --user=root --password=MAcri < Extras/database/db-mysql.sql
 BUILD IT
 ========
 
+Firstly you need to contact Marcello La Rosa and get approved to use the apromore licence for ZK. Without the license you will
+not be able to build the Portal. If approved you will be supplied with additional instructions to get the portal working.
+
 Navigate to the Extras/Test-Tools folder and run 'mvn clean install'
 Navigate to the Extras/Build-Tools folder and run 'mvn clean install'
+Navigate to the Extras/MavenPropertyChanger folder and run 'mvn clean install'
 
 Change the the Extras/libraries folder and run 'upload.bat' (Windows) or 'upload.sh' (Unix/Linux/Mac)
 This will place jars in the build that are needed for the next set.
@@ -69,4 +73,4 @@ while still in the root after a successful build 'ant start-virgo'. This will in
 TRY IT OUT
 ==========
 
-Currently Apromore only runs in Mozilla Firefox, browse http://localhost:9000/portal
+Apromore runs on all modern browsers, browse http://localhost:9000/portal
