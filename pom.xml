@@ -1242,11 +1242,11 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apromore</groupId>
-                    <artifactId>version-updater-maven-plugin</artifactId>
-                    <version>${maven.version.updater.plugin}</version>
-                </plugin>
+                <!--<plugin>-->
+                    <!--<groupId>org.apromore</groupId>-->
+                    <!--<artifactId>version-updater-maven-plugin</artifactId>-->
+                    <!--<version>${maven.version.updater.plugin}</version>-->
+                <!--</plugin>-->
                 <!--<plugin>-->
                     <!--<groupId>org.codehaus.mojo</groupId>-->
                     <!--<artifactId>sonar-maven3-plugin</artifactId>-->

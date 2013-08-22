@@ -310,7 +310,7 @@ public class MenuController extends Menubar {
                         versionList.add(selectedVersion);
                     } else {
                         for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
-                            versionNumber = Double.valueOf(((ProcessSummaryType) obj).getLastVersion());
+                            versionNumber = ((ProcessSummaryType) obj).getLastVersion();
                             if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
                                 versionList.add(summaryType);
                             }
@@ -357,26 +357,18 @@ public class MenuController extends Menubar {
      * @throws org.apromore.portal.exception.ExceptionDomains
      */
     private void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers, ParseException {
-        this.mainC.eraseMessage();
+        mainC.eraseMessage();
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
 
         if (selectedProcessVersions.size() != 0) {
-            new EditListProcessDataController(this.mainC, this, selectedProcessVersions);
+            new EditListProcessDataController(mainC, selectedProcessVersions);
         } else {
-            this.mainC.displayMessage("No process version selected.");
+            mainC.displayMessage("No process version selected.");
         }
     }
 
     public Menubar getMenuB() {
         return menuB;
-    }
-
-    public void setMenuB(final Menubar menuB) {
-        this.menuB = menuB;
-    }
-
-    public Menuitem getMergeMI() {
-        return mergeMI;
     }
 
 }

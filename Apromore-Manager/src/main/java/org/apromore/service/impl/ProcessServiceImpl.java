@@ -327,14 +327,14 @@ public class ProcessServiceImpl implements ProcessService {
             final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
         try {
+            ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
+            ProcessBranch branch = processModelVersion.getProcessBranch();
             Process process = processRepo.findOne(processId);
             process.setDomain(domain);
             process.setName(processName);
             process.setRanking(ranking);
             process.setUser(userSrv.findUserByLogin(username));
-
-            ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
-            ProcessBranch branch = processModelVersion.getProcessBranch();
+            processModelVersion.setVersionNumber(newVersion);
 
             updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
 
