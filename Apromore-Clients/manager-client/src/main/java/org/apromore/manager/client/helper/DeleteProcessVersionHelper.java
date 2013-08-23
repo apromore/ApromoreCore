@@ -34,6 +34,7 @@ public class DeleteProcessVersionHelper {
             versionSummaries = selectedProcessVersions.get(processSummary);
 
             processVersionId = new ProcessVersionIdentifierType();
+            processVersionId.setProcessId(processSummary.getId());
             processVersionId.setProcessName(processSummary.getName());
             for (VersionSummaryType versionSummary : versionSummaries) {
                 processVersionId.setBranchName(versionSummary.getName());

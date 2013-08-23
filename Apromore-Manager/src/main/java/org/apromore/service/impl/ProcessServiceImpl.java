@@ -90,7 +90,7 @@ import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
-import org.apromore.service.model.NameValuePair;
+import org.apromore.service.model.ProcessData;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
 import org.apromore.util.XMLUtils;
@@ -216,8 +216,17 @@ public class ProcessServiceImpl implements ProcessService {
             final String natType, final CanonisedProcess cpf, final String domain, final String documentation,
             final String created, final String lastUpdate) throws ImportException {
         LOGGER.debug("Executing operation canoniseProcess");
-        ProcessModelVersion pmv;
 
+        if (cpf == null) {
+            LOGGER.error("Process " + processName + " Failed to import correctly.");
+            throw new ImportException("Process " + processName + " Failed to import correctly.");
+        } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
+                (processRepo.findByNameAndFolderId(processName, folderId) != null)) {
+            LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
+            throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
+        }
+
+        ProcessModelVersion pmv;
         try {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
@@ -521,16 +530,17 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
-    public void deleteProcessModel(final List<NameValuePair> models) {
+    public void deleteProcessModel(final List<ProcessData> models) {
         ProcessModelVersion pvid;
-        for (NameValuePair entry : models) {
+        for (ProcessData entry : models) {
             try {
-                LOGGER.debug("Retrieving the Process Model of the current version of " + entry.getName() + " - " + entry.getValue() + " to be deleted.");
-                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getName(), entry.getValue());
+                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getProcessId(), entry.getVersionNumber());
 
                 if (pvid != null) {
                     Process process = pvid.getProcessBranch().getProcess();
                     Set<ProcessBranch> branches = process.getProcessBranches();
+
+                    LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName() + " to be deleted.");
 
                     // Only delete the version selected, but if there is only a single version then remove all of the process
                     if (branches.size() > 1 || (branches.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
@@ -546,7 +556,7 @@ public class ProcessServiceImpl implements ProcessService {
                     }
                 }
             } catch (Exception e) {
-                String msg = "Failed to delete the current version of the branch " + entry.getValue() + " of the process model " + entry.getValue();
+                String msg = "Failed to delete the current version of the Process with id: " + entry.getProcessId();
                 LOGGER.error(msg, e);
             }
         }
@@ -570,14 +580,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     private ProcessModelVersion addProcess(final Process process, final String processName, final Double versionNumber, final String branchName,
             final String created, final String lastUpdated, final CanonisedProcess cpf, NativeType nativeType) throws ImportException {
-        if (cpf == null) {
-            LOGGER.error("Process " + processName + " Failed to import correctly.");
-            throw new ImportException("Process " + processName + " Failed to import correctly.");
-        } else if (processRepo.getProcessByNameAndBranchName(processName, branchName) != null) {
-            LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
-            throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
-        }
-
         Canonical can;
         OperationContext rootFragment;
         ProcessModelVersion pmv;

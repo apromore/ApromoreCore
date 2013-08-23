@@ -19,7 +19,7 @@ import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.NameValuePair;
+import org.apromore.service.model.ProcessData;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -188,6 +188,6 @@ public interface ProcessService {
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.
      */
-    void deleteProcessModel(List<NameValuePair> models);
+    void deleteProcessModel(List<ProcessData> models);
 
 }
