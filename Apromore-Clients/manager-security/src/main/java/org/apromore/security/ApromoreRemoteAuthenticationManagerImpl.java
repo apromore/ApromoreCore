@@ -4,7 +4,6 @@ import org.apromore.security.exception.ApromoreRemoteAuthenticationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.rcp.RemoteAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.Assert;
@@ -31,7 +30,7 @@ public class ApromoreRemoteAuthenticationManagerImpl implements ApromoreRemoteAu
         try {
             return authenticationManager.authenticate(request);
         } catch (AuthenticationException authEx) {
-            throw new RemoteAuthenticationException(authEx.getMessage());
+            throw new ApromoreRemoteAuthenticationException(authEx.getMessage());
         }
     }
 
