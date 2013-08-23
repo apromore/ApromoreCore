@@ -876,7 +876,7 @@ CREATE TABLE `batch_step_execution_context`  (
 
 CREATE INDEX `idx_native_type` ON `native_type` (`nat_type`, `extension`) USING BTREE;
 CREATE INDEX `idx_user_username` ON `user` (`username`) USING BTREE;
-CREATE INDEX `idx_process_name` ON `process` (`name`) USING BTREE;
+CREATE INDEX `idx_process_name` ON `process` (`name`, `folderId`) USING BTREE;
 CREATE INDEX `idx_branch_name` ON `process_branch` (`branch_name`) USING BTREE;
 CREATE INDEX `idx_pmv_version` ON `process_model_version` (`version_number`) USING BTREE;
 CREATE INDEX `idx_pmv_lock` ON `process_model_version` (`lock_status`) USING BTREE;

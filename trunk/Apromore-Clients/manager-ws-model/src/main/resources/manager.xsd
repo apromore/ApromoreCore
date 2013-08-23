@@ -871,6 +871,7 @@
     </xs:complexType>
 
     <xs:complexType name="ProcessVersionIdentifierType">
+        <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="ProcessName" type="xs:string"/>
         <xs:attribute name="BranchName" type="xs:string"/>
         <xs:attribute name="VersionNumber" type="xs:double"/>

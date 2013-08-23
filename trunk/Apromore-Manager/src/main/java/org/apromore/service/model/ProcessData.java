@@ -5,22 +5,28 @@ package org.apromore.service.model;
  */
 public class ProcessData {
 
-    private String processId;
-    private String processName;
+    private Integer id;
+    private Double versionNumber;
 
-    public String getProcessId() {
-        return processId;
+
+    public ProcessData(Integer id, Double versionNumber) {
+        this.id = id;
+        this.versionNumber = versionNumber;
     }
 
-    public void setProcessId(String processId) {
-        this.processId = processId;
+    public Integer getProcessId() {
+        return id;
     }
 
-    public String getProcessName() {
-        return processName;
+    public void setProcessId(Integer id) {
+        this.id = id;
     }
 
-    public void setProcessName(String processName) {
-        this.processName = processName;
+    public Double getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(Double versionNumber) {
+        this.versionNumber = versionNumber;
     }
 }

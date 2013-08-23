@@ -32,4 +32,19 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
     @Query("SELECT p FROM ProcessBranch pb JOIN pb.process p WHERE p.name = ?1 AND pb.branchName = ?2")
     Process getProcessByNameAndBranchName(String processName, String branchName);
 
+    /**
+     * Finds if a process with a particular name exists.
+     * @param processName the process name
+     * @return the process if one exists, null otherwise.
+     */
+    @Query("SELECT p FROM Process p WHERE p.name = ?1 AND p.folder is null")
+    Process findUniqueByName(String processName);
+
+    /**
+     * Finds if a process with a particular name in a particular folder exists.
+     * @param processName the process name
+     * @param folderId the folder id
+     * @return the process if one exists, null otherwise.
+     */
+    Process findByNameAndFolderId(String processName, Integer folderId);
 }

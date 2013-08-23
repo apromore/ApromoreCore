@@ -26,7 +26,11 @@ import org.springframework.beans.factory.annotation.Configurable;
  */
 @Entity
 @Table(name = "process",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id"}),
+                @UniqueConstraint(columnNames = {"name", "folderId"})
+        }
+)
 @Configurable("process")
 @Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Process implements Serializable {
