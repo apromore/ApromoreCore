@@ -1,12 +1,12 @@
 package org.apromore.manager.client;
 
+import javax.activation.DataHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.activation.DataHandler;
 
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSettingsType;
@@ -17,7 +17,6 @@ import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
-import org.apromore.model.FragmentType;
 import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;

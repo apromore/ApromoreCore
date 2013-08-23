@@ -184,7 +184,7 @@ import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.DecanonisedProcess;
-import org.apromore.service.model.NameValuePair;
+import org.apromore.service.model.ProcessData;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -464,9 +464,9 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            List<NameValuePair> processVersions = new ArrayList<>();
+            List<ProcessData> processVersions = new ArrayList<>();
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
-                processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName(), p.getVersionNumber()));
+                processVersions.add(new ProcessData(p.getProcessId(), p.getVersionNumber()));   //new NameValuePair(p.getProcessName(), p.getBranchName(), p.getVersionNumber())
             }
             procSrv.deleteProcessModel(processVersions);
 
