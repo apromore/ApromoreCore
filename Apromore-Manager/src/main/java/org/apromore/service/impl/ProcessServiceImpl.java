@@ -534,7 +534,7 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pvid;
         for (ProcessData entry : models) {
             try {
-                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getProcessId(), entry.getVersionNumber());
+                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber());
 
                 if (pvid != null) {
                     Process process = pvid.getProcessBranch().getProcess();
@@ -556,7 +556,7 @@ public class ProcessServiceImpl implements ProcessService {
                     }
                 }
             } catch (Exception e) {
-                String msg = "Failed to delete the current version of the Process with id: " + entry.getProcessId();
+                String msg = "Failed to delete the current version of the Process with id: " + entry.getId();
                 LOGGER.error(msg, e);
             }
         }
