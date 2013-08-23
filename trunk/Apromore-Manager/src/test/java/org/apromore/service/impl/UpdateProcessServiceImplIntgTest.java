@@ -23,6 +23,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
+import org.apromore.service.model.ProcessData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -83,8 +84,8 @@ public class UpdateProcessServiceImplIntgTest {
         pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp);
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>();
-        deleteList.add(new NameValuePair(name, branch));
+        List<ProcessData> deleteList = new ArrayList<>();
+        deleteList.add(new ProcessData(pst.getId(), 1.1d));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again
