@@ -9,16 +9,19 @@ public class ProcessData {
     private Double versionNumber;
 
 
+    public ProcessData() {
+    }
+
     public ProcessData(Integer id, Double versionNumber) {
         this.id = id;
         this.versionNumber = versionNumber;
     }
 
-    public Integer getProcessId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setProcessId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

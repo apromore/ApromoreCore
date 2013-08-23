@@ -21,6 +21,7 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
+import org.apromore.security.exception.ApromoreRemoteAuthenticationException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,9 +66,13 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
             throw new UsernameNotFoundException("Username and/or password sent were empty! Not authenticating.");
         }
 
-        User account = userRepository.login(token.getName(), hashPassword((String) token.getCredentials()));
+        try {
+            User account = userRepository.login(token.getName(), hashPassword((String) token.getCredentials()));
 
-        return authenticatedToken(account, authentication);
+            return authenticatedToken(account, authentication);
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Failed to find the user or the password was incorrect!");
+        }
     }
 
     public boolean supports(Class<? extends Object> authentication) {

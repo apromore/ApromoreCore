@@ -18,6 +18,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.NameValuePair;
+import org.apromore.service.model.ProcessData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -68,8 +69,8 @@ public class DeleteProcessServiceImplIntgTest {
         assertThat(pst, notNullValue());
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>();
-        deleteList.add(new NameValuePair(name, branch));
+        List<ProcessData> deleteList = new ArrayList<>();
+        deleteList.add(new ProcessData(pst.getId(), 1.0d));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again
@@ -96,8 +97,8 @@ public class DeleteProcessServiceImplIntgTest {
         cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
 
         // Delete Process
-        List<NameValuePair> deleteList = new ArrayList<>();
-        deleteList.add(new NameValuePair(name, branch));
+        List<ProcessData> deleteList = new ArrayList<>();
+        deleteList.add(new ProcessData(pst.getId(), 1.0d));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again
