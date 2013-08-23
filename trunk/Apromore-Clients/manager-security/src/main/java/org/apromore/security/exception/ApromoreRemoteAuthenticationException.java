@@ -1,6 +1,6 @@
 package org.apromore.security.exception;
 
-import org.springframework.security.authentication.rcp.RemoteAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * /**
@@ -12,7 +12,7 @@ import org.springframework.security.authentication.rcp.RemoteAuthenticationExcep
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class ApromoreRemoteAuthenticationException extends RemoteAuthenticationException {
+public class ApromoreRemoteAuthenticationException extends AuthenticationException {
 
     /**
      * Constructs a <code>ApromoreRemoteAuthenticationException</code> with the
