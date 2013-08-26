@@ -369,7 +369,7 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcessSummaryType> getProcesses(String userId, int folderId) {
+    public ProcessSummariesType getProcesses(String userId, int folderId) {
         LOGGER.debug("Preparing GetProcessesRequest.....");
 
         GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
@@ -646,31 +646,6 @@ public class ManagerServiceClient implements ManagerService {
     @SuppressWarnings("unchecked")
     public ProcessSummariesType readProcessSummaries(final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
-
-        // temp code
-        //        ClusterFilterType filterType = new ClusterFilterType();
-        //        filterType.setMinAvgFragmentSize(10.0f);
-        //        filterType.setMinBCR(1d);
-        //        filterType.setMinClusterSize(4);
-        //        filterType.setMaxClusterSize(15);
-        //        List<ClusterType> clusters = getClusters(filterType);
-        //        for (ClusterType c : clusters) {
-        //        	int clusterSize = c.getClusterSize();
-        //        	String medoidId = c.getMedoidId();
-        //        	float avgFragSize = c.getAvgFragmentSize();
-        //        	double BCR = c.getBCR();
-        //        	LOGGER.debug(clusterSize + ", " + medoidId + ", " + avgFragSize);
-        //
-        //        	List<FragmentData> fragments = c.getFragments();
-        //        	for (FragmentData fragment : fragments) {
-        //        		String fragmentId = fragment.getFragmentId();
-        //        		double fragmentToMedoidDistance = fragment.getDistance();
-        //        		LOGGER.debug(fragmentId + ": " + fragmentToMedoidDistance);
-        //        	}
-        //        }
-        //
-        //        String epml = getFragment(fragmentId).getContent();
-        // temp code
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
         msg.setSearchExpression(searchCriteria);
