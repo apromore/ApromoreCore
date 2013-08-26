@@ -229,18 +229,20 @@ public class MainController extends BaseController {
         UserType user = UserSessionManager.getCurrentUser();
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
 
-        List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
-        for (ProcessSummaryType processSummary : processSummaryTypes) {
-            processSummaries.getProcessSummary().add(processSummary);
+        //List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
+        processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
+        //for (ProcessSummaryType processSummary : processSummaryTypes.getProcessSummary()) {
+        //    processSummaries.getProcessSummary().add(processSummary);
+        //}
+
+        String message = processSummaries.getProcessSummary().size() + " out of " + processSummaries.getTotalProcessCount();
+        if (processSummaries.getTotalProcessCount() > 1) {
+            message += " processes.";
+        } else {
+            message += " process.";
         }
 
-        String message;
-        if (processSummaries.getProcessSummary().size() > 1) {
-            message = " processes.";
-        } else {
-            message = " process.";
-        }
-        this.displayMessage(processSummaries.getProcessSummary().size() + message);
+        this.displayMessage(message);
         this.simplesearch.clearSearches();
         this.displayProcessSummaries(processSummaries, false);
 

@@ -71,7 +71,7 @@ public interface ManagerService {
 
     List<UserFolderType> getProcessUsers(int processId);
 
-    List<ProcessSummaryType> getProcesses(String userId, int folderId);
+    ProcessSummariesType getProcesses(String userId, int folderId);
 
     void createFolder(String userId, String folderName, int parentFolderId);
 

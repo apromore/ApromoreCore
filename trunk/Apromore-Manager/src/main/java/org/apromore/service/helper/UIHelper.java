@@ -258,13 +258,11 @@
 package org.apromore.service.helper;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
@@ -293,7 +291,6 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
-    private NativeRepository nRepository;
 
     private WorkspaceService workspaceService;
 
@@ -302,22 +299,20 @@ public class UIHelper implements UserInterfaceHelper {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepository Annotations Repository.
      * @param processRepository process Repository.
-     * @param nativeRepository Native Repository.
      * @param workspaceService Workspace Services.
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository, final ProcessRepository processRepository,
-                    final NativeRepository nativeRepository, final WorkspaceService workspaceService) {
+                    final WorkspaceService workspaceService) {
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
-        this.nRepository = nativeRepository;
         this.workspaceService = workspaceService;
     }
 
 
 
     /**
-     * @see UserInterfaceHelper#createProcessSummary(java.lang.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String)
+     * @see UserInterfaceHelper#createProcessSummary(org.apromore.dao.model.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String)
      */
     public ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv,  String nativeType,
             String domain, String created, String lastUpdate, String username) {
@@ -358,6 +353,8 @@ public class UIHelper implements UserInterfaceHelper {
         ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
 
+        processSummaries.setTotalProcessCount(pRepository.count());
+
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<Process> processes = pRepository.findAllProcesses(conditions);
 
@@ -379,6 +376,8 @@ public class UIHelper implements UserInterfaceHelper {
     public ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses) {
         ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
+
+        processSummaries.setTotalProcessCount(pRepository.count());
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<ProcessUser> processes = workspaceService.getUserProcessesOrig(userId, folderId);

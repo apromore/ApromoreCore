@@ -1367,10 +1367,12 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        ProcessSummariesType processTypes = uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null); //WorkspaceMapper.convertProcessUsersToProcessSummaryTypes(workspaceSrv.getUserProcesses(payload.getUserId(), payload.getFolderId()));
-        for (ProcessSummaryType pt : processTypes.getProcessSummary()) {
-            res.getProcesses().add(pt);
-        }
+        //ProcessSummariesType processTypes = uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null); //WorkspaceMapper.convertProcessUsersToProcessSummaryTypes(workspaceSrv.getUserProcesses(payload.getUserId(), payload.getFolderId()));
+        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null));
+        //res.setTotalProcessCount(processTypes.getTotalProcessCount());
+        //for (ProcessSummaryType pt : processTypes.getProcessSummary()) {
+        //    res.getProcesses().add(pt);
+        //}
         return new ObjectFactory().createGetProcessesResponse(res);
     }
 
