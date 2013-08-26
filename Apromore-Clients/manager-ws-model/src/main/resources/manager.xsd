@@ -417,6 +417,7 @@
         <xs:sequence>
             <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType"/>
         </xs:sequence>
+        <xs:attribute name="total_process_count" type="xs:long"/>
     </xs:complexType>
 
     <xs:complexType name="ProcessSummaryType">
@@ -695,8 +696,9 @@
     <xs:complexType name="GetProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Processes" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Processes" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
+
     </xs:complexType>
 
     <xs:complexType name="CreateFolderInputMsgType">

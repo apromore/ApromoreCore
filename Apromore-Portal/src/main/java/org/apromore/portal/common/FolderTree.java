@@ -1,6 +1,7 @@
 package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 
 import java.util.List;
@@ -43,8 +44,8 @@ public class FolderTree {
         }
 
         if (loadAll){
-            List<ProcessSummaryType> processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId);
-            for(ProcessSummaryType process : processes)
+            ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId);
+            for(ProcessSummaryType process : processes.getProcessSummary())
             {
                 FolderTreeNode childNode = new FolderTreeNode(process, null, true, FolderTreeNodeTypes.Process);
                 node.add(childNode);
