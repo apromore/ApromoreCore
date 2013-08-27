@@ -33,7 +33,7 @@ public final class Constants {
     public static final String STAR_MID_ICON = "/img/revertSelection-12.png";
     public static final String ANNOTATIONS_ONLY = "notationsOnly";
 
-    public static final String INITIAL_VERSION = "0.1";
+    public static final String INITIAL_VERSION = "1.0";
     public static final String dateFormat = "yyyy/MM/dd hh:mm a";
 
 }

@@ -119,7 +119,7 @@ public class FormatServiceImpl implements FormatService {
 
 
     private boolean isEmptyANF(AnnotationsType ant) {
-        return ant.getAnnotation().isEmpty();
+        return ant == null || ant.getAnnotation() == null || ant.getAnnotation().isEmpty();
     }
 
     private Canonical createCanonical(ProcessModelVersion pmv, String canonicalString) {

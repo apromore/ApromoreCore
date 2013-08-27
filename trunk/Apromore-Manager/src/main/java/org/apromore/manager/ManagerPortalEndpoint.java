@@ -333,8 +333,11 @@ public class ManagerPortalEndpoint {
                 id.setVersionNumber(t.getVersionNumber());
                 ids.getProcessVersionId().add(id);
             }
-            ProcessSummaryType respFromToolbox = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids);
-            res.setProcessSummary(respFromToolbox);
+            ProcessModelVersion pmv = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids);
+            ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username);
+
+            res.setProcessSummary(process);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {

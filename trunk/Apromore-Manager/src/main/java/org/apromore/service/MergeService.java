@@ -1,8 +1,8 @@
 package org.apromore.service;
 
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdsType;
 
 /**
@@ -27,7 +27,7 @@ public interface MergeService {
      * @return the new process summary of the newly merged process
      * @throws ExceptionMergeProcess if the merge failed
      */
-    ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
+    ProcessModelVersion mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
         ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess;
 
 
