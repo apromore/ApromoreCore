@@ -782,14 +782,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Double, Boolean, String, java.io.InputStream)
+     * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Double, String, java.io.InputStream)
      *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
             final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
-            final Double originalVersionNumber, final Boolean createNewBranch, final String preVersion, final InputStream native_is)
+            final Double originalVersionNumber, final String preVersion, final InputStream native_is)
             throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
@@ -801,7 +801,6 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setNewBranchName(newBranchName);
         editSession.setOriginalVersionNumber(originalVersionNumber);
         editSession.setVersionNumber(versionNumber);
-        editSession.setCreateNewBranch(createNewBranch);
         editSession.setDomain(domain);
         editSession.setProcessId(processId);
 

@@ -12,7 +12,6 @@ import org.zkoss.zul.Window;
 public class BaseController extends Window {
 
     public static final String MANAGER_SERVICE = "managerClient";
-
     private ManagerService managerService;
 
 

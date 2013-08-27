@@ -10,10 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.persistence.annotations.Cache;
@@ -46,8 +49,8 @@ public class Process implements Serializable {
     private NativeType nativeType;
 
     private Set<EditSession> editSessions = new HashSet<>();
-    private Set<ProcessBranch> processBranches = new HashSet<>();
     private Set<ProcessUser> processUsers = new HashSet<>();
+    private List<ProcessBranch> processBranches = new ArrayList<>();
 
 
     /**
@@ -149,11 +152,12 @@ public class Process implements Serializable {
     }
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<ProcessBranch> getProcessBranches() {
+    @OrderBy("id")
+    public List<ProcessBranch> getProcessBranches() {
         return this.processBranches;
     }
 
-    public void setProcessBranches(final Set<ProcessBranch> newProcessBranches) {
+    public void setProcessBranches(final List<ProcessBranch> newProcessBranches) {
         this.processBranches = newProcessBranches;
     }
 
