@@ -13,11 +13,11 @@
                 </row>
                 <row id="modelthreshold" visible="false">
                     <label value="Model sim. threshold" width="100%" />
-                    <doublebox value="0.5" width="100%" />
+                    <doublebox value="0.6" width="100%" />
                 </row>
                 <row id="labelthreshold" visible="false">
                     <label value="Label sim. threshold" width="100%" />
-                    <doublebox value="0.5" width="100%" />
+                    <doublebox value="0.6" width="100%" />
                 </row>
                 <row id="contextthreshold" visible="false">
                     <label value="Context sim. threshold" width="100%" />
