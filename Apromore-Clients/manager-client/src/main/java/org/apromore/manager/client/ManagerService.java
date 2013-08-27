@@ -334,14 +334,13 @@ public interface ManagerService {
      * @param newBranchName the originalBranchName.
      * @param versionNumber the versionNumber.
      * @param originalVersionNumber the original version number of the model.
-     * @param createNewBranch are we forcing a new branch.
      * @param preVersion the process current version.
      * @param native_is the actual input stream of the model.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
-            String originalBranchName, String newBranchName, Double versionNumber, Double originalVersionNumber, Boolean createNewBranch,
+            String originalBranchName, String newBranchName, Double versionNumber, Double originalVersionNumber,
             String preVersion, InputStream native_is) throws IOException, Exception;
 
     /**

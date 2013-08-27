@@ -39,6 +39,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
@@ -62,6 +64,8 @@ import org.zkoss.zul.Window;
 public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
+
+    private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
     private static final String HOST_NAME = "Host";
     private static final String VERSION_NUMBER = "version.number";
@@ -113,6 +117,10 @@ public class MainController extends BaseController {
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
+            if (EventQueues.exists(Constants.EVENT_MESSAGE_SAVE, EventQueues.SESSION)) {
+                System.out.println("Event Queues enabled.");
+            }
+
             moreButton.addEventListener("onClick",
                     new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
@@ -137,11 +145,21 @@ public class MainController extends BaseController {
                             displayInstalledPlugins();
                         }
                     });
-
+            qe.subscribe(
+                    new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            System.out.println(event.getName());
+                            if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
+                                clearProcessVersions();
+                                reloadProcessSummaries();
+                            }
+                        }
+                    });
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {
-                message = "Please contact Apromore's administrator";
+                message = "Please contact your Apromore Administrator";
             } else {
                 message = e.getMessage();
             }
@@ -229,11 +247,7 @@ public class MainController extends BaseController {
         UserType user = UserSessionManager.getCurrentUser();
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
 
-        //List<ProcessSummaryType> processSummaryTypes = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
         processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
-        //for (ProcessSummaryType processSummary : processSummaryTypes.getProcessSummary()) {
-        //    processSummaries.getProcessSummary().add(processSummary);
-        //}
 
         String message = processSummaries.getProcessSummary().size() + " out of " + processSummaries.getTotalProcessCount();
         if (processSummaries.getTotalProcessCount() > 1) {
@@ -558,9 +572,9 @@ public class MainController extends BaseController {
 
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
-        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(this.baseListboxController);
-        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(this.baseDetailController);
-        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(this.baseFilterController);
+        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(baseListboxController);
+        this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
+        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(baseFilterController);
     }
 
     /* Switches all dynamic UI elements to the ProcessSummaryView. Affects the listbox, detail and filter view */
@@ -624,8 +638,6 @@ public class MainController extends BaseController {
     private void setHeaderText(Toolbarbutton releaseNotes) {
         releaseNotes.setLabel(String.format(WELCOME_TEXT, versionNumber, buildDate));
     }
-
-
 
 
 

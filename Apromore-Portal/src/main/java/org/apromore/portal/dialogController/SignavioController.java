@@ -25,12 +25,10 @@ import org.zkoss.zk.ui.event.EventListener;
  */
 public class SignavioController extends BaseController {
 
-    private final String JSON_DATA = "jsonData";
     public static EditSessionType editSession;
     public static MainController mainC;
     public static ProcessSummaryType process;
     public static VersionSummaryType version;
-    private boolean isNormalSave;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
@@ -53,6 +51,7 @@ public class SignavioController extends BaseController {
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
+            String JSON_DATA = "jsonData";
             param.put(JSON_DATA, data.replace("\n", " ").trim());
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
@@ -74,24 +73,23 @@ public class SignavioController extends BaseController {
             e.printStackTrace();
         }
 
-        this.addEventListener("onSave", new EventListener() {
-
+        this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     LOGGER.info("Event type " + event.getData().getClass() + ": " + event.getData());
-                    new SaveAsDialogController(mainC, process, version, editSession, true /* a normal save */, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     exceptionFormats.printStackTrace();
                 }
             }
         });
 
-        this.addEventListener("onSaveAs", new EventListener() {
+        this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(mainC, process, version, editSession, false /* not a normal save */, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession, false, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     exceptionFormats.printStackTrace();
                 }

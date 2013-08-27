@@ -443,7 +443,7 @@ public class UIHelper implements UserInterfaceHelper {
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
                 }
-                buildNativeSummaryList(processSummary, versionSummary, processModelVersion.getVersionNumber());
+                buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), processModelVersion.getVersionNumber());
 
                 processSummary.getVersionSummaries().add(versionSummary);
 
@@ -455,9 +455,9 @@ public class UIHelper implements UserInterfaceHelper {
     }
 
     /* Builds the list of Native Summaries for a version summary. */
-    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, Double maxVersion) {
+    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName, Double maxVersion) {
         AnnotationsType annotation;
-        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), maxVersion);
+        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion);
 
         for (Annotation ann : annotations) {
             annotation = new AnnotationsType();
