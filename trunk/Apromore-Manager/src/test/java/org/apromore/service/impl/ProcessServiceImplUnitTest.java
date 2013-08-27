@@ -147,8 +147,8 @@ public class ProcessServiceImplUnitTest {
         pmv.setNativeType(natType);
         pmv.setProcessBranch(branch);
 
-        expect(pmvDao.getProcessModelVersion(processId, name, versionNumber)).andReturn(pmv);
-        expect(natDao.getNative(processId, name, versionNumber, format)).andReturn(nat);
+        expect(pmvDao.getProcessModelVersion(processId, version, versionNumber)).andReturn(pmv);
+        expect(natDao.getNative(processId, version, versionNumber, format)).andReturn(nat);
 
         replay(pmvDao, natDao);
 
