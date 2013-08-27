@@ -139,6 +139,7 @@ public class ProcessServiceImplUnitTest {
 
         ProcessBranch branch = new ProcessBranch();
         branch.setId(processId);
+        branch.setBranchName(name);
         branch.setProcess(process);
 
         ProcessModelVersion pmv = new ProcessModelVersion();
@@ -146,8 +147,8 @@ public class ProcessServiceImplUnitTest {
         pmv.setNativeType(natType);
         pmv.setProcessBranch(branch);
 
-        expect(pmvDao.getCurrentProcessModelVersion(processId, versionNumber)).andReturn(pmv);
-        expect(natDao.getNative(processId, versionNumber, format)).andReturn(nat);
+        expect(pmvDao.getProcessModelVersion(processId, name, versionNumber)).andReturn(pmv);
+        expect(natDao.getNative(processId, name, versionNumber, format)).andReturn(nat);
 
         replay(pmvDao, natDao);
 

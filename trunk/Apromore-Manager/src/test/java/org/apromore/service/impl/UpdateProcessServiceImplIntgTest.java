@@ -2,7 +2,6 @@ package org.apromore.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -22,7 +21,6 @@ import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.NameValuePair;
 import org.apromore.service.model.ProcessData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +79,7 @@ public class UpdateProcessServiceImplIntgTest {
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), Boolean.FALSE, user, Constants.LOCKED, nativeType, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), user, Constants.LOCKED, nativeType, cp);
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
