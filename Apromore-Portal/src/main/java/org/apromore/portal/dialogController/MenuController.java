@@ -29,12 +29,6 @@ public class MenuController extends Menubar {
     private final MainController mainC;
     private Menubar menuB;
 
-    private final Menuitem mergeMI;
-
-    private Menuitem evalQualityMI;
-    private Menuitem evalCorrectnessMI;
-    private Menuitem evalPerformanceMI;
-
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
@@ -49,16 +43,13 @@ public class MenuController extends Menubar {
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
         Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
 
-        //Menu evaluationM = (Menu) this.menuB.getFellow("evaluation");
-
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
         Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
 
         Menu designM = (Menu) this.menuB.getFellow("design");
-        mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
-        //Menu presentationM = (Menu) this.menuB.getFellow("presentation");
+        Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -177,7 +168,7 @@ public class MenuController extends Menubar {
         // At least 2 process versions must be selected. Not necessarily of different processes
         if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() > 1 || selectedProcessVersions.size() > 1) {
             try {
-                new ProcessMergeController(this.mainC, this, selectedProcessVersions);
+                new ProcessMergeController(this.mainC, selectedProcessVersions);
             } catch (SuspendNotAllowedException e) {
                 Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
             } catch (ExceptionAllUsers e) {
