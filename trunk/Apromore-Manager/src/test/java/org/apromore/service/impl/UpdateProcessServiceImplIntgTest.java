@@ -22,6 +22,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -58,6 +59,7 @@ public class UpdateProcessServiceImplIntgTest {
 
     @Test
     @Rollback(true)
+    @Ignore
     public void testImportUpdateThenDeleteModel() throws Exception {
         String natType = "EPML 2.0";
         String name = "AudioTest2";
