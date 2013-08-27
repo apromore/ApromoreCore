@@ -5,46 +5,48 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 
 import org.apromore.canoniser.Canoniser;
-import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class SaveAsDialogController extends BaseController {
 
-    private org.zkoss.zul.Window saveAsW;
-    private org.zkoss.zul.Button saveB;
-    private org.zkoss.zul.Button cancelB;
-    private org.zkoss.zul.Textbox modelName;
-    private org.zkoss.zul.Textbox versionNumber;
-    private org.zkoss.zul.Textbox branchName;
+    private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
+
+    private Window saveAsW;
+    private Textbox modelName;
+    private Textbox versionNumber;
+    private Textbox branchName;
     private ProcessSummaryType process;
     private VersionSummaryType version;
-    private ManagerServiceClient managerService;
     private PluginPropertiesHelper pluginPropertiesHelper;
     private EditSessionType editSession;
     private boolean save;
-    private boolean createNewBranch;
     private String modelData;
     private Double originalVersionNumber;
 
-    public SaveAsDialogController(MainController mainC, ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
         this.process = process;
         this.version = version;
         this.editSession = editSession;
         this.save = isNormalSave;
-        this.createNewBranch = false;
         this.saveAsW = (Window) Executions.createComponents("SaveAsDialog.zul", null, null);
         this.modelData = data;
         this.originalVersionNumber = this.editSession.getVersionNumber();
@@ -64,25 +66,24 @@ public class SaveAsDialogController extends BaseController {
         this.branchName = (org.zkoss.zul.Textbox) branchNameR.getFirstChild().getNextSibling();
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.saveAsW.getFellow("saveAsGrid"));
-        this.saveB = (org.zkoss.zul.Button) buttonGroupR.getFirstChild().getFirstChild();
-        this.cancelB = (org.zkoss.zul.Button) this.saveB.getNextSibling();
+        Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
+        Button cancelB = (Button) saveB.getNextSibling();
         this.modelName.setText(this.editSession.getProcessName());
 
-
-        this.saveB.addEventListener("onClick",
-                new org.zkoss.zk.ui.event.EventListener() {
+        saveB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         saveModel(save);
                     }
                 });
         this.saveAsW.addEventListener("onOK",
-                new org.zkoss.zk.ui.event.EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         saveModel(save);
                     }
                 });
-        this.cancelB.addEventListener("onClick",
-                new org.zkoss.zk.ui.event.EventListener() {
+        cancelB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancel();
                     }
@@ -95,7 +96,7 @@ public class SaveAsDialogController extends BaseController {
         } else {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
-            this.versionNumber.setText("0.1");
+            this.versionNumber.setText("1.0");
         }
         this.saveAsW.doModal();
     }
@@ -110,7 +111,6 @@ public class SaveAsDialogController extends BaseController {
 
     protected void saveModel(boolean isNormalSave) throws Exception {
         String userName = UserSessionManager.getCurrentUser().getUsername();
-        //String originalNativeType = this.process.getOriginalNativeType();
         String nativeType = this.editSession.getNativeType();
         String versionName = this.version.getName();
         String domain = this.process.getDomain();
@@ -140,7 +140,7 @@ public class SaveAsDialogController extends BaseController {
                             Messagebox.OK, Messagebox.INFORMATION);
                 } else {
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, process.getName(),
-                            editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, createNewBranch, versionName, is);
+                            editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);
                     Messagebox.show("Saved as: Branch Name : " + branch, "Save", Messagebox.OK, Messagebox.INFORMATION);
                 }
                 closePopup();
@@ -149,7 +149,7 @@ public class SaveAsDialogController extends BaseController {
             Messagebox.show("Unable to Save Model : Error: \n" + e.getMessage());
         }
 
-        //this.mainC.reloadProcessSummaries();
+        qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
     }
 
 

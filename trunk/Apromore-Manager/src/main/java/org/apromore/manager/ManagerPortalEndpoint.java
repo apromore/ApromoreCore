@@ -498,7 +498,7 @@ public class ManagerPortalEndpoint {
             CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
-                    editType.getVersionNumber(), editType.getOriginalVersionNumber(), editType.isCreateNewBranch(),
+                    editType.getVersionNumber(), editType.getOriginalVersionNumber(),
                     secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
 
             result.setCode(0);
@@ -1367,12 +1367,8 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        //ProcessSummariesType processTypes = uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null); //WorkspaceMapper.convertProcessUsersToProcessSummaryTypes(workspaceSrv.getUserProcesses(payload.getUserId(), payload.getFolderId()));
         res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null));
-        //res.setTotalProcessCount(processTypes.getTotalProcessCount());
-        //for (ProcessSummaryType pt : processTypes.getProcessSummary()) {
-        //    res.getProcesses().add(pt);
-        //}
+
         return new ObjectFactory().createGetProcessesResponse(res);
     }
 

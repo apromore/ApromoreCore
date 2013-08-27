@@ -109,14 +109,13 @@ public interface ProcessService {
      * @param newBranchName of this update.
      * @param versionNumber of this update.
      * @param originalVersionNumber of this update.
-     * @param createNewBranch of this update.
      * @param user User who updated the process model.
      * @param lockStatus is this model now going to be locked?
      * @param nativeType the native format.
      * @param cpf the process model graph.
      */
     ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName, Double versionNumber,
-            Double originalVersionNumber, Boolean createNewBranch, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
+            Double originalVersionNumber, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
             throws ImportException, RepositoryException;
 
 

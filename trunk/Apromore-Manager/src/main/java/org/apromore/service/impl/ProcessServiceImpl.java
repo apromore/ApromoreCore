@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -245,21 +246,25 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Double, Double, Boolean, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
+     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Double, Double, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
-            final String newBranchName, final Double versionNumber, final Double originalVersionNumber, final Boolean createNewBranch,
-            final User user, final String lockStatus, final NativeType nativeType, final CanonisedProcess cpf)
-            throws ImportException, RepositoryException {
+            final String newBranchName, final Double versionNumber, final Double originalVersionNumber, final User user, final String lockStatus,
+            final NativeType nativeType, final CanonisedProcess cpf) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
+        String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
 
         try {
-            pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+            if (!StringUtils.equals(originalBranchName, newBranchName)) {
+                Process process = processRepo.findOne(processId);
+                pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
+            } else {
+                pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+            }
 
-            String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
             formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), cpf);
         } catch (RepositoryException | JAXBException | IOException e) {
             LOGGER.error("Failed to update process {}", processName);
@@ -283,8 +288,8 @@ public class ProcessServiceImpl implements ProcessService {
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
             // Work out if we are looking at the original format or native format for this model.
-            if (isRequestForNativeFormat(processId, version, format)) {
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, version, format).getContent(),
+            if (isRequestForNativeFormat(processId, branch, version, format)) {
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, branch, version, format).getContent(),
                         "text/xml")));
             } else if (isRequestForAnnotationsOnly(format)) {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch, version, annName).
@@ -538,7 +543,7 @@ public class ProcessServiceImpl implements ProcessService {
 
                 if (pvid != null) {
                     Process process = pvid.getProcessBranch().getProcess();
-                    Set<ProcessBranch> branches = process.getProcessBranches();
+                    List<ProcessBranch> branches = process.getProcessBranches();
 
                     LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName() + " to be deleted.");
 
@@ -993,8 +998,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Did the request ask for the model in the same format as it was originally added? */
-    private boolean isRequestForNativeFormat(Integer processId, Double version, String format) {
-        ProcessModelVersion pmv = processModelVersionRepo.getCurrentProcessModelVersion(processId, version);
+    private boolean isRequestForNativeFormat(Integer processId, String branch, Double version, String format) {
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branch, version);
         return pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 

@@ -1,51 +1,19 @@
 package org.apromore.portal.controller;
 
 import javax.servlet.ServletRequest;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.FolderType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PluginMessage;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.BaseDetailController;
 import org.apromore.portal.dialogController.BaseFilterController;
 import org.apromore.portal.dialogController.BaseListboxController;
-import org.apromore.portal.dialogController.HeaderController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.MenuController;
 import org.apromore.portal.dialogController.NavigationController;
-import org.apromore.portal.dialogController.ProcessListboxController;
-import org.apromore.portal.dialogController.ProcessVersionDetailController;
 import org.apromore.portal.dialogController.ShortMessageController;
-import org.apromore.portal.dialogController.SignavioController;
 import org.apromore.portal.dialogController.SimpleSearchController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -57,24 +25,20 @@ import org.zkoss.web.fn.ServletFns;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
-import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Window;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class MainControllerOldCopy extends BaseController {
+public class MainControllerOldCopy {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
@@ -122,7 +86,7 @@ public class MainControllerOldCopy extends BaseController {
 
 
     @Command
-    public void moreInfo(){
+    public void moreInfo() {
         String instruction;
         int offsetH = 100, offsetV = 200;
         instruction = "window.open('" + Constants.MORE_INFO + "','','top=" + offsetH + ",left=" + offsetV
@@ -141,10 +105,10 @@ public class MainControllerOldCopy extends BaseController {
 
     @Command
     public void signout() throws Exception {
-        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
+        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 new EventListener() {
                     public void onEvent(Event evt) {
-                        switch (((Integer)evt.getData()).intValue()) {
+                        switch (((Integer) evt.getData()).intValue()) {
                             case Messagebox.YES:
                                 UserSessionManager.setCurrentFolder(null);
                                 UserSessionManager.setCurrentSecurityItem(0);
