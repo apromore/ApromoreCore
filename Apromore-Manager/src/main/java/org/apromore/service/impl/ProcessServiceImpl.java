@@ -44,6 +44,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.Native;
@@ -304,10 +305,13 @@ public class ProcessServiceImpl implements ProcessService {
                     AnnotationsType anf = null;
                     process = processRepo.findOne(processId);
                     if (withAnn) {
-                        String annotation = annotationRepo.getAnnotation(processId, branch, version, annName).getContent();
-                        if (annotation != null && !annotation.equals("")) {
-                            ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
-                            anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
+                        Annotation ann = annotationRepo.getAnnotation(processId, branch, version, annName);
+                        if (ann != null) {
+                            String annotation = ann.getContent();
+                            if (annotation != null && !annotation.equals("")) {
+                                ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
+                                anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
+                            }
                         }
 
                         anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);

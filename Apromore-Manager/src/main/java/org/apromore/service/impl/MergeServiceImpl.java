@@ -75,14 +75,14 @@ public class MergeServiceImpl implements MergeService {
      */
     @Override
     @Transactional(readOnly = false)
-    public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
+    public ProcessModelVersion mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<>();
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
             models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
         }
 
-        ProcessSummaryType pst = null;
+        ProcessModelVersion pmv = null;
         try {
             ToolboxData data = convertModelsToCPT(models);
             data = getParametersForMerge(data, algo, parameters);
@@ -95,15 +95,14 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
 
             // This fails as we need to specify a native type and pass in the model.
-            ProcessModelVersion pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created);
-            pst = ui.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv, null, domain, created, created, username);
+            pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException | JAXBException ie) {
             LOGGER.error("Failed Import the newly merged model.", ie);
         }
 
-        return pst;
+        return pmv;
     }
 
 

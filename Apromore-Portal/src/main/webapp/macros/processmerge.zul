@@ -1,71 +1,65 @@
 <window width="300px" closable="false" position="center" title="Merge process models">
-	<vbox>
-		<grid>
-			<columns sizable="true">
-				<column width="60%"></column>
-				<column width="40%"></column>
-			</columns>
-			<rows>
-				<row id="mergednamep">
-					<label value="Process name*" width="100%"/>
-					<textbox width="100%"/>
-				</row>
-				<row id="mergednamev">
-					<label value="Version name*" width="100%"/>
-					<textbox width="100%"/>
-				</row>
-				<row id="mergeddomainR">
-					<label value="Domain" width="100%"/>
-					<!-- combobox implemented in SelectDynamicListController -->
-				</row>
-				<row id="removeEnt">
-					<label value="Remove entanglements" />
-					<checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
-				</row>
-				<row id="mergeAlgoChoice">
-					<label value="Algorithm (please choose one)" width="100%" />
-					<listbox width="100%" />
-				</row>
-				<row id="mergethreshold" visible="false">
-					<label value="Model merge threshold" width="100%" />
-					<doublebox value="0.5" width="100%" />	
-				</row>
-				<row id="labelthreshold" visible="false">
-					<label value="Label sim. threshold" width="100%" />
-					<doublebox value="0.5" width="100%" />	
-				</row>
-				<row id="contextthreshold" visible="false">
-					<label value="Context sim. threshold" width="100%" />
-					<doublebox value="0.75" width="100%" />	
-				</row>
-				<row id="skipeweight" visible="false">
-					<label value="Skip-e weight" width="100%" />
-					<doublebox value="1" width="100%" />	
-				</row>
-				<!-- row id="subeweight" visible="false">
-					<label value="Sub-e weight" width="100%" />
-					<doublebox value="1" width="100%" />	
-				</row -->
-				<row id="skipnweight" visible="false">
-					<label value="Skip-n weight" width="100%" />
-					<doublebox value="1" width="100%" />	
-				</row>
-				<row id="subnweight" visible="false">
-					<label value="Sub-n weight" width="100%" />
-					<doublebox value="1" width="100%" />	
-				</row>
-				<row id="mergeButtons" spans="2">
-					<div align="center">
-						<button id="mergeOKButton" label="OK" image="img/ok.png" disabled="true"></button>
-						<button id="mergeCancelButton"  label="Cancel"
-							image="img/cancel2.png">
-						</button>
-					</div>
-				</row>
-				<row>
-					<label value="*: value is mandatory" style="color: red"/>
-				</row>
-			</rows>
-		</grid>
-	</vbox>
+    <vbox>
+        <grid>
+            <columns sizable="true">
+                <column width="60%"></column>
+                <column width="40%"></column>
+            </columns>
+            <rows>
+                <row id="mergednamep">
+                    <label value="Process name*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergednamev">
+                    <label value="Version Number*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergeddomainR">
+                    <label value="Domain" width="100%"/>
+                </row>
+                <row id="removeEnt">
+                    <label value="Remove entanglements"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
+                </row>
+                <row id="mergeAlgoChoice">
+                    <label value="Algorithm (please choose one)" width="100%"/>
+                    <listbox width="100%"/>
+                </row>
+                <row id="mergethreshold" visible="false">
+                    <label value="Model merge threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="labelthreshold" visible="false">
+                    <label value="Label sim. threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="contextthreshold" visible="false">
+                    <label value="Context sim. threshold" width="100%"/>
+                    <doublebox value="0.75" width="100%"/>
+                </row>
+                <row id="skipeweight" visible="false">
+                    <label value="Skip-e weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="skipnweight" visible="false">
+                    <label value="Skip-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="subnweight" visible="false">
+                    <label value="Sub-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="mergeButtons" spans="2">
+                    <div align="center">
+                        <button id="mergeOKButton" label="OK" image="img/ok.png" disabled="true"></button>
+                        <button id="mergeCancelButton" label="Cancel" image="img/cancel2.png">
+                        </button>
+                    </div>
+                </row>
+                <row>
+                    <label value="*: value is mandatory" style="color: red"/>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
 </window>
