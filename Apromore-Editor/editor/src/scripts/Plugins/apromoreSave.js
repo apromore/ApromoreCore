@@ -20,8 +20,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if (!ORYX.Plugins)
+if (!ORYX.Plugins) {
     ORYX.Plugins = new Object();
+}
 
 ORYX.Plugins.ApromoreSave = Clazz.extend({
 
@@ -54,7 +55,7 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             if (e.ctrlKey && e.keyCode === 83) {
                 Event.stop(e);
             }
-        }, false)
+        }, false);
 
 
         this.facade.offer({
@@ -72,7 +73,6 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         this.changeDifference = 0;
 
         // Register on event for executing commands --> store all commands in a stack
-        // --> Execute
         this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
             this.changeDifference++;
             this.updateTitle();
@@ -81,12 +81,10 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             this.changeDifference++;
             this.updateTitle();
         }.bind(this));
-        // --> Rollback
         this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
             this.changeDifference--;
             this.updateTitle();
         }.bind(this));
-
 
     },
 
@@ -95,8 +93,9 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         var docElement = document.getElementsByTagName("title")[0];
         if (docElement) {
             var child = docElement.childNodes[0];
-            if (child)
+            if (child) {
                 value = docElement.nodeValue;
+            }
         }
         if (value) {
             if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)) {
@@ -111,7 +110,6 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         if (this.changeDifference !== 0 || (this.facade.getModelMetaData()['new'] && this.facade.getCanvas().getChildShapes().size() > 0)) {
             return ORYX.I18N.Save.unsavedData;
         }
-
     },
 
     getSVG:function () {
@@ -143,7 +141,7 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
      */
     save:function (forceNew, event) {
         if (this.saving) {
-            return;
+            return false;
         }
 
         this.saving = true;
@@ -151,8 +149,6 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             type:ORYX.CONFIG.EVENT_ABOUT_TO_SAVE
         });
 
-//        var epc = ORYX.Plugins.EPCSupport.exportEPC();
-//        alert(epc);
         var json = Ext.encode(this.facade.getJSON());
         var svg = this.getSVG();
 
@@ -170,6 +166,7 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             }
         }
 
+        this.saving = false;
         return true;
     }
 

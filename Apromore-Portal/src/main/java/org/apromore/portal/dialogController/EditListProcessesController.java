@@ -1,44 +1,31 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zul.Window;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.exception.ExceptionFormats;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
+
 public class EditListProcessesController extends BaseController {
 
-    private MainController mainC;        // the main controller
-    private MenuController menuC;        // the menu controller which made the call
-    // the
-    private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
-    private List<EditOneProcessController> toEditList; // list of edits to do
-    private List<EditOneProcessController> editedList; //list of edits sent to editor
+    private MainController mainC;
+    private List<EditOneProcessController> toEditList;
+    private List<EditOneProcessController> editedList;
 
-    public EditListProcessesController(MainController mainC, MenuController menuC,
-                                       Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
+    public EditListProcessesController(MainController mainC, MenuController menuC, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
-
-        //this.emptynative = (Listitem) win.getFellow("emptynative");
-        this.menuC = menuC;
         this.mainC = mainC;
-        this.processVersions = processVersions;
-        this.toEditList = new ArrayList<EditOneProcessController>();
-        this.editedList = new ArrayList<EditOneProcessController>();
+        this.toEditList = new ArrayList<>();
+        this.editedList = new ArrayList<>();
         Set<ProcessSummaryType> keys = processVersions.keySet();
-        Iterator<ProcessSummaryType> it = keys.iterator();
-        while (it.hasNext()) {
-            ProcessSummaryType process = it.next();
+        for (ProcessSummaryType process : keys) {
             for (Integer i = 0; i < processVersions.get(process).size(); i++) {
                 VersionSummaryType version = processVersions.get(process).get(i);
-                EditOneProcessController editOneProcess =
-                        new EditOneProcessController(this.mainC, this, process, version);
+                EditOneProcessController editOneProcess = new EditOneProcessController(this.mainC, this, process, version);
                 this.toEditList.add(editOneProcess);
             }
         }
@@ -46,7 +33,7 @@ public class EditListProcessesController extends BaseController {
 
     public List<EditOneProcessController> getEditedList() {
         if (editedList == null) {
-            editedList = new ArrayList<EditOneProcessController>();
+            editedList = new ArrayList<>();
         }
         return this.editedList;
     }
@@ -54,7 +41,7 @@ public class EditListProcessesController extends BaseController {
 
     public List<EditOneProcessController> getToEditList() {
         if (toEditList == null) {
-            toEditList = new ArrayList<EditOneProcessController>();
+            toEditList = new ArrayList<>();
         }
         return toEditList;
     }
@@ -76,16 +63,15 @@ public class EditListProcessesController extends BaseController {
             } else if (this.editedList.size() > 1) {
                 report += " processes completed.";
             }
-            ;
             this.mainC.reloadProcessSummaries();
         }
         this.mainC.displayMessage(report);
     }
 
     public void cancelAll() {
-        for (int i = 0; i < this.toEditList.size(); i++) {
-            if (this.toEditList.get(i).getEditOneProcessWindow() != null) {
-                this.toEditList.get(i).getEditOneProcessWindow().detach();
+        for (EditOneProcessController aToEditList : this.toEditList) {
+            if (aToEditList.getEditOneProcessWindow() != null) {
+                aToEditList.getEditOneProcessWindow().detach();
             }
         }
         this.toEditList.clear();
