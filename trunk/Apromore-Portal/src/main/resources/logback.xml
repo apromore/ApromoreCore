@@ -31,7 +31,7 @@
 
 
     <logger name="org.apromore">
-        <level value="TRACE"/>
+        <level value="DEBUG"/>
         <appender-ref ref="everythinglogfile"/>
     </logger>
 
@@ -50,7 +50,7 @@
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="console"/>
         <appender-ref ref="everythinglogfile"/>
     </root>
