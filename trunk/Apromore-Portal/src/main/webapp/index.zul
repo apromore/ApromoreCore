@@ -44,7 +44,7 @@
                     </north>
                     <center id="leftCenterPanel" vflex="1">
                         <borderlayout vflex="true">
-                            <center id="leftInnerCenterPanel" title="Tree">
+                            <center id="leftInnerCenterPanel" title="Folders">
                                 <Navigation id="navigationcomp" vflex="true"/>
                             </center>
                             <south id="leftInnerSouthPanel" title="Refine Filter" splittable="false" collapsible="true" open="false">
