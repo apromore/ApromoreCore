@@ -65,8 +65,8 @@
 
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-Portal</module>
-        <module>Apromore-Manager</module>
-        <module>Apromore-Editor</module>
+        <!--<module>Apromore-Manager</module>-->
+        <!--<module>Apromore-Editor</module>-->
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Manager-Assembly</module>

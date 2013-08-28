@@ -25,7 +25,7 @@ import org.apromore.plugin.message.PluginMessageImpl;
 import org.springframework.stereotype.Component;
 
 /**
- * EPML to BPMN Pre Processor.
+ * AML to BPMN Pre Processor.
  * Used to manipulate the ANF of the BPMN output when the input process langauge was EPML.
  * Used to change the size of the shapes as each language has different sizes elements.
  *
