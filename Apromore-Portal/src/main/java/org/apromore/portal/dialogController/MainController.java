@@ -334,11 +334,6 @@ public class MainController extends BaseController {
 
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
-//        if (true) {
-//            editSession.setCreateNewBranch(false);
-//        } else {
-//            editSession.setCreateNewBranch(true);
-//        }
         if (annotation == null) {
             editSession.setWithAnnotation(false);
         } else {
