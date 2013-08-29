@@ -73,6 +73,11 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-collections</artifactId>
+      <version>r03</version>
+    </dependency>
+    <dependency>
       <groupId>net.sf.javabdd</groupId>
       <artifactId>javabdd</artifactId>
       <version>1.0b2</version>
