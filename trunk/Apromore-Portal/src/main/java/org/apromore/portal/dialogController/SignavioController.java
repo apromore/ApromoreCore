@@ -42,7 +42,7 @@ public class SignavioController extends BaseController {
                     getService().exportFormat(editSession.getProcessId(),
                             editSession.getProcessName(),
                             editSession.getOriginalBranchName(),
-                            editSession.getVersionNumber(),
+                            editSession.getCurrentVersionNumber(),
                             editSession.getNativeType(),
                             editSession.getAnnotation(),
                             editSession.isWithAnnotation(),
@@ -80,18 +80,17 @@ public class SignavioController extends BaseController {
                     LOGGER.info("Event type " + event.getData().getClass() + ": " + event.getData());
                     new SaveAsDialogController(process, version, editSession, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
-                    exceptionFormats.printStackTrace();
+                    LOGGER.error("Error saving model.", exceptionFormats);
                 }
             }
         });
-
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     new SaveAsDialogController(process, version, editSession, false, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
-                    exceptionFormats.printStackTrace();
+                    LOGGER.error("Error saving model.", exceptionFormats);
                 }
             }
         });

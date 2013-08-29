@@ -13,16 +13,16 @@
     <xs:element name="ReadUserResponse" type="tns:ReadUserOutputMsgType"/>
     <xs:element name="ReadAllUsersRequest" type="tns:ReadAllUsersInputMsgType"/>
     <xs:element name="ReadAllUsersResponse" type="tns:ReadAllUsersOutputMsgType"/>
-    <xs:element name="ReadEditSessionRequest" type="tns:ReadEditSessionInputMsgType"/>
-    <xs:element name="ReadEditSessionResponse" type="tns:ReadEditSessionOutputMsgType"/>
+    <!--<xs:element name="ReadEditSessionRequest" type="tns:ReadEditSessionInputMsgType"/>-->
+    <!--<xs:element name="ReadEditSessionResponse" type="tns:ReadEditSessionOutputMsgType"/>-->
     <xs:element name="WriteUserRequest" type="tns:WriteUserInputMsgType"/>
     <xs:element name="WriteUserResponse" type="tns:WriteUserOutputMsgType"/>
-    <xs:element name="WriteEditSessionRequest" type="tns:WriteEditSessionInputMsgType"/>
-    <xs:element name="WriteEditSessionResponse" type="tns:WriteEditSessionOutputMsgType"/>
+    <!--<xs:element name="WriteEditSessionRequest" type="tns:WriteEditSessionInputMsgType"/>-->
+    <!--<xs:element name="WriteEditSessionResponse" type="tns:WriteEditSessionOutputMsgType"/>-->
     <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType"/>
     <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
-    <xs:element name="DeleteEditSessionRequest" type="tns:DeleteEditSessionInputMsgType"/>
-    <xs:element name="DeleteEditSessionResponse" type="tns:DeleteEditSessionOutputMsgType"/>
+    <!--<xs:element name="DeleteEditSessionRequest" type="tns:DeleteEditSessionInputMsgType"/>-->
+    <!--<xs:element name="DeleteEditSessionResponse" type="tns:DeleteEditSessionOutputMsgType"/>-->
     <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
     <xs:element name="DeleteProcessVersionsResponse" type="tns:DeleteProcessVersionsOutputMsgType"/>
     <xs:element name="ImportProcessRequest" type="tns:ImportProcessInputMsgType"/>
@@ -311,7 +311,8 @@
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="processId" type="xs:int"/>
         <xs:attribute name="processName" type="xs:string"/>
-        <xs:attribute name="versionNumber" type="xs:double"/>
+        <xs:attribute name="currentVersionNumber" type="xs:double"/>
+        <xs:attribute name="maxVersionNumber" type="xs:double"/>
         <xs:attribute name="originalVersionNumber" type="xs:double"/>
         <xs:attribute name="originalBranchName" type="xs:string"/>
         <xs:attribute name="newBranchName" type="xs:string"/>
@@ -551,9 +552,9 @@
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="ReadEditSessionInputMsgType">
-        <xs:attribute name="EditSessionCode" type="xs:int"/>
-    </xs:complexType>
+    <!--<xs:complexType name="ReadEditSessionInputMsgType">-->
+        <!--<xs:attribute name="EditSessionCode" type="xs:int"/>-->
+    <!--</xs:complexType>-->
 
     <xs:complexType name="ReadDomainsOutputMsgType">
         <xs:sequence>
@@ -606,13 +607,13 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="ReadEditSessionOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"/>
-            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
-            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
+    <!--<xs:complexType name="ReadEditSessionOutputMsgType">-->
+        <!--<xs:sequence>-->
+            <!--<xs:element name="Result" type="tns:ResultType"/>-->
+            <!--<xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>-->
+            <!--<xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>-->
+        <!--</xs:sequence>-->
+    <!--</xs:complexType>-->
 
     <xs:complexType name="ReadNativeTypesInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
@@ -771,28 +772,28 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="WriteEditSessionInputMsgType">
-        <xs:sequence>
-            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
+    <!--<xs:complexType name="WriteEditSessionInputMsgType">-->
+        <!--<xs:sequence>-->
+            <!--<xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>-->
+        <!--</xs:sequence>-->
+    <!--</xs:complexType>-->
 
-    <xs:complexType name="WriteEditSessionOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"/>
-        </xs:sequence>
-        <xs:attribute name="EditSessionCode" type="xs:int"/>
-    </xs:complexType>
+    <!--<xs:complexType name="WriteEditSessionOutputMsgType">-->
+        <!--<xs:sequence>-->
+            <!--<xs:element name="Result" type="tns:ResultType"/>-->
+        <!--</xs:sequence>-->
+        <!--<xs:attribute name="EditSessionCode" type="xs:int"/>-->
+    <!--</xs:complexType>-->
 
-    <xs:complexType name="DeleteEditSessionInputMsgType">
-        <xs:attribute name="EditSessionCode" type="xs:int"/>
-    </xs:complexType>
+    <!--<xs:complexType name="DeleteEditSessionInputMsgType">-->
+        <!--<xs:attribute name="EditSessionCode" type="xs:int"/>-->
+    <!--</xs:complexType>-->
 
-    <xs:complexType name="DeleteEditSessionOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"/>
-        </xs:sequence>
-    </xs:complexType>
+    <!--<xs:complexType name="DeleteEditSessionOutputMsgType">-->
+        <!--<xs:sequence>-->
+            <!--<xs:element name="Result" type="tns:ResultType"/>-->
+        <!--</xs:sequence>-->
+    <!--</xs:complexType>-->
 
     <xs:complexType name="DeleteProcessVersionsInputMsgType">
         <xs:sequence>

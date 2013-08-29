@@ -14,7 +14,6 @@ import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.ClusterType;
 import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.DomainsType;
-import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.GetFragmentOutputMsgType;
@@ -107,12 +106,12 @@ public interface ManagerService {
      */
     NativeTypesType readNativeTypes();
 
-    /**
-     * Reads the Edit session values for a particular code.
-     * @param code the code we are searching for
-     * @return the EditSessionType from the WebService
-     */
-    EditSessionType readEditSession(int code);
+//    /**
+//     * Reads the Edit session values for a particular code.
+//     * @param code the code we are searching for
+//     * @return the EditSessionType from the WebService
+//     */
+//    EditSessionType readEditSession(int code);
 
     /**
      * Create a GED Matrix used in the Cluster Creation.
@@ -380,24 +379,24 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void writeAnnotation(Integer editSessionCode, String annName, boolean isNew, Integer processId, String version, String nat_type, InputStream native_is) throws IOException, Exception;
+//
+//    /**
+//     * set an edit session for a model.
+//     * @param editSession the edit session to persist.
+//     * @return the code of the new session.
+//     * @throws Exception ... change to be something more relevant
+//     * TODO: Fix Exception
+//     */
+//    int writeEditSession(EditSessionType editSession) throws Exception;
 
-    /**
-     * set an edit session for a model.
-     * @param editSession the edit session to persist.
-     * @return the code of the new session.
-     * @throws Exception ... change to be something more relevant
-     * TODO: Fix Exception
-     */
-    int writeEditSession(EditSessionType editSession) throws Exception;
 
-
-    /**
-     * Delete an edit session for a model.
-     * @param code the edit session code
-     * @throws Exception ... change to be something more relevant
-     * TODO: Fix Exception
-     */
-    void deleteEditSession(int code) throws Exception;
+//    /**
+//     * Delete an edit session for a model.
+//     * @param code the edit session code
+//     * @throws Exception ... change to be something more relevant
+//     * TODO: Fix Exception
+//     */
+//    void deleteEditSession(int code) throws Exception;
 
     /**
      * Delete process models / versions from the repository.
