@@ -183,6 +183,18 @@ public class CpfNetType extends NetType implements Attributed {
                         switch (exclusiveGateway.getGatewayDirection()) {
                             case CONVERGING: routing = new CpfXORJoinType(); break;
                             case DIVERGING:  routing = new CpfXORSplitType();  break;
+                            case UNSPECIFIED:
+                               if (exclusiveGateway.getIncoming().size() > 1 && exclusiveGateway.getOutgoing().size() == 1) {
+                                   routing = new CpfXORJoinType();
+                                   break;
+                               } else if (exclusiveGateway.getIncoming().size() == 1 && exclusiveGateway.getOutgoing().size() > 1) {
+                                   routing = new CpfXORSplitType();
+                                   break;
+                               } else if (exclusiveGateway.getIncoming().size() == 1 && exclusiveGateway.getOutgoing().size() == 1) {
+                                   // Arbitrarily assume a split -- can't tell from either the explicit direction or incoming/outgoing counts
+                                   routing = new CpfXORSplitType();
+                                   break;
+                               }
                             default:
                                 throw new RuntimeException(
                                     new CanoniserException("Gateway " + exclusiveGateway.getId() +

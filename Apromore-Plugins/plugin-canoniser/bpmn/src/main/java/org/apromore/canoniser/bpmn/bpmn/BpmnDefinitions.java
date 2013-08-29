@@ -330,15 +330,16 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @return corrected JAXB document
      */
     // TODO - change the return type and the factory parameter to be Definitions and ObjectFactory, and move to bpmn-schema
-    private BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
-                                                final BpmnObjectFactory factory) throws JAXBException, TransformerException {
+    public BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
+                                               final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
                                                       com.processconfiguration.ObjectFactory.class,
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                                       org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                      org.omg.spec.dd._20100524.di.ObjectFactory.class);
+                                                      org.omg.spec.dd._20100524.di.ObjectFactory.class,
+                                                      com.signavio.ObjectFactory.class);
 
         // Marshal the BPMN into a DOM tree
         DOMResult intermediateResult = new DOMResult();
@@ -454,12 +455,30 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
      * @param id  the name of a BPMN element
      * @throws CanoniserException if <code>id</code> isn't a BPMN element from the current document
      */
-    TBaseElement findElement(final QName id) throws CanoniserException {
+    public TBaseElement findElement(final QName id) throws CanoniserException {
         if (!targetNamespace.equals(id.getNamespaceURI())) {
-            throw new CanoniserException(id + " is not local to this BPMN model");
+            if ("http://www.omg.org/spec/BPMN/20100524/MODEL".equals(id.getNamespaceURI())) {
+                java.util.logging.Logger.getAnonymousLogger().warning(
+                    id + " is a QName reference to the BPMN namespace rather than the document's target namespace.  " +
+                    "Treating as {" + targetNamespace + "}" + id.getLocalPart() + " instead.  " +
+                    "Please fix the original document.");
+            } else {
+                throw new CanoniserException(id + " is not local to this BPMN model");
+            }
         }
 
         return idMap.get(id.getLocalPart());
     }
 
+    /**
+     * @param element  a BPMN element with an ID already present in the model
+     * @throws CanoniserException if <code>element</code> doesn't have an ID that's already mapped
+     */
+    public void updateElement(final TBaseElement element) throws CanoniserException {
+        TBaseElement old = idMap.put(element.getId(), element);
+        if (old == null) {
+            throw new CanoniserException(element.getId() + " can't be updated because it doesn't already exist");
+        }
+        assert old.getId().equals(element.getId());
+    }
 }
