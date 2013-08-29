@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
   xmlns:bpmn = "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:pc   = "http://www.processconfiguration.com"
   xmlns:xsl  = "http://www.w3.org/1999/XSL/Transform">
 
 <!-- The XJC compiler that generates JAXB for the BPMN schema doesn't handle collections of IDREFs well.
@@ -15,6 +16,10 @@
     </xsl:copy>
 </xsl:template>
 <xsl:template match="@workaround"/>
+
+<!-- Attributes of type IDREFS aren't allowed to be zero length -->
+<xsl:template match="pc:configuration/@sourceRefs[.='']"/>
+<xsl:template match="pc:configuration/@targetRefs[.='']"/>
 
 <!-- Work around XJC's trouble with bpmn:lane/flowNodeRef. -->
 <xsl:template match="bpmn:lane/*">
