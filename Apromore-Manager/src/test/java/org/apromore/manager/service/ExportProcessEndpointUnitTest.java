@@ -1,10 +1,17 @@
 package org.apromore.manager.service;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
+import javax.activation.DataHandler;
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.xml.bind.JAXBElement;
 
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -30,7 +37,6 @@ import org.apromore.service.MergeService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
-import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
@@ -46,7 +52,6 @@ import org.apromore.service.impl.MergeServiceImpl;
 import org.apromore.service.impl.PluginServiceImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.impl.SecurityServiceImpl;
-import org.apromore.service.impl.SessionServiceImpl;
 import org.apromore.service.impl.SimilarityServiceImpl;
 import org.apromore.service.impl.UserServiceImpl;
 import org.apromore.service.impl.WorkspaceServiceImpl;
@@ -55,13 +60,6 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 public class ExportProcessEndpointUnitTest {
 
@@ -78,7 +76,6 @@ public class ExportProcessEndpointUnitTest {
     private UserService userSrv;
     private SimilarityService simSrv;
     private MergeService merSrv;
-    private SessionService sesSrv;
     private SecurityService secSrv;
     private WorkspaceService wrkSrv;
     private UserInterfaceHelper uiHelper;
@@ -96,13 +93,12 @@ public class ExportProcessEndpointUnitTest {
         userSrv = createMock(UserServiceImpl.class);
         simSrv = createMock(SimilarityServiceImpl.class);
         merSrv = createMock(MergeServiceImpl.class);
-        sesSrv = createMock(SessionServiceImpl.class);
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, sesSrv, secSrv, wrkSrv, uiHelper);
+                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, secSrv, wrkSrv, uiHelper);
     }
 
 

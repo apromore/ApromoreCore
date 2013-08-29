@@ -330,7 +330,8 @@ public class MainController extends BaseController {
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
 
         editSession.setOriginalBranchName(version.getName());
-        editSession.setVersionNumber(version.getVersionNumber());
+        editSession.setCurrentVersionNumber(version.getVersionNumber());
+        editSession.setMaxVersionNumber(findMaxVersion(process));
 
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
@@ -342,8 +343,6 @@ public class MainController extends BaseController {
         }
 
         try {
-            // create and store an edit session
-            getService().writeEditSession(editSession);
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             SignavioController.process = process;
@@ -632,6 +631,17 @@ public class MainController extends BaseController {
     /* From the data in the properties automagically update the label in the header. */
     private void setHeaderText(Toolbarbutton releaseNotes) {
         releaseNotes.setLabel(String.format(WELCOME_TEXT, versionNumber, buildDate));
+    }
+
+    /* From a list of version summary types find the max version number. */
+    private Double findMaxVersion(ProcessSummaryType process) {
+        Double max = 0.0;
+        for (VersionSummaryType version : process.getVersionSummaries()) {
+            if (version.getVersionNumber() > max) {
+                max = version.getVersionNumber();
+            }
+        }
+        return max;
     }
 
 

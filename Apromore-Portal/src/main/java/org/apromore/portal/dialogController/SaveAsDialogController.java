@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.model.EditSessionType;
@@ -29,6 +30,8 @@ public class SaveAsDialogController extends BaseController {
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
+    private static final BigDecimal VERSION_INCREMENT = new BigDecimal("0.1");
+
     private Window saveAsW;
     private Textbox modelName;
     private Textbox versionNumber;
@@ -49,7 +52,7 @@ public class SaveAsDialogController extends BaseController {
         this.save = isNormalSave;
         this.saveAsW = (Window) Executions.createComponents("SaveAsDialog.zul", null, null);
         this.modelData = data;
-        this.originalVersionNumber = this.editSession.getVersionNumber();
+        this.originalVersionNumber = this.editSession.getCurrentVersionNumber();
         if (isNormalSave) {
             this.saveAsW.setTitle("Save");
         } else {
@@ -61,9 +64,9 @@ public class SaveAsDialogController extends BaseController {
         Row versionNumberR = (Row) rows.getChildren().get(1);
         Row branchNameR = (Row) rows.getChildren().get(2);
         Row buttonGroupR = (Row) rows.getChildren().get(3);
-        this.modelName = (org.zkoss.zul.Textbox) modelNameR.getFirstChild().getNextSibling();
-        this.versionNumber = (org.zkoss.zul.Textbox) versionNumberR.getFirstChild().getNextSibling();
-        this.branchName = (org.zkoss.zul.Textbox) branchNameR.getFirstChild().getNextSibling();
+        this.modelName = (Textbox) modelNameR.getFirstChild().getNextSibling();
+        this.versionNumber = (Textbox) versionNumberR.getFirstChild().getNextSibling();
+        this.branchName = (Textbox) branchNameR.getFirstChild().getNextSibling();
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.saveAsW.getFellow("saveAsGrid"));
         Button saveB = (Button) buttonGroupR.getFirstChild().getFirstChild();
@@ -92,7 +95,7 @@ public class SaveAsDialogController extends BaseController {
         if (isNormalSave) {
             this.modelName.setReadonly(true);
             this.branchName.setText(this.editSession.getOriginalBranchName());
-            this.versionNumber.setText(BigDecimal.valueOf(this.editSession.getVersionNumber() + 0.1).toString());
+            this.versionNumber.setText(String.format("%1.1f", new BigDecimal(this.editSession.getMaxVersionNumber()).add(VERSION_INCREMENT)));
         } else {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
@@ -118,7 +121,6 @@ public class SaveAsDialogController extends BaseController {
         String processName = this.modelName.getText();
         Integer processId = this.process.getId();
         String created = this.version.getCreationDate();
-        String owner = UserSessionManager.getCurrentUser().getUsername();
         String branch = this.branchName.getText();
         Double versionNo = Double.valueOf(versionNumber.getText());
 
@@ -157,9 +159,9 @@ public class SaveAsDialogController extends BaseController {
         String title = "Missing Fields";
         try {
             if (this.save) {
-                if (new Double(versionNumber.getText()) < this.editSession.getVersionNumber()) {
+                if (new Double(versionNumber.getText()) < this.editSession.getCurrentVersionNumber()) {
                     valid = false;
-                    message = message + "New Version number has to be greater than " + this.editSession.getVersionNumber();
+                    message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
                     title = "Wrong Version Number";
                 }
                 if (this.branchName.getText().equals("") || this.branchName.getText() == null) {
