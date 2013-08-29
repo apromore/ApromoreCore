@@ -26,8 +26,6 @@ import org.apromore.model.CreateClustersInputMsgType;
 import org.apromore.model.CreateFolderInputMsgType;
 import org.apromore.model.CreateFolderOutputMsgType;
 import org.apromore.model.CreateGEDMatrixInputMsgType;
-import org.apromore.model.DeleteEditSessionInputMsgType;
-import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteFolderInputMsgType;
 import org.apromore.model.DeleteFolderOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
@@ -91,8 +89,6 @@ import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
 import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadEditSessionInputMsgType;
-import org.apromore.model.ReadEditSessionOutputMsgType;
 import org.apromore.model.ReadInitialNativeFormatInputMsgType;
 import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
 import org.apromore.model.ReadInstalledPluginsInputMsgType;
@@ -129,8 +125,6 @@ import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.model.WriteAnnotationInputMsgType;
 import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.apromore.model.WriteEditSessionInputMsgType;
-import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -478,24 +472,6 @@ public class ManagerServiceClient implements ManagerService {
         return response.getValue().getNativeTypes();
     }
 
-    /**
-     * @see org.apromore.manager.client.ManagerService#readEditSession(int)
-     *      {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public EditSessionType readEditSession(int code) {
-        LOGGER.debug("Preparing ReadEditSessionRequest.....");
-
-        ReadEditSessionInputMsgType msg = new ReadEditSessionInputMsgType();
-        msg.setEditSessionCode(code);
-
-        JAXBElement<ReadEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createReadEditSessionRequest(msg);
-
-        JAXBElement<ReadEditSessionOutputMsgType> response = (JAXBElement<ReadEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getEditSession();
-    }
-
 
     /**
      * @see ManagerService#getFragment(Integer)
@@ -761,7 +737,7 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setFolderId(folderId);
         editSession.setNativeType(nativeType);
         editSession.setProcessName(processName);
-        editSession.setVersionNumber(versionNumber);
+        editSession.setCurrentVersionNumber(versionNumber);
         editSession.setDomain(domain);
         editSession.setCreationDate(created);
         editSession.setLastUpdate(lastUpdate);
@@ -800,7 +776,7 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setOriginalBranchName(originalBranchName);
         editSession.setNewBranchName(newBranchName);
         editSession.setOriginalVersionNumber(originalVersionNumber);
-        editSession.setVersionNumber(versionNumber);
+        editSession.setCurrentVersionNumber(versionNumber);
         editSession.setDomain(domain);
         editSession.setProcessId(processId);
 
@@ -892,49 +868,6 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<WriteAnnotationOutputMsgType> response = (JAXBElement<WriteAnnotationOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        }
-    }
-
-    /**
-     * @see ManagerService#writeEditSession(org.apromore.model.EditSessionType)
-     *      {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public int writeEditSession(final EditSessionType editSession) throws Exception {
-        LOGGER.debug("Preparing WriteEditSessionRequest.....");
-
-        WriteEditSessionInputMsgType msg = new WriteEditSessionInputMsgType();
-        msg.setEditSession(editSession);
-
-        JAXBElement<WriteEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createWriteEditSessionRequest(msg);
-
-        JAXBElement<WriteEditSessionOutputMsgType> response = (JAXBElement<WriteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            return response.getValue().getEditSessionCode();
-        }
-    }
-
-
-    /**
-     * @see ManagerService#deleteEditSession(int)
-     *      {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void deleteEditSession(final int code) throws Exception {
-        LOGGER.debug("Preparing DeleteEditionSessionRequest.....");
-
-        DeleteEditSessionInputMsgType msg = new DeleteEditSessionInputMsgType();
-        msg.setEditSessionCode(code);
-
-        JAXBElement<DeleteEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createDeleteEditSessionRequest(msg);
-
-        JAXBElement<DeleteEditSessionOutputMsgType> response = (JAXBElement<DeleteEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }

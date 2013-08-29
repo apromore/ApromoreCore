@@ -23,7 +23,6 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
-import org.apromore.dao.model.EditSession;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
@@ -47,8 +46,6 @@ import org.apromore.model.CreateFolderInputMsgType;
 import org.apromore.model.CreateFolderOutputMsgType;
 import org.apromore.model.CreateGEDMatrixInputMsgType;
 import org.apromore.model.CreateGEDMatrixOutputMsgType;
-import org.apromore.model.DeleteEditSessionInputMsgType;
-import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteFolderInputMsgType;
 import org.apromore.model.DeleteFolderOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
@@ -117,8 +114,6 @@ import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
 import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadEditSessionInputMsgType;
-import org.apromore.model.ReadEditSessionOutputMsgType;
 import org.apromore.model.ReadInitialNativeFormatInputMsgType;
 import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
 import org.apromore.model.ReadInstalledPluginsInputMsgType;
@@ -153,10 +148,6 @@ import org.apromore.model.UpdateProcessOutputMsgType;
 import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
-import org.apromore.model.WriteAnnotationInputMsgType;
-import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.apromore.model.WriteEditSessionInputMsgType;
-import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
 import org.apromore.plugin.ParameterAwarePlugin;
@@ -175,7 +166,6 @@ import org.apromore.service.MergeService;
 import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
-import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
@@ -218,7 +208,6 @@ public class ManagerPortalEndpoint {
     private UserService userSrv;
     private SimilarityService simSrv;
     private MergeService merSrv;
-    private SessionService sesSrv;
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
@@ -242,7 +231,6 @@ public class ManagerPortalEndpoint {
      * @param userSrv User Service.
      * @param simSrv Similarity Service.
      * @param merSrv Merge Service.
-     * @param sesSrv Session Service.
      * @param secSrv security Service.
      * @param wrkSrv workspace service.
      * @param uiHelper UI Helper.
@@ -251,7 +239,7 @@ public class ManagerPortalEndpoint {
     public ManagerPortalEndpoint(final DeploymentService deploymentService, final PluginService pluginService,
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
-            final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv, final SessionService sesSrv,
+            final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
@@ -264,7 +252,6 @@ public class ManagerPortalEndpoint {
         this.userSrv = userSrv;
         this.simSrv = simSrv;
         this.merSrv = merSrv;
-        this.sesSrv = sesSrv;
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
@@ -386,35 +373,6 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createSearchForSimilarProcessesResponse(res);
     }
 
-    @PayloadRoot(localPart = "WriteAnnotationRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload final JAXBElement<WriteAnnotationInputMsgType> req) {
-        LOGGER.debug("Executing operation writeAnnotation");
-        //WriteAnnotationInputMsgType payload = req.getValue();
-        WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-//            Integer editSessionCode = payload.getEditSessionCode();
-//            String annotName = payload.getAnnotationName();
-//            Integer processId = payload.getProcessId();
-//            String version = payload.getVersion();
-//            String nat_type = payload.getNativeType();
-//            Boolean isNew = payload.isIsNew();
-//            DataHandler handler = payload.getNative();
-//            InputStream native_is = handler.getInputStream();
-//            // TODO use CanoniserService instead
-//            caClient.GenerateAnnotation(annotName, editSessionCode, isNew, processId, version, nat_type, native_is);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createWriteAnnotationResponse(res);
-    }
-
     @PayloadRoot(namespace = NAMESPACE, localPart = "GetAllClustersRequest")
     public void getAllClusters(@RequestPayload final JAXBElement<String> message) {
         LOGGER.debug("Retrieving all clusters in the repository ...");
@@ -434,27 +392,6 @@ public class ManagerPortalEndpoint {
         result.setCode(0);
         result.setMessage("");
         return WS_OBJECT_FACTORY.createReadAllUsersResponse(res);
-    }
-
-    @PayloadRoot(localPart = "DeleteEditSessionRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<DeleteEditSessionOutputMsgType> deleteEditSession(@RequestPayload final JAXBElement<DeleteEditSessionInputMsgType> req) {
-        LOGGER.debug("Executing operation deleteEditSession");
-        DeleteEditSessionInputMsgType payload = req.getValue();
-        DeleteEditSessionOutputMsgType res = new DeleteEditSessionOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        int code = payload.getEditSessionCode();
-        try {
-            sesSrv.deleteSession(code);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createDeleteEditSessionResponse(res);
     }
 
     @PayloadRoot(localPart = "DeleteProcessVersionsRequest", namespace = NAMESPACE)
@@ -501,7 +438,7 @@ public class ManagerPortalEndpoint {
             CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
-                    editType.getVersionNumber(), editType.getOriginalVersionNumber(),
+                    editType.getCurrentVersionNumber(), editType.getOriginalVersionNumber(),
                     secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
 
             result.setCode(0);
@@ -514,69 +451,6 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createUpdateProcessResponse(res);
     }
 
-    @PayloadRoot(localPart = "ReadEditSessionRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<ReadEditSessionOutputMsgType> readEditSession(@RequestPayload final JAXBElement<ReadEditSessionInputMsgType> req) {
-        LOGGER.debug("Executing operation readEditSession");
-        ReadEditSessionInputMsgType payload = req.getValue();
-        ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
-        int code = payload.getEditSessionCode();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            EditSession session = sesSrv.readSession(code);
-
-            EditSessionType editSessionP = new EditSessionType();
-            editSessionP.setNativeType(session.getNatType());
-            editSessionP.setProcessId(session.getProcess().getId());
-            editSessionP.setUsername(session.getUser().getUsername());
-            editSessionP.setVersionNumber(session.getVersionNumber());
-            editSessionP.setProcessName(session.getProcess().getName());
-            editSessionP.setOriginalBranchName(session.getOriginalBranchName());
-            editSessionP.setNewBranchName(session.getNewBranchName());
-            editSessionP.setCreateNewBranch(session.getCreateNewBranch());
-            editSessionP.setDomain(session.getProcess().getDomain());
-            editSessionP.setCreationDate(session.getCreateDate());
-            editSessionP.setLastUpdate(session.getLastUpdateDate());
-            if (session.getAnnotation() == null) {
-                editSessionP.setWithAnnotation(false);
-            } else {
-                editSessionP.setWithAnnotation(true);
-                editSessionP.setAnnotation(session.getAnnotation());
-            }
-
-            res.setEditSession(editSessionP);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createReadEditSessionResponse(res);
-    }
-
-    @PayloadRoot(localPart = "WriteEditSessionRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<WriteEditSessionOutputMsgType> writeEditSession(@RequestPayload final JAXBElement<WriteEditSessionInputMsgType> req) {
-        LOGGER.debug("Executing operation writeEditSession");
-        WriteEditSessionInputMsgType payload = req.getValue();
-        WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-
-        try {
-            EditSession session = sesSrv.createSession(payload.getEditSession());
-            res.setEditSessionCode(session.getId());
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createWriteEditSessionResponse(res);
-    }
 
     @PayloadRoot(localPart = "GetFragmentRequest", namespace = NAMESPACE)
     @ResponsePayload
@@ -664,7 +538,7 @@ public class ManagerPortalEndpoint {
             Integer folderId = editSession.getFolderId();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
-            Double versionNumber = editSession.getVersionNumber();
+            Double versionNumber = editSession.getCurrentVersionNumber();
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
@@ -705,7 +579,6 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<CreateGEDMatrixOutputMsgType> createGedMatrix(@RequestPayload final JAXBElement<CreateGEDMatrixInputMsgType> req) {
         LOGGER.debug("Executing operation createGedMatrix");
-        //CreateGEDMatrixInputMsgType payload = req.getValue();
         CreateGEDMatrixOutputMsgType res = new CreateGEDMatrixOutputMsgType();
 
         try {
@@ -764,7 +637,6 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<GetClusteringSummaryOutputMsgType> getClusteringSummary(@RequestPayload final JAXBElement<GetClusteringSummaryInputMsgType> req) {
         LOGGER.debug("Executing operation getClusteringSummary");
-        //GetClusteringSummaryInputMsgType payload = req.getValue();
         GetClusteringSummaryOutputMsgType res = new GetClusteringSummaryOutputMsgType();
 
         ClusteringSummary summary = clusterService.getClusteringSummary();
