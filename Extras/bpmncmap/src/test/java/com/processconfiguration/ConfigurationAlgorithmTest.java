@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 import com.sun.xml.bind.IDResolver;
@@ -49,6 +50,8 @@ import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.model.gateway.InclusiveGateway;
 */
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.*;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -119,7 +122,6 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
     @Test public final void testConfigure1() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
@@ -144,7 +146,6 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
     @Test public final void testConfigure2() throws IOException, JAXBException, SAXException {
 
         // Obtain the test document
@@ -162,7 +163,6 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Ignore
     @Test public final void testFindAbsentSequenceFlows1() throws FileNotFoundException, JAXBException {
 
         // Obtain the test set
@@ -172,7 +172,7 @@ public class ConfigurationAlgorithmTest {
         assertEquals(1, configuredGatewaySet.size());
 
         // Exercise the method
-        Set<TSequenceFlow> absentFlowSet = ConfigurationAlgorithm.findAbsentSequenceFlows(configuredGatewaySet);
+        Set<TSequenceFlow> absentFlowSet = ConfigurationAlgorithm.findAbsentSequenceFlows(definitions, configuredGatewaySet);
 
         // Examine the output
         assertEquals(1, absentFlowSet.size());
@@ -210,13 +210,29 @@ public class ConfigurationAlgorithmTest {
     }
 
     /**
+     * Test the {@link ConfigurationAlgorithm#findConfiguredGateways} method.
+     *
+     * @throws JAXBException if the test document can't be parsed
+     */
+    @Test public final void testFindConfiguredGateways2() throws FileNotFoundException, JAXBException {
+
+        // Obtain the test document
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(trivialGatewayFile), true);
+
+        // Exercise the method
+        Set<TGateway> configuredGateways = ConfigurationAlgorithm.findConfiguredGateways(definitions);
+
+        // Examine the output
+        assertTrue(configuredGateways.isEmpty());
+    }
+
+    /**
      * Test the {@link ConfigurationAlgorithm#findOrphans} method.
      *
      * On the unmodified {@link #test1File}, no orphans should be found.
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Ignore
     @Test public final void testFindOrphans1() throws FileNotFoundException, JAXBException {
 
         // Obtain the test document
@@ -233,7 +249,6 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Ignore
     @Test public final void testFindOrphans2() throws FileNotFoundException, JAXBException {
 
         // Obtain the test document
@@ -250,7 +265,6 @@ public class ConfigurationAlgorithmTest {
      *
      * @throws JAXBException if the test document can't be parsed
      */
-    @Ignore
     @Test public final void testFindOrphans3() throws FileNotFoundException, JAXBException {
 
         // Sequence position of the sequence flow that is deleted by this test
@@ -265,7 +279,7 @@ public class ConfigurationAlgorithmTest {
         ConfigurationAlgorithm.prune(definitions, Collections.singleton((TBaseElement) removedFlow));
 
         // Exercise the method
-        Set<TFlowElement> orphans = ConfigurationAlgorithm.findOrphans(definitions);
+        Set<TBaseElement> orphans = ConfigurationAlgorithm.findOrphans(definitions);
 
         // Examine the output, expecting two orphans
         assertNotNull(orphans);
@@ -279,13 +293,13 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
-    @Test public final void testPrune1() throws IOException, JAXBException, SAXException {
+    @Test public final void testPrune1() throws IOException, JAXBException, SAXException, TransformerException {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(test1File), true);
 
         ConfigurationAlgorithm.prune(definitions, java.util.Collections.EMPTY_SET);
+        definitions = definitions.correctFlowNodeRefs(definitions, new BpmnObjectFactory());
         assertValidBPMN(definitions, "test-prune1.bpmn.xml");
     }
 
@@ -296,8 +310,7 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
-    @Test public final void testPrune2() throws IOException, JAXBException, SAXException {
+    @Test public final void testPrune2() throws IOException, JAXBException, SAXException, TransformerException {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(test1File), true);
@@ -310,6 +323,8 @@ public class ConfigurationAlgorithmTest {
         Set<TBaseElement> pruningSet = new HashSet<TBaseElement>();
         pruningSet.add(airbus);
         ConfigurationAlgorithm.prune(definitions, pruningSet);
+        definitions = definitions.correctFlowNodeRefs(definitions, new BpmnObjectFactory());
+        definitions.marshal(new FileOutputStream("/tmp/prune2.bpmn"), false);
 
         // Inspect the mutated definitions
         //assertValidBPMN(definitions, "test-prune2.bpmn.xml");  // pruning introduces unsourced/untargeted flows
@@ -323,8 +338,7 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
-    @Test public final void testTrivialGatewayFile1() throws IOException, JAXBException, SAXException {
+    @Test public final void testTrivialGatewayFile1() throws CanoniserException, IOException, JAXBException, SAXException {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(trivialGatewayFile), true);
@@ -337,13 +351,13 @@ public class ConfigurationAlgorithmTest {
         TSequenceFlow tuesday = (TSequenceFlow) process.getFlowElement().get(4).getValue();
         assertEquals("sid-C354ED3F-6C0A-4A04-B25B-AA5A4B63227B", tuesday.getId());
 
-        TTextAnnotation tuesdayText = (TTextAnnotation) process.getArtifact().get(12).getValue();
+        TTextAnnotation tuesdayText = (TTextAnnotation) process.getArtifact().get(7).getValue();
         assertEquals("sid-C9BB116E-3513-42B8-B53D-6DE8FF1F597B", tuesdayText.getId());
 
-        TAssociation tuesdayAssoc = (TAssociation) process.getArtifact().get(5).getValue();
+        TAssociation tuesdayAssoc = (TAssociation) process.getArtifact().get(0).getValue();
         assertEquals("sid-DF727F05-4C45-40C3-B4C8-9EECBFAE95AB", tuesdayAssoc.getId());
-        assertEquals(tuesdayText, tuesdayAssoc.getSourceRef());
-        assertEquals(tuesday, tuesdayAssoc.getTargetRef());
+        assertEquals(tuesdayText, definitions.findElement(tuesdayAssoc.getSourceRef()));
+        assertEquals(tuesday, definitions.findElement(tuesdayAssoc.getTargetRef()));
 
 	/* TODO - reinstate
         assertEquals(1, tuesday.getIncoming().size());
@@ -363,8 +377,7 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
-    @Test public final void testRemoveTrivialGateway1() throws IOException, JAXBException, SAXException {
+    @Test public final void testRemoveTrivialGateway1() throws CanoniserException, IOException, JAXBException, SAXException {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(trivialGatewayFile), true);
@@ -382,13 +395,13 @@ public class ConfigurationAlgorithmTest {
         TEndEvent friday = (TEndEvent) process.getFlowElement().get(2).getValue();
         assertEquals("sid-1FA55E81-D95D-4288-B8AE-B9739C47766B", friday.getId());
 
-        TAssociation tuesdayAssoc = (TAssociation) process.getArtifact().get(5).getValue();
+        TAssociation tuesdayAssoc = (TAssociation) process.getArtifact().get(0).getValue();
         assertEquals("sid-DF727F05-4C45-40C3-B4C8-9EECBFAE95AB", tuesdayAssoc.getId());
-        assertEquals(tuesday, tuesdayAssoc.getTargetRef());
+        assertEquals(tuesday, definitions.findElement(tuesdayAssoc.getTargetRef()));
 
-        TAssociation thursdayAssoc = (TAssociation) process.getArtifact().get(6).getValue();
+        TAssociation thursdayAssoc = (TAssociation) process.getArtifact().get(1).getValue();
         assertEquals("sid-E2325258-5152-43D4-BBF5-1F58BF541336", thursdayAssoc.getId());
-        assertEquals(thursday, thursdayAssoc.getTargetRef());
+        assertEquals(thursday, definitions.findElement(thursdayAssoc.getTargetRef()));
 
 	/* TODO - reinstate
         assertEquals(1, tuesday.getIncoming().size());
@@ -397,21 +410,21 @@ public class ConfigurationAlgorithmTest {
 
         BPMNShape wednesdayGui = (BPMNShape) definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().get(1).getValue();
         assertEquals("sid-6A5EAA84-D4F8-4E3B-B5A0-EE93A65D0F10_gui", wednesdayGui.getId());
-        assertSame(wednesday, wednesdayGui.getBpmnElement());
+        assertSame(wednesday, definitions.findElement(wednesdayGui.getBpmnElement()));
 
         // Exercise the method
         ConfigurationAlgorithm.removeTrivialGateway(definitions, wednesday);
 
         // Inspect mutated BPMN XML document
-        assertSame(process, definitions.getRootElement().get(0));
-        assertSame(monday, process.getFlowElement().get(0));
-        assertSame(tuesday, process.getFlowElement().get(2));
-        assertSame(friday, process.getFlowElement().get(1));
+        assertSame(process, definitions.getRootElement().get(0).getValue());
+        assertSame(monday, process.getFlowElement().get(0).getValue());
+        assertSame(tuesday, process.getFlowElement().get(2).getValue());
+        assertSame(friday, process.getFlowElement().get(1).getValue());
 
         assertEquals(monday, tuesday.getSourceRef());
         assertEquals(friday, tuesday.getTargetRef());
-        assertEquals(tuesday, tuesdayAssoc.getTargetRef());
-        assertEquals(tuesday, thursdayAssoc.getTargetRef());
+        assertEquals(tuesday, definitions.findElement(tuesdayAssoc.getTargetRef()));
+        assertEquals(tuesday, definitions.findElement(thursdayAssoc.getTargetRef()));
 
 	/* TODO - reinstate
         assertEquals(2, tuesday.getIncoming().size());
@@ -431,8 +444,7 @@ public class ConfigurationAlgorithmTest {
      * @throws JAXBException if the test document can't be parsed
      * @throws SAXException if the schema can't be parsed
      */
-    @Ignore
-    @Test public final void testReplaceConfiguredGateway1() throws IOException, JAXBException, SAXException {
+    @Test public final void testReplaceConfiguredGateway1() throws CanoniserException, IOException, JAXBException, SAXException {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(test1File), true);
@@ -445,10 +457,11 @@ public class ConfigurationAlgorithmTest {
 
         BPMNShape gatewayGui = (BPMNShape) definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().get(1).getValue();
         assertEquals("sid-B044A443-736E-495B-9DD8-90EB4860F9AC_gui", gatewayGui.getId());
-        assertSame(gateway, gatewayGui.getBpmnElement());
+        assertSame(gateway, definitions.findElement(gatewayGui.getBpmnElement()));
 
         // Exercise the method
         ConfigurationAlgorithm.replaceConfiguredGateway(definitions, gateway);
+        definitions.marshal(new FileOutputStream("/tmp/test-replaceConfiguredGateway1.bpmn"), false);
 
         // Expecting a new, non-configurable inclusive gateway
         TGateway newGateway = (TGateway) ((TProcess) definitions.getRootElement().get(0).getValue()).getFlowElement().get(1).getValue();
@@ -470,8 +483,8 @@ public class ConfigurationAlgorithmTest {
 	*/
 
         // Test that the diagram reference has also been updated
-        assertSame(gatewayGui, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().get(1));
-        assertSame(newGateway, gatewayGui.getBpmnElement());
+        assertSame(gatewayGui, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().get(1).getValue());
+        assertSame(newGateway, definitions.findElement(gatewayGui.getBpmnElement()));
 
         assertValidBPMN(definitions, "test-replaceConfiguredGateway1.bpmn.xml");
     }

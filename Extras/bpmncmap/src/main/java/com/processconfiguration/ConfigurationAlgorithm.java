@@ -15,6 +15,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 //import com.sun.xml.bind.IDResolver;
 
 /*
@@ -56,6 +59,9 @@ import de.hpi.bpmn2_0.model.gateway.ParallelGateway;
 import de.hpi.bpmn2_0.transformation.AbstractVisitor;
 import de.hpi.bpmn2_0.transformation.BPMNPrefixMapper;
 */
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.*;
 import org.omg.spec.bpmn._20100524.model.*;
 import org.omg.spec.dd._20100524.di.*;
@@ -98,7 +104,7 @@ public abstract class ConfigurationAlgorithm {
         final Set<TGateway> reconfiguredGatewaySet = findConfiguredGateways(definitions);
 
         // Find and remove absent sequence flows
-        prune(definitions, (Set) findAbsentSequenceFlows(reconfiguredGatewaySet));
+        prune(definitions, (Set) findAbsentSequenceFlows((BpmnDefinitions) definitions, reconfiguredGatewaySet));
 
         // Replace configured gateways with the configured type, and remove their <configurable> element
         for (TGateway gateway : reconfiguredGatewaySet) {
@@ -118,8 +124,8 @@ public abstract class ConfigurationAlgorithm {
      * @param definitions  a BPMN XML document
      * @return  the reverse mapping of the <code>bpmnElement</code> attribute
      */
-    public static Map<QName, DiagramElement> findBpmndiMap(final TDefinitions definitions) {
-        final Map<QName, DiagramElement> bpmndiMap = new HashMap<>();
+    public static Map<TBaseElement, DiagramElement> findBpmndiMap(final TDefinitions definitions) {
+        final Map<TBaseElement, DiagramElement> bpmndiMap = new HashMap<>();
 
 	/* FOO
         for (BPMNDiagram bpmnDiagram : definitions.getBPMNDiagram()) {
@@ -139,11 +145,19 @@ public abstract class ConfigurationAlgorithm {
 	*/
         definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
             @Override public void visit(final BPMNEdge that) {
-                bpmndiMap.put(that.getBpmnElement(), that);
+                try {
+                    bpmndiMap.put(((BpmnDefinitions) definitions).findElement(that.getBpmnElement()), that);
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override public void visit(final BPMNShape that) {
-                bpmndiMap.put(that.getBpmnElement(), that);
+                try {
+                    bpmndiMap.put(((BpmnDefinitions) definitions).findElement(that.getBpmnElement()), that);
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
             }
         }));
 
@@ -161,38 +175,14 @@ public abstract class ConfigurationAlgorithm {
         // Output value
         final Set<TGateway> reconfiguredGatewaySet = new HashSet<TGateway>();
 
-	/*
-        for (BPMNDiagram bpmnDiagram : definitions.getBPMNDiagram()) {
-            for (JAXBElement<? extends DiagramElement> jaxbElement : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-                DiagramElement element = jaxbElement.getValue();
-                element.acceptVisitor(new BaseVisitor() {
-                    @Override public void visit(final BPMNShape that) {
-                        super.visitBpmnShape(that);
-                        that.getBpmnElement().acceptVisitor(this);
-                    }
-
-                    @Override public void visit(final TGateway that) {
-                        super.visitBaseElement(that);
-
-                        if (gatewayConfigurationType(that) != null) {
-                            reconfiguredGatewaySet.add(that);
-                        }
-                    }
-                });
-            }
-        }
-	*/
-        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new InheritingVisitor() {
             @Override public void visit(final TGateway that) {
-                // TODO - add a check for the configuration element(!)
-                reconfiguredGatewaySet.add(that);
+                that.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+                    @Override public void visit(final Configurable.Configuration configuration) {
+                        reconfiguredGatewaySet.add(that);
+                    }
+                }));
             }
-
-            @Override public void visit(final TComplexGateway that)    { visit((TGateway) that); }
-            @Override public void visit(final TEventBasedGateway that) { visit((TGateway) that); }
-            @Override public void visit(final TExclusiveGateway that)  { visit((TGateway) that); }
-            @Override public void visit(final TInclusiveGateway that)  { visit((TGateway) that); }
-            @Override public void visit(final TParallelGateway that)   { visit((TGateway) that); }
         }));
 
         return reconfiguredGatewaySet;
@@ -206,7 +196,7 @@ public abstract class ConfigurationAlgorithm {
      *     <code>configurable/configuration</code> extension elements
      * @return all sequence flows which are configured to be absent
      */
-    public static Set<TSequenceFlow> findAbsentSequenceFlows(final Set<TGateway> reconfiguredGatewaySet) {
+    public static Set<TSequenceFlow> findAbsentSequenceFlows(final BpmnDefinitions definitions, final Set<TGateway> reconfiguredGatewaySet) {
 
         // Return value
         final Set<TSequenceFlow> absentFlowSet = new HashSet<TSequenceFlow>();
@@ -227,7 +217,12 @@ public abstract class ConfigurationAlgorithm {
             switch (gateway.getGatewayDirection()) {
                 case CONVERGING:
                 case MIXED:
-                    absentFlowSet.addAll(getIncomingSequenceFlows(gateway));  // was originally gateway.get_incomingSequenceFlows()
+                    for (QName qName: gateway.getIncoming()) {
+                        try {
+                            absentFlowSet.add((TSequenceFlow) definitions.findElement(qName));
+                        } catch (CanoniserException e) { e.printStackTrace(); }
+                    }
+                    // Preceding loop replaced: absentFlowSet.addAll(getIncomingSequenceFlows(gateway));
                     absentFlowSet.removeAll(configuration.getSourceRefs());
                     break;
                 default:
@@ -238,7 +233,12 @@ public abstract class ConfigurationAlgorithm {
             switch (gateway.getGatewayDirection()) {
                 case DIVERGING:
                 case MIXED:
-                    absentFlowSet.addAll(getOutgoingSequenceFlows(gateway));  // was originally gateway.get_outgoingSequenceFlows()
+                    for (QName qName: gateway.getOutgoing()) {
+                        try {
+                            absentFlowSet.add((TSequenceFlow) definitions.findElement(qName));
+                        } catch (CanoniserException e) { e.printStackTrace(); }
+                    }
+                    // Preceding loop replaces: absentFlowSet.addAll(getOutgoingSequenceFlows(gateway));
                     absentFlowSet.removeAll(configuration.getTargetRefs());
                     break;
                 default:
@@ -255,30 +255,96 @@ public abstract class ConfigurationAlgorithm {
      * @param definitions  a BPMN model
      * @return any elements of the model aren't connected to both a start event and an end event
      */
-    static Set<TFlowElement> findOrphans(final TDefinitions definitions) {
+    static Set<TBaseElement> findOrphans(final TDefinitions definitions) {
 
-        Set<TFlowElement> all      = new HashSet<>();
-        Set<TFlowElement> canStart = new HashSet<>();
-        Set<TFlowElement> canEnd   = new HashSet<>();
+        final Set<TBaseElement> all      = new HashSet<>();  // all elements
+        final Set<TBaseElement> canStart = new HashSet<>();  // elements connected to a start event
+        final Set<TBaseElement> canEnd   = new HashSet<>();  // elements connected to an end event
 
-        for (final JAXBElement<? extends TRootElement> jaxbElement : definitions.getRootElement()) {
-            TRootElement rootElement = jaxbElement.getValue();
-            if (rootElement instanceof TProcess) {
-                for (final JAXBElement<? extends TFlowElement> jaxbElement2 : ((TProcess) rootElement).getFlowElement()) {
-                    TFlowElement element = jaxbElement2.getValue();
-                    all.add(element);
-                    if (element instanceof TStartEvent) {
-                        mark(element, canStart, Direction.FORWARDS);
-                    } else if (element instanceof TEndEvent) {
-                        mark(element, canEnd, Direction.BACKWARDS);
+        final Multimap<TBaseElement,TBaseElement> incomingMap = HashMultimap.create();
+        final Multimap<TBaseElement,TBaseElement> outgoingMap = HashMultimap.create();
+
+        // Populate incomingMap by traversing all the edges (not the nodes) of the document graph
+        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl() {
+            @Override public void traverse(Configurable.Configuration aBean, Visitor aVisitor) {}
+        }, new InheritingVisitor() {
+            @Override public void visit(final TAssociation that) {
+                try {
+                    TBaseElement source = ((BpmnDefinitions) definitions).findElement(that.getSourceRef());
+                    if (source != null) {
+                        incomingMap.put(that, source);
+                        incomingMap.put(source, that);  // for the purposes of marking, associations count in both directions
                     }
+
+                    TBaseElement target = ((BpmnDefinitions) definitions).findElement(that.getTargetRef());
+                    if (target != null) {
+                        incomingMap.put(target, that);
+                        incomingMap.put(that, target);  // for the purposes of marking, associations count in both directions
+                    }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
                 }
             }
-        }
+
+            @Override public void visit(final TMessageFlow that) {
+                try {
+                    TBaseElement source = ((BpmnDefinitions) definitions).findElement(that.getSourceRef());
+                    if (source != null) {
+                        incomingMap.put(that, source);
+                        incomingMap.put(source, that);  // for the purposes of marking, message flows count in both directions
+                    }
+
+                    TBaseElement target = ((BpmnDefinitions) definitions).findElement(that.getTargetRef());
+                    if (target != null) {
+                        incomingMap.put(target, that);
+                        incomingMap.put(that, that);  // for the purposes of marking, message flows count in both directions
+                    }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override public void visit(final TSequenceFlow that) {
+                if (that.getSourceRef() != null) {
+                    incomingMap.put(that, that.getSourceRef());
+                }
+
+                if (that.getTargetRef() != null) {
+                    incomingMap.put(that.getTargetRef(), that);
+                }
+            }
+        }));
+
+        // Populate outgoingMap
+        Multimaps.invertFrom(incomingMap, outgoingMap);
+
+        // Populate the sets of elements: all, canStart, canEnd
+        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl() {
+            @Override public void traverse(Configurable.Configuration aBean, Visitor aVisitor) {}
+        }, new InheritingVisitor() {
+            @Override public void visit(final TArtifact that) {
+                all.add(that);
+            }
+
+            @Override public void visit(final TFlowElement that) {
+                all.add(that);
+            }
+
+            @Override public void visit(final TStartEvent that) {
+                super.visit(that);
+                mark((BpmnDefinitions) definitions, that, canStart, Direction.FORWARDS, incomingMap, outgoingMap);
+            }
+
+            @Override public void visit(final TEndEvent that) {
+                super.visit(that);
+                mark((BpmnDefinitions) definitions, that, canEnd, Direction.BACKWARDS, incomingMap, outgoingMap);
+            }
+        }));
 
         // Compose and return the set of orphan elements
         canStart.retainAll(canEnd);  // the intersection of elements with starts and with ends
         all.removeAll(canStart);      // elements lacking either a start or an end
+
         return all;
     }
 
@@ -300,8 +366,15 @@ public abstract class ConfigurationAlgorithm {
      * @param element  the initial element to mark
      * @param markedSet  the set of marked elements
      * @param direction  whether to propagate marking to incoming or outgoing flows
+     * @param incomingMap  for each document element, its set of incoming elements
+     * @param outgoingMap  for each document element, its set of outgoing elements
      */
-    private static void mark(final TFlowElement element, final Set<TFlowElement> markedSet, final Direction direction) {
+    private static void mark(final BpmnDefinitions                     definitions,
+                             final TBaseElement                        element,
+                             final Set<TBaseElement>                   markedSet,
+                             final Direction                           direction,
+                             final Multimap<TBaseElement,TBaseElement> incomingMap,
+                             final Multimap<TBaseElement,TBaseElement> outgoingMap) {
 
         // Don't try to traverse null references
         if (element == null) { return; }
@@ -309,67 +382,104 @@ public abstract class ConfigurationAlgorithm {
         // If this element has already been done, we don't need to do it again
         if (markedSet.contains(element)) { return; }
 
-        // Recursively mark the element and all elements upstream/downstream from it
-	/* FOO
-        element.acceptVisitor(new AbstractVisitor() {
-            @Override public void visitBaseElement(final TBaseElement that) {
-                super.visitBaseElement(that);
+        markedSet.add(element);
 
-                markedSet.add(element);
-            }
-
-            @Override public void visitEdge(final Edge that) {
-                super.visitEdge(that);
-
-                if (direction == Direction.ASSOCIATED) {
-                    mark(that.getSourceRef(), markedSet, Direction.ASSOCIATED);
-                    mark(that.getTargetRef(), markedSet, Direction.ASSOCIATED);
-                }
-            }
-
-            @Override public void visitSequenceFlow(final TSequenceFlow that) {
-                super.visitSequenceFlow(that);
-
-                if (direction == Direction.BACKWARDS) {
-                    mark(that.getSourceRef(), markedSet, Direction.BACKWARDS);
-                } else if (direction == Direction.FORWARDS) {
-                    mark(that.getTargetRef(), markedSet, Direction.FORWARDS);
-                }
-            }
-
-            @Override public void visitFlowElement(final TFlowElement that) {
-                super.visitFlowElement(that);
-
-                for (Edge edge : that.getIncoming()) {
-                    if (!(edge instanceof TSequenceFlow)) {
-                        mark(edge, markedSet, Direction.ASSOCIATED);
+        if (element instanceof TAssociation) {
+            TAssociation that = (TAssociation) element;
+            if (direction == Direction.ASSOCIATED) {
+                try {
+                    TBaseElement source = definitions.findElement(that.getSourceRef());
+                    if (source != null) {
+                        mark(definitions, source, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
                     }
-                }
 
-                for (Edge edge : that.getOutgoing()) {
-                    if (!(edge instanceof TSequenceFlow)) {
-                        mark(edge, markedSet, Direction.ASSOCIATED);
+                    TBaseElement target = definitions.findElement(that.getTargetRef());
+                    if (target != null) {
+                        mark(definitions, target, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
                     }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
                 }
             }
+        }
 
-            @Override public void visitFlowNode(final TFlowNode that) {
-                super.visitFlowNode(that);
-
-                if (direction == Direction.BACKWARDS) {
-                    for (Edge edge : getIncomingSequenceFlows(that)) {
-                        mark(edge, markedSet, Direction.BACKWARDS);
-                    }
+        if (element instanceof TDataAssociation) {
+            TDataAssociation that = (TDataAssociation) element;
+            if (direction == Direction.ASSOCIATED) {
+                for (JAXBElement<Object> jeo: that.getSourceRef()) {
+                    mark(definitions, (TBaseElement) jeo.getValue(), markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
                 }
+                mark(definitions, that.getTargetRef(), markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+            }
+        }
 
-                if (direction == Direction.FORWARDS) {
-                    for (Edge edge : getOutgoingSequenceFlows(that)) {
-                        mark(edge, markedSet, Direction.FORWARDS);
+        if (element instanceof TSequenceFlow) {
+            TSequenceFlow that = (TSequenceFlow) element;
+            if (direction == Direction.BACKWARDS) {
+                mark(definitions, that.getSourceRef(), markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
+            } else if (direction == Direction.FORWARDS) {
+                mark(definitions, that.getTargetRef(), markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
+            }
+        }
+
+        if (element instanceof TFlowNode) {
+            for (TBaseElement incomingElement: incomingMap.get(element)) {
+                if (incomingElement instanceof TSequenceFlow) {
+                    if (direction == Direction.BACKWARDS) {
+                        mark(definitions, incomingElement, markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
                     }
                 }
             }
-        });
-        */
+
+            for (TBaseElement outgoingElement: outgoingMap.get(element)) {
+                if (outgoingElement instanceof TSequenceFlow) {
+                    if (direction == Direction.FORWARDS) {
+                        mark(definitions, outgoingElement, markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
+                    }
+                }
+            }
+         }
+
+         if (element instanceof TFlowElement) {
+             for (TBaseElement incomingElement: incomingMap.get(element)) {
+                 if (incomingElement instanceof TAssociation) {
+                     mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                 }
+             }
+         }
+
+            /*
+            for (QName incomingQName : that.getIncoming()) {
+                TBaseElement incomingElement;
+                try {
+                    incomingElement = (TBaseElement) definitions.findElement(incomingQName);
+                    if (incomingElement instanceof TSequenceFlow) {
+                        if (direction == Direction.BACKWARDS) {
+                            mark(definitions, incomingElement, markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
+                        }
+                    } else {
+                        mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                    }
+                } catch (CanoniserException e) {
+                    throw new RuntimeException("Unable to dereference incoming QName " + incomingQName, e);
+                }
+            }
+            for (QName outgoingQName : that.getOutgoing()) {
+                TBaseElement outgoingElement;
+                try {
+                    outgoingElement = (TBaseElement) definitions.findElement(outgoingQName);
+                    if (outgoingElement instanceof TSequenceFlow) {
+                        if (direction == Direction.FORWARDS) {
+                            mark(definitions, outgoingElement, markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
+                        }
+                    } else {
+                        mark(definitions, outgoingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                    }
+                } catch (CanoniserException e) {
+                    throw new RuntimeException("Unable to dereference outgoing QName " + outgoingQName, e);
+                }
+            }
+            */
     }
 
     /**
@@ -391,11 +501,10 @@ public abstract class ConfigurationAlgorithm {
                 // Remove any references this process contains to pruned elements
                 for (final JAXBElement<? extends TFlowElement> jaxbElement2 : process.getFlowElement()) {
                     TFlowElement flowElement = jaxbElement2.getValue();
-                    substituteReferences(flowElement, pruningSet, null);
+                    substituteReferences((BpmnDefinitions) definitions, flowElement, pruningSet, null);
                 }
-
-                // Remove the pruned elements from this process
-                process.getFlowElement().removeAll(pruningSet);
+                // TODO: move the preceding loop into the substituteReferences call instead
+                substituteReferences((BpmnDefinitions) definitions, process, pruningSet, null);
             }
         }
 
@@ -403,18 +512,23 @@ public abstract class ConfigurationAlgorithm {
         for (final BPMNDiagram bpmnDiagram : definitions.getBPMNDiagram()) {
             for (JAXBElement<? extends DiagramElement> jaxbElement : new ArrayList<JAXBElement<? extends DiagramElement>>(bpmnDiagram.getBPMNPlane().getDiagramElement())) {
                 DiagramElement diagramElement = jaxbElement.getValue();
-                if (diagramElement instanceof BPMNEdge) {
-                    BPMNEdge edge = (BPMNEdge) diagramElement;
 
-                    if (pruningSet.contains(edge.getBpmnElement())) {
-                        bpmnDiagram.getBPMNPlane().getDiagramElement().remove(jaxbElement);
-                    }
-                } else if (diagramElement instanceof BPMNShape) {
-                    BPMNShape shape = (BPMNShape) diagramElement;
+                try {
+                    if (diagramElement instanceof BPMNEdge) {
+                        BPMNEdge edge = (BPMNEdge) diagramElement;
 
-                    if (pruningSet.contains(shape.getBpmnElement())) {
-                        bpmnDiagram.getBPMNPlane().getDiagramElement().remove(jaxbElement);
+                        if (pruningSet.contains(((BpmnDefinitions) definitions).findElement(edge.getBpmnElement()))) {
+                            bpmnDiagram.getBPMNPlane().getDiagramElement().remove(jaxbElement);
+                        }
+                    } else if (diagramElement instanceof BPMNShape) {
+                        BPMNShape shape = (BPMNShape) diagramElement;
+
+                        if (pruningSet.contains(((BpmnDefinitions) definitions).findElement(shape.getBpmnElement()))) {
+                            bpmnDiagram.getBPMNPlane().getDiagramElement().remove(jaxbElement);
+                        }
                     }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -429,72 +543,147 @@ public abstract class ConfigurationAlgorithm {
      *     Note that <code>null</code> is both a valid and a typical substitution value, and indicates simple deletion.
      * @throws ClassCastException if newReference isn't a suitable substitution
      */
-    private static void substituteReferences(final TBaseElement      element,
+    private static void substituteReferences(final BpmnDefinitions   definitions,
+                                             final TBaseElement      element,
                                              final Set<TBaseElement> substitutionSet,
                                              final TBaseElement      newReference) throws ClassCastException {
 
         assert !substitutionSet.contains(newReference);
 
-	/*
-        element.acceptVisitor(new AbstractVisitor() {
+        // create a QName version of substitutionSet
+        final Set<QName> substitutionQNameSet = new HashSet<>();
+        for (TBaseElement substitutedElement: substitutionSet) {
+            substitutionQNameSet.add(new QName(definitions.getTargetNamespace(), substitutedElement.getId()));
+        }
 
-            @Override public void visitDataObjectReference(final DataObjectReference that) {
-                super.visitDataObjectReference(that);
+        element.accept(new InheritingVisitor() {
+
+            @Override public void visit(final TAssociation that) {
+                super.visit(that);
+
+                try {
+                    if (substitutionSet.contains(definitions.findElement(that.getSourceRef()))) {
+                        that.setSourceRef(newReference == null ? null : new QName(definitions.getTargetNamespace(), newReference.getId()));
+                    }
+
+                    if (substitutionSet.contains(definitions.findElement(that.getTargetRef()))) {
+                        that.setTargetRef(newReference == null ? null : new QName(definitions.getTargetNamespace(), newReference.getId()));
+                    }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override public void visit(final TComplexGateway that) {
+                super.visit(that);
+
+                if (substitutionSet.contains(that.getDefault())) {
+                    that.setDefault((TSequenceFlow) newReference);
+                }
+            }
+
+            @Override public void visit(final Configurable.Configuration that) {
+                super.visit(that);
+
+                if (that.getSourceRefs().removeAll(substitutionSet)) {
+                    if (newReference != null) {
+                        that.getSourceRefs().add(newReference);
+                    }
+                }
+
+                if (that.getTargetRefs().removeAll(substitutionSet)) {
+                    if (newReference != null) {
+                        that.getTargetRefs().add(newReference);
+                    }
+                }
+            }
+
+            @Override public void visit(final TDataObjectReference that) {
+                super.visit(that);
 
                 if (substitutionSet.contains(that.getDataObjectRef())) {
-                    that.setDataObjectRef((DataObject) newReference);
+                    that.setDataObjectRef((TDataObject) newReference);
                 }
             }
 
-            @Override public void visitDataStoreReference(final DataStoreReference that) {
-                super.visitDataStoreReference(that);
+            @Override public void visit(final TDataStoreReference that) {
+                super.visit(that);
 
                 if (substitutionSet.contains(that.getDataStoreRef())) {
-                    that.setDataStoreRef((DataStore) newReference);
+                    that.setDataStoreRef(new QName(definitions.getTargetNamespace(), newReference.getId()));
                 }
             }
 
-            @Override public void visitEdge(final Edge that) {
-                super.visitEdge(that);
+            @Override public void visit(final TExclusiveGateway that) {
+                super.visit(that);
+
+                if (substitutionSet.contains(that.getDefault())) {
+                    that.setDefault((TSequenceFlow) newReference);
+                }
+            }
+
+            @Override public void visit(final TFlowNode that) {
+                super.visit(that);
+
+                if (that.getIncoming().removeAll(substitutionQNameSet)) {
+                    if (newReference != null) {
+                        that.getIncoming().add(new QName(definitions.getTargetNamespace(), newReference.getId()));
+                    }
+                }
+
+                if (that.getOutgoing().removeAll(substitutionQNameSet)) {
+                    if (newReference != null) {
+                        that.getOutgoing().add(new QName(definitions.getTargetNamespace(), newReference.getId()));
+                    }
+                }
+            }
+
+            @Override public void visit(final TInclusiveGateway that) {
+                super.visit(that);
+
+                if (substitutionSet.contains(that.getDefault())) {
+                    that.setDefault((TSequenceFlow) newReference);
+                }
+            }
+
+            @Override public void visit(final TMessageFlow that) {
+                super.visit(that);
+
+                try {
+                    if (substitutionSet.contains(definitions.findElement(that.getMessageRef()))) {
+                        that.setMessageRef(new QName(definitions.getTargetNamespace(), newReference.getId()));
+                    }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override public void visit(final TProcess that) {
+                super.visit(that);
+
+                for (JAXBElement<? extends TFlowElement> jfe: new ArrayList<>(that.getFlowElement())) {
+                    if (substitutionSet.contains(jfe.getValue())) {
+                        boolean wasPresent = that.getFlowElement().remove(jfe);
+                        if (wasPresent && newReference != null) {
+                            JAXBElement<TFlowElement> newJfe = (new BpmnObjectFactory()).createFlowElement((TFlowElement) newReference);
+                            that.getFlowElement().add(newJfe);
+                        }
+                    }
+                }
+            }
+
+            @Override public void visit(final TSequenceFlow that) {
+                super.visit(that);
 
                 if (substitutionSet.contains(that.getSourceRef())) {
-                    that.setSourceRef((FlowElement) newReference);
+                    that.setSourceRef((TFlowNode) newReference);
                 }
 
                 if (substitutionSet.contains(that.getTargetRef())) {
-                    that.setTargetRef((FlowElement) newReference);
-                }
-            }
-
-            @Override public void visitFlowElement(final FlowElement that) {
-                super.visitFlowElement(that);
-
-                if (that.getIncoming().removeAll(substitutionSet)) {
-                    that.getIncoming().add((Edge) newReference);
-                }
-
-                if (that.getOutgoing().removeAll(substitutionSet)) {
-                    that.getOutgoing().add((Edge) newReference);
-                }
-            }
-
-            @Override public void visitGatewayWithDefaultFlow(final GatewayWithDefaultFlow that) {
-                super.visitGatewayWithDefaultFlow(that);
-
-                if (substitutionSet.contains(that.getDefault())) {
-                    that.setDefault((SequenceFlow) newReference);
-                }
-            }
-
-            @Override public void visitMessageFlow(final MessageFlow that) {
-                super.visitMessageFlow(that);
-
-                if (substitutionSet.contains(that.getMessageRef())) {
-                    that.setMessageRef((Message) newReference);
+                    that.setTargetRef((TFlowNode) newReference);
                 }
             }
         });
-        */
     }
 
     /**
@@ -512,8 +701,8 @@ public abstract class ConfigurationAlgorithm {
                     TFlowElement flowElement = jaxbElement2.getValue();
                     if (flowElement instanceof TGateway) {
                         TGateway gateway = (TGateway) flowElement;
-                        if (getIncomingSequenceFlows(gateway).size() == 1
-                         && getOutgoingSequenceFlows(gateway).size() == 1) {
+                        if (gateway.getIncoming().size() == 1
+                         && gateway.getOutgoing().size() == 1) {
                             removeTrivialGateway(definitions, gateway);
                         }
                     }
@@ -531,11 +720,12 @@ public abstract class ConfigurationAlgorithm {
      * @param gateway  a trivial gateway
      */
     static void removeTrivialGateway(final TDefinitions definitions, final TGateway gateway) {
-        final TSequenceFlow incomingFlow = getIncomingSequenceFlows(gateway).get(0),
-                            outgoingFlow = getOutgoingSequenceFlows(gateway).get(0);
+        final TSequenceFlow incomingFlow, outgoingFlow;
 
-	throw new RuntimeException("Not yet reimplemented");
-/*
+        try {
+            incomingFlow = (TSequenceFlow) ((BpmnDefinitions) definitions).findElement(gateway.getIncoming().get(0));
+            outgoingFlow = (TSequenceFlow) ((BpmnDefinitions) definitions).findElement(gateway.getOutgoing().get(0));
+
         Map<TBaseElement, DiagramElement> bpmndiMap = findBpmndiMap(definitions);
 
         // Append the outgoing flow's waypoints to the incoming flow
@@ -548,6 +738,7 @@ public abstract class ConfigurationAlgorithm {
         // Connect the incoming flow to the outgoing flow's target
         incomingFlow.setTargetRef(outgoingFlow.getTargetRef());
 
+        /*
         // Anything connected to the outgoing flow is now connected to the incoming flow instead
         for (Edge edge : outgoingFlow.getIncoming()) {
             assert edge.getTargetRef() == outgoingFlow;
@@ -562,6 +753,7 @@ public abstract class ConfigurationAlgorithm {
             incomingFlow.getOutgoing().add(edge);
         }
         outgoingFlow.getOutgoing().clear();
+        */
 
         // Anything that used to reference the outgoing flow now references the incoming flow
         for (final JAXBElement<? extends TRootElement> jaxbElement : definitions.getRootElement()) {
@@ -571,7 +763,12 @@ public abstract class ConfigurationAlgorithm {
 
                 for (final JAXBElement<? extends TFlowElement> jaxbElement2 : new ArrayList<JAXBElement<? extends TFlowElement>>(process.getFlowElement())) {
                     TFlowElement flowElement = jaxbElement2.getValue();
-                    substituteReferences(flowElement, Collections.singleton((TBaseElement) outgoingFlow), incomingFlow);
+                    substituteReferences((BpmnDefinitions) definitions, flowElement, Collections.singleton((TBaseElement) outgoingFlow), incomingFlow);
+                }
+
+                for (final JAXBElement<? extends TArtifact> jaxbElement2 : new ArrayList<JAXBElement<? extends TArtifact>>(process.getArtifact())) {
+                    TArtifact artifact = jaxbElement2.getValue();
+                    substituteReferences((BpmnDefinitions) definitions, artifact, Collections.singleton((TBaseElement) outgoingFlow), incomingFlow);
                 }
             }
         }
@@ -581,7 +778,10 @@ public abstract class ConfigurationAlgorithm {
         pruningSet.add(gateway);
         pruningSet.add(outgoingFlow);
         prune(definitions, pruningSet);
-*/
+
+        } catch (CanoniserException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -618,6 +818,7 @@ public abstract class ConfigurationAlgorithm {
     static void replaceConfiguredGateway(final TDefinitions definitions, final TGateway gateway) {
 
         TGateway reconfiguredGateway = null;
+        JAXBElement<? extends TGateway> jeReconfiguredGateway = null;
 
         // From the processes, replace gateways
         for (final JAXBElement<? extends TRootElement> jaxbElement : definitions.getRootElement()) {
@@ -634,15 +835,19 @@ public abstract class ConfigurationAlgorithm {
                         switch (gatewayType) {
                         case DATA_BASED_EXCLUSIVE:
                             reconfiguredGateway = new TExclusiveGateway();
+                            jeReconfiguredGateway = (new BpmnObjectFactory()).createExclusiveGateway((TExclusiveGateway) reconfiguredGateway);
                             break;
                         case EVENT_BASED_EXCLUSIVE:
                             reconfiguredGateway = new TEventBasedGateway();
+                            jeReconfiguredGateway = (new BpmnObjectFactory()).createEventBasedGateway((TEventBasedGateway) reconfiguredGateway);
                             break;
                         case INCLUSIVE:
                             reconfiguredGateway = new TInclusiveGateway();
+                            jeReconfiguredGateway = (new BpmnObjectFactory()).createInclusiveGateway((TInclusiveGateway) reconfiguredGateway);
                             break;
                         case PARALLEL:
                             reconfiguredGateway = new TParallelGateway();
+                            jeReconfiguredGateway = (new BpmnObjectFactory()).createParallelGateway((TParallelGateway) reconfiguredGateway);
                             break;
                         default:
                             assert false : "Unknown gateway type: " + gatewayType;
@@ -707,7 +912,15 @@ public abstract class ConfigurationAlgorithm {
                         }
 
                         // Replace the original gateway with the the reconfigured one, in situ
-                        process.getFlowElement().set(process.getFlowElement().indexOf(gateway), (new org.omg.spec.bpmn._20100524.model.ObjectFactory()).createGateway(reconfiguredGateway));
+                        int replacementCounter = 0;  // count how many times we replace the gateway; ought be exactly once
+                        for (int i = 0; i < process.getFlowElement().size(); i++) {
+                            if (process.getFlowElement().get(i).getValue().equals(gateway)) {
+                                process.getFlowElement().set(i, jeReconfiguredGateway);
+                                replacementCounter++;
+                                break;
+                            }
+                        }
+                        assert replacementCounter == 1;
                     }
                 }
             }
@@ -725,13 +938,18 @@ public abstract class ConfigurationAlgorithm {
                         TFlowElement flowElement = jaxbElement.getValue();
                         Set<TBaseElement> substitutionSet = new HashSet();
                         substitutionSet.add(gateway);
-                        substituteReferences(flowElement, substitutionSet, reconfiguredGateway);
+                        substituteReferences((BpmnDefinitions) definitions, flowElement, substitutionSet, reconfiguredGateway);
                     }
                 }
             }
 
             // Update the diagram element's @bpmnElement reference (not needed since the reconfiguredGateway has the same ID as the original)
             //((BPMNShape) findBpmndiMap(definitions).get(gateway)).setBpmnElement(reconfiguredGateway);
+            try {
+                ((BpmnDefinitions) definitions).updateElement(reconfiguredGateway);
+            } catch (CanoniserException e) {
+                e.printStackTrace();
+            }
         }
     }
 
