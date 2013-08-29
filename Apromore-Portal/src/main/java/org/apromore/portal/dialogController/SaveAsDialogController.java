@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.model.EditSessionType;
