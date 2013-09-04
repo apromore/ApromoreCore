@@ -36,26 +36,30 @@
 
     <!-- VP6 -->
     <configurable bpmnid="sid-C9176B7F-AA74-436D-9F9D-AB500DFE7854">
-      <configuration condition="f6" targetRefs="sid-2340DC72-277C-4A78-8773-B71609B72769"/>
-      <configuration condition="f5" targetRefs="sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+      <configuration condition="f5 . -f6" targetRefs="sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+      <configuration condition="f6 . -f5" targetRefs="sid-2340DC72-277C-4A78-8773-B71609B72769"/>
+      <configuration condition="f5 . f6" type="data-based_exclusive" targetRefs="sid-2340DC72-277C-4A78-8773-B71609B72769 sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
     </configurable>
 
     <!-- VP7 -->
     <configurable bpmnid="sid-C7E44262-C259-4DC1-9BE7-079C36DDC725">
-      <configuration condition="f5" sourceRefs="sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
-      <configuration condition="f6" sourceRefs="sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D"/>
+      <configuration condition="f5 . -f6" sourceRefs="sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+      <configuration condition="f6 . -f5" sourceRefs="sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D"/>
+      <configuration condition="f5 . f6" type="data-based_exclusive" sourceRefs="sid-63937968-672D-48F3-8970-DFD0103CD3C6 sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D"/>
     </configurable>
 
     <!-- VP8 -->
     <configurable bpmnid="sid-19CDE21C-8F6E-4AC3-9129-418960EA2766">
-      <configuration condition="f5" targetRefs="sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
-      <configuration condition="f6" targetRefs="sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A"/>
+      <configuration condition="f5 . -f6" targetRefs="sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+      <configuration condition="f6 . -f5" targetRefs="sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A"/>
+      <configuration condition="f5 . f6" type="data-based_exclusive" targetRefs="sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
     </configurable>
 
     <!-- VP9 -->
     <configurable bpmnid="sid-120EC531-0C82-4F91-BC2E-33AD53B55875">
-      <configuration condition="f6" sourceRefs="sid-0FA89D8F-1749-4E31-8CC5-3A482479150D"/>
-      <configuration condition="f5" sourceRefs="sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+      <configuration condition="f5 . -f6" sourceRefs="sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+      <configuration condition="f6 . -f5" sourceRefs="sid-0FA89D8F-1749-4E31-8CC5-3A482479150D"/>
+      <configuration condition="f5 . f6" type="data-based_exclusive" sourceRefs="sid-0FA89D8F-1749-4E31-8CC5-3A482479150D sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
     </configurable>
 
     <!-- VP10 -->

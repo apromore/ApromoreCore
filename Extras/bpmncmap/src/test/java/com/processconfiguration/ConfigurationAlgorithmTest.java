@@ -89,6 +89,11 @@ public class ConfigurationAlgorithmTest {
      */
     public static final File trivialGatewayFile = new File(testsDirectory, "TrivialGateway.bpmn20.xml");
 
+    /**
+     * A <a href="{@docRoot}/../tests/data/1 Terminal Entry.bpmn">test document</a> used in the test suite.
+     */
+    public static final File terminalEntryFile = new File(testsDirectory, "1 Terminal Entry.bpmn");
+
     /** Factory for JAXB marshallers and unmarshallers. */
     private final JAXBContext context;
 
@@ -156,6 +161,25 @@ public class ConfigurationAlgorithmTest {
 
         // Validate the configured BPMN document
         assertValidBPMN(definitions, "test-configure2.bpmn.xml");
+    }
+
+    /**
+     * Test the {@link ConfigurationAlgorithm#configure} method on the {@link #terminalEntryFile}.
+     *
+     * @throws IOException if the test document can't be read
+     * @throws JAXBException if the test document can't be parsed
+     * @throws SAXException if the schema can't be parsed
+     */
+    @Test public final void testConfigure3() throws IOException, JAXBException, SAXException {
+
+        // Obtain the test document
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(terminalEntryFile), true);
+
+        // Exercise the method
+        ConfigurationAlgorithm.configure(definitions);
+
+        // Validate the configured BPMN document
+        assertValidBPMN(definitions, "test-configure3.bpmn.xml");
     }
 
     /**
@@ -284,6 +308,24 @@ public class ConfigurationAlgorithmTest {
         // Examine the output, expecting two orphans
         assertNotNull(orphans);
         assertEquals(2, orphans.size());
+    }
+
+    /**
+     * Test the {@link ConfigurationAlgorithm#findOrphans} method.
+     *
+     * @throws JAXBException if the test document can't be parsed
+     */
+    @Test public final void testFindOrphans4() throws FileNotFoundException, JAXBException {
+
+        // Obtain the test document
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(terminalEntryFile), true);
+
+        // Exercise the method and examine the output -- the test document oughtn't to have any
+        Set<TBaseElement> orphans = ConfigurationAlgorithm.findOrphans(definitions);
+        for (TBaseElement orphan: orphans) {
+            System.err.println( "  " + orphan.getId() + " " + orphan);
+        }
+        assertTrue("Unexpected orphan elements: " + orphans, orphans.isEmpty());
     }
 
     /**
