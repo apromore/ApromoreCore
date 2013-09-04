@@ -115,7 +115,8 @@ public abstract class ConfigurationAlgorithm {
         removeTrivialGateways(definitions);
 
         // Find and remove disconnected elements
-        prune(definitions, (Set) findOrphans(definitions));
+        Set<TBaseElement> disconnectedSet = findOrphans(definitions);
+        prune(definitions, (Set) disconnectedSet);
     }
 
     /**
@@ -143,10 +144,12 @@ public abstract class ConfigurationAlgorithm {
             }
         }
 	*/
-        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+        definitions.accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
             @Override public void visit(final BPMNEdge that) {
                 try {
-                    bpmndiMap.put(((BpmnDefinitions) definitions).findElement(that.getBpmnElement()), that);
+                    TBaseElement processElement = ((BpmnDefinitions) definitions).findElement(that.getBpmnElement());
+                    assert processElement != null : "Diagram edge " + that.getId() + " has nonexistent bpmnElement " + that.getBpmnElement();
+                    bpmndiMap.put(processElement, that);
                 } catch (CanoniserException e) {
                     e.printStackTrace();
                 }
@@ -154,7 +157,9 @@ public abstract class ConfigurationAlgorithm {
 
             @Override public void visit(final BPMNShape that) {
                 try {
-                    bpmndiMap.put(((BpmnDefinitions) definitions).findElement(that.getBpmnElement()), that);
+                    TBaseElement processElement = ((BpmnDefinitions) definitions).findElement(that.getBpmnElement());
+                    assert processElement != null : "Diagram shape " + that.getId() + " has nonexistent bpmnElement " + that.getBpmnElement();
+                    bpmndiMap.put(processElement, that);
                 } catch (CanoniserException e) {
                     e.printStackTrace();
                 }
@@ -175,9 +180,9 @@ public abstract class ConfigurationAlgorithm {
         // Output value
         final Set<TGateway> reconfiguredGatewaySet = new HashSet<TGateway>();
 
-        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new InheritingVisitor() {
+        definitions.accept(new TraversingVisitor(new MyTraverser(), new InheritingVisitor() {
             @Override public void visit(final TGateway that) {
-                that.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+                that.accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
                     @Override public void visit(final Configurable.Configuration configuration) {
                         reconfiguredGatewaySet.add(that);
                     }
@@ -265,7 +270,7 @@ public abstract class ConfigurationAlgorithm {
         final Multimap<TBaseElement,TBaseElement> outgoingMap = HashMultimap.create();
 
         // Populate incomingMap by traversing all the edges (not the nodes) of the document graph
-        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl() {
+        definitions.accept(new TraversingVisitor(new MyTraverser() {
             @Override public void traverse(Configurable.Configuration aBean, Visitor aVisitor) {}
         }, new InheritingVisitor() {
             @Override public void visit(final TAssociation that) {
@@ -283,6 +288,20 @@ public abstract class ConfigurationAlgorithm {
                     }
                 } catch (CanoniserException e) {
                     e.printStackTrace();
+                }
+            }
+
+            @Override public void visit(final TDataAssociation that) {
+                for (JAXBElement<Object> jeo: that.getSourceRef()) {
+                    TBaseElement source = (TBaseElement) jeo.getValue();
+                    incomingMap.put(that, source);
+                    incomingMap.put(source, that);  // for the purposes of marking, data associations count in both directions
+                }
+
+                TBaseElement target = that.getTargetRef();
+                if (target != null) {
+                    incomingMap.put(target, that);
+                    incomingMap.put(that, target);  // for the purposes of marking, data associations count in both directions
                 }
             }
 
@@ -319,15 +338,46 @@ public abstract class ConfigurationAlgorithm {
         Multimaps.invertFrom(incomingMap, outgoingMap);
 
         // Populate the sets of elements: all, canStart, canEnd
-        definitions.accept(new TraversingVisitor(new DepthFirstTraverserImpl() {
+        definitions.accept(new TraversingVisitor(new MyTraverser() {
             @Override public void traverse(Configurable.Configuration aBean, Visitor aVisitor) {}
         }, new InheritingVisitor() {
             @Override public void visit(final TArtifact that) {
+                super.visit(that);
+                all.add(that);
+            }
+
+            @Override public void visit(final TDataAssociation that) {
+                super.visit(that);
                 all.add(that);
             }
 
             @Override public void visit(final TFlowElement that) {
+                super.visit(that);
                 all.add(that);
+            }
+
+            @Override public void visit(final TGroup that) {
+                // This artifact doesn't get added to "all", so no super call
+            }
+
+            @Override public void visit(final TIntermediateCatchEvent that) {
+                super.visit(that);
+                for (JAXBElement<? extends TEventDefinition> jed: that.getEventDefinition()) {
+                    if (jed.getValue() instanceof TLinkEventDefinition) {
+                        mark((BpmnDefinitions) definitions, that, canStart, Direction.FORWARDS, incomingMap, outgoingMap);
+                        break;
+                    }
+                }
+            }
+
+            @Override public void visit(final TIntermediateThrowEvent that) {
+                super.visit(that);
+                for (JAXBElement<? extends TEventDefinition> jed: that.getEventDefinition()) {
+                    if (jed.getValue() instanceof TLinkEventDefinition) {
+                        mark((BpmnDefinitions) definitions, that, canEnd, Direction.BACKWARDS, incomingMap, outgoingMap);
+                        break;
+                    }
+                }
             }
 
             @Override public void visit(final TStartEvent that) {
@@ -442,44 +492,11 @@ public abstract class ConfigurationAlgorithm {
 
          if (element instanceof TFlowElement) {
              for (TBaseElement incomingElement: incomingMap.get(element)) {
-                 if (incomingElement instanceof TAssociation) {
+                 if (incomingElement instanceof TAssociation || incomingElement instanceof TDataAssociation) {
                      mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
                  }
              }
          }
-
-            /*
-            for (QName incomingQName : that.getIncoming()) {
-                TBaseElement incomingElement;
-                try {
-                    incomingElement = (TBaseElement) definitions.findElement(incomingQName);
-                    if (incomingElement instanceof TSequenceFlow) {
-                        if (direction == Direction.BACKWARDS) {
-                            mark(definitions, incomingElement, markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
-                        }
-                    } else {
-                        mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
-                    }
-                } catch (CanoniserException e) {
-                    throw new RuntimeException("Unable to dereference incoming QName " + incomingQName, e);
-                }
-            }
-            for (QName outgoingQName : that.getOutgoing()) {
-                TBaseElement outgoingElement;
-                try {
-                    outgoingElement = (TBaseElement) definitions.findElement(outgoingQName);
-                    if (outgoingElement instanceof TSequenceFlow) {
-                        if (direction == Direction.FORWARDS) {
-                            mark(definitions, outgoingElement, markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
-                        }
-                    } else {
-                        mark(definitions, outgoingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
-                    }
-                } catch (CanoniserException e) {
-                    throw new RuntimeException("Unable to dereference outgoing QName " + outgoingQName, e);
-                }
-            }
-            */
     }
 
     /**
@@ -595,6 +612,23 @@ public abstract class ConfigurationAlgorithm {
                     if (newReference != null) {
                         that.getTargetRefs().add(newReference);
                     }
+                }
+            }
+
+            @Override public void visit(final TDataAssociation that) {
+                super.visit(that);
+
+                for (JAXBElement<Object> jbe: new ArrayList<>(that.getSourceRef())) {
+                    if (substitutionSet.contains(jbe.getValue())) {
+                        boolean wasPresent = that.getSourceRef().remove(jbe);
+                        if (wasPresent && newReference != null) {
+                            that.getSourceRef().add((JAXBElement) (new BpmnObjectFactory()).createBaseElement(newReference));
+                        }
+                    }
+                }
+
+                if (substitutionSet.contains(that.getTargetRef())) {
+                    that.setTargetRef(newReference);
                 }
             }
 
@@ -832,6 +866,7 @@ public abstract class ConfigurationAlgorithm {
 
                         // Create the replacement gateway
                         TGatewayType gatewayType = gatewayConfigurationType(gateway);
+                        assert gatewayType != null: "Null gateway type for " + gateway.getId();
                         switch (gatewayType) {
                         case DATA_BASED_EXCLUSIVE:
                             reconfiguredGateway = new TExclusiveGateway();
