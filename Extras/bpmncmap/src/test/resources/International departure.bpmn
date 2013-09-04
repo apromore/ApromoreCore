@@ -18,10 +18,12 @@
          -->
          <outgoing>sid-A997D1BE-9A0E-40BD-B94B-80B38CF6442D</outgoing>
       </startEvent>
-      <exclusiveGateway gatewayDirection="Diverging" id="sid-766DEE2F-1D62-4F5F-B314-9E8D77A2ECE1" name="VP1">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-766DEE2F-1D62-4F5F-B314-9E8D77A2ECE1">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration targetRefs="sid-21AEBEAD-9E24-443C-8994-57D9041CDBBB sid-F477F46C-A07D-486B-A579-642C28CBDCED"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" targetRefs="sid-21AEBEAD-9E24-443C-8994-57D9041CDBBB sid-F477F46C-A07D-486B-A579-642C28CBDCED"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -31,10 +33,12 @@
          <outgoing>sid-F477F46C-A07D-486B-A579-642C28CBDCED</outgoing>
          <outgoing>sid-21AEBEAD-9E24-443C-8994-57D9041CDBBB</outgoing>
       </exclusiveGateway>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-340159F0-2CC3-43C8-BAE4-CEF215B0E58A" name="VP2">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-340159F0-2CC3-43C8-BAE4-CEF215B0E58A">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration sourceRefs="sid-9999DF11-E0E7-4B74-A931-F73EF734ADF4 sid-F477F46C-A07D-486B-A579-642C28CBDCED"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" sourceRefs="sid-9999DF11-E0E7-4B74-A931-F73EF734ADF4 sid-F477F46C-A07D-486B-A579-642C28CBDCED"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -85,10 +89,12 @@
          <incoming>sid-78EBD6A5-607E-42B8-8516-6F206D2C68F2</incoming>
          <outgoing>sid-031F0B23-323F-44A6-8528-6C115F1C3086</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Diverging" id="sid-2D1AD29B-5391-4B31-95CB-3E48B33E1AEA" name="VP3">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-2D1AD29B-5391-4B31-95CB-3E48B33E1AEA">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration targetRefs="sid-E1FF85E1-BD07-4123-A2D4-2CDE84467DD6 sid-1061FEE2-459B-43AB-B541-F7A879041B65"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" targetRefs="sid-E1FF85E1-BD07-4123-A2D4-2CDE84467DD6 sid-1061FEE2-459B-43AB-B541-F7A879041B65"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -130,10 +136,12 @@
          <incoming>sid-82B0EEC9-681C-42BD-9A7F-88042F266D29</incoming>
          <outgoing>sid-AB0F2052-27A2-4248-B0D6-EC2C93613893</outgoing>
       </exclusiveGateway>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-DFF0A27C-50C6-4324-BE72-DC8D594B7664" name="VP4">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-DFF0A27C-50C6-4324-BE72-DC8D594B7664">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration sourceRefs="sid-0F3F188D-1515-43A0-9299-291DFA8DD6E5 sid-AB0F2052-27A2-4248-B0D6-EC2C93613893"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" sourceRefs="sid-0F3F188D-1515-43A0-9299-291DFA8DD6E5 sid-AB0F2052-27A2-4248-B0D6-EC2C93613893"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -150,10 +158,12 @@
          <incoming>sid-1061FEE2-459B-43AB-B541-F7A879041B65</incoming>
          <outgoing>sid-0F3F188D-1515-43A0-9299-291DFA8DD6E5</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Diverging" id="sid-DC2DAC13-C018-41C8-8517-2AF44E1C08E3" name="VP5">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-DC2DAC13-C018-41C8-8517-2AF44E1C08E3">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration targetRefs="sid-92E0CA28-124B-4E05-A28F-61820F83267D sid-20BCB1A6-76D4-45BD-BBD5-7FCB9F9146A6"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" targetRefs="sid-92E0CA28-124B-4E05-A28F-61820F83267D sid-20BCB1A6-76D4-45BD-BBD5-7FCB9F9146A6"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -170,10 +180,12 @@
          <incoming>sid-92E0CA28-124B-4E05-A28F-61820F83267D</incoming>
          <outgoing>sid-9A827714-8C58-4072-95AC-A848FAC5B387</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Diverging" id="sid-C9176B7F-AA74-436D-9F9D-AB500DFE7854" name="VP6">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-C9176B7F-AA74-436D-9F9D-AB500DFE7854">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration targetRefs="sid-2340DC72-277C-4A78-8773-B71609B72769 sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" targetRefs="sid-2340DC72-277C-4A78-8773-B71609B72769 sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -190,10 +202,12 @@
          <incoming>sid-2340DC72-277C-4A78-8773-B71609B72769</incoming>
          <outgoing>sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-C7E44262-C259-4DC1-9BE7-079C36DDC725" name="VP7">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-C7E44262-C259-4DC1-9BE7-079C36DDC725">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration sourceRefs="sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" sourceRefs="sid-E463E786-DC82-432C-A11F-2C9D00FC6E7D sid-63937968-672D-48F3-8970-DFD0103CD3C6"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -203,10 +217,12 @@
          <incoming>sid-63937968-672D-48F3-8970-DFD0103CD3C6</incoming>
          <outgoing>sid-AEB5FD8D-1A21-45FC-84B2-182D36496E08</outgoing>
       </exclusiveGateway>
-      <exclusiveGateway gatewayDirection="Diverging" id="sid-19CDE21C-8F6E-4AC3-9129-418960EA2766" name="VP8">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-19CDE21C-8F6E-4AC3-9129-418960EA2766">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration targetRefs="sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" targetRefs="sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -223,10 +239,12 @@
          <incoming>sid-309D5DB1-7C05-44AD-BD7E-2990691BF14A</incoming>
          <outgoing>sid-0FA89D8F-1749-4E31-8CC5-3A482479150D</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-120EC531-0C82-4F91-BC2E-33AD53B55875" name="VP9">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-120EC531-0C82-4F91-BC2E-33AD53B55875">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration sourceRefs="sid-0FA89D8F-1749-4E31-8CC5-3A482479150D sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" sourceRefs="sid-0FA89D8F-1749-4E31-8CC5-3A482479150D sid-3D58F2EC-2825-4DE6-958D-047F6AC18268"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
@@ -243,10 +261,12 @@
          <incoming>sid-EB70385F-505D-4026-AF90-9342AD160DBD</incoming>
          <outgoing>sid-80BE7BD9-9271-4013-BBD1-3DE30CED6D85</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-70A1E66F-F246-4E2D-B885-11CFF83F5501" name="VP10">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-70A1E66F-F246-4E2D-B885-11CFF83F5501">
          <extensionElements>
             <pc:configurable>
-               <pc:configuration sourceRefs="sid-80BE7BD9-9271-4013-BBD1-3DE30CED6D85 sid-DCB039F6-9451-481E-92C6-1C3EEF8EF03F"/>
+               <!--
+               <pc:configuration type="data-based_exclusive" sourceRefs="sid-80BE7BD9-9271-4013-BBD1-3DE30CED6D85 sid-DCB039F6-9451-481E-92C6-1C3EEF8EF03F"/>
+               -->
             </pc:configurable>
             <!--
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>

@@ -9,14 +9,12 @@
   <Question id="q3" mapQF="#f5 #f6">
     <description>What scope of travel does the usage/configuration of the terminal building cater to?</description>
   </Question>
-  <!--
   <Question id="q4" mapQF="#f7 #f8 #f10">
     <description>What transport facilities are available to the airport?</description>
   </Question>
   <Question id="q5" mapQF="#f13 #f12">
     <description>Is there a bag-weighing facility present?</description>
   </Question>
-  -->
   <Question id="q6" mapQF="#f14 #f15 #f16">
     <description>What check in types are provided by the airlines?</description>
   </Question>
@@ -99,7 +97,6 @@
   <Fact id="f6">
     <description>Domestic</description>
   </Fact>
-  <!--
   <Fact id="f7">
     <description>Bus</description>
   </Fact>
@@ -121,7 +118,6 @@
   <Fact id="f13">
     <description>No</description>
   </Fact>
-  -->
   <Fact id="f14">
     <description>Regular check in  (traditional)</description>
   </Fact>
@@ -290,5 +286,5 @@
     <description>No</description>
   </Fact>
   -->
-  <Constraints>xor(f1,f2).xor(f3,f4).(f5+f6)<!-- .(f7+f8+f9+f10+f11).xor(f12,f13).(f14+f15+f16).xor(f17,f18).xor(f19,f20).(f21+f22+f23).xor(f26,f27).xor(f28,f29).xor(f30,f31).(f32+f33).xor(f34,f35).xor(f36,f37).xor(f38,f39).xor(f40,f41).(f42+f43+f44+f45+f46+f47+f48+f49).xor(f50,f51).(f52+f53+f54).xor(f55,f56).(f57+f58+f59+f60+f61+f62+f63).(f64+f65) --></Constraints>
+  <Constraints>xor(f1,f2).xor(f3,f4).(f5+f6).(f7+f8+f9+f10+f11).xor(f12,f13).(f14+f15+f16) <!--.xor(f17,f18).xor(f19,f20).(f21+f22+f23).xor(f26,f27).xor(f28,f29).xor(f30,f31).(f32+f33).xor(f34,f35).xor(f36,f37).xor(f38,f39).xor(f40,f41).(f42+f43+f44+f45+f46+f47+f48+f49).xor(f50,f51).(f52+f53+f54).xor(f55,f56).(f57+f58+f59+f60+f61+f62+f63).(f64+f65) --></Constraints>
 </qml:QML>
