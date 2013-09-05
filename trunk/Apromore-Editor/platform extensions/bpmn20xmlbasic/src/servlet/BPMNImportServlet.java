@@ -32,6 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
 
 /**
  * EPMLImportServlet converts a EPML specification (.epml file) to the JSON
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BPMNImportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 4651535054294830523L;
-
+    private static final Logger LOGGER = Logger.getLogger(BPMNImportServlet.class.getCanonicalName());
 
     /* (non-Javadoc)
       * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -59,10 +60,9 @@ public class BPMNImportServlet extends HttpServlet {
             res.setStatus(200);
             BPMN2DiagramConverter bpmnConverter = new BPMN2DiagramConverter("/signaviocore/editor/");
             bpmnConverter.getBPMN(bpmnData, "UTF-8", res.getOutputStream());
-
         } catch (Exception e) {
             try {
-                e.printStackTrace();
+                LOGGER.severe(e.toString());
                 res.setStatus(500);
                 res.setContentType("text/plain");
                 res.getWriter().write(e.getCause().getMessage());

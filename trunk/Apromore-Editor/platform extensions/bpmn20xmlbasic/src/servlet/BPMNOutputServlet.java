@@ -1,7 +1,8 @@
 package servlet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.ValidationEventCollector;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.logging.Logger;
 
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
@@ -24,9 +29,6 @@ import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 import org.xml.sax.SAXException;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
-
 /**
  * BPMNOutputServlet converts the diagram (JSON) into a BPMN file.
  * It should be accessible at: /bpmnoutput
@@ -36,6 +38,7 @@ import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 public class BPMNOutputServlet extends HttpServlet {
 
     private static final long serialVersionUID = 4651531154294830523L;
+    private static final Logger LOGGER = Logger.getLogger(BPMNOutputServlet.class.getCanonicalName());
 
     private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
 
@@ -62,8 +65,7 @@ public class BPMNOutputServlet extends HttpServlet {
             }
         } catch (Exception e) {
             try {
-                e.printStackTrace();
-                System.out.println(e.toString());
+                LOGGER.severe(e.toString());
                 res.setStatus(500);
                 res.setContentType("text/plain; charset=UTF-8");
                 if (e.getCause() != null) {
@@ -86,9 +88,9 @@ public class BPMNOutputServlet extends HttpServlet {
         Definitions definitions = converter.getDefinitionsFromDiagram();
 
         Marshaller marshaller = JAXBContext.newInstance(Definitions.class,
-                                                        ConfigurationAnnotationAssociation.class,
-                                                        ConfigurationAnnotationShape.class).createMarshaller();
-        marshaller.setEventHandler(new ValidationEventCollector());
+                ConfigurationAnnotationAssociation.class,
+                ConfigurationAnnotationShape.class).createMarshaller();
+        marshaller.setEventHandler(new BPMNValidationEventHandler());
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(PREFIX_MAPPER, new BPMNPrefixMapper());
         String schemaFile = req.getSession().getServletContext().getRealPath("/") + "WEB-INF" + "/xml/BPMN20.xsd";
@@ -96,6 +98,17 @@ public class BPMNOutputServlet extends HttpServlet {
         marshaller.marshal(definitions, bpmn);
 
         return bpmn;
+    }
+
+
+    public class BPMNValidationEventHandler implements ValidationEventHandler {
+        public boolean handleEvent(ValidationEvent event) {
+            LOGGER.info("Error:");
+            LOGGER.info("MESSAGE:  " + event.getMessage());
+            LOGGER.info("LINKED EXCEPTION:  " + event.getLinkedException());
+            LOGGER.info("OBJECT:  " + event.getLocator().getObject());
+            return true;
+        }
     }
 
 }
