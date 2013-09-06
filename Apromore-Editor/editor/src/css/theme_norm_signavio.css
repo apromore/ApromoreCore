@@ -135,9 +135,10 @@ text * {
 	background-image:url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	position:absolute;
-	top:59px;
+	top:28px;
 	width:100%;
 }
+/*59px;*/
 
 .x-panel-editor-north * {
 	overflow:visible;
@@ -168,15 +169,17 @@ text * {
 	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	left:0;
-	top:59px;
+	top:28px;
 	position:absolute;
 	width:100%;
 	z-index:1000;
 }
+/*59px;*/
 
 .x-panel-editor-north .x-panel-body {
-	height:59px !important;
+	height:28px !important;
 }
+/*59px;*/
 .x-panel-editor-north .x-panel .x-panel-body {
 	height:35px !important;
 }
