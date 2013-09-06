@@ -34,6 +34,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import de.epml.EPMLSchema;
 import de.epml.ObjectFactory;
@@ -65,8 +66,9 @@ import org.xml.sax.SAXException;
  */
 public class JSONToEPMLConverter {
 
-    private final ObjectFactory factory = new ObjectFactory();
+    private static final Logger LOGGER = Logger.getLogger(JSONToEPMLConverter.class.getCanonicalName());
 
+    private final ObjectFactory factory = new ObjectFactory();
     private final IdFactory idFactory = new IdFactory();
 
     /**
@@ -75,12 +77,12 @@ public class JSONToEPMLConverter {
     private final Map<String, BigInteger> jsonToEpmlIdMap = new HashMap<String, BigInteger>();
 
     /**
-     * @param jsonStream  source stream in Signavio JSON format
-     * @param epmlStream  destination stream to receive EPML 2.0 format
+     * @param jsonStream source stream in Signavio JSON format
+     * @param epmlStream destination stream to receive EPML 2.0 format
      */
     public void convert(final InputStream jsonStream, final OutputStream epmlStream) {
         try {
-            String json = new Scanner(jsonStream, "UTF-8" ).useDelimiter("\\A").next();
+            String json = new Scanner(jsonStream, "UTF-8").useDelimiter("\\A").next();
             BasicDiagram diagram = BasicDiagramBuilder.parseJson(json);
             TypeEPML epml = toEPML(diagram);
             EPMLSchema.marshalEPMLFormat(epmlStream, epml, true /* is validating */);
@@ -90,21 +92,21 @@ public class JSONToEPMLConverter {
     }
 
     /**
-     * @param diagram  a process model as a Signavio JSON object
+     * @param diagram a process model as a Signavio JSON object
      * @return the translation of the <var>diagram</var> into EPML
-     * @throws RuntimeException  if <var>diagram</var> contains an unsupported stencil ID
+     * @throws RuntimeException if <var>diagram</var> contains an unsupported stencil ID
      */
     public TypeEPML toEPML(final BasicDiagram diagram) {
         final Map<BasicShape, BasicShape> sourceMap = new HashMap<>();  // for each edge, what is its source node?
         final Map<BasicShape, BasicShape> targetMap = new HashMap<>();  // for each edge, what is its target node?
 
         // First pass, during which the EPC topology is examined (i.e. sourceMap and targetMap are populated)
-        for (BasicShape shape: diagram.getAllShapesReadOnly()) {
+        for (BasicShape shape : diagram.getAllShapesReadOnly()) {
             if (shape.isNode()) {
-                for (BasicShape incoming: shape.getIncomingsReadOnly()) {
+                for (BasicShape incoming : shape.getIncomingsReadOnly()) {
                     targetMap.put(incoming, shape);
                 }
-                for (BasicShape outgoing: shape.getOutgoingsReadOnly()) {
+                for (BasicShape outgoing : shape.getOutgoingsReadOnly()) {
                     sourceMap.put(outgoing, shape);
                 }
             }
@@ -115,43 +117,46 @@ public class JSONToEPMLConverter {
 
         TypeCoordinates coordinates = factory.createTypeCoordinates();
         coordinates.setXOrigin("leftToRight");
-        coordinates.setYOrigin("topToBottom");        
+        coordinates.setYOrigin("topToBottom");
         epml.setCoordinates(coordinates);
 
         TypeEPC epc = factory.createTypeEPC();
         epc.setEpcId(new BigInteger("1" /*diagram.getResourceId()*/));  // TODO: 1 is a dummy value
         epc.setName("dummy" /* diagram.getProperty("title") */);
-        for (BasicShape shape: diagram.getAllShapesReadOnly()) {
+        for (BasicShape shape : diagram.getAllShapesReadOnly()) {
             switch (shape.getStencilId()) {
-            case "AndConnector":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCAnd(populateElement(factory.createTypeAND(), shape)));
-                break;
-            case "Event":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCEvent(populateElement(factory.createTypeEvent(), shape)));
-                break;
-            case "Function":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCFunction(populateElement(factory.createTypeFunction(), shape)));
-                break;
-            case "ControlFlow":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCArc(populateArc(factory.createTypeArc(), shape, sourceMap, targetMap)));
-                break;
-            case "OrConnector":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCOr(populateElement(factory.createTypeOR(), shape)));
-                break;
-            case "ProcessInterface":
-                TypeProcessInterface processInterface = populateElement(factory.createTypeProcessInterface(), shape);
+                case "system":
+                    LOGGER.info("eEPC extension found that isn't currently supported!");
+                    break;
+                case "AndConnector":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCAnd(populateElement(factory.createTypeAND(), shape)));
+                    break;
+                case "Event":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCEvent(populateElement(factory.createTypeEvent(), shape)));
+                    break;
+                case "Function":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCFunction(populateElement(factory.createTypeFunction(), shape)));
+                    break;
+                case "ControlFlow":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCArc(populateArc(factory.createTypeArc(), shape, sourceMap, targetMap)));
+                    break;
+                case "OrConnector":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCOr(populateElement(factory.createTypeOR(), shape)));
+                    break;
+                case "ProcessInterface":
+                    TypeProcessInterface processInterface = populateElement(factory.createTypeProcessInterface(), shape);
 
-                TypeToProcess toProcess = factory.createTypeToProcess();
-                toProcess.setLinkToEpcId(new BigInteger("1"));  // TODO: 1 is a dummy value; need to actually populate it
-                processInterface.setToProcess(toProcess);
+                    TypeToProcess toProcess = factory.createTypeToProcess();
+                    toProcess.setLinkToEpcId(new BigInteger("1"));  // TODO: 1 is a dummy value; need to actually populate it
+                    processInterface.setToProcess(toProcess);
 
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCProcessInterface(processInterface));
-                break;
-            case "XorConnector":
-                epc.getEventAndFunctionAndRole().add(factory.createTypeEPCXor(populateElement(factory.createTypeXOR(), shape)));
-                break;
-            default:
-                throw new RuntimeException("Unsupported stencil ID: " + shape.getStencilId());
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCProcessInterface(processInterface));
+                    break;
+                case "XorConnector":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCXor(populateElement(factory.createTypeXOR(), shape)));
+                    break;
+                default:
+                    throw new RuntimeException("Unsupported stencil ID: " + shape.getStencilId());
             }
         }
 
@@ -165,13 +170,12 @@ public class JSONToEPMLConverter {
     /**
      * Name an EPC element within an EPC.
      *
-     * @param jsonId  the identifier of the element within the source JSON representation
+     * @param jsonId the identifier of the element within the source JSON representation
      * @return the identifier within the target EPML representation
      */
     private BigInteger getId(final String jsonId) {
-
         if (jsonToEpmlIdMap.containsKey(jsonId)) {
-             // This JSON identifier has been encountered before, so return its previously-mapped EPML value
+            // This JSON identifier has been encountered before, so return its previously-mapped EPML value
             return jsonToEpmlIdMap.get(jsonId);
         } else {
             // This is the first occurrence of this JSON identifier, so map it to a new EPC identifier
@@ -183,15 +187,12 @@ public class JSONToEPMLConverter {
     }
 
     /**
-     * @param arc an EPC arc to initialize
-     * @param shape  the Signavio JSON object corresponding to the <var>arc</var>
+     * @param arc   an EPC arc to initialize
+     * @param shape the Signavio JSON object corresponding to the <var>arc</var>
      * @return <var>arc</var>
      */
-    private TypeArc populateArc(final TypeArc arc,
-                                final BasicShape shape,
-                                final Map<BasicShape, BasicShape> sourceMap,
-                                final Map<BasicShape, BasicShape> targetMap) {
-
+    private TypeArc populateArc(final TypeArc arc, final BasicShape shape, final Map<BasicShape, BasicShape> sourceMap,
+        final Map<BasicShape, BasicShape> targetMap) {
         BasicShape sourceShape = sourceMap.get(shape);
         BasicShape targetShape = targetMap.get(shape);
 
@@ -214,7 +215,7 @@ public class JSONToEPMLConverter {
             } else if (i == shape.getDockersReadOnly().size() - 1 && targetShape != null) {
                 origin = targetShape.getBounds().getUpperLeft();
             }
-            
+
             move.getPosition().add(toMove2(point, origin));
         }
         arc.getGraphics().add(move);
@@ -223,14 +224,14 @@ public class JSONToEPMLConverter {
 
     private TypeMove2 toMove2(final Point point, final Point origin) {
         TypeMove2 move2 = factory.createTypeMove2();
-        move2.setX(new BigDecimal(point.getX() + origin.getX())); 
-        move2.setY(new BigDecimal(point.getY() + origin.getY())); 
+        move2.setX(new BigDecimal(point.getX() + origin.getX()));
+        move2.setY(new BigDecimal(point.getY() + origin.getY()));
         return move2;
     }
 
     /**
-     * @param element  an EPC element to initialize
-     * @param shape  the Signavio JSON object corresponding to the <var>element</var>
+     * @param element an EPC element to initialize
+     * @param shape   the Signavio JSON object corresponding to the <var>element</var>
      * @return <var>element</var>
      */
     private <T extends TEpcElement> T populateElement(final T element, final BasicShape shape) {
@@ -241,7 +242,7 @@ public class JSONToEPMLConverter {
     }
 
     /**
-     * @param bounds  a Signavio JSON bounds
+     * @param bounds a Signavio JSON bounds
      * @return an equivalent EPC graphics specification
      */
     private TypeGraphics toGraphics(final Bounds bounds) {
@@ -259,7 +260,7 @@ public class JSONToEPMLConverter {
     /**
      * Command line filter converting a Signavio JSON-formatted standard input stream into an EPML-formatted standard output stream.
      *
-     * @param args  first argument names the input file
+     * @param args first argument names the input file
      * @throw FileNotFoundException  if <code>args[0]</code> isn't the name of a file
      */
     public static void main(String args[]) throws FileNotFoundException {

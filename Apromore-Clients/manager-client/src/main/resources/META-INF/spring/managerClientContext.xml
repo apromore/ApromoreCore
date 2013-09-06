@@ -26,29 +26,6 @@
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
           p:defaultUri="http://localhost:9000/manager/services/manager">
         <constructor-arg ref="messageFactory"/>
-        <!--<property name="interceptors">-->
-            <!--<list>-->
-                <!--<ref local="securityInterceptor"/>-->
-            <!--</list>-->
-        <!--</property>-->
     </bean>
-
-    <!--<bean id="securityInterceptor" class="org.springframework.ws.soap.security.xwss.XwsSecurityInterceptor">-->
-        <!--<property name="policyConfiguration" value="classpath:securityPolicy.xml"/>-->
-        <!--<property name="callbackHandlers">-->
-            <!--<list>-->
-                <!--<ref bean="callbackHandler"/>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-    <!--<bean id="callbackHandler" class="org.springframework.ws.soap.security.xwss.callback.SimplePasswordValidationCallbackHandler">-->
-        <!--<property name="users">-->
-            <!--<props>-->
-                <!--<prop key="mojo">mojopass</prop>-->
-                <!--<prop key="user">pass</prop>-->
-            <!--</props>-->
-        <!--</property>-->
-    <!--</bean>-->
 
 </beans>
