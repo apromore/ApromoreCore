@@ -16,6 +16,7 @@ package com.processconfiguration.quaestio;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.FlowLayout;
@@ -40,7 +41,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -84,6 +88,11 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import org.apromore.manager.client.ManagerService;
+import org.apromore.model.ExportFormatResultType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.processconfiguration.bddc.ExecBDDC;
 import com.processconfiguration.cmap.CEpcType;
@@ -1978,6 +1987,15 @@ public class Main extends JFrame implements ListSelectionListener,
 		// Parse command line arguments
                	for (int i=0; i< args.length; i++) {
 			switch (args[i]) {
+			case "-apromore":
+				if (i+3 >= args.length) {
+					throw new IllegalArgumentException("-apromore without id/branch/version");
+				}
+				application.openApromoreProcess(Integer.valueOf(args[i+1]).intValue(),  // process ID
+                                                                args[i+2],                              // branch
+                                                                Double.valueOf(args[i+3]));             // version number
+				i =+ 3;
+                                break;
 			case "-cmap":
 				if (++i >= args.length) {
 					throw new IllegalArgumentException("-cmap without filename");
@@ -2006,6 +2024,30 @@ public class Main extends JFrame implements ListSelectionListener,
 				throw new IllegalArgumentException("Unknown parameter: " + args[i]);
 			}
 		}
+	}
+
+        /**
+         * Read a C-BPMN process model from the Apromore manager service.
+         *
+         * @param processName  the name of a process on the Apromore server
+         */
+	private void openApromoreProcess(final int processId, String branch, double version) throws Exception {
+
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
+		ManagerService manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
+		ExportFormatResultType result = manager.exportFormat(
+			processId,		// process ID
+			null,                   // process name
+			branch,                 // branch
+			version,                // version number,
+			"BPMN 2.0",             // nativeType,
+			null,                   // annotation name,
+			false,                  // with annotations?
+			null,			// owner
+			Collections.EMPTY_SET   // canoniser properties
+		);
+		BpmnDefinitions bpmn = BpmnDefinitions.newInstance(result.getNative().getInputStream(), true /* validate */);
+		bpmn.marshal(System.out, true);
 	}
 
 	/**
@@ -2362,7 +2404,6 @@ public class Main extends JFrame implements ListSelectionListener,
 																		// always
 																		// contained
 			// TODO: verify why XOR facts are left UNSET
-			// System.out.println(currentFID+": "+currentFValue);
 
 			// for each unset fact, the method checks whether it can be forced
 			// to a value, given the constraints and the answers given so far
@@ -3835,17 +3876,8 @@ public class Main extends JFrame implements ListSelectionListener,
 		/// Hack for AotF demo
 		if (fInConf != null) {
 			exportConfiguration(true);
-/*
-			try {
-				Process process = Runtime.getRuntime().exec("../bpmncmap/animate.sh");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-*/
 		}
-		System.out.println("ALPHA fInMap:" + fInMap + " fInModel:" + fInModel);
 		if (fInMap != null && fInModel != null) {
-			System.out.println("BETA");
 			try {
 				BpmnDefinitions bpmn = BpmnDefinitions.newInstance(new FileInputStream(fInModel), true);
 				CMAP cmap = (CMAP) JAXBContext.newInstance("com.processconfiguration.cmap").createUnmarshaller().unmarshal(fInMap);
@@ -3858,12 +3890,18 @@ public class Main extends JFrame implements ListSelectionListener,
 				com.processconfiguration.ConfigurationAlgorithm.configure(bpmn);
 
 				// Serialize the individualized BPMN
-				bpmn.marshal(new FileOutputStream("/tmp/out.bpmn"), true);
+				bpmn.marshal(new FileOutputStream("../../Apromore-Editor/test.bpmn"), true);
 
-			} catch (IOException|JAXBException je) {
+				// Delegate remaining animation process to the animation script
+				Process process = Runtime.getRuntime().exec("./animate.sh");
+				int exitCode = process.waitFor();
+
+                                // Display the configured model with Apromore-Editor in the default browser
+                                Desktop.getDesktop().browse(new URI("http://localhost:9000/editor/p/editor?id=root-directory%3BTest.signavio.xml"));
+
+			} catch (InterruptedException|IOException|JAXBException|URISyntaxException je) {
 				je.printStackTrace();
 			}
-			System.out.println("GAMMA");
 		}
 		/// End hack for AotF demo
 	}
@@ -4319,8 +4357,6 @@ public class Main extends JFrame implements ListSelectionListener,
 							.setText("  Output message: process model and c-mapping are linked");
 					getJDialog_CG().setVisible(false);
 					if (!flg) {
-						// Configurator cg = new
-						// Configurator(fInModel,fInMap,fInConf);						
 						individualize();
 					}
 				}
