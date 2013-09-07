@@ -12,7 +12,7 @@ public class SearchExpressionBuilder {
     public String buildSearchConditions(String searchExpression) throws UnsupportedEncodingException {
         String condition = "";
         if (searchExpression != null && searchExpression.compareTo("") != 0) {
-            condition = " and ";
+            //condition = " and ";
 
             // map search expression into a list of terms
             // example: (yawl;protos),invoicing => [(,yawl,or,protos,),and,invoicing]
@@ -22,7 +22,7 @@ public class SearchExpressionBuilder {
                         current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
                     condition += current;
                 } else {
-                    condition += " p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%" + current + "%' )";
+                    condition += " p.id in (select k.processId FROM Keywords k WHERE k.value like '%" + current + "%' )";
                 }
             }
         }
@@ -41,7 +41,7 @@ public class SearchExpressionBuilder {
      * @return the SQL condition corresponding to keywordSearch
      */
     public List<String> mapQuery(String keywordSearch) {
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         String term = "";
         int state = 1;
         String currentChar;

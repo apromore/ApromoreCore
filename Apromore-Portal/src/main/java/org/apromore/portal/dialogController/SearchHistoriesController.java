@@ -49,6 +49,7 @@ public class SearchHistoriesController extends Combobox {
      * Refreshes comboitem based on the specified value.
      */
     public void refresh(String val) {
+
         if (UserSessionManager.getCurrentUser() != null) {
             this.previousSearches = this.mainC.getSearchHistory();
 

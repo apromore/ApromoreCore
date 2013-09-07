@@ -10,6 +10,7 @@
         <class>org.apromore.dao.model.Cluster</class>
         <class>org.apromore.dao.model.ClusterAssignment</class>
         <class>org.apromore.dao.model.EditSession</class>
+        <class>org.apromore.dao.model.Keywords</class>
         <class>org.apromore.dao.model.Native</class>
         <class>org.apromore.dao.model.NativeType</class>
         <class>org.apromore.dao.model.Process</class>
