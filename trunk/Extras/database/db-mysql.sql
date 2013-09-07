@@ -2,6 +2,8 @@ SET FOREIGN_KEY_CHECKS=0;
 
 USE `Apromore`;
 
+DROP VIEW IF EXISTS `apromore`.`keywords`;
+
 DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `annotation`;
 DROP TABLE IF EXISTS `canonical`;
@@ -1038,6 +1040,29 @@ LOCK TABLES `batch_job_seq` WRITE;
 INSERT INTO `batch_job_seq` VALUES (0);
 /*!40000 ALTER TABLE `batch_job_seq` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+CREATE VIEW `apromore`.`keywords` AS
+  select `process`.`id` AS `processId`, `process`.`id` AS `value`
+  from `process`
+  union
+  select `process`.`id` AS `processId`, `process`.`name` AS `word`
+  from `process`
+  union
+  select `process`.`id` AS `processId`, `process`.`domain` AS `domain`
+  from `process`
+  union
+  select `process`.`id` AS `processId`, `native_type`.`nat_type` AS `original_type`
+  from `process` join `native_type` ON (`process`.`nativeTypeId` = `native_type`.`id`)
+  union
+  select `process`.`id` AS `processId`, `user`.`first_name` AS `firstname`
+  from `process` join `user` ON (`process`.`owner` = `user`.`username`)
+  union
+  select `process`.`id` AS `processId`, `user`.`last_name` AS `lastname`
+  from `process` join `user` ON (`process`.`owner` = `user`.`username`)
+  union
+  select `process_branch`.`processId` AS `processId`, `process_branch`.`branch_name` AS `branch_name`
+  from `process_branch`;
 
 
 SET FOREIGN_KEY_CHECKS=1;
