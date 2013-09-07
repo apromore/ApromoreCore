@@ -41,7 +41,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
         StringBuilder strQry = new StringBuilder(0);
         strQry.append(GET_ALL_PROCESSES_JPA);
         if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(conditions);
+            strQry.append(" where ").append(conditions);
         }
         strQry.append(GET_ALL_PRO_SORT_JPA);
 

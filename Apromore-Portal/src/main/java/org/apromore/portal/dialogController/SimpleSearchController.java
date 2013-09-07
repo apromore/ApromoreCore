@@ -13,18 +13,12 @@ import org.zkoss.zul.Window;
 
 public class SimpleSearchController extends BaseController {
 
-    private MainController mainC;                // the main controller
-    private Window simpleSearchW;                // the window that includes simple search features
-    private Hbox previoussearchesH;             // the box which includes previous search features
-    // visible for connected user only
-    private Button simplesearchesBu;             // the button to trigger search
+    private MainController mainC;
+    private Hbox previoussearchesH;
+    private Button simplesearchesBu;
     private SearchHistoriesController previoussearchesCB;
-    // the controller which manages search histories
-    private EventListener searchEventListener;    // event listener associated with simplesearchesBu and previoussearchesCB
 
-    public SimpleSearchController(MainController mainController)
-            throws UnsupportedEncodingException, ExceptionDao, JAXBException {
-
+    public SimpleSearchController(MainController mainController) throws UnsupportedEncodingException, ExceptionDao, JAXBException {
         /*
            * <hbox>
               <combobox id="previoussearchescombobox" autodrop="true"
@@ -35,35 +29,25 @@ public class SimpleSearchController extends BaseController {
           </hbox>
            */
         this.mainC = mainController;
-        this.simpleSearchW = (Window) this.mainC.getFellow("simplesearchcomp").getFellow("simplesearchwindow");
-        this.previoussearchesH = (Hbox) this.simpleSearchW.getFellow("previoussearcheshbox");
-
-        // the combobox itself
+        Window simpleSearchW = (Window) this.mainC.getFellow("simplesearchcomp").getFellow("simplesearchwindow");
+        this.previoussearchesH = (Hbox) simpleSearchW.getFellow("previoussearcheshbox");
         this.previoussearchesCB = new SearchHistoriesController(this.mainC, this);
-
-        // its associated button
         this.simplesearchesBu = (Button) this.previoussearchesH.getFellow("previoussearchesbutton");
-
-        /**
-         * sets components
-         */
         this.previoussearchesCB.setId("previoussearchescombobox");
         this.previoussearchesCB.setAutodrop(true);
         this.previoussearchesCB.setWidth("95%");
         this.previoussearchesCB.setHeight("100%");
         this.previoussearchesCB.setAttribute("hflex", "1");
-        //this.previoussearchesCB.setVisible(false);
-        this.previoussearchesCB.setTooltiptext("list of keywords separated by ',' (and semantic) or/and by " +
-                "';' (or semantic). Brackets allowed.");
+        this.previoussearchesCB.setTooltiptext("list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed.");
         this.previoussearchesH.appendChild(previoussearchesCB);
 
-        this.searchEventListener = new EventListener() {
+        EventListener searchEventListener = new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 processSearch();
             }
         };
-        this.simplesearchesBu.addEventListener("onClick", this.searchEventListener);
-        this.previoussearchesCB.addEventListener("onOK", this.searchEventListener);
+        this.simplesearchesBu.addEventListener("onClick", searchEventListener);
+        this.previoussearchesCB.addEventListener("onOK", searchEventListener);
     }
 
     /**
@@ -84,9 +68,6 @@ public class SimpleSearchController extends BaseController {
         }
         this.mainC.displayMessage(message);
         this.mainC.displayProcessSummaries(processSummaries, false);
-        /**
-         *Keeps search history up to date
-         */
         this.previoussearchesCB.addSearchHist(query);
     }
 
