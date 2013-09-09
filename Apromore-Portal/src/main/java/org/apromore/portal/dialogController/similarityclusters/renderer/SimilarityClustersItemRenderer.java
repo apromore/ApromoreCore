@@ -3,6 +3,9 @@ package org.apromore.portal.dialogController.similarityclusters.renderer;
 import java.text.NumberFormat;
 
 import org.apromore.model.ClusterSummaryType;
+import org.apromore.portal.common.Constants;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -23,7 +26,7 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
     }
 
     private void renderSimilarityCluster(Listitem listItem, final ClusterSummaryType obj) {
-        listItem.appendChild(new Listcell()); // Built-In Checkbox
+        listItem.appendChild(renderClusterImage());
         listItem.appendChild(renderClusterId(obj));
         listItem.appendChild(renderClusterName(obj));
         listItem.appendChild(renderClusterSize(obj));
@@ -32,34 +35,52 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderStandardizationEffort(obj));
     }
 
+    private Listcell renderClusterImage() {
+        Listcell lc = new Listcell();
+        lc.appendChild(new Image(Constants.CLUSTER_ICON));
+        return lc;
+    }
+
     private Listcell renderClusterId(final ClusterSummaryType obj) {
-        return new Listcell(obj.getClusterId().toString());
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(obj.getClusterId().toString()));
+        return lc;
     }
 
     private Listcell renderClusterName(final ClusterSummaryType obj) {
-        return new Listcell(obj.getClusterLabel());
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(obj.getClusterLabel()));
+        return lc;
     }
 
     private Listcell renderClusterSize(final ClusterSummaryType obj) {
-        return new Listcell(String.valueOf(obj.getClusterSize()));
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(String.valueOf(obj.getClusterSize())));
+        return lc;
     }
 
     private Listcell renderAvgFragmentSize(final ClusterSummaryType obj) {
         NumberFormat numberInstance = NumberFormat.getNumberInstance();
         numberInstance.setMaximumFractionDigits(2);
         String fragmentSize = numberInstance.format(obj.getAvgFragmentSize());
-        return new Listcell(fragmentSize);
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(fragmentSize));
+        return lc;
     }
 
     private Listcell renderRefactoringGain(final ClusterSummaryType obj) {
-        return new Listcell(String.valueOf(obj.getRefactoringGain()));
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(String.valueOf(obj.getRefactoringGain())));
+        return lc;
     }
 
     private Listcell renderStandardizationEffort(final ClusterSummaryType obj) {
         NumberFormat numberInstance = NumberFormat.getNumberInstance();
         numberInstance.setMaximumFractionDigits(2);
         String standardizationEffort = numberInstance.format(obj.getStandardizationEffort());
-        return new Listcell(standardizationEffort);
+        Listcell lc = new Listcell();
+        lc.appendChild(new Label(standardizationEffort));
+        return lc;
     }
 
 }

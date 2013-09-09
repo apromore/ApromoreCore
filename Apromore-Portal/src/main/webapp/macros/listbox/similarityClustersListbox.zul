@@ -1,8 +1,8 @@
-<listbox id="similarityClustersListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="true">
+<listbox id="similarityClustersListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="false">
     <listhead sizable="true" >
-        <listheader hflex="min" label="" visible="true" />
+        <listheader height="25px" width="25px" visible="true" />
         <listheader hflex="min" label="Cluster id" sort="auto(clusterId)" />
-        <listheader hflex="min" visible="false" width="200px" label="Cluster name" sort="auto(clusterLabel)" />
+        <listheader hflex="min" label="Cluster name" width="200px" visible="false" sort="auto(clusterLabel)" />
         <listheader hflex="min" label="Cluster size" sort="auto(clusterSize)" />
         <listheader hflex="min" label="Average fragment size" sort="auto(avgFragmentSize)" />
         <listheader hflex="min" label="Refactoring gain" sort="auto(refactoringGain)" />

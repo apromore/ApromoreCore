@@ -1,7 +1,7 @@
-<listbox id="processSummariesListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="true">
+<listbox id="processSummariesListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="false">
     <listhead sizable="true" >
-        <listheader hflex="min" label="" visible="true" />
-        <listheader hflex="min" id="columnScore" label="Score" visible="true" />
+        <listheader width="25px" visible="true" />
+        <listheader hflex="min" label="Score" id="columnScore" visible="true" />
         <listheader hflex="min" label="Id" sort="auto(id)" />
         <listheader hflex="min" label="Name" sort="auto(name)" />
         <listheader hflex="min" label="Original language" sort="auto(originalNativeType)" />
