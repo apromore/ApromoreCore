@@ -25,8 +25,7 @@ import org.zkoss.zul.Messagebox;
 public class SimilarityClustersListboxController extends BaseListboxController {
 
     private static final String ZUL_PAGE = "macros/listbox/similarityClustersListbox.zul";
-
-    private static final long serialVersionUID = -2618566726735239713L;
+    private static final String VERTICAL_ALIGN_MIDDLE = "vertical-align:middle;";
 
     private final SimilarityClustersFilterController filterController;
 
@@ -80,9 +79,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
     @Override
     @SuppressWarnings("unchecked")
     protected final void refreshContent() {
-
         getListBox().clearSelection();
-        getListBox().setCheckmark(true);
         getListBox().setModel(new ListModelList<>());
         getListModel().setMultiple(true);
 
