@@ -79,25 +79,25 @@ public class SimilaritySearchController extends BaseController {
         updateActions();
 
         this.algosLB.addEventListener("onSelect",
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         updateActions();
                     }
                 });
         this.OKbutton.addEventListener("onClick",
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         searchSimilarProcesses();
                     }
                 });
         this.OKbutton.addEventListener("onOK",
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         searchSimilarProcesses();
                     }
                 });
         this.CancelButton.addEventListener("onClick",
-                new EventListener() {
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancel();
                     }

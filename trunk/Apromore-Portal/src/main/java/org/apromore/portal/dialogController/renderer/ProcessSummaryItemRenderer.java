@@ -24,8 +24,10 @@ import org.zkoss.zul.ListitemRenderer;
 public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessSummaryItemRenderer.class.getName());
+    private static final String VERTICAL_ALIGN_MIDDLE = "vertical-align: middle";
 
     private MainController mainController;
+
 
     public ProcessSummaryItemRenderer(MainController main) {
         this.mainController = main;
@@ -36,6 +38,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
       */
     @Override
     public void render(Listitem listItem, Object obj, int index) {
+        listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
             renderProcessSummary(listItem, (ProcessSummaryType) obj);
         } else if (obj instanceof FolderType) {
@@ -47,7 +50,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     /* Used to render the process summary infomation into the list box. */
     private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
-        listItem.appendChild(new Listcell());
+        listItem.appendChild(renderProcessImage());
         listItem.appendChild(renderProcessScore(process));
         listItem.appendChild(renderProcessId(process));
         listItem.appendChild(renderProcessName(process));
@@ -60,12 +63,11 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     /* Used to render folders in the list of process models. */
     private void renderFolder(final Listitem listitem, final FolderType folder) {
-        listitem.appendChild(new Listcell());
+        listitem.appendChild(renderFolderImage());
         listitem.appendChild(renderFolderId(folder));
         listitem.appendChild(renderFolderName(folder));
 
-        listitem.setStyle(Constants.FOLDER);
-        listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+        listitem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);
@@ -74,9 +76,17 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         });
     }
 
+    private Listcell renderFolderImage() {
+        Listcell lc = new Listcell();
+        lc.appendChild(new Image(Constants.FOLDER_ICON));
+        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
+        return lc;
+    }
+
     private Listcell renderFolderId(FolderType folder) {
         Listcell lc = new Listcell();
         lc.appendChild(new Label(folder.getId().toString()));
+        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 
@@ -87,6 +97,14 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         Listcell lc = new Listcell();
         lc.appendChild(name);
         lc.setSpan(7);
+        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
+        return lc;
+    }
+
+    private Listcell renderProcessImage() {
+        Listcell lc = new Listcell();
+        lc.appendChild(new Image(Constants.PROCESS_ICON));
+        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 
@@ -150,7 +168,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     private Listcell wrapIntoListCell(Component cp) {
         Listcell lc = new Listcell();
         lc.appendChild(cp);
-        //lc.setStyle("height:12px;padding:0px;margin:0px");
+        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 

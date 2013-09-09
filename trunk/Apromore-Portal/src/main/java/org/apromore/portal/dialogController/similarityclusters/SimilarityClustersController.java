@@ -108,7 +108,6 @@ public class SimilarityClustersController extends BaseController {
         initMaxDistance(settings);
         initConstrainedProcessIds(settings);
         getService().createClusters(settings);
-        //TODO show some kind of feedback
         Messagebox.show("Clustering Completed!");
     }
 
