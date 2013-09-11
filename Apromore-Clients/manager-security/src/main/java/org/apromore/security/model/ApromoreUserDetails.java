@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 /**
- * Just a shell class so Devs doen't confused between the User Model and the Security User Model.
+ * Just a shell class so Devs doesn't confused between the DAO Models and the Security Models.
  *
  * @author Cameron James
  */
@@ -19,6 +19,7 @@ public class ApromoreUserDetails extends User {
     private String email;
     private Collection<? extends ApromoreRoleDetails> roles = new ArrayList<>();
     private Collection<? extends ApromorePermissionDetails> permissions = new ArrayList<>();
+    private Collection<? extends ApromoreSearchHistoryDetails> searchHistories = new ArrayList<>();
 
 
     /**
@@ -30,12 +31,13 @@ public class ApromoreUserDetails extends User {
      * @param credentialsNonExpired set to <code>true</code> if the credentials have not expired
      * @param accountNonLocked set to <code>true</code> if the account is not locked
      * @param authorities the authorities that should be granted to the caller if they presented the correct username and password and the user is enabled. Not null.
+     * @param searchHistories the previous searches the user has performed.
      * @throws IllegalArgumentException if a <code>null</code> value was passed either as a parameter or as an element in the <code>GrantedAuthority</code> collection
      */
     public ApromoreUserDetails(String id, String firstName, String lastName, String username, String password, boolean enabled,
             boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, String email,
             Collection<? extends GrantedAuthority> authorities, Collection<? extends ApromoreRoleDetails> roles,
-            Collection<? extends ApromorePermissionDetails> permissions) {
+            Collection<? extends ApromorePermissionDetails> permissions, Collection<? extends ApromoreSearchHistoryDetails> searchHistories) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 
         this.id = id;
@@ -44,6 +46,7 @@ public class ApromoreUserDetails extends User {
         this.email = email;
         this.roles = roles;
         this.permissions = permissions;
+        this.searchHistories = searchHistories;
     }
 
 
@@ -93,6 +96,14 @@ public class ApromoreUserDetails extends User {
 
     public void setRoles(Collection<? extends ApromoreRoleDetails> roles) {
         this.roles = roles;
+    }
+
+    public Collection<? extends ApromoreSearchHistoryDetails> getSearchHistories() {
+        return searchHistories;
+    }
+
+    public void setSearchHistories(Collection<? extends ApromoreSearchHistoryDetails> searchHistories) {
+        this.searchHistories = searchHistories;
     }
 
 }

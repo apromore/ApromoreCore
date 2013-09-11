@@ -71,7 +71,7 @@ public class ClusterVisualisationController extends BaseController {
                 if (event.getData() != null) {
                     Object[] idList = (Object[]) event.getData();
                     for (Object anIdList : idList) {
-                        pairwiseFilter.add(((Integer) anIdList).toString());
+                        pairwiseFilter.add((anIdList).toString());
                     }
                     try {
                         Clients.evalJavaScript("clusterVisualisation.refreshData(" + writeUpdatedEdges(pairwiseFilter) + ");");

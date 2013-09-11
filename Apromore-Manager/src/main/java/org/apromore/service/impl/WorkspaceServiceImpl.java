@@ -139,7 +139,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<Folder> getBreadcrumbs(String userId, Integer folderId) {
-        List<Folder> folders = new ArrayList<Folder>();
+        List<Folder> folders = new ArrayList<>();
 
         Folder folder = folderRepo.findOne(folderId);
         if (folder != null) {

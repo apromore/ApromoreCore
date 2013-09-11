@@ -40,7 +40,7 @@ public class SimilarityClustersFilterController extends BaseFilterController {
     }
 
 
-    final class FilterScrollListener implements EventListener {
+    final class FilterScrollListener implements EventListener<Event> {
         @Override
         public void onEvent(final Event event) throws Exception {
             if (event instanceof ScrollEvent) {

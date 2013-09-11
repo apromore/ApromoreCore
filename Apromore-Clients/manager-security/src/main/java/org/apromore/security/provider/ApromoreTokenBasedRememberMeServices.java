@@ -4,9 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apromore.model.PermissionType;
 import org.apromore.model.RoleType;
+import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserType;
 import org.apromore.security.model.ApromorePermissionDetails;
 import org.apromore.security.model.ApromoreRoleDetails;
+import org.apromore.security.model.ApromoreSearchHistoryDetails;
 import org.apromore.security.model.ApromoreUserDetails;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,20 +73,31 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
         userType.setUsername(user.getUsername());
         userType.setEmail(user.getEmail());
 
+        RoleType newRole;
         for (ApromoreRoleDetails role : user.getRoles()) {
-            RoleType newRole = new RoleType();
+            newRole = new RoleType();
             newRole.setId(role.getId());
             newRole.setName(role.getName());
             userType.getRoles().add(newRole);
         }
+
+        PermissionType permissionType;
         for (ApromorePermissionDetails permission : user.getPermissions()) {
-            PermissionType permissionType = new PermissionType();
+            permissionType = new PermissionType();
             permissionType.setId(permission.getId());
             permissionType.setName(permission.getName());
 
             if (!userType.getPermissions().contains(permissionType)){
                 userType.getPermissions().add(permissionType);
             }
+        }
+
+        SearchHistoriesType searchHistoryType;
+        for (ApromoreSearchHistoryDetails searchHistory : user.getSearchHistories()) {
+            searchHistoryType = new SearchHistoriesType();
+            searchHistoryType.setNum(searchHistory.getId());
+            searchHistoryType.setSearch(searchHistory.getSearchString());
+            userType.getSearchHistories().add(searchHistoryType);
         }
 
         return userType;

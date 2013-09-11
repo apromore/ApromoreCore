@@ -52,9 +52,9 @@
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
 
                 <!--<prop key="eclipselink.logging.file">output.log</prop>-->
-                <prop key="eclipselink.logging.level">OFF</prop>
-                <prop key="eclipselink.logging.level.sql">OFF</prop>
-                <prop key="eclipselink.logging.parameters">flase</prop>
+                <prop key="eclipselink.logging.level">FINE</prop>
+                <prop key="eclipselink.logging.level.sql">FINE</prop>
+                <prop key="eclipselink.logging.parameters">true</prop>
             </util:properties>
         </property>
     </bean>
