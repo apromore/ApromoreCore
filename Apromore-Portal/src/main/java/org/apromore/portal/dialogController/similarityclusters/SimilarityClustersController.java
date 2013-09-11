@@ -61,34 +61,31 @@ public class SimilarityClustersController extends BaseController {
         this.btnCreate = (Button) this.scWindow.getFellow("similarityclustersCreateButton");
         this.btnGed = (Button) this.scWindow.getFellow("similarityclustersCreateGED");
 
-        this.btnCreate.addEventListener("onClick", new EventListener() {
+        this.btnCreate.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 doCreateSimilarityClusters();
             }
         });
-        this.btnGed.addEventListener("onClick", new EventListener() {
+        this.btnGed.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 doCreateGedMatrix();
             }
         });
-
-        this.btnOK.addEventListener("onClick", new EventListener() {
+        this.btnOK.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 doShowSimilarityClusters();
             }
         });
-
-        this.btnOK.addEventListener("onOK", new EventListener() {
+        this.btnOK.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 doShowSimilarityClusters();
             }
         });
-
-        this.btnCancel.addEventListener("onClick", new EventListener() {
+        this.btnCancel.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 doCancel();

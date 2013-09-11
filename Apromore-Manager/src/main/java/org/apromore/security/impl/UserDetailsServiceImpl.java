@@ -8,9 +8,11 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
+import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.security.model.ApromorePermissionDetails;
 import org.apromore.security.model.ApromoreRoleDetails;
+import org.apromore.security.model.ApromoreSearchHistoryDetails;
 import org.apromore.security.model.ApromoreUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     protected UserDetails loadUserDetailsByUsername(String username) {
         Set<ApromoreRoleDetails> dbRoleSet = new HashSet<>();
         Set<ApromorePermissionDetails> dbPermSet = new HashSet<>();
+        Set<ApromoreSearchHistoryDetails> dbSearchSet = new HashSet<>();
         Set<GrantedAuthority> dbAuthsSet = new HashSet<>();
         User usr = userRepo.findByUsername(username);
         Membership membership = usr.getMembership();
@@ -84,9 +87,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 dbPermSet.add(new ApromorePermissionDetails(permission.getRowGuid(), permission.getName()));
             }
         }
+        for (SearchHistory searchHistory : usr.getSearchHistories()) {
+            dbSearchSet.add(new ApromoreSearchHistoryDetails(searchHistory.getId(), searchHistory.getSearch()));
+        }
 
         return new ApromoreUserDetails(usr.getRowGuid(), usr.getFirstName(), usr.getLastName(), username, membership.getPassword(),
-                !membership.getIsLocked(), true, true, true, membership.getEmail(), dbAuthsSet, dbRoleSet, dbPermSet);
+                !membership.getIsLocked(), true, true, true, membership.getEmail(), dbAuthsSet, dbRoleSet, dbPermSet, dbSearchSet);
     }
 
 }

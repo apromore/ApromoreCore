@@ -18,7 +18,6 @@ import org.zkoss.zul.Slider;
 public class SimilarityClustersFilterProperties extends BaseController {
 
     private static final long serialVersionUID = 3023944678410096666L;
-    private final Component filterWrapper;
     private final Slider minClusterSize;
     private final Slider maxClusterSize;
     private final Slider minAverageFragmentSize;
@@ -34,17 +33,17 @@ public class SimilarityClustersFilterProperties extends BaseController {
      * @param filterWrapper
      * @param externalScrollListener
      */
-    public SimilarityClustersFilterProperties(final Component filterWrapper, final EventListener externalScrollListener) {
+    public SimilarityClustersFilterProperties(final Component filterWrapper, final EventListener<Event> externalScrollListener) {
         super();
-        this.filterWrapper = filterWrapper;
+        Component filterWrapper1 = filterWrapper;
 
         // Wire Slider
-        this.minClusterSize = (Slider) this.filterWrapper.getFellow("minclustersize");
-        this.maxClusterSize = (Slider) this.filterWrapper.getFellow("maxclustersize");
-        this.minAverageFragmentSize = (Slider) this.filterWrapper.getFellow("minavgfragmentsize");
-        this.maxAverageFragmentSize = (Slider) this.filterWrapper.getFellow("maxavgfragmentsize");
-        this.minBenefitCostRatio = (Slider) this.filterWrapper.getFellow("minbcr");
-        this.maxBenefitCostRatio = (Slider) this.filterWrapper.getFellow("maxbcr");
+        this.minClusterSize = (Slider) filterWrapper1.getFellow("minclustersize");
+        this.maxClusterSize = (Slider) filterWrapper1.getFellow("maxclustersize");
+        this.minAverageFragmentSize = (Slider) filterWrapper1.getFellow("minavgfragmentsize");
+        this.maxAverageFragmentSize = (Slider) filterWrapper1.getFellow("maxavgfragmentsize");
+        this.minBenefitCostRatio = (Slider) filterWrapper1.getFellow("minbcr");
+        this.maxBenefitCostRatio = (Slider) filterWrapper1.getFellow("maxbcr");
 
         this.currentFilter = buildClusterFilter();
 
@@ -202,7 +201,7 @@ public class SimilarityClustersFilterProperties extends BaseController {
     /**
      * Event used onScroll
      */
-    private final class FilterScrollListener implements EventListener {
+    private final class FilterScrollListener implements EventListener<Event> {
         @Override
         public void onEvent(final Event event) throws Exception {
 

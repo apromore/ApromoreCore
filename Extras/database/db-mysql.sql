@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `annotation`;
 DROP TABLE IF EXISTS `canonical`;
 DROP TABLE IF EXISTS `native`;
-DROP TABLE IF EXISTS `edit_session`;
 DROP TABLE IF EXISTS `fragment_version_dag`;
 DROP TABLE IF EXISTS `process_fragment_map`;
 DROP TABLE IF EXISTS `expression`;
@@ -71,6 +70,7 @@ DROP TABLE IF EXISTS `batch_step_execution_context`;
 CREATE TABLE `search_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
+  `index` int(11) DEFAULT NULL,
   `search` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `un_search` (`userId` , `search`),
@@ -116,39 +116,8 @@ CREATE TABLE `native` (
   `lastUpdateDate` varchar(40) DEFAULT NULL,
   `nativeTypeId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_native` FOREIGN KEY (`nativeTypeId`)
+  CONSTRAINT `fk_native_type` FOREIGN KEY (`nativeTypeId`)
   REFERENCES `native_type` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `edit_session` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `recordTime` datetime DEFAULT NULL,
-  `userId` int(11) DEFAULT NULL,
-  `processModelVersionId` int(11) NOT NULL,
-  `processId` int(11) DEFAULT NULL,
-  `folderId` int(11) DEFAULT NULL,
-  `original_branch_name` varchar(40) DEFAULT NULL,
-  `new_branch_name` varchar(40) DEFAULT NULL,
-  `version_number` double DEFAULT NULL,
-  `create_new_branch` boolean DEFAULT NULL,
-  `nat_type` varchar(20) DEFAULT NULL,
-  `annotation` varchar(40) DEFAULT NULL,
-  `remove_fake_events` tinyint(1) DEFAULT NULL,
-  `createDate` varchar(40) DEFAULT NULL,
-  `lastUpdateDate` varchar(40) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_edit_session1` FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_edit_session pmv` FOREIGN KEY (`processModelVersionId`)
-  REFERENCES `process_model_version` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_edit_session_process` FOREIGN KEY (`processId`)
-  REFERENCES `process` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_edit_session_folder` FOREIGN KEY (`folderId`)
-  REFERENCES `folder` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -876,6 +845,7 @@ CREATE TABLE `batch_step_execution_context`  (
 
 -- Create indexes for the tables
 
+CREATE INDEX `idx_search_history` ON `search_history` (`index`, `search`) USING BTREE;
 CREATE INDEX `idx_native_type` ON `native_type` (`nat_type`, `extension`) USING BTREE;
 CREATE INDEX `idx_user_username` ON `user` (`username`) USING BTREE;
 CREATE INDEX `idx_process_name` ON `process` (`name`, `folderId`) USING BTREE;
@@ -1014,9 +984,9 @@ UNLOCK TABLES;
 
 LOCK TABLES `search_history` WRITE;
 /*!40000 ALTER TABLE `search_history` DISABLE KEYS */;
-INSERT INTO `search_history` VALUES (1,8,'airport');
-INSERT INTO `search_history` VALUES (2,8,'gold coast');
-INSERT INTO `search_history` VALUES (3,8,'goldcoast');
+INSERT INTO `search_history` VALUES (1,1,8,'airport');
+INSERT INTO `search_history` VALUES (2,2,8,'gold coast');
+INSERT INTO `search_history` VALUES (3,3,8,'goldcoast');
 /*!40000 ALTER TABLE `search_history` ENABLE KEYS */;
 UNLOCK TABLES;
 

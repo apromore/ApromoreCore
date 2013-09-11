@@ -9,20 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Stores the process in apromore.
@@ -59,7 +61,7 @@ public class User implements Serializable {
     private Set<EditSession> editSessionMappings = new HashSet<>();
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
-    private Set<SearchHistory> searchHistories = new HashSet<>();
+    private List<SearchHistory> searchHistories = new ArrayList<>();
 
 
     /**
@@ -305,7 +307,8 @@ public class User implements Serializable {
      * @return Returns the searchHistories.
      */
     @OneToMany(mappedBy = "user")
-    public Set<SearchHistory> getSearchHistories() {
+    @OrderBy("index ASC")
+    public List<SearchHistory> getSearchHistories() {
         return this.searchHistories;
     }
 
@@ -313,7 +316,7 @@ public class User implements Serializable {
      * Set the searchHistories for the Object.
      * @param newSearchHistories The searchHistories to set.
      */
-    public void setSearchHistories(final Set<SearchHistory> newSearchHistories) {
+    public void setSearchHistories(final List<SearchHistory> newSearchHistories) {
         this.searchHistories = newSearchHistories;
     }
 }

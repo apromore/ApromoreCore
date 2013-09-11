@@ -1,16 +1,15 @@
 package org.apromore.mapper;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.model.SearchHistoriesType;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  * SearchHistory Mapper Unit test.
@@ -20,15 +19,15 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class SearchHistoryMapperUnitTest {
 
-	SearchHistoryMapper mapper;
+    SearchHistoryMapper mapper;
 
-	@Before
-	public void setUp() throws Exception {
-		mapper = new SearchHistoryMapper();
-	}
+    @Before
+    public void setUp() throws Exception {
+        mapper = new SearchHistoryMapper();
+    }
 
-	@Test
-	public void testConvertFromSearchHistoriesType() throws Exception {
+    @Test
+    public void testConvertFromSearchHistoriesType() throws Exception {
         List<SearchHistoriesType> srhTypes = new ArrayList<SearchHistoriesType>();
         SearchHistoriesType typ1 = new SearchHistoriesType();
         typ1.setNum(1);
@@ -40,8 +39,8 @@ public class SearchHistoryMapperUnitTest {
         typ2.setSearch("cats");
         srhTypes.add(typ2);
 
-        Set<SearchHistory> searches = mapper.convertFromSearchHistoriesType(srhTypes);
+        List<SearchHistory> searches = mapper.convertFromSearchHistoriesType(srhTypes);
         assertThat(searches.size(), equalTo(srhTypes.size()));
-	}
+    }
 
 }

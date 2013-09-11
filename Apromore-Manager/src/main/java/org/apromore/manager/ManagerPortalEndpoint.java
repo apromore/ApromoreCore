@@ -33,6 +33,7 @@ import org.apromore.helper.PluginHelper;
 import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
+import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.mapper.WorkspaceMapper;
 import org.apromore.model.AddProcessToFolderInputMsgType;
@@ -145,6 +146,8 @@ import org.apromore.model.UpdateFolderInputMsgType;
 import org.apromore.model.UpdateFolderOutputMsgType;
 import org.apromore.model.UpdateProcessInputMsgType;
 import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UpdateSearchHistoryInputMsgType;
+import org.apromore.model.UpdateSearchHistoryOutputMsgType;
 import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
@@ -707,10 +710,32 @@ public class ManagerPortalEndpoint {
             res.setUser(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
-            result.setCode(0);
+            result.setCode(1);
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createWriteUserResponse(res);
+    }
+
+
+    @PayloadRoot(localPart = "UpdateSearchHistoryRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<UpdateSearchHistoryOutputMsgType> updateSearchHistories(@RequestPayload final JAXBElement<UpdateSearchHistoryInputMsgType> req) {
+        LOGGER.debug("Executing operation updateSearchHistories");
+        UpdateSearchHistoryInputMsgType payload = req.getValue();
+        UpdateSearchHistoryOutputMsgType res = new UpdateSearchHistoryOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            userSrv.updateUserSearchHistory(UserMapper.convertFromUserType(payload.getUser()),
+                    SearchHistoryMapper.convertFromSearchHistoriesType(payload.getSearchHistory()));
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(1);
+            result.setMessage(ex.getMessage());
+        }
+        return WS_OBJECT_FACTORY.createUpdateSearchHistoryResponse(res);
     }
 
     @PayloadRoot(localPart = "ReadNativeTypesRequest", namespace = NAMESPACE)

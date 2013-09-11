@@ -75,7 +75,6 @@ public class MainController extends BaseController {
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
-    private List<SearchHistoriesType> searchHistory = new ArrayList<>();
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
     private BaseFilterController baseFilterController;
@@ -467,6 +466,15 @@ public class MainController extends BaseController {
         }
     }
 
+    /* Get the Search Histories for the current logged in User. */
+    public List<SearchHistoriesType> getSearchHistory() {
+        return UserSessionManager.getCurrentUser().getSearchHistories();
+    }
+
+    /* Tell the manager we need to update the search history for this user. */
+    public void updateSearchHistory(final List<SearchHistoriesType> searchHist) throws Exception {
+        getService().updateSearchHistories(UserSessionManager.getCurrentUser(), searchHist);
+    }
 
 
 
@@ -494,7 +502,7 @@ public class MainController extends BaseController {
     protected void signout() throws Exception {
         Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {
-                    public void onEvent(Event evt) {
+                    public void onEvent(Event evt) throws Exception {
                         switch ((Integer) evt.getData()) {
                             case Messagebox.YES:
                                 UserSessionManager.setCurrentFolder(null);
@@ -503,6 +511,7 @@ public class MainController extends BaseController {
                                 UserSessionManager.setPreviousFolder(null);
                                 UserSessionManager.setSelectedFolderIds(null);
                                 UserSessionManager.setTree(null);
+                                getService().writeUser(UserSessionManager.getCurrentUser());
                                 Executions.sendRedirect("/j_spring_security_logout");
                                 break;
                             case Messagebox.NO:
@@ -658,10 +667,6 @@ public class MainController extends BaseController {
         return baseDetailController;
     }
 
-    public List<SearchHistoriesType> getSearchHistory() {
-        return searchHistory;
-    }
-
     public String getHost() {
         return host;
     }
@@ -685,5 +690,6 @@ public class MainController extends BaseController {
     public void setBuildDate(final String newBuildDate) {
         buildDate = newBuildDate;
     }
+
 }
 

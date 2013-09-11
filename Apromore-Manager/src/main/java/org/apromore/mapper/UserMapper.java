@@ -1,5 +1,11 @@
 package org.apromore.mapper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
@@ -8,11 +14,8 @@ import org.apromore.model.PermissionType;
 import org.apromore.model.RoleType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
@@ -21,6 +24,8 @@ import java.util.List;
  * @since 1.0
  */
 public class UserMapper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserMapper.class.getName());
 
     /**
      * Convert the List of Users to a UserNamesType Webservice object.
@@ -90,7 +95,9 @@ public class UserMapper {
         if (userType.getLastActivityDate() != null && !userType.getLastActivityDate().equals("")) {
             try {
                 date = formatter.parse(userType.getLastActivityDate());
-            } catch (Exception ex){}
+            } catch (ParseException ex) {
+                LOGGER.error("Last Activity Date: " + userType.getLastActivityDate() + " could not be parsed.");
+            }
         }
 
         User user = new User();
@@ -98,9 +105,11 @@ public class UserMapper {
         user.setFirstName(userType.getFirstName());
         user.setUsername(userType.getUsername());
         user.setRowGuid(userType.getId());
-
         if (date != null){
             user.setLastActivityDate(date);
+        }
+        if (user.getSearchHistories() != null) {
+            user.setSearchHistories(SearchHistoryMapper.convertFromSearchHistoriesType(userType.getSearchHistories()));
         }
         
         Membership membership = new Membership();

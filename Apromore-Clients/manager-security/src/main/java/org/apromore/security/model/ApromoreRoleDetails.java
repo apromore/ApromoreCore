@@ -3,7 +3,7 @@ package org.apromore.security.model;
 import java.io.Serializable;
 
 /**
- * Just a shell class so Devs doen't confused between the User Model and the Security User Model.
+ * Just a shell class so Devs doesn't confused between the DAO Models and the Security Models.
  *
  * @author Cameron James
  */
