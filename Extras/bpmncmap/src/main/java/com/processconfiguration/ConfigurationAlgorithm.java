@@ -351,6 +351,11 @@ public abstract class ConfigurationAlgorithm {
                 all.add(that);
             }
 
+            @Override public void visit(final TEndEvent that) {
+                super.visit(that);
+                mark((BpmnDefinitions) definitions, that, canEnd, Direction.BACKWARDS, incomingMap, outgoingMap);
+            }
+
             @Override public void visit(final TFlowElement that) {
                 super.visit(that);
                 all.add(that);
@@ -380,14 +385,16 @@ public abstract class ConfigurationAlgorithm {
                 }
             }
 
+            /* TODO: support message flow pruning
+            @Override public void visit(final TMessageFlow that) {
+                super.visit(that);
+                all.add(that);
+            }
+            */
+
             @Override public void visit(final TStartEvent that) {
                 super.visit(that);
                 mark((BpmnDefinitions) definitions, that, canStart, Direction.FORWARDS, incomingMap, outgoingMap);
-            }
-
-            @Override public void visit(final TEndEvent that) {
-                super.visit(that);
-                mark((BpmnDefinitions) definitions, that, canEnd, Direction.BACKWARDS, incomingMap, outgoingMap);
             }
         }));
 
@@ -460,6 +467,25 @@ public abstract class ConfigurationAlgorithm {
                     mark(definitions, (TBaseElement) jeo.getValue(), markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
                 }
                 mark(definitions, that.getTargetRef(), markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+            }
+        }
+
+        if (element instanceof TMessageFlow) {
+            TMessageFlow that = (TMessageFlow) element;
+            if (direction == Direction.ASSOCIATED) {
+                try {
+                    TBaseElement source = definitions.findElement(that.getSourceRef());
+                    if (source != null) {
+                        mark(definitions, source, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                    }
+
+                    TBaseElement target = definitions.findElement(that.getTargetRef());
+                    if (target != null) {
+                        mark(definitions, target, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                    }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
