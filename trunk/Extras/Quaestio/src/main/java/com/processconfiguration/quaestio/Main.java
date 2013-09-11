@@ -35,6 +35,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -261,9 +263,9 @@ public class Main extends JFrame implements ListSelectionListener,
 	Map<String, FactType> FactsMap;
 	Map<String, QuestionType> QuestionsMap;
 
-	File fInMap;
-	File fInModel;
-	File fInConf;
+	File         fInMap;
+	ProcessModel fInModel;
+	File         fInConf;
 
 	/**
 	 * This method initializes jScrollPane_A
@@ -1991,10 +1993,12 @@ public class Main extends JFrame implements ListSelectionListener,
 				if (i+3 >= args.length) {
 					throw new IllegalArgumentException("-apromore without id/branch/version");
 				}
-				application.openApromoreProcess(Integer.valueOf(args[i+1]).intValue(),  // process ID
-                                                                args[i+2],                              // branch
-                                                                Double.valueOf(args[i+3]));             // version number
-				i =+ 3;
+				application.setLinkedProcessModel(
+					new ApromoreProcessModel(Integer.valueOf(args[i+1]).intValue(),  // process ID
+					                         args[i+2],                              // branch
+					                         Double.valueOf(args[i+3]))              // version number
+				);
+				i += 3;
                                 break;
 			case "-cmap":
 				if (++i >= args.length) {
@@ -2012,7 +2016,9 @@ public class Main extends JFrame implements ListSelectionListener,
 				if (++i >= args.length) {
 					throw new IllegalArgumentException("-model without filename");
 				}
-				application.setLinkedProcessModel(new File(args[i]));
+				application.setLinkedProcessModel(
+					new FileProcessModel(new File(args[i]))
+				);
 				break;
 			case "-qml":
 				if (++i >= args.length) {
@@ -2048,6 +2054,36 @@ public class Main extends JFrame implements ListSelectionListener,
 		);
 		BpmnDefinitions bpmn = BpmnDefinitions.newInstance(result.getNative().getInputStream(), true /* validate */);
 		bpmn.marshal(System.out, true);
+	}
+
+	/**
+	 * Update a C-BPMN process model on the Apromore manager service.
+         *
+         * @param bpmn the updated process model
+	 */
+	private void updateApromoreProcess(final BpmnDefinitions bpmn) throws Exception {
+
+		// Serialize
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bpmn.marshal(baos, true);
+
+		// Send to the server
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
+		ManagerService manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
+		manager.updateProcess(
+			0,		// session code
+			null,		// user name
+			"BPMN 2.0",	// native type
+			0,		// process ID
+			null,		// domain
+			null,		// process name
+			null,		// original branch name
+			null,		// new branch name
+			0d,		// version number
+			0d,		// original version number
+			null,		// pre-version
+			new ByteArrayInputStream(baos.toByteArray())
+		);
 	}
 
 	/**
@@ -3879,7 +3915,7 @@ public class Main extends JFrame implements ListSelectionListener,
 		}
 		if (fInMap != null && fInModel != null) {
 			try {
-				BpmnDefinitions bpmn = BpmnDefinitions.newInstance(new FileInputStream(fInModel), true);
+				BpmnDefinitions bpmn = fInModel.getBpmn(); // BpmnDefinitions.newInstance(new FileInputStream(fInModel), true);
 				CMAP cmap = (CMAP) JAXBContext.newInstance("com.processconfiguration.cmap").createUnmarshaller().unmarshal(fInMap);
 				DCL dcl = getDCL();
 
@@ -3901,6 +3937,8 @@ public class Main extends JFrame implements ListSelectionListener,
 
 			} catch (InterruptedException|IOException|JAXBException|URISyntaxException je) {
 				je.printStackTrace();
+			} catch (Exception ee) {  // TODO: remove this when the ProcessModel.getBpmn method no longer requires it
+				ee.printStackTrace();
 			}
 		}
 		/// End hack for AotF demo
@@ -4433,7 +4471,7 @@ public class Main extends JFrame implements ListSelectionListener,
 									.showOpenDialog(getJDialog_CG());
 
 							if (returnVal == JFileChooser.APPROVE_OPTION) {
-								fInModel = fileChooser.getSelectedFile();
+								fInModel = new FileProcessModel(fileChooser.getSelectedFile());
 								try {
 									setLinkedProcessModel(fInModel);
 
@@ -4458,7 +4496,8 @@ public class Main extends JFrame implements ListSelectionListener,
          *              or in YAWL format with a <code>.yawl</code> extension
 	 * @throws Exception if <var>fInModel</var> doesn't validate against the indicated XML schema
 	 */
-	void setLinkedProcessModel(final File file) throws Exception {
+	void setLinkedProcessModel(final ProcessModel processModel) throws Exception {
+	/*
 		if (file.toString().endsWith(".bpmn")) {
 			schemaValidation.validate(getClass().getResource("/xsd/BPMN20.xsd"), file);
 		} else if (fInModel.toString().endsWith(".epml")) {
@@ -4466,9 +4505,10 @@ public class Main extends JFrame implements ListSelectionListener,
 		} else if (fInModel.toString().endsWith(".yawl")) {
 			schemaValidation.validate(getClass().getResource("/schema/YAWL_Schema2.2.xsd"), file);
 		}
-		getJTextField_model().setText(file.getAbsolutePath());
+	*/
+		getJTextField_model().setText(/*file.getAbsolutePath()*/ processModel.getText());
 
-		this.fInModel = file;
+		this.fInModel = processModel;
 	}
 
 	/**
@@ -4523,7 +4563,8 @@ public class Main extends JFrame implements ListSelectionListener,
 
 	private void individualize() {
 		File fOutput = null;
-		Configurator cg = new Configurator(fInModel, fInMap, fInConf);
+		// TODO: port EPML and YAWL support
+		Configurator cg = null; //new Configurator(fInModel, fInMap, fInConf);
 		if ((fOutput = cg.commit()) != null) {
 			getJDialog_CG().setVisible(false);
 			try{
