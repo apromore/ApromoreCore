@@ -1,6 +1,12 @@
 package org.apromore.service.impl;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apromore.dao.SearchHistoryRepository;
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
@@ -8,9 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import javax.inject.Inject;
 
 /**
  * Implementation of the UserService Contract.
@@ -21,7 +24,11 @@ import javax.inject.Inject;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
+    private static final Integer MIN_SEARCH_SAVE = 0;
+    private static final Integer MAX_SEARCH_SAVE = 10;
+
     private UserRepository userRepo;
+    private SearchHistoryRepository searchHistoryRepo;
 
 
     /**
@@ -29,17 +36,18 @@ public class UserServiceImpl implements UserService {
      * @param userRepository User Repository.
      */
     @Inject
-    public UserServiceImpl(final UserRepository userRepository) {
+    public UserServiceImpl(final UserRepository userRepository, final SearchHistoryRepository searchHistoryRepository) {
         userRepo = userRepository;
+        searchHistoryRepo = searchHistoryRepository;
     }
 
 
 
     /**
      * @see org.apromore.service.UserService#findAllUsers()
-     *      {@inheritDoc}
-     *      <p/>
-     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     * {@inheritDoc}
+     * <p/>
+     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     public List<User> findAllUsers() {
@@ -48,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @see org.apromore.service.UserService#findUserByLogin(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public User findUserByLogin(String username) throws UserNotFoundException {
@@ -62,14 +70,54 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @see org.apromore.service.UserService#writeUser(org.apromore.dao.model.User)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void writeUser(User user) {
-        User dbUser = userRepo.findByUsername(user.getUsername());
+        User dbUser = userRepo.findOne(user.getId());
         dbUser.setSearchHistories(user.getSearchHistories());
         userRepo.save(dbUser);
+    }
+
+    /**
+     * @see org.apromore.service.UserService#updateUserSearchHistory(org.apromore.dao.model.User, java.util.List)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateUserSearchHistory(User user, List<SearchHistory> searchHistories) {
+        List<SearchHistory> history = new ArrayList<>();
+        User dbUser = userRepo.findByUsername(user.getUsername());
+
+        if (searchHistories != null) {
+            searchHistories = updateSearchHistoriesWithUser(dbUser, searchHistories);
+            if (searchHistories.size() > 10) {
+               for (SearchHistory searchHistory : searchHistories) {
+                   if (searchHistory.getIndex() > MIN_SEARCH_SAVE && searchHistory.getIndex() < MAX_SEARCH_SAVE) {
+                       history.add(searchHistory);
+                   }
+               }
+            } else {
+                history = searchHistories;
+            }
+        }
+        user.setSearchHistories(history);
+
+        searchHistoryRepo.save(history);
+        userRepo.save(dbUser);
+    }
+
+    /* Need to update the search history records with the user we are attaching to. */
+    private List<SearchHistory> updateSearchHistoriesWithUser(User user, List<SearchHistory> searchHistories) {
+        List<SearchHistory> updatedSearchHistories = new ArrayList<>();
+        if (user != null && searchHistories != null) {
+            for (SearchHistory searchHistory : searchHistories) {
+                searchHistory.setUser(user);
+                updatedSearchHistories.add(searchHistory);
+            }
+        }
+        return updatedSearchHistories;
     }
 
 }

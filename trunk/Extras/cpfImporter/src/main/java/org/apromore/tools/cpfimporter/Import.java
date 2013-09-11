@@ -3,6 +3,7 @@ package org.apromore.tools.cpfimporter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.apromore.model.FolderType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -24,12 +24,15 @@ public final class Import {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Import.class.getName());
 
-    private AutowireCapableBeanFactory fac;
     private ManagerService manager;
 
     /* The Canonical Process Importer Starting point. */
     public static void main(String[] args) throws Exception {
-        new Import(args[0]);
+        if (args.length > 0) {
+            new Import(args[0]);
+        } else {
+            new Import(Paths.get("").toString());
+        }
     }
 
 
@@ -37,9 +40,8 @@ public final class Import {
      * Default Constructor.
      */
     public Import(final String arg0) throws Exception {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:spring/applicationContext-managerClient.xml");
-        fac = ctx.getAutowireCapableBeanFactory();
-        manager = (ManagerService) getBean("managerClient");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
+        manager = (ManagerService) ctx.getAutowireCapableBeanFactory().getBean("managerClient");
 
         File fileArg = new File(arg0);
         if (fileArg.isFile()) {
@@ -154,13 +156,6 @@ public final class Import {
             return "AML fragment";
         }
         return null;
-    }
-
-
-
-    /* Finds a Spring bean with the passed in name. */
-    private Object getBean(final String name) {
-        return fac.getBean(name);
     }
 
 }

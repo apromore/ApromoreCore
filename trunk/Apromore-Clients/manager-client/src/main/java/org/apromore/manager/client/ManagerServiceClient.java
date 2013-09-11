@@ -113,12 +113,15 @@ import org.apromore.model.SaveProcessPermissionsInputMsgType;
 import org.apromore.model.SaveProcessPermissionsOutputMsgType;
 import org.apromore.model.SearchForSimilarProcessesInputMsgType;
 import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.SearchUserInputMsgType;
 import org.apromore.model.SearchUserOutputMsgType;
 import org.apromore.model.UpdateFolderInputMsgType;
 import org.apromore.model.UpdateFolderOutputMsgType;
 import org.apromore.model.UpdateProcessInputMsgType;
 import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UpdateSearchHistoryInputMsgType;
+import org.apromore.model.UpdateSearchHistoryOutputMsgType;
 import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
@@ -507,7 +510,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#createClusters(org.apromore.model.ClusterSettingsType)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -1015,7 +1018,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-    /* (non-Javadoc)
+    /*
      * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
      */
     @Override
@@ -1040,6 +1043,10 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+    /*
+     * @see org.apromore.manager.client.ManagerService#deployProcess
+     * {@inheritDoc}
+     */
     @Override
     public PluginMessages deployProcess(final String branchName, final String processName, final Double versionName, final String nativeType,
             final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
@@ -1067,4 +1074,25 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+    /*
+     * @see ManagerService#updateSearchHistories
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateSearchHistories(UserType user, List<SearchHistoriesType> searchHist) throws Exception {
+        LOGGER.debug("Preparing UpdateSearchHistories Request...");
+
+        UpdateSearchHistoryInputMsgType msg = new UpdateSearchHistoryInputMsgType();
+        msg.setUser(user);
+        msg.getSearchHistory().addAll(searchHist);
+
+        JAXBElement<UpdateSearchHistoryInputMsgType> request = WS_CLIENT_FACTORY.createUpdateSearchHistoryRequest(msg);
+
+        @SuppressWarnings("unchecked")
+        JAXBElement<UpdateSearchHistoryOutputMsgType> response = (JAXBElement<UpdateSearchHistoryOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }
+    }
 }

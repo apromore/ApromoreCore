@@ -15,6 +15,8 @@
     <xs:element name="ReadAllUsersResponse" type="tns:ReadAllUsersOutputMsgType"/>
     <xs:element name="WriteUserRequest" type="tns:WriteUserInputMsgType"/>
     <xs:element name="WriteUserResponse" type="tns:WriteUserOutputMsgType"/>
+    <xs:element name="UpdateSearchHistoryRequest" type="tns:UpdateSearchHistoryInputMsgType"/>
+    <xs:element name="UpdateSearchHistoryResponse" type="tns:UpdateSearchHistoryOutputMsgType"/>
     <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType"/>
     <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
     <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
@@ -339,6 +341,7 @@
         <xs:sequence>
             <xs:element name="Roles" type="tns:RoleType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Permissions" type="tns:PermissionType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="SearchHistories" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="firstName" type="xs:string"/>
         <xs:attribute name="lastName" type="xs:string"/>
@@ -597,14 +600,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <!--<xs:complexType name="ReadEditSessionOutputMsgType">-->
-        <!--<xs:sequence>-->
-            <!--<xs:element name="Result" type="tns:ResultType"/>-->
-            <!--<xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>-->
-            <!--<xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>-->
-        <!--</xs:sequence>-->
-    <!--</xs:complexType>-->
-
     <xs:complexType name="ReadNativeTypesInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
     </xs:complexType>
@@ -745,6 +740,19 @@
     <xs:complexType name="WriteUserOutputMsgType">
         <xs:sequence>
             <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UpdateSearchHistoryInputMsgType">
+        <xs:sequence>
+            <xs:element name="User" type="tns:UserType"/>
+            <xs:element name="SearchHistory" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UpdateSearchHistoryOutputMsgType">
+        <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
@@ -1139,7 +1147,7 @@
 
     <xs:complexType name="GetClustersRequestType">
         <xs:sequence>
-            <xs:element name="ClusterFilter" type="tns:ClusterFilterType"></xs:element>
+            <xs:element name="ClusterFilter" type="tns:ClusterFilterType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1150,57 +1158,57 @@
 
     <xs:complexType name="GetClustersResponseType">
         <xs:sequence>
-            <xs:element name="Clusters" type="tns:ClusterType" maxOccurs="unbounded"></xs:element>
+            <xs:element name="Clusters" type="tns:ClusterType" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
 
     <xs:complexType name="ClusterType">
         <xs:sequence>
-            <xs:element name="ClusterLabel" type="xs:string"></xs:element>
+            <xs:element name="ClusterLabel" type="xs:string"/>
             <xs:element name="ClusterSize" type="xs:int"/>
-            <xs:element name="MedoidId" type="xs:int"></xs:element>
-            <xs:element name="AvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="BCR" type="xs:double"></xs:element>
-            <xs:element name="RefactoringGain" type="xs:int"></xs:element>
-            <xs:element name="StandardizationEffort" type="xs:double"></xs:element>
-            <xs:element name="Fragments" type="tns:FragmentData" maxOccurs="unbounded"></xs:element>
+            <xs:element name="MedoidId" type="xs:int"/>
+            <xs:element name="AvgFragmentSize" type="xs:float"/>
+            <xs:element name="BCR" type="xs:double"/>
+            <xs:element name="RefactoringGain" type="xs:int"/>
+            <xs:element name="StandardizationEffort" type="xs:double"/>
+            <xs:element name="Fragments" type="tns:FragmentData" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="ClusterId" type="xs:string"></xs:attribute>
+        <xs:attribute name="ClusterId" type="xs:string"/>
     </xs:complexType>
 
 
     <xs:complexType name="FragmentDistancesType">
         <xs:sequence>
-            <xs:element name="Distance" type="tns:DistanceType" maxOccurs="unbounded" minOccurs="1"></xs:element>
+            <xs:element name="Distance" type="tns:DistanceType" maxOccurs="unbounded" minOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="DistanceType">
         <xs:sequence>
-            <xs:element name="GED" type="xs:double"></xs:element>
+            <xs:element name="GED" type="xs:double"/>
         </xs:sequence>
-        <xs:attribute name="FragmentId" type="xs:string"></xs:attribute>
+        <xs:attribute name="FragmentId" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="FragmentData">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int"></xs:element>
-            <xs:element name="FragmentLabel" type="xs:string"></xs:element>
-            <xs:element name="Distance" type="xs:double"></xs:element>
-            <xs:element name="FragmentSize" type="xs:int"></xs:element>
-            <xs:element name="ProcessAssociations" type="tns:ProcessAssociationsType" maxOccurs="unbounded" minOccurs="0"></xs:element>
+            <xs:element name="FragmentId" type="xs:int"/>
+            <xs:element name="FragmentLabel" type="xs:string"/>
+            <xs:element name="Distance" type="xs:double"/>
+            <xs:element name="FragmentSize" type="xs:int"/>
+            <xs:element name="ProcessAssociations" type="tns:ProcessAssociationsType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterFilterType">
         <xs:sequence>
-            <xs:element name="minClusterSize" type="xs:int"></xs:element>
-            <xs:element name="maxClusterSize" type="xs:int"></xs:element>
-            <xs:element name="minAvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="maxAvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="minBCR" type="xs:double"></xs:element>
-            <xs:element name="maxBCR" type="xs:double"></xs:element>
+            <xs:element name="minClusterSize" type="xs:int"/>
+            <xs:element name="maxClusterSize" type="xs:int"/>
+            <xs:element name="minAvgFragmentSize" type="xs:float"/>
+            <xs:element name="maxAvgFragmentSize" type="xs:float"/>
+            <xs:element name="minBCR" type="xs:double"/>
+            <xs:element name="maxBCR" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1231,8 +1239,8 @@
 
     <xs:complexType name="FragmentType">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int"></xs:element>
-            <xs:element name="Content" type="xs:string"></xs:element>
+            <xs:element name="FragmentId" type="xs:int"/>
+            <xs:element name="Content" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1247,44 +1255,44 @@
 
     <xs:complexType name="CreateClustersInputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterSettings" type="tns:ClusterSettingsType"></xs:element>
+            <xs:element name="ClusterSettings" type="tns:ClusterSettingsType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterSettingsType">
         <xs:sequence>
-            <xs:element name="Algorithm" type="xs:string"></xs:element>
+            <xs:element name="Algorithm" type="xs:string"/>
             <xs:element name="ClusteringParams"
                         type="tns:ClusteringParameterType" maxOccurs="unbounded"
                         minOccurs="1">
             </xs:element>
-            <xs:element name="ConstrainedProcessIds" type="tns:ConstrainedProcessIdsType"></xs:element>
+            <xs:element name="ConstrainedProcessIds" type="tns:ConstrainedProcessIdsType"/>
         </xs:sequence>
     </xs:complexType>
 
 
     <xs:complexType name="CreateClustersOutputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterSummaries" type="tns:ClusteringSummaryType"></xs:element>
+            <xs:element name="ClusterSummaries" type="tns:ClusteringSummaryType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusteringSummaryType">
         <xs:sequence>
-            <xs:element name="NumClusters" type="xs:int"></xs:element>
-            <xs:element name="minClusterSize" type="xs:int"></xs:element>
-            <xs:element name="maxClusterSize" type="xs:int"></xs:element>
-            <xs:element name="minAvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="maxAvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="minBCR" type="xs:double"></xs:element>
-            <xs:element name="maxBCR" type="xs:double"></xs:element>
+            <xs:element name="NumClusters" type="xs:int"/>
+            <xs:element name="minClusterSize" type="xs:int"/>
+            <xs:element name="maxClusterSize" type="xs:int"/>
+            <xs:element name="minAvgFragmentSize" type="xs:float"/>
+            <xs:element name="maxAvgFragmentSize" type="xs:float"/>
+            <xs:element name="minBCR" type="xs:double"/>
+            <xs:element name="maxBCR" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusteringParameterType">
         <xs:sequence>
-            <xs:element name="ParamName" type="xs:string"></xs:element>
-            <xs:element name="ParmaValue" type="xs:string"></xs:element>
+            <xs:element name="ParamName" type="xs:string"/>
+            <xs:element name="ParmaValue" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1293,17 +1301,17 @@
 
     <xs:complexType name="GetClusteringSummaryInputMsgType">
         <xs:sequence>
-            <xs:element name="param1" type="xs:string"></xs:element>
+            <xs:element name="param1" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="GetClusteringSummaryOutputMsgType">
         <xs:sequence>
-            <xs:element name="ClusteringSummary" type="tns:ClusteringSummaryType"></xs:element>
+            <xs:element name="ClusteringSummary" type="tns:ClusteringSummaryType"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="NewComplexType"></xs:complexType>
+    <xs:complexType name="NewComplexType"/>
 
     <xs:element name="PairwiseDistancesRequest"
                 type="tns:GetPairwiseDistancesInputMsgType">
@@ -1311,13 +1319,13 @@
 
     <xs:complexType name="GetPairwiseDistancesInputMsgType">
         <xs:sequence>
-            <xs:element name="FragmentIds" type="tns:FragmentIdsType"></xs:element>
+            <xs:element name="FragmentIds" type="tns:FragmentIdsType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="FragmentIdsType">
         <xs:sequence>
-            <xs:element name="FragmentId" type="xs:int" maxOccurs="unbounded" minOccurs="1"></xs:element>
+            <xs:element name="FragmentId" type="xs:int" maxOccurs="unbounded" minOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1327,37 +1335,37 @@
 
     <xs:complexType name="GetPairwiseDistancesOutputMsgType">
         <xs:sequence>
-            <xs:element name="PairDistances" type="tns:PairDistancesType"></xs:element>
+            <xs:element name="PairDistances" type="tns:PairDistancesType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="PairDistancesType">
         <xs:sequence>
-            <xs:element name="PairDistance" type="tns:PairDistanceType" maxOccurs="unbounded" minOccurs="0"></xs:element>
+            <xs:element name="PairDistance" type="tns:PairDistanceType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="PairDistanceType">
         <xs:sequence>
-            <xs:element name="FragmentId1" type="xs:int"></xs:element>
-            <xs:element name="FragmentId2" type="xs:int"></xs:element>
-            <xs:element name="Distance" type="xs:double"></xs:element>
+            <xs:element name="FragmentId1" type="xs:int"/>
+            <xs:element name="FragmentId2" type="xs:int"/>
+            <xs:element name="Distance" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ProcessAssociationsType">
         <xs:sequence>
-            <xs:element name="ProcessId" type="xs:int"></xs:element>
-            <xs:element name="ProcessName" type="xs:string"></xs:element>
-            <xs:element name="BranchName" type="xs:string"></xs:element>
-            <xs:element name="ProcessVersionId" type="xs:int"></xs:element>
-            <xs:element name="ProcessVersionNumber" type="xs:string"></xs:element>
+            <xs:element name="ProcessId" type="xs:int"/>
+            <xs:element name="ProcessName" type="xs:string"/>
+            <xs:element name="BranchName" type="xs:string"/>
+            <xs:element name="ProcessVersionId" type="xs:int"/>
+            <xs:element name="ProcessVersionNumber" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ConstrainedProcessIdsType">
         <xs:sequence>
-            <xs:element name="ProcessId" type="xs:int" maxOccurs="unbounded" minOccurs="0"></xs:element>
+            <xs:element name="ProcessId" type="xs:int" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1367,7 +1375,7 @@
 
     <xs:complexType name="GetClusterSummariesInputMsgType">
         <xs:sequence>
-            <xs:element name="filter" type="tns:ClusterFilterType"></xs:element>
+            <xs:element name="filter" type="tns:ClusterFilterType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1377,21 +1385,21 @@
 
     <xs:complexType name="GetClusterSummariesOutputMsgType">
         <xs:sequence>
-            <xs:element name="clusterSummaries" type="tns:ClusterSummaryType" maxOccurs="unbounded" minOccurs="0"></xs:element>
+            <xs:element name="clusterSummaries" type="tns:ClusterSummaryType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ClusterSummaryType">
         <xs:sequence>
-            <xs:element name="ClusterLabel" type="xs:string"></xs:element>
-            <xs:element name="ClusterSize" type="xs:int"></xs:element>
-            <xs:element name="MedoidId" type="xs:int"></xs:element>
-            <xs:element name="AvgFragmentSize" type="xs:float"></xs:element>
-            <xs:element name="BCR" type="xs:double"></xs:element>
-            <xs:element name="RefactoringGain" type="xs:int"></xs:element>
-            <xs:element name="StandardizationEffort" type="xs:double"></xs:element>
+            <xs:element name="ClusterLabel" type="xs:string"/>
+            <xs:element name="ClusterSize" type="xs:int"/>
+            <xs:element name="MedoidId" type="xs:int"/>
+            <xs:element name="AvgFragmentSize" type="xs:float"/>
+            <xs:element name="BCR" type="xs:double"/>
+            <xs:element name="RefactoringGain" type="xs:int"/>
+            <xs:element name="StandardizationEffort" type="xs:double"/>
         </xs:sequence>
-        <xs:attribute name="ClusterId" type="xs:int"></xs:attribute>
+        <xs:attribute name="ClusterId" type="xs:int"/>
     </xs:complexType>
 
     <xs:element name="GetClusterRequest"
@@ -1400,7 +1408,7 @@
 
     <xs:complexType name="GetClusterInputMsgType">
         <xs:sequence>
-            <xs:element name="ClusterId" type="xs:int"></xs:element>
+            <xs:element name="ClusterId" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1410,7 +1418,7 @@
 
     <xs:complexType name="GetClusterOutputMsgType">
         <xs:sequence>
-            <xs:element name="Cluster" type="tns:ClusterType"></xs:element>
+            <xs:element name="Cluster" type="tns:ClusterType"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

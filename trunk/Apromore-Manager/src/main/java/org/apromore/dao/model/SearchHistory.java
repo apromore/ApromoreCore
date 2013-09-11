@@ -1,10 +1,9 @@
 package org.apromore.dao.model;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class SearchHistory implements Serializable {
 
     private Integer id;
+    private Integer index;
     private String search;
 
     private User user;
@@ -46,7 +46,7 @@ public class SearchHistory implements Serializable {
      * @return the id
      */
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public Integer getId() {
         return this.id;
@@ -60,6 +60,24 @@ public class SearchHistory implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "position")
+    public Integer getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(final Integer newIndex) {
+        this.index = newIndex;
+    }
+
+    @Column(name = "search", length = 200)
+    public String getSearch() {
+        return this.search;
+    }
+
+    public void setSearch(final String newSearch) {
+        this.search = newSearch;
+    }
+
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -69,15 +87,6 @@ public class SearchHistory implements Serializable {
 
     public void setUser(User newUser) {
         this.user = newUser;
-    }
-
-    @Column(name = "search", length = 200)
-    public String getSearch() {
-        return this.search;
-    }
-
-    public void setSearch(String newSearch) {
-        this.search = newSearch;
     }
 
 }

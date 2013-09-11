@@ -1,7 +1,6 @@
 package org.apromore.manager.client;
 
 import javax.activation.DataHandler;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.apromore.model.PluginInfoResult;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
@@ -105,13 +105,6 @@ public interface ManagerService {
      * @return the NativeTypesType from the WebService
      */
     NativeTypesType readNativeTypes();
-
-//    /**
-//     * Reads the Edit session values for a particular code.
-//     * @param code the code we are searching for
-//     * @return the EditSessionType from the WebService
-//     */
-//    EditSessionType readEditSession(int code);
 
     /**
      * Create a GED Matrix used in the Cluster Creation.
@@ -245,7 +238,7 @@ public interface ManagerService {
      */
     ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, Double versionNumber,
             InputStream xml_process, String domain, String documentation, String created, String lastUpdate,
-            Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception;
+            Set<RequestParameterType<?>> canoniserProperties) throws Exception;
 
     /**
      * Get list of all currently installed Plugins.
@@ -340,7 +333,7 @@ public interface ManagerService {
      */
     void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
             String originalBranchName, String newBranchName, Double versionNumber, Double originalVersionNumber,
-            String preVersion, InputStream native_is) throws IOException, Exception;
+            String preVersion, InputStream native_is) throws Exception;
 
     /**
      * Write the modified processes which are in processVersions. For each of which, preNewVersion gives the mapping between its previous and new
@@ -378,25 +371,8 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    void writeAnnotation(Integer editSessionCode, String annName, boolean isNew, Integer processId, String version, String nat_type, InputStream native_is) throws IOException, Exception;
-//
-//    /**
-//     * set an edit session for a model.
-//     * @param editSession the edit session to persist.
-//     * @return the code of the new session.
-//     * @throws Exception ... change to be something more relevant
-//     * TODO: Fix Exception
-//     */
-//    int writeEditSession(EditSessionType editSession) throws Exception;
-
-
-//    /**
-//     * Delete an edit session for a model.
-//     * @param code the edit session code
-//     * @throws Exception ... change to be something more relevant
-//     * TODO: Fix Exception
-//     */
-//    void deleteEditSession(int code) throws Exception;
+    void writeAnnotation(Integer editSessionCode, String annName, boolean isNew, Integer processId, String version, String nat_type,
+                         InputStream native_is) throws Exception;
 
     /**
      * Delete process models / versions from the repository.
@@ -406,5 +382,13 @@ public interface ManagerService {
      */
     void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
 
+
+    /**
+     * Update the search history records for a User.
+     * @param currentUser the Current User to save the serches against.
+     * @param searchHist the list of searches we need to save.
+     * @throws Exception ... change to be something more relevant
+     */
+    void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
 
 }
