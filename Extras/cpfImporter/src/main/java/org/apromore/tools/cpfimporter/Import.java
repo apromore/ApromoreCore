@@ -124,7 +124,7 @@ public final class Import {
         for (int i = 0; i < path.getNameCount(); i++) {
             folder = findFolderByName(path.getName(i).toString(), tree);
             if (folder == null) {
-                return -1;  // folder has a nonexistent parent
+                return -1;
             }
             tree = folder.getFolders();
             id = folder.getId();
