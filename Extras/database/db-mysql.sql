@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS `batch_step_execution_context`;
 CREATE TABLE `search_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
-  `index` int(11) DEFAULT NULL,
+  `position` int(11) DEFAULT NULL,
   `search` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `un_search` (`userId` , `search`),
@@ -845,7 +845,7 @@ CREATE TABLE `batch_step_execution_context`  (
 
 -- Create indexes for the tables
 
-CREATE INDEX `idx_search_history` ON `search_history` (`index`, `search`) USING BTREE;
+CREATE INDEX `idx_search_history` ON `search_history` (`position`, `search`) USING BTREE;
 CREATE INDEX `idx_native_type` ON `native_type` (`nat_type`, `extension`) USING BTREE;
 CREATE INDEX `idx_user_username` ON `user` (`username`) USING BTREE;
 CREATE INDEX `idx_process_name` ON `process` (`name`, `folderId`) USING BTREE;
