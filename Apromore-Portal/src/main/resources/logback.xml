@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
 
+    <jmxConfigurator/>
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <jmxConfigurator/>
 
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%date] %-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="everythinglogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${catalina.home}/logs/Portal.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${catalina.home}/logs/Portal.%i.log.zip</fileNamePattern>
@@ -32,27 +34,27 @@
 
     <logger name="org.apromore">
         <level value="DEBUG"/>
-        <appender-ref ref="everythinglogfile"/>
+        <appender-ref ref="FILE"/>
     </logger>
 
     <logger name="org.springframework.ws.client.MessageTracing.sent">
         <level value="DEBUG"/>
-        <appender-ref ref="everythinglogfile"/>
+        <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.springframework.ws.client.MessageTracing.received">
         <level value="DEBUG"/>
-        <appender-ref ref="everythinglogfile"/>
+        <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.springframework">
         <level value="DEBUG"/>
-        <appender-ref ref="everythinglogfile"/>
+        <appender-ref ref="FILE"/>
     </logger>
     <logger name="javax.xml" level="WARN" />
     <logger name="com.sun" level="WARN" />
 
     <root level="DEBUG">
-        <appender-ref ref="console"/>
-        <appender-ref ref="everythinglogfile"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>

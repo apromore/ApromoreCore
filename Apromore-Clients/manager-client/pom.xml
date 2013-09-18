@@ -53,12 +53,6 @@
             <artifactId>logback-core</artifactId>
         </dependency>
 
-        <!-- Spring security -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.security</groupId>-->
-            <!--<artifactId>org.springframework.security.core</artifactId>-->
-        <!--</dependency>-->
-
         <!-- Spring-WS dependencies -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
@@ -72,30 +66,18 @@
             <groupId>org.springframework.ws</groupId>
             <artifactId>org.springframework.ws.support</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.ws</groupId>-->
-            <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
-        <!--</dependency>-->
-
-        <!-- Web Services -->
-        <!--<dependency>-->
-            <!--<groupId>net.java.dev.xwss</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.sun.xml</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
-        <!--</dependency>-->
 
         <!-- HTTP Commons, used in the spring config. -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
         </dependency>
-        
+
+        <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -120,10 +102,6 @@
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]"
-                            <!--org.springframework.ws.soap.security;version="[2.1.0.RELEASE,2.1.0.RELEASE]",-->
-                            <!--org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",-->
-                            <!--com.springsource.com.sun.xml.wss;version="[2.0.0.FCS,2.0.0.FCS]",-->
-                            <!--com.springsource.com.sun.xml.messaging.saaj;version="[1.3.2,1.3.2]",-->
                         </Import-Bundle>
                         <Import-Package>
                             org.springframework.ws.soap,

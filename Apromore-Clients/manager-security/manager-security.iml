@@ -13,11 +13,11 @@
     <orderEntry type="module" module-name="manager-ws-model" />
     <orderEntry type="module" module-name="plugin-api" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.2" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.0.7" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.0.13" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.0.13" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.beans:3.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.core:3.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.asm:3.1.0.RELEASE" level="project" />
