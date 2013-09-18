@@ -62,8 +62,10 @@
         <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
+        <module>Apromore-Clients/filestore-client</module>
 
         <!-- Manager Portal and Editor Web App creation -->
+        <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
         <module>Apromore-Editor</module>
@@ -71,6 +73,7 @@
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
+        <module>Apromore-Assembly/Filestore-Assembly</module>
     </modules>
 
     <properties>
@@ -83,6 +86,7 @@
 
         <!-- Apromore Dependency Versions -->
         <manager-client.version>1.1</manager-client.version>
+        <filestore-client.version>1.0</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
@@ -126,19 +130,24 @@
         <commons.codec.version>1.7</commons.codec.version>
         <commons.httpclient.version>4.2.1</commons.httpclient.version>
         <servlet-api.version>2.5</servlet-api.version>
-        <slf4j.version>1.7.2</slf4j.version>
-        <logback.version>1.0.7</logback.version>
+        <slf4j.version>1.7.5</slf4j.version>
+        <logback.version>1.0.13</logback.version>
         <joda-time.version>1.6.2</joda-time.version>
         <cglib.version>2.2.0</cglib.version>
+        <validation.version>1.0.0.GA</validation.version>
         <google.guava.version>14.0.1</google.guava.version>
         <json.version>20090211</json.version>
         <inject.version>1.0.0</inject.version>
+        <sardine.version>5.0.1</sardine.version>
+        <jackson.version>1.9.12</jackson.version>
+        <xmlbeans.version>2.4.0</xmlbeans.version>
 
         <zk.version>6.5.3</zk.version>
         <zk.spring.version>3.0</zk.spring.version>
         <zk.security.version>3.0</zk.security.version>
 
         <xmlSchema.version>2.0.2</xmlSchema.version>
+        <dom4j.version>1.6.1</dom4j.version>
         <wsdl4j.version>1.6.1</wsdl4j.version>
         <jaxb-xjc.version>2.2.0</jaxb-xjc.version>
         <jaxb-impl.version>2.2.0</jaxb-impl.version>
@@ -294,6 +303,11 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>manager-security</artifactId>
                 <version>${manager-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>filestore-client</artifactId>
+                <version>${filestore-client.version}</version>
             </dependency>
 
             <!--  Core Plugins -->
@@ -712,35 +726,6 @@
                 </exclusions>
             </dependency>
 
-            <!--<dependency>-->
-            <!--<groupId>net.java.dev.xwss</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
-            <!--<version>${xwss.version}</version>-->
-            <!--<exclusions>-->
-            <!--<exclusion>-->
-            <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>com.sun.xml</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
-            <!--<version>${saaj.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-            <!--<groupId>org.springframework.ws</groupId>-->
-            <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
-            <!--<version>${spring-ws.version}</version>-->
-            <!--<exclusions>-->
-            <!--<exclusion>-->
-            <!--<artifactId>com.springsource.org.apache.commons.logging</artifactId>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--</dependency>-->
-
-
             <!-- Spring Web Services -->
             <dependency>
                 <groupId>org.springframework.ws</groupId>
@@ -886,6 +871,11 @@
                 <version>${cglib.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>com.springsource.javax.validation</artifactId>
+                <version>${validation.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${json.version}</version>
@@ -934,6 +924,11 @@
                 <artifactId>xmlschema-core</artifactId>
                 <version>${xmlSchema.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
 
             <!-- JEE dependencies -->
             <dependency>
@@ -964,19 +959,43 @@
                 <version>${inject.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.github.lookfirst</groupId>
+                <artifactId>sardine</artifactId>
+                <version>${sardine.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpcore</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>com.springsource.org.apache.tools.ant</artifactId>
+                <version>${ant.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-core-lgpl</artifactId>
-                <version>1.9.12</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-lgpl</artifactId>
-                <version>1.9.12</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
-                <version>2.4.0</version>
+                <version>${xmlbeans.version}</version>
             </dependency>
 
             <!-- zk libraries -->
@@ -1010,7 +1029,6 @@
                 <artifactId>zkspring-security</artifactId>
                 <version>${zk.security.version}</version>
             </dependency>
-
 
             <!-- Test Scope Dependencies -->
             <dependency>
@@ -1243,14 +1261,14 @@
                     <version>${maven.war.plugin}</version>
                 </plugin>
                 <!--<plugin>-->
-                    <!--<groupId>org.apromore</groupId>-->
-                    <!--<artifactId>version-updater-maven-plugin</artifactId>-->
-                    <!--<version>${maven.version.updater.plugin}</version>-->
+                <!--<groupId>org.apromore</groupId>-->
+                <!--<artifactId>version-updater-maven-plugin</artifactId>-->
+                <!--<version>${maven.version.updater.plugin}</version>-->
                 <!--</plugin>-->
                 <!--<plugin>-->
-                    <!--<groupId>org.codehaus.mojo</groupId>-->
-                    <!--<artifactId>sonar-maven3-plugin</artifactId>-->
-                    <!--<version>${maven.sonar.plugin}</version>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>sonar-maven3-plugin</artifactId>-->
+                <!--<version>${maven.sonar.plugin}</version>-->
                 <!--</plugin>-->
             </plugins>
         </pluginManagement>
@@ -1585,9 +1603,9 @@
                 </configuration>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>sonar-maven3-plugin</artifactId>-->
-                <!--<version>${maven.sonar.plugin}</version>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>sonar-maven3-plugin</artifactId>-->
+            <!--<version>${maven.sonar.plugin}</version>-->
             <!--</plugin>-->
         </plugins>
     </build>

@@ -201,6 +201,7 @@ org.osgi.framework.system.packages = \
  org.xml.sax.ext;version="1.3",\
  org.xml.sax.helpers;version="1.3",\
  com.sun.org.apache.xerces.internal.dom,\
+ com.sun.org.apache.xml.internal.utils,\
  com.sun.org.apache.xml.internal.security.algorithms,\
  com.sun.org.apache.xml.internal.security.c14n,\
  com.sun.org.apache.xml.internal.security.c14n.helper,\
@@ -215,6 +216,10 @@ org.osgi.framework.system.packages = \
  com.sun.org.apache.xml.internal.security.transforms.params,\
  com.sun.org.apache.xml.internal.security.utils,\
  com.sun.org.apache.xml.internal.security.utils.resolver,\
+ com.sun.org.apache.xpath.internal,\
+ com.sun.org.apache.xalan.internal.res,\
+ com.sun.org.apache.xpath.internal.objects,\
+ com.sun.org.apache.xpath.internal.jaxp,\
  com.sun.jndi.ldap,\
  sun.misc
 org.osgi.framework.bootdelegation = \
