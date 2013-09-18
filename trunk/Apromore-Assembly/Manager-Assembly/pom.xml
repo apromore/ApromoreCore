@@ -293,34 +293,10 @@
             <artifactId>org.springframework.security.remoting</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.ws</groupId>-->
-        <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>net.java.dev.xwss</groupId>-->
-        <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>com.sun.xml</groupId>-->
-        <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-par-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<applicationSymbolicName>apromore-manager</applicationSymbolicName>-->
-                    <!--<applicationDescription>Advance Process Modelling Repository</applicationDescription>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

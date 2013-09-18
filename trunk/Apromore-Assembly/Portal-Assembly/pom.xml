@@ -120,26 +120,11 @@
             <artifactId>org.springframework.security.remoting</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.ws</groupId>-->
-            <!--<artifactId>org.springframework.ws.soap.security</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>org.springframework.xml</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>net.java.dev.xwss</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.wss</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.sun.xml</groupId>-->
-            <!--<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.ws.xmlschema</groupId>
             <artifactId>xmlschema-core</artifactId>
@@ -215,48 +200,10 @@
             <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zkbind</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zul</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zkplus</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zhtml</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zkspring-core</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.zkoss.zk</groupId>-->
-            <!--<artifactId>zkspring-security</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-par-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<applicationSymbolicName>apromore-portal</applicationSymbolicName>-->
-                    <!--<applicationDescription>Advance Process Modelling Repository Portal</applicationDescription>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -281,7 +228,6 @@
                                 org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
                                 com.springsource.javax.xml.bind
                             </excludeArtifactIds>
-                            <!--,breeze,zkmax,zkplus,zhtml,zkspring-core-->
                         </configuration>
                     </execution>
                 </executions>
