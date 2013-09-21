@@ -50,6 +50,7 @@ public class WebDavSpringServlet extends HttpServletBean {
     private HashMap<String, IMethodExecutor> methodMap = new HashMap<>();
 
     private String rootPath;
+    private String servletPath;
     private String resourceHandlerImplementation;
     private boolean lazyFolderCreationOnPut;
     private String defaultIndexFile;
@@ -76,12 +77,13 @@ public class WebDavSpringServlet extends HttpServletBean {
      */
     @Override
     public void initServletBean() throws ServletException {
-        resourceHandlerImplementation = getServletConfig().getInitParameter("ResourceHandlerImplementation");
+        resourceHandlerImplementation = getInitParameter("ResourceHandlerImplementation");
         if (resourceHandlerImplementation == null || resourceHandlerImplementation.equals("")) {
             resourceHandlerImplementation = LocalFileSystemStore.class.getName();
         }
 
         File root = getFileRoot();
+        servletPath = getInitParameter("servletPath");
         store = constructStore(resourceHandlerImplementation, root);
 
         lazyFolderCreationOnPut = getInitParameter("lazyFolderCreationOnPut") != null && getInitParameter("lazyFolderCreationOnPut").equals("1");
