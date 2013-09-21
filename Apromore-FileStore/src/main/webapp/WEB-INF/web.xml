@@ -71,8 +71,13 @@
         </init-param>
         <init-param>
             <param-name>rootpath</param-name>
-            <param-value>*WAR-FILE-ROOT*</param-value>
+            <param-value>/Users/cameron/Development/apps/temp/webdav</param-value>
             <description>folder where webdav content on the local filesystem is stored (*WAR-FILE-ROOT*)</description>
+        </init-param>
+        <init-param>
+            <param-name>servletPath</param-name>
+            <param-value>/filestore/dav</param-value>
+            <description>Always the same as the servlet-mapping for this servlet. </description>
         </init-param>
         <init-param>
             <param-name>storeDebug</param-name>
