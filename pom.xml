@@ -1156,10 +1156,15 @@
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Milestones</name>
             <url>http://repository.springsource.com/maven/bundles/milestone</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>ZK EE Repo</id>-->
+            <!--<url>https://maven.zkoss.org/repo/zk/ee</url>-->
+            <!--<name>ZK Enterprise Edition Repository (USER/PASS not available)</name>-->
+        <!--</repository>-->
         <repository>
-            <id>ZK EE Repo</id>
-            <url>https://maven.zkoss.org/repo/zk/ee</url>
-            <name>ZK Enterprise Edition Repository (USER/PASS not available)</name>
+            <id>ZK CE</id>
+            <name>ZK CE Repository</name>
+            <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
     </repositories>
     <pluginRepositories>
