@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.processconfiguration.cmap.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="com.processconfiguration.cmap.rcp.Perspective"
+            id="com.processconfiguration.cmap.rcp.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="com.processconfiguration.cmap.rcp.views.QmlViewPart"
+            icon="icons/FAQ-icon.png"
+            id="com.processconfiguration.cmap.rcp.views.qmlview"
+            name="Questionnaire Model View"
+            restorable="true">
+      </view>
+      <view
+            class="com.processconfiguration.cmap.rcp.views.ModelViewPart"
+            icon="icons/blockdevice-icon.png"
+            id="com.processconfiguration.cmap.rcp.views.modelview"
+            name="Configurable Process Model View"
+            restorable="true">
+      </view>
+      <view
+            class="com.processconfiguration.cmap.rcp.views.CMapView"
+            icon="icons/Places-icon.png"
+            id="com.processconfiguration.cmap.rcp.views.cmap"
+            name="CMapping Template View"
+            restorable="true">
+      </view>
+      <view
+            class="com.processconfiguration.cmap.rcp.views.DispCondition"
+            icon="icons/desktop-icon.png"
+            id="com.processconfiguration.cmap.rcp.views.dispcondition"
+            name="Display Condition"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="File">
+            <menu
+                  label="Open">
+               <command
+                     commandId="com.processconfiguration.cmap.rcp.commands.commandopenques"
+                     label="Open Questionnaire Model"
+                     style="push">
+               </command>
+               <command
+                     commandId="com.processconfiguration.cmap.rcp.commands.commandopenmodel"
+                     label="Open Conf. Process Model"
+                     style="push">
+               </command>
+               <command
+                     commandId="com.processconfiguration.cmap.rcp.commands.commandopencmap"
+                     label="Open C-Mapping"
+                     style="push">
+               </command>
+            </menu>
+            <separator
+                  name="com.processconfiguration.cmap.rcp.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Help">
+            <command
+                  commandId="com.processconfiguration.cmap.rcp.commands.help"
+                  label="Help topics"
+                  style="push">
+            </command>
+            <separator
+                  name="com.processconfiguration.cmap.rcp.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="com.processconfiguration.cmap.rcp.commands.about"
+                  label="About..."
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.processconfiguration.cmap.rcp.commands.CommandOpenQues"
+            id="com.processconfiguration.cmap.rcp.commands.commandopenques"
+            name="Open Questionnaire Model">
+      </command>
+      <command
+            defaultHandler="com.processconfiguration.cmap.rcp.commands.CommandOpenModel"
+            id="com.processconfiguration.cmap.rcp.commands.commandopenmodel"
+            name="Open Conf. Process Model">
+      </command>
+      <command
+            defaultHandler="com.processconfiguration.cmap.rcp.commands.CommandOpenCmap"
+            id="com.processconfiguration.cmap.rcp.commands.commandopencmap"
+            name="Open C-Mapping">
+      </command>
+      <command
+            defaultHandler="com.processconfiguration.cmap.rcp.commands.Help"
+            id="com.processconfiguration.cmap.rcp.commands.help"
+            name="Help topics">
+      </command>
+      <command
+            defaultHandler="com.processconfiguration.cmap.rcp.commands.About"
+            id="com.processconfiguration.cmap.rcp.commands.about"
+            name="About ...">
+      </command>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.processconfiguration.cmap.rcp.application"
+            name="C-Mapper">
+         <property
+               name="appName"
+               value="C-Mapper">
+         </property>
+         <property
+               name="windowImage"
+               value="/icons/Layers-icon.png">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
