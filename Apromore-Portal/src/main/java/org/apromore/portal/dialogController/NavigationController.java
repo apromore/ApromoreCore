@@ -14,7 +14,6 @@ public class NavigationController extends BaseController {
 
     public NavigationController(MainController newMainC) throws Exception {
         mainC = newMainC;
-        //Panel navigationP = (Panel) mainC.getFellow("navigationcomp").getFellow("navigationPanel");
 
         Window treeW = (Window) mainC.getFellow("navigationcomp").getFellow("treeW");
         treeW.setContentStyle("background-image: none; background-color: white");
