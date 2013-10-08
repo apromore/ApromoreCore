@@ -498,8 +498,6 @@ public class Canonical2EPML {
             }
 
             if (node instanceof WorkType) {
-                assert !(node instanceof RoutingType);
-
                 for (ObjectRefType ref : ((WorkType) node).getObjectRef()) {
                     object_res_list.add(ref.getObjectId());
                 }

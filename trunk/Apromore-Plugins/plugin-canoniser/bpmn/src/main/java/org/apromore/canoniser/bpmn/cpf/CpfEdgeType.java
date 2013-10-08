@@ -9,6 +9,8 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CPF 0.6 edge with convenience methods.
@@ -17,6 +19,8 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
  * @since 0.4
  */
 public class CpfEdgeType extends EdgeType implements Attributed {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CpfEdgeType.class);
 
     /** {@link TypeAttribute} name for the name of the original BPMN sequence flow. */
     private static final String  NAME = "name";
@@ -62,16 +66,21 @@ public class CpfEdgeType extends EdgeType implements Attributed {
 
         initializer.defer(new Initialization() {
             public void initialize() throws CanoniserException {
-
                 // handle source
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("Flow Sequence source: " + sequenceFlow.getSourceRef());
+                }
                 CpfNodeType sourceRef = (CpfNodeType) initializer.findElement(sequenceFlow.getSourceRef());
                 setSourceId(sourceRef.getId());
-                ((CpfNodeType) sourceRef).getOutgoingEdges().add(CpfEdgeType.this);
+                sourceRef.getOutgoingEdges().add(CpfEdgeType.this);
 
                 // handle target
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("Flow Sequence target: " + sequenceFlow.getTargetRef());
+                }
                 CpfNodeType targetRef = (CpfNodeType) initializer.findElement(sequenceFlow.getTargetRef());
                 setTargetId(targetRef.getId());
-                ((CpfNodeType) targetRef).getIncomingEdges().add(CpfEdgeType.this);
+                targetRef.getIncomingEdges().add(CpfEdgeType.this);
             }
         });
     }
@@ -83,7 +92,7 @@ public class CpfEdgeType extends EdgeType implements Attributed {
         return ExtensionUtils.getString(getAttribute(), NAME);
     }
 
-    /** @param node  the name of the original BPMN sequence flow */
+    /** @param name the name of the original BPMN sequence flow */
     public void setName(final String name) {
         ExtensionUtils.setString(getAttribute(), NAME, name);
     }
