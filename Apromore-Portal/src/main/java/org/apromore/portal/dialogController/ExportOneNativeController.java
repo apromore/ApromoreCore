@@ -132,31 +132,31 @@ public class ExportOneNativeController extends BaseController {
 
         pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.exportNativeW.getFellow("canoniserPropertiesGrid"));
 
-        formatsLB.addEventListener("onSelect", new EventListener() {
+        formatsLB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         updateActions();
                     }
                 });
-        okB.addEventListener("onClick", new EventListener() {
+        okB.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         export();
                     }
                 });
-        exportNativeW.addEventListener("onOK", new EventListener() {
+        exportNativeW.addEventListener("onOK", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         export();
                     }
                 });
-        cancelB.addEventListener("onClick", new EventListener() {
+        cancelB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 cancel();
             }
         });
-        cancelAllB.addEventListener("onClick", new EventListener() {
+        cancelAllB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 cancelAll();
@@ -245,7 +245,7 @@ public class ExportOneNativeController extends BaseController {
             if (this.formatsLB.getSelectedItem().getValue() == null) {
                 Messagebox.show("Please choose a target native type", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
-                String format = (String) this.formatsLB.getSelectedItem().getValue();
+                String format = this.formatsLB.getSelectedItem().getValue();
                 String ext = null;
                 // retrieve the extension associated with the format
                 if (Constants.CANONICAL.compareTo(format) == 0) {
@@ -273,9 +273,10 @@ public class ExportOneNativeController extends BaseController {
                 String annotation = null;
                 Boolean withAnnotation;
                 if (this.annotationsLB.getSelectedItem() != null) {
-                    annotation = (String) this.annotationsLB.getSelectedItem().getValue();
+                    annotation = this.annotationsLB.getSelectedItem().getValue();
                     withAnnotation = annotation.compareTo(Constants.NO_ANNOTATIONS) != 0;
                 } else {
+                    annotation = format;
                     withAnnotation = false;
                 }
                 ExportFormatResultType exportResult = getService().exportFormat(this.processId, processName, this.versionName, this.versionNumber,

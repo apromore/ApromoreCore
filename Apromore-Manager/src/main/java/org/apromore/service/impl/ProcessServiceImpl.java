@@ -88,6 +88,7 @@ import org.apromore.service.LockService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
+import org.apromore.service.helper.AnnotationHelper;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
@@ -293,8 +294,8 @@ public class ProcessServiceImpl implements ProcessService {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, branch, version, format).getContent(),
                         "text/xml")));
             } else if (isRequestForAnnotationsOnly(format)) {
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch, version, annName).
-                        getContent(), "text/xml")));
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch, version,
+                        AnnotationHelper.getAnnotationName(annName)).getContent(), "text/xml")));
             } else {
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
                 Process process;

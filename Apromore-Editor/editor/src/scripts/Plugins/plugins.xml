@@ -34,6 +34,7 @@
 			<notUsesIn namespace="http://b3mn.org/stencilset/xforms#"/>
 		</plugin>
 		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
+        <plugin source="apromoreBimp.js" name="ORYX.Plugins.ApromoreBimp"/>
 		<plugin source="view.js" name="ORYX.Plugins.View" />
 		<plugin source="dragdropresize.js" name="ORYX.Plugins.DragDropResize" />
 		<plugin source="shapeHighlighting.js" name="ORYX.Plugins.HighlightingSelectedShapes" />
