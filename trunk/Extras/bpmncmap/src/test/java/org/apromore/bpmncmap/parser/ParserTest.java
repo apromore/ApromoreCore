@@ -112,7 +112,7 @@ public class ParserTest {
     Parser parser = new Parser(new StringBufferInputStream("xor"));
     parser.init();
     Parser.NaryFunction function = parser.Function();
-    assertTrue(function.getClass().equals(Parser.XorFunction.class));
+    assertTrue(function.getClass().equals(Parser.ExactlyOneFunction.class));
   }
 
   @Test
