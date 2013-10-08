@@ -77,7 +77,6 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    LOGGER.info("Event type " + event.getData().getClass() + ": " + event.getData());
                     new SaveAsDialogController(process, version, editSession, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
@@ -92,6 +91,12 @@ public class SignavioController extends BaseController {
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
+            }
+        });
+        this.addEventListener("onBimp", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws InterruptedException {
+                LOGGER.info("Bimp Called!");
             }
         });
 

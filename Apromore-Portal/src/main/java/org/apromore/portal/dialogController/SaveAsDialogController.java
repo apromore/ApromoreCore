@@ -72,7 +72,8 @@ public class SaveAsDialogController extends BaseController {
         Button cancelB = (Button) saveB.getNextSibling();
         this.modelName.setText(this.editSession.getProcessName());
 
-        saveB.addEventListener("onClick", new EventListener<Event>() {
+        saveB.addEventListener("onClick",
+                new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         saveModel(save);
                     }
