@@ -37,18 +37,17 @@ public class FolderTreeModel extends DefaultTreeModel {
      *             - indexFrom < 0 or indexTo > number of parent's children
      */
     public void remove(DefaultTreeNode parent, int indexFrom, int indexTo) throws IndexOutOfBoundsException {
-        DefaultTreeNode stn = parent;
         for (int i = indexTo; i >= indexFrom; i--)
             try {
-                stn.getChildren().remove(i);
+                parent.getChildren().remove(i);
             } catch (Exception exp) {
                 exp.printStackTrace();
             }
     }
 
     public void remove(DefaultTreeNode target) throws IndexOutOfBoundsException {
-        int index = 0;
-        DefaultTreeNode parent = null;
+        int index;
+        DefaultTreeNode parent;
         // find the parent and index of target
         parent = dfSearchParent(_root, target);
         for (index = 0; index < parent.getChildCount(); index++) {
@@ -76,12 +75,11 @@ public class FolderTreeModel extends DefaultTreeModel {
      */
     public void insert(DefaultTreeNode parent, int indexFrom, int indexTo, DefaultTreeNode[] newNodes)
             throws IndexOutOfBoundsException {
-        DefaultTreeNode stn = parent;
         for (int i = indexFrom; i <= indexTo; i++) {
             try {
-                stn.getChildren().add(i, newNodes[i - indexFrom]);
+                parent.getChildren().add(i, newNodes[i - indexFrom]);
             } catch (Exception exp) {
-                throw new IndexOutOfBoundsException("Out of bound: " + i + " while size=" + stn.getChildren().size());
+                throw new IndexOutOfBoundsException("Out of bound: " + i + " while size=" + parent.getChildren().size());
             }
         }
     }
@@ -98,9 +96,9 @@ public class FolderTreeModel extends DefaultTreeModel {
     public void add(DefaultTreeNode parent, DefaultTreeNode[] newNodes) {
         DefaultTreeNode stn = (DefaultTreeNode) parent;
 
-        for (int i = 0; i < newNodes.length; i++)
-            stn.getChildren().add(newNodes[i]);
-
+        for (DefaultTreeNode newNode : newNodes) {
+            stn.getChildren().add(newNode);
+        }
     }
 
     private DefaultTreeNode dfSearchParent(DefaultTreeNode node, DefaultTreeNode target) {

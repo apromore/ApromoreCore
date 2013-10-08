@@ -24,14 +24,17 @@ public final class Import {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Import.class.getName());
 
+    private final static String PWD = "./";
+
     private ManagerService manager;
+    private String importRootFolder;
 
     /* The Canonical Process Importer Starting point. */
     public static void main(String[] args) throws Exception {
         if (args.length > 0) {
             new Import(args[0]);
         } else {
-            new Import(Paths.get("").toString());
+            new Import("");
         }
     }
 
@@ -43,6 +46,7 @@ public final class Import {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
         manager = (ManagerService) ctx.getAutowireCapableBeanFactory().getBean("managerClient");
 
+        importRootFolder = arg0;
         File fileArg = new File(arg0);
         if (fileArg.isFile()) {
             uploadProcess(new File(arg0));
@@ -91,13 +95,16 @@ public final class Import {
                         "lastUpdate", noCanoniserParameters);
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to load file {} due to {}" , file.getName(), e.getMessage());
+            LOGGER.error("Failed to load file {} due to {}", file.getName(), e.getMessage());
         }
     }
 
     /* creates a folder in apromore. */
     private void createFolder(final File file) throws Exception {
         final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
+
+//        String filename = file.getPath().replaceFirst("./", "");
+//        Path p1 = Paths.get(filename);
 
         File parentFile = file.getParentFile();
         int parentId = 0;
