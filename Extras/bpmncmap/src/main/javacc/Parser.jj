@@ -113,6 +113,12 @@ public class Parser {
     BDD eval(final List<BDD> parameters);
   }
 
+  class ExactlyOneFunction implements NaryFunction {
+    public BDD eval(final List<BDD> parameterList) {
+      return exactlyOne(parameterList);
+    }
+  }
+
   class NorFunction implements NaryFunction {
     public BDD eval(final List<BDD> parameterList) {
       return fold(factory.or, parameterList, factory.zero()).not();
@@ -229,7 +235,7 @@ NaryFunction Function() : {}
 {
   <NOR> { return new NorFunction(); }
   |
-  <XOR> { return new XorFunction(); }
+  <XOR> { return new ExactlyOneFunction(); }
 }
 
 List<BDD> ParameterList() : {
