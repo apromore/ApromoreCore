@@ -178,4 +178,22 @@ public class ParserTest {
      assertFalse(bdd.isOne());
   }
 */
+
+  @Test
+  public void testExactlyOne1() throws Exception {
+    Parser parser = new Parser(new StringBufferInputStream("f1"));
+    parser.init();
+
+    List<BDD> bddList = new ArrayList<BDD>();
+    assertFalse(parser.exactlyOne(bddList).isOne());  // <>
+
+    bddList.add(parser.getFactory().zero());
+    assertFalse(parser.exactlyOne(bddList).isOne());  // <0>
+
+    bddList.add(parser.getFactory().one());
+    assertTrue(parser.exactlyOne(bddList).isOne());   // <0,1>
+
+    bddList.add(parser.getFactory().one());
+    assertFalse(parser.exactlyOne(bddList).isOne());  // <0,1,1>
+  }
 }

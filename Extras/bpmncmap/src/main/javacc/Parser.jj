@@ -56,6 +56,22 @@ public class Parser {
     parser.Start();
   }
 
+  /**
+   * @param propositions  a collection of propositions
+   * @return whether exactly one of the <var>propositions</var> is true
+   */
+  public BDD exactlyOne(Collection<BDD> propositions) {
+    BDD sum = factory.zero();
+    for (BDD x: propositions) {
+      BDD product = factory.one();
+      for (BDD y: propositions) {
+          product = product.and((x == y) ? y : y.not());
+      }  // at the end of this loop, product is the proposition that only x is true
+      sum = sum.orWith(product);
+    }
+    return sum;
+  }
+
   public BDD findVariable(final String s) {
     if (variableMap.containsKey(s)) {
       return factory.ithVar(variableMap.get(s));
