@@ -143,6 +143,12 @@ ORYX.I18N.Save.noRights = "You have no rights to save changes.";
 ORYX.I18N.Save.saving = "Saving";
 ORYX.I18N.Save.saveAsHint = "The process diagram is stored under:";
 
+if(!ORYX.I18N.Bimp) ORYX.I18N.Bimp = {};
+
+ORYX.I18N.Bimp.group = "BIMP";
+ORYX.I18N.Bimp.upload = "upload";
+ORYX.I18N.Bimp.uploadDesc = "Upload file to BIMP Simulator";
+
 if(!ORYX.I18N.File) ORYX.I18N.File = {};
 
 ORYX.I18N.File.group = "File";

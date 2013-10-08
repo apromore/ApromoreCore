@@ -141,6 +141,12 @@ ORYX.I18N.Save.noRights = "Sie haben nicht die erforderlichen Rechte, um Ã„nderu
 ORYX.I18N.Save.saving = "Speichern";
 ORYX.I18N.Save.saveAsHint = "Das Diagramm wurde unter folgendem Link gespeichert:";
 
+if(!ORYX.I18N.Bimp) ORYX.I18N.Bimp = {};
+
+ORYX.I18N.Bimp.group = "BIMP";
+ORYX.I18N.Bimp.upload = "laden";
+ORYX.I18N.Bimp.uploadDesc = "Datei hochladen, um Simulator BIMP";
+
 if(!ORYX.I18N.File) ORYX.I18N.File = {};
 
 ORYX.I18N.File.group = "File";
@@ -396,7 +402,7 @@ ORYX.I18N.YAWL.importGroup = "Export";
 ORYX.I18N.YAWL.exportName = "YAWL exportieren";
 ORYX.I18N.YAWL.exportDesc = "";
 ORYX.I18N.YAWL.exportGroup = "Export";
-ORYX.I18N.YAWL.selectFileText = "Eine YAWL Spezifikation über eine Datei auswählen (.yawl) oder in das Textfeld eingeben!"
+ORYX.I18N.YAWL.selectFileText = "Eine YAWL Spezifikation ï¿½ber eine Datei auswï¿½hlen (.yawl) oder in das Textfeld eingeben!"
 ORYX.I18N.YAWL.fileText = "Datei: "
 ORYX.I18N.YAWL.importTitle = "Importiere YAWL Spezifikation"
 ORYX.I18N.YAWL.importButtonText = "Importieren"
@@ -404,7 +410,7 @@ ORYX.I18N.YAWL.importProgress = "Importiere YAWL Spezifikation..."
 ORYX.I18N.YAWL.importFailed = "Der Import der YAWL Spezifikation ist fehlgeschlagen!"
 ORYX.I18N.YAWL.importFinished = 'Import abgeschlossen!';
 ORYX.I18N.YAWL.importFinishedText = 'You will be redirected to the just saved root net.';
-ORYX.I18N.YAWL.closeButtonText = "Schließen"
+ORYX.I18N.YAWL.closeButtonText = "Schlieï¿½en"
 ORYX.I18N.YAWL.yawlGroup = "YAWL";
 ORYX.I18N.YAWL.cancelationSetName = "Cancelation Set hervorheben";
 ORYX.I18N.YAWL.cancelationSetDesc = "";
@@ -415,7 +421,7 @@ ORYX.I18N.YAWL.messageConversionFailed = "Konvertierung fehlgeschlagen! \n";
 ORYX.I18N.YAWL.messageConversionWarnings = "Konvertierung mit Warnungen abgeschlossen: \n";	
 ORYX.I18N.YAWL.unfoldMenuNewSubnet = "neues Subnetz";
 ORYX.I18N.YAWL.unfoldMenu = ".. bestehendes Subnetz";
-ORYX.I18N.YAWL.unfoldMenuChooseSubnet = "Wähle ein Subnetz:";
+ORYX.I18N.YAWL.unfoldMenuChooseSubnet = "Wï¿½hle ein Subnetz:";
 ORYX.I18N.YAWL.unfoldMenuSuccess = "Unfold to net";
 ORYX.I18N.YAWL.unfoldMenuSuccessText = "Unfolded to: ";	
 ORYX.I18N.YAWL.unfoldExistingMenuFailure = "Could not retrieve possible subnets from backend!";
