@@ -18,8 +18,8 @@ public class NavigationController extends BaseController {
         Window treeW = (Window) mainC.getFellow("navigationcomp").getFellow("treeW");
         treeW.setContentStyle("background-image: none; background-color: white");
 
-        this.tree = (Tree) mainC.getFellow("navigationcomp").getFellow("treeW").getFellow("tree");
-        this.tree.setStyle("background-image: none; background-color: white");
+        tree = (Tree) mainC.getFellow("navigationcomp").getFellow("treeW").getFellow("tree");
+        tree.setStyle("background-image: none; background-color: white");
     }
 
     public void loadWorkspace() {
