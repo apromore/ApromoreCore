@@ -36,6 +36,8 @@
         <n:span id="oryxstartupcode">
             <n:script>
                 <![CDATA[
+                    var urlData = '${arg.url}'
+
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
 
@@ -75,7 +77,8 @@
                         };
 
                         ORYX.Plugins.ApromoreBimp.openBimp = function(json, svg) {
-                            new Ajax.Request('${arg.exportPath}', {
+                            if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
+                                new Ajax.Request('${arg.exportPath}', {
                                     parameters: {'data': json},
                                     method: 'POST',
 
@@ -105,12 +108,12 @@
                                     onFailure: function(transport) {
                                         alert("Failed to send process to the BIMP simulator!");
                                     }.bind(this)
-                                }
-                            );
+                                });
+                            } else {
+                                alert("The BIMP Simulator only works with BPMN models!");
+                            }
                         };
 
-
-                        var urlData = '${arg.url}'
                         var oryxEditor = new ORYX.Editor({
                             model : {
                                 id : 'oryx-canvas123',
@@ -129,6 +132,7 @@
                             parameters: {
                                 'data': '${arg.jsonData}'},
                                 method: 'POST',
+
                                 onSuccess: function(transport) {
                                     var editorConfig = Ext.decode(transport.responseText);
                                     oryxEditor.importJSON(editorConfig, true);
