@@ -366,7 +366,7 @@
             <xs:element name="Processes" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:int"/>
-        <xs:attribute name="parent_id" type="xs:int"/>
+        <xs:attribute name="parentId" type="xs:int"/>
         <xs:attribute name="folderName" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
