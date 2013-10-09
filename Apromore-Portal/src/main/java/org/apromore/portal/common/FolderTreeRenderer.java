@@ -43,6 +43,9 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         if (folder.getParentId() == null || folder.getParentId() == 0 ||
                 checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
             treeItem.setOpen(true);
+            if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+                treeItem.setSelected(true);
+            }
         } else {
             treeItem.setOpen(false);
         }
@@ -58,6 +61,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         Treecell treeCell = new Treecell();
         treeCell.appendChild(hl);
         dataRow.appendChild(treeCell);
+
         dataRow.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

@@ -44,7 +44,7 @@
                     </north>
                     <center id="leftCenterPanel" vflex="1">
                         <borderlayout vflex="true">
-                            <center id="leftInnerCenterPanel" title="Folders">
+                            <center id="leftInnerCenterPanel">
                                 <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                             </center>
                             <south id="leftInnerSouthPanel" title="Refine Filter" splittable="false" collapsible="true" open="false">
@@ -52,7 +52,7 @@
                             </south>
                         </borderlayout>
                     </center>
-                    <south id="leftSouthPanel" title="Process Details" size="30%" collapsible="true" splittable="true">
+                    <south id="leftSouthPanel" size="30%" splittable="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>
