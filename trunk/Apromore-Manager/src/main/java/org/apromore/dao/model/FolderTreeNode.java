@@ -14,7 +14,7 @@ public class FolderTreeNode {
 
     private Integer id;
     private int depth;
-    private int parent_id;
+    private FolderTreeNode parent;
     private String name;
     private User user;
     private List<FolderTreeNode> subFolders = new ArrayList<>();
@@ -26,23 +26,23 @@ public class FolderTreeNode {
         return id;
     }
 
-    public void setId (final Integer newId) {
+    public void setId(final Integer newId) {
         this.id = newId;
     }
 
-    public int getParentId() {
-        return parent_id;
+    public FolderTreeNode getParent() {
+        return parent;
     }
 
-    public void setParentId (final int newParentId) {
-        this.parent_id = newParentId;
+    public void setParent(final FolderTreeNode newParentId) {
+        this.parent = newParentId;
     }
 
     public int getDepth() {
         return depth;
     }
 
-    public void setDepth (final int newDepth) {
+    public void setDepth(final int newDepth) {
         this.depth = newDepth;
     }
 
@@ -50,7 +50,7 @@ public class FolderTreeNode {
         return user;
     }
 
-    public void setUser (final User newUser) {
+    public void setUser(final User newUser) {
         this.user = newUser;
     }
 

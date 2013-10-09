@@ -33,24 +33,24 @@
 
 
     <logger name="org.apromore">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
         <appender-ref ref="FILE"/>
     </logger>
 
     <logger name="org.springframework.ws.server.MessageTracing">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
         <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
         <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
         <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.springframework">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
         <appender-ref ref="FILE"/>
     </logger>
     <logger name="org.eclipse.persistence" level="WARN"/>
