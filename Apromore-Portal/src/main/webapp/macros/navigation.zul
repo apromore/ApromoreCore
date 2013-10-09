@@ -1,4 +1,4 @@
-        <window id="treeW" sizable="true" vflex="true" height="100%" width="100%">
+        <window id="treeW" sizable="true" hflex="true" vflex="true" height="100%" width="100%">
             <style>
                 .h-inline-block {
                     display: inline-block;
