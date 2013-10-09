@@ -80,24 +80,26 @@
                                     method: 'POST',
 
                                     onSuccess: function(transport) {
-                                        alert(transport.responseText);
-                                        var form = document.createElement("form");
-                                        form.setAttribute("action", "http://bimp.cs.ut.ee/uploadsignavio");
-                                        form.setAttribute("method", "POST");
-                                        form.setAttribute("target", "view");
-                                        form.setAttribute("enctype", "multipart/form-data");
+                                        var bimpForm = document.createElement("form");
+                                        bimpForm.setAttribute("action", "http://bimp.cs.ut.ee/uploadsignavio");
+                                        bimpForm.setAttribute("method", "POST");
+                                        bimpForm.setAttribute("target", "view");
 
                                         var fileField = document.createElement("input");
+                                        fileField.setAttribute("type", "hidden");
                                         fileField.setAttribute("id", "file");
-                                        fileField.setAttribute("type", "file");
                                         fileField.setAttribute("name", "file");
                                         fileField.setAttribute("value", transport.responseText);
-                                        form.appendChild(fileField);
 
-                                        document.body.appendChild(form);
-                                        window.open('', 'view','height=600,width=800,scrollbars=1,resizable=1');
+                                        bimpForm.appendChild(fileField);
+                                        document.body.appendChild(bimpForm);
 
-                                        form.submit();
+                                        bimp = window.open('', 'view','status=0,title=0,height=600,width=1000,scrollbars=1,resizable=1');
+                                        if (bimp) {
+                                            bimpForm.submit();
+                                        } else {
+                                            alert('You must allow popups for this map to work.');
+                                        }
                                     }.bind(this),
 
                                     onFailure: function(transport) {
