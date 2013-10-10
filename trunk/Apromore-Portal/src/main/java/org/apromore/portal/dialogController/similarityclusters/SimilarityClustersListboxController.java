@@ -25,7 +25,6 @@ import org.zkoss.zul.Messagebox;
 public class SimilarityClustersListboxController extends BaseListboxController {
 
     private static final String ZUL_PAGE = "macros/listbox/similarityClustersListbox.zul";
-    private static final String VERTICAL_ALIGN_MIDDLE = "vertical-align:middle;";
 
     private final SimilarityClustersFilterController filterController;
 
