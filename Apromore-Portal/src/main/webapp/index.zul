@@ -15,9 +15,48 @@
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <style dynamic="true">
-        .z-listbox-autopaging {
-            height: 20px;
+        tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
+            padding: 1px 1px 1px 1px;
+        }
+        td.z-listcell {
+            border: 1px solid transparent;
+        }
+        tr.z-row td.z-row-inner, tr.z-row .z-cell {
+            line-height: 25px;
+        }
+        div.z-listbox-body .z-listcell {
+            padding: 0px;
+        }
+        tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
+            background: none repeat scroll 0% 0% white;
+        }
+        tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd {
+            background: none repeat scroll 0% 0% rgb(240, 250, 255);
+        }
+        div.z-listcell-cnt {
+            line-height: 25px;
+            padding: 1px 0;
+        }
+        .z-listbox-autopaging .z-listcell-cnt {
+            height: 25px;
             overflow: hidden;
+            vertical-align: middle;
+        }
+        tbody.z-listbox-empty-body tr {
+            color: #000000;
+            height: 25px;
+            font-size: 12px;
+            font-weight: normal;
+            text-decoration: none;
+        }
+        tbody.z-listbox-empty-body td {
+            color: #7D7D7D;
+            line-height: 25px;
+            font-family: arial,sans-serif;
+            font-size: 12px;
+            font-style: italic;
+            font-weight: normal;
+            text-align: center;
         }
     </style>
 
@@ -107,4 +146,15 @@
 
         <ShortMessages id="shortmessagescomp" />
     </window>
+
+    <!-- Following script improves performance of listbox dropdown display time-->
+    <script defer="true">
+        <![CDATA[
+            zul.inp.Combobox.prototype.slideDown_ = function(pp) {
+                pp.style.visibility = "visible";
+                pp.style.display = "block";
+            };
+            zul.inp.Bandbox.prototype.slideDown_ = zul.inp.Combobox.prototype.slideDown_;
+        ]]>
+    </script>
 </zk>

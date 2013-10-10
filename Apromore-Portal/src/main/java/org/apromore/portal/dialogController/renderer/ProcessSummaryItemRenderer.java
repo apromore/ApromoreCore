@@ -24,7 +24,7 @@ import org.zkoss.zul.ListitemRenderer;
 public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessSummaryItemRenderer.class.getName());
-    private static final String VERTICAL_ALIGN_MIDDLE = "vertical-align: middle";
+    private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
 
     private MainController mainController;
 
@@ -79,14 +79,13 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     private Listcell renderFolderImage() {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.FOLDER_ICON));
-        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
+        lc.setStyle(CENTRE_ALIGN);
         return lc;
     }
 
     private Listcell renderFolderId(FolderType folder) {
         Listcell lc = new Listcell();
         lc.appendChild(new Label(folder.getId().toString()));
-        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 
@@ -97,14 +96,13 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         Listcell lc = new Listcell();
         lc.appendChild(name);
         lc.setSpan(7);
-        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 
     private Listcell renderProcessImage() {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.PROCESS_ICON));
-        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
+        lc.setStyle(CENTRE_ALIGN);
         return lc;
     }
 
@@ -168,7 +166,6 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     private Listcell wrapIntoListCell(Component cp) {
         Listcell lc = new Listcell();
         lc.appendChild(cp);
-        lc.setStyle(VERTICAL_ALIGN_MIDDLE);
         return lc;
     }
 

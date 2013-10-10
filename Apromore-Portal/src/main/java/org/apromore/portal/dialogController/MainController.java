@@ -53,7 +53,6 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
@@ -596,10 +595,6 @@ public class MainController extends BaseController {
         this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
-
-        ((Window) this.getFellow("baseDetail").getFellow("detailcomp")).setTitle("Process Details");
-        //((South) this.getFellow("leftSouthPanel")).setTitle("Process Details");
-
         reloadProcessSummaries();
     }
 
@@ -620,11 +615,6 @@ public class MainController extends BaseController {
                 (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
-
-        // TODO this should be done in ZUL or elsewhere
-        //((South) this.getFellow("leftSouthPanel")).setTitle("Cluster Details");
-        ((Window) this.getFellow("baseDetail").getFellow("detailcomp")).setTitle("Cluster Details");
-        ((South) this.getFellow("leftInnerSouthPanel")).setOpen(true);
     }
 
     /* Load the props for this app. */
