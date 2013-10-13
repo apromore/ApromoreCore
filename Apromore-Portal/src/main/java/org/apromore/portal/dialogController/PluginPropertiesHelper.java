@@ -53,7 +53,7 @@ public class PluginPropertiesHelper {
     /**
      * Helper class that builds up a ZK Grid with inputs for Plugin properties.
      *
-     * @param service
+     * @param service the manager service that does the comms to the manager.
      * @param propertiesGrid the grid to be filled
      */
     public PluginPropertiesHelper(final ManagerService service, final Grid propertiesGrid) {
@@ -128,9 +128,9 @@ public class PluginPropertiesHelper {
     /**
      * Creates an ZK input component based on the property type
      *
-     * @param prop
-     * @param isRequired
-     * @return
+     * @param prop the plugin Parameter
+     * @param isRequired is the parameter mandatory
+     * @return the java build ui component
      * @throws InterruptedException
      */
     private static Component createInputComponent(final PluginParameter prop, final boolean isRequired) throws InterruptedException {
@@ -142,7 +142,7 @@ public class PluginPropertiesHelper {
             if (isRequired) {
                 textBox.setConstraint("no empty");
             }
-            textBox.addEventListener("onChange", new EventListener() {
+            textBox.addEventListener("onChange", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
@@ -161,7 +161,7 @@ public class PluginPropertiesHelper {
             if (isRequired) {
                 longBox.setConstraint("no empty");
             }
-            longBox.addEventListener("onChange", new EventListener() {
+            longBox.addEventListener("onChange", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
@@ -180,7 +180,7 @@ public class PluginPropertiesHelper {
             if (isRequired) {
                 intBox.setConstraint("no empty");
             }
-            intBox.addEventListener("onChange", new EventListener() {
+            intBox.addEventListener("onChange", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
@@ -196,13 +196,13 @@ public class PluginPropertiesHelper {
             if (prop.getValue() != null) {
                 booleanBox.setChecked((Boolean) prop.getValue());
             }
-            booleanBox.addEventListener("onCheck", new EventListener() {
+            booleanBox.addEventListener("onCheck", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
                     if (event instanceof CheckEvent) {
                         CheckEvent checkEvent = (CheckEvent) event;
-                        prop.setValue(Boolean.valueOf(checkEvent.isChecked()));
+                        prop.setValue(checkEvent.isChecked());
                     }
                 }
             });
@@ -210,7 +210,7 @@ public class PluginPropertiesHelper {
         } else if (prop.getClazz().equals("java.io.InputStream")) {
             Fileupload fileButton = new Fileupload("Upload file");
             fileButton.setAttribute("upload", "true");
-            fileButton.addEventListener("onUpload", new EventListener() {
+            fileButton.addEventListener("onUpload", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
@@ -234,7 +234,7 @@ public class PluginPropertiesHelper {
             if (isRequired) {
                 textBox.setConstraint("no empty");
             }
-            textBox.addEventListener("onChange", new EventListener() {
+            textBox.addEventListener("onChange", new EventListener<Event>() {
 
                 @Override
                 public void onEvent(final Event event) {
@@ -255,7 +255,7 @@ public class PluginPropertiesHelper {
      * @return Set of RequestParameterType
      */
     public Set<RequestParameterType<?>> readPluginProperties(final String parameterCategory) {
-        Set<RequestParameterType<?>> requestProperties = new HashSet<RequestParameterType<?>>();
+        Set<RequestParameterType<?>> requestProperties = new HashSet<>();
 
         if (this.currentPluginInfo != null) {
             PluginParameters mandatoryParameters = this.currentPluginInfo.getMandatoryParameters();

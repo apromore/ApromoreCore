@@ -172,7 +172,7 @@ public class EPML2Canonical {
     }
 
     /**
-     * This method for removing the fake functions and events in case the modelass has them.
+     * This method for removing the fake functions and events in case the model has them.
      * 
      * @param epml
      *            the header for an EPML

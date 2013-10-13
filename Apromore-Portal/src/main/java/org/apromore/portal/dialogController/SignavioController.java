@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
@@ -29,6 +30,7 @@ public class SignavioController extends BaseController {
     public static MainController mainC;
     public static ProcessSummaryType process;
     public static VersionSummaryType version;
+    public static Set<RequestParameterType<?>> params;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
@@ -46,7 +48,8 @@ public class SignavioController extends BaseController {
                             editSession.getNativeType(),
                             editSession.getAnnotation(),
                             editSession.isWithAnnotation(),
-                            editSession.getUsername(), new HashSet<RequestParameterType<?>>());
+                            editSession.getUsername(),
+                            params);
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
 
             mainC.showPluginMessages(exportResult.getMessage());

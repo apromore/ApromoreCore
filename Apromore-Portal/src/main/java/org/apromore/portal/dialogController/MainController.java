@@ -26,6 +26,7 @@ import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -308,15 +309,17 @@ public class MainController extends BaseController {
      * to be used to edit the process version. If annotation is instantiated, it
      * identifies the annotation file to be used. If readOnly=1, annotations
      * only are editable.
+     *
      * @param process the process summary
      * @param version the version of the process
      * @param nativeType the native type of the process
      * @param annotation the annotation of that process
      * @param readOnly is this model readonly or not
+     * @param requestParameterTypes
      * @throws InterruptedException
      */
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-            final String readOnly) throws InterruptedException {
+            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
         String instruction = "";
         int offsetH = 100, offsetV = 200;
 
@@ -344,7 +347,8 @@ public class MainController extends BaseController {
             SignavioController.editSession = editSession;
             SignavioController.mainC = this;
             SignavioController.process = process;
-            SignavioController.version = version;            
+            SignavioController.version = version;
+            SignavioController.params = requestParameterTypes;
 
             String url = "macros/OpenModelInSignavio.zul";
             
