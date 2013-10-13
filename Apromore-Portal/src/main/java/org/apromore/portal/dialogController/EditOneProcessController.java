@@ -1,9 +1,12 @@
 package org.apromore.portal.dialogController;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apromore.canoniser.Canoniser;
+import org.apromore.model.PluginInfo;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
@@ -15,6 +18,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -39,6 +43,8 @@ public class EditOneProcessController extends BaseController {
     private ProcessSummaryType process;
     private VersionSummaryType version;
 
+    private final PluginPropertiesHelper pluginPropertiesHelper;
+
     public EditOneProcessController(MainController mainController, EditListProcessesController editListProcessesController,
             ProcessSummaryType processType, VersionSummaryType versionType)
             throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
@@ -54,7 +60,8 @@ public class EditOneProcessController extends BaseController {
         Row nativeTypesR = (Row) warning.getNextSibling();
         Row annotationR = (Row) nativeTypesR.getNextSibling();
         Row readOnlyR = (Row) annotationR.getNextSibling();
-        Row buttonsR = (Row) readOnlyR.getNextSibling();
+        Row paramsR = (Row) readOnlyR.getNextSibling();
+        Row buttonsR = (Row) paramsR.getNextSibling().getNextSibling();
         nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
         annotationsLB = (Listbox) annotationR.getFirstChild().getNextSibling();
         annotationOnlyCB = (Checkbox) readOnlyR.getFirstChild().getNextSibling();
@@ -111,10 +118,15 @@ public class EditOneProcessController extends BaseController {
             annotationsLB.appendChild(noAnnotationI);
         }
 
+        // setup the class that will help build the parameters for a canoniser
+        pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.chooseNativeW.getFellow("canoniserPropertiesGrid"));
+
+        // setup the events
         nativeTypesLB.addEventListener(Events.ON_SELECT,
                 new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         syncAnnotationLB();
+                        updateCanoniserParameters();
                     }
                 });
         annotationsLB.addEventListener(Events.ON_SELECT,
@@ -188,7 +200,6 @@ public class EditOneProcessController extends BaseController {
     }
 
     protected void cancel() throws Exception {
-        // delete process from the list of processes still to be edited
         editListProcessesC.deleteFromToBeEdited(this);
         closePopup();
     }
@@ -210,8 +221,7 @@ public class EditOneProcessController extends BaseController {
             Listitem cbi = nativeTypesLB.getSelectedItem();
             String nativeType = cbi.getLabel();
             String annotation = null;
-            if (annotationsLB.getSelectedItem() != null
-                    && Constants.NO_ANNOTATIONS.compareTo(annotationsLB.getSelectedItem().getLabel()) != 0) {
+            if (annotationsLB.getSelectedItem() != null && Constants.NO_ANNOTATIONS.compareTo(annotationsLB.getSelectedItem().getLabel()) != 0) {
                 annotation = annotationsLB.getSelectedItem().getValue();
             }
             if (annotationOnlyCB.isChecked()) {
@@ -220,7 +230,8 @@ public class EditOneProcessController extends BaseController {
                 readOnly = FALSE;
             }
 
-            mainC.editProcess(process, version, nativeType, annotation, readOnly);
+            mainC.editProcess(process, version, nativeType, annotation, readOnly,
+                    pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
             editListProcessesC.deleteFromToBeEdited(this);
             closePopup();
         }
@@ -231,4 +242,34 @@ public class EditOneProcessController extends BaseController {
     public Window getEditOneProcessWindow() {
         return chooseNativeW;
     }
+
+
+    /* Used to update the list of parameters that a canoniser may require for use. */
+    private void updateCanoniserParameters() throws InterruptedException {
+        if (nativeTypesLB.getSelectedItem() != null) {
+            readCanoniserInfos(nativeTypesLB.getSelectedItem().getLabel());
+        }
+    }
+
+    /*  */
+    private boolean readCanoniserInfos(final String nativeType) throws InterruptedException {
+        try {
+            Set<PluginInfo> canoniserInfos = getService().readCanoniserInfo(nativeType);
+
+            if (canoniserInfos.size() >= 1) {
+                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
+                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.CANONISE_PARAMETER);
+
+                return true;
+            } else {
+                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", nativeType), "Attention",
+                        Messagebox.OK, Messagebox.ERROR);
+                return false;
+           }
+        } catch (Exception e) {
+            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            return false;
+        }
+    }
+
 }

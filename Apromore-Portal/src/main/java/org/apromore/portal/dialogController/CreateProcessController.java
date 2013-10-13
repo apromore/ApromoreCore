@@ -121,27 +121,27 @@ public class CreateProcessController extends BaseController {
         // empty fields
         reset();
 
-        this.okB.addEventListener("onClick", new EventListener() {
+        this.okB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createProcess();
             }
         });
 
-        this.createProcessW.addEventListener("onOK", new EventListener() {
+        this.createProcessW.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createProcess();
             }
         });
 
-        this.cancelB.addEventListener("onClick", new EventListener() {
+        this.cancelB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 cancel();
             }
         });
-        this.resetB.addEventListener("onClick", new EventListener() {
+        this.resetB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 reset();
@@ -205,7 +205,7 @@ public class CreateProcessController extends BaseController {
         String nativeType = cbi.getLabel();
         String annotation = Constants.INITIAL_ANNOTATION;
         String readOnly = "false";
-        this.mainC.editProcess(process, version, nativeType, annotation, readOnly);
+        this.mainC.editProcess(process, version, nativeType, annotation, readOnly, new HashSet<RequestParameterType<?>>());
         cancel();
     }
 
