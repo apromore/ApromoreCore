@@ -85,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 public class Canonical2EPML {
 
@@ -271,9 +272,8 @@ public class Canonical2EPML {
      */
     private void add_fake(final TypeArc arc1, final JAXBElement<? extends TEpcElement> element, final TypeArc arc2, final TypeEPC epc) {
         element.getValue().setId(BigInteger.valueOf(ids++));
-        //TODO Invalid according to EPML schema
-        //QName typeRef = new QName("typeRef");
-        //element.getValue().getOtherAttributes().put(typeRef, "fake");
+        QName typeRef = new QName("typeRef");
+        element.getValue().getOtherAttributes().put(typeRef, "fake");
         element.getValue().setName("");
         arc2.setId(BigInteger.valueOf(ids++));
         arc2.getFlow().setSource(element.getValue().getId());

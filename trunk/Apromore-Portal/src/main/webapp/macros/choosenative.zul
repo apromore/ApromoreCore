@@ -6,8 +6,8 @@
     <vbox vflex="1">
         <grid>
             <columns sizable="true">
-                <column width="40%"></column>
-                <column width="60%"></column>
+                <column width="40%"/>
+                <column width="60%"/>
             </columns>
             <rows>
                 <row spans="2">
@@ -15,15 +15,36 @@
                 </row>
                 <row>
                     <label value="Available native types" />
-                    <listbox width="100%" multiple="false" mold="select" rows="1"></listbox>
+                    <listbox width="100%" multiple="false" mold="select" rows="1"/>
                 </row>
                 <row >
                     <label value="Annotation" />
-                    <listbox width="100%" multiple="false" mold="select" rows="1"></listbox>
+                    <listbox width="100%" multiple="false" mold="select" rows="1"/>
                 </row>
                 <row>
                     <label value="Edit annotation only" />
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to edit selected annotation"/>
+                </row>
+                <row spans="3">
+                    <groupbox width="100%" >
+                        <attribute name="onOpen">
+                            <![CDATA[
+                                arrow.setSclass("open-" + self.isOpen());
+                            ]]>
+                        </attribute>
+                        <caption>
+                            <div id="arrow" class="open-true">Canoniser parameters</div>
+                        </caption>
+                        <grid id="canoniserPropertiesGrid" width="90%">
+                            <columns>
+                                <column width="50%"/>
+                                <column width="50%"/>
+                            </columns>
+                        </grid>
+                    </groupbox>
+                </row>
+                <row spans="3">
+                    <label value="*: mandatory fields." />
                 </row>
                 <row spans="3">
                     <div align="center">

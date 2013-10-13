@@ -49,7 +49,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
     public EPML20Canoniser() {
         super();
-        this.fakeEventsProperty = new PluginParameterType<>(ADD_FAKE_PROPERTY_ID, "Add Fake Events?", "", false, Canoniser.CANONISE_PARAMETER, true);
+        this.fakeEventsProperty = new PluginParameterType<>(ADD_FAKE_PROPERTY_ID, "Add Fake Events?", "", false, Canoniser.CANONISE_PARAMETER, false);
         registerParameter(fakeEventsProperty);
     }
 
@@ -59,8 +59,8 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
      * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
      */
     @Override
-    public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
-
+    public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
+            final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
         try {
             JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(nativeInput, false);
             EPML2Canonical epml2canonical = new EPML2Canonical(nativeElement.getValue());
@@ -88,13 +88,12 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
             Canonical2EPML canonical2epml;
 
             if (annotationFormat != null) {
-                canonical2epml = new Canonical2EPML(canonicalFormat, annotationFormat,
-                        request.getRequestParameter(fakeEventsProperty).getValue());
+                canonical2epml = new Canonical2EPML(canonicalFormat, annotationFormat, request.getRequestParameter(fakeEventsProperty).getValue());
             } else {
                 canonical2epml = new Canonical2EPML(canonicalFormat, request.getRequestParameter(fakeEventsProperty).getValue());
             }
 
-            EPMLSchema.marshalEPMLFormat(nativeOutput, canonical2epml.getEPML(), true);
+            EPMLSchema.marshalEPMLFormat(nativeOutput, canonical2epml.getEPML(), false);
 
             return newPluginResult();
         } catch (JAXBException | PluginPropertyNotFoundException | SAXException e) {
