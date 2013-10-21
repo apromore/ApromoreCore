@@ -48,7 +48,6 @@ public class Process implements Serializable {
     private Folder folder;
     private NativeType nativeType;
 
-    private Set<EditSession> editSessions = new HashSet<>();
     private Set<ProcessUser> processUsers = new HashSet<>();
     private List<ProcessBranch> processBranches = new ArrayList<>();
 
@@ -141,15 +140,6 @@ public class Process implements Serializable {
         this.user = newUser;
     }
 
-
-    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<EditSession> getEditSessions() {
-        return this.editSessions;
-    }
-
-    public void setEditSessions(final Set<EditSession> newEditSessions) {
-        this.editSessions = newEditSessions;
-    }
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id")

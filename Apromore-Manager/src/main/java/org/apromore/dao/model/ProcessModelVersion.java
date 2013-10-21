@@ -52,7 +52,6 @@ public class ProcessModelVersion implements Serializable {
     private Set<FragmentVersion> fragmentVersions = new HashSet<>();
 
     private Set<Annotation> annotations = new HashSet<>();
-    private Set<EditSession> editSessions = new HashSet<>();
     private Set<Node> parentProcesses = new HashSet<>();
     private Set<ProcessBranch> currentProcessModelVersion = new HashSet<>();
     private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<>();
@@ -235,15 +234,6 @@ public class ProcessModelVersion implements Serializable {
 
     public void setAnnotations(final Set<Annotation> newAnnotations) {
         this.annotations = newAnnotations;
-    }
-
-    @OneToMany(mappedBy = "processModelVersion")
-    public Set<EditSession> getEditSessions() {
-        return this.editSessions;
-    }
-
-    public void setEditSessions(final Set<EditSession> editSessions) {
-        this.editSessions = editSessions;
     }
 
     @OneToMany(mappedBy = "subProcess")

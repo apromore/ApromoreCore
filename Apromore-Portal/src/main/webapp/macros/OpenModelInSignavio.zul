@@ -41,6 +41,24 @@
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
 
+                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
+                            new Ajax.Request('${arg.exportPath}', {
+                                    parameters: {'data': json},
+                                    method: 'POST',
+
+                                    onSuccess: function(transport) {
+                                        console.log(json);
+                                        var nativeFormat = transport.responseText;
+                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
+                                    }.bind(this),
+
+                                    onFailure: function(transport) {
+                                        alert("Failed to save process!");
+                                    }.bind(this)
+                                }
+                            );
+                        };
+
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
                                     parameters: {'data': json},
@@ -53,24 +71,6 @@
 
                                     onFailure: function(transport) {
                                         alert("Failed to save process as " + nativeFormat);
-                                    }.bind(this)
-                                }
-                            );
-                        };
-
-
-                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
-                            new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {'data': json},
-                                    method: 'POST',
-
-                                    onSuccess: function(transport) {
-                                        var nativeFormat = transport.responseText;
-                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
-                                    }.bind(this),
-
-                                    onFailure: function(transport) {
-                                        alert("Failed to save process!");
                                     }.bind(this)
                                 }
                             );
@@ -112,6 +112,21 @@
                             } else {
                                 alert("The BIMP Simulator only works with BPMN models!");
                             }
+                        };
+
+                        ORYX.Plugins.ApromoreBpstruct.sendBPStruct = function(json, svg) {
+                            new Ajax.Request('${arg.exportPath}', {
+                                parameters: {'data': json},
+                                method: 'POST',
+
+                                onSuccess: function(transport) {
+                                    alert("Call to BPSTRUCT executed!");
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    alert("Failed to send process to the BIMP simulator!");
+                                }.bind(this)
+                            });
                         };
 
                         var oryxEditor = new ORYX.Editor({

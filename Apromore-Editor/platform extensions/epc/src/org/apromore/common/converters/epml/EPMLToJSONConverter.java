@@ -115,6 +115,7 @@ public class EPMLToJSONConverter {
             Bounds bounds = new Bounds();
             bounds.setCoordinates(0, 0, 600, 600);
             diagram.setBounds(bounds);
+            diagram.setProperty("title", epc.getName());
             context.addDiagram(diagram);
             for (Object obj : epc.getEventAndFunctionAndRole()) {
                 if (obj instanceof JAXBElement) {

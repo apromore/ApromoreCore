@@ -37,7 +37,8 @@ public class SimilarityClustersFragmentsListboxController extends BaseDetailCont
 
         this.listBox = ((Listbox) Executions.createComponents(ZUL_PAGE, getMainController(), null));
 
-        ((Window) getMainController().getFellow("baseDetail").getFellow("detailcomp")).setTitle("Cluster Details");
+        //((Window) getMainController().getFellow("baseDetail").getFellow("detailcomp")).setTitle("Cluster Details");
+        ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Cluster Details");
         ((South) getMainController().getFellow("leftInnerSouthPanel")).setOpen(true);
 
         getListBox().setItemRenderer(new SimilarityFragmentsItemRenderer());

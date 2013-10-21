@@ -37,7 +37,7 @@ ORYX.Plugins.ApromoreBimp = Clazz.extend({
             'name':ORYX.I18N.Bimp.upload,
             'functionality':this.sendToBimp.bind(this, false),
             'group':ORYX.I18N.Bimp.group,
-            'icon':ORYX.PATH + "images/bimp.png",
+            'icon':ORYX.PATH + "images/BIMP.png",
             'description':ORYX.I18N.Bimp.uploadDesc,
             'index':1,
             'minShape':0,
@@ -109,7 +109,7 @@ ORYX.Plugins.ApromoreBimp = Clazz.extend({
         if (ORYX.Plugins.ApromoreBimp.openBimp) {
             ORYX.Plugins.ApromoreBimp.openBimp(json);
         } else {
-            alert("Upload to BIMP can not be found!");
+            alert("Upload to BIMP failed!");
         }
 
         return true;

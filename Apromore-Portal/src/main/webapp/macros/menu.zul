@@ -2,48 +2,39 @@
 <menubar id="operationMenu" width="100%">
     <menu id="process" label="Process">
         <menupopup>
-            <menuitem id="createProcess" label="Create model" disabled="true"/>
+            <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
             <menuseparator/>
-            <menuitem id="fileImport" label="Import" disabled="true"/>
+            <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
             <menuseparator/>
-            <menuitem id="fileExport" label="Export" disabled="true"/>
+            <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
             <menuseparator/>
-            <menuitem id="processEdit" label="Edit model" disabled="true"/>
+            <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
             <menuseparator/>
-            <menuitem id="dataEdit" label="Edit meta data" disabled="true"/>
+            <menuitem id="dataEdit" label="Edit meta data" disabled="true" image="/img/edit_metadata.png"/>
             <menuseparator/>
-            <menuitem id="processDelete" label="Delete" disabled="true"/>
+            <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>
             <menuseparator/>
-            <menuitem id="processCopy" label="Copy" disabled="true"/>
+            <menuitem id="processCopy" label="Copy" disabled="true" image="/img/copy.png"/>
             <menuseparator/>
-            <menuitem id="processPaste" label="Paste" disabled="true"/>
+            <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
             <menuseparator/>
-            <menuitem id="processDeploy" label="Deploy Process" disabled="true"/>
-            <menuseparator/>
+            <menuitem id="processDeploy" label="Deploy Process" disabled="true" image="/img/deploy.png"/>
         </menupopup>
     </menu>
     <menu id="filtering" label="Filtering">
         <menupopup>
-            <menuitem id="similaritySearch" label="Similarity Search" disabled="true"/>
+            <menuitem id="similaritySearch" label="Similarity Search" disabled="true" image="/img/similarity.png"/>
             <menuseparator/>
-            <menuitem id="exactMatching" label="Exact Clone Detection" disabled="true"/>
+            <menuitem id="exactMatching" label="Exact Clone Detection" disabled="true" image="/img/clones.png"/>
             <menuseparator/>
-            <menuitem id="similarityClusters" label="Approximate Clone Detection" disabled="true"/>
+            <menuitem id="similarityClusters" label="Approximate Clone Detection" disabled="true" image="/img/approx_clones.png"/>
         </menupopup>
     </menu>
     <menu id="design" label="Design">
         <menupopup>
-            <menuitem id="designMerging" label="Merging" disabled="true"/>
+            <menuitem id="designMerging" label="Merging" disabled="true" image="/img/merge.png"/>
             <menuseparator/>
-            <menuitem id="designPatternCr" label="Pattern-based composition" disabled="true"/>
-            <menuseparator/>
-            <menuitem id="designReference" label="Reference-based completion" disabled="true"/>
-            <menuseparator/>
-            <menuitem id="designPatternCo" label="Pattern-based completion" disabled="true"/>
-            <menuseparator/>
-            <menuitem id="designConfiguration" label="Configuration" disabled="true"/>
-            <menuseparator/>
-            <menuitem id="designExtension" label="Extension control" disabled="true"/>
+            <menuitem id="designConfiguration" label="Configuration" disabled="true" image="/img/configuration.png"/>
         </menupopup>
     </menu>
    <!--

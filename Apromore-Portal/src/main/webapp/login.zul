@@ -67,7 +67,7 @@
                                         <h:h4 class="welcome">
                                             <h:small>
                                                 <h:i class="icon-user" />
-                                                Login in
+                                                Login
                                             </h:small>
                                         </h:h4>
                                         <h:form method="post" action="j_spring_security_check" name="login_form" xmlns:h="http://www.w3.org/1999/xhtml">
