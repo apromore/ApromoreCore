@@ -58,7 +58,6 @@ public class User implements Serializable {
     private Set<FragmentUser> fragmentUsers = new HashSet<>();
     private Set<FolderUser> folderUsers = new HashSet<>();
     private Set<Folder> foldersForCreatorId = new HashSet<>();
-    private Set<EditSession> editSessionMappings = new HashSet<>();
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
     private List<SearchHistory> searchHistories = new ArrayList<>();
@@ -273,15 +272,6 @@ public class User implements Serializable {
 
     public void setFoldersForCreatorId(Set<Folder> foldersForCreatorId) {
         this.foldersForCreatorId = foldersForCreatorId;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public Set<EditSession> getEditSessionMappings() {
-        return this.editSessionMappings;
-    }
-
-    public void setEditSessionMappings(Set<EditSession> editSessionMappings) {
-        this.editSessionMappings = editSessionMappings;
     }
 
     @OneToMany(mappedBy = "modifiedBy")

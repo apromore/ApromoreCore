@@ -8,7 +8,7 @@ import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.South;
 
 public class ProcessVersionDetailController extends BaseDetailController {
 
@@ -23,7 +23,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
         listBox.setItemRenderer(new VersionSummaryItemRenderer());
         listBox.setModel(new ListModelList());
 
-        ((Window) getMainController().getFellow("baseDetail").getFellow("detailcomp")).setTitle("Process Details");
+        ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Process Details");
 
         appendChild(listBox);
     }
