@@ -1,15 +1,15 @@
 <hbox id="folderOptions" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #cccccc; padding: 6px;" vflex="false"
       visible="true">
-    <button id="btnAddFolder" label="" image="img/new_folder.png"
+    <button id="btnAddFolder" label="" image="img/folder_add.png"
             style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
-    <button id="btnAddProcess" label="" image="img/new_process.png"
+    <button id="btnAddProcess" label="" image="img/add.png"
             style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
     <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;"
             image="img/rename.png" tooltiptext="Rename" visible="false"/>
     <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;"
             image="img/delete.png" tooltiptext="Delete" visible="false"/>
     <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;"
-            image="img/lock.png" tooltiptext="Security"/>
+            image="img/key.png" tooltiptext="Security"/>
     <button id="btnListView" label="" style="background: transparent; border:none; cursor: pointer;"
             image="img/list.png" tooltiptext="Show List View"/>
 </hbox>

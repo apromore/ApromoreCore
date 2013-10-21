@@ -25,6 +25,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessSummaryItemRenderer.class.getName());
     private static final String CENTRE_ALIGN = "vertical-align: middle; text-align:center";
+    private static final String VERTICAL_ALIGN = "vertical-align: middle;";
 
     private MainController mainController;
 
@@ -52,8 +53,8 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
         listItem.appendChild(renderProcessImage());
         listItem.appendChild(renderProcessScore(process));
-        listItem.appendChild(renderProcessId(process));
         listItem.appendChild(renderProcessName(process));
+        listItem.appendChild(renderProcessId(process));
         listItem.appendChild(renderProcessNativeType(process));
         listItem.appendChild(renderProcessDomain(process));
         listItem.appendChild(renderVersionRanking(process));
@@ -67,7 +68,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listitem.appendChild(renderFolderId(folder));
         listitem.appendChild(renderFolderName(folder));
 
-        listitem.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);
@@ -91,8 +92,6 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
     private Listcell renderFolderName(FolderType folder) {
         Label name = new Label(folder.getFolderName());
-        name.setStyle(Constants.FONT_BOLD);
-
         Listcell lc = new Listcell();
         lc.appendChild(name);
         lc.setSpan(7);
@@ -133,6 +132,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         } else {
             displayRanking(processRanking, "0");
         }
+        processRanking.setStyle(CENTRE_ALIGN);
         return wrapIntoListCell(processRanking);
     }
 
@@ -185,18 +185,21 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         int i;
         for (i = 1; i <= fullStars; i++) {
             star = new Image();
+            star.setStyle(VERTICAL_ALIGN);
             rankingHb.appendChild(star);
             star.setSrc(imgFull);
         }
         if (i <= 5) {
             if (Math.floor(rankingF) != rankingF) {
                 star = new Image();
+                star.setStyle(VERTICAL_ALIGN);
                 star.setSrc(imgMid);
                 rankingHb.appendChild(star);
                 i = i + 1;
             }
             for (int j = i; j <= 5; j++) {
                 star = new Image();
+                star.setStyle(VERTICAL_ALIGN);
                 star.setSrc(imgBlank);
                 rankingHb.appendChild(star);
             }

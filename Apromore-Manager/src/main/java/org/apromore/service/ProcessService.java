@@ -178,12 +178,6 @@ public interface ProcessService {
 
 
     /**
-     * Removes a process from the repository.
-     * @param process the process to remove
-     */
-    void deleteProcess(org.apromore.dao.model.Process process);
-
-    /**
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.
      */

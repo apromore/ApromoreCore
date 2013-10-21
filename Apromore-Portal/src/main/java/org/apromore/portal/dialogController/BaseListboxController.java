@@ -2,9 +2,7 @@ package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
@@ -42,9 +40,9 @@ public abstract class BaseListboxController extends BaseController {
 
     private final MainController mainController;
 
-    private final Button revertSelectionB;
-    private final Button selectAllB;
-    private final Button unselectAllB;
+//    private final Button revertSelectionB;
+//    private final Button selectAllB;
+//    private final Button unselectAllB;
     private final Button refreshB;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
@@ -63,9 +61,9 @@ public abstract class BaseListboxController extends BaseController {
         listBox.setPaginal((Paging) mainController.getFellow("pg"));
         listBox.setItemRenderer(itemRenderer);
 
-        revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
-        unselectAllB = (Button) mainController.getFellow("unselectAllB");
-        selectAllB = (Button) mainController.getFellow("selectAllB");
+//        revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
+//        unselectAllB = (Button) mainController.getFellow("unselectAllB");
+//        selectAllB = (Button) mainController.getFellow("selectAllB");
         refreshB = (Button) mainController.getFellow("refreshB");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
@@ -79,26 +77,26 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void attachEvents() {
-        this.revertSelectionB.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                revertSelection();
-            }
-        });
-
-        this.selectAllB.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                selectAll();
-            }
-        });
-
-        this.unselectAllB.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                unselectAll();
-            }
-        });
+//        this.revertSelectionB.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                revertSelection();
+//            }
+//        });
+//
+//        this.selectAllB.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                selectAll();
+//            }
+//        });
+//
+//        this.unselectAllB.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                unselectAll();
+//            }
+//        });
 
         this.refreshB.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -155,26 +153,26 @@ public abstract class BaseListboxController extends BaseController {
         return (ListModelList) listBox.getModel();
     }
 
-    public void unselectAll() {
-        getListBox().clearSelection();
-    }
-
-    public void selectAll() {
-        getListBox().selectAll();
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void revertSelection() {
-        Set selectedItems = getListBox().getSelectedItems();
-        Set reveredSet = new HashSet();
-        for (Object obj : getListBox().getItems()) {
-            if (!selectedItems.contains(obj)) {
-                reveredSet.add(obj);
-            }
-        }
-        getListBox().clearSelection();
-        getListBox().setSelectedItems(reveredSet);
-    }
+//    public void unselectAll() {
+//        getListBox().clearSelection();
+//    }
+//
+//    public void selectAll() {
+//        getListBox().selectAll();
+//    }
+//
+//    @SuppressWarnings({"rawtypes", "unchecked"})
+//    public void revertSelection() {
+//        Set selectedItems = getListBox().getSelectedItems();
+//        Set reveredSet = new HashSet();
+//        for (Object obj : getListBox().getItems()) {
+//            if (!selectedItems.contains(obj)) {
+//                reveredSet.add(obj);
+//            }
+//        }
+//        getListBox().clearSelection();
+//        getListBox().setSelectedItems(reveredSet);
+//    }
 
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();

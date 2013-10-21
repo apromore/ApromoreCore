@@ -27,8 +27,8 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
 
     private void renderSimilarityCluster(Listitem listItem, final ClusterSummaryType obj) {
         listItem.appendChild(renderClusterImage());
-        listItem.appendChild(renderClusterId(obj));
         listItem.appendChild(renderClusterName(obj));
+        listItem.appendChild(renderClusterId(obj));
         listItem.appendChild(renderClusterSize(obj));
         listItem.appendChild(renderAvgFragmentSize(obj));
         listItem.appendChild(renderRefactoringGain(obj));

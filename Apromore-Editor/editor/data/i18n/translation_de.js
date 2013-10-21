@@ -147,6 +147,12 @@ ORYX.I18N.Bimp.group = "BIMP";
 ORYX.I18N.Bimp.upload = "laden";
 ORYX.I18N.Bimp.uploadDesc = "Datei hochladen, um Simulator BIMP";
 
+if(!ORYX.I18N.BPStruct) ORYX.I18N.BPStruct = {};
+
+ORYX.I18N.BPStruct.group = "BPStruct";
+ORYX.I18N.BPStruct.upload = "laden";
+ORYX.I18N.BPStruct.uploadDesc = "Datei hochladen, um BPStruct";
+
 if(!ORYX.I18N.File) ORYX.I18N.File = {};
 
 ORYX.I18N.File.group = "File";

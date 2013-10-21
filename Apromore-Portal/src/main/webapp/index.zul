@@ -25,7 +25,7 @@
             line-height: 25px;
         }
         div.z-listbox-body .z-listcell {
-            padding: 0px;
+            padding: 0;
         }
         tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
             background: none repeat scroll 0% 0% white;
@@ -38,7 +38,7 @@
             padding: 1px 0;
         }
         .z-listbox-autopaging .z-listcell-cnt {
-            height: 25px;
+            /*height: 25px;*/
             overflow: hidden;
             vertical-align: middle;
         }
@@ -91,7 +91,7 @@
                             </south>
                         </borderlayout>
                     </center>
-                    <south id="leftSouthPanel" size="30%" splittable="true">
+                    <south id="leftSouthPanel" size="30%" splittable="true" vflex="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>
@@ -103,16 +103,16 @@
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="true">
-                            <button id="revertSelectionB" label="" image="img/invertselection.png" style="background: transparent; border:none" tooltiptext="Invert selection" />
-                            <button id="selectAllB" label="" style="background: transparent; border:none" image="img/select.png" tooltiptext="Select all" />
-                            <button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselect.png" tooltiptext="Unselect all" />
-                            <button id="refreshB" label="" style="background: transparent; border:none" image="img/reload.png" tooltiptext="Reload data" />
-                            <button id="showVisualisation" label="" style="background: transparent; border:none" image="img/cluster.png" tooltiptext="Show Clustering" />
-                            <button id="btnAddFolder" label="" image="img/folder.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
-                            <button id="btnAddProcess" label="" image="img/process.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <!--<button id="revertSelectionB" label="" image="img/invertselection.png" style="background: transparent; border:none" tooltiptext="Invert selection" />-->
+                            <!--<button id="selectAllB" label="" style="background: transparent; border:none" image="img/select.png" tooltiptext="Select all" />-->
+                            <!--<button id="unselectAllB" label="" style="background: transparent; border:none" image="img/unselect.png" tooltiptext="Unselect all" />-->
+                            <button id="refreshB" label="" style="background: transparent; border:none" image="img/arrow_refresh.png" tooltiptext="Reload data" />
+                            <button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />
+                            <button id="btnAddFolder" label="" image="img/folder_add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button id="btnAddProcess" label="" image="img/add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
                             <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
-                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
-                            <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/lock.png" tooltiptext="Security"/>
+                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete 2.png" tooltiptext="Delete" visible="true"/>
+                            <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/key.png" tooltiptext="Security"/>
                         </hbox>
                     </hbox>
 

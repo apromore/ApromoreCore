@@ -184,7 +184,6 @@ public class ProcessDetailsController extends BaseController {
             this.lastUpdateD.setValue(null);
         }
         if (this.creationDateH.size() == 1) {
-
             this.creationDateD.setValue((Date) this.creationDateH.get(0).getValue());
         } else {
             this.creationDateD.setValue(null);

@@ -523,17 +523,6 @@ public class ProcessServiceImpl implements ProcessService {
 
 
 
-
-    /**
-     * @see ProcessService#deleteProcess(org.apromore.dao.model.Process)
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteProcess(final Process process) {
-        processRepo.delete(process);
-    }
-
     /**
      * @see ProcessService#deleteProcessModel(java.util.List)
      * {@inheritDoc}

@@ -8,16 +8,13 @@
     <property name="platform-lib" value="../../platform/WebContent/WEB-INF/lib"/>
     <property name="platform-web-inf" value="../../platform/WebContent/WEB-INF/"/>
 
-    <!-- SPECIFY A UNIQUE NAME FOR YOUR EXTENSION -->
     <property name="jar-file" value="platform-extension-epc"/>
 
-    <!-- Clean up project (remove temporary folders) -->
     <target name="com.signavio.extension.clean">
         <delete dir="${target}"/>
         <delete dir="${build}"/>
     </target>
 
-    <!-- Compile the Java classes -->
     <target name="com.signavio.extension.compile" depends="com.signavio.extension.clean">
         <mkdir dir="${build}"/>
         <javac srcdir="${src}" destdir="${build}" debug="on" target="1.7" includeantruntime="false">
@@ -38,7 +35,6 @@
         </javac>
     </target>
 
-    <!-- Generate the JAR file -->
     <target name="com.signavio.extension.jar" depends="com.signavio.extension.compile">
         <mkdir dir="${target}"/>
         <jar destfile="${target}/${jar-file}.jar" update="false">
@@ -47,7 +43,6 @@
         </jar>
     </target>
 
-    <!-- Copy Java libraries, if the lib property is defined. -->
     <target name="com.signavio.extension.copy2Platform.lib" if="lib">
         <copy todir="${platform-lib}">
             <fileset dir="${lib}">
@@ -57,8 +52,7 @@
     </target>
 
     <!-- Copy the JAR file into the Platform's lib folder -->
-    <target name="com.signavio.extension.copy2Platform"
-            depends="com.signavio.extension.jar, com.signavio.extension.jar, com.signavio.extension.copy2Platform.lib">
+    <target name="com.signavio.extension.copy2Platform" depends="com.signavio.extension.jar, com.signavio.extension.copy2Platform.lib">
         <copy file="${target}/${jar-file}.jar" todir="${platform-lib}"/>
         <copy todir="${platform-lib}">
             <fileset dir="../../target/dependencies" >
