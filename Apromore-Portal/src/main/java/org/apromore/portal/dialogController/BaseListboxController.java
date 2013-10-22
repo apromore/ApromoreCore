@@ -15,10 +15,12 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -40,9 +42,6 @@ public abstract class BaseListboxController extends BaseController {
 
     private final MainController mainController;
 
-//    private final Button revertSelectionB;
-//    private final Button selectAllB;
-//    private final Button unselectAllB;
     private final Button refreshB;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
@@ -61,9 +60,6 @@ public abstract class BaseListboxController extends BaseController {
         listBox.setPaginal((Paging) mainController.getFellow("pg"));
         listBox.setItemRenderer(itemRenderer);
 
-//        revertSelectionB = (Button) mainController.getFellow("revertSelectionB");
-//        unselectAllB = (Button) mainController.getFellow("unselectAllB");
-//        selectAllB = (Button) mainController.getFellow("selectAllB");
         refreshB = (Button) mainController.getFellow("refreshB");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
@@ -77,26 +73,18 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     protected void attachEvents() {
-//        this.revertSelectionB.addEventListener("onClick", new EventListener<Event>() {
-//            @Override
-//            public void onEvent(Event event) throws Exception {
-//                revertSelection();
-//            }
-//        });
-//
-//        this.selectAllB.addEventListener("onClick", new EventListener<Event>() {
-//            @Override
-//            public void onEvent(Event event) throws Exception {
-//                selectAll();
-//            }
-//        });
-//
-//        this.unselectAllB.addEventListener("onClick", new EventListener<Event>() {
-//            @Override
-//            public void onEvent(Event event) throws Exception {
-//                unselectAll();
-//            }
-//        });
+        this.listBox.addEventListener("onKeyPress", new EventListener<KeyEvent>() {
+            @Override
+            public void onEvent(KeyEvent keyEvent) throws Exception {
+                if ((keyEvent.isCtrlKey() && keyEvent.getKeyCode() == 65)) {
+                    if (listBox.getSelectedCount() > 0) {
+                        selectAll();
+                    } else {
+                        unselectAll();
+                    }
+                }
+            }
+        });
 
         this.refreshB.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -153,26 +141,13 @@ public abstract class BaseListboxController extends BaseController {
         return (ListModelList) listBox.getModel();
     }
 
-//    public void unselectAll() {
-//        getListBox().clearSelection();
-//    }
-//
-//    public void selectAll() {
-//        getListBox().selectAll();
-//    }
-//
-//    @SuppressWarnings({"rawtypes", "unchecked"})
-//    public void revertSelection() {
-//        Set selectedItems = getListBox().getSelectedItems();
-//        Set reveredSet = new HashSet();
-//        for (Object obj : getListBox().getItems()) {
-//            if (!selectedItems.contains(obj)) {
-//                reveredSet.add(obj);
-//            }
-//        }
-//        getListBox().clearSelection();
-//        getListBox().setSelectedItems(reveredSet);
-//    }
+    public void unselectAll() {
+        getListBox().clearSelection();
+    }
+
+    public void selectAll() {
+        getListBox().selectAll();
+    }
 
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();
