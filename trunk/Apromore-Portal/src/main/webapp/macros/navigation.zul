@@ -1,7 +1,7 @@
         <window id="treeW" title="Folders" sizable="true" hflex="true" vflex="true" height="100%" width="100%">
             <caption>
                 <toolbarbutton id="expand" image="/img/expandall.gif" />
-                <toolbarbutton id="contract" image="/img/collaspeall.gif" />
+                <toolbarbutton id="contract" image="/img/collaspeall.png" />
             </caption>
             <style>
                 .h-inline-block {
