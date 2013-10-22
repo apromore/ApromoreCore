@@ -1,7 +1,6 @@
 package org.apromore.portal.dialogController;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
@@ -11,7 +10,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;

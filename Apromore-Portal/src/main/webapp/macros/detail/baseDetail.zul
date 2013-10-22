@@ -1,4 +1,2 @@
-<!--<window id="detailcomp" title="Process Details" hflex="true" vflex="true">-->
-<!--</window>-->
 <vlayout id="detailcomp" height="100%" width="100%">
 </vlayout>
