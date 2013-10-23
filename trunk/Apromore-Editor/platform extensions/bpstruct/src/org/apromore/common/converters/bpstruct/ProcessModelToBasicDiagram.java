@@ -2,6 +2,7 @@ package org.apromore.common.converters.bpstruct;
 
 import de.hpi.bpt.process.ControlFlow;
 import de.hpi.bpt.process.Gateway;
+import de.hpi.bpt.process.Node;
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.Task;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
@@ -64,10 +65,10 @@ public class ProcessModelToBasicDiagram {
     }
 
 
-    private BasicShape buildBasicNode(Task task) {
-        BasicNode node = new BasicNode(task.getId());
-        node.setProperty(TITLE, task.getName());
-        return node;
+    private BasicShape buildBasicNode(Node node) {
+        BasicNode node1 = new BasicNode(node.getId());
+        node1.setProperty(TITLE, node.getName());
+        return node1;
     }
 
     private BasicShape buildBasicGateway(Gateway gateway) {
@@ -90,8 +91,8 @@ public class ProcessModelToBasicDiagram {
 
     private BasicShape buildBasicEdge(ControlFlow flow) {
         BasicEdge edge = new BasicEdge(flow.getId());
-        edge.connectToASource(buildBasicNode((Task) flow.getSource()));
-        edge.connectToATarget(buildBasicNode((Task) flow.getTarget()));
+        edge.connectToASource(buildBasicNode(flow.getSource()));
+        edge.connectToATarget(buildBasicNode(flow.getTarget()));
         return edge;
     }
 
