@@ -10,12 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.serialize.JSON2Process;
 import de.hpi.bpt.process.serialize.SerializationException;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-
 
 /**
  * Converts Editor JSon to BPStruct JSon.
@@ -23,6 +22,8 @@ import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
  * @author Cameron James
  */
 public class BPStructConverter {
+
+    private static final Logger LOGGER = Logger.getLogger(BPStructConverter.class);
 
     private static final String BPSTRUCT_SERVER = "http://localhost:8080/bpstruct/rest/v1/structure/max";
 
@@ -47,6 +48,7 @@ public class BPStructConverter {
         }
 
         if (newDiagram != null) {
+            LOGGER.info(newDiagram.getJSON().toString());
             return newDiagram.getJSON().toString();
         } else {
             return "";
@@ -84,7 +86,7 @@ public class BPStructConverter {
                     response.append('\r');
                 }
                 rd.close();
-                System.out.println(response.toString());
+                LOGGER.info(response.toString());
                 return response.toString();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -104,9 +106,9 @@ public class BPStructConverter {
         try {
             json = Process2JSON.convert(process);
         } catch (SerializationException e) {
-            System.err.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
-        System.out.println(json);
+        LOGGER.info(json);
         return json;
     }
 
@@ -116,7 +118,7 @@ public class BPStructConverter {
         try {
             process = JSON2Process.convert(json);
         } catch (SerializationException e) {
-            System.err.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return process;
     }
@@ -139,7 +141,7 @@ public class BPStructConverter {
     /* So we can run it as a test in isolation. */
     public static void main(String[] args) throws Exception {
         File file = new File("test/CyclicStructureSimple.json");
-        new BPStructConverter().convert(FileUtils.readFileToString(file));
+        System.out.println(new BPStructConverter().convert(FileUtils.readFileToString(file)));
     }
 
 }
