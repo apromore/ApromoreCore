@@ -40,6 +40,19 @@
 
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
+                        var oryxEditor = new ORYX.Editor({
+                            model : {
+                                id : 'oryx-canvas123',
+                                stencilset : {
+                                    url : '${arg.url}',
+                                    namespace : '${arg.url}'
+                                },
+                            },
+                            fullscreen : true
+                        });
+
+                        Ext.select('svg').setVisible(false);
+
 
                         ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
@@ -115,32 +128,36 @@
                         };
 
                         ORYX.Plugins.ApromoreBpstruct.sendBPStruct = function(json, svg) {
-                            new Ajax.Request('${arg.exportPath}', {
-                                parameters: {'data': json},
-                                method: 'POST',
+                            if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
+                                new Ajax.Request('/editor/editor/bpstruct', {
+                                    parameters: {'data': json},
+                                    method: 'POST',
 
-                                onSuccess: function(transport) {
-                                    alert("Call to BPSTRUCT executed!");
-                                }.bind(this),
+                                    onSuccess: function(data) {
+                                        var editorConfig = Ext.decode(data.responseText);
+                                        oryxEditor.importJSON(editorConfig, true);
 
-                                onFailure: function(transport) {
-                                    alert("Failed to send process to the BIMP simulator!");
-                                }.bind(this)
-                            });
+                                        // Call Auto-Layout if everything is available
+                                        window.setTimeout(function() {
+                                            var layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                                return pluginData.name === "Layout-BPMN";
+                                            });
+
+                                            layouter.functionality();
+
+                                            Ext.select('svg').setVisible(true);
+                                            window.onbeforeunload = null;
+                                        }, 1000);
+                                    }.bind(this),
+
+                                    onFailure: function(transport) {
+                                        alert("Failed to send process to the BIMP simulator!");
+                                    }.bind(this)
+                                });
+                            } else {
+                                alert("BPStruct only works with BPMN models!");
+                            }
                         };
-
-                        var oryxEditor = new ORYX.Editor({
-                            model : {
-                                id : 'oryx-canvas123',
-                                stencilset : {
-                                    url : '${arg.url}',
-                                    namespace : '${arg.url}'
-                                },
-                            },
-                            fullscreen : true
-                        });
-
-                        Ext.select('svg').setVisible(false);
 
                         // Import new process model
                         new Ajax.Request('${arg.importPath}', {
