@@ -596,7 +596,7 @@ public class MainController extends BaseController {
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
+        this.baseFilterController = new APQLFilterController(this);
 
         reattachDynamicUI();
         reloadProcessSummaries();
