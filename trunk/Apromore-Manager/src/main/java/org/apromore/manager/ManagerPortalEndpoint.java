@@ -134,6 +134,8 @@ import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
 import org.apromore.model.RemoveProcessPermissionsInputMsgType;
 import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
 import org.apromore.model.ResultType;
+import org.apromore.model.RunAPQLInputMsgType;
+import org.apromore.model.RunAPQLOutputMsgType;
 import org.apromore.model.SaveFolderPermissionsInputMsgType;
 import org.apromore.model.SaveFolderPermissionsOutputMsgType;
 import org.apromore.model.SaveProcessPermissionsInputMsgType;
@@ -862,6 +864,32 @@ public class ManagerPortalEndpoint {
         }
         return WS_OBJECT_FACTORY.createReadProcessSummariesResponse(res);
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.manager.service.ManagerPortalPortType#runAPQLExpression(RunAPQLInputMsgType payload )*
+     */
+    @PayloadRoot(localPart = "RunAPQLRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<RunAPQLOutputMsgType> runAPQLExpression(@RequestPayload final JAXBElement<RunAPQLInputMsgType> req) {
+        LOGGER.trace("Executing operation runAPQLExpression");
+        RunAPQLInputMsgType payload = req.getValue();
+        RunAPQLOutputMsgType res = new RunAPQLOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        try {
+            result.setCode(-1);
+            result.setMessage("Currently Not Implemented");
+        } catch (Exception ex) {
+            LOGGER.error("runAPQLExpression", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+        return WS_OBJECT_FACTORY.createRunAPQLResponse(res);
+    }
+
 
     @PayloadRoot(localPart = "ReadInstalledPluginsRequest", namespace = NAMESPACE)
     @ResponsePayload
