@@ -107,6 +107,8 @@ import org.apromore.model.RemoveFolderPermissionsInputMsgType;
 import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
 import org.apromore.model.RemoveProcessPermissionsInputMsgType;
 import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
+import org.apromore.model.RunAPQLInputMsgType;
+import org.apromore.model.RunAPQLOutputMsgType;
 import org.apromore.model.SaveFolderPermissionsInputMsgType;
 import org.apromore.model.SaveFolderPermissionsOutputMsgType;
 import org.apromore.model.SaveProcessPermissionsInputMsgType;
@@ -635,6 +637,29 @@ public class ManagerServiceClient implements ManagerService {
         return response.getValue().getProcessSummaries();
     }
 
+
+    /**
+     * @see ManagerService#runAPQLExpression(String)
+     *      {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ProcessSummariesType runAPQLExpression(final String searchExpression) throws Exception {
+        LOGGER.debug("Preparing RunAPQLRequest.....");
+
+        RunAPQLInputMsgType msg = new RunAPQLInputMsgType();
+        msg.setAPQLExpression(searchExpression);
+
+        JAXBElement<RunAPQLInputMsgType> request = WS_CLIENT_FACTORY.createRunAPQLRequest(msg);
+        JAXBElement<RunAPQLOutputMsgType> response = (JAXBElement<RunAPQLOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+
+        RunAPQLOutputMsgType resp = response.getValue();
+        if (resp.getResult().getCode().equals(-1)) {
+            throw new Exception(resp.getResult().getMessage());
+        } else {
+            return response.getValue().getProcessSummaries();
+        }
+    }
 
     /**
      * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, double, double, double, double, double, double)

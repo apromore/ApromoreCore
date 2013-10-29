@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grid hflex="true" vflex="true" height="100%" width="100%">
+    <columns sizable="true">
+        <column width="80%"></column>
+        <column width="20%"></column>
+    </columns>
+    <rows>
+        <row>
+            <cell >
+                <vlayout>
+                    <textbox id="apqlQuery" rows="6" tabindex="1" height="100%" width="100%" />
+                </vlayout>
+            </cell>
+            <cell style="text-align:center; vertical-align:bottom;">
+                <vlayout>
+                    <button id="submitButton" label="Submit" tabindex="2" width="75px" height="25px" />
+                </vlayout>
+            </cell>
+        </row>
+    </rows>
+</grid>

@@ -72,10 +72,11 @@
     <xs:element name="GetClustersRequest" type="tns:GetClustersRequestType"/>
     <xs:element name="GetClustersResponse" type="tns:GetClustersResponseType"/>
 
-
-    <!-- Data Access -->
+    <!-- Retrieve Process Summaries -->
     <xs:element name="ReadProcessSummariesRequest" type="tns:ReadProcessSummariesInputMsgType"/>
     <xs:element name="ReadProcessSummariesResponse" type="tns:ReadProcessSummariesOutputMsgType"/>
+    <xs:element name="RunAPQLRequest" type="tns:RunAPQLInputMsgType"/>
+    <xs:element name="RunAPQLResponse" type="tns:RunAPQLOutputMsgType"/>
     <xs:element name="WriteAnnotationRequest" type="tns:WriteAnnotationInputMsgType"/>
     <xs:element name="WriteAnnotationResponse" type="tns:WriteAnnotationOutputMsgType"/>
 
@@ -861,6 +862,17 @@
     </xs:complexType>
 
     <xs:complexType name="ReadProcessSummariesOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RunAPQLInputMsgType">
+        <xs:attribute name="APQLExpression" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="RunAPQLOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>

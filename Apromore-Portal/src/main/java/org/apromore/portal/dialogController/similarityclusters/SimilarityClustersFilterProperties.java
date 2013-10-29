@@ -35,15 +35,14 @@ public class SimilarityClustersFilterProperties extends BaseController {
      */
     public SimilarityClustersFilterProperties(final Component filterWrapper, final EventListener<Event> externalScrollListener) {
         super();
-        Component filterWrapper1 = filterWrapper;
 
         // Wire Slider
-        this.minClusterSize = (Slider) filterWrapper1.getFellow("minclustersize");
-        this.maxClusterSize = (Slider) filterWrapper1.getFellow("maxclustersize");
-        this.minAverageFragmentSize = (Slider) filterWrapper1.getFellow("minavgfragmentsize");
-        this.maxAverageFragmentSize = (Slider) filterWrapper1.getFellow("maxavgfragmentsize");
-        this.minBenefitCostRatio = (Slider) filterWrapper1.getFellow("minbcr");
-        this.maxBenefitCostRatio = (Slider) filterWrapper1.getFellow("maxbcr");
+        this.minClusterSize = (Slider) filterWrapper.getFellow("minclustersize");
+        this.maxClusterSize = (Slider) filterWrapper.getFellow("maxclustersize");
+        this.minAverageFragmentSize = (Slider) filterWrapper.getFellow("minavgfragmentsize");
+        this.maxAverageFragmentSize = (Slider) filterWrapper.getFellow("maxavgfragmentsize");
+        this.minBenefitCostRatio = (Slider) filterWrapper.getFellow("minbcr");
+        this.maxBenefitCostRatio = (Slider) filterWrapper.getFellow("maxbcr");
 
         this.currentFilter = buildClusterFilter();
 

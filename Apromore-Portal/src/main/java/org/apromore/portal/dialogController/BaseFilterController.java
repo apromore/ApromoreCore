@@ -9,8 +9,6 @@ public class BaseFilterController extends BaseController {
     public BaseFilterController(MainController mainController) {
         super();
         this.mainController = mainController;
-        setHflex("true");
-        setVflex("true");
     }
 
     public MainController getMainController() {
