@@ -28,11 +28,14 @@ package servlet;
 
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Logger;
 
 /**
  * EPMLImportServlet converts a EPML specification (.epml file) to the JSON
@@ -53,20 +56,25 @@ public class BPMNImportServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
         String bpmnData = req.getParameter("data");
+        OutputStream out = null;;
 
         /* Transform and return as JSON */
         try {
+            out = res.getOutputStream();
             res.setContentType("application/json");
             res.setStatus(200);
             BPMN2DiagramConverter bpmnConverter = new BPMN2DiagramConverter("/signaviocore/editor/");
-            bpmnConverter.getBPMN(bpmnData, "UTF-8", res.getOutputStream());
+            bpmnConverter.getBPMN(bpmnData, "UTF-8", out);
         } catch (Exception e) {
             try {
                 LOGGER.severe(e.toString());
                 res.setStatus(500);
                 res.setContentType("text/plain");
-                res.getWriter().write(e.getCause().getMessage());
+                (new OutputStreamWriter(out)).write(e.getCause().getMessage());
             } catch (Exception e1) {
+                System.err.println("Original exception was:");
+                e.printStackTrace();
+                System.err.println("Exception in exception handler was:");
                 e1.printStackTrace();
             }
         }

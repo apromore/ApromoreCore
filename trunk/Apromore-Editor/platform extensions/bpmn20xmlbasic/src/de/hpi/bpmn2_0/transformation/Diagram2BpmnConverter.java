@@ -1902,6 +1902,16 @@ public class Diagram2BpmnConverter {
 
         this.insertDiagramsForLinkedSubprocesses();
 
+        // Copy the top-level JSON shape's documentation property to the BPMN root elements
+        {
+            String documentation = this.diagram.getProperty("documentation");
+            if (documentation != null) {
+                for (BaseElement root: this.definitions.getRootElement()) {
+                    root.getDocumentation().add(new Documentation(documentation));
+                }
+            }
+        }
+
         // Insert Synergia <variants> extension element if variants are present
         if (!this.state.variantMap.isEmpty()) {
             Variants variants = new Variants();
