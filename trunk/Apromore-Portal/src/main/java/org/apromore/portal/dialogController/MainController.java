@@ -229,8 +229,8 @@ public class MainController extends BaseController {
                     ((Menuitem) C).setDisabled(true);
                 } else if (C.getId().equals("designPatternCo")) {
                     ((Menuitem) C).setDisabled(true);
-                } else if (C.getId().equals("designConfiguration")) {
-                    ((Menuitem) C).setDisabled(true);
+//              } else if (C.getId().equals("designConfiguration")) {
+//                  ((Menuitem) C).setDisabled(true);
                 } else if (C.getId().equals("designExtension")) {
                     ((Menuitem) C).setDisabled(true);
                 } else {
