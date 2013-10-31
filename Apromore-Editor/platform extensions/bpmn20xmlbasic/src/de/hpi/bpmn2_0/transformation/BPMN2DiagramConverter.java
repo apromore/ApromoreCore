@@ -50,6 +50,7 @@ import org.oryxeditor.server.diagram.basic.BasicShape;
 import com.processconfiguration.DefinitionsIDResolver;
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.Documentation;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNDiagram;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNEdge;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNShape;
@@ -252,12 +253,20 @@ public class BPMN2DiagramConverter {
             // Additional properties
             diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
             diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
-            diagram.setProperty("documentation",      bpmnDiagram.getDocumentation());
+            //diagram.setProperty("documentation",      bpmnDiagram.getDocumentation());
             diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
             diagram.setProperty("name",               bpmnDiagram.getName());
             diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
             diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
             diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
+
+            // Kludge for the AotF project - use the Signavio-editable documentation field on the top-level JSON
+            // element to set the BPMN root element's documentation field.
+            for (BaseElement root: definitions.getRootElement()) {
+                for (Documentation doc: root.getDocumentation()) {
+                    diagram.setProperty("documentation", doc.getText());
+                }
+            }
 
             /*
             // Handle extension elements
