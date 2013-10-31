@@ -131,7 +131,13 @@ public class Configurator {
 					.newInstance("com.processconfiguration.cmap");
 			Unmarshaller unmarshaller = jaxbcontext.createUnmarshaller();
 			cMAP = (CMAP) unmarshaller.unmarshal(fInMap);
-			cyawlMap = cMAP.getCYawl();
+			cyawlMap = null;
+                        for (Object object: cMAP.getCBpmnOrCEpcOrCYawl()) {
+                                if (object instanceof CYawlType) {
+                                        cyawlMap = (CYawlType) object;
+                                        break;
+                                }
+                        }
 
 			createSets();
 			bddc = new ExecBDDC(FactsMap);
@@ -655,15 +661,22 @@ public class Configurator {
 					.newInstance("com.processconfiguration.cmap");
 			Unmarshaller unmarshaller = jaxbcontext.createUnmarshaller();
 			cMAP = (CMAP) unmarshaller.unmarshal(fInMap);
-			cepcMap = cMAP.getCEpc();
+			cepcMap = null;
+			for (Object object: cMAP.getCBpmnOrCEpcOrCYawl()) {
+				if (object instanceof CEpcType) {
+					cepcMap = (CEpcType) object;
+					break;
+				}
+			}
 
 			createSets();
 			bddc = new ExecBDDC(FactsMap);
 
 			// NOTE: even if all the values but the last evaluate false, the
 			// mapper still checks if the last evaluates to true
-			for (com.processconfiguration.cmap.CORType currentVP : cepcMap
-					.getOR()) {
+			for (Object object: cepcMap.getCOROrCXOROrCAND()) {
+			    if (object instanceof com.processconfiguration.cmap.CORType) {
+				com.processconfiguration.cmap.CORType currentVP = (com.processconfiguration.cmap.CORType) object;
 				for (com.processconfiguration.cmap.CORType.Value currentValue : currentVP
 						.getValue()) {
 					if (verifyCondition(currentValue.getCondition())) {// verifies
@@ -694,9 +707,8 @@ public class Configurator {
 								// the other values
 					}
 				}
-			}
-			for (com.processconfiguration.cmap.CXORType currentVP : cepcMap
-					.getXOR()) {
+			    } else if (object instanceof com.processconfiguration.cmap.CXORType) {
+				com.processconfiguration.cmap.CXORType currentVP = (com.processconfiguration.cmap.CXORType) object;
 				for (com.processconfiguration.cmap.CXORType.Value currentValue : currentVP
 						.getValue()) {
 					if (verifyCondition(currentValue.getCondition())) {// verifies
@@ -727,9 +739,8 @@ public class Configurator {
 								// the other values
 					}
 				}
-			}
-			for (com.processconfiguration.cmap.CANDType currentVP : cepcMap
-					.getAND()) {
+			    } else if (object instanceof com.processconfiguration.cmap.CANDType) {
+                                com.processconfiguration.cmap.CANDType currentVP = (com.processconfiguration.cmap.CANDType) object;
 				for (com.processconfiguration.cmap.CANDType.Value currentValue : currentVP
 						.getValue()) {
 					if (verifyCondition(currentValue.getCondition())) {// verifies
@@ -760,9 +771,8 @@ public class Configurator {
 								// the other values
 					}
 				}
-			}
-			for (com.processconfiguration.cmap.CFunctionType currentVP : cepcMap
-					.getFunction()) {
+			    } else if (object instanceof com.processconfiguration.cmap.CFunctionType) {
+                                com.processconfiguration.cmap.CFunctionType currentVP = (com.processconfiguration.cmap.CFunctionType) object;
 				for (com.processconfiguration.cmap.CFunctionType.Value currentValue : currentVP
 						.getValue()) {
 					if (verifyCondition(currentValue.getCondition())) {// verifies
@@ -790,6 +800,9 @@ public class Configurator {
 								// the other values
 					}
 				}
+			    } else {
+				throw new AssertionError("Unsupported CEpcType: " + object.getClass().getName());
+			    }
 			}
 			// close file
 			//fOutName = fInModel.getPath().substring(0,fInModel.getPath().length() - 5)+ "_configured.epml";

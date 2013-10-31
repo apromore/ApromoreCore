@@ -41,10 +41,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,6 +92,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -96,7 +104,9 @@ import org.apromore.model.ExportFormatResultType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.processconfiguration.bddc.BDDService;
 import com.processconfiguration.bddc.ExecBDDC;
+import com.processconfiguration.bddc.JavaBDDService;
 import com.processconfiguration.cmap.CEpcType;
 import com.processconfiguration.cmap.CMAP;
 import com.processconfiguration.cmap.CYawlType;
@@ -116,7 +126,7 @@ import com.processconfiguration.utils.TXTFilter;
 import com.processconfiguration.utils.YAWLFilter;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 
-public class Main extends JFrame implements ListSelectionListener,
+public class Main extends JPanel implements ListSelectionListener,
 		ItemListener, MouseListener, ActionListener {
 
 	public static final String TRUE = "true"; // @jve:decl-index=0:
@@ -131,6 +141,7 @@ public class Main extends JFrame implements ListSelectionListener,
 	private JMenuItem exitMenuItem = null;
 	private JMenuItem aboutMenuItem = null;
 	private JMenuItem logMenuItem = null;
+	private JMenuItem saveModelMenuItem = null;
 	private JMenuItem saveCMenuItem = null;
 	private JMenuItem LinkCMenuItem = null;
 	private JMenuItem openCMMenuItem = null;
@@ -203,7 +214,7 @@ public class Main extends JFrame implements ListSelectionListener,
 	private JTextArea jTextArea_FC = null;
 	private JLabel jLabel_FinQ = null;
 	private JTextField jTextField_FinQ = null;
-	private ExecBDDC bddc = null;
+	private BDDService bddc = null;
 	private boolean first;
 	private State tempS = null;// temporary state used for testing if an answer
 								// is allowed (progresses with the selection of
@@ -263,9 +274,16 @@ public class Main extends JFrame implements ListSelectionListener,
 	Map<String, FactType> FactsMap;
 	Map<String, QuestionType> QuestionsMap;
 
-	File         fInMap;
+	Cmap         fInMap;
 	ProcessModel fInModel;
 	File         fInConf;
+
+	/**
+         * The URL of the Apromore-Editor web application which should be used to display the configured BPMN.
+         *
+         * If this is <code>null</code>, {@link #showModel} does nothing.
+	 */
+	private URL editorURL = null;
 
 	/**
 	 * This method initializes jScrollPane_A
@@ -1038,10 +1056,11 @@ public class Main extends JFrame implements ListSelectionListener,
 			jTextArea_About.setWrapStyleWord(true);
 			jTextArea_About.setLineWrap(true);
 			jTextArea_About
-					.setText("\n   Synergia - Quaestio v. 0.9. Copyright Process Configuration\u24B8 2006-2012\n\n\n"
+					.setText("\n   Synergia - Quaestio v. 1.0. Copyright Process Configuration\u24B8 2006-2013\n\n\n"
 							+ "           Contributors:\n"
 							+ "                        Marcello La Rosa\n"
-							+ "                        Possakorn Pitayarojanakul\n\n"
+							+ "                        Possakorn Pitayarojanakul\n"
+							+ "                        Simon Raboczi\n\n"
 							+ "   This program and the accompanying materials are made available under\n"
 							+ "   the terms of the Eclipse Public License v1.0 which accompanies this\n"
 							+ "   distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.");
@@ -1068,14 +1087,14 @@ public class Main extends JFrame implements ListSelectionListener,
 			jTextArea_LegendC
 					.setText("Constraints are expressed in propositional logic, using any\n"
 							+ "combination of the logical connectives: OR (+), AND (.), NOT (-).\n"
-							+ "\nConstraints can also feauture macros, such as:\n"
+							+ "\nConstraints can also feature macros, such as:\n"
 							+ "- XOR: xor(f1,f2) = (f1 . -f2) + (-f1 . f2),\n"
 							+ "  used when just a fact over a set of facts can be set to true.\n"
 							+ "- NOR: nor(f1,f2) = -(f1 + f2),\n"
-							+ "  used when just a fact over a set of facts can be set to true.\n"
+							+ "  used when no fact in a set of facts can be set to true.\n"
 							+ "- IMPLICATION: f1 => f2 =  -f1 + f2,\n"
-							+ "  used to express a condition where if f1 is set to true, also f2 needs\n"
-							+ "  to be true, otherwise f2 can take any value.\n"
+							+ "  used to express a condition where if f1 is set to true, also\n"
+							+ "  f2 needs to be true, otherwise f2 can take any value.\n"
 							+ "- DOUBLE IMPLICATION: f1 = f2, if (f1 => f2) . (f2 => f1),\n"
 							+ "  used to express a condition where f1 is true if and only if f2 is true.");
 		}
@@ -1089,29 +1108,23 @@ public class Main extends JFrame implements ListSelectionListener,
 	 */
 	private JDialog getJDialog_AskToContinue() {
 		if (jDialog_AskToContinue == null) {
-			jDialog_AskToContinue = new JDialog(this, "Warning", true);
+			jDialog_AskToContinue = new JDialog(/*this, "Warning", true*/);
+			jDialog_AskToContinue.setTitle("Warning");
 			jDialog_AskToContinue.setMinimumSize(new Dimension(388, 160));
 			jDialog_AskToContinue.setSize(new Dimension(388, 168));
 			jDialog_AskToContinue.setLocation(new Point(400, 350));
 			jDialog_AskToContinue.setMaximumSize(new Dimension(388, 160));
 			jDialog_AskToContinue.setResizable(false);
 			jDialog_AskToContinue.setPreferredSize(new Dimension(388, 160));
-			jDialog_AskToContinue
-					.setContentPane(getJContentPane_askToContinue());
-			jDialog_AskToContinue
-					.addWindowListener(new java.awt.event.WindowAdapter() {
-						public void windowClosing(java.awt.event.WindowEvent e) {// if
-																					// closed
-																					// then
-																					// the
-																					// configuration
-																					// can
-																					// continue
-							getJDialog_AskToContinue().setVisible(false);
-							continueC = true;
-							updateValidQ();
-						}
-					});
+			jDialog_AskToContinue.setContentPane(getJContentPane_askToContinue());
+			jDialog_AskToContinue.addWindowListener(new java.awt.event.WindowAdapter() {
+                        	/** if closed then the configuration can continue */
+				public void windowClosing(java.awt.event.WindowEvent e) {
+					getJDialog_AskToContinue().setVisible(false);
+					continueC = true;
+					updateValidQ();
+				}
+			});
 		}
 		return jDialog_AskToContinue;
 	}
@@ -1123,8 +1136,8 @@ public class Main extends JFrame implements ListSelectionListener,
 	 */
 	private JDialog getJDialog_AskToSave() {
 		if (jDialog_AskToSave == null) {
-			jDialog_AskToSave = new JDialog(this, "Configuration completed",
-					true);
+			jDialog_AskToSave = new JDialog(/*this, "Configuration completed", true*/);
+                        jDialog_AskToSave.setTitle("Configuration completed");
 			jDialog_AskToSave.setMinimumSize(new Dimension(388, 160));
 			jDialog_AskToSave.setSize(new Dimension(388, 168));
 			jDialog_AskToSave.setLocation(new Point(400, 350));
@@ -1132,19 +1145,13 @@ public class Main extends JFrame implements ListSelectionListener,
 			jDialog_AskToSave.setResizable(false);
 			jDialog_AskToSave.setPreferredSize(new Dimension(388, 160));
 			jDialog_AskToSave.setContentPane(getJContentPane_askToSave());
-			jDialog_AskToSave
-					.addWindowListener(new java.awt.event.WindowAdapter() {
-						public void windowClosing(java.awt.event.WindowEvent e) {// if
-																					// closed
-																					// then
-																					// the
-																					// configuration
-																					// can
-																					// continue
-							getJDialog_AskToSave().setVisible(false);
-							getExportMenuItem().setEnabled(true);
-						}
-					});
+			jDialog_AskToSave.addWindowListener(new java.awt.event.WindowAdapter() {
+                                /** if closed then the configuration can continue */
+				public void windowClosing(java.awt.event.WindowEvent e) {
+					getJDialog_AskToSave().setVisible(false);
+					getExportMenuItem().setEnabled(true);
+				}
+			});
 		}
 		return jDialog_AskToSave;
 	}
@@ -1545,9 +1552,7 @@ public class Main extends JFrame implements ListSelectionListener,
 							currentS.qs.add(currentQ.getId());// register the
 																// question just
 																// answered
-							getJText_log().append(
-									"s" + states.size() + ".qs: "
-											+ currentS.qs.toString() + "\n");// updates
+							log("s" + states.size() + ".qs: " + currentS.qs.toString());// updates
 																				// log
 																				// (done
 																				// before
@@ -1577,8 +1582,7 @@ public class Main extends JFrame implements ListSelectionListener,
 					// currentS=tempS;//could be simpliefied, anyway: this is
 					// used for showing answered questions correctly
 					jDialog_AskToContinue.setVisible(false);
-					getJText_log()
-							.append("Configuration process completed with default values.\n");
+					log("Configuration process completed with default values.");
 					exportConfiguration(true);
 					getJDialog_AskToSave().setVisible(true);// prompt to export
 															// the results
@@ -1694,9 +1698,7 @@ public class Main extends JFrame implements ListSelectionListener,
 				if (!filePath.endsWith(".dcl"))
 					filePath = filePath + ".dcl";
 				fExport = new File(filePath);
-				getJText_log().append(
-						"Configuration exported to: " + fExport.getName()
-								+ ".\n");
+				log("Configuration exported to: " + fExport.getName() + ".");
 
 				DCL dcl = new DCL();
 				dcl.setAuthor(qml.getAuthor());
@@ -1852,17 +1854,13 @@ public class Main extends JFrame implements ListSelectionListener,
 								// by checkApplicabilityDef
 			if (!bddc.isViolated(tempS.vs)) {// removed buttonsList.keySet() as
 												// paramenter
-				getJText_log().append(
-						currentQ.getId()
-								+ " can be answered with default values.\n");
+				log(currentQ.getId() + " can be answered with default values.");
 				tempAQ.addElement(currentQ);
 				return true;
 			} else {// if all the facts have been set with a value which
 					// deviates from default, then the default answer can't be
 					// applied
-				getJText_log().append(
-						currentQ.getId()
-								+ " cannot be answered with default values.\n");
+				log(currentQ.getId() + " cannot be answered with default values.");
 				return false;
 			}
 		} else
@@ -1984,14 +1982,28 @@ public class Main extends JFrame implements ListSelectionListener,
 	 */
 	public static void main(String[] args) throws Exception {
 		Main application = new Main();
-		application.setVisible(true);
+
+                JFrame frame = new JFrame();
+                frame.add(application);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
+                                Main.class.getResource("/icons/Q4.gif")));
+                frame.setLocation(new java.awt.Point(100, 100));
+                frame.setMinimumSize(new java.awt.Dimension(800, 600));
+                frame.setSize(826, 600);
+                frame.setJMenuBar(application.getJJMenuBar());
+                frame.setContentPane(application.getJContentPane());
+                frame.setTitle("Synergia - Quaestio v. 0.9");
+                application.setVisible(true);
+                frame.pack();
+		frame.setVisible(true);
 
 		// Parse command line arguments
                	for (int i=0; i< args.length; i++) {
 			switch (args[i]) {
-			case "-apromore":
+			case "-apromore_model":
 				if (i+3 >= args.length) {
-					throw new IllegalArgumentException("-apromore without id/branch/version");
+					throw new IllegalArgumentException("-apromore_model without id/branch/version");
 				}
 				application.setLinkedProcessModel(
 					new ApromoreProcessModel(Integer.valueOf(args[i+1]).intValue(),  // process ID
@@ -2000,11 +2012,35 @@ public class Main extends JFrame implements ListSelectionListener,
 				);
 				i += 3;
                                 break;
+			case "-cmap_url":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-cmap_url without URL");
+				}
+				application.setLinkedCmap(new UrlCmap(args[i]));
+                                break;
+			case "-model_url":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-model_url without URL");
+				}
+				application.setLinkedProcessModel(new UrlProcessModel(args[i]));
+                                break;
+			case "-qml_url":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-qml_url without URL");
+				}
+				application.openUrlQuestionnaireModel(args[i]);
+                                break;
+			case "-editor_url":
+				if (++i >= args.length) {
+					throw new IllegalArgumentException("-editor_url without URL");
+				}
+				application.setEditorURL(new URL(args[i]));
+                                break;
 			case "-cmap":
 				if (++i >= args.length) {
 					throw new IllegalArgumentException("-cmap without filename");
 				}
-				application.setLinkedCmap(new File(args[i]));
+				application.setLinkedCmap(new FileCmap(new File(args[i])));
 				break;
 			case "-dcl":
 				if (++i >= args.length) {
@@ -2113,15 +2149,6 @@ public class Main extends JFrame implements ListSelectionListener,
 		showMan = true;
 		continueC = false;
 		showSkippableQuestions = true;
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/icons/Q4.gif")));
-		this.setLocation(new java.awt.Point(100, 100));
-		this.setMinimumSize(new java.awt.Dimension(800, 600));
-		this.setSize(826, 600);
-		this.setJMenuBar(getJJMenuBar());
-		this.setContentPane(getJContentPane());
-		this.setTitle("Synergia - Quaestio v. 0.9");
 	}
 
 	/**
@@ -2363,8 +2390,7 @@ public class Main extends JFrame implements ListSelectionListener,
 							// answered questions
 						currentQ.setSkippable(true);
 						skippedQuestions.add(currentQ.getId());
-						getJText_log().append(
-								currentQ.getId() + " is skippable\n");
+						log(currentQ.getId() + " is skippable");
 						if (validQ.contains(currentQ))// if the question was
 														// already shown in the
 														// Valid Questions list
@@ -2381,9 +2407,7 @@ public class Main extends JFrame implements ListSelectionListener,
 															// questions are set
 															// not to be
 															// visible.
-						getJText_log().append(
-								"s" + states.size() + ".qs: "
-										+ currentS.qs.toString() + "\n");// updates
+						log("s" + states.size() + ".qs: " + currentS.qs.toString());// updates
 																			// log
 																			// (done
 																			// before
@@ -2600,9 +2624,7 @@ public class Main extends JFrame implements ListSelectionListener,
 									new FileOutputStream(fLog));
 							pwLog.print(jArea_log.getText());
 							pwLog.close();
-							getJText_log().append(
-									"Log exported to: " + fLog.getName()
-											+ ".\n");
+							log("Log exported to: " + fLog.getName());
 						} catch (Exception ex) {
 							ex.printStackTrace();
 						}
@@ -2618,7 +2640,7 @@ public class Main extends JFrame implements ListSelectionListener,
 	 * 
 	 * @return javax.swing.JList
 	 */
-	private JTextArea getJText_log() {
+	JTextArea getJText_log() {
 		if (jArea_log == null) {
 			jArea_log = new JTextArea();
 			jArea_log.setMargin(new Insets(5, 5, 5, 5));
@@ -2789,7 +2811,7 @@ public class Main extends JFrame implements ListSelectionListener,
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJContentPane() {
+	public JPanel getJContentPane() {
 		if (jContentPane == null) {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 0;
@@ -2847,7 +2869,7 @@ public class Main extends JFrame implements ListSelectionListener,
 			gridBagConstraints.gridwidth = 1;
 			gridBagConstraints.gridheight = 1;
 			gridBagConstraints.gridy = 2;
-			jContentPane = new JPanel();
+			jContentPane = this;  //new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.setMinimumSize(new java.awt.Dimension(800, 600));
 			jContentPane.setPreferredSize(new java.awt.Dimension(800, 600));
@@ -2865,7 +2887,7 @@ public class Main extends JFrame implements ListSelectionListener,
 	 * 
 	 * @return javax.swing.JMenuBar
 	 */
-	private JMenuBar getJJMenuBar() {
+	public JMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
 			jJMenuBar = new JMenuBar();
 			jJMenuBar.add(getFileMenu());
@@ -2887,6 +2909,7 @@ public class Main extends JFrame implements ListSelectionListener,
 			fileMenu.setFont(new Font("Dialog", Font.PLAIN, 12));
 			fileMenu.add(getOpenCMMenuItem());
 			fileMenu.add(getLinkCMenuItem());
+			fileMenu.add(getSaveModelMenuItem());
 			// fileMenu.add(getLoadCMenuItem());
 			fileMenu.add(getSaveCMenuItem());
 			fileMenu.add(getExportMenuItem());
@@ -2974,13 +2997,13 @@ public class Main extends JFrame implements ListSelectionListener,
 
 	private JDialog getJDialog_About() {
 		if (jDialog_About == null) {
-			jDialog_About = new JDialog(Main.this, "About", true);
+                        jDialog_About = new JDialog(/*Main.this, "About", true*/);
+			jDialog_About.setTitle("About");
 			jDialog_About.setSize(new Dimension(500, 250));
 			jDialog_About.setMaximumSize(new Dimension(500, 250));
 			jDialog_About.setLocation(new Point(400, 350));
 			jDialog_About.setResizable(false);
 			jDialog_About.setContentPane(getJScrollPane_About());
-
 		}
 		return jDialog_About;
 	}
@@ -3096,6 +3119,36 @@ public class Main extends JFrame implements ListSelectionListener,
 	}
 
 	/**
+         * This method initializes jMenuItem
+         * 
+         * @return javax.swing.JMenuItem
+         */
+        private JMenuItem getSaveModelMenuItem() {
+		if (saveModelMenuItem == null) {
+			saveModelMenuItem = new JMenuItem();
+			saveModelMenuItem.setText("Save Process Model");
+			saveModelMenuItem.setEnabled(true);
+			saveModelMenuItem.setFont(new java.awt.Font("Dialog",
+					java.awt.Font.PLAIN, 12));
+			saveModelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+					Event.META_MASK, true));
+			saveModelMenuItem
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							try {
+								fInModel.update(getPartiallyConfiguredModel());
+								System.err.println("Successfully updated");
+							} catch (Exception ex) {
+								System.err.println("Failed to update: " + ex.getMessage());
+								ex.printStackTrace();
+							}
+						}
+					});
+		}
+		return saveModelMenuItem;
+	}
+
+	/**
 	 * This method initializes jMenuItem
 	 * 
 	 * @return javax.swing.JMenuItem
@@ -3166,8 +3219,7 @@ public class Main extends JFrame implements ListSelectionListener,
 
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
 						fIn = fileChooser.getSelectedFile();
-						getJText_log().append(
-								"Opening: " + fIn.getName() + ".\n");
+						log("Opening: " + fIn.getName() + ".");
 						try {
 							openQuestionnaireModel(fIn);
 
@@ -3175,11 +3227,10 @@ public class Main extends JFrame implements ListSelectionListener,
 							e.printStackTrace();
 						}
 					} else {
-						getJText_log().append(
-								"Open command cancelled by user.\n");
+						log("Open command cancelled by user.");
 					}
 					getJText_log().setCaretPosition(
-							getJText_log().getDocument().getLength());
+						getJText_log().getDocument().getLength());
 
 				}
 			});
@@ -3201,7 +3252,20 @@ public class Main extends JFrame implements ListSelectionListener,
 		readModel();
 	}
 
+	void openUrlQuestionnaireModel(final String urlString) throws IOException, JAXBException {
+                log("Opening QML model");
+		URLConnection connection = new URL(urlString).openConnection();
+                connection.setRequestProperty("Authorization", "Basic " + DatatypeConverter.printBase64Binary("admin:password".getBytes()));
+		JAXBElement qmlElement = (JAXBElement) JAXBContext.newInstance("com.processconfiguration.qml")
+		                                                  .createUnmarshaller()
+		                                                  .unmarshal(connection.getInputStream()); // creates the root element from XML file
+		qml = (QMLType) qmlElement.getValue();
+		readModel();
+                log("Opened QML model");
+	}
+
 	private void readModel() {
+		log("Reading model");
 		if (!first) {// clear everything if it isn't the first time
 			states.clear();// clear the states list
 			validQ.clear();// clear validQ JList
@@ -3224,6 +3288,7 @@ public class Main extends JFrame implements ListSelectionListener,
 			QuestionsMap.clear();// clear the questions
 			FactsMap.clear();// clear the facts
 		}
+                getJPanel_info();  // TODO - remove this
 		jLabel_info.setText("Name: " + qml.getName());// to print the name of
 														// the model
 		jLabel_info2.setText("Author: " + qml.getAuthor());// to print the
@@ -3235,8 +3300,7 @@ public class Main extends JFrame implements ListSelectionListener,
 
 		currentS = new State(FactsMap.keySet());// creates a temp state used by
 												// the algorithm
-		getJText_log().append(
-				"s" + states.size() + ".qs: " + currentS.qs.toString() + "\n");// updates
+		log("s" + states.size() + ".qs: " + currentS.qs.toString());// updates
 																				// log
 																				// (done
 																				// before
@@ -3268,6 +3332,7 @@ public class Main extends JFrame implements ListSelectionListener,
 		} else
 			updateValidQ();// start configuring
 		first = false;
+		log("Read model");
 	}
 
 	private void createSets() {
@@ -3285,18 +3350,18 @@ public class Main extends JFrame implements ListSelectionListener,
 		}
 	}
 
-	private void initBDDC() {// sets the conjunctive normal form output +
-								// initializes the facts variables with "u+fID"
+	private void initBDDC() {// sets the conjunctive normal form output + initializes the facts variables with "u+fID"
+		log("Initializing BDDService");
 		StringBuffer init = new StringBuffer("set cnf;\n");
 		for (String fID : FactsMap.keySet()) {
 			init.append(fID + " := u" + fID.substring(1) + "; ");
 		}
 
-		bddc = new ExecBDDC(qml.getConstraints());// launches the process bddc
-													// for constraints checking
-		bddc.init(init.toString());// initiates the bddc variables with empty
-									// arguments
+		//bddc = new ExecBDDC(qml.getConstraints());  // launches the process bddc for constraints checking
+		bddc = new JavaBDDService(qml.getConstraints());  // uses the JavaDBB library for constraints checking
+		bddc.init(init.toString());// initiates the bddc variables with empty arguments
 		// bddc.init("init");
+		log("Initialized BDDService");
 	}
 
 	// this method retrieves all the mandatory facts
@@ -3826,10 +3891,9 @@ public class Main extends JFrame implements ListSelectionListener,
 			cState = states.size() - 1;
 			currentS = new State(states.get(cState));// the last state after
 														// removing
-			getJText_log().append(
-					"Rolled back from " + selectedQ.getId()
-							+ " onwards. Current state: s" + cState + ".qs: "
-							+ currentS.qs.toString() + "\n");
+			log("Rolled back from " + selectedQ.getId()
+						+ " onwards. Current state: s" + cState + ".qs: "
+						+ currentS.qs.toString());
 
 			for (String fID : currentS.vs.keySet()) {// restores the facts
 														// values in bddc
@@ -3866,11 +3930,9 @@ public class Main extends JFrame implements ListSelectionListener,
 
 			currentS.qs.add(selectedQ.getId());// register the question just
 												// answered
-			getJText_log().append(
-					"s" + states.size() + ".qs: " + currentS.qs.toString()
-							+ "\n");// updates log (done before updating list
-									// states, so as to get the correct state
-									// number starting from 0=s_init)
+			log("s" + states.size() + ".qs: " + currentS.qs.toString());  // updates log (done before updating list
+									              // states, so as to get the correct state
+									              // number starting from 0=s_init)
 			states.add(new State(currentS));// creates a new state with the info
 											// of currentS and stores it in list
 											// states
@@ -3901,7 +3963,7 @@ public class Main extends JFrame implements ListSelectionListener,
 				// getJDialog_AskToSave().setVisible(true);//prompt to export
 				// the results
 				cFlag = false;
-				// getJText_log().append("Configuration process completed\n");
+				// log("Configuration process completed");
 				exportConfiguration(true);// create temporary DCL file
 				getExportMenuItem().setEnabled(true);
 				getJDialog_AskToSave().setVisible(true);// prompt to export
@@ -3915,33 +3977,132 @@ public class Main extends JFrame implements ListSelectionListener,
 		}
 		if (fInMap != null && fInModel != null) {
 			try {
-				BpmnDefinitions bpmn = fInModel.getBpmn(); // BpmnDefinitions.newInstance(new FileInputStream(fInModel), true);
-				CMAP cmap = (CMAP) JAXBContext.newInstance("com.processconfiguration.cmap").createUnmarshaller().unmarshal(fInMap);
-				DCL dcl = getDCL();
-
-				// Apply the configuration mapping for the facts provided so far from the questionnaire
-				org.apromore.bpmncmap.Main.configure(bpmn, cmap, dcl);
-
-				// Tidy up the configured model to remove trivial gates, etc
-				com.processconfiguration.ConfigurationAlgorithm.configure(bpmn);
-
-				// Serialize the individualized BPMN
-				bpmn.marshal(new FileOutputStream("../../Apromore-Editor/test.bpmn"), true);
-
-				// Delegate remaining animation process to the animation script
-				Process process = Runtime.getRuntime().exec("./animate.sh");
-				int exitCode = process.waitFor();
-
-                                // Display the configured model with Apromore-Editor in the default browser
-                                Desktop.getDesktop().browse(new URI("http://localhost:9000/editor/p/editor?id=root-directory%3BTest.signavio.xml"));
-
-			} catch (InterruptedException|IOException|JAXBException|URISyntaxException je) {
-				je.printStackTrace();
-			} catch (Exception ee) {  // TODO: remove this when the ProcessModel.getBpmn method no longer requires it
+				showModel(getPartiallyConfiguredModel());
+				System.err.println("Checkpoint 5");
+			} catch (Exception ee) {
+				System.err.println("Checkpoint 6");
 				ee.printStackTrace();
 			}
 		}
 		/// End hack for AotF demo
+	}
+
+	/**
+         * @return the BPMN process model with the current questionnaire answers applied according to the cmap
+         */
+        private BpmnDefinitions getPartiallyConfiguredModel() throws Exception {
+		
+		BpmnDefinitions bpmn = fInModel.getBpmn();
+		CMAP cmap = fInMap.getCMAP();
+		DCL dcl = getDCL();
+
+		System.err.println("Checkpoint 1");
+
+		// Apply the configuration mapping for the facts provided so far from the questionnaire
+		System.err.println("Checkpoint 2");
+		org.apromore.bpmncmap.Main.configure(bpmn, cmap, dcl);
+
+		// Tidy up the configured model to remove trivial gates, etc
+		System.err.println("Checkpoint 3");
+		com.processconfiguration.ConfigurationAlgorithm.configure(bpmn);
+
+		return bpmn;
+	}
+
+	/**
+	 * Display a C-BPMN model.
+         *
+	 * @param bpmn  a (partially) configured C-BPMN model
+	 */
+	protected void showModel(final BpmnDefinitions bpmn) throws Exception {
+
+		if (editorURL == null) { return; }
+
+		// Serialize the individualized BPMN
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bpmn.marshal(baos, true);
+		//System.out.println("Request data: " + URLEncoder.encode(baos.toString("utf-8")));
+
+		/*
+		// Delegate remaining animation process to the animation script
+		Process process = Runtime.getRuntime().exec("/Users/raboczi/Project/apromore/Extras/Quaestio/animate.sh");
+		int exitCode = process.waitFor();
+		*/
+
+		// Convert the BPMN to JSON
+		HttpURLConnection c = (HttpURLConnection) (new URL(editorURL, "editor/bpmnimport")).openConnection();
+		c.setRequestMethod("POST");
+		c.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                c.setDoOutput(true);
+		OutputStream out = c.getOutputStream();
+		out.write(("data=" + URLEncoder.encode(baos.toString("utf-8"))).getBytes());
+
+		c.connect();
+
+		System.out.println("Reponse code: " + c.getResponseCode());
+		System.out.println("Reponse message: " + c.getResponseMessage());
+		System.out.println("Content type: " + c.getContentType());
+
+		assert c.getResponseCode() == HttpURLConnection.HTTP_OK;  // TODO - these ought to be error-handled, not asserted
+		assert c.getContentType().equals("application/json");
+
+		String s = "";
+		InputStream in = c.getInputStream();
+		int b;
+		while ((b = in.read()) != -1) {
+			s += (char) b;
+		}
+		in.close();
+                System.out.println("Data: " + s);
+
+		// Delete any previously-extant JSON
+		HttpURLConnection c3 = (HttpURLConnection) (new URL(editorURL, "p/model/root-directory;Test.signavio.xml")).openConnection();
+		c3.setRequestMethod("DELETE");
+                c3.connect();
+
+		System.out.println("Reponse code (3): " + c3.getResponseCode());
+		System.out.println("Reponse message (3): " + c3.getResponseMessage());
+		System.out.println("Content type (3): " + c3.getContentType());
+
+		// Upload the JSON
+		HttpURLConnection c2 = (HttpURLConnection) (new URL(editorURL, "p/model")).openConnection();
+		c2.setRequestMethod("POST");
+		c2.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		c2.setDoOutput(true);
+		OutputStream out2 = c2.getOutputStream();
+		out2.write(("comment=" +
+                           "&description=" +
+                           "&glossary_xml=[]" +
+                           "&json_xml=" + URLEncoder.encode(s) +
+		           "&svg_xml=NO_SVG_PROVIDED" +
+		           "&name=Test" +
+		           "&namespace=http://b3mn.org/stencilset/bpmn2.0#" +
+		           "&parent=root-directory" +
+		           "&type=BPMN2.0" +
+		           "&views=[]").getBytes());
+
+		c2.connect();
+
+		System.out.println("Reponse code (2): " + c2.getResponseCode());
+		System.out.println("Reponse message (2): " + c2.getResponseMessage());
+		System.out.println("Content type (2): " + c2.getContentType());
+
+		// Display the configured model with Apromore-Editor in the default browser
+		browse(new URL(editorURL, "p/editor?id=root-directory%3BTest.signavio.xml"));
+	}
+
+        /**
+         * @param url  the URL of the Apromore-Editor web application (e.g. <code>http://localhost:9000/editor/</code>)
+         */
+	public void setEditorURL(final URL url) {
+		editorURL = url;
+	}
+
+	/**
+         * @param url  an web page URL to (re)display
+         */
+	protected void browse(final URL url) throws Exception {
+		Desktop.getDesktop().browse(url.toURI());
 	}
 
 	private void checkMandatoryF() {
@@ -4261,8 +4422,8 @@ public class Main extends JFrame implements ListSelectionListener,
 					int fStr, lStr, cStr;
 
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						fInMap = fileChooser.getSelectedFile();
 						try {
+							fInMap = new FileCmap(fileChooser.getSelectedFile());
 							setLinkedCmap(fInMap);
 
 						} catch (IllegalArgumentException iae) {
@@ -4293,7 +4454,8 @@ public class Main extends JFrame implements ListSelectionListener,
          * @param file  a file in CMAP format
          * @throws IllegalArgumentException if <var>file</var> contains the characters \u2228, \u2227, \u00ac or \u22bb.
          */
-        void setLinkedCmap(final File file) throws Exception {
+        void setLinkedCmap(final Cmap cmap) throws Exception {
+                /*
                 String str, cond;
                 int fStr, lStr, cStr;
 
@@ -4320,9 +4482,10 @@ public class Main extends JFrame implements ListSelectionListener,
                         }
                 }
                 reader.close();
+                */
 
-                getJTextField_map().setText(file.getAbsolutePath());
-		this.fInMap = file;
+                getJTextField_map().setText(cmap.getText());
+		this.fInMap = cmap;
         }
 
 	protected void enableCommitButton() {
@@ -4509,6 +4672,7 @@ public class Main extends JFrame implements ListSelectionListener,
 		getJTextField_model().setText(/*file.getAbsolutePath()*/ processModel.getText());
 
 		this.fInModel = processModel;
+		showModel(processModel.getBpmn());
 	}
 
 	/**
@@ -4621,6 +4785,10 @@ public class Main extends JFrame implements ListSelectionListener,
 			}
 		}
 		return fExport.getAbsolutePath();
+	}
+
+	public void log(String message) {
+		getJText_log().append(message + "\n");
 	}
 } // @jve:decl-index=0:visual-constraint="10,10"
 
