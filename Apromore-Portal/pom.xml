@@ -58,6 +58,7 @@
                             org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",
@@ -82,6 +83,68 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.processconfiguration</groupId>
+                                    <artifactId>quaestio</artifactId>
+                                    <version>0.9</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>quaestio-0.9.jar</destFileName>
+                                </artifactItem>
+                                <!--
+                                <artifactItem>
+                                    <groupId>org.apromore.plugin</groupId>
+                                    <artifactId>bpmncmap</artifactId>
+                                    <version>1.0</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>bpmncmap-1.0.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apromore</groupId>
+                                    <artifactId>cmap-schema</artifactId>
+                                    <version>1.1</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>cmap-schema-1.1.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apromore</groupId>
+                                    <artifactId>dcl-schema</artifactId>
+                                    <version>1.1</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>dcl-schema-1.1.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>net.sf.javabdd</groupId>
+                                    <artifactId>javabdd</artifactId>
+                                    <version>1.0b2</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>javabdd-1.0b2.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apromore</groupId>
+                                    <artifactId>manager-client</artifactId>
+                                    <version>1.1</version>
+                                    <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
+                                    <destFileName>manager-client-1.1.jar</destFileName>
+                                </artifactItem>
+                                -->
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
@@ -89,7 +152,7 @@
                         WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,WEB-INF/lib/manager*.jar,
                         WEB-INF/lib/jackson*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,WEB-INF/lib/json*.jar,WEB-INF/lib/logback*.jar,
                         WEB-INF/lib/jcl*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/org.*.jar,WEB-INF/lib/plugin*.jar,WEB-INF/lib/slf4j-api*.jar,
-                        WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/epml-schema*.jar,WEB-INF/lib/mail*.jar,WEB-INF/lib/javax.persistence*.jar,
+                        WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/epml-schema*.jar,WEB-INF/lib/bpmn-schema*.jar,WEB-INF/lib/mail*.jar,WEB-INF/lib/javax.persistence*.jar,
                         WEB-INF/lib/javaassist*.jar,WEB-INF/lib/jcommon-1.0.15.jar,WEB-INF/lib/jfreechart-1.0.15.jar
                     </packagingExcludes>
                     <archive>
@@ -124,6 +187,27 @@
             <groupId>org.apromore</groupId>
             <artifactId>xpdl-schema</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cmap-schema</artifactId>
+            <version>1.1</version>  - why does this schema need a version, while none of the others do?
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>com.springsource.javax.xml.bind</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        -->
 
         <!-- APIs -->
         <dependency>
