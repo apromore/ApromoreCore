@@ -50,6 +50,7 @@ public class MenuController extends Menubar {
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
+        Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -103,6 +104,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 mergeSelectedProcessVersions();
+            }
+        });
+        configureMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                configureModel();
             }
         });
         deployMI.addEventListener("onClick", new EventListener<Event>() {
@@ -182,6 +189,20 @@ public class MenuController extends Menubar {
             }
         } else {
             this.mainC.displayMessage("Select at least 2 process models for merge.");
+        }
+    }
+
+    protected void configureModel() throws ParseException {
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        this.mainC.eraseMessage();
+        if (selectedProcessVersions.size() == 1) {
+            try {
+                new ConfigureController(this.mainC, selectedProcessVersions);
+            } catch (RuntimeException e) {
+                Messagebox.show("Unable to configure model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        } else {
+            this.mainC.displayMessage("Select only 1 process model to configure.");
         }
     }
 
