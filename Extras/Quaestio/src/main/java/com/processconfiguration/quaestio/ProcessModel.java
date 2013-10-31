@@ -18,8 +18,10 @@ public interface ProcessModel {
 	String getText();
 
 	/**
-	 * Durably record any changes to the process model.
+	 * Durably record any changes to the configurable process model.
+         *
+         * @param bpmn  the new value of the process model
 	 */
-	void update() throws Exception;
+	void update(final BpmnDefinitions bpmn) throws Exception;
 }
 

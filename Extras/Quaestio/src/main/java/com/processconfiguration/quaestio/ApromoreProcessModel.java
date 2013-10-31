@@ -72,28 +72,28 @@ class ApromoreProcessModel implements ProcessModel {
          *
          * @param bpmn the updated process model
 	 */
-	public void update() throws Exception {
+	public void update(final BpmnDefinitions bpmn) throws Exception {
 
 		assert manager != null;
 
 		// Serialize
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		getBpmn().marshal(baos, true);
+		bpmn.marshal(baos, true);
 
 		// Send to the server
 		double newVersion = version + 0.1d;
 		manager.updateProcess(
-			0,		// session code
-			null,		// user name
-			NATIVE_TYPE,	// native type
-			processId,	// process ID
-			null,		// domain
-			null,		// process name
-			branch,		// original branch name
-			branch,		// new branch name
-			newVersion,	// version number
-			version,	// original version number
-			null,		// pre-version
+			0,			// session code
+			null,			// user name
+			NATIVE_TYPE,		// native type
+			processId,		// process ID
+			null,			// domain
+			"non-null dummy",	// process name
+			branch,			// original branch name
+			branch,			// new branch name
+			newVersion,		// version number
+			version,		// original version number
+			null,			// pre-version
 			new ByteArrayInputStream(baos.toByteArray())
 		);
                 version = newVersion;
