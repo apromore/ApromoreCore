@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore</artifactId>
+    <version>1.1</version>
+   <relativePath>../../</relativePath>
+  </parent>
+
   <groupId>com.processconfiguration</groupId>
   <artifactId>quaestio</artifactId>
-  <version>0.9</version>
+  <version>1.0</version>
+  <packaging>jar</packaging>
   <name>Quaestio</name>
   <build>
     <plugins>
@@ -27,6 +35,9 @@
               <addClasspath>true</addClasspath>
               <mainClass>com.processconfiguration.quaestio.Main</mainClass>
             </manifest>
+            <manifestEntries>
+              <Trusted-Only>true</Trusted-Only>
+            </manifestEntries>
           </archive>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -69,6 +80,25 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jarsigner-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <id>sign</id>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <keystore>src/main/keystore/signing-jar.keystore</keystore>
+          <alias>applet</alias>
+          <storepass>applet</storepass>
+          <keypass>applet</keypass>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -82,7 +112,18 @@
       <artifactId>bpmncmap</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>net.sf.javabdd</groupId>
+      <artifactId>javabdd</artifactId>
+      <version>1.0b2</version>
+    </dependency>
     <!--
+    <dependency>
+      <groupId>java</groupId>
+      <artifactId>plugin</artifactId>
+      <version>1.7.0</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apromore</groupId>
       <artifactId>epml-schema</artifactId>
@@ -94,15 +135,11 @@
       <version>1.1</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.javabdd</groupId>
-      <artifactId>javabdd</artifactId>
-      <version>1.0b2</version>
-    </dependency>
-    <dependency>
       <groupId>org.apromore.plugin</groupId>
       <artifactId>canoniser-bpmn</artifactId>
       <version>1.1</version>
     </dependency>
+    -->
     <dependency>
       <groupId>org.apromore</groupId>
       <artifactId>cmap-schema</artifactId>
@@ -113,7 +150,6 @@
       <artifactId>dcl-schema</artifactId>
       <version>1.1</version>
     </dependency>
-    -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

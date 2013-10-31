@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
-public class ExecBDDC extends JFrame {
+public class ExecBDDC extends JFrame implements BDDService {
 	private PrintWriter writer;
 	private BufferedReader reader;
 	private Process p;
@@ -46,7 +46,7 @@ public class ExecBDDC extends JFrame {
 			else if (osName.startsWith("Solaris"))
 				osName = "./bddc/bddcS";
 			else if (osName.startsWith("Mac OS X"))
-				osName = "./bddc/bddcM";
+				osName = "/Users/raboczi/Project/apromore/Extras/Quaestio/bddc/bddcM";
 			else {
 				System.err
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");

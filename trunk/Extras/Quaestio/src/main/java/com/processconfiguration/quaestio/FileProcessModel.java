@@ -40,7 +40,8 @@ class FileProcessModel implements ProcessModel {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void update() throws Exception {
+	public void update(final BpmnDefinitions bpmn) throws Exception {
+		throw new Exception("Save to file not implemented");
 	}
 }
 
