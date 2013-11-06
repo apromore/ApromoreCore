@@ -97,9 +97,9 @@
                                 <artifactItem>
                                     <groupId>com.processconfiguration</groupId>
                                     <artifactId>quaestio</artifactId>
-                                    <version>0.9</version>
+                                    <version>1.0</version>
                                     <outputDirectory>${project.build.directory}/portal/img</outputDirectory>
-                                    <destFileName>quaestio-0.9.jar</destFileName>
+                                    <destFileName>quaestio-1.0.jar</destFileName>
                                 </artifactItem>
                                 <!--
                                 <artifactItem>
