@@ -86,12 +86,12 @@
                             <center id="leftInnerCenterPanel">
                                 <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                             </center>
-                            <south id="leftInnerSouthPanel" title="Filter" size="30%" vflex="true" splittable="false" collapsible="true">
+                            <south id="leftInnerSouthPanel" title="Filter" size="35%" vflex="true" splittable="false" collapsible="true">
                                 <Filter id="baseFilter" vflex="true" hflex="true"/>
                             </south>
                         </borderlayout>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="true">
+                    <south id="leftSouthPanel" size="20%" splittable="true" vflex="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>

@@ -121,7 +121,7 @@ public class BPMNLayouterServlet extends HttpServlet {
                 }
                 json.write(response.getWriter());
             } catch (JSONException e) {
-                response.getWriter().print("exception");
+                response.getWriter().print("exception: " + e.toString());
             }
         } else {
             try {
