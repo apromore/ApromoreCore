@@ -8,7 +8,7 @@
         <row>
             <cell >
                 <vlayout>
-                    <textbox id="apqlQuery" rows="6" tabindex="1" height="100%" width="100%" />
+                    <textbox id="apqlQuery" rows="7" tabindex="1" height="100%" width="100%" />
                 </vlayout>
             </cell>
             <cell style="text-align:center; vertical-align:bottom;">

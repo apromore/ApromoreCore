@@ -33,7 +33,7 @@ public class JSON2Process {
         Process process;
         try {
             process = new Process(json.getString("name"));
-            Map<String, Node> nodes = new HashMap();
+            Map<String, Node> nodes = new HashMap<>();
             JSONArray tasks = json.getJSONArray("tasks");
             for (int i = 0; i < tasks.length(); i++) {
                 Task task = new Task(tasks.getJSONObject(i).getString("label"));

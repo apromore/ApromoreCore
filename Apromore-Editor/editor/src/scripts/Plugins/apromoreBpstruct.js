@@ -26,106 +26,189 @@ if (!ORYX.Plugins) {
 
 ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
 
-    facade:undefined,
-
-    changeSymbol:"*",
+    facade: undefined,
 
     construct:function (facade) {
         this.facade = facade;
 
         this.facade.offer({
             'name':ORYX.I18N.BPStruct.upload,
-            'functionality':this.sendToBPStruct.bind(this, false),
+            'functionality':this.showInfoDialog.bind(this, false),
             'group':ORYX.I18N.Bimp.group,
             'icon':ORYX.PATH + "images/BPStruct.png",
             'description':ORYX.I18N.BPStruct.uploadDesc,
-            'index':1,
-            'minShape':0,
-            'maxShape':0,
-            keyCodes:[
-                {
-                    metaKeys:[ORYX.CONFIG.META_KEY_META_CTRL],
-                    keyCode:80, // p-Keycode
-                    keyAction:ORYX.CONFIG.KEY_ACTION_UP
+            'index':1
+        });
+    },
+
+    /** Show a dialog box with some info about what is going to happen! */
+    showInfoDialog: function () {
+        this.dialog = new Ext.Window({
+            resizable: true,
+            closeable: true,
+            minimizable: false,
+            modal: true,
+            width: 600,
+            minHeight: 300,
+            layout: "anchor",
+            bodyStyle: "background-color:white; padding: 10px; color: black; overflow: visible;",
+            title: "BPStruct",
+            html: '<style>.format p { margin-bottom: 10px; } </style><div class="format" style="width: 100%; position: relative; left: 0; top: 0; float: left;"><p style="text-align: justify;">BPStruct is a tool for transforming unstructured programs/service compositions/(business) process models (models of concurrency) into well-structured ones. A model is well-structured, if for every node with multiple outgoing arcs (a split) there is a corresponding node with multiple incoming arcs (a join), and vice versa, such that the fragment of the model between the split and the join forms a single-entry-single-exit (SESE) component; otherwise the model is unstructured. The transformation preserves concurrency in resulting well-structured models.</p></div><div style="clear: both;"></div>',
+            buttons: [{
+                text: "Transform",
+                handler: this.bpstruct.bind(this)
+            }, {
+                text: "Cancel",
+                handler: function () {
+                    this.ownerCt.close()
                 }
-            ]
+            }]
+        });
+        this.dialog.show()
+    },
+
+    bpstruct: function () {
+        if (this.dialog) {
+            this.dialog.close()
+        }
+
+        var json = this.facade.getSerializedJSON();
+        if (this.facade.getCanvas().nodes.size() == 0) {
+            Ext.Msg.show({
+                title: "Info",
+                msg: "There is nothing to structure.",
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.INFO
+            }).getDialog().syncSize();
+            return
+        }
+
+        var msg = Ext.Msg.wait("Waiting for BPStruct to process model.");
+        new Ajax.Request('/editor/editor/bpstruct', {
+            parameters: {'data': json, 'type': this.getDiagramType()},
+            method: 'POST',
+            asynchronous: true,
+
+            onSuccess: function(data) {
+                msg.hide();
+                var responseJson = data.responseText.evalJSON(true);
+                if (responseJson != null) {
+                    if (responseJson.hasOwnProperty("errors")) {
+                        this.showErrors(responseJson.errors)
+                    } else {
+                        if (responseJson.hasChanged) {
+                            if (responseJson.hasOwnProperty("data_json")) {
+                                this.replaceProcess(responseJson.data_json)
+                            }
+                        } else {
+                            this.showCouldntStructure()
+                        }
+                    }
+                }
+            }.bind(this),
+
+            onFailure: function (data) {
+                msg.hide();
+                Ext.Msg.show({
+                    title: "Error",
+                    msg: "The communication with the BPStruct failed.",
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                }).getDialog().syncSize()
+            }.bind(this)
+        })
+    },
+
+    replaceProcess: function (newModel) {
+        var comd = ORYX.Core.Command.extend({
+            construct: function (newFacade, process) {
+                this.facade = newFacade;
+                this.oldProcess = newFacade.getJSON();
+                this.newProcess = process
+            },
+            execute: function () {
+                this.facade.getCanvas().getChildShapes().each(function (process) {
+                    this.facade.getCanvas().remove(process)
+                }.bind(this));
+                this.facade.importJSON(this.newProcess)
+            },
+            rollback: function () {
+                this.facade.getCanvas().getChildShapes().each(function (process) {
+                    this.facade.getCanvas().remove(process)
+                }.bind(this));
+                this.facade.importJSON(this.oldProcess)
+            }
         });
 
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && e.keyCode === 80) {
-                Event.stop(e);
-            }
-        }, false);
-
-        window.onbeforeunload = this.onUnLoad.bind(this);
-        this.changeDifference = 0;
-
-        // Register on event for executing commands --> store all commands in a stack
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
-            this.changeDifference--;
-            this.updateTitle();
-        }.bind(this));
-
+        this.facade.executeCommands([new comd(this.facade, newModel)]);
+        this.facade.setSelection([]);
+        Ext.Msg.show({
+            title: "Result",
+            msg: "Your process was structured successfully.",
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.INFO
+        }).getDialog().syncSize()
     },
 
-    updateTitle:function () {
-        var value = window.document.title;
-        var docElement = document.getElementsByTagName("title")[0];
-        if (docElement) {
-            var child = docElement.childNodes[0];
-            if (child) {
-                value = docElement.nodeValue;
-            }
-        }
-        if (value) {
-            if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)) {
-                window.document.title = value.slice(1);
-            } else if (this.changeDifference !== 0 && !value.startsWith(this.changeSymbol)) {
-                window.document.title = this.changeSymbol + "" + value;
-            }
+    getDiagramType: function () {
+        switch (this.facade.getCanvas().getStencil().namespace()) {
+            case "http://b3mn.org/stencilset/bpmn1.1#":
+                return("xpdl");
+            case "http://b3mn.org/stencilset/bpmn2.0#":
+                return("bpmn");
+            case "http://b3mn.org/stencilset/epc#":
+                return("epc");
+            case "http://b3mn.org/stencilset/yawl2.2#":
+                return("yawl");
+            default:
+                return("");
         }
     },
 
-    onUnLoad:function () {
-        if (this.changeDifference !== 0 || (this.facade.getModelMetaData()['new'] && this.facade.getCanvas().getChildShapes().size() > 0)) {
-            return ORYX.I18N.Save.unsavedData;
-        }
-    },
-
-    /**
-     * Saves the current process to the server.
-     */
-    sendToBPStruct:function (forceNew, event) {
-        var json = Ext.encode(this.facade.getJSON());
-
-        if (ORYX.Plugins.ApromoreBpstruct.sendBPStruct) {
-            ORYX.Plugins.ApromoreBpstruct.sendBPStruct(json);
+    showErrors: function (errors) {
+        if (errors.size() == 0) {
+            Ext.Msg.show({
+                title: "Error",
+                msg: "An error occured while structuring your process.",
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            }).getDialog().syncSize()
         } else {
-            alert("Upload to BPStruct Failed!");
+            Ext.Msg.show({
+                title: "Error",
+                msg: "It was not possible to structure the process because of some unsupported content.",
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            }).getDialog().syncSize();
+            var a = new Ext.ux.grid.ErrorGridPanel(errors, this.facade);
+            var b = new Ext.Window({
+                resizable: true,
+                closeable: true,
+                minimizable: false,
+                width: 300,
+                minHeight: 250,
+                x: 0,
+                layout: "anchor",
+                bodyStyle: "background-color:white; color: black; overflow: visible;",
+                title: "Errors that occurred",
+                items: a,
+                buttons: [{
+                    text: "OK",
+                    handler: function () {
+                        this.ownerCt.close()
+                    }
+                }]
+            });
+            b.show()
         }
+    },
 
-        return true;
+    showCouldntStructure: function () {
+        Ext.Msg.show({
+            title: "Result",
+            msg: "It was not possible to structure the process",
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.INFO
+        }).getDialog().syncSize()
     }
-
 });
-
-function getObjectClass(obj) {
-    if (obj && obj.constructor && obj.constructor.toString) {
-        var arr = obj.constructor.toString().match(/function\s*(\w+)/);
-
-        if (arr && arr.length == 2) {
-            return arr[1];
-        }
-    }
-
-    return undefined;
-}
-

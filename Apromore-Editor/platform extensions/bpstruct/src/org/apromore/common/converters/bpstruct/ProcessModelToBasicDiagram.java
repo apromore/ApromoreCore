@@ -27,7 +27,7 @@ public class ProcessModelToBasicDiagram {
     private static final String AND = "AND";
     private static final String AND_CONNECTOR = "ParallelGateway";
     private static final String XOR = "XOR";
-private static final String XOR_CONNECTOR = "Exclusive_Databased_Gateway";
+    private static final String XOR_CONNECTOR = "Exclusive_Databased_Gateway";
     private static final String OR = "OR";
     private static final String OR_CONNECTOR = "Inclusive_Databased_Gateway";
     private static final String NAME = "name";

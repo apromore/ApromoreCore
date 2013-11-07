@@ -60,7 +60,6 @@
                                     method: 'POST',
 
                                     onSuccess: function(transport) {
-                                        console.log(json);
                                         var nativeFormat = transport.responseText;
                                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
                                     }.bind(this),
@@ -89,75 +88,43 @@
                             );
                         };
 
-                        ORYX.Plugins.ApromoreBimp.openBimp = function(json, svg) {
-                            if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
-                                new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {'data': json},
-                                    method: 'POST',
+                        <!--ORYX.Plugins.ApromoreBimp.openBimp = function(json, svg) {-->
+                            <!--if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {-->
+                                <!--new Ajax.Request('${arg.exportPath}', {-->
+                                    <!--parameters: {'data': json},-->
+                                    <!--method: 'POST',-->
 
-                                    onSuccess: function(transport) {
-                                        var bimpForm = document.createElement("form");
-                                        bimpForm.setAttribute("action", "http://bimp.cs.ut.ee/uploadsignavio");
-                                        bimpForm.setAttribute("method", "POST");
-                                        bimpForm.setAttribute("target", "view");
+                                    <!--onSuccess: function(transport) {-->
+                                        <!--var bimpForm = document.createElement("form");-->
+                                        <!--bimpForm.setAttribute("action", "http://bimp.cs.ut.ee/uploadsignavio");-->
+                                        <!--bimpForm.setAttribute("method", "POST");-->
+                                        <!--bimpForm.setAttribute("target", "view");-->
 
-                                        var fileField = document.createElement("input");
-                                        fileField.setAttribute("type", "hidden");
-                                        fileField.setAttribute("id", "file");
-                                        fileField.setAttribute("name", "file");
-                                        fileField.setAttribute("value", transport.responseText);
+                                        <!--var fileField = document.createElement("input");-->
+                                        <!--fileField.setAttribute("type", "hidden");-->
+                                        <!--fileField.setAttribute("id", "file");-->
+                                        <!--fileField.setAttribute("name", "file");-->
+                                        <!--fileField.setAttribute("value", transport.responseText);-->
 
-                                        bimpForm.appendChild(fileField);
-                                        document.body.appendChild(bimpForm);
+                                        <!--bimpForm.appendChild(fileField);-->
+                                        <!--document.body.appendChild(bimpForm);-->
 
-                                        bimp = window.open('', 'view','status=0,title=0,height=600,width=1000,scrollbars=1,resizable=1');
-                                        if (bimp) {
-                                            bimpForm.submit();
-                                        } else {
-                                            alert('You must allow popups for this map to work.');
-                                        }
-                                    }.bind(this),
+                                        <!--bimp = window.open('', 'view','status=0,title=0,height=600,width=1000,scrollbars=1,resizable=1');-->
+                                        <!--if (bimp) {-->
+                                            <!--bimpForm.submit();-->
+                                        <!--} else {-->
+                                            <!--alert('You must allow popups for this map to work.');-->
+                                        <!--}-->
+                                    <!--}.bind(this),-->
 
-                                    onFailure: function(transport) {
-                                        alert("Failed to send process to the BIMP simulator!");
-                                    }.bind(this)
-                                });
-                            } else {
-                                alert("The BIMP Simulator only works with BPMN models!");
-                            }
-                        };
-
-                        ORYX.Plugins.ApromoreBpstruct.sendBPStruct = function(json, svg) {
-                            if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
-                                new Ajax.Request('/editor/editor/bpstruct', {
-                                    parameters: {'data': json},
-                                    method: 'POST',
-
-                                    onSuccess: function(data) {
-                                        var editorConfig = Ext.decode(data.responseText);
-                                        oryxEditor.importJSON(editorConfig, true);
-
-                                        // Call Auto-Layout if everything is available
-                                        window.setTimeout(function() {
-                                            var layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                                return pluginData.name === "Layout-BPMN";
-                                            });
-
-                                            layouter.functionality();
-
-                                            Ext.select('svg').setVisible(true);
-                                            window.onbeforeunload = null;
-                                        }, 1000);
-                                    }.bind(this),
-
-                                    onFailure: function(transport) {
-                                        alert("Failed to send process to the BIMP simulator!");
-                                    }.bind(this)
-                                });
-                            } else {
-                                alert("BPStruct only works with BPMN models!");
-                            }
-                        };
+                                    <!--onFailure: function(transport) {-->
+                                        <!--alert("Failed to send process to the BIMP simulator!");-->
+                                    <!--}.bind(this)-->
+                                <!--});-->
+                            <!--} else {-->
+                                <!--alert("The BIMP Simulator only works with BPMN models!");-->
+                            <!--}-->
+                        <!--};-->
 
                         // Import new process model
                         new Ajax.Request('${arg.importPath}', {
