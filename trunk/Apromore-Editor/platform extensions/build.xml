@@ -4,12 +4,12 @@
     <target name="build-all">
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="diagram core" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpmn20xmlbasic" inheritall="true"/>
-        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpstruct" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="epc" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="jpdl" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="xpdl" inheritall="true"/>
-        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="syntaxchecker" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="yawl" inheritall="true"/>
+        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="syntaxchecker" inheritall="true"/>
+        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpstruct" inheritall="true"/>
     </target>
 
 </project>
