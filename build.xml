@@ -9,6 +9,14 @@
          You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available. -->
     <property name="database-name" value="mysql"/>
 
+    <!-- Folders used to build and deploy dependencies for Apromore. -->
+    <property name="dir-extras" location="${basedir}/Extras"/>
+    <property name="dir-extras-lib" location="${dir-extras}/libraries"/>
+    <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
+    <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
+    <property name="dir-extras-bpmncmap" location="${dir-extras}/bpmncmap"/>
+    <property name="dir-extras-quaestio" location="${dir-extras}/Quaestio"/>
+
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
     <property name="virgo-url" value="http://apromore.googlecode.com/svn/dev/software/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
@@ -20,6 +28,53 @@
     <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
     <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
 
+    <fileset id="pickupRepo" dir=".">
+        <include name="Apromore-Assembly/**/*.plan"/>
+    </fileset>
+
+    <fileset id="usrRepo" dir=".">
+        <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
+        <include name="Apromore-Assembly/**/repository/usr/*.war"/>
+    </fileset>
+
+    <fileset id="webAppRepo" dir=".">
+        <include name="Apromore-Editor/target/*.war"/>
+    </fileset>
+
+
+
+
+    <!-- Project Setup -->
+    <target name="apromore-pre-build">
+        <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
+        <exec dir="${dir-extras-lib}/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="upload.bat"/>
+        </exec>
+        <exec dir="${dir-extras-lib}" executable="./upload.sh" osfamily="unix" />
+
+        <!-- Build the tools required for the main Apromore product. -->
+        <exec dir="${dir-extras-build-tools}/" executable="mvn">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+        <exec dir="${dir-extras-test-tools}/" executable="mvn">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+        <exec dir="${dir-extras-bpmncmap}/" executable="mvn">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+        <exec dir="${dir-extras-quaestio}/" executable="mvn">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+
+
+
+    <!-- Virgo Related -->
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
 
     <target name="check-virgo">
@@ -163,19 +218,5 @@
             </fileset>
         </copy>
     </target>
-
-
-    <fileset id="pickupRepo" dir=".">
-        <include name="Apromore-Assembly/**/*.plan"/>
-    </fileset>
-
-    <fileset id="usrRepo" dir=".">
-        <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
-        <include name="Apromore-Assembly/**/repository/usr/*.war"/>
-    </fileset>
-
-    <fileset id="webAppRepo" dir=".">
-        <include name="Apromore-Editor/target/*.war"/>
-    </fileset>
 
 </project>
