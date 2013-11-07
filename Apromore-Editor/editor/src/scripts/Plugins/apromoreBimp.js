@@ -26,9 +26,7 @@ if (!ORYX.Plugins) {
 
 ORYX.Plugins.ApromoreBimp = Clazz.extend({
 
-    facade:undefined,
-
-    changeSymbol:"*",
+    facade: undefined,
 
     construct:function (facade) {
         this.facade = facade;
@@ -39,93 +37,135 @@ ORYX.Plugins.ApromoreBimp = Clazz.extend({
             'group':ORYX.I18N.Bimp.group,
             'icon':ORYX.PATH + "images/BIMP.png",
             'description':ORYX.I18N.Bimp.uploadDesc,
-            'index':1,
-            'minShape':0,
-            'maxShape':0,
-            keyCodes:[
-                {
-                    metaKeys:[ORYX.CONFIG.META_KEY_META_CTRL],
-                    keyCode:66, // s-Keycode
-                    keyAction:ORYX.CONFIG.KEY_ACTION_UP
-                }
-            ]
+            'index':1
         });
-
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && e.keyCode === 66) {
-                Event.stop(e);
-            }
-        }, false);
-
-        window.onbeforeunload = this.onUnLoad.bind(this);
-        this.changeDifference = 0;
-
-        // Register on event for executing commands --> store all commands in a stack
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
-            this.changeDifference--;
-            this.updateTitle();
-        }.bind(this));
-
     },
 
-    updateTitle:function () {
-        var value = window.document.title;
-        var docElement = document.getElementsByTagName("title")[0];
-        if (docElement) {
-            var child = docElement.childNodes[0];
-            if (child) {
-                value = docElement.nodeValue;
-            }
-        }
-        if (value) {
-            if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)) {
-                window.document.title = value.slice(1);
-            } else if (this.changeDifference !== 0 && !value.startsWith(this.changeSymbol)) {
-                window.document.title = this.changeSymbol + "" + value;
-            }
-        }
-    },
+    /** Sends the current process to the BIMP Simulator. */
+    sendToBimp:function () {
+        if (this.getDiagramType() == 'xpdl' || this.getDiagramType() == 'bpmn') {
+            this.form = new Ext.form.FormPanel({
+                url: "http://bimp.cs.ut.ee/uploadsignavio",
+                method: "POST",
+                items: new Ext.form.Hidden({
+                    name: "file"
+                }),
+                bodyStyle: "background-color:white; border: none;",
+                submit: function () {
+                    var dom = this.getForm().getEl().dom;
+                    var doc = document.createAttribute("target");
+                    doc.nodeValue = "_blank";
+                    dom.setAttributeNode(doc);
+                    dom.action = this.getForm().url;
+                    dom.submit()
+                }
+            });
 
-    onUnLoad:function () {
-        if (this.changeDifference !== 0 || (this.facade.getModelMetaData()['new'] && this.facade.getCanvas().getChildShapes().size() > 0)) {
-            return ORYX.I18N.Save.unsavedData;
-        }
-    },
+            var formPane = new Ext.Panel({
+                bodyStyle: "background-color:white; border: none;",
+                layout: "anchor",
+                html: '<style type="text/css"> .format p { margin-bottom: 10px; }</style><div class="format" style="width: 100%; position: relative; left: 0; top: 0; float: left;"><p style="text-align: justify;">Web based business process simulator is easy to use and can be accessed directly from a web browser.</p> <p style="text-align: justify;">You must have a business process diagram in BPMN 2.0 or Visio 2013 BPMN (VSDX) format. With the web based simulator interface you can upload your business process diagram and add the additional information that is required for simulation. Additional information like the number of process instances, their arrival rate, activity durations, amount of various resources, path execution probabilities and etc is essential for the simulation.</p> <p style="text-align: justify;">After the simulation data has been entered, the simulation can be started. You can also enable MXML log creation to produce the logs in a standard XML format that can be downloaded and analyzed further with other process mining tools.</p> <p style="text-align: justify;">From the results you can analyze the performance of the business process. You can download the process model with the simulation data to be simulated later again. You can always go back modify the entered simulation specific information and run the simulation again.</p> <p style="text-align: justify;">Online Business Process Simulator is free for academic use, contact us for commercial use.</p> </div><div style="clear:both;"></div>'
+            });
 
-    /**
-     * Saves the current process to the server.
-     */
-    sendToBimp:function (forceNew, event) {
-        var json = Ext.encode(this.facade.getJSON());
+            this.window = new Ext.Window({
+                title: "BIMP Simulator",
+                bodyStyle: "background-color:white; padding: 10px; color: black; overflow: visible;",
+                resizable: true,
+                closeable: true,
+                minimizable: false,
+                modal: true,
+                width: 600,
+                minHeight: 300,
+                items: [formPane, this.form],
+                buttons: [{
+                    text: "Simulate",
+                    disabled: true,
+                    handler: function () {
+                        this.ownerCt.items.item(1).submit();
+                        this.ownerCt.close()
+                    }
+                }, {
+                    text: "Cancel",
+                    handler: function () {
+                        this.ownerCt.close()
+                    }
+                }]
+            });
 
-        if (ORYX.Plugins.ApromoreBimp.openBimp) {
-            ORYX.Plugins.ApromoreBimp.openBimp(json);
+            new Ajax.Request(this.getExportUrl(this.getDiagramType()), {
+                method: "POST",
+                parameters: {'data': this.facade.getSerializedJSON()},
+                asynchronous: true,
+                encoding: "UTF-8",
+                requestHeaders: {
+                    Accept: "application/json"
+                },
+
+                onSuccess: function (transport) {
+                    if (transport != null) {
+                        this.form.items.item(0).getEl().dom.value = transport.responseText;
+                        this.window.buttons[0].enable()
+                    } else {
+                        Ext.Msg.show({
+                            title: "Error",
+                            msg: "An error occured while loading your process.",
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.ERROR
+                        }).getDialog().syncSize();
+                        this.window.close()
+                    }
+                }.bind(this),
+
+                onFailure: function (data) {
+                    Ext.Msg.show({
+                        title: "Error",
+                        msg: "An error occured while loading your process.",
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    }).getDialog().syncSize();
+                    this.window.close()
+                }.bind(this)
+            });
+
+            this.window.show()
         } else {
-            alert("Upload to BIMP failed!");
+            Ext.Msg.show({
+                title: "Error",
+                msg: "The BIMP Simulator only works with BPMN models!",
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            }).getDialog().syncSize();
         }
+    },
 
-        return true;
+    getDiagramType: function() {
+        switch (this.facade.getCanvas().getStencil().namespace()) {
+            case "http://b3mn.org/stencilset/bpmn1.1#":
+                return("xpdl");
+            case "http://b3mn.org/stencilset/bpmn2.0#":
+                return("bpmn");
+            case "http://b3mn.org/stencilset/epc#":
+                return("epml");
+            case "http://b3mn.org/stencilset/yawl2.2#":
+                return("yawl");
+            default:
+                return("");
+        }
+    },
+
+    getExportUrl: function(namespace) {
+        switch (namespace) {
+            case "xpdl":
+                return "/editor/editor/xpdlexport";
+            case "bpmn":
+                return "/editor/editor/bpmnexport";
+            case "epml":
+                return "/editor/editor/epmlexport";
+            case "yawl":
+                return "/editor/editor/yawlexport";
+            default:
+                return("");
+        }
     }
 
 });
-
-function getObjectClass(obj) {
-    if (obj && obj.constructor && obj.constructor.toString) {
-        var arr = obj.constructor.toString().match(/function\s*(\w+)/);
-
-        if (arr && arr.length == 2) {
-            return arr[1];
-        }
-    }
-
-    return undefined;
-}
-
