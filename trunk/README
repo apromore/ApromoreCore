@@ -55,16 +55,11 @@ $ mysql --user=root --password=MAcri < Extras/database/db-mysql.sql
 BUILD IT
 ========
 
-Navigate to the Extras/Test-Tools folder and run 'mvn clean install'
-Navigate to the Extras/Build-Tools folder and run 'mvn clean install'
-Navigate to the Extras/MavenPropertyChanger folder and run 'mvn clean install'
-
-Change the the Extras/libraries folder and run 'upload.bat' (Windows) or 'upload.sh' (Unix/Linux/Mac)
-This will place jars in the build that are needed for the next set.
-
-Change to the root and run 'mvn clean install'. This will build the Apromore manager, portal and editor.
-
-while still in the root after a successful build 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
+* Change to the root of the project you checked out of SVN.
+* Run the ant command 'ant apromore-pre-build'. This will upload any libraries that are needed and not in any maven
+  repository and builds some support libraries and places all of them in your local maven repository.
+* Run the maven command 'mvn clean install'. This will build the Apromore manager, portal and editor and all the extra plugins.
+* Run the ant command 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
 
 
 TRY IT OUT
