@@ -67,9 +67,6 @@ ORYX.Plugins.BpmnLayouter = ORYX.Plugins.AbstractPlugin.extend({
             	this.facade.raiseEvent({type:ORYX.CONFIG.EVENT_LOADING_DISABLE});
 			},
 			onSuccess: function(request){
-
-				/*Ext.Msg.alert("Oryx", "New Layout arrived:!\n" + request.responseText);*/
-				
 				var setLayoutCommandClass = ORYX.Core.Command.extend({
 					construct: function(layoutArray, plugin){
 						this.layoutArray = layoutArray;
@@ -78,31 +75,21 @@ ORYX.Plugins.BpmnLayouter = ORYX.Plugins.AbstractPlugin.extend({
 					},
 					execute: function(){
 						this.layoutArray.each(function(elem){
-							/* get shape */
 							var shape = this.plugin.facade.getCanvas().getChildShapeByResourceId(elem.id);
-							
-							/* save old layout for undo*/
 							var oldLayout = {
 								id : elem.id,
 								bounds : shape.bounds.clone()
 							};
 							this.oldLayoutArray.push(oldLayout);
-							
-							/* set new bounds */
 							var bound = elem.bounds.split(" ");
-							shape.bounds.set(bound[0],bound[1],bound[2],bound[3]);
-							
-							/* set new dockers */
+							shape.bounds.set(bound[0], bound[1], bound[2], bound[3]);
 							if(elem.dockers != null){
-								this.plugin.setDockersBad(shape,elem.dockers);
+								this.plugin.setDockersBad(shape, elem.dockers);
 							}
-							
 							shape.update();
 						}.bind(this));
-						
 						this.plugin.facade.getCanvas().update();
-						this.plugin.facade.updateSelection();					
-						
+						this.plugin.facade.updateSelection();
 					},
 					rollback: function(){
 						this.oldLayoutArray.each(function(elem){
@@ -110,54 +97,44 @@ ORYX.Plugins.BpmnLayouter = ORYX.Plugins.AbstractPlugin.extend({
 							shape.bounds.set(elem.bounds);
 							shape.update();
 						}.bind(this));
-						
 						this.plugin.facade.getCanvas().update();
 						this.plugin.facade.updateSelection();	
 					}
 				});
 				
-				
 				var resp = request.responseText.evalJSON();
 				if (resp instanceof Array && resp.size() > 0) {
-					/* create command */
 					var command = new setLayoutCommandClass(resp, this);
-					/* execute command */
 					this.facade.executeCommands([command]);
 				}
             	this.facade.raiseEvent({type:ORYX.CONFIG.EVENT_LOADING_DISABLE});
 			}.bind(this)
 		})
 	},
-	setDockersBad: function(shape, dockers){
+	setDockersBad: function(shape, dockers) {
 		var dockersString = "";
 		dockers.each(function(p){
 			dockersString += p.x + " " + p.y + " ";
 		});
 		dockersString += " # ";
 		shape.deserialize([{
-								prefix: 'oryx',
-								name: 'dockers',
-								value: dockersString
-							}]);
+            prefix: 'oryx',
+            name: 'dockers',
+            value: dockersString
+        }]);
 	},
-	setDockersGood: function(shape, dockers){
+	setDockersGood: function(shape, dockers) {
 		if(elem.dockers.length == 1){
-			/* docked event */
-			
-		}else{
-			
-			/* clear all except of the first and last dockers */
+		} else {
 			var dockers = shape.getDockers().slice(1,-1);
-			dockers.each(function(docker){
+			dockers.each(function(docker) {
 				shape.removeDocker(docker);
 			});
 			
-			/* set first and last docker */
 			var firstDocker = shape.getDockers()[0];
 			if (firstDocker.getDockedShape()) {
 				firstDocker.setReferencePoint(elem.dockers[0]);
-			}
-			else {
+			} else {
 				firstDocker.bounds.moveTo(elem.dockers[0].x,elem.dockers[0].y);
 			}
 			firstDocker.refresh();
@@ -165,19 +142,16 @@ ORYX.Plugins.BpmnLayouter = ORYX.Plugins.AbstractPlugin.extend({
 			var lastDocker = shape.getDockers()[1];
 			if (lastDocker.getDockedShape()) {
 				lastDocker.setReferencePoint(elem.dockers[elem.dockers.length - 1]);
-			}
-			else {
+			} else {
 				lastDocker.bounds.moveTo(elem.dockers[elem.dockers.length - 1].x, elem.dockers[elem.dockers.length - 1].y);
 			}
 			lastDocker.refresh();
 			
-			/* add new dockers except of the first and last */
 			var dockersToAdd = elem.dockers.slice(1,-1);
 			dockersToAdd.each(function(dockerPoint){
 				var newDocker = shape.createDocker(undefined, dockerPoint);
 				newDocker.parent = shape;
 				newDocker.bounds.centerMoveTo(dockerPoint.x, dockerPoint.y);
-				/*newDocker.setReferencePoint(dockerPoint);*/
 				newDocker.update();
 			});
 		}		

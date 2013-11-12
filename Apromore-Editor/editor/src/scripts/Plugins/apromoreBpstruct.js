@@ -20,24 +20,23 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if (!ORYX.Plugins) {
-    ORYX.Plugins = new Object();
-}
+if(!ORYX){ var ORYX = {} }
+if(!ORYX.Plugins){ ORYX.Plugins = {} }
 
-ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
+ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
 
     facade: undefined,
 
-    construct:function (facade) {
+    construct: function (facade) {
         this.facade = facade;
 
         this.facade.offer({
-            'name':ORYX.I18N.BPStruct.upload,
-            'functionality':this.showInfoDialog.bind(this, false),
-            'group':ORYX.I18N.Bimp.group,
-            'icon':ORYX.PATH + "images/BPStruct.png",
-            'description':ORYX.I18N.BPStruct.uploadDesc,
-            'index':1
+            'name': ORYX.I18N.BPStruct.upload,
+            'functionality': this.showInfoDialog.bind(this, false),
+            'group': ORYX.I18N.Bimp.group,
+            'icon': ORYX.PATH + "images/BPStruct.png",
+            'description': ORYX.I18N.BPStruct.uploadDesc,
+            'index': 1
         });
     },
 
@@ -54,15 +53,18 @@ ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
             bodyStyle: "background-color:white; padding: 10px; color: black; overflow: visible;",
             title: "BPStruct",
             html: '<style>.format p { margin-bottom: 10px; } </style><div class="format" style="width: 100%; position: relative; left: 0; top: 0; float: left;"><p style="text-align: justify;">BPStruct is a tool for transforming unstructured programs/service compositions/(business) process models (models of concurrency) into well-structured ones. A model is well-structured, if for every node with multiple outgoing arcs (a split) there is a corresponding node with multiple incoming arcs (a join), and vice versa, such that the fragment of the model between the split and the join forms a single-entry-single-exit (SESE) component; otherwise the model is unstructured. The transformation preserves concurrency in resulting well-structured models.</p></div><div style="clear: both;"></div>',
-            buttons: [{
-                text: "Transform",
-                handler: this.bpstruct.bind(this)
-            }, {
-                text: "Cancel",
-                handler: function () {
-                    this.ownerCt.close()
+            buttons: [
+                {
+                    text: "Transform",
+                    handler: this.bpstruct.bind(this)
+                },
+                {
+                    text: "Cancel",
+                    handler: function () {
+                        this.ownerCt.close()
+                    }
                 }
-            }]
+            ]
         });
         this.dialog.show()
     },
@@ -89,9 +91,10 @@ ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
             method: 'POST',
             asynchronous: true,
 
-            onSuccess: function(data) {
+            onSuccess: function (data) {
                 msg.hide();
                 var responseJson = data.responseText.evalJSON(true);
+                //console.log("JSON: " + JSON.stringify(responseJson.data_json));
                 if (responseJson != null) {
                     if (responseJson.hasOwnProperty("errors")) {
                         this.showErrors(responseJson.errors)
@@ -120,28 +123,36 @@ ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
     },
 
     replaceProcess: function (newModel) {
-        var comd = ORYX.Core.Command.extend({
+        var commandClass = ORYX.Core.Command.extend({
             construct: function (newFacade, process) {
                 this.facade = newFacade;
                 this.oldProcess = newFacade.getJSON();
                 this.newProcess = process
             },
             execute: function () {
-                this.facade.getCanvas().getChildShapes().each(function (process) {
-                    this.facade.getCanvas().remove(process)
-                }.bind(this));
-                this.facade.importJSON(this.newProcess)
+                try {
+                    this.facade.getCanvas().getChildShapes().each(
+                        function (process) {
+                            this.facade.getCanvas().remove(process)
+                        }.bind(this)
+                    );
+                    this.facade.importJSON(this.newProcess, true);
+                } catch (err) {
+                    console.log("BPStruct Update Canvas error: " +err.message);
+                }
             },
+
             rollback: function () {
-                this.facade.getCanvas().getChildShapes().each(function (process) {
-                    this.facade.getCanvas().remove(process)
-                }.bind(this));
-                this.facade.importJSON(this.oldProcess)
+                this.facade.getCanvas().getChildShapes().each(
+                    function (process) {
+                        this.facade.getCanvas().remove(process)
+                    }.bind(this)
+                );
+                this.facade.importJSON(this.oldProcess, true);
             }
         });
 
-        this.facade.executeCommands([new comd(this.facade, newModel)]);
-        this.facade.setSelection([]);
+        this.facade.executeCommands([new commandClass(this.facade, newModel)]);
         Ext.Msg.show({
             title: "Result",
             msg: "Your process was structured successfully.",
@@ -192,12 +203,14 @@ ORYX.Plugins.ApromoreBpstruct = Clazz.extend({
                 bodyStyle: "background-color:white; color: black; overflow: visible;",
                 title: "Errors that occurred",
                 items: a,
-                buttons: [{
-                    text: "OK",
-                    handler: function () {
-                        this.ownerCt.close()
+                buttons: [
+                    {
+                        text: "OK",
+                        handler: function () {
+                            this.ownerCt.close()
+                        }
                     }
-                }]
+                ]
             });
             b.show()
         }

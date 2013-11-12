@@ -1,4 +1,4 @@
-<vlayout spacing="10px">
+<vlayout spacing="10px" vflex="true">
     <style>
         .z-listbox-autopaging .z-listcell-cnt {
         height: 23px;
@@ -12,8 +12,7 @@
         <button label="Clear" id="btnClear"></button>
         <button label="Save Selected" id="btnSave"></button>
     </hlayout>
-    <listbox id="lstUsers" vflex="true" span="true" visible="false"
-             autopaging="true" mold="paging" multiple="true" checkmark="true">
+    <listbox id="lstUsers" vflex="true" span="true" visible="false" autopaging="true" mold="paging" multiple="true" checkmark="true">
         <listhead sizable="true" >
             <listheader hflex="min" label="" visible="true" />
             <listheader hflex="min" label="Name" sort="auto(name)" />

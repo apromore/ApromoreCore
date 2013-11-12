@@ -40,7 +40,7 @@
 
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
-                        var oryxEditor = new ORYX.Editor({
+                        var oryxEditor = new ORYX.Editor ({
                             model : {
                                 id : 'oryx-canvas123',
                                 stencilset : {
@@ -50,81 +50,50 @@
                             },
                             fullscreen : true
                         });
-
                         Ext.select('svg').setVisible(false);
 
 
                         ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {'data': json},
-                                    method: 'POST',
+                                parameters: {'data': json},
+                                method: 'POST',
 
-                                    onSuccess: function(transport) {
-                                        var nativeFormat = transport.responseText;
-                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', nativeFormat));
-                                    }.bind(this),
+                                onSuccess: function(transport) {
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', transport.responseText));
+                                }.bind(this),
 
-                                    onFailure: function(transport) {
-                                        alert("Failed to save process!");
-                                    }.bind(this)
-                                }
-                            );
+                                onFailure: function(transport) {
+                                    Ext.Msg.show({
+                                        title: "Error",
+                                        msg: "Failed to save the Process!",
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.ERROR
+                                    }).getDialog().syncSize()
+                                }.bind(this)
+                            });
                         };
 
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
-                                    parameters: {'data': json},
-                                    method: 'POST',
+                                parameters: {'data': json},
+                                method: 'POST',
 
-                                    onSuccess: function(transport) {
-                                        var nativeFormat = transport.responseText;
-                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', nativeFormat));
-                                    }.bind(this),
+                                onSuccess: function(transport) {
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', transport.responseText));
+                                }.bind(this),
 
-                                    onFailure: function(transport) {
-                                        alert("Failed to save process as " + nativeFormat);
-                                    }.bind(this)
-                                }
-                            );
+                                onFailure: function(transport) {
+                                    Ext.Msg.show({
+                                        title: "Error",
+                                        msg: "Failed to save process as " + transport.responseText,
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.ERROR
+                                    }).getDialog().syncSize()
+                                    alert("Failed to save process as " + nativeFormat);
+                                }.bind(this)
+                            });
                         };
 
-                        <!--ORYX.Plugins.ApromoreBimp.openBimp = function(json, svg) {-->
-                            <!--if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {-->
-                                <!--new Ajax.Request('${arg.exportPath}', {-->
-                                    <!--parameters: {'data': json},-->
-                                    <!--method: 'POST',-->
-
-                                    <!--onSuccess: function(transport) {-->
-                                        <!--var bimpForm = document.createElement("form");-->
-                                        <!--bimpForm.setAttribute("action", "http://bimp.cs.ut.ee/uploadsignavio");-->
-                                        <!--bimpForm.setAttribute("method", "POST");-->
-                                        <!--bimpForm.setAttribute("target", "view");-->
-
-                                        <!--var fileField = document.createElement("input");-->
-                                        <!--fileField.setAttribute("type", "hidden");-->
-                                        <!--fileField.setAttribute("id", "file");-->
-                                        <!--fileField.setAttribute("name", "file");-->
-                                        <!--fileField.setAttribute("value", transport.responseText);-->
-
-                                        <!--bimpForm.appendChild(fileField);-->
-                                        <!--document.body.appendChild(bimpForm);-->
-
-                                        <!--bimp = window.open('', 'view','status=0,title=0,height=600,width=1000,scrollbars=1,resizable=1');-->
-                                        <!--if (bimp) {-->
-                                            <!--bimpForm.submit();-->
-                                        <!--} else {-->
-                                            <!--alert('You must allow popups for this map to work.');-->
-                                        <!--}-->
-                                    <!--}.bind(this),-->
-
-                                    <!--onFailure: function(transport) {-->
-                                        <!--alert("Failed to send process to the BIMP simulator!");-->
-                                    <!--}.bind(this)-->
-                                <!--});-->
-                            <!--} else {-->
-                                <!--alert("The BIMP Simulator only works with BPMN models!");-->
-                            <!--}-->
-                        <!--};-->
 
                         // Import new process model
                         new Ajax.Request('${arg.importPath}', {
@@ -134,6 +103,7 @@
 
                                 onSuccess: function(transport) {
                                     var editorConfig = Ext.decode(transport.responseText);
+                                    //alert(transport.responseText);
                                     oryxEditor.importJSON(editorConfig, true);
 
                                     // Call Auto-Layout if everything is available
@@ -150,11 +120,8 @@
                                         }
 
                                         var doAutoLayout = '${arg.doAutoLayout}' === 'true';
-
                                         if (layouter && doAutoLayout) {
                                             layouter.functionality();                                            
-                                        } else {
-                                            // Could be already layouted model (for example YAWL)
                                         }
 
                                         Ext.select('svg').setVisible(true);

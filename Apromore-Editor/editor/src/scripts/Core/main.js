@@ -916,45 +916,39 @@ ORYX.Editor = {
         if (!(this._pluginFacade))
 
         // create it.
-            this._pluginFacade = {
-
-                activatePluginByName: this.activatePluginByName.bind(this),
-                //deactivatePluginByName:		this.deactivatePluginByName.bind(this),
-                getAvailablePlugins: this.getAvailablePlugins.bind(this),
-                offer: this.offer.bind(this),
-                getStencilSets: this.getStencilSets.bind(this),
-                getStencilSetExtensionDefinition: function () {
-                    return Object.clone(this.ss_extensions_def || {})
-                }.bind(this),
-                getRules: this.getRules.bind(this),
-                loadStencilSet: this.loadStencilSet.bind(this),
-                createShape: this.createShape.bind(this),
-                deleteShape: this.deleteShape.bind(this),
-                getSelection: this.getSelection.bind(this),
-                setSelection: this.setSelection.bind(this),
-                updateSelection: this.updateSelection.bind(this),
-                getCanvas: this.getCanvas.bind(this),
-
-                importJSON: this.importJSON.bind(this),
-                importERDF: this.importERDF.bind(this),
-                getERDF: this.getERDF.bind(this),
-                getJSON: this.getJSON.bind(this),
-                getSerializedJSON: this.getSerializedJSON.bind(this),
-
-                executeCommands: this.executeCommands.bind(this),
-                isExecutingCommands: this.isExecutingCommands.bind(this),
-
-                registerOnEvent: this.registerOnEvent.bind(this),
-                unregisterOnEvent: this.unregisterOnEvent.bind(this),
-                raiseEvent: this.handleEvents.bind(this),
-                enableEvent: this.enableEvent.bind(this),
-                disableEvent: this.disableEvent.bind(this),
-
-                eventCoordinates: this.eventCoordinates.bind(this),
-                addToRegion: this.addToRegion.bind(this),
-
-                getModelMetaData: this.getModelMetaData.bind(this)
-            };
+        this._pluginFacade = {
+            activatePluginByName: this.activatePluginByName.bind(this),
+            //deactivatePluginByName:		this.deactivatePluginByName.bind(this),
+            getAvailablePlugins: this.getAvailablePlugins.bind(this),
+            offer: this.offer.bind(this),
+            getStencilSets: this.getStencilSets.bind(this),
+            getStencilSetExtensionDefinition: function () {
+                return Object.clone(this.ss_extensions_def || {})
+            }.bind(this),
+            getRules: this.getRules.bind(this),
+            loadStencilSet: this.loadStencilSet.bind(this),
+            createShape: this.createShape.bind(this),
+            deleteShape: this.deleteShape.bind(this),
+            getSelection: this.getSelection.bind(this),
+            setSelection: this.setSelection.bind(this),
+            updateSelection: this.updateSelection.bind(this),
+            getCanvas: this.getCanvas.bind(this),
+            importJSON: this.importJSON.bind(this),
+            importERDF: this.importERDF.bind(this),
+            getERDF: this.getERDF.bind(this),
+            getJSON: this.getJSON.bind(this),
+            getSerializedJSON: this.getSerializedJSON.bind(this),
+            executeCommands: this.executeCommands.bind(this),
+            isExecutingCommands: this.isExecutingCommands.bind(this),
+            registerOnEvent: this.registerOnEvent.bind(this),
+            unregisterOnEvent: this.unregisterOnEvent.bind(this),
+            raiseEvent: this.handleEvents.bind(this),
+            enableEvent: this.enableEvent.bind(this),
+            disableEvent: this.disableEvent.bind(this),
+            eventCoordinates: this.eventCoordinates.bind(this),
+            addToRegion: this.addToRegion.bind(this),
+            getModelMetaData: this.getModelMetaData.bind(this)
+        };
 
         // return it.
         return this._pluginFacade;
@@ -1075,13 +1069,7 @@ ORYX.Editor = {
      * @throws {SyntaxError} If the serialized json object contains syntax errors
      */
     importJSON: function (jsonObject, noSelectionAfterImport) {
-//        try {
-//            jsonObject = this.renewResourceIds(jsonObject);
-//        } catch (error) {
-//            throw error;
-//        }
-        //check, if the imported json model can be loaded in this editor
-        // (stencil set has to fit)
+        // check, if the imported json model can be loaded in this editor (stencil set has to fit)
         if (jsonObject.stencilset.namespace && jsonObject.stencilset.namespace !== this.getCanvas().getStencil().stencilSet().namespace()) {
             Ext.Msg.alert(ORYX.I18N.JSONImport.title, String.format(ORYX.I18N.JSONImport.wrongSS, jsonObject.stencilset.namespace, this.getCanvas().getStencil().stencilSet().namespace()));
             return null;
@@ -1097,82 +1085,62 @@ ORYX.Editor = {
                     this.selection = this.facade.getSelection();
                     this.loadSerialized = loadSerializedCB;
                 },
+
                 execute: function () {
-
-                    if (!this.shapes) {
-                        // Import the shapes out of the serialization
-                        this.shapes = this.loadSerialized(this.jsonObject);
-
-                        //store all connections
-                        this.shapes.each(function (shape) {
-
-                            if (shape.getDockers) {
-                                var dockers = shape.getDockers();
-                                if (dockers) {
-                                    if (dockers.length > 0) {
-                                        this.connections.push([dockers.first(), dockers.first().getDockedShape(), dockers.first().referencePoint]);
-                                    }
-                                    if (dockers.length > 1) {
-                                        this.connections.push([dockers.last(), dockers.last().getDockedShape(), dockers.last().referencePoint]);
+                    try {
+                        if (!this.shapes) {
+                            this.shapes = this.loadSerialized(this.jsonObject);
+                            this.shapes.each(function (shape) {
+                                if (shape.getDockers) {
+                                    var dockers = shape.getDockers();
+                                    if (dockers) {
+                                        if (dockers.length > 0) {
+                                            this.connections.push([dockers.first(), dockers.first().getDockedShape(), dockers.first().referencePoint]);
+                                        }
+                                        if (dockers.length > 1) {
+                                            this.connections.push([dockers.last(), dockers.last().getDockedShape(), dockers.last().referencePoint]);
+                                        }
                                     }
                                 }
-                            }
-
-                            //store parents
-                            this.parents[shape.id] = shape.parent;
-                        }.bind(this));
-                    } else {
-                        this.shapes.each(function (shape) {
-                            this.parents[shape.id].add(shape);
-                        }.bind(this));
-
-                        this.connections.each(function (con) {
-                            con[0].setDockedShape(con[1]);
-                            con[0].setReferencePoint(con[2]);
-                            con[0].update();
-                        });
+                                this.parents[shape.id] = shape.parent;
+                            }.bind(this));
+                        } else {
+                            this.shapes.each(function (shape) {
+                                this.parents[shape.id].add(shape);
+                            }.bind(this));
+                            this.connections.each(function (con) {
+                                con[0].setDockedShape(con[1]);
+                                con[0].setReferencePoint(con[2]);
+                                con[0].update();
+                            });
+                        }
+                        this.facade.getCanvas().update();
+                        if (!this.noSelection) {
+                            this.facade.setSelection(this.shapes);
+                        } else {
+                            this.facade.updateSelection();
+                        }
+                        this.facade.getCanvas().updateSize();
+                    } catch (err) {
+                        console.log("ImportJSON error: " + err.message);
                     }
-
-                    //this.parents.values().uniq().invoke("update");
-                    this.facade.getCanvas().update();
-
-                    if (!this.noSelection)
-                        this.facade.setSelection(this.shapes);
-                    else
-                        this.facade.updateSelection();
-
-                    // call updateSize again, because during loadSerialized the edges' bounds
-                    // are not yet initialized properly
-                    this.facade.getCanvas().updateSize();
-
                 },
+
                 rollback: function () {
                     var selection = this.facade.getSelection();
-
                     this.shapes.each(function (shape) {
                         selection = selection.without(shape);
                         this.facade.deleteShape(shape);
                     }.bind(this));
-
-                    /*this.parents.values().uniq().each(function(parent) {
-                     if(!this.shapes.member(parent))
-                     parent.update();
-                     }.bind(this));*/
-
                     this.facade.getCanvas().update();
-
                     this.facade.setSelection(selection);
                 }
             })
 
-            var command = new commandClass(jsonObject,
-                this.loadSerialized.bind(this),
-                noSelectionAfterImport,
-                this._getPluginFacade());
-
+            var command = new commandClass(jsonObject, this.loadSerialized.bind(this), noSelectionAfterImport, this._getPluginFacade());
             this.executeCommands([command]);
 
-            return command.shapes.clone();
+            return command.shapes ? command.shapes.clone() : null
         }
     },
 
