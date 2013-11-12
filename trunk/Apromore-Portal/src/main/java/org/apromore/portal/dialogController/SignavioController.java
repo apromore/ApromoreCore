@@ -1,10 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
@@ -17,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -94,12 +93,6 @@ public class SignavioController extends BaseController {
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
-            }
-        });
-        this.addEventListener("onBimp", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws InterruptedException {
-                LOGGER.info("Bimp Called!");
             }
         });
 

@@ -45,6 +45,7 @@
                         <configuration>
                             <sources>
                                 <source>/platform extensions/bpmn20xmlbasic/src</source>
+                                <source>/platform extensions/bpstruct/src</source>
                                 <source>/platform extensions/diagram core/src</source>
                                 <source>/platform extensions/epc/src</source>
                                 <source>/platform extensions/jpdl/src</source>

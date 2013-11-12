@@ -16,7 +16,7 @@
                 <Permissions id="existingPermissions"/>
             </north>
             <center title="Users" flex="true">
-                <Users id="findUsers"/>
+                <Users id="findUsers" vflex="true"/>
             </center>
         </borderlayout>
     </hbox>

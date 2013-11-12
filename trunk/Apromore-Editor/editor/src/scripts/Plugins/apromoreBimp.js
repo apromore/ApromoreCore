@@ -20,11 +20,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **/
-if (!ORYX.Plugins) {
-    ORYX.Plugins = new Object();
-}
+if(!ORYX){ var ORYX = {} }
+if(!ORYX.Plugins){ ORYX.Plugins = {} }
 
-ORYX.Plugins.ApromoreBimp = Clazz.extend({
+ORYX.Plugins.ApromoreBimp = ORYX.Plugins.AbstractPlugin.extend({
 
     facade: undefined,
 
