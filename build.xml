@@ -121,6 +121,7 @@
                 <include name="pickup/*.jar"/>
                 <include name="pickup/*.war"/>
                 <include name="pickup/*.par"/>
+                <include name="pickup/*.plan"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.2.RELEASE.par"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.2.RELEASE.jar"/>
                 <exclude name="pickup/org.eclipse.virgo.management.console_3.6.2.RELEASE.jar"/>

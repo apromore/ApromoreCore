@@ -36,7 +36,6 @@
             <artifactId>plugin-api</artifactId>
         </dependency>
 
-        <!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>

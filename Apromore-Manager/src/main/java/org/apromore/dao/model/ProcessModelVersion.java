@@ -50,6 +50,7 @@ public class ProcessModelVersion implements Serializable {
     private NativeType nativeType;
 
     private Set<FragmentVersion> fragmentVersions = new HashSet<>();
+    private Set<Metric> metrics = new HashSet<>();
 
     private Set<Annotation> annotations = new HashSet<>();
     private Set<Node> parentProcesses = new HashSet<>();
@@ -224,6 +225,15 @@ public class ProcessModelVersion implements Serializable {
 
     public void addFragmentVersion(FragmentVersion fragmentVersion) {
         this.fragmentVersions.add(fragmentVersion);
+    }
+
+    @OneToMany(mappedBy = "processModelVersion")
+    public Set<Metric> getMetrics() {
+        return this.metrics;
+    }
+
+    public void setMetrics(final Set<Metric> newMetrics) {
+        this.metrics = newMetrics;
     }
 
 

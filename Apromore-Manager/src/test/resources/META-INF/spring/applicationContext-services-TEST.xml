@@ -91,6 +91,9 @@
     <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl" p:canoniserSet-ref="canonisers"/>
     <bean id="deploymentProvider" class="org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl"/>
     <bean id="annotationProcessorProvider" class="org.apromore.annotation.provider.impl.AnnotationProcessorProviderImpl"/>
+    <bean id="metricProvider" class="org.apromore.plugin.metric.provider.impl.MetricPluginProviderImpl"/>
+    <!--<bean id="searchByModelProvider" class="org.apromore.plugin.search.provider.impl.SearchByModelPluginProviderImpl"/>-->
+    <!--<bean id="searchByTextProvider" class="org.apromore.plugin.search.provider.impl.SearchByTextPluginProviderImpl"/>-->
 
     <!-- Mock Providers -->
     <bean id="mockDeploymentProvider" class="org.apromore.plugin.deployment.MockDeploymentPluginProvider" />

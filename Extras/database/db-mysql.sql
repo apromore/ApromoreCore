@@ -54,6 +54,7 @@ DROP TABLE IF EXISTS `object_ref_attribute`;
 DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
+DROP TABLE IF EXISTS `metric`;
 
 DROP TABLE IF EXISTS `batch_step_execution_seq`;
 DROP TABLE IF EXISTS `batch_job_execution_seq`;
@@ -756,6 +757,18 @@ CREATE TABLE `cluster_assignment` (
   REFERENCES `cluster` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `metric` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `processModelVersionId` int(11) NOT NULL,
+  `name` varchar(40) NOT NULL,
+  `value` double NOT NULL,
+  `lastUpdateDate` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_metric` (`processModelVersionId` , `name`),
+  CONSTRAINT `fk_metric1` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 -- Spring Batch / Scheduler tables
