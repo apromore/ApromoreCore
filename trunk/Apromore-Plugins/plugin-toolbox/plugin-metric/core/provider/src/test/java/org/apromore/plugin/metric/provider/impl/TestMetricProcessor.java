@@ -3,6 +3,7 @@ package org.apromore.plugin.metric.provider.impl;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.metric.MetricPlugin;
+import org.apromore.plugin.metric.result.MetricPluginResult;
 import org.apromore.plugin.property.ParameterType;
 
 import java.util.Set;
