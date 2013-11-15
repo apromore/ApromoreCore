@@ -94,9 +94,14 @@
             <artifactId>deployment-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>search-api</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>search-api</artifactId>
+            <artifactId>metric-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -120,9 +125,14 @@
             <artifactId>deployment-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>search-api-provider</artifactId>-->
+            <!--<version>${project.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>search-api-provider</artifactId>
+            <artifactId>metric-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -6,9 +6,13 @@
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <osgi:reference id="canoniserProvider" interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <osgi:reference id="pluginProvider" interface="org.apromore.plugin.provider.PluginProvider"/>
+
+    <osgi:reference id="canoniserProvider" interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <osgi:reference id="annotationProcessorProvider" interface="org.apromore.annotation.provider.AnnotationProcessorProvider"/>
     <osgi:reference id="deploymentProvider" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
+    <!--<osgi:reference id="searchByModelProvider" interface="org.apromore.plugin.search.provider.SearchByModelPluginProvider"/>-->
+    <!--<osgi:reference id="searchByTextProvider" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>-->
+    <osgi:reference id="metricProvider" interface="org.apromore.plugin.metric.provider.MetricPluginProvider"/>
 
 </beans:beans>

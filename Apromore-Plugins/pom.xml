@@ -20,6 +20,7 @@
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
+        <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
 
@@ -55,8 +56,12 @@
         <module>plugin-deployment/core/provider</module>
 
         <!-- Search Interface -->
-        <module>plugin-toolbox/plugin-search/core/api</module>
-        <module>plugin-toolbox/plugin-search/core/provider</module>
+        <!--<module>plugin-toolbox/plugin-search/core/api</module>-->
+        <!--<module>plugin-toolbox/plugin-search/core/provider</module>-->
+
+        <!-- Metric Interface -->
+        <module>plugin-toolbox/plugin-metric/core/api</module>
+        <module>plugin-toolbox/plugin-metric/core/provider</module>
 
         <!-- Plugin Implementations -->
         <!-- Common Plugins -->
@@ -74,6 +79,9 @@
         <module>plugin-annotation/bpmn</module>
         <module>plugin-annotation/xpdl</module>
         <module>plugin-annotation/epml</module>
+
+        <!-- Metrics Plugins -->
+        <module>plugin-toolbox/plugin-metric/size</module>
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
@@ -104,11 +112,11 @@
                 <artifactId>deployment-api</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>search-api</artifactId>
-                <version>${apromore.plugin.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apromore.plugin</groupId>-->
+                <!--<artifactId>search-api</artifactId>-->
+                <!--<version>${apromore.plugin.version}</version>-->
+            <!--</dependency>-->
 
             <!-- Canonisers -->
             <dependency>
@@ -168,7 +176,19 @@
                 <artifactId>annotation-epml</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
-            
+
+            <!-- Metrics -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>metric-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>metric-size</artifactId>
+                <version>${apromore.metric.plugin.version}</version>
+            </dependency>
+
             <!--  Core Plugins -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>

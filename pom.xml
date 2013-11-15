@@ -91,12 +91,13 @@
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
+        <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <pax.runner.version>1.7.6</pax.runner.version>
 
         <spring.version>3.1.0.RELEASE</spring.version>
-        <spring.data.jpa.version>1.1.2.RELEASE</spring.data.jpa.version>
+        <spring.data.jpa.version>1.4.1.RELEASE</spring.data.jpa.version>
         <spring-ws.version>2.1.0.RELEASE</spring-ws.version>
         <spring-security.version>3.1.4.RELEASE</spring-security.version>
 
@@ -240,9 +241,6 @@
         <pmd.skip>false</pmd.skip>
     </properties>
 
-    <dependencies>
-    </dependencies>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -358,6 +356,26 @@
                 <artifactId>deployment-api-provider</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apromore.plugin</groupId>-->
+                <!--<artifactId>search-api</artifactId>-->
+                <!--<version>${apromore.plugin.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.apromore.plugin</groupId>-->
+                <!--<artifactId>search-api-provider</artifactId>-->
+                <!--<version>${apromore.plugin.version}</version>-->
+            <!--</dependency>-->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>metric-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>metric-api-provider</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
 
             <!-- Canonisers -->
             <dependency>
@@ -405,7 +423,14 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>annotation-epml</artifactId>
-                <version>${project.version}</version>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+
+            <!-- Metric Calculations -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>metric-size</artifactId>
+                <version>${apromore.metric.plugin.version}</version>
             </dependency>
 
             <!-- Deployment -->
