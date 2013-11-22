@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/util/spring-context-3.1.xsd">
+
+    <context:property-placeholder location="classpath:/*.properties"/>
 
     <bean id="managerClient" class="org.apromore.manager.client.ManagerServiceClient" >
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerServiceTemplate" />
@@ -24,7 +28,7 @@
 
     <bean id="managerServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://localhost:9000/manager/services/manager">
+          p:defaultUri="http://${hostname}:${port}/${manager-url}">
         <constructor-arg ref="messageFactory"/>
     </bean>
 
