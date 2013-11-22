@@ -53,6 +53,20 @@
             <artifactId>logback-core</artifactId>
         </dependency>
 
+        <!-- Spring Dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context.support</artifactId>
+        </dependency>
+
         <!-- Spring-WS dependencies -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
@@ -97,6 +111,7 @@
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
+                            org.springframework.context;bundle-version="[3.1.0,4.0)",
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
