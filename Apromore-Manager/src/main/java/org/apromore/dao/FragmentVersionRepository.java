@@ -54,7 +54,7 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
      * @param clusterId the cluster id
      * @return the list of fragments
      */
-    @Query("SELECT f FROM FragmentVersion f JOIN f.processModelVersions pmv JOIN pmv.processBranch b JOIN b.process p WHERE p.id IN (?1)")
+    @Query("SELECT f FROM FragmentVersion f JOIN f.processModelVersions pmv JOIN pmv.processBranch b JOIN b.process p WHERE p.id IN ?1")
     List<FragmentVersion> getFragmentsByProcessIds(List<Integer> clusterId);
 
     /**

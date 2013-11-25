@@ -10,10 +10,8 @@ import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
-import org.apromore.model.PermissionType;
-import org.apromore.model.RoleType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
+import org.apromore.model.*;
+import org.apromore.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,10 +71,16 @@ public class UserMapper {
                 }
             }
         }
-        
+
         Membership membership = user.getMembership();
         if (membership != null){
-            userType.setEmail(membership.getEmail());    
+            MembershipType membershipType = new MembershipType();
+            membershipType.setEmail(membership.getEmail());
+            membershipType.setApproved(membership.getIsApproved());
+            membershipType.setLocked(membership.getIsLocked());
+            membershipType.setFailedLogins(membership.getFailedPasswordAttempts());
+            membershipType.setFailedAnswers(membership.getFailedAnswerAttempts());
+            userType.setMembership(membershipType);
         }
         
         return userType;
@@ -113,8 +117,20 @@ public class UserMapper {
         }
         
         Membership membership = new Membership();
-        membership.setEmail(userType.getEmail());
-        
+        if (userType.getMembership() != null) {
+            membership.setSalt("username");
+            membership.setDateCreated(new Date());
+            membership.setEmail(userType.getMembership().getEmail());
+            membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
+            membership.setQuestion(userType.getMembership().getPasswordQuestion());
+            membership.setAnswer(userType.getMembership().getPasswordAnswer());
+            membership.setFailedPasswordAttempts(0);
+            membership.setFailedAnswerAttempts(0);
+            membership.setUser(user);
+
+            user.setMembership(membership);
+        }
+
         for (RoleType roleType : userType.getRoles()){
             Role role = new Role();
             role.setRowGuid(roleType.getId());

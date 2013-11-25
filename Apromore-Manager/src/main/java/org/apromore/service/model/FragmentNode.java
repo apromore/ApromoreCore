@@ -1,7 +1,7 @@
 package org.apromore.service.model;
 
 import org.apromore.graph.canonical.Canonical;
-import org.apromore.service.utils.IDGenerator;
+import org.apromore.util.IDGenerator;
 import org.jbpt.algo.tree.tctree.TCType;
 
 import java.util.ArrayList;

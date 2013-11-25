@@ -27,7 +27,7 @@ import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.model.FragmentNode;
-import org.apromore.service.utils.MutableTreeConstructor;
+import org.apromore.util.MutableTreeConstructor;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;

@@ -33,7 +33,7 @@
 
 
     <logger name="org.apromore">
-        <level value="TRACE"/>
+        <level value="INFO"/>
         <appender-ref ref="FILE"/>
     </logger>
 

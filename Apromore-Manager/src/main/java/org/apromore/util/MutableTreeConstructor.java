@@ -1,4 +1,4 @@
-package org.apromore.service.utils;
+package org.apromore.util;
 
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.canonical.CPFEdge;

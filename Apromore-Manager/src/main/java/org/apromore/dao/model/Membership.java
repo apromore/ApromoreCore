@@ -263,7 +263,7 @@ public class Membership implements Serializable {
      * @return Returns the user.
      */
     @OneToOne
-    @JoinColumn(name = "UserId", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "UserId", nullable = false)
     public User getUser() {
         return this.user;
     }

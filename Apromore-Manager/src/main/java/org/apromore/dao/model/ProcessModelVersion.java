@@ -236,6 +236,10 @@ public class ProcessModelVersion implements Serializable {
         this.metrics = newMetrics;
     }
 
+    public void addMetric(Metric newMetric) {
+        this.metrics.add(newMetric);
+    }
+
 
     @OneToMany(mappedBy = "processModelVersion")
     public Set<Annotation> getAnnotations() {

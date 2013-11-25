@@ -1,19 +1,20 @@
 <?page title="AProMoRe" contentType="text/html;charset=UTF-8"?>
-<zk>
 
-    <style src="css/apromore.css"/>
-    <style src="css/login.css"/>
-    <style src="css/bootstrap.css"/>
-    <style src="css/bootstrap-responsive.css"/>
-    <style src="css/font-awesome.css"/>
+<?link rel="stylesheet" type="text/css" href="css/apromore.css" ?>
+<?link rel="stylesheet" type="text/css" href="css/login.css" ?>
+<?link rel="stylesheet" type="text/css" href="css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" ?>
+<?link rel="stylesheet" type="text/css" href="css/font-awesome.css" ?>
 
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/bootstrap.js"></script>
+<?script type="text/javascript" src="js/jquery.js"?>
+<?script type="text/javascript" src="js/bootstrap.js"?>
 
-    <window title="AProMoRe" border="none" contentStyle="overflow:auto;">
+<zk xmlns:h="xhtml" xmlns:n="native">
+
+    <window id="main" title="AProMoRe" border="none" contentStyle="overflow:auto;">
 
         <html>
-        <h:body class="signin signin-horizontal" xmlns:h="http://www.w3.org/1999/xhtml">
+        <h:body class="signin signin-horizontal" >
 
             <h:div class="page-container">
                 <h:div id="header-container">
@@ -31,7 +32,7 @@
                 <h:div id="main-content" class="main-content container">
                     <h:div id="page-content" class="page-content">
 
-                        <h:div if="${param['error']=='1'}">
+                        <h:div if="${param['error'] == '1'}">
                             <![CDATA[
                               <div class="row">
                                 <div class="span6 offset3">
@@ -43,8 +44,7 @@
                               </div>
                             ]]>
                         </h:div>
-
-                        <h:div if="${param['error']=='2'}">
+                        <h:div if="${param['error'] == '2'}">
                             <![CDATA[
                               <div class="row">
                                 <div class="span6 offset3">
@@ -56,6 +56,30 @@
                                   </div>
                                 </div>
                               </div>
+                            ]]>
+                        </h:div>
+                        <h:div if="${param['error'] == '3'}">
+                            <![CDATA[
+                            <div class="row">
+                                <div class="span6 offset3">
+                                    <div class="alert alert-error">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <i class="icon-remove-circle"></i> User Registration Failed! Please try again.
+                                    </div>
+                                </div>
+                            </div>
+                            ]]>
+                        </h:div>
+                        <h:div if="${param['success'] != null}">
+                            <![CDATA[
+                            <div class="row">
+                                <div class="span6 offset3">
+                                    <div class="alert alert-success">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <i class="icon-remove-circle"></i> User Registration Accepted. Please Login.
+                                    </div>
+                                </div>
+                            </div>
                             ]]>
                         </h:div>
 
@@ -70,7 +94,7 @@
                                                 Login
                                             </h:small>
                                         </h:h4>
-                                        <h:form method="post" action="j_spring_security_check" name="login_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                        <h:form method="post" action="j_spring_security_check" name="login_form">
                                             <h:fieldset>
                                                 <h:div class="controls">
                                                     <h:input class="span5" type="text" name="j_username" placeholder="Your Login or Email"/>
@@ -124,14 +148,14 @@
                                                 Forgot your password?
                                             </h:small>
                                         </h:h4>
-                                        <h:form method="post" action="j_spring_reset" name="reset_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                        <h:form method="post" action="register/resetPassword" name="reset_form">
                                             <h:fieldset>
                                                 <h:div class="controls">
                                                     <h:input class="span5" type="text" name="j_username" placeholder="Your Email Address"/>
                                                 </h:div>
                                                 <h:hr class="margin-xm"/>
-                                                <!--<h:button type="submit" class="btn-block btn btn-primary btn-larg">Submit</h:button>-->
-                                                <a href="#resetPassword" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Reset Password</a>
+                                                <n:button type="submit" class="btn-block btn btn-primary btn-larg">Reset Password</n:button>
+                                                <!--<a href="#resetPassword" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Reset Password</a>-->
                                                 <h:hr class="margin-mm"/>
                                                 <h:p>Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>
@@ -167,20 +191,20 @@
                                                 New User Registration?
                                             </h:small>
                                         </h:h4>
-                                        <h:form method="post" action="j_spring_new" name="newuser_form" xmlns:h="http://www.w3.org/1999/xhtml">
+                                        <h:form method="post" action="register/newUserRegister" name="newuser_form">
                                             <h:fieldset>
                                                 <h:legend class="two"><h:span>Account information</h:span></h:legend>
                                                 <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="id_firstname" placeholder="first name"/>
+                                                    <h:input class="input-block-level" type="text" name="firstname" placeholder="first name"/>
                                                 </h:div>
                                                 <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="id_surname" placeholder="surname"/>
+                                                    <h:input class="input-block-level" type="text" name="surname" placeholder="surname"/>
                                                 </h:div>
                                                 <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="id_username" placeholder="username"/>
+                                                    <h:input class="input-block-level" type="text" name="username" placeholder="username"/>
                                                 </h:div>
                                                 <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="id_email_address" placeholder="email address"/>
+                                                    <h:input class="input-block-level" type="text" name="email" placeholder="email address"/>
                                                 </h:div>
                                             </h:fieldset>
                                             <h:fieldset>
@@ -189,41 +213,24 @@
                                                     <h:input class="span3" type="password" name="password" placeholder="password"/>
                                                 </h:div>
                                                 <h:div class="controls controls-row">
-                                                    <h:input class="span3" type="password" name="confirm_password" placeholder="confirm password"/>
+                                                    <h:input class="span3" type="password" name="confirmPassword" placeholder="confirm password"/>
+                                                </h:div>
+                                            </h:fieldset>
+                                            <h:fieldset>
+                                                <h:legend class="two"><h:span>Password Security</h:span></h:legend>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="securityQuestion" placeholder="Password recovery security question"/>
+                                                </h:div>
+                                                <h:div class="controls controls-row">
+                                                    <h:input class="input-block-level" type="text" name="securityAnswer" placeholder="Answer for your security question"/>
                                                 </h:div>
                                                 <h:hr class="margin-xx"/>
-                                                <!--<h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>-->
-                                                <a href="#newUser" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Register</a>
+                                                <h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>
+                                                <!--<a href="#newUser" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Register</a>-->
                                                 <h:hr class="margin-xm"/>
                                                 <h:p class="text-right">Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>
                                         </h:form>
-                                    </h:div>
-                                </h:div>
-
-
-                                <h:div id="newUser" class="modal hide fade">
-                                    <h:div class="modal-header">
-                                        <h:button type="button" class="close" data-dismiss="modal" aria-hidden="true"><![CDATA[ &times; ]]></h:button>
-                                        <h:h3>Function Not Available!</h:h3>
-                                    </h:div>
-                                    <h:div class="modal-body">
-                                        <h:p>Sorry, The register a new user function hasn't been completed yet. Please check back soon.</h:p>
-                                    </h:div>
-                                    <h:div class="modal-footer">
-                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                                    </h:div>
-                                </h:div>
-                                <h:div id="resetPassword" class="modal hide fade">
-                                    <h:div class="modal-header">
-                                        <h:button type="button" class="close" data-dismiss="modal" aria-hidden="true"><![CDATA[ &times; ]]></h:button>
-                                        <h:h3>Function Not Available!</h:h3>
-                                    </h:div>
-                                    <h:div class="modal-body">
-                                        <h:p>Sorry, The reset password function hasn't been completed yet. Please check back soon.</h:p>
-                                    </h:div>
-                                    <h:div class="modal-footer">
-                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                                     </h:div>
                                 </h:div>
 
@@ -246,4 +253,5 @@
         </html>
 
     </window>
+
 </zk>

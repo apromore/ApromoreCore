@@ -22,6 +22,7 @@
     <import resource="manager-osgi-context.xml" />
     <import resource="managerContext-jpa.xml" />
     <import resource="managerContext-services.xml" />
+    <import resource="managerContext-scheduler.xml" />
     <import resource="managerContext-security.xml" />
 
 </beans>

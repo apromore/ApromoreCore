@@ -265,7 +265,6 @@ public class ImportOneProcessController extends BaseController {
         } catch (Exception e) {
             Messagebox.show("Reading process metadata failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
-
     }
 
     private void updateOwner(final String owner) {
