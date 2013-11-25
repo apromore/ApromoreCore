@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.MembershipRepository;
 import org.apromore.dao.PermissionRepository;
 import org.apromore.dao.RoleRepository;
 import org.apromore.dao.UserRepository;
@@ -28,9 +29,12 @@ import java.util.UUID;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class SecurityServiceImpl implements SecurityService {
 
+    private static final String ROLE_USER = "ROLE_USER";
+
     private UserRepository userRepo;
     private RoleRepository roleRepo;
     private PermissionRepository permissionRepo;
+    private MembershipRepository membershipRepo;
 
 
     /**
@@ -40,10 +44,11 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Inject
     public SecurityServiceImpl(final UserRepository userRepository, final RoleRepository roleRepository,
-            final PermissionRepository permissionRepository) {
+            final PermissionRepository permissionRepository, final MembershipRepository membershipRepository) {
         userRepo = userRepository;
         roleRepo = roleRepository;
         permissionRepo = permissionRepository;
+        membershipRepo = membershipRepository;
     }
 
 
@@ -126,16 +131,25 @@ public class SecurityServiceImpl implements SecurityService {
         user.setDateCreated(Calendar.getInstance().getTime());
         user.setLastActivityDate(Calendar.getInstance().getTime());
         user.setRowGuid(UUID.randomUUID().toString());
-        user.setMembership(null);
 
-        Role existingRole = roleRepo.findByName("User");
+        Role existingRole = roleRepo.findByName(ROLE_USER);
         if (existingRole != null) {
             Set<Role> roles = user.getRoles();
             roles.add(existingRole);
             user.setRoles(roles);
+
+            Set<User> rolesUsers = existingRole.getUsers();
+            rolesUsers.add(user);
+            existingRole.setUsers(rolesUsers);
         }
 
-        return userRepo.save(user);
+        userRepo.save(user);
+
+        user.setMembership(user.getMembership());
+        user.getMembership().setUser(user);
+        membershipRepo.save(user.getMembership());
+
+        return user;
     }
 
 }

@@ -2,10 +2,7 @@ package org.apromore.security.provider;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apromore.model.PermissionType;
-import org.apromore.model.RoleType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
+import org.apromore.model.*;
 import org.apromore.security.model.ApromorePermissionDetails;
 import org.apromore.security.model.ApromoreRoleDetails;
 import org.apromore.security.model.ApromoreSearchHistoryDetails;
@@ -71,7 +68,10 @@ public class ApromoreTokenBasedRememberMeServices extends TokenBasedRememberMeSe
         userType.setLastName(user.getLastName());
         userType.setFirstName(user.getFirstName());
         userType.setUsername(user.getUsername());
-        userType.setEmail(user.getEmail());
+
+        MembershipType membership = new MembershipType();
+        membership.setEmail(user.getEmail());
+        userType.setMembership(membership);
 
         RoleType newRole;
         for (ApromoreRoleDetails role : user.getRoles()) {

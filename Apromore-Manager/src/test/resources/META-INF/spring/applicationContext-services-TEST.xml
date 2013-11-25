@@ -15,7 +15,7 @@
     <sws:annotation-driven/>
 
     <sws:dynamic-wsdl id="manager" portTypeName="manager" locationUri="http://localhost:80/Apromore/services/manager">
-        <sws:xsd location="classpath:/manager.xsd"/>
+        <sws:xsd location="classpath*:/manager.xsd"/>
     </sws:dynamic-wsdl>
 
     <sws:interceptors>
@@ -51,7 +51,7 @@
     </bean>
 
     <util:list id="schemasList">
-        <value>classpath:/manager.xsd</value>
+        <value>classpath*:/manager.xsd</value>
     </util:list>
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>

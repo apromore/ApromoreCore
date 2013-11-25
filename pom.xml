@@ -130,8 +130,9 @@
         <commons.io.version>2.4</commons.io.version>
         <commons.codec.version>1.7</commons.codec.version>
         <commons.httpclient.version>4.2.1</commons.httpclient.version>
-        <servlet-api.version>2.5</servlet-api.version>
+        <servlet-api.version>3.0.1</servlet-api.version>
         <slf4j.version>1.7.5</slf4j.version>
+        <!--<quartz.version>1.8.5</quartz.version>-->
         <logback.version>1.0.13</logback.version>
         <joda-time.version>1.6.2</joda-time.version>
         <cglib.version>2.2.0</cglib.version>
@@ -143,9 +144,9 @@
         <jackson.version>1.9.12</jackson.version>
         <xmlbeans.version>2.4.0</xmlbeans.version>
 
-        <zk.version>6.5.3</zk.version>
-        <zk.spring.version>3.0</zk.spring.version>
-        <zk.security.version>3.0</zk.security.version>
+        <zk.version>7.0.0-Preview</zk.version>
+        <zk.spring.version>3.1</zk.spring.version>
+        <zk.security.version>3.1</zk.security.version>
 
         <xmlSchema.version>2.0.2</xmlSchema.version>
         <dom4j.version>1.6.1</dom4j.version>
@@ -824,7 +825,6 @@
                 </exclusions>
             </dependency>
 
-
             <!-- JAXB -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
@@ -958,7 +958,7 @@
             <!-- JEE dependencies -->
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
+                <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet-api.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -983,6 +983,11 @@
                 <artifactId>com.springsource.javax.inject</artifactId>
                 <version>${inject.version}</version>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.quartz-scheduler</groupId>-->
+                <!--<artifactId>quartz</artifactId>-->
+                <!--<version>${quartz.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>com.github.lookfirst</groupId>
                 <artifactId>sardine</artifactId>

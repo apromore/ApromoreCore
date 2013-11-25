@@ -21,6 +21,8 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.PluginResultImpl;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("bpmnCanoniser")
 public class BPMN20Canoniser extends DefaultAbstractCanoniser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMN20Canoniser.class.getName());
 
     /** Generator of identifiers for @uri scoped across all generated CPF and ANF documents. */
     private final IdFactory linkUriFactory = new IdFactory();
@@ -152,6 +156,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
             return result;
         } catch (Exception e) {
+            LOGGER.error("Unable to read Meta Data", e);
             return null;
         }
     }

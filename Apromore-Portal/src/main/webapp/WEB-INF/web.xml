@@ -63,6 +63,14 @@
             <param-value>true</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>newUserRegistration</servlet-name>
+        <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>resetPassword</servlet-name>
+        <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>zkLoader</servlet-name>
@@ -87,6 +95,14 @@
     <servlet-mapping>
         <servlet-name>spring-ws</servlet-name>
         <url-pattern>*.xsd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>newUserRegistration</servlet-name>
+        <url-pattern>/register/newUserRegister/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resetPassword</servlet-name>
+        <url-pattern>/register/resetPassword/*</url-pattern>
     </servlet-mapping>
 
     <session-config>

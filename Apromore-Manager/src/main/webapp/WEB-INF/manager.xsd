@@ -343,13 +343,13 @@
             <xs:element name="Roles" type="tns:RoleType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Permissions" type="tns:PermissionType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="SearchHistories" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="Membership" type="tns:MembershipType" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
+        <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="firstName" type="xs:string"/>
         <xs:attribute name="lastName" type="xs:string"/>
-        <xs:attribute name="email" type="xs:string"/>
-        <xs:attribute name="username" type="xs:string"/>
         <xs:attribute name="lastActivityDate" type="xs:string"/>
-        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="username" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="WorkspaceType">
@@ -385,6 +385,19 @@
     <xs:complexType name="PermissionType">
         <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="MembershipType">
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="email" type="xs:string"/>
+        <xs:attribute name="locked" type="xs:boolean"/>
+        <xs:attribute name="approved" type="xs:boolean"/>
+        <xs:attribute name="password" type="xs:string" use="optional"/>
+        <xs:attribute name="passwordSalt" type="xs:string"/>
+        <xs:attribute name="passwordQuestion" type="xs:string"/>
+        <xs:attribute name="passwordAnswer" type="xs:string"/>
+        <xs:attribute name="failedLogins" type="xs:int"/>
+        <xs:attribute name="failedAnswers" type="xs:int"/>
     </xs:complexType>
 
     <xs:complexType name="UserFolderType">

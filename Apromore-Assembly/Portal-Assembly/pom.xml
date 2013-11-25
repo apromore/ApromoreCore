@@ -146,6 +146,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>com.springsource.javax.validation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>com.springsource.javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.sun.xml</groupId>
             <artifactId>com.springsource.com.sun.xml.bind</artifactId>
             <scope>provided</scope>

@@ -22,7 +22,7 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.FragmentNode;
-import org.apromore.service.utils.MutableTreeConstructor;
+import org.apromore.util.MutableTreeConstructor;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.utils.IOUtils;
 import org.junit.Test;
