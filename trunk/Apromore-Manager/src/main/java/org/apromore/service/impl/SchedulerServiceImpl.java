@@ -61,7 +61,7 @@ public class SchedulerServiceImpl implements SchedulerService {
      * {@inheritDoc}
      */
     @Override
-    @Scheduled(cron = "0 0 21 * * *")
+    @Scheduled(cron = "0 0 22 * * FRI")
     public void runGEDMatrixComputation() {
         LOGGER.info("Starting Execution of the GED Matrix Computation!");
 
