@@ -16,7 +16,7 @@
     <sws:annotation-driven />
 
     <sws:dynamic-wsdl id="manager" portTypeName="Manager" locationUri="/services/manager/" targetNamespace="urn:qut-edu-au:schema:apromore:manager">
-        <sws:xsd location="/WEB-INF/manager.xsd "/>
+        <sws:xsd location="/WEB-INF/manager.xsd"/>
     </sws:dynamic-wsdl>
 
     <sws:interceptors>

@@ -11,10 +11,7 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.dao.model.User;
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.mapper.UserMapper;
-import org.apromore.model.ObjectFactory;
-import org.apromore.model.UserType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.model.*;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -142,9 +139,14 @@ public class WriteUserEndpointUnitTest {
     private UserType createUserType() {
         UserType userType = new UserType();
         userType.setUsername("test");
-        userType.setEmail("test@test.com");
         userType.setFirstName("test");
         userType.setLastName("tester");
+
+        MembershipType membership = new MembershipType();
+        membership.setEmail("test@test.com");
+        membership.setPassword("password");
+        userType.setMembership(membership);
+
         return userType;
     }
 

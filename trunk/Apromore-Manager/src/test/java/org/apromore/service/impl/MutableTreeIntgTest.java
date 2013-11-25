@@ -8,7 +8,7 @@ import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.FragmentNode;
-import org.apromore.service.utils.MutableTreeConstructor;
+import org.apromore.util.MutableTreeConstructor;
 import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;

@@ -100,7 +100,6 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     /*
      * (non-Javadoc)
-     *
      * @see org.apromore.service.CanoniserService#canonise(java.lang.String, java.io.InputStream, java.util.Set)
      */
     @Override

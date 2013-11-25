@@ -34,7 +34,7 @@ public class UserMapperUnitTest {
 
     @Test
     public void testMapUserNames() throws Exception {
-        List<User> usrs = new ArrayList<User>();
+        List<User> usrs = new ArrayList<>();
         User usr1 = new User();
         usr1.setUsername("Bob1");
         User usr2 = new User();
@@ -54,7 +54,7 @@ public class UserMapperUnitTest {
         SearchHistory searchHist = new SearchHistory();
         searchHist.setId(1);
         searchHist.setSearch("cheque processing");
-        Set<SearchHistory> searches = new HashSet<SearchHistory>();
+        Set<SearchHistory> searches = new HashSet<>();
         searches.add(searchHist);
 
         User user = new User();

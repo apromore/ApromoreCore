@@ -1,22 +1,12 @@
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
-import java.util.List;
-import java.util.Map;
-
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.exception.SerializationException;
-import org.apromore.model.ParameterType;
-import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessVersionType;
-import org.apromore.model.ProcessVersionsType;
+import org.apromore.model.*;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.ProcessService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.ToolboxData;
@@ -27,6 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the SimilarityService Contract.
@@ -41,7 +36,6 @@ public class SimilarityServiceImpl implements SimilarityService {
 
     private ProcessModelVersionRepository processModelVersionRepo;
     private CanoniserService canoniserSrv;
-    private ProcessService processSrv;
     private UserInterfaceHelper ui;
 
 
@@ -49,15 +43,13 @@ public class SimilarityServiceImpl implements SimilarityService {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      *
      * @param processModelVersionRepository Process Model Version Repository.
-     * @param processService Repository Service.
      * @param uiHelper user interface helper
      */
     @Inject
     public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
-             final ProcessService processService, final UserInterfaceHelper uiHelper) {
+             final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
         canoniserSrv = canoniserService;
-        processSrv = processService;
         ui = uiHelper;
     }
 

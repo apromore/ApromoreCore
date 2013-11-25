@@ -1,4 +1,4 @@
-package org.apromore.service.utils;
+package org.apromore.util;
 
 public class IDGenerator {
 

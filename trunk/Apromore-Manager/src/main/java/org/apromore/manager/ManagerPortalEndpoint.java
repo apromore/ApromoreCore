@@ -706,13 +706,14 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            UserType newUser = UserMapper.convertUserTypes(secSrv.createUser(UserMapper.convertFromUserType(payload.getUser())));
+            UserType newUser = UserMapper.convertUserTypes(
+                    secSrv.createUser(UserMapper.convertFromUserType(payload.getUser())));
             result.setCode(0);
             result.setMessage("");
             res.setUser(newUser);
         } catch (Exception ex) {
             ex.printStackTrace();
-            result.setCode(1);
+            result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createWriteUserResponse(res);
@@ -999,7 +1000,11 @@ public class ManagerPortalEndpoint {
             }
 
             CanoniserMetadataResult metaData = c.readMetaData(req.getValue().getNativeFormat().getInputStream(), new PluginRequestImpl());
-            res.setNativeMetaData(CanoniserHelper.convertFromCanoniserMetaData(metaData));
+            if (metaData != null) {
+                res.setNativeMetaData(CanoniserHelper.convertFromCanoniserMetaData(metaData));
+            } else {
+                throw new Exception("Couldn't read meta data!");
+            }
 
             result.setCode(0);
             result.setMessage("Success 'ReadNativeMetaData'!");
