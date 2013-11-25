@@ -9,19 +9,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 package org.apromore.security.impl;
 
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
-import org.apromore.security.exception.ApromoreRemoteAuthenticationException;
+import org.apromore.util.SecurityUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Adapts {@link org.apromore.dao.UserRepository#login(String, String)} to the SpringSecurity AuthenticationProvider SPI.
@@ -67,7 +64,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         }
 
         try {
-            User account = userRepository.login(token.getName(), hashPassword((String) token.getCredentials()));
+            User account = userRepository.login(token.getName(), SecurityUtil.hashPassword((String) token.getCredentials()));
 
             return authenticatedToken(account, authentication);
         } catch (Exception e) {
@@ -102,17 +99,4 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         return authList;
     }
 
-
-    public String hashPassword(String password) {
-        String hashword = null;
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.update(password.getBytes());
-            BigInteger hash = new BigInteger(1, md5.digest());
-            hashword = hash.toString(16);
-        } catch (NoSuchAlgorithmException nsae) {
-            // ignore
-        }
-        return hashword;
-    }
 }
