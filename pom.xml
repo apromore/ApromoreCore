@@ -144,7 +144,7 @@
         <jackson.version>1.9.12</jackson.version>
         <xmlbeans.version>2.4.0</xmlbeans.version>
 
-        <zk.version>7.0.0-Preview</zk.version>
+        <zk.version>6.5.3</zk.version>
         <zk.spring.version>3.1</zk.spring.version>
         <zk.security.version>3.1</zk.security.version>
 
@@ -161,6 +161,7 @@
         <clover.version>3.1.10</clover.version>
         <easymock.version>3.1</easymock.version>
         <powermock.version>1.4.12</powermock.version>
+        <mock-javamail.version>1.9</mock-javamail.version>
         <hamcrest.version>1.1</hamcrest.version>
         <ipsedixit.version>1.0.0</ipsedixit.version>
         <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
@@ -1101,6 +1102,12 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4-rule-agent</artifactId>
                 <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.mock-javamail</groupId>
+                <artifactId>mock-javamail</artifactId>
+                <version>${mock-javamail.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

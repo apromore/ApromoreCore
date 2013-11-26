@@ -8,9 +8,7 @@ import org.apromore.portal.common.WebAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.HttpRequestHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,36 +26,22 @@ import java.util.Set;
  * when ZK 7 is finished.
  *
  * @author Cameron James
+ * @since 1.0
  */
 @Component("newUserRegistration")
-public class NewUserRegistrationHttpServletRequestHandler implements HttpRequestHandler {
+public class NewUserRegistrationHttpServletRequestHandler extends BaseServletRequestHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewUserRegistrationHttpServletRequestHandler.class);
 
-    private static final String FIRSTNAME = "firstname";
-    private static final String SURNAME = "surname";
-    private static final String EMAIL = "email";
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String SECURITY_QUESTION = "securityQuestion";
-    private static final String SECURITY_ANSWER = "securityAnswer";
-    private static final String CONFIRM_PASSWORD = "confirmPassword";
-
-    private static final String LOGIN_PAGE = "/login.zul";
-    private static final String ERROR_EXTENSION = "?error=3";
-    private static final String MESSAGE_EXTENSION = "?success=1";
-
-    private boolean contextRelative;
-
     @Autowired
     private ManagerService manager;
+
 
     /* (non-Javadoc)
      * @see HttpRequestHandler#handleRequest(HttpServletRequest, HttpServletResponse)
      */
     @Override
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserType userType;
         String url = LOGIN_PAGE;
         Set<String> messages = new HashSet<>();
@@ -138,62 +122,4 @@ public class NewUserRegistrationHttpServletRequestHandler implements HttpRequest
         return ok;
     }
 
-
-
-    /**
-     * Redirects the response to the supplied URL.
-     * <p>
-     * If <tt>contextRelative</tt> is set, the redirect value will be the value after the request context path. Note
-     * that this will result in the loss of protocol information (HTTP or HTTPS), so will cause problems if a
-     * redirect is being performed to change to HTTPS, for example.
-     */
-    public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
-        String redirectUrl = calculateRedirectUrl(request.getContextPath(), url);
-        redirectUrl = response.encodeRedirectURL(redirectUrl);
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Redirecting to '" + redirectUrl + "'");
-        }
-
-        response.sendRedirect(redirectUrl);
-    }
-
-    private String calculateRedirectUrl(String contextPath, String url) {
-        if (!UrlUtils.isAbsoluteUrl(url)) {
-            if (contextRelative) {
-                return url;
-            } else {
-                return contextPath + url;
-            }
-        }
-
-        // Full URL, including http(s)://
-        if (!contextRelative) {
-            return url;
-        }
-
-        // Calculate the relative URL from the fully qualified URL, minus the scheme and base context.
-        url = url.substring(url.indexOf("://") + 3); // strip off scheme
-        url = url.substring(url.indexOf(contextPath) + contextPath.length());
-
-        if (url.length() > 1 && url.charAt(0) == '/') {
-            url = url.substring(1);
-        }
-
-        return url;
-    }
-
-    /**
-     * Removes temporary authentication-related data which may have been stored in the session
-     * during the authentication process.
-     */
-    private void clearAuthenticationAttributes(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            return;
-        }
-
-        session.removeAttribute(WebAttributes.REGISTRATION_EXCEPTION);
-    }
 }
