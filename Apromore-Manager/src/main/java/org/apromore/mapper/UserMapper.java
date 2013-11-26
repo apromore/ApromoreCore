@@ -121,7 +121,9 @@ public class UserMapper {
             membership.setSalt("username");
             membership.setDateCreated(new Date());
             membership.setEmail(userType.getMembership().getEmail());
-            membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
+            if (userType.getMembership().getPassword() != null) {
+                membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
+            }
             membership.setQuestion(userType.getMembership().getPasswordQuestion());
             membership.setAnswer(userType.getMembership().getPasswordAnswer());
             membership.setFailedPasswordAttempts(0);
