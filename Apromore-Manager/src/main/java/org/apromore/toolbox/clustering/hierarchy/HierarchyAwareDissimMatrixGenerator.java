@@ -183,7 +183,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
             if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
-                double dissim = computeFromDissimilarityCalc(fid1, fid2);  //computeFromGEDMatrixCalc(fid1, fid2);
+                double dissim =  computeFromGEDMatrixCalc(fid1, fid2); // computeFromDissimilarityCalc(fid1, fid2);
                 if (dissim <= dissThreshold) {
                     dissimmap.put(fid1, fid2, dissim);
                 }

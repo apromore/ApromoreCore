@@ -1,19 +1,18 @@
 package org.apromore.util;
 
 import org.apromore.TestData;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.wfmc._2008.xpdl2.PackageType;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
