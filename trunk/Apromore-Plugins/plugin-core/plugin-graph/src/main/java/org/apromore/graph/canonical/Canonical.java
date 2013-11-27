@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
-    public static DirectedGraphAlgorithms<CPFEdge, CPFNode> directed_graph_algorithms = new DirectedGraphAlgorithms<>();
+    public static final DirectedGraphAlgorithms<CPFEdge, CPFNode> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<>();
 
     private CPFNode entry = null;
     private CPFNode exit = null;
@@ -228,12 +228,12 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Set<CPFNode> getSourceNodes() {
-        return Canonical.directed_graph_algorithms.getSources(this);
+        return Canonical.DIRECTED_GRAPH_ALGORITHMS.getSources(this);
     }
 
     @Override
     public Set<CPFNode> getSinkNodes() {
-        return Canonical.directed_graph_algorithms.getSinks(this);
+        return Canonical.DIRECTED_GRAPH_ALGORITHMS.getSinks(this);
     }
 
 
@@ -378,7 +378,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     public void populateDominantRelationships() {
         for (CPFNode v : getNodes()) {
-            v.dominance = performFullDominanceSearch(v);
+            v.setDominance(performFullDominanceSearch(v));
         }
     }
 
@@ -400,7 +400,7 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
 
     /* Used to find the dominant relationships. */
-    private HashSet<String> performFullDominanceSearch(CPFNode nodes) {
+    private Set<String> performFullDominanceSearch(CPFNode nodes) {
         LinkedList<CPFNode> toProcess = new LinkedList<>(nodes.getChildren());
         HashSet<String> domList = new HashSet<>();
 

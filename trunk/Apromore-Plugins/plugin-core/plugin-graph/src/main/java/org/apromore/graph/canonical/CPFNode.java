@@ -31,16 +31,16 @@ public class CPFNode extends Vertex implements INode {
     private CPFExpression resourceRuntimeExpr;
     private AllocationStrategyEnum allocation;
 
-    private Set<ICPFObjectReference> objectReferences = new HashSet<ICPFObjectReference>(0);
-    private Set<ICPFResourceReference> resourceReferences = new HashSet<ICPFResourceReference>(0);
-    private Set<String> cancelNodes = new HashSet<String>(0);
-    private Set<String> cancelEdges = new HashSet<String>(0);
-    private Set<CPFExpression> inputExpr = new HashSet<CPFExpression>(0);
-    private Set<CPFExpression> outputExpr = new HashSet<CPFExpression>(0);
-    private Map<String, IAttribute> attributes = new HashMap<String, IAttribute>(0);
+    private Set<ICPFObjectReference> objectReferences = new HashSet<>();
+    private Set<ICPFResourceReference> resourceReferences = new HashSet<>();
+    private Set<String> cancelNodes = new HashSet<>();
+    private Set<String> cancelEdges = new HashSet<>();
+    private Set<CPFExpression> inputExpr = new HashSet<>();
+    private Set<CPFExpression> outputExpr = new HashSet<>();
+    private Map<String, IAttribute> attributes = new HashMap<>();
 
     // Used in the Merge, find something else to use.
-    public HashSet<String> dominance;
+    private Set<String> dominance;
 
     private Canonical graph;
 
@@ -417,5 +417,14 @@ public class CPFNode extends Vertex implements INode {
     @Override
     public void setGraph(Canonical canonicalGraph) {
         graph = canonicalGraph;
+    }
+
+
+    public Set<String> getDominance() {
+        return dominance;
+    }
+
+    public void setDominance(Set<String> dominance) {
+        this.dominance = dominance;
     }
 }

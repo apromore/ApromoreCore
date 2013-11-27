@@ -66,34 +66,34 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
 
     @Override
     public Set<N> getNodes() {
-        return new HashSet<N>(super.getVertices());
+        return new HashSet<>(super.getVertices());
     }
 
 
     @Override
     public Set<E> getEdges() {
-        return new HashSet<E>(super.getEdges());
+        return new HashSet<>(super.getEdges());
     }
 
 
     @Override
     public Set<N> getPostset(N node) {
-        return new HashSet<N>(this.getDirectSuccessors(node));
+        return new HashSet<>(this.getDirectSuccessors(node));
     }
 
     @Override
     public Set<N> getPostset(Collection<N> nodes) {
-        return new HashSet<N>(this.getDirectSuccessors(nodes));
+        return new HashSet<>(this.getDirectSuccessors(nodes));
     }
 
     @Override
     public Set<N> getPreset(N node) {
-        return new HashSet<N>(this.getDirectPredecessors(node));
+        return new HashSet<>(this.getDirectPredecessors(node));
     }
 
     @Override
     public Set<N> getPreset(Collection<N> nodes) {
-        return new HashSet<N>(this.getDirectPredecessors(nodes));
+        return new HashSet<>(this.getDirectPredecessors(nodes));
     }
 
     @Override
@@ -105,51 +105,6 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
     public Set<N> getMax() {
         return this.getSinkNodes();
     }
-
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public AbstractCanonical<E, N> clone() {
-//        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
-//
-//        return this.cloneHelper(clone, new HashMap<N, N>());
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    private AbstractCanonical<E, N> cloneHelper(AbstractCanonical<E, N> clone, Map<N, N> nodeMapping) {
-//        clone.clearMembers();
-//
-//        for (N n : this.getNodes()) {
-//            N cn = (N) n.clone();
-//            clone.addVertex(cn);
-//            nodeMapping.put(n, cn);
-//        }
-//
-//        for (E f : this.getEdges()) {
-//            E cf = clone.addEdge(nodeMapping.get(f.getSource()), nodeMapping.get(f.getTarget()));
-//
-//            if (f.getId() != null) {
-//                cf.setId(f.getId());
-//            }
-//            if (f.getName() != null) {
-//                cf.setName(f.getName());
-//            }
-//            if (f.getDescription() != null) {
-//                cf.setDescription(f.getDescription());
-//            }
-//            if (f.getOriginalId() != null) {
-//                cf.setOriginalId(f.getOriginalId());
-//            }
-//        }
-//
-//        return clone;
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public AbstractCanonical<E, N> clone(Map<N, N> nodeMapping) {
-//        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
-//        return cloneHelper(clone, nodeMapping);
-//    }
-//
 
     @Override
     public void clear() {
