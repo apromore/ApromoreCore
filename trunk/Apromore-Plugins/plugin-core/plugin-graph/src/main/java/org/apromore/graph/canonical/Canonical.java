@@ -322,20 +322,20 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public void setNodeProperty(final String nodeId, final String propertyName, final String propertyValue) {
-        Map<String, String> properties = nodeProperties.get(nodeId);
-        if (properties == null) {
-            properties = new HashMap<>();
-            nodeProperties.put(nodeId, properties);
+        Map<String, String> props = nodeProperties.get(nodeId);
+        if (props == null) {
+            props = new HashMap<>();
         }
-        properties.put(propertyName, propertyValue);
+        props.put(propertyName, propertyValue);
+        nodeProperties.put(nodeId, props);
     }
 
     @Override
     public String getNodeProperty(final String nodeId, final String propertyName) {
         String result = null;
-        Map<String, String> properties = nodeProperties.get(nodeId);
+        Map<String, String> props = nodeProperties.get(nodeId);
         if (properties != null) {
-            result = properties.get(propertyName);
+            result = props.get(propertyName);
         }
         return result;
     }
