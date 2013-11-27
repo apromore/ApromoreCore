@@ -32,6 +32,8 @@ public final class GraphUtil {
                 } else if (isJoin(node.getNodeType(), node.getName()) || isSplit(node.getNodeType(), node.getName()) ||
                         isState(node.getNodeType(), node.getName())) {
                     type = GraphConstants.CONNECTOR;
+                } else {
+                    LOGGER.warn("Unable to determine Node Type, Type is UNKNOWN. " + node.getId());
                 }
             } else {
                 LOGGER.warn("Unable to determine Node Type, Type is NULL (Could be a Pocket). " + node.getId());
