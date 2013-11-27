@@ -8,32 +8,31 @@ import org.slf4j.LoggerFactory;
 public final class GraphUtil {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphUtil.class);
-    
+
+    /* Only here so people can't instantiate this class */
+    private GraphUtil() { }
+
+    /**
+     * Finds out the type of this node.
+     * @param node returns the type of this node.
+     * @return the type of the node.
+     */
     public static String getType(final INode node) {
         String type = null;
         if (node != null) {
             if (node.getNodeType() != null) {
-                if (node.getNodeType().equals(NodeTypeEnum.TASK)) {
+                if (isTask(node.getNodeType())) {
                     type = GraphConstants.FUNCTION;
-                } else if (node.getNodeType().equals(NodeTypeEnum.EVENT)) {
+                } else if (isEvent(node.getNodeType())) {
                     type = GraphConstants.EVENT;
-                } else if (node.getNodeType().equals(NodeTypeEnum.MESSAGE)) {
+                } else if (isMessage(node.getNodeType())) {
                     type = GraphConstants.EVENT;
-                } else if (node.getNodeType().equals(NodeTypeEnum.TIMER)) {
+                } else if (isTimer(node.getNodeType())) {
                     type = GraphConstants.EVENT;
                 } else {
-                    if (node.getNodeType().equals(NodeTypeEnum.ORJOIN) || node.getNodeType().equals(NodeTypeEnum.XORJOIN) ||
-                            node.getNodeType().equals(NodeTypeEnum.ANDJOIN) || node.getNodeType().equals(NodeTypeEnum.ORSPLIT) ||
-                            node.getNodeType().equals(NodeTypeEnum.XORSPLIT) || node.getNodeType().equals(NodeTypeEnum.ANDSPLIT) ||
-                            node.getNodeType().equals(NodeTypeEnum.STATE)) {
+                    if (isJoin(node.getNodeType(), node.getName()) || isSplit(node.getNodeType(), node.getName()) ||
+                            isState(node.getNodeType(), node.getName())) {
                         type = GraphConstants.CONNECTOR;
-                    } else {
-                        String nodeName = node.getName();
-                        if (nodeName != null && (nodeName.equals("OrJoin") || nodeName.equals("XOrJoin") ||
-                                nodeName.equals("AndJoin") || nodeName.equals("OrSplit") || nodeName.equals("XOrSplit") ||
-                                nodeName.equals("AndSplit") || nodeName.equals("State"))) {
-                            type = GraphConstants.CONNECTOR;
-                        }
                     }
                 }
             } else {
@@ -44,5 +43,56 @@ public final class GraphUtil {
         }
         return type;
     }
-    
+
+    private static boolean isTask(NodeTypeEnum nodeType) {
+        return (nodeType.equals(NodeTypeEnum.TASK));
+    }
+
+    private static boolean isEvent(NodeTypeEnum nodeType) {
+        return (nodeType.equals(NodeTypeEnum.EVENT));
+    }
+
+    private static boolean isMessage(NodeTypeEnum nodeType) {
+        return (nodeType.equals(NodeTypeEnum.MESSAGE));
+    }
+
+    private static boolean isTimer(NodeTypeEnum nodeType) {
+        return (nodeType.equals(NodeTypeEnum.TIMER));
+    }
+
+    private static boolean isJoin(NodeTypeEnum nodeType, String nodeName) {
+        return (isOrJoin(nodeType, nodeName) || isXOrJoin(nodeType, nodeName) || isAndJoin(nodeType, nodeName));
+    }
+
+    private static boolean isSplit(NodeTypeEnum nodeType, String nodeName) {
+        return (isOrSplit(nodeType, nodeName) || isXOrSplit(nodeType, nodeName) || isAndSplit(nodeType, nodeName));
+    }
+
+    private static boolean isState(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.STATE) || (nodeName != null && nodeName.equals("State"));
+    }
+
+    private static boolean isOrJoin(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.ORJOIN) || (nodeName != null && nodeName.equals("OrJoin"));
+    }
+
+    private static boolean isXOrJoin(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.XORJOIN) || (nodeName != null && nodeName.equals("XOrJoin"));
+    }
+
+    private static boolean isAndJoin(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.ANDJOIN) || (nodeName != null && nodeName.equals("AndJoin"));
+    }
+
+    private static boolean isOrSplit(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.ORSPLIT) || (nodeName != null && nodeName.equals("OrSplit"));
+    }
+
+    private static boolean isXOrSplit(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.XORSPLIT) || (nodeName != null && nodeName.equals("XOrSplit"));
+    }
+
+    private static boolean isAndSplit(NodeTypeEnum nodeType, String nodeName) {
+        return nodeType.equals(NodeTypeEnum.ANDSPLIT) || (nodeName != null && nodeName.equals("AndSplit"));
+    }
 }

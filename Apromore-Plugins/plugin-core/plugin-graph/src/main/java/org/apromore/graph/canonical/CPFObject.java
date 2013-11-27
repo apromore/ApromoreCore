@@ -26,7 +26,6 @@ public class CPFObject extends CPFNonFlowNode implements ICPFObject, Cloneable {
     public CPFObject() { }
 
 
-
     @Override
          public String getOriginalId() {
         return originalId;
