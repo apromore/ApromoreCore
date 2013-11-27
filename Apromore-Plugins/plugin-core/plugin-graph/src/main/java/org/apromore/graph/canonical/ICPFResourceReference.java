@@ -1,6 +1,5 @@
 package org.apromore.graph.canonical;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +17,7 @@ public interface ICPFResourceReference extends INonFlowNode {
 
     /**
      * Sets the Linked Resource Id.
-     * @param newResourceId
+     * @param newResourceId the new resource id
      */
     void setResourceId(String newResourceId);
 

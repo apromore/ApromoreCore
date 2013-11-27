@@ -11,47 +11,47 @@ public interface IExpression {
      * Get the Description.
      * @return the description
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Set the Description.
      * @param newDescription the new Description
      */
-    public void setDescription(String newDescription);
+    void setDescription(String newDescription);
 
     /**
      * Get the Language.
      * @return the Language
      */
-    public String getLanguage();
+    String getLanguage();
 
     /**
      * Set the Language.
      * @param newLanguage the new Language
      */
-    public void setLanguage(String newLanguage);
+    void setLanguage(String newLanguage);
 
     /**
      * Get the Expression.
      * @return the Expression
      */
-    public String getExpression();
+    String getExpression();
 
     /**
      * Set the Expression.
      * @param newExpression the new Expression
      */
-    public void setExpression(String newExpression);
+    void setExpression(String newExpression);
 
     /**
      * Get the ReturnType.
      * @return the ReturnType
      */
-    public String getReturnType();
+    String getReturnType();
 
     /**
      * Set the ReturnType.
      * @param newReturnType the new ReturnType
      */
-    public void setReturnType(String newReturnType);
+    void setReturnType(String newReturnType);
 }

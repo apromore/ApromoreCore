@@ -4,9 +4,7 @@ import org.jbpt.graph.abs.AbstractDirectedGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -108,50 +106,50 @@ public abstract class AbstractCanonical<E extends IEdge<N>, N extends INode> ext
         return this.getSinkNodes();
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public AbstractCanonical<E, N> clone() {
-        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
-
-        return this.cloneHelper(clone, new HashMap<N, N>());
-    }
-
-    @SuppressWarnings("unchecked")
-    private AbstractCanonical<E, N> cloneHelper(AbstractCanonical<E, N> clone, Map<N, N> nodeMapping) {
-        clone.clearMembers();
-
-        for (N n : this.getNodes()) {
-            N cn = (N) n.clone();
-            clone.addVertex(cn);
-            nodeMapping.put(n, cn);
-        }
-
-        for (E f : this.getEdges()) {
-            E cf = clone.addEdge(nodeMapping.get(f.getSource()), nodeMapping.get(f.getTarget()));
-
-            if (f.getId() != null) {
-                cf.setId(f.getId());
-            }
-            if (f.getName() != null) {
-                cf.setName(f.getName());
-            }
-            if (f.getDescription() != null) {
-                cf.setDescription(f.getDescription());
-            }
-            if (f.getOriginalId() != null) {
-                cf.setOriginalId(f.getOriginalId());
-            }
-        }
-
-        return clone;
-    }
-
-    @SuppressWarnings("unchecked")
-    public AbstractCanonical<E, N> clone(Map<N, N> nodeMapping) {
-        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
-        return cloneHelper(clone, nodeMapping);
-    }
-
+//    @SuppressWarnings("unchecked")
+//    @Override
+//    public AbstractCanonical<E, N> clone() {
+//        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
+//
+//        return this.cloneHelper(clone, new HashMap<N, N>());
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private AbstractCanonical<E, N> cloneHelper(AbstractCanonical<E, N> clone, Map<N, N> nodeMapping) {
+//        clone.clearMembers();
+//
+//        for (N n : this.getNodes()) {
+//            N cn = (N) n.clone();
+//            clone.addVertex(cn);
+//            nodeMapping.put(n, cn);
+//        }
+//
+//        for (E f : this.getEdges()) {
+//            E cf = clone.addEdge(nodeMapping.get(f.getSource()), nodeMapping.get(f.getTarget()));
+//
+//            if (f.getId() != null) {
+//                cf.setId(f.getId());
+//            }
+//            if (f.getName() != null) {
+//                cf.setName(f.getName());
+//            }
+//            if (f.getDescription() != null) {
+//                cf.setDescription(f.getDescription());
+//            }
+//            if (f.getOriginalId() != null) {
+//                cf.setOriginalId(f.getOriginalId());
+//            }
+//        }
+//
+//        return clone;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    public AbstractCanonical<E, N> clone(Map<N, N> nodeMapping) {
+//        AbstractCanonical<E, N> clone = (AbstractCanonical<E, N>) super.clone();
+//        return cloneHelper(clone, nodeMapping);
+//    }
+//
 
     @Override
     public void clear() {
