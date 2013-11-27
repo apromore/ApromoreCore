@@ -71,7 +71,7 @@ import java.util.Set;
  */
 public class GraphToCanonical {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GraphToCanonical.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphToCanonical.class);
 
 
     /**

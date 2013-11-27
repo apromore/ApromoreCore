@@ -238,89 +238,89 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * @param to   Target node.
      * @return Edge added to this net; <tt>null</tt> if no flow was added.
      */
-    public E addEdge(N from, N to);
+    E addEdge(N from, N to);
 
     /**
      * Add node to this net.
      * @param node Node to add.
      * @return Node added to this net; <tt>null</tt> if no node was added.
      */
-    public N addNode(N node);
+    N addNode(N node);
 
     /**
      * Add nodes to this net.
      * @param nodes Nodes to add.
      * @return Nodes added to this net.
      */
-    public Collection<N> addNodes(Collection<N> nodes);
+    Collection<N> addNodes(Collection<N> nodes);
 
     /**
      * Remove node from this net.
      * @param node Node to remove.
      * @return Node removed from this net; <tt>null</tt> if node was not removed.
      */
-    public N removeNode(N node);
+    N removeNode(N node);
 
     /**
      * Remove nodes from this net.
      * @param nodes Nodes to remove.
      * @return Nodes removed from this net.
      */
-    public Collection<N> removeNodes(Collection<N> nodes);
+    Collection<N> removeNodes(Collection<N> nodes);
 
     /**
      * Remove flow from this net.
      * @param edge Edge to remove.
      * @return Edge removed from this net; <tt>null</tt> if no flow was removed.
      */
-    public E removeFlow(E edge);
+    E removeFlow(E edge);
 
     /**
      * Remove flow from this net.
      * @param edge Edge to remove.
      * @return Edge removed from this net.
      */
-    public Collection<E> removeFlows(Collection<E> edge);
+    Collection<E> removeFlows(Collection<E> edge);
 
 
     /**
      * Get node by it's Id.
      * @return Node of this net.
      */
-    public N getNode(String id);
+    N getNode(String id);
 
     /**
      * Get nodes of this net.
      * @return Nodes of this net.
      */
-    public Set<N> getNodes();
+    Set<N> getNodes();
 
     /**
      * Get flow relation of this net.
      * @return Edge relation of this net.
      */
-    public Set<E> getEdges();
+    Set<E> getEdges();
 
     /**
      * Get postset of a given node.
      * @param node Node.
      * @return Postset of the given node.
      */
-    public Set<N> getPostset(N node);
+    Set<N> getPostset(N node);
 
     /**
      * Get postset of given nodes.
      * @param nodes Nodes.
      * @return Postset of given nodes.
      */
-    public Set<N> getPostset(Collection<N> nodes);
+    Set<N> getPostset(Collection<N> nodes);
 
     /**
      * Get preset of a given node.
      * @param node Node.
      * @return Preset of the given node.
      */
-    public Set<N> getPreset(N node);
+    Set<N> getPreset(N node);
 
     /**
      * Get preset of the given nodes.
@@ -328,7 +328,7 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      * @param nodes Nodes.
      * @return Preset of the given nodes.
      */
-    public Set<N> getPreset(Collection<N> nodes);
+    Set<N> getPreset(Collection<N> nodes);
 
     /**
      * Get source nodes of this net.
@@ -336,7 +336,7 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      *
      * @return Source nodes of this net.
      */
-    public Set<N> getSourceNodes();
+    Set<N> getSourceNodes();
 
     /**
      * Get sink nodes of this net.
@@ -344,29 +344,29 @@ public interface ICanonical<E extends IEdge<N>, N extends INode> extends IDirect
      *
      * @return Sink nodes of this net.
      */
-    public Set<N> getSinkNodes();
+    Set<N> getSinkNodes();
 
     /**
      * Get minimal nodes of this net (alias of {@link ICanonical#getSourceNodes()}).
      * @return Minimal nodes of this net.
      */
-    public Set<N> getMin();
+    Set<N> getMin();
 
     /**
      * Get maximal nodes of this net (alias of {@link ICanonical#getSinkNodes()}).
      *
      * @return Maximal nodes of this net.
      */
-    public Set<N> getMax();
+    Set<N> getMax();
 
     /**
      * Clear this net.
      */
-    public void clear();
+    void clear();
 
     /**
      * Get the Node Map.
      * @return the map of Nodes.
      */
-    public Map<String, CPFNode> getNodeMap();
+    Map<String, CPFNode> getNodeMap();
 }
