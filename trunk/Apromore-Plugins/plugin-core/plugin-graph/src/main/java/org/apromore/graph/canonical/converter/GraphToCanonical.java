@@ -130,9 +130,9 @@ public class GraphToCanonical {
             } else {
                 netData = data.get(edge.getSource().getNetId());
             }
-            netData.getEdges().add(edge);
-            netData.getNodes().add(edge.getSource());
-            netData.getNodes().add(edge.getTarget());
+            netData.addEdge(edge);
+            netData.addNode(edge.getSource());
+            netData.addNode(edge.getTarget());
             data.put(edge.getSource().getNetId(), netData);
         }
         return data;
@@ -597,15 +597,31 @@ public class GraphToCanonical {
      * Class to store the Nodes and Edges for a particular Net.
      */
     public class NetData {
-        Set<CPFNode> nodes = new HashSet<>();
-        Set<CPFEdge> edges = new HashSet<>();
+        private Set<CPFNode> nodes = new HashSet<>();
+        private Set<CPFEdge> edges = new HashSet<>();
 
         public Set<CPFNode> getNodes() {
             return nodes;
         }
 
+        public void setNodes(Set<CPFNode> newNodes) {
+            nodes = newNodes;
+        }
+
+        public void addNode(CPFNode newNode) {
+            nodes.add(newNode);
+        }
+
         public Set<CPFEdge> getEdges() {
             return edges;
+        }
+
+        public void setEdges(Set<CPFEdge> newEdges) {
+            edges = newEdges;
+        }
+
+        public void addEdge(CPFEdge newEdge) {
+            edges.add(newEdge);
         }
     }
 
