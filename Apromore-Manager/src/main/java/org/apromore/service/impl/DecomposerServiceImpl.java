@@ -1,11 +1,5 @@
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-
 import org.apromore.common.Constants;
 import org.apromore.dao.EdgeMappingRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
@@ -19,7 +13,6 @@ import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeMapping;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.TreeVisitor;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
@@ -37,6 +30,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
 /**
  * @author Chathura Ekanayake
  */
@@ -46,32 +45,16 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecomposerServiceImpl.class);
 
-    private ContentService cService;
-    private FragmentVersionRepository fvRepository;
-    private FragmentVersionDagRepository fvdRepository;
-    private NodeMappingRepository nmRepository;
-    private EdgeMappingRepository emRepository;
-
-
-
-    /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param contentService  Content Service.
-     * @param fragmentVersionRepository Fragment Version Repo.
-     * @param fragmentVersionDagRepository Fragment Version Dag Repo.
-     * @param nodeMappingRepository Node Mapping Repo.
-     * @param edgeMappingRepository Edge mapping Repo.
-     */
     @Inject
-    public DecomposerServiceImpl(final ContentService contentService, final FragmentVersionRepository fragmentVersionRepository,
-            final FragmentVersionDagRepository fragmentVersionDagRepository, final NodeMappingRepository nodeMappingRepository,
-            final EdgeMappingRepository edgeMappingRepository) {
-        cService = contentService;
-        fvRepository = fragmentVersionRepository;
-        fvdRepository = fragmentVersionDagRepository;
-        nmRepository = nodeMappingRepository;
-        emRepository = edgeMappingRepository;
-    }
+    private ContentService cService;
+    @Inject
+    private FragmentVersionRepository fvRepository;
+    @Inject
+    private FragmentVersionDagRepository fvdRepository;
+    @Inject
+    private NodeMappingRepository nmRepository;
+    @Inject
+    private EdgeMappingRepository emRepository;
 
 
     /**
@@ -82,10 +65,8 @@ public class DecomposerServiceImpl implements DecomposerService {
     @SuppressWarnings("unchecked")
     public OperationContext decompose(Canonical graph, ProcessModelVersion modelVersion) throws RepositoryException {
         try {
-            TreeVisitor visitor = new TreeVisitor();
             OperationContext op = new OperationContext();
             op.setGraph(graph);
-            op.setTreeVisitor(visitor);
 
             RPST<CPFEdge, CPFNode> rpst = new RPST(graph);
             FragmentNode rf = new MutableTreeConstructor().construct(rpst);
