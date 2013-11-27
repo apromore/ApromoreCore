@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
-    public static DirectedGraphAlgorithms<CPFEdge, CPFNode> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<>();
+    public static DirectedGraphAlgorithms<CPFEdge, CPFNode> directed_graph_algorithms = new DirectedGraphAlgorithms<>();
 
     private CPFNode entry = null;
     private CPFNode exit = null;
@@ -228,12 +228,12 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
 
     @Override
     public Set<CPFNode> getSourceNodes() {
-        return Canonical.DIRECTED_GRAPH_ALGORITHMS.getSources(this);
+        return Canonical.directed_graph_algorithms.getSources(this);
     }
 
     @Override
     public Set<CPFNode> getSinkNodes() {
-        return Canonical.DIRECTED_GRAPH_ALGORITHMS.getSinks(this);
+        return Canonical.directed_graph_algorithms.getSinks(this);
     }
 
 
