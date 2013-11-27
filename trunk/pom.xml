@@ -208,7 +208,6 @@
         <maven.release.plugin>2.4</maven.release.plugin>
         <maven.resources.plugin>2.6</maven.resources.plugin>
         <maven.site.plugin>3.2</maven.site.plugin>
-        <maven.sonar.plugin>3.5.1</maven.sonar.plugin>
         <maven.source.plugin>2.2.1</maven.source.plugin>
         <maven.surefire.plugin>2.14.1</maven.surefire.plugin>
         <maven.taglist.plugin>2.4</maven.taglist.plugin>
@@ -1302,16 +1301,6 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>${maven.war.plugin}</version>
                 </plugin>
-                <!--<plugin>-->
-                <!--<groupId>org.apromore</groupId>-->
-                <!--<artifactId>version-updater-maven-plugin</artifactId>-->
-                <!--<version>${maven.version.updater.plugin}</version>-->
-                <!--</plugin>-->
-                <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>sonar-maven3-plugin</artifactId>-->
-                <!--<version>${maven.sonar.plugin}</version>-->
-                <!--</plugin>-->
             </plugins>
         </pluginManagement>
 
@@ -1397,32 +1386,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-pmd-plugin</artifactId>-->
-            <!--<version>${maven.pmd.plugin}</version>-->
-            <!--<inherited>true</inherited>-->
-            <!--<configuration>-->
-            <!--<skip>${pmd.skip}</skip>-->
-            <!--<targetJdk>${java.target.version}</targetJdk>-->
-            <!--<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>-->
-            <!--<rulesets>-->
-            <!--<ruleset>${pmd.ruleset.location}</ruleset>-->
-            <!--</rulesets>-->
-            <!--<failOnViolation>false</failOnViolation>-->
-            <!--<verbose>true</verbose>-->
-            <!--<aggregate>true</aggregate>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>verify</phase>-->
-            <!--<goals>-->
-            <!--<goal>check</goal>-->
-            <!--<goal>cpd-check</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -1644,11 +1607,6 @@
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>sonar-maven3-plugin</artifactId>-->
-            <!--<version>${maven.sonar.plugin}</version>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 
@@ -1732,14 +1690,6 @@
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven.jxr.plugin}</version>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-pmd-plugin</artifactId>-->
-            <!--<version>${maven.pmd.plugin}</version>-->
-            <!--<configuration>-->
-            <!--<targetJdk>${java.target.version}</targetJdk>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

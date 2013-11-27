@@ -1,11 +1,5 @@
 package org.apromore.graph.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apromore.graph.canonical.CPFEdge;
-import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.INode;
 import org.apromore.graph.canonical.NodeTypeEnum;
 import org.slf4j.Logger;
@@ -49,18 +43,6 @@ public final class GraphUtil {
             LOGGER.warn("Unable to determine Node Type, Node is NULL. ");
         }
         return type;
-    }
-
-    public static List<CPFNode> getPostset(final CPFNode v, final Collection<CPFEdge> es) {
-        List<CPFNode> postset = new ArrayList<CPFNode>(0);
-        if (v != null) {
-            for (CPFEdge e: es) {
-                if (e.getSource().getId().equals(v.getId())) {
-                    postset.add(e.getTarget());
-                }
-            }
-        }
-        return postset;
     }
     
 }

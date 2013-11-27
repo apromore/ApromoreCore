@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.Node;
-import org.apromore.graph.TreeVisitor;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
@@ -19,7 +18,6 @@ import org.apromore.graph.canonical.Canonical;
 public class OperationContext {
 
     private Canonical graph;
-    private TreeVisitor treeVisitor;
     private Map<Integer, Integer> contentUsage;
     private Map<String, Integer> processedFragmentTypes;
 
@@ -64,14 +62,6 @@ public class OperationContext {
 
     public void addPersistedEdge(String uri, Edge pEdge) {
         this.persistedEdges.put(uri, pEdge);
-    }
-
-    public TreeVisitor getTreeVisitor() {
-        return treeVisitor;
-    }
-
-    public void setTreeVisitor(TreeVisitor treeVisitor) {
-        this.treeVisitor = treeVisitor;
     }
 
     public void addProcessedFragmentType(String fragmentType) {
