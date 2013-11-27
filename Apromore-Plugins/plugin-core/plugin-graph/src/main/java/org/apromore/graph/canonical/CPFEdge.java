@@ -27,14 +27,13 @@ public class CPFEdge extends AbstractEdge<CPFNode> implements IEdge<CPFNode> {
     public CPFEdge(AbstractMultiDirectedGraph<?, CPFNode> g, String id, CPFNode source, CPFNode target) {
         super(g, source, target);
 
-        this.setOriginalId(id);
+        originalId = id;
     }
 
     /* We need to set the whole object data sometimes... */
     public CPFEdge(AbstractMultiDirectedGraph<?, CPFNode> g, CPFEdge edge) {
         super(g, edge.getSource(), edge.getTarget());
 
-        this.setOriginalId(edge.getId());
         originalId = edge.getOriginalId();
         isDefault = edge.isDefault();
         conditionExpr = edge.getConditionExpr();
