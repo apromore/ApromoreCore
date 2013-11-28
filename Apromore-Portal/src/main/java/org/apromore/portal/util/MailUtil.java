@@ -81,11 +81,12 @@ public class MailUtil {
     /* Creates the properties used to connect to the email server. */
     private static Properties getEmailServerProperties() {
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.host", "mail-relay.qut.edu.au");
+        props.put("mail.smtp.port", "25");
+        props.put("mail.smtp.auth", "false");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.socketFactory.fallback", "true");
         return props;
     }
 
