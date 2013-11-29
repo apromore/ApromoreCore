@@ -142,7 +142,7 @@ public class Membership implements Serializable {
      * Get the security question for the Object.
      * @return Returns the security question.
      */
-    @Column(name = "password_question")
+    @Column(name = "password_question", nullable = true)
     public String getQuestion() {
         return question;
     }
@@ -159,7 +159,7 @@ public class Membership implements Serializable {
      * Get the security answer for the Object.
      * @return Returns the security answer.
      */
-    @Column(name = "password_answer")
+    @Column(name = "password_answer", nullable = true)
     public String getAnswer() {
         return answer;
     }

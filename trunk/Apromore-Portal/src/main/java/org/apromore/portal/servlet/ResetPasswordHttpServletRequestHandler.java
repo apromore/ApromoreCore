@@ -62,7 +62,7 @@ public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHa
 
         try {
             if (isUserRequestOk(request, messages)) {
-                userType = manager.readUser(request.getParameter(USERNAME));
+                userType = manager.readUserByEmail(request.getParameter(USERNAME));
                 resetUsersPassword(userType);
                 emailUserPassword(userType);
                 clearAuthenticationAttributes(request);
@@ -87,12 +87,7 @@ public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHa
     /* Reset the password and update the userType record. */
     private void resetUsersPassword(UserType userType) throws Exception {
         String newPassword = new String(RandomPasswordGenerator.generatePassword(minLength, maxLength, noCapitals, noDigits, noSpecial));
-
-        MembershipType membership = userType.getMembership();
-        membership.setPassword(newPassword);
-        userType.setMembership(membership);
-
-        manager.writeUser(userType);
+        manager.resetUserPassword(userType.getUsername(), newPassword);
     }
 
 

@@ -119,7 +119,7 @@
         <eclipselink.asm.version>3.3.1.v201206041142</eclipselink.asm.version>
         <bonecp.version>0.7.1.RELEASE</bonecp.version>
 
-        <javamail.version>1.4.1</javamail.version>
+        <javamail.version>1.4.5</javamail.version>
         <activation.version>1.1.1</activation.version>
         <asm.version>3.2.0</asm.version>
         <javassist.version>3.15.0.GA</javassist.version>
@@ -133,7 +133,6 @@
         <commons.httpclient.version>4.2.1</commons.httpclient.version>
         <servlet-api.version>3.0.1</servlet-api.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <!--<quartz.version>1.8.5</quartz.version>-->
         <logback.version>1.0.13</logback.version>
         <joda-time.version>1.6.2</joda-time.version>
         <cglib.version>2.2.0</cglib.version>
@@ -359,14 +358,14 @@
                 <version>${apromore.plugin.version}</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>org.apromore.plugin</groupId>-->
-                <!--<artifactId>search-api</artifactId>-->
-                <!--<version>${apromore.plugin.version}</version>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>search-api</artifactId>-->
+            <!--<version>${apromore.plugin.version}</version>-->
             <!--</dependency>-->
             <!--<dependency>-->
-                <!--<groupId>org.apromore.plugin</groupId>-->
-                <!--<artifactId>search-api-provider</artifactId>-->
-                <!--<version>${apromore.plugin.version}</version>-->
+            <!--<groupId>org.apromore.plugin</groupId>-->
+            <!--<artifactId>search-api-provider</artifactId>-->
+            <!--<version>${apromore.plugin.version}</version>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
@@ -965,30 +964,14 @@
             </dependency>
             <dependency>
                 <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
+                <artifactId>com.springsource.javax.mail</artifactId>
                 <version>${javamail.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>${activation.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>com.springsource.javax.inject</artifactId>
                 <version>${inject.version}</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.quartz-scheduler</groupId>-->
-                <!--<artifactId>quartz</artifactId>-->
-                <!--<version>${quartz.version}</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>com.github.lookfirst</groupId>
                 <artifactId>sardine</artifactId>
@@ -1194,9 +1177,9 @@
             <url>http://repository.springsource.com/maven/bundles/milestone</url>
         </repository>
         <!--<repository>-->
-            <!--<id>ZK EE Repo</id>-->
-            <!--<url>https://maven.zkoss.org/repo/zk/ee</url>-->
-            <!--<name>ZK Enterprise Edition Repository (USER/PASS not available)</name>-->
+        <!--<id>ZK EE Repo</id>-->
+        <!--<url>https://maven.zkoss.org/repo/zk/ee</url>-->
+        <!--<name>ZK Enterprise Edition Repository (USER/PASS not available)</name>-->
         <!--</repository>-->
         <repository>
             <id>ZK CE</id>

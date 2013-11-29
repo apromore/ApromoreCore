@@ -254,10 +254,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.quartz-scheduler</groupId>-->
-            <!--<artifactId>quartz</artifactId>-->
-        <!--</dependency>-->
 
         <!-- logging -->
         <dependency>
@@ -409,7 +405,7 @@
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
+            <artifactId>com.springsource.javax.mail</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
