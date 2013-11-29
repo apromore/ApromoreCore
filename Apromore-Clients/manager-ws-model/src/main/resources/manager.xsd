@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:manager"
-           xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+           xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            targetNamespace="urn:qut-edu-au:schema:apromore:manager"
-           elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0">
+           elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0"
+           xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime ">
 
     <!-- Manager -->
     <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
     <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
     <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType"/>
     <xs:element name="ReadNativeTypesResponse" type="tns:ReadNativeTypesOutputMsgType"/>
-    <xs:element name="ReadUserRequest" type="tns:ReadUserInputMsgType"/>
-    <xs:element name="ReadUserResponse" type="tns:ReadUserOutputMsgType"/>
+    <xs:element name="ReadUserByUsernameRequest" type="tns:ReadUserByUsernameInputMsgType"/>
+    <xs:element name="ReadUserByUsernameResponse" type="tns:ReadUserByUsernameOutputMsgType"/>
+    <xs:element name="ReadUserByEmailRequest" type="tns:ReadUserByEmailInputMsgType"/>
+    <xs:element name="ReadUserByEmailResponse" type="tns:ReadUserByEmailOutputMsgType"/>
     <xs:element name="ReadAllUsersRequest" type="tns:ReadAllUsersInputMsgType"/>
     <xs:element name="ReadAllUsersResponse" type="tns:ReadAllUsersOutputMsgType"/>
     <xs:element name="WriteUserRequest" type="tns:WriteUserInputMsgType"/>
     <xs:element name="WriteUserResponse" type="tns:WriteUserOutputMsgType"/>
+    <xs:element name="ResetUserPasswordRequest" type="tns:ResetUserPasswordInputMsgType"/>
+    <xs:element name="ResetUserPasswordResponse" type="tns:ResetUserPasswordOutputMsgType"/>
     <xs:element name="UpdateSearchHistoryRequest" type="tns:UpdateSearchHistoryInputMsgType"/>
     <xs:element name="UpdateSearchHistoryResponse" type="tns:UpdateSearchHistoryOutputMsgType"/>
     <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType"/>
@@ -27,8 +32,6 @@
     <xs:element name="ExportFormatResponse" type="tns:ExportFormatOutputMsgType"/>
     <xs:element name="UpdateProcessRequest" type="tns:UpdateProcessInputMsgType"/>
     <xs:element name="UpdateProcessResponse" type="tns:UpdateProcessOutputMsgType"/>
-    <xs:element name="LoginRequest" type="tns:LoginInputMsgType"/>
-    <xs:element name="LoginResponse" type="tns:LoginOutputMsgType"/>
     <xs:element name="GetFragmentRequest" type="tns:GetFragmentInputMsgType"/>
     <xs:element name="GetFragmentResponse" type="tns:GetFragmentOutputMsgType"/>
     <xs:element name="GetWorkspaceFolderTreeRequest" type="tns:GetWorkspaceFolderTreeInputMsgType"/>
@@ -342,8 +345,8 @@
         <xs:sequence>
             <xs:element name="Roles" type="tns:RoleType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Permissions" type="tns:PermissionType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="SearchHistories" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="Membership" type="tns:MembershipType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="SearchHistories" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Membership" type="tns:MembershipType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="firstName" type="xs:string"/>
@@ -603,14 +606,37 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="ReadUserInputMsgType">
+    <xs:complexType name="ReadUserByUsernameInputMsgType">
         <xs:attribute name="username" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="ReadUserOutputMsgType">
+    <xs:complexType name="ReadUserByUsernameOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReadUserByEmailInputMsgType">
+        <xs:attribute name="email" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ReadUserByEmailOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="user" type="tns:UserType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ResetUserPasswordInputMsgType">
+        <xs:attribute name="username" type="xs:string"/>
+        <xs:attribute name="password" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ResetUserPasswordOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="success" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -638,18 +664,6 @@
     <xs:complexType name="EditProcessDataOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="LoginInputMsgType">
-        <xs:attribute name="username" type="xs:string"/>
-        <xs:attribute name="password" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="LoginOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="User" type="tns:UserType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1090,8 +1104,10 @@
     <xs:complexType name="ReadCanonicalAnfOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="cpf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="1"
+                        maxOccurs="1"/>
+            <xs:element name="anf" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" minOccurs="0"
+                        maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1321,7 +1337,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="GetClusteringSummaryRequest" type="tns:GetClusteringSummaryInputMsgType" />
+    <xs:element name="GetClusteringSummaryRequest" type="tns:GetClusteringSummaryInputMsgType"/>
     <xs:element name="GetClusteringSummaryResponse" type="tns:GetClusteringSummaryOutputMsgType"/>
 
     <xs:complexType name="GetClusteringSummaryInputMsgType">

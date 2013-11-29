@@ -32,7 +32,8 @@
         <!-- Commons -->
         <dependency>
             <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
+            <artifactId>com.springsource.javax.mail</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Logging -->

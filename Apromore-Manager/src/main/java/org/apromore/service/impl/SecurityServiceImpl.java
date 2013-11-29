@@ -4,6 +4,7 @@ import org.apromore.dao.MembershipRepository;
 import org.apromore.dao.PermissionRepository;
 import org.apromore.dao.RoleRepository;
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
@@ -82,12 +83,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     /**
-     * @see org.apromore.service.SecurityService#login(String, String)
+     * @see org.apromore.service.SecurityService#getUserByEmail(String)
      * {@inheritDoc}
      */
     @Override
-    public User login(String username, String password){
-        return userRepo.login(username, password);
+    public User getUserByEmail(String email){
+        return userRepo.findUserByEmail(email);
     }
 
     /**
@@ -152,4 +153,21 @@ public class SecurityServiceImpl implements SecurityService {
         return user;
     }
 
+    /**
+     * @see org.apromore.service.SecurityService#resetUserPassword(String, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean resetUserPassword(String username, String newPassword) {
+        User user = userRepo.findByUsername(username);
+        Membership membership = user.getMembership();
+        membership.setPassword(newPassword);
+
+        membership = membershipRepo.save(membership);
+        if (membership.getPassword().equals(newPassword)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

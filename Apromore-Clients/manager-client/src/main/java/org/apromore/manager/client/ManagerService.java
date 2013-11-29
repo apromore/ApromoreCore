@@ -1,12 +1,5 @@
 package org.apromore.manager.client;
 
-import javax.activation.DataHandler;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSettingsType;
 import org.apromore.model.ClusterSummaryType;
@@ -32,6 +25,13 @@ import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 
+import javax.activation.DataHandler;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Manager interface.
  *
@@ -44,7 +44,7 @@ public interface ManagerService {
      * @param username the users login name
      * @return the UserType from the webservice
      */
-    UserType readUser(String username);
+    UserType readUserByUsername(String username);
 
     /**
      * the User record.
@@ -54,11 +54,19 @@ public interface ManagerService {
     List<UserType> searchUsers(String searchString);
 
     /**
-     * the User record.
-     * @param username the users login name
+     * USed as apart of the reset user's password.
+     * @param email the users email address
      * @return the UserType from the webservice
      */
-    UserType login(String username, String password);
+    UserType readUserByEmail(String email) throws Exception;
+
+    /**
+     * Reset the USers password for them.
+     * @param username the users username
+     * @param password the new password
+     * @return if we succeeded or not
+     */
+    boolean resetUserPassword(String username, String password);
 
     List<FolderType> getWorkspaceFolderTree(String userId);
 

@@ -145,16 +145,19 @@
                                         <h:h4 class="welcome">
                                             <h:small>
                                                 <h:i class="icon-question" />
-                                                Forgot your password?
+                                                Forgot your password
                                             </h:small>
                                         </h:h4>
                                         <h:form method="post" action="register/resetPassword" name="reset_form">
                                             <h:fieldset>
-                                                <h:div class="controls">
-                                                    <h:input class="span5" type="text" name="username" placeholder="Your Email Address"/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="username" placeholder="Your Email Address"/>
                                                 </h:div>
                                                 <h:hr class="margin-xm"/>
-                                                <n:button type="submit" class="btn-block btn btn-primary btn-larg">Reset Password</n:button>
+                                                <h:span>
+                                                    <h:button class="span4 btn btn-primary" type="submit">Reset Password</h:button>
+                                                    <h:br/>
+                                                </h:span>
                                                 <h:hr class="margin-mm"/>
                                                 <h:p>Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>
@@ -187,45 +190,62 @@
                                         <h:h4 class="welcome">
                                             <h:small>
                                                 <h:i class="icon-user" />
-                                                New User Registration?
+                                                New User Registration
                                             </h:small>
                                         </h:h4>
                                         <h:form method="post" action="register/newUserRegister" name="newuser_form">
                                             <h:fieldset>
                                                 <h:legend class="two"><h:span>Account information</h:span></h:legend>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="firstname" placeholder="first name"/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="firstname" placeholder="First Name"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="surname" placeholder="surname"/>
+                                                <br/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="surname" placeholder="surname"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="username" placeholder="username"/>
+                                                <br/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="username" placeholder="username"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="email" placeholder="email address"/>
+                                                <br/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="email" placeholder="email address"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
                                             </h:fieldset>
                                             <h:fieldset>
                                                 <h:legend class="two"><h:span>Password</h:span></h:legend>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="span3" type="password" name="password" placeholder="password"/>
+                                                <h:div class="input-group input-append">
+                                                    <h:input class="span4" type="password" name="password" placeholder="password"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="span3" type="password" name="confirmPassword" placeholder="confirm password"/>
+                                                <br/>
+                                                <h:div class="input-group input-append">
+                                                    <h:input class="span4" type="password" name="confirmPassword" placeholder="confirm password"/>
+                                                    <h:span class="add-on">*</h:span>
                                                 </h:div>
                                             </h:fieldset>
                                             <h:fieldset>
                                                 <h:legend class="two"><h:span>Password Security</h:span></h:legend>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="securityQuestion" placeholder="Password recovery security question"/>
+                                                <h:div class="input-append">
+                                                    <h:select name="securityQuestion" class="span4">
+                                                        <h:option value="What was your childhood nickname?">What was your childhood nickname?</h:option>
+                                                        <h:option value="In what city did you meet your spouse/significant other?">In what city did you meet your spouse/significant other?</h:option>
+                                                        <h:option value="What is the name of your favorite childhood friend?">What is the name of your favorite childhood friend?</h:option>
+                                                        <h:option value="What street did you live on in third grade?">What street did you live on in third grade?</h:option>
+                                                        <h:option value="What is the middle name of your oldest child?">What is the middle name of your oldest child?</h:option>
+                                                        <h:option value="What is your oldest sibling's middle name?">What is your oldest sibling's middle name?</h:option>
+                                                    </h:select>
                                                 </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="input-block-level" type="text" name="securityAnswer" placeholder="Answer for your security question"/>
+                                                <br/>
+                                                <h:div class="input-append">
+                                                    <h:input class="span4" type="text" name="securityAnswer" placeholder="Answer for your security question"/>
                                                 </h:div>
                                                 <h:hr class="margin-xx"/>
                                                 <h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>
-                                                <!--<a href="#newUser" role="button" class="btn-block btn btn-primary btn-larg" data-toggle="modal">Register</a>-->
                                                 <h:hr class="margin-xm"/>
                                                 <h:p class="text-right">Have you remembered? <h:a href="#login" class="btn btn-boo" data-toggle="tab">Try to log in again.</h:a></h:p>
                                             </h:fieldset>

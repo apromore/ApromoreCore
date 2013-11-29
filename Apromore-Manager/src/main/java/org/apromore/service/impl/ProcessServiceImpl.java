@@ -505,19 +505,21 @@ public class ProcessServiceImpl implements ProcessService {
             createNewProcessModelVersion(pmv, updatedFragment, composingFragments, newVersionNumber);
         }
 
-        // unlock the fragment
-        LOGGER.debug("Unlocking the original fragment: " + originalFragment);
-        lService.unlockFragment(originalFragment);
+        if (originalFragment != null) {
+            // unlock the fragment
+            LOGGER.debug("Unlocking the original fragment: " + originalFragment);
+            lService.unlockFragment(originalFragment);
 
-        // release locks of all descendant fragments of the original fragment
-        lService.unlockDescendantFragments(originalFragment);
+            // release locks of all descendant fragments of the original fragment
+            lService.unlockDescendantFragments(originalFragment);
 
-        // create new version for all ascendant fragments
-        LOGGER.debug("Propagating to parent fragments of fragment: " + originalFragment);
-        List<FragmentVersion> lockedParents = fragmentVersionRepo.getLockedParentFragments(originalFragment);
+            // create new version for all ascendant fragments
+            LOGGER.debug("Propagating to parent fragments of fragment: " + originalFragment);
+            List<FragmentVersion> lockedParents = fragmentVersionRepo.getLockedParentFragments(originalFragment);
 
-        for (FragmentVersion parent : lockedParents) {
-            propagateToParentsWithLockRelease(parent, originalFragment, updatedFragment, composingFragments, newVersionNumber);
+            for (FragmentVersion parent : lockedParents) {
+                propagateToParentsWithLockRelease(parent, originalFragment, updatedFragment, composingFragments, newVersionNumber);
+            }
         }
     }
 
