@@ -514,7 +514,7 @@ public class MainController extends BaseController {
                                 UserSessionManager.setPreviousFolder(null);
                                 UserSessionManager.setSelectedFolderIds(null);
                                 UserSessionManager.setTree(null);
-                                getService().writeUser(UserSessionManager.getCurrentUser());
+                                //getService().writeUser(UserSessionManager.getCurrentUser());
                                 Executions.sendRedirect("/j_spring_security_logout");
                                 break;
                             case Messagebox.NO:

@@ -1,18 +1,10 @@
 package org.apromore.manager.service;
 
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
-
-import javax.xml.bind.JAXBElement;
-import java.util.Date;
-
 import org.apromore.dao.model.User;
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.ReadUserByUsernameInputMsgType;
+import org.apromore.model.ReadUserByUsernameOutputMsgType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -45,10 +37,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.JAXBElement;
+import java.util.Date;
+
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
+
 /**
  * Test the Read User method on the Manager Portal Endpoint WebService.
  */
-public class ReadUserEndpointUnitTest {
+public class ReadUserByUsernameEndpointUnitTest {
 
     private ManagerPortalEndpoint endpoint;
 
@@ -93,9 +93,9 @@ public class ReadUserEndpointUnitTest {
 
     @Test
     public void testInvokeReadUser() throws Exception {
-        ReadUserInputMsgType msg = new ReadUserInputMsgType();
+        ReadUserByUsernameInputMsgType msg = new ReadUserByUsernameInputMsgType();
         msg.setUsername("someone");
-        JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
+        JAXBElement<ReadUserByUsernameInputMsgType> request = new ObjectFactory().createReadUserByUsernameRequest(msg);
 
         User user = new User();
         user.setLastActivityDate(new Date());
@@ -103,7 +103,7 @@ public class ReadUserEndpointUnitTest {
 
         replay(secSrv);
 
-        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(request);
+        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUser(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertNotNull(response.getValue().getUser());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), 0);
@@ -114,16 +114,16 @@ public class ReadUserEndpointUnitTest {
 
     @Test
     public void testInvokeReadUserNotFound() throws Exception {
-        ReadUserInputMsgType msg = new ReadUserInputMsgType();
+        ReadUserByUsernameInputMsgType msg = new ReadUserByUsernameInputMsgType();
         msg.setUsername("someone");
-        JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
+        JAXBElement<ReadUserByUsernameInputMsgType> request = new ObjectFactory().createReadUserByUsernameRequest(msg);
 
         User user = null;
         expect(secSrv.getUserByName(msg.getUsername())).andReturn(user);
 
         replay(secSrv);
 
-        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(request);
+        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUser(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), -1);
 

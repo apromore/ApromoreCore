@@ -22,6 +22,13 @@ public interface UserRepositoryCustom {
     User login(final String username, final String password);
 
     /**
+     * Attempts to find the User with the passed in email.
+     * @param email the email of the user.
+     * @return The user if found with a correct password or null.
+     */
+    User findUserByEmail(final String email);
+
+    /**
      * Check if user has specific permission.
      * @param userId, the id of the user we are searching for.
      * @param permissionId the id of the permission we are searching for.

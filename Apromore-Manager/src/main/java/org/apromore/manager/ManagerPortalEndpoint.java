@@ -1,20 +1,5 @@
 package org.apromore.manager;
 
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -89,8 +74,6 @@ import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.LoginInputMsgType;
-import org.apromore.model.LoginOutputMsgType;
 import org.apromore.model.MergeProcessesInputMsgType;
 import org.apromore.model.MergeProcessesOutputMsgType;
 import org.apromore.model.NativeMetaData;
@@ -127,12 +110,16 @@ import org.apromore.model.ReadPluginInfoInputMsgType;
 import org.apromore.model.ReadPluginInfoOutputMsgType;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.ReadUserByEmailInputMsgType;
+import org.apromore.model.ReadUserByEmailOutputMsgType;
+import org.apromore.model.ReadUserByUsernameInputMsgType;
+import org.apromore.model.ReadUserByUsernameOutputMsgType;
 import org.apromore.model.RemoveFolderPermissionsInputMsgType;
 import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
 import org.apromore.model.RemoveProcessPermissionsInputMsgType;
 import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
+import org.apromore.model.ResetUserPasswordInputMsgType;
+import org.apromore.model.ResetUserPasswordOutputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.model.RunAPQLInputMsgType;
 import org.apromore.model.RunAPQLOutputMsgType;
@@ -187,6 +174,21 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The WebService Endpoint Used by the Portal.
@@ -789,14 +791,14 @@ public class ManagerPortalEndpoint {
     /*
      * (non-Javadoc)
      *
-     * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType payload )
+     * @see org.apromore.manager.service.ManagerPortalPortType#ReadUserByUsername(ReadUserInputMsgType payload )
      */
-    @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "ReadUserByUsernameRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload final JAXBElement<ReadUserInputMsgType> req) {
+    public JAXBElement<ReadUserByUsernameOutputMsgType> readUser(@RequestPayload final JAXBElement<ReadUserByUsernameInputMsgType> req) {
         LOGGER.trace("Executing operation readUser");
-        ReadUserInputMsgType payload = req.getValue();
-        ReadUserOutputMsgType res = new ReadUserOutputMsgType();
+        ReadUserByUsernameInputMsgType payload = req.getValue();
+        ReadUserByUsernameOutputMsgType res = new ReadUserByUsernameOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
         try {
@@ -809,8 +811,50 @@ public class ManagerPortalEndpoint {
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return WS_OBJECT_FACTORY.createReadUserResponse(res);
+        return WS_OBJECT_FACTORY.createReadUserByUsernameResponse(res);
     }
+
+    @PayloadRoot(localPart = "ReadUserByEmailRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadUserByEmailOutputMsgType> resetUser(@RequestPayload final JAXBElement<ReadUserByEmailInputMsgType> req) {
+        LOGGER.trace("Executing operation login");
+        ReadUserByEmailInputMsgType payload = req.getValue();
+        ReadUserByEmailOutputMsgType res = new ReadUserByEmailOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            UserType user = UserMapper.convertUserTypes(secSrv.getUserByEmail(payload.getEmail()));
+            res.setUser(user);
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(0);
+            result.setMessage(ex.getMessage());
+        }
+        return new ObjectFactory().createReadUserByEmailResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ResetUserPasswordRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ResetUserPasswordOutputMsgType> resetUserPassword(@RequestPayload final JAXBElement<ResetUserPasswordInputMsgType> req) {
+        LOGGER.trace("Executing operation login");
+        ResetUserPasswordInputMsgType payload = req.getValue();
+        ResetUserPasswordOutputMsgType res = new ResetUserPasswordOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            res.setSuccess(secSrv.resetUserPassword(payload.getUsername(),payload.getPassword()));
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(0);
+            result.setMessage(ex.getMessage());
+        }
+        return new ObjectFactory().createResetUserPasswordResponse(res);
+    }
+
 
     /* (non-Javadoc)
     * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType  payload )
@@ -1132,27 +1176,6 @@ public class ManagerPortalEndpoint {
 
         res.setResult(result);
         return WS_OBJECT_FACTORY.createDeployProcessResponse(res);
-    }
-
-    @PayloadRoot(localPart = "LoginRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<LoginOutputMsgType> login(@RequestPayload final JAXBElement<LoginInputMsgType> req) {
-        LOGGER.trace("Executing operation login");
-        LoginInputMsgType payload = req.getValue();
-        LoginOutputMsgType res = new LoginOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            UserType user = UserMapper.convertUserTypes(secSrv.login(payload.getUsername(), payload.getPassword()));
-            res.setUser(user);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(0);
-            result.setMessage(ex.getMessage());
-        }
-        return new ObjectFactory().createLoginResponse(res);
     }
 
     @PayloadRoot(localPart = "GetWorkspaceFolderTreeRequest", namespace = NAMESPACE)

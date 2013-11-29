@@ -36,12 +36,11 @@ public interface SecurityService {
     List<User> searchUsers(String searchString);
 
     /**
-     * Get a particular User.
-     * @param username the username of the user we are searching for.
-     * @param password the MD5 encrypted password
+     * Get a particular User by their email.
+     * @param email the username of the user we are searching for.
      * @return the logged in User         
      */
-    User login(String username, String password);
+    User getUserByEmail(String email);
 
     /**
      * Get a particular User.
@@ -69,5 +68,12 @@ public interface SecurityService {
      * @return a List of permissions for the specific user.
      */
     boolean hasAccess(String userId, String permissionId);
-    
+
+    /**
+     * Update the user password with the new one passed in.
+     * @param username the user to find.
+     * @param password the new password
+     * @return if success or not.
+     */
+    boolean resetUserPassword(String username, String password);
 }
