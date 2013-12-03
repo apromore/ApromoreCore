@@ -61,17 +61,17 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
                 {
                     text: "Cancel",
                     handler: function () {
-                        this.ownerCt.close()
+                        this.ownerCt.close();
                     }
                 }
             ]
         });
-        this.dialog.show()
+        this.dialog.show();
     },
 
     bpstruct: function () {
         if (this.dialog) {
-            this.dialog.close()
+            this.dialog.close();
         }
 
         var json = this.facade.getSerializedJSON();
@@ -82,7 +82,7 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
                 buttons: Ext.Msg.OK,
                 icon: Ext.Msg.INFO
             }).getDialog().syncSize();
-            return
+            return;
         }
 
         var msg = Ext.Msg.wait("Waiting for BPStruct to process model.");
@@ -94,17 +94,16 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
             onSuccess: function (data) {
                 msg.hide();
                 var responseJson = data.responseText.evalJSON(true);
-                //console.log("JSON: " + JSON.stringify(responseJson.data_json));
                 if (responseJson != null) {
                     if (responseJson.hasOwnProperty("errors")) {
-                        this.showErrors(responseJson.errors)
+                        this.showErrors(responseJson.errors);
                     } else {
                         if (responseJson.hasChanged) {
                             if (responseJson.hasOwnProperty("data_json")) {
-                                this.replaceProcess(responseJson.data_json)
+                                this.replaceProcess(responseJson.data_json);
                             }
                         } else {
-                            this.showCouldntStructure()
+                            this.showCouldntStructure();
                         }
                     }
                 }
@@ -138,7 +137,7 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
                     );
                     this.facade.importJSON(this.newProcess, true);
                 } catch (err) {
-                    console.log("BPStruct Update Canvas error: " +err.message);
+                    console.log("BPStruct Update Canvas error: " + err.message);
                 }
             },
 

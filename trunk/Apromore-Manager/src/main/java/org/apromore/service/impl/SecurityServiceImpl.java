@@ -9,7 +9,9 @@ import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.model.UserType;
 import org.apromore.service.SecurityService;
+import org.apromore.util.MailUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,6 +33,11 @@ import java.util.UUID;
 public class SecurityServiceImpl implements SecurityService {
 
     private static final String ROLE_USER = "ROLE_USER";
+    private static final String EMAIL_ADDRESS = "apromore@qut.edu.au";
+    private static final String EMAIL_SUBJECT = "Reset Password";
+    private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
+    private static final String EMAIL_END = ", Please try to login again!";
+
 
     private UserRepository userRepo;
     private RoleRepository roleRepo;
@@ -162,12 +169,17 @@ public class SecurityServiceImpl implements SecurityService {
         User user = userRepo.findByUsername(username);
         Membership membership = user.getMembership();
         membership.setPassword(newPassword);
-
         membership = membershipRepo.save(membership);
-        if (membership.getPassword().equals(newPassword)) {
-            return true;
-        } else {
-            return false;
-        }
+
+        // Email the password to the user
+        emailUserPassword(membership, newPassword);
+
+        return membership.getPassword().equals(newPassword);
+    }
+
+    /* Email the Users Password to them. */
+    private void emailUserPassword(Membership membership, String newPswd) {
+        String emailText = EMAIL_START + newPswd + EMAIL_END;
+        MailUtil.sendEmailText(membership.getEmail(), EMAIL_ADDRESS, EMAIL_SUBJECT, emailText);
     }
 }

@@ -1,4 +1,4 @@
-package org.apromore.portal.util;
+package org.apromore.util;
 
 import org.junit.After;
 import org.junit.Test;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
 
 /**

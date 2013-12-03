@@ -807,7 +807,7 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setUser(user);
         } catch (Exception ex) {
-            LOGGER.error("", ex);
+            LOGGER.error("Get User by there username failed for " + payload.getUsername(), ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
@@ -828,8 +828,8 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(0);
+            LOGGER.error("Get User by there email address failed for " + payload.getEmail(), ex);
+            result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
         return new ObjectFactory().createReadUserByEmailResponse(res);
@@ -844,12 +844,12 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            res.setSuccess(secSrv.resetUserPassword(payload.getUsername(),payload.getPassword()));
+            res.setSuccess(secSrv.resetUserPassword(payload.getUsername(), payload.getPassword()));
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(0);
+            LOGGER.error("Resetting a users password failed for " + payload.getUsername(), ex);
+            result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
         return new ObjectFactory().createResetUserPasswordResponse(res);
