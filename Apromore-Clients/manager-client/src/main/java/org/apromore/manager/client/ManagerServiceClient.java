@@ -186,6 +186,7 @@ public class ManagerServiceClient implements ManagerService {
 
         ResetUserPasswordInputMsgType msg = new ResetUserPasswordInputMsgType();
         msg.setUsername(username);
+        msg.setPassword(password);
 
         JAXBElement<ResetUserPasswordInputMsgType> request = WS_CLIENT_FACTORY.createResetUserPasswordRequest(msg);
 

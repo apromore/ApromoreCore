@@ -1,4 +1,4 @@
-package org.apromore.util;
+package org.apromore.security.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

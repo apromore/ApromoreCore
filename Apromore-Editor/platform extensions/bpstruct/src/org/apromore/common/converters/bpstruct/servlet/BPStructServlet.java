@@ -33,7 +33,7 @@ public class BPStructServlet extends HttpServlet {
     private static final long serialVersionUID = 4651531154294830523L;
 
     private static final Logger LOGGER = Logger.getLogger(BPStructServlet.class);
-    private static final String BPSTRUCT_SERVER = "http://localhost:8080/bpstruct/rest/v1/structure/max";
+    private static final String BPSTRUCT_SERVER = "http://apromore.qut.edu.au/bpstruct/rest/v1/structure/max";
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

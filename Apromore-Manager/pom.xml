@@ -406,7 +406,6 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>com.springsource.javax.mail</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -482,6 +481,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>test-tools</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.mock-javamail</groupId>
+            <artifactId>mock-javamail</artifactId>
             <scope>test</scope>
         </dependency>
 
