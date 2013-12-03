@@ -13,7 +13,7 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.mapper.UserMapper;
-import org.apromore.util.SecurityUtil;
+import org.apromore.security.util.SecurityUtil;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -11,7 +11,7 @@ import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.model.*;
-import org.apromore.util.SecurityUtil;
+import org.apromore.security.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
