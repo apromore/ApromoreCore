@@ -45,7 +45,7 @@
                             <mainClass>com.processconfiguration.quaestio.Main</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <Permissions>sandbox</Permissions>
+                            <Permissions>all-permissions</Permissions>
                             <Trusted-Only>true</Trusted-Only>
                         </manifestEntries>
                     </archive>
