@@ -10,12 +10,13 @@
     <property name="database-name" value="mysql"/>
 
     <!-- Folders used to build and deploy dependencies for Apromore. -->
-    <property name="dir-extras" location="${basedir}/Extras"/>
-    <property name="dir-extras-lib" location="${dir-extras}/libraries"/>
+    <property name="dir-sups" location="${basedir}/Supplements"/>
+    <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
+    <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
     <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
     <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
-    <property name="dir-extras-bpmncmap" location="${dir-extras}/bpmncmap"/>
-    <property name="dir-extras-quaestio" location="${dir-extras}/Quaestio"/>
+    <!--<property name="dir-extras-bpmncmap" location="${dir-extras}/bpmncmap"/>-->
+    <!--<property name="dir-extras-quaestio" location="${dir-sups}/Quaestio"/>-->
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
     <property name="virgo-url" value="http://apromore.googlecode.com/svn/dev/software/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
@@ -47,29 +48,29 @@
     <!-- Project Setup -->
     <target name="apromore-pre-build">
         <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
-        <exec dir="${dir-extras-lib}/" executable="cmd" osfamily="windows">
+        <exec dir="${dir-sups-lib}/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="upload.bat"/>
         </exec>
-        <exec dir="${dir-extras-lib}" executable="./upload.sh" osfamily="unix" />
+        <exec dir="${dir-sups-lib}" executable="./upload.sh" osfamily="unix" />
 
         <!-- Build the tools required for the main Apromore product. -->
-        <exec dir="${dir-extras-build-tools}/" executable="mvn">
+        <exec dir="/Apromore-Extras/Build-Tools/" executable="mvn">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-        <exec dir="${dir-extras-test-tools}/" executable="mvn">
+        <exec dir="/Apromore-Schema/Test-Tools/" executable="mvn">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-        <exec dir="${dir-extras-bpmncmap}/" executable="mvn">
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
-        <exec dir="${dir-extras-quaestio}/" executable="mvn">
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
+        <!--<exec dir="/Apromore-Extras/bpmncmap/" executable="mvn">-->
+            <!--<arg value="clean"/>-->
+            <!--<arg value="install"/>-->
+        <!--</exec>-->
+        <!--<exec dir="${dir-extras-quaestio}/" executable="mvn">-->
+            <!--<arg value="clean"/>-->
+            <!--<arg value="install"/>-->
+        <!--</exec>-->
     </target>
 
 
@@ -92,12 +93,12 @@
 
     <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
-            <fileset dir="Extras/Virgo">
+            <fileset dir="Supplements/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/configuration" overwrite="true">
-            <fileset dir="Extras/Virgo">
+            <fileset dir="Supplements/Virgo">
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
             </fileset>
