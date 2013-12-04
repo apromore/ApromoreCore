@@ -14,6 +14,7 @@
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
     <http pattern="/js/**" security="none"/>
+    <http pattern="/applets/**" security="none"/>
     <http pattern="/zkau/**" security="none"/>
     <http pattern="/login.zul*" security="none"/>
 
