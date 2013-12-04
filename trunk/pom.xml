@@ -57,6 +57,8 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>Apromore-Extras/bpmncmap</module>
+        <module>Apromore-Extras/Quaestio</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
@@ -195,6 +197,7 @@
         <maven.install.plugin>2.4</maven.install.plugin>
         <maven.jar.plugin>2.3.2</maven.jar.plugin>
         <maven.jacoco.version>0.6.2.201302030002</maven.jacoco.version>
+        <maven.javacc.plugin>2.6</maven.javacc.plugin>
         <maven.javadoc.plugin>2.9</maven.javadoc.plugin>
         <maven.jaxb2.plugin>0.8.3</maven.jaxb2.plugin>
         <maven.jaxb2.codehaus.plugin>1.5</maven.jaxb2.codehaus.plugin>
@@ -1231,6 +1234,11 @@
                         <source>${java.source.version}</source>
                         <target>${java.target.version}</target>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>javacc-maven-plugin</artifactId>
+                    <version>${maven.javacc.plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
