@@ -1,0 +1,1242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2004-2011 The YAWL Foundation. All rights reserved.
+  ~ The YAWL Foundation is a collaboration of individuals and
+  ~ organisations who are committed to improving workflow technology.
+  ~
+  ~ This file is part of YAWL. YAWL is free software: you can
+  ~ redistribute it and/or modify it under the terms of the GNU Lesser
+  ~ General Public License as published by the Free Software Foundation.
+  ~
+  ~ YAWL is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  ~ or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
+  ~ Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with YAWL. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:yawl="http://www.yawlfoundation.org/yawlschema"
+           targetNamespace="http://www.yawlfoundation.org/yawlschema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="2.2">
+	<!--	
+	##########################################################################################
+		DECLARE ROOT ELEMENT - YAWL_Specification
+	##########################################################################################
+	-->
+	<xs:element name="specificationSet" type="yawl:SpecificationSetFactsType">
+		<xs:unique name="SpecificationUnique">
+			<xs:selector xpath="specification"/>
+			<xs:field xpath="@uri"/>
+		</xs:unique>
+	</xs:element>
+	<!--
+	################################################################################################
+	SIMPLE TYPES FROM VALUE TYPES
+	################################################################################################
+	-->
+	<xs:simpleType name="ControlTypeCodeType">
+		<xs:annotation>
+			<xs:documentation>Encapsulates the range of relation T--&gt;{AND, OR, XOR}</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="and"/>
+			<xs:enumeration value="or"/>
+			<xs:enumeration value="xor"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CreationModeCodeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="static"/>
+			<xs:enumeration value="dynamic"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DecompositionIDType">
+		<xs:restriction base="xs:NCName"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocumentationType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="LabelType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="DirectionModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="input"/>
+			<xs:enumeration value="output"/>
+			<xs:enumeration value="both"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NCNameType">
+		<xs:restriction base="xs:NCName"/>
+	</xs:simpleType>
+	<xs:simpleType name="NetElementIDType">
+		<xs:restriction base="xs:NMTOKEN"/>
+	</xs:simpleType>
+	<xs:simpleType name="NullType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PositiveIntegerType">
+		<xs:restriction base="xs:positiveInteger"/>
+	</xs:simpleType>
+	<xs:simpleType name="ResourcingExternalInteractionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="manual"/>
+			<xs:enumeration value="automated"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResourcingInitiatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="system"/>
+			<xs:enumeration value="user"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResourcingPrivilegeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="canSuspend"/>
+			<xs:enumeration value="canReallocateStateless"/>
+			<xs:enumeration value="canReallocateStateful"/>
+			<xs:enumeration value="canDeallocate"/>
+			<xs:enumeration value="canDelegate"/>
+			<xs:enumeration value="canSkip"/>
+			<xs:enumeration value="canPile"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResourcingResourceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="participant"/>
+			<xs:enumeration value="role"/>
+		</xs:restriction>
+	</xs:simpleType>
+    <xs:simpleType name="ResourcingNonHumanType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="nonHumanResource"/>
+            <xs:enumeration value="nonHumanCategory"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ResourcingSecondaryResourceType">
+        <xs:union memberTypes="yawl:ResourcingResourceType yawl:ResourcingNonHumanType"/>
+    </xs:simpleType>
+	<xs:simpleType name="TimerTriggerType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OnEnabled"/>
+			<xs:enumeration value="OnExecuting"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimerIntervalType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="YEAR"/>
+			<xs:enumeration value="MONTH"/>
+			<xs:enumeration value="WEEK"/>
+			<xs:enumeration value="DAY"/>
+			<xs:enumeration value="HOUR"/>
+			<xs:enumeration value="MIN"/>
+			<xs:enumeration value="SEC"/>
+			<xs:enumeration value="MSEC"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="URIType">
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<xs:simpleType name="VariableNameType">
+		<xs:restriction base="xs:NMTOKEN"/>
+	</xs:simpleType>
+	<xs:simpleType name="XPathPredicateType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="XQueryType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+	################################################################################################
+	COMPLEX TYPES FROM ENTITY TYPES
+	################################################################################################
+	-->
+	<xs:complexType name="ControlTypeType">
+		<xs:attribute name="code" type="yawl:ControlTypeCodeType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CreationModeType">
+		<xs:attribute name="code" type="yawl:CreationModeCodeType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CustomSchemaNamespaceMappingType">
+		<xs:attribute name="ncname" type="yawl:NCNameType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="DecompositionType">
+		<xs:attribute name="id" type="yawl:DecompositionIDType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="DirectionType">
+		<xs:attribute name="mode" type="yawl:DirectionModeType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ExpressionType">
+		<xs:attribute name="query" type="yawl:XQueryType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ExternalNetElementType">
+		<xs:attribute name="id" type="yawl:NetElementIDType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="FlowsIntoType">
+		<xs:sequence>
+			<xs:element name="nextElementRef" type="yawl:ExternalNetElementType"/>
+			<xs:element name="predicate" type="yawl:PredicateType" minOccurs="0"/>
+			<xs:element name="isDefaultFlow" type="yawl:NullType" minOccurs="0"/>
+			<xs:element name="documentation" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LocationType">
+		<xs:attribute name="uri" type="yawl:URIType"/>
+	</xs:complexType>
+	<xs:complexType name="NamespacePrefixType">
+		<xs:attribute name="ncname" type="yawl:NCNameType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="NamespaceURI">
+		<xs:attribute name="uri" type="yawl:URIType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="PredicateType">
+		<xs:simpleContent>
+			<xs:extension base="yawl:XPathPredicateType">
+				<xs:attribute name="ordering" type="xs:integer"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ResourcingInteractionInitiatorType">
+		<xs:attribute name="initiator" type="yawl:ResourcingInitiatorType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TypeNameType">
+		<xs:attribute name="ncname" type="yawl:NCNameType"/>
+	</xs:complexType>
+	<xs:complexType name="TypeType">
+		<xs:sequence>
+			<xs:element name="namespace" type="yawl:NamespacePrefixType"/>
+			<xs:element name="typeName" type="yawl:TypeNameType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SpecificationType">
+		<xs:attribute name="uri" type="yawl:URIType" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="SpecificationSetType">
+		<!--xs:attribute name="uri" type="yawl:URIType" use="required"/-->
+	</xs:complexType>
+    <xs:complexType name="NonHumanCategoryType">
+        <xs:attribute name="subcategory" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+
+  <!--
+  #######################################################################################
+    TYPES FROM CONFIGURATION
+  #######################################################################################
+  -->
+  <xs:simpleType name="InputPortValueType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="activated"/>
+      <xs:enumeration value="blocked" />
+      <xs:enumeration value="hidden" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="OutputPortValueType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="activated"/>
+      <xs:enumeration value="blocked" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CreationModeConfigType">
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="restict"/>
+        <xs:enumeration value="keep"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="InputPortConfigType">
+    <xs:sequence>
+      <xs:element name="flowSource" type="yawl:ExternalNetElementType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="yawl:InputPortValueType"/>
+  </xs:complexType>
+  <xs:complexType name="OutputPortConfigType">
+    <xs:sequence>
+      <xs:element name="flowDestination" type="yawl:ExternalNetElementType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="yawl:OutputPortValueType"/>
+  </xs:complexType>
+
+  <xs:complexType name="joinConfigType">
+    <xs:sequence>
+      <xs:element name="port" type="yawl:InputPortConfigType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="yawl:InputPortValueType"/>
+  </xs:complexType>
+  <xs:complexType name="remConfigType">
+    <xs:attribute name="value" type="yawl:OutputPortValueType"/>
+  </xs:complexType>
+  <xs:complexType name="splitConfigType">
+    <xs:sequence>
+      <xs:element name="port" type="yawl:OutputPortConfigType"
+                  minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="yawl:OutputPortValueType"/>
+  </xs:complexType>
+
+  <xs:complexType name="nofiConfigType">
+    <xs:sequence>
+      <xs:element name="minIncrease" type="xs:positiveInteger"/>
+      <xs:element name="maxDecrease" type="xs:positiveInteger"/>
+      <xs:element name="thresIncrease" type="xs:positiveInteger"/>
+      <xs:element name="creationMode" type="yawl:CreationModeConfigType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ConfigurationType">
+    <xs:sequence>
+      <xs:element name="join" type="yawl:joinConfigType" minOccurs="0"/>
+      <xs:element name="nofi" type="yawl:nofiConfigType" minOccurs="0"/>
+      <xs:element name="rem" type="yawl:remConfigType" minOccurs="0"/>
+      <xs:element name="split" type="yawl:splitConfigType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+    <!--
+    ################################################################################################
+    COMPLEX TYPES FROM FACT TYPE GROUPINGS
+    ################################################################################################
+    -->
+	<!--
+	#### TYPE #### CustomSchemaNamespaceMappingFactsType
+	-->
+	<xs:complexType name="CustomSchemaNamespaceMappingFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:CustomSchemaNamespaceMappingType">
+				<xs:sequence>
+					<xs:element name="expandsTo" type="yawl:URIType"/>
+					<xs:element name="definedAt" type="yawl:URIType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### DecompositionFactsType
+	-->
+	<xs:complexType name="DecompositionFactsType" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="yawl:DecompositionType">
+				<xs:sequence>
+					<xs:element name="name" type="yawl:NameType" minOccurs="0"/>
+					<xs:element name="documentation" type="yawl:DocumentationType" minOccurs="0"/>
+					<xs:element name="inputParam" type="yawl:InputParameterFactsType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="outputParam" type="yawl:OutputParameterFactsType" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="logPredicate" type="yawl:LogPredicateFactsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### ExternalConditionFactsType
+	-->
+	<xs:complexType name="ExternalConditionFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ExternalNetElementFactsType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### ExternalNetElementFactsType
+	-->
+	<xs:complexType name="ExternalNetElementFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ExternalNetElementType">
+				<xs:sequence>
+					<xs:element name="name" minOccurs="0"/>
+					<xs:element name="documentation" minOccurs="0"/>
+					<xs:element name="flowsInto" type="yawl:FlowsIntoType" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### ExternalTaskFactsType extends ExternalNetElementFactsType
+	-->
+	<xs:complexType name="ExternalTaskFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ExternalNetElementFactsType">
+				<xs:sequence>
+					<xs:element name="join" type="yawl:ControlTypeType"/>
+					<xs:element name="split" type="yawl:ControlTypeType"/>
+          <xs:element name="defaultConfiguration" type="yawl:ConfigurationType" minOccurs="0"/>
+          <xs:element name="configuration" type="yawl:ConfigurationType" minOccurs="0"/>
+					<xs:element name="removesTokens" type="yawl:ExternalNetElementType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="removesTokensFromFlow" type="yawl:RemovesTokensFromFlowType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="startingMappings" type="yawl:VarMappingSetType" minOccurs="0">
+						<xs:key name="StartMappingExpressionKey">
+							<xs:selector xpath="yawl:mapping/yawl:expression"/>
+							<xs:field xpath="@query"/>
+						</xs:key>
+						<xs:key name="StartMappingMapToKey">
+							<xs:selector xpath="yawl:mapping"/>
+							<xs:field xpath="yawl:mapsTo"/>
+						</xs:key>
+					</xs:element>
+					<xs:element name="completedMappings" type="yawl:VarMappingSetType" minOccurs="0">
+						<xs:key name="CompletedMappingExpressionKey">
+							<xs:selector xpath="yawl:mapping/yawl:expression"/>
+							<xs:field xpath="@query"/>
+						</xs:key>
+						<xs:key name="CompletedMappingMapToKey">
+							<xs:selector xpath="yawl:mapping"/>
+							<xs:field xpath="yawl:mapsTo"/>
+						</xs:key>
+					</xs:element>
+					<xs:element name="enablementMappings" type="yawl:VarMappingSetType" minOccurs="0">
+						<xs:key name="EnablementMappingExpressionKey">
+							<xs:selector xpath="yawl:mapping/yawl:expression"/>
+							<xs:field xpath="@query"/>
+						</xs:key>
+						<xs:key name="EnablementMappingMapToKey">
+							<xs:selector xpath="yawl:mapping"/>
+							<xs:field xpath="yawl:mapsTo"/>
+						</xs:key>
+					</xs:element>
+					<xs:element name="timer" type="yawl:TimerType" minOccurs="0"/>
+					<xs:element name="resourcing" type="yawl:ResourcingFactsType" minOccurs="0"/>
+                    <xs:element name="customForm" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="decomposesTo" type="yawl:DecompositionType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### MultipleInstanceExternalTaskFactsType
+	-->
+	<xs:complexType name="MultipleInstanceExternalTaskFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ExternalTaskFactsType">
+				<xs:sequence>
+					<xs:element name="minimum" type="yawl:XQueryType"/>
+					<xs:element name="maximum" type="yawl:XQueryType"/>
+					<xs:element name="threshold" type="yawl:XQueryType"/>
+					<xs:element name="creationMode" type="yawl:CreationModeType"/>
+					<xs:element name="miDataInput">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="expression" type="yawl:ExpressionType"/>
+								<xs:element name="splittingExpression" type="yawl:ExpressionType"/>
+								<xs:element name="formalInputParam" type="yawl:VariableNameType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="miDataOutput" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="formalOutputExpression" type="yawl:ExpressionType"/>
+								<xs:element name="outputJoiningExpression" type="yawl:ExpressionType"/>
+								<xs:element name="resultAppliedToLocalVariable" type="yawl:VariableNameType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### NetFactsType
+	-->
+	<xs:complexType name="NetFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:DecompositionFactsType">
+				<xs:sequence>
+					<xs:element name="localVariable" type="yawl:VariableFactsType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="processControlElements">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="inputCondition" type="yawl:ExternalConditionFactsType"/>
+								<xs:choice maxOccurs="unbounded">
+									<xs:element name="task" type="yawl:ExternalTaskFactsType" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element name="condition" type="yawl:ExternalConditionFactsType" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:choice>
+								<xs:element name="outputCondition" type="yawl:OutputConditionFactsType"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+                    <xs:element name="externalDataGateway" type="yawl:NameType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="isRootNet" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### OutputConditionFactsType extends ExternalNetElementType
+	-->
+	<xs:complexType name="OutputConditionFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ExternalNetElementType">
+				<xs:sequence>
+					<xs:element name="name" minOccurs="0"/>
+					<xs:element name="documentation" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### RemovesTokensFromFlowType
+	-->
+	<xs:complexType name="RemovesTokensFromFlowType">
+		<xs:sequence>
+			<xs:element name="flowSource" type="yawl:ExternalNetElementType"/>
+			<xs:element name="flowDestination" type="yawl:ExternalNetElementType"/>
+		</xs:sequence>
+	</xs:complexType>
+    <!--
+    #### TYPE #### LogPredicateFactsType
+    -->
+    <xs:complexType name="LogPredicateFactsType">
+		<xs:sequence>
+			<xs:element name="start" type="yawl:NameType" minOccurs="0"/>
+			<xs:element name="completion" type="yawl:NameType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+	#### RESOURCING TYPES
+	-->
+	<xs:complexType name="ResourcingAllocateFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ResourcingInteractionInitiatorType">
+				<xs:sequence>
+					<xs:element name="allocator" type="yawl:ResourcingSelectorFactsType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingDistributionSetFactsType">
+		<xs:sequence>
+			<xs:element name="initialSet">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="yawl:ResourcingSetFactsType">
+							<xs:sequence>
+								<xs:element name="param" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="name" type="yawl:NameType"/>
+											<xs:element name="refers" type="yawl:ResourcingResourceType"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+				<xs:unique name="uniqueParam">
+					<xs:selector xpath="yawl:param"/>
+					<xs:field xpath="yawl:name"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="filters" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="filter" type="yawl:ResourcingSelectorFactsType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="uniqueFilter">
+					<xs:selector xpath="yawl:filter"/>
+					<xs:field xpath="yawl:name"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="constraints" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="constraint" type="yawl:ResourcingSelectorFactsType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="uniqueConstraint">
+					<xs:selector xpath="yawl:constraint"/>
+					<xs:field xpath="yawl:name"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+		### RESOURCING "ROOT"
+	-->
+	<xs:complexType name="ResourcingFactsType">
+		<xs:sequence>
+			<xs:element name="offer" type="yawl:ResourcingOfferFactsType"/>
+			<xs:element name="allocate" type="yawl:ResourcingAllocateFactsType"/>
+			<xs:element name="start" type="yawl:ResourcingInteractionInitiatorType"/>
+            <xs:element name="secondary" type="yawl:ResourcingSecondaryFactsType" minOccurs="0"/>
+			<xs:element name="privileges" type="yawl:ResourcingPrivilegesFactsType" minOccurs="0">
+				<xs:unique name="uniquePrivilege">
+					<xs:selector xpath="yawl:privilege"/>
+					<xs:field xpath="yawl:name"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingOfferFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:ResourcingInteractionInitiatorType">
+				<xs:sequence>
+					<xs:element name="distributionSet" type="yawl:ResourcingDistributionSetFactsType" minOccurs="0"/>
+					<xs:element name="familiarParticipant" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="taskID" type="yawl:NameType" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingParamFactsType">
+		<xs:sequence>
+			<xs:element name="param" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="key" type="yawl:NameType"/>
+						<xs:element name="value" type="yawl:NameType"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+    <!--
+    -->
+	<xs:complexType name="ResourcingPrivilegesFactsType">
+		<xs:sequence>
+			<xs:element name="privilege" minOccurs="0" maxOccurs="7">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="yawl:ResourcingPrivilegeType"/>
+						<xs:choice>
+							<xs:element name="allowall" type="xs:boolean"/>
+							<xs:element name="set" type="yawl:ResourcingSetFactsType"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="uniqueSetParticipant">
+					<xs:selector xpath="yawl:set"/>
+					<xs:field xpath="yawl:participant"/>
+				</xs:unique>
+				<xs:unique name="uniqueSetRole">
+					<xs:selector xpath="yawl:set"/>
+					<xs:field xpath="yawl:role"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingSelectorFactsType">
+		<xs:sequence>
+			<xs:element name="name" type="yawl:NameType"/>
+			<xs:element name="params" type="yawl:ResourcingParamFactsType" minOccurs="0">
+				<xs:unique name="uniqueParams">
+					<xs:selector xpath="yawl:param"/>
+					<xs:field xpath="yawl:key"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingSetFactsType">
+		<xs:sequence>
+			<xs:element name="participant" type="yawl:NameType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="role" type="yawl:NameType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+    -->
+	<xs:complexType name="ResourcingStartFactsType">
+		<xs:sequence>
+			<xs:element name="initiator" type="yawl:ResourcingInitiatorType"/>
+		</xs:sequence>
+	</xs:complexType>
+    <!--
+    -->
+    <xs:complexType name="ResourcingSecondaryFactsType">
+        <xs:complexContent>
+            <xs:extension base="yawl:ResourcingSetFactsType">
+                <xs:sequence>
+                    <xs:element name="nonHumanResource" type="yawl:NameType"
+                                minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="nonHumanCategory" minOccurs="0" maxOccurs="unbounded">
+                       <xs:complexType>
+                         <xs:simpleContent>
+                           <xs:extension base="yawl:NameType">
+                              <xs:attribute name="subcategory" type="xs:string"/>
+                           </xs:extension>
+                         </xs:simpleContent>
+                       </xs:complexType>
+                     </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+	<!--  
+		### END RESOURCING TYPES ###
+    -->
+    <!--
+	#### TYPE #### TimerType
+	-->
+    <xs:complexType name="TimerType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="netparam" type="xs:string"/>
+                <xs:sequence>
+                    <xs:element name="trigger" type="yawl:TimerTriggerType"/>
+                    <xs:choice>
+                        <xs:element name="expiry" type="xs:long"/>
+                        <xs:choice>
+                            <xs:element name="duration" type="xs:duration"/>
+                            <xs:element name="durationparams"
+                                        type="yawl:TimerDurationFactsType"/>
+                        </xs:choice>    
+                    </xs:choice>
+                </xs:sequence>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+	<!--
+	#### TYPE #### TimerDurationFactsType
+	-->
+    <xs:complexType name="TimerDurationFactsType">
+        <xs:sequence>
+            <xs:element name="ticks" type="xs:long"/>
+            <xs:element name="interval" type="yawl:TimerIntervalType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!--
+	#### TYPE #### VarMappingAndTransformType
+	-->
+	<xs:complexType name="VarMappingSetType">
+		<xs:sequence>
+			<xs:element name="mapping" type="yawl:VarMappingFactsType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+	#### TYPE #### VarMappingFactsType
+	-->
+	<xs:complexType name="VarMappingFactsType">
+		<xs:sequence>
+			<xs:element name="expression" type="yawl:ExpressionType"/>
+			<xs:element name="mapsTo" type="yawl:VariableNameType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+	#### TYPE #### WebServiceGatewayFactsType
+	-->
+	<xs:complexType name="WebServiceGatewayFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:DecompositionFactsType">
+				<xs:sequence>
+					<xs:element name="enablementParam" type="yawl:InputParameterFactsType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="yawlService" minOccurs="0">
+              <xs:complexType>
+                  <xs:sequence>
+                      <xs:element name="documentation" type="xs:string" minOccurs="0"/>
+                      <xs:choice>
+                          <xs:sequence>
+                              <xs:element name="wsdlLocation" type="xs:anyURI"/>
+                              <xs:element name="operationName" type="xs:NMTOKEN"/>
+                          </xs:sequence>
+                          <xs:sequence/>
+                      </xs:choice>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="yawl:YAWLServiceIDType" use="required"/>
+              </xs:complexType>
+					</xs:element>
+          <xs:element name="codelet" type="xs:NCName" minOccurs="0"/>
+          <xs:element name="externalInteraction"
+                      type="yawl:ResourcingExternalInteractionType" minOccurs="0"/>
+        </xs:sequence>
+				<!-- Extended Attributes whose validation will be skipped -->
+        <xs:anyAttribute processContents="skip"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### YAWLServiceType
+	-->
+	<xs:simpleType name="YAWLServiceIDType">
+		<xs:restriction base="yawl:URIType"/>
+	</xs:simpleType>
+	<!--
+	#### TYPE #### YAWLSpecificationFactsType
+	-->
+	<xs:complexType name="YAWLSpecificationFactsType" final="#all">
+		<xs:complexContent>
+			<xs:extension base="yawl:SpecificationType">
+				<xs:sequence>
+					<xs:element name="name" type="yawl:NameType" minOccurs="0"/>
+					<xs:element name="documentation" type="yawl:DocumentationType" minOccurs="0"/>
+					<xs:element name="metaData" type="yawl:MetaDataType"/>
+					<xs:any namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" minOccurs="0"/>
+					<xs:element name="decomposition" type="yawl:DecompositionType" maxOccurs="unbounded">
+						<xs:key name="DecompositionKey">
+							<xs:selector xpath="yawl:decomposition"/>
+							<xs:field xpath="@id"/>
+						</xs:key>
+						<xs:keyref name="DecomposeToForeignKey" refer="yawl:DecompositionKey">
+							<xs:selector xpath="*/yawl:processControlElements/*/yawl:decomposesTo"/>
+							<xs:field xpath="@id"/>
+						</xs:keyref>
+						<xs:unique name="VariableUnique">
+							<xs:selector xpath="yawl:inputParam|yawl:localVariable"/>
+							<xs:field xpath="yawl:name"/>
+						</xs:unique>
+						<xs:unique name="OutputExpresionUnique">
+							<xs:selector xpath="yawl:outputExpression"/>
+							<xs:field xpath="@query"/>
+						</xs:unique>
+						<xs:unique name="OutputParamUnique">
+							<xs:selector xpath="yawl:outputParam"/>
+							<xs:field xpath="yawl:name"/>
+						</xs:unique>
+						<xs:unique name="EnablementParamUnique">
+							<xs:selector xpath="yawl:enablementParam"/>
+							<xs:field xpath="yawl:name"/>
+						</xs:unique>
+						<xs:key name="NetElementKey_Inner">
+							<xs:selector xpath="yawl:processControlElements/*"/>
+							<xs:field xpath="@id"/>
+						</xs:key>
+						<xs:keyref name="Flows_ToInnerKeyRef" refer="yawl:NetElementKey_Inner">
+							<xs:selector xpath="yawl:processControlElements/*/yawl:flowsInto/yawl:nextElementRef"/>
+							<xs:field xpath="@id"/>
+						</xs:keyref>
+						<xs:keyref name="RemovesTokensForeignKey" refer="yawl:NetElementKey_Inner">
+							<xs:selector xpath="yawl:processControlElements/*/yawl:removesTokens"/>
+							<xs:field xpath="@id"/>
+						</xs:keyref>
+						<xs:keyref name="RemovesTokensFromFlowForeignKey" refer="yawl:NetElementKey_Inner">
+							<xs:selector xpath="yawl:processControlElements/*/yawl:removesTokensFromFlow/yawl:flowSource"/>
+							<xs:field xpath="@id"/>
+						</xs:keyref>
+						<xs:keyref name="RemovesTokensFromFlowForeignKey2" refer="yawl:NetElementKey_Inner">
+							<xs:selector xpath="yawl:processControlElements/*/yawl:removesTokensFromFlow/yawl:flowDestination"/>
+							<xs:field xpath="@id"/>
+						</xs:keyref>
+						<xs:unique name="YawlServiceUnique">
+							<xs:selector xpath="yawl:yawlService"/>
+							<xs:field xpath="@id"/>
+						</xs:unique>
+						<!-- -->
+					</xs:element>
+					<xs:element name="importedNet" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+					<!--xs:element name="webServiceGateways" type="WebServiceGatewaysType" maxOccurs="unbounded"/-->
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SpecificationSetFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:SpecificationSetType">
+				<xs:sequence>
+					<xs:element name="specification" type="yawl:YAWLSpecificationFactsType" maxOccurs="unbounded"/>
+          <xs:element name="layout" type="yawl:LayoutFactsType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="version" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="2.2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#################################################################################################
+	BEGIN VARIABLE FACTS TYPES
+	#################################################################################################
+	-->
+	<!--
+	#### TYPE #### VariableFactsType
+	-->
+	<xs:complexType name="VariableBaseType">
+		<xs:sequence>
+	        <xs:element name="index" type="xs:integer"/>
+			<xs:element name="documentation" type="xs:string" minOccurs="0"/>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="name" type="xs:NCName"/>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element name="type" type="xs:NCName"/>
+							<xs:element name="namespace" type="xs:anyURI" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element name="isUntyped"/>
+					</xs:choice>
+				</xs:sequence>
+				<xs:element name="element" type="xs:NCName"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+	#### TYPE #### VariableFactsType
+	-->
+	<xs:complexType name="VariableFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:VariableBaseType">
+				<xs:sequence>
+					<xs:element name="initialValue" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+                <!-- Extended Attributes whose validation will be skipped -->
+                <xs:anyAttribute processContents="skip"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### OutputParameterFactsType
+	-->
+	<xs:complexType name="OutputParameterFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:VariableBaseType">
+				<xs:sequence>
+                    <xs:element name="defaultValue" minOccurs="0"/>
+					<xs:element name="mandatory" minOccurs="0"/>
+					<xs:element name="isCutThroughParam" minOccurs="0"/>
+                    <xs:element name="logPredicate" type="yawl:LogPredicateFactsType" minOccurs="0"/>
+				</xs:sequence>
+				<!-- Extended Attributes whose validation will be skipped -->
+				<xs:anyAttribute processContents="skip"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--
+	#### TYPE #### InputParameterFactsType
+	-->
+	<xs:complexType name="InputParameterFactsType">
+		<xs:complexContent>
+			<xs:extension base="yawl:VariableBaseType">
+				<xs:sequence>
+					<xs:choice minOccurs="0">
+						<xs:element name="initialValue" type="xs:string" minOccurs="0"/>
+						<xs:element name="mandatory" minOccurs="0"/>
+					</xs:choice>
+                    <xs:element name="logPredicate" type="yawl:LogPredicateFactsType" minOccurs="0"/>
+				</xs:sequence>
+                <!-- Extended Attributes whose validation will be skipped -->
+                <xs:anyAttribute processContents="skip"/>
+			</xs:extension>
+		</xs:complexContent>	
+	</xs:complexType>
+	<!--
+	################################################################################################
+	BEGIN Ancilliary TYPES
+	################################################################################################
+	-->
+	<!--                                                                  
+	#### TYPE #### MetaDataType
+	-->
+	<xs:complexType name="MetaDataType">
+		<xs:annotation>
+			<xs:documentation>
+          Uses meta data specification of the dublin core:
+          http://dublincore.org/usage/terms/dc/current-elements/
+      </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="title" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="creator" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="subject" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="description" type="xs:normalizedString" minOccurs="0"/>
+			<xs:element name="contributor" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="coverage" type="xs:string" minOccurs="0"/>
+			<xs:element name="validFrom" type="xs:date" minOccurs="0"/>
+			<xs:element name="validUntil" type="xs:date" minOccurs="0"/>
+			<xs:element name="created" type="xs:date" minOccurs="0"/>
+			<xs:element name="version" type="yawl:VersionType" minOccurs="0"/>
+			<xs:element name="status" type="xs:string" minOccurs="0"/>
+			<xs:element name="persistent" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="identifier" type="xs:NCName" minOccurs="0"/>
+    </xs:sequence>
+	</xs:complexType>
+	<!--
+	#### TYPE #### VersionType
+	-->	
+	<xs:simpleType name="VersionType">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0.1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--
+	#### TYPE #### IndividualOrOrganisationType
+	-->
+	<xs:complexType name="IndividualOrOrganisationType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:choice maxOccurs="4">
+				<xs:element name="address" type="yawl:AddressType"/>
+				<xs:element name="emailAddress" type="xs:anyURI"/>
+			</xs:choice>
+			<xs:element name="description" type="xs:normalizedString" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--
+	#### TYPE #### AddressType
+	-->
+	<xs:complexType name="AddressType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="numAndStreet">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="number">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="\d*(/|-)*\d+"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="street">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="\D+\s+[S|s|R|r|A|a|C|c|B|b|o](treet|oad|venue|t|d|ve|rescent|lvd|ther)"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="GPOBox" type="xs:positiveInteger"/>
+			</xs:choice>
+			<xs:element name="suburbOrTown" type="xs:string" minOccurs="0"/>
+			<xs:element name="postOrZipCode">
+				<xs:simpleType>
+					<xs:restriction base="xs:positiveInteger">
+						<xs:minInclusive value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="state" type="xs:string" minOccurs="0"/>
+			<xs:element name="country" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- #### TYPE ####  ImportType for importing Schemas from other documents -->
+	<xs:complexType name="ImportType">
+		<xs:attribute name="namespace" type="xs:anyURI"/>
+		<xs:attribute name="location" type="xs:anyURI"/>
+	</xs:complexType>
+	<!-- #### TYPE #### SchemaType for declaring data types to use in YAWL - using XML Schema -->
+	<xs:complexType name="SchemaType">
+		<xs:sequence>
+			<xs:element name="type" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="targetNamespace" type="xs:anyURI"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+    <!--
+    #### LAYOUT TYPE ADDITIONS ####
+    -->
+  <xs:complexType name="LayoutFactsType">
+    <xs:sequence>
+      <xs:element name="locale" type="yawl:LayoutLocaleType"/>  
+      <xs:element name="specification" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="size" type="yawl:LayoutDimensionType"/>
+            <xs:element name="net" type="yawl:LayoutNetFactsType" maxOccurs="unbounded"/>
+            <xs:element name="labelFontSize" type="xs:integer" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:NCName" use="required"/>
+          <xs:attribute name="defaultBgColor" type="xs:integer"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutNetFactsType">
+   <xs:choice maxOccurs="unbounded">
+       <xs:element name="bounds" type="yawl:LayoutFrameType"/>
+       <xs:element name="frame" type="yawl:LayoutFrameType"/>
+       <xs:element name="viewport" type="yawl:LayoutFrameType"/>
+       <xs:element name="bgImage" type="xs:string" minOccurs="0"/>
+       <xs:element name="scale" type="xs:string"/>
+       <xs:element name="cancellationtask" type="xs:NCName" minOccurs="0"/>      
+       <xs:element name="vertex" type="yawl:LayoutVertexFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element name="container" type="yawl:LayoutContainerFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element name="flow" type="yawl:LayoutFlowFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+   </xs:choice>
+   <xs:attribute name="id" type="xs:NCName" use="required"/>
+   <xs:attribute name="bgColor" type="xs:integer"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutVertexFactsType">
+   <xs:sequence>
+       <xs:element name="startpoint" type="yawl:LayoutPointType" minOccurs="0"/>
+       <xs:element name="iconpath" type="xs:anyURI" minOccurs="0"/>
+       <xs:element name="attributes" type="yawl:LayoutAttributesFactsType"/>
+       <xs:element name="notes" type="xs:string" minOccurs="0"/>
+   </xs:sequence>
+   <xs:attribute name="id" type="xs:NCName"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutContainerFactsType">
+   <xs:choice maxOccurs="unbounded">
+       <xs:element name="vertex" type="yawl:LayoutVertexFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element name="label" type="yawl:LayoutLabelFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element name="decorator" type="yawl:LayoutDecoratorFactsType"
+                   minOccurs="0" maxOccurs="unbounded"/>
+   </xs:choice>
+   <xs:attribute name="id" type="xs:NCName" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutFlowFactsType">
+   <xs:sequence>
+       <xs:element name="label" type="xs:string" minOccurs="0"/>
+       <xs:element name="ports" type="yawl:LayoutPortsType"/>
+       <xs:element name="attributes" type="yawl:LayoutAttributesFactsType"/>
+   </xs:sequence>
+   <xs:attribute name="source" type="xs:NCName" use="required"/>
+   <xs:attribute name="target" type="xs:NCName" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutDecoratorFactsType">
+   <xs:sequence>
+     <xs:element name="position" type="xs:integer"/>
+     <xs:element name="attributes" type="yawl:LayoutAttributesFactsType"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="xs:NCName" use="required"/>
+  </xs:complexType>
+
+ <xs:complexType name="LayoutLabelFactsType">
+   <xs:sequence>
+       <xs:element name="userobject" type="yawl:LayoutUserObjectHTMLType" minOccurs="0"/>
+       <xs:element name="attributes" type="yawl:LayoutAttributesFactsType"/>
+   </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutPointType">
+     <xs:attribute name="x" type="xs:string" use="required"/>
+     <xs:attribute name="y" type="xs:string" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutLocaleType">
+     <xs:attribute name="language" type="xs:string" use="required"/>
+     <xs:attribute name="country" type="xs:string" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutPortsType">
+    <xs:attribute name="in" type="xs:integer" use="required"/>
+    <xs:attribute name="out" type="xs:integer" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutUserObjectHTMLType">
+   <xs:sequence>
+     <xs:element name="html">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="body">
+             <xs:complexType>
+               <xs:simpleContent>
+                 <xs:extension base="xs:string">
+                    <xs:attribute name="style" type="xs:string"/>
+                    <xs:attribute name="align" type="xs:string"/>
+                 </xs:extension>
+               </xs:simpleContent>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+       </xs:complexType>
+     </xs:element>
+   </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutAttributesFactsType">
+   <xs:choice maxOccurs="unbounded">
+       <xs:element name="autosize" type="xs:boolean"/>
+       <xs:element name="backgroundColor" type="xs:integer"/>
+       <xs:element name="bendable" type="xs:boolean"/>
+       <xs:element name="bounds" type="yawl:LayoutRectangleType"/>
+       <xs:element name="connectable" type="xs:boolean"/>
+       <xs:element name="disconnectable" type="xs:boolean"/>
+       <xs:element name="editable" type="xs:boolean"/>
+       <xs:element name="endFill" type="xs:boolean"/>
+       <xs:element name="font" type="yawl:LayoutFontType"/>
+       <xs:element name="foregroundColor" type="xs:integer"/>
+       <xs:element name="labelposition" type="yawl:LayoutPointType"/>
+       <xs:element name="linecolor" type="xs:integer"/>
+       <xs:element name="lineEnd" type="xs:integer"/>
+       <xs:element name="lineStyle" type="xs:integer"/>
+       <xs:element name="offset" type="yawl:LayoutPointType"/>
+       <xs:element name="opaque" type="xs:boolean"/>
+       <xs:element name="points" type="yawl:LayoutPointsType"/>
+       <xs:element name="resize" type="xs:boolean"/>
+       <xs:element name="size" type="yawl:LayoutDimensionType"/>
+       <xs:element name="sizeable" type="xs:boolean"/>
+   </xs:choice>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutColorType">
+   <xs:attribute name="r" type="xs:integer" use="required"/>
+   <xs:attribute name="g" type="xs:integer" use="required"/>
+   <xs:attribute name="b" type="xs:integer" use="required"/>
+ </xs:complexType>
+
+ <!--strings instead of doubles used to avoid locale issues: '.' vs ','  -->
+ <xs:complexType name="LayoutRectangleType">
+   <xs:attribute name="x" type="xs:string" use="required"/>
+   <xs:attribute name="y" type="xs:string" use="required"/>
+   <xs:attribute name="w" type="xs:string" use="required"/>
+   <xs:attribute name="h" type="xs:string" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutFrameType">
+   <xs:attribute name="x" type="xs:integer" use="required"/>
+   <xs:attribute name="y" type="xs:integer" use="required"/>
+   <xs:attribute name="w" type="xs:integer" use="required"/>
+   <xs:attribute name="h" type="xs:integer" use="required"/>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutPointsType">
+   <xs:sequence>
+     <xs:element name="value" type="yawl:LayoutPointType" maxOccurs="unbounded"/>
+   </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutFontType">
+   <xs:sequence>
+     <xs:element name="name" type="xs:string"/>
+     <xs:element name="style" type="xs:integer"/>
+     <xs:element name="size" type="xs:integer"/>
+   </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="LayoutDimensionType">
+   <xs:attribute name="w" type="xs:integer" use="required"/>
+   <xs:attribute name="h" type="xs:integer" use="required"/>
+ </xs:complexType>
+    
+</xs:schema>

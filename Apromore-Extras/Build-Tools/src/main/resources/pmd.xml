@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Custom ruleset" xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        Base ruleset
+    </description>
+    <rule ref="rulesets/basic.xml/JumbledIncrementer"/>
+    <rule ref="rulesets/basic.xml/UnnecessaryConversionTemporary"/>
+    <rule ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode"/>
+    <rule ref="rulesets/basic.xml/ReturnFromFinallyBlock"/>
+    <rule ref="rulesets/basic.xml/UnnecessaryReturn"/>
+    <rule ref="rulesets/basic.xml/UnconditionalIfStatement"/>
+    <rule ref="rulesets/basic.xml/BooleanInstantiation"/>
+    <rule ref="rulesets/basic.xml/CollapsibleIfStatements"/>
+    <rule ref="rulesets/basic.xml/UselessOverridingMethod"/>
+    <rule ref="rulesets/basic.xml/ClassCastExceptionWithToArray"/>
+    <rule ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
+    <rule ref="rulesets/basic.xml/UselessOperationOnImmutable"/>
+    <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>
+    <rule ref="rulesets/basic.xml/UnusedNullCheckInEquals"/>
+    <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
+    <rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP"/>
+    <rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
+    <rule ref="rulesets/design.xml/ConstructorCallsOverridableMethod"/>
+    <rule ref="rulesets/design.xml/AccessorClassGeneration"/>
+    <rule ref="rulesets/design.xml/CloseResource"/>
+    <rule ref="rulesets/design.xml/NonStaticInitializer"/>
+    <rule ref="rulesets/design.xml/DefaultLabelNotLastInSwitchStmt"/>
+    <rule ref="rulesets/design.xml/NonCaseLabelInSwitchStatement"/>
+    <rule ref="rulesets/design.xml/BadComparison"/>
+    <rule ref="rulesets/design.xml/EqualsNull"/>
+    <rule ref="rulesets/design.xml/InstantiationToGetClass"/>
+    <rule ref="rulesets/design.xml/IdempotentOperations"/>
+    <rule ref="rulesets/design.xml/SimpleDateFormatNeedsLocale"/>
+    <rule ref="rulesets/design.xml/ImmutableField"/>
+    <rule ref="rulesets/design.xml/AvoidProtectedFieldInFinalClass"/>
+    <rule ref="rulesets/design.xml/AssignmentToNonFinalStatic"/>
+    <!--<rule ref="rulesets/design.xml/MissingStaticMethodInNonInstantiatableClass"/>-->
+    <rule ref="rulesets/design.xml/AvoidSynchronizedAtMethodLevel"/>
+    <rule ref="rulesets/design.xml/UseNotifyAllInsteadOfNotify"/>
+    <rule ref="rulesets/design.xml/AvoidInstanceofChecksInCatchClause"/>
+    <rule ref="rulesets/design.xml/AbstractClassWithoutAbstractMethod"/>
+    <rule ref="rulesets/design.xml/CompareObjectsWithEquals"/>
+    <rule ref="rulesets/design.xml/UnsynchronizedStaticDateFormatter"/>
+    <rule ref="rulesets/design.xml/PreserveStackTrace"/>
+    <rule ref="rulesets/design.xml/UseCollectionIsEmpty"/>
+    <rule ref="rulesets/design.xml/SingularField"/>
+    <rule ref="rulesets/design.xml/AbstractClassWithoutAnyMethod"/>
+    <rule ref="rulesets/design.xml/TooFewBranchesForASwitchStatement"/>
+    <rule ref="rulesets/logging-java.xml/SystemPrintln"/>
+    <rule ref="rulesets/logging-java.xml/AvoidPrintStackTrace"/>
+    <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
+    <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
+    <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
+    <rule ref="rulesets/strictexception.xml/ExceptionAsFlowControl"/>
+    <rule ref="rulesets/strictexception.xml/AvoidCatchingNPE"/>
+    <rule ref="rulesets/strictexception.xml/AvoidThrowingNullPointerException"/>
+    <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
+    <rule ref="rulesets/strictexception.xml/DoNotExtendJavaLangError"/>
+    <rule ref="rulesets/strictexception.xml/DoNotThrowExceptionInFinally"/>
+    <rule ref="rulesets/strictexception.xml/AvoidThrowingNewInstanceOfSameException"/>
+    <rule ref="rulesets/strings.xml/UnnecessaryCaseChange"/>
+    <rule ref="rulesets/strings.xml/UseStringBufferLength"/>
+    <rule ref="rulesets/strings.xml/InefficientEmptyStringCheck"/>
+    <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
+    <rule ref="rulesets/strings.xml/AvoidStringBufferField"/>
+    <rule ref="rulesets/sunsecure.xml/MethodReturnsInternalArray"/>
+    <rule ref="rulesets/sunsecure.xml/ArrayIsStoredDirectly"/>
+</ruleset>
