@@ -49,7 +49,7 @@ $ mysqladmin --user=root --password=MAcri create apromore
 
 Navigate to the directory Extras/database/ and execute db-mysql.sql in your MySQL database.
 This will create your database and setup the tables.
-$ mysql --user=root --password=MAcri < Extras/database/db-mysql.sql
+$ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
 
 At the end of the db-mysql.sql script is where we populate some of the system data including user information. Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change there password. This is coming soon as well as a setup utility to allow the creation of a user on first running.
 

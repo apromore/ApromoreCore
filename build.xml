@@ -15,8 +15,6 @@
     <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
     <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
     <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
-    <!--<property name="dir-extras-bpmncmap" location="${dir-extras}/bpmncmap"/>-->
-    <!--<property name="dir-extras-quaestio" location="${dir-sups}/Quaestio"/>-->
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
     <property name="virgo-url" value="http://apromore.googlecode.com/svn/dev/software/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
@@ -55,22 +53,14 @@
         <exec dir="${dir-sups-lib}" executable="./upload.sh" osfamily="unix" />
 
         <!-- Build the tools required for the main Apromore product. -->
-        <exec dir="/Apromore-Extras/Build-Tools/" executable="mvn">
+        <exec dir="${dir-extras-build-tools}" executable="mvn">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-        <exec dir="/Apromore-Schema/Test-Tools/" executable="mvn">
+        <exec dir="${dir-extras-test-tools}" executable="mvn">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-        <!--<exec dir="/Apromore-Extras/bpmncmap/" executable="mvn">-->
-            <!--<arg value="clean"/>-->
-            <!--<arg value="install"/>-->
-        <!--</exec>-->
-        <!--<exec dir="${dir-extras-quaestio}/" executable="mvn">-->
-            <!--<arg value="clean"/>-->
-            <!--<arg value="install"/>-->
-        <!--</exec>-->
     </target>
 
 
