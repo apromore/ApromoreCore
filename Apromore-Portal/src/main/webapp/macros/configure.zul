@@ -1,7 +1,7 @@
 <window width="826px" closable="true" position="center" title="Configure process model">
     <applet id="quaestio"
-         codebase="img/"
-         archive="quaestio-1.0-jar-with-dependencies.jar"
+         codebase="applets/"
+         archive="quaestio-applet.jar"
          code="com.processconfiguration.quaestio.QuaestioApplet"
          mayscript="true"
          width="826px" height="600px"/>
