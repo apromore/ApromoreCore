@@ -74,6 +74,17 @@
     <xs:element name="CreateClustersResponse" type="tns:CreateClustersOutputMsgType"/>
     <xs:element name="GetClustersRequest" type="tns:GetClustersRequestType"/>
     <xs:element name="GetClustersResponse" type="tns:GetClustersResponseType"/>
+    <xs:element name="GetClusteringSummaryRequest" type="tns:GetClusteringSummaryInputMsgType"/>
+    <xs:element name="GetClusteringSummaryResponse" type="tns:GetClusteringSummaryOutputMsgType"/>
+    <xs:element name="GetClusterSummariesRequest" type="tns:GetClusterSummariesInputMsgType"/>
+    <xs:element name="GetClusterSummariesResponse" type="tns:GetClusterSummariesOutputMsgType"/>
+    <xs:element name="GetGedMatrixSummaryRequest" type="tns:GetGedMatrixSummaryInputMsgType"/>
+    <xs:element name="GetGedMatrixSummaryResponse" type="tns:GetGedMatrixSummaryOutputMsgType"/>
+    <xs:element name="GetClusterRequest" type="tns:GetClusterInputMsgType"/>
+    <xs:element name="GetClusterResponse" type="tns:GetClusterOutputMsgType"/>
+    <xs:element name="PairwiseDistancesRequest" type="tns:GetPairwiseDistancesInputMsgType" />
+    <xs:element name="PairwiseDistancesResponse" type="tns:GetPairwiseDistancesOutputMsgType"/>
+
 
     <!-- Retrieve Process Summaries -->
     <xs:element name="ReadProcessSummariesRequest" type="tns:ReadProcessSummariesInputMsgType"/>
@@ -135,12 +146,9 @@
     <!-- Plugin Data Types -->
     <xs:complexType name="PluginInfoResult">
         <xs:sequence>
-            <xs:element name="MandatoryParameters" type="tns:PluginParameters"
-                        minOccurs="0" maxOccurs="1"/>
-            <xs:element name="OptionalParameters" type="tns:PluginParameters"
-                        minOccurs="0" maxOccurs="1"/>
-            <xs:element name="PluginInfo" type="tns:PluginInfo"
-                        minOccurs="1" maxOccurs="1"/>
+            <xs:element name="MandatoryParameters" type="tns:PluginParameters" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="OptionalParameters" type="tns:PluginParameters" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -155,8 +163,7 @@
 
     <xs:complexType name="PluginParameters">
         <xs:sequence>
-            <xs:element name="Parameter" type="tns:PluginParameter"
-                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Parameter" type="tns:PluginParameter" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -166,8 +173,7 @@
         </xs:sequence>
         <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="description" type="xs:string"
-                      use="optional"/>
+        <xs:attribute name="description" type="xs:string" use="optional"/>
         <xs:attribute name="class" type="xs:string"/>
         <xs:attribute name="isMandatory" type="xs:boolean"/>
         <xs:attribute name="category" type="xs:string"/>
@@ -175,8 +181,7 @@
 
     <xs:complexType name="PluginMessages">
         <xs:sequence>
-            <xs:element name="Message" type="tns:PluginMessage"
-                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Message" type="tns:PluginMessage" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="PluginMessage">
@@ -191,10 +196,8 @@
     </xs:complexType>
     <xs:complexType name="ReadCanoniserInfoOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1"/>
-            <xs:element name="PluginInfo" type="tns:PluginInfo"
-                        minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -203,53 +206,39 @@
             <xs:element name="NativeMetaData" type="tns:NativeMetaData"/>
         </xs:sequence>
         <xs:attribute name="nativeType" type="xs:string"/>
-        <xs:attribute name="canoniserName" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="canoniserVersion" type="xs:string"
-                      use="optional"/>
+        <xs:attribute name="canoniserName" type="xs:string" use="optional"/>
+        <xs:attribute name="canoniserVersion" type="xs:string" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ReadInitialNativeFormatOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1"/>
-            <xs:element name="NativeFormat" type="xs:base64Binary"
-                        xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="NativeFormat" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadNativeMetaDataInputMsgType">
         <xs:sequence>
-            <xs:element name="NativeFormat" type="xs:base64Binary"
-                        xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="NativeFormat" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
         </xs:sequence>
         <xs:attribute name="nativeType" type="xs:string"/>
-        <xs:attribute name="canoniserName" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="canoniserVersion" type="xs:string"
-                      use="optional"/>
+        <xs:attribute name="canoniserName" type="xs:string" use="optional"/>
+        <xs:attribute name="canoniserVersion" type="xs:string" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ReadNativeMetaDataOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="NativeMetaData" type="tns:NativeMetaData"/>
         </xs:sequence>
     </xs:complexType>
 
     <!-- Canoniser Data Type -->
     <xs:complexType name="NativeMetaData">
-        <xs:attribute name="processName" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="processAuthor" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="processVersion" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="processDocumentation" type="xs:string"
-                      use="optional"/>
-        <xs:attribute name="processCreated" type="xs:dateTime"
-                      use="optional"/>
-        <xs:attribute name="processLastUpdate" type="xs:dateTime"
-                      use="optional"/>
+        <xs:attribute name="processName" type="xs:string" use="optional"/>
+        <xs:attribute name="processAuthor" type="xs:string" use="optional"/>
+        <xs:attribute name="processVersion" type="xs:string" use="optional"/>
+        <xs:attribute name="processDocumentation" type="xs:string" use="optional"/>
+        <xs:attribute name="processCreated" type="xs:dateTime" use="optional"/>
+        <xs:attribute name="processLastUpdate" type="xs:dateTime" use="optional"/>
     </xs:complexType>
 
     <!-- Deployment Messages -->
@@ -258,10 +247,8 @@
     </xs:complexType>
     <xs:complexType name="ReadDeploymentPluginInfoOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType"
-                        minOccurs="1" maxOccurs="1"/>
-            <xs:element name="PluginInfo" type="tns:PluginInfo"
-                        minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -635,13 +622,13 @@
 
     <xs:complexType name="ResetUserPasswordOutputMsgType">
         <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="success" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="ReadNativeTypesInputMsgType">
-        <xs:attribute name="Empty" type="xs:string" use="optional"/>
+        <xs:attribute name="empty" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="ReadNativeTypesOutputMsgType">
@@ -1253,10 +1240,6 @@
         </xs:sequence>
     </xs:complexType>
 
-
-    <!--<xs:element name="GetFragmentRequest" type="tns:GetFragmentInputMsgType"/>-->
-    <!--<xs:element name="GetFragmentResponse" type="tns:GetFragmentOutputMsgType"/>-->
-
     <xs:complexType name="GetFragmentInputMsgType">
         <xs:sequence>
             <xs:element name="FragmentId" type="xs:int"/>
@@ -1286,11 +1269,11 @@
     </xs:complexType>
 
     <xs:complexType name="CreateGEDMatrixInputMsgType">
-        <xs:attribute name="Empty" type="xs:string" use="optional"/>
+        <xs:attribute name="empty" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="CreateGEDMatrixOutputMsgType">
-        <xs:attribute name="Completed" type="xs:boolean" use="optional"/>
+        <xs:attribute name="completed" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
 
@@ -1303,9 +1286,7 @@
     <xs:complexType name="ClusterSettingsType">
         <xs:sequence>
             <xs:element name="Algorithm" type="xs:string"/>
-            <xs:element name="ClusteringParams"
-                        type="tns:ClusteringParameterType" maxOccurs="unbounded"
-                        minOccurs="1">
+            <xs:element name="ClusteringParams" type="tns:ClusteringParameterType" maxOccurs="unbounded"  minOccurs="1">
             </xs:element>
             <xs:element name="ConstrainedProcessIds" type="tns:ConstrainedProcessIdsType"/>
         </xs:sequence>
@@ -1320,7 +1301,7 @@
 
     <xs:complexType name="ClusteringSummaryType">
         <xs:sequence>
-            <xs:element name="NumClusters" type="xs:int"/>
+            <xs:element name="numClusters" type="xs:int"/>
             <xs:element name="minClusterSize" type="xs:int"/>
             <xs:element name="maxClusterSize" type="xs:int"/>
             <xs:element name="minAvgFragmentSize" type="xs:float"/>
@@ -1337,9 +1318,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="GetClusteringSummaryRequest" type="tns:GetClusteringSummaryInputMsgType"/>
-    <xs:element name="GetClusteringSummaryResponse" type="tns:GetClusteringSummaryOutputMsgType"/>
-
     <xs:complexType name="GetClusteringSummaryInputMsgType">
         <xs:sequence>
             <xs:element name="param1" type="xs:string"/>
@@ -1352,12 +1330,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="NewComplexType"/>
-
-    <xs:element name="PairwiseDistancesRequest"
-                type="tns:GetPairwiseDistancesInputMsgType">
-    </xs:element>
-
     <xs:complexType name="GetPairwiseDistancesInputMsgType">
         <xs:sequence>
             <xs:element name="FragmentIds" type="tns:FragmentIdsType"/>
@@ -1369,10 +1341,6 @@
             <xs:element name="FragmentId" type="xs:int" maxOccurs="unbounded" minOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-
-    <xs:element name="PairwiseDistancesResponse"
-                type="tns:GetPairwiseDistancesOutputMsgType">
-    </xs:element>
 
     <xs:complexType name="GetPairwiseDistancesOutputMsgType">
         <xs:sequence>
@@ -1410,23 +1378,25 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="GetClusterSummariesRequest"
-                type="tns:GetClusterSummariesInputMsgType">
-    </xs:element>
-
     <xs:complexType name="GetClusterSummariesInputMsgType">
         <xs:sequence>
             <xs:element name="filter" type="tns:ClusterFilterType"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:element name="GetClusterSummariesResponse"
-                type="tns:GetClusterSummariesOutputMsgType">
-    </xs:element>
-
     <xs:complexType name="GetClusterSummariesOutputMsgType">
         <xs:sequence>
             <xs:element name="clusterSummaries" type="tns:ClusterSummaryType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GetGedMatrixSummaryInputMsgType">
+        <xs:attribute name="empty" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="GetGedMatrixSummaryOutputMsgType">
+        <xs:sequence>
+            <xs:element name="gedMatrixSummary" type="tns:GedMatrixSummaryType" maxOccurs="1" minOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1443,19 +1413,19 @@
         <xs:attribute name="ClusterId" type="xs:int"/>
     </xs:complexType>
 
-    <xs:element name="GetClusterRequest"
-                type="tns:GetClusterInputMsgType">
-    </xs:element>
+    <xs:complexType name="GedMatrixSummaryType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="built" type="xs:boolean"/>
+            <xs:element name="buildDate" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="GetClusterInputMsgType">
         <xs:sequence>
             <xs:element name="ClusterId" type="xs:int"/>
         </xs:sequence>
     </xs:complexType>
-
-    <xs:element name="GetClusterResponse"
-                type="tns:GetClusterOutputMsgType">
-    </xs:element>
 
     <xs:complexType name="GetClusterOutputMsgType">
         <xs:sequence>

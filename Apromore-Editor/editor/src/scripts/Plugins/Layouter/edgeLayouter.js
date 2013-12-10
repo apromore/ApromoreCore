@@ -205,21 +205,26 @@ new function(){
 			d1 = (d1||"").toLowerCase();
 			d2 = (d2||"").toLowerCase();
 			
-			if (!["t","r","b","l"].include(d1)){ d1 = "r"}
-			if (!["t","r","b","l"].include(d2)){ d1 = "l"}
+			if (!["t","r","b","l"].include(d1)) {
+                d1 = "r"
+            }
+			if (!["t","r","b","l"].include(d2)) {
+                d1 = "l"
+            }
 			
 			// If reverse is set
 			if (reverse) {
 				// Reverse d1 and d2
-				d1 = d1=="t"?"b":(d1=="r"?"l":(d1=="b"?"t":(d1=="l"?"r":"r")))
-				d2 = d2=="t"?"b":(d2=="r"?"l":(d2=="b"?"t":(d2=="l"?"r":"r")))
+				d1 = d1 == "t" ? "b" : (d1 == "r" ? "l" : (d1 == "b" ? "t" : (d1 == "l" ? "r" : "r" )));
+				d2 = d2 == "t" ? "b" : (d2 == "r" ? "l" : (d2 == "b" ? "t" : (d2 == "l" ? "r" : "r" )))
 			}
 			
 					
 			var weight = 0;
+            var orientation = this.facade.getCanvas().getOrientation();
 			// Get rules for from "out" and to "in"
-			var dr1 = this.facade.getRules().getLayoutingRules(from, edge)["out"];
-			var dr2 = this.facade.getRules().getLayoutingRules(to, edge)["in"];
+			var dr1 = this.facade.getRules().getLayoutingRules(from, edge, orientation)["out"];
+			var dr2 = this.facade.getRules().getLayoutingRules(to, edge, orientation)["in"];
 
 			var fromWeight = dr1[d1];
 			var toWeight = dr2[d2];

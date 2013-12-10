@@ -1,11 +1,6 @@
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.apromore.aop.Event;
 import org.apromore.dao.ClusterAssignmentRepository;
 import org.apromore.dao.ClusterRepository;
 import org.apromore.dao.FragmentDistanceRepository;
@@ -13,11 +8,14 @@ import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.FragmentDistance;
 import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.HistoryEvent;
+import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.ClusterService;
 import org.apromore.service.FragmentService;
+import org.apromore.service.HistoryEventService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
@@ -35,6 +33,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the ClusterService Contract.
@@ -54,6 +58,7 @@ public class ClusterServiceImpl implements ClusterService {
     private ClusterAssignmentRepository caRepository;
     private FragmentDistanceRepository fdRepository;
     private FragmentService fService;
+    private HistoryEventService historyService;
 
     private InMemoryClusterer dbscanClusterer;
     private HACClusterer hacCluster;
@@ -66,16 +71,19 @@ public class ClusterServiceImpl implements ClusterService {
      * @param clusterRepository Cluster Repository.
      * @param clusterAssignmentRepository Cluster Assignment Repository.
      * @param fragmentDistanceRepository Fragment Distance Repository.
+     * @param historyEventService the HistoryEvent Auditable Service.
      * @param fragmentService Fragment Repository.
      * @param inMemoryClusterer in Memory Clusterer.
      */
     @Inject
     public ClusterServiceImpl(final ClusterRepository clusterRepository, final ClusterAssignmentRepository clusterAssignmentRepository,
-            final FragmentDistanceRepository fragmentDistanceRepository, final FragmentService fragmentService,
-            final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer, final DMatrix matrix) {
+            final FragmentDistanceRepository fragmentDistanceRepository, final HistoryEventService historyEventService,
+            final FragmentService fragmentService, final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer,
+            final DMatrix matrix) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
         fdRepository = fragmentDistanceRepository;
+        historyService = historyEventService;
         dbscanClusterer = inMemoryClusterer;
         hacCluster = hacClusterer;
         fService = fragmentService;
@@ -89,6 +97,7 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     @Transactional(readOnly = false)
+    @Event(message = HistoryEnum.CLUSTERING_COMPUTATION)
     public void cluster(ClusterSettings settings) throws RepositoryException {
         LOGGER.debug("Create the Clusters");
         clearClusters();
@@ -107,6 +116,7 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     @Transactional(readOnly = false)
+    @Event(message = HistoryEnum.GED_MATRIX_COMPUTATION)
     public void computeGEDMatrix() throws RepositoryException {
         LOGGER.debug("Computing the GED Matrix....");
         clearGEDMatrix();
@@ -118,6 +128,16 @@ public class ClusterServiceImpl implements ClusterService {
             throw new RepositoryException(e);
         }
         LOGGER.debug("Completed computing the GED Matrix....");
+    }
+
+    /**
+     * @see org.apromore.service.ClusterService#getGedMatrixLastExecutionTime()
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public HistoryEvent getGedMatrixLastExecutionTime() {
+        return historyService.findLatestHistoryEventType(HistoryEnum.GED_MATRIX_COMPUTATION);
     }
 
     /**

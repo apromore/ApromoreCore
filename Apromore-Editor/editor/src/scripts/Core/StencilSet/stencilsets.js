@@ -119,7 +119,7 @@ ORYX.Core.StencilSet.stencil = function(id) {
  */
 ORYX.Core.StencilSet.rules = function(editorId) {
 	if(!ORYX.Core.StencilSet._rulesByEditorInstance[editorId]) {
-		ORYX.Core.StencilSet._rulesByEditorInstance[editorId] = new ORYX.Core.StencilSet.Rules();;
+		ORYX.Core.StencilSet._rulesByEditorInstance[editorId] = new ORYX.Core.StencilSet.Rules();
 	}
 	return ORYX.Core.StencilSet._rulesByEditorInstance[editorId];
 };

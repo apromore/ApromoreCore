@@ -10,13 +10,14 @@
 		
 		<!--  Prototype -->
 		<script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/prototype-1.6.0.3.js"></script>
-		
-				
+
 		<!--  Ext -->
-		<script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/ext-2.0.2/adapter/ext/ext-base.js"></script>
+        <script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/ext-2.0.2/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/ext-2.0.2/ext-all.js"></script>
-		
-		<!-- CSS -->
+        <script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/ext-2.0.2/color-field.js"></script>
+        <script type="text/javascript" src="<%= request.getAttribute("libs_url") %>/iscroll.js"></script>
+
+        <!-- CSS -->
 		<link type="text/css" rel="stylesheet" href="<%= request.getAttribute("libs_url") %>/ext-2.0.2/resources/css/ext-all.css" />
 		<link type="text/css" rel="stylesheet" href="<%= request.getAttribute("libs_url") %>/ext-2.0.2/resources/css/xtheme-darkgray.css" />
 		<link type="text/css" rel="stylesheet" href="<%= request.getAttribute("explorer_url") %>/src/css/xtheme-specific.css" />
