@@ -103,7 +103,7 @@ public class ReadUserByUsernameEndpointUnitTest {
 
         replay(secSrv);
 
-        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUser(request);
+        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUserByUsername(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertNotNull(response.getValue().getUser());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), 0);
@@ -123,7 +123,7 @@ public class ReadUserByUsernameEndpointUnitTest {
 
         replay(secSrv);
 
-        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUser(request);
+        JAXBElement<ReadUserByUsernameOutputMsgType> response = endpoint.readUserByUsername(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), -1);
 

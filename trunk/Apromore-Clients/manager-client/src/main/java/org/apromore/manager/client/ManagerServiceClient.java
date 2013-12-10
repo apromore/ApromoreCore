@@ -31,6 +31,7 @@ import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.FragmentIdsType;
+import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.GetBreadcrumbsInputMsgType;
 import org.apromore.model.GetBreadcrumbsOutputMsgType;
 import org.apromore.model.GetClusterInputMsgType;
@@ -45,6 +46,8 @@ import org.apromore.model.GetFolderUsersInputMsgType;
 import org.apromore.model.GetFolderUsersOutputMsgType;
 import org.apromore.model.GetFragmentInputMsgType;
 import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GetGedMatrixSummaryInputMsgType;
+import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.GetProcessUsersInputMsgType;
@@ -528,10 +531,23 @@ public class ManagerServiceClient implements ManagerService {
     @SuppressWarnings("unchecked")
     public void createGedMatrix() {
         LOGGER.debug("Invoking create GED Matrix method ...");
-
         CreateGEDMatrixInputMsgType msg = new CreateGEDMatrixInputMsgType();
         JAXBElement<CreateGEDMatrixInputMsgType> request = WS_CLIENT_FACTORY.createCreateGEDMatrixRequest(msg);
         webServiceTemplate.marshalSendAndReceive(request);
+    }
+
+    /**
+     * @see ManagerService#createGedMatrix()
+     *      {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public GedMatrixSummaryType getGedMatrixSummary() {
+        LOGGER.debug("Invoking retrieve GED Matrix Summary method ...");
+        GetGedMatrixSummaryInputMsgType msg = new GetGedMatrixSummaryInputMsgType();
+        JAXBElement<GetGedMatrixSummaryInputMsgType> request = WS_CLIENT_FACTORY.createGetGedMatrixSummaryRequest(msg);
+        JAXBElement<GetGedMatrixSummaryOutputMsgType> response = (JAXBElement<GetGedMatrixSummaryOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getGedMatrixSummary();
     }
 
     /**

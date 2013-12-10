@@ -1,6 +1,5 @@
 package org.apromore.manager;
 
-import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -8,8 +7,11 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.HistoryEvent;
+import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.StatusEnum;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
@@ -47,6 +49,7 @@ import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ExportFragmentResultType;
 import org.apromore.model.FolderType;
+import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.GetBreadcrumbsInputMsgType;
 import org.apromore.model.GetBreadcrumbsOutputMsgType;
 import org.apromore.model.GetClusterInputMsgType;
@@ -61,6 +64,8 @@ import org.apromore.model.GetFolderUsersInputMsgType;
 import org.apromore.model.GetFolderUsersOutputMsgType;
 import org.apromore.model.GetFragmentInputMsgType;
 import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GetGedMatrixSummaryInputMsgType;
+import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.GetProcessUsersInputMsgType;
@@ -179,12 +184,15 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -473,9 +481,8 @@ public class ManagerPortalEndpoint {
         Integer fragmentId = payload.getFragmentId();
 
         try {
-            AnnotationsType anf = null;
             CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
-            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, anf, new HashSet<RequestParameterType<?>>());
+            DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, null, new HashSet<RequestParameterType<?>>());
 
             ExportFragmentResultType exportResult = new ExportFragmentResultType();
             exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
@@ -595,6 +602,36 @@ public class ManagerPortalEndpoint {
         }
 
         return WS_OBJECT_FACTORY.createCreateGEDMatrixResponse(res);
+    }
+
+    @PayloadRoot(localPart = "GetGedMatrixSummaryRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetGedMatrixSummaryOutputMsgType> getGedMatrixSummary(@RequestPayload final JAXBElement<GetGedMatrixSummaryInputMsgType> req) {
+        LOGGER.trace("Executing operation getGedMatrixSummary");
+        GetGedMatrixSummaryOutputMsgType res = new GetGedMatrixSummaryOutputMsgType();
+        GedMatrixSummaryType gedMatrixSummary = new GedMatrixSummaryType();
+
+        try {
+            HistoryEvent gedMatrix = clusterService.getGedMatrixLastExecutionTime();
+            GregorianCalendar calendar = new GregorianCalendar();
+            if (gedMatrix == null) {
+                gedMatrixSummary.setBuildDate(null);
+            } else if (gedMatrix.getStatus() == StatusEnum.FINISHED && gedMatrix.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
+                gedMatrixSummary.setBuilt(true);
+                calendar.setTime(gedMatrix.getOccurDate());
+                gedMatrixSummary.setBuildDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+            } else if (gedMatrix.getStatus() == StatusEnum.START && gedMatrix.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
+                gedMatrixSummary.setBuilt(false);
+                calendar.setTime(gedMatrix.getOccurDate());
+                gedMatrixSummary.setBuildDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+            }
+
+            res.setGedMatrixSummary(gedMatrixSummary);
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        return WS_OBJECT_FACTORY.createGetGedMatrixSummaryResponse(res);
     }
 
 
@@ -790,12 +827,11 @@ public class ManagerPortalEndpoint {
 
     /*
      * (non-Javadoc)
-     *
      * @see org.apromore.manager.service.ManagerPortalPortType#ReadUserByUsername(ReadUserInputMsgType payload )
      */
     @PayloadRoot(localPart = "ReadUserByUsernameRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadUserByUsernameOutputMsgType> readUser(@RequestPayload final JAXBElement<ReadUserByUsernameInputMsgType> req) {
+    public JAXBElement<ReadUserByUsernameOutputMsgType> readUserByUsername(@RequestPayload final JAXBElement<ReadUserByUsernameInputMsgType> req) {
         LOGGER.trace("Executing operation readUser");
         ReadUserByUsernameInputMsgType payload = req.getValue();
         ReadUserByUsernameOutputMsgType res = new ReadUserByUsernameOutputMsgType();
@@ -814,9 +850,13 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createReadUserByUsernameResponse(res);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apromore.manager.service.ManagerPortalPortType#ReadUserByUsername(ReadUserInputMsgType payload )
+     */
     @PayloadRoot(localPart = "ReadUserByEmailRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadUserByEmailOutputMsgType> resetUser(@RequestPayload final JAXBElement<ReadUserByEmailInputMsgType> req) {
+    public JAXBElement<ReadUserByEmailOutputMsgType> readUserByEmail(@RequestPayload final JAXBElement<ReadUserByEmailInputMsgType> req) {
         LOGGER.trace("Executing operation login");
         ReadUserByEmailInputMsgType payload = req.getValue();
         ReadUserByEmailOutputMsgType res = new ReadUserByEmailOutputMsgType();

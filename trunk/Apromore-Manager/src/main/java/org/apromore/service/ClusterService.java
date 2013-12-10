@@ -2,6 +2,7 @@ package org.apromore.service;
 
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.HistoryEvent;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
@@ -77,5 +78,13 @@ public interface ClusterService {
      * @throws RepositoryException if the repository had issues
      */
     Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException;
+
+
+    /**
+     * Returns the Last Time the GED matrix completed or wht time it was started if the completed doesn't exist.
+     * @return the dateTime of the last time the GED Matrix was completed or it's start time if non have completed or null if both
+     * haven't happened yet.
+     */
+    HistoryEvent getGedMatrixLastExecutionTime();
 
 }

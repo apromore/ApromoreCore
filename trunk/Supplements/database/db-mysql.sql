@@ -52,6 +52,7 @@ DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
 DROP TABLE IF EXISTS `metric`;
+DROP TABLE IF EXISTS `history_event`;
 
 # DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 # DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
@@ -67,6 +68,17 @@ DROP TABLE IF EXISTS `metric`;
 
 
 -- Construct the DB
+CREATE TABLE `history_event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` varchar(50) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `occurDate` datetime DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_history` (`type` , `occurDate`),
+  CONSTRAINT `fk_history_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `search_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -74,9 +86,7 @@ CREATE TABLE `search_history` (
   `search` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `un_search` (`userId` , `search`),
-  CONSTRAINT `fk_search` FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_search` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `native_type` (

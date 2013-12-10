@@ -24,6 +24,11 @@
             </row>
             <row spans="2">
                 <div align="center">
+                    <label value="GED Matrix was last built: "/> <label id="GEDBuildDate"/>
+                </div>
+            </row>
+            <row spans="2">
+                <div align="center">
                     <button id="similarityclustersCreateGED" label="Create GED Matrix" image="img/ok.png" />
                     <button id="similarityclustersCreateButton" label="Create Clusters" image="img/ok.png" />
                     <button id="similarityclustersOKbutton" label="Show Clusters" image="img/search.png" />
@@ -31,8 +36,7 @@
             </row>
             <row spans="2">
                 <div align="center">
-                    <button id="similarityclustersCancelbutton" label="Cancel" image="img/cancel2.png">
-                    </button>
+                    <button id="similarityclustersCancelbutton" label="Cancel" image="img/cancel2.png" />
                 </div>
             </row>
         </rows>

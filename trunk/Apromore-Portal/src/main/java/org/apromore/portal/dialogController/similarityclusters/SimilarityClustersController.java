@@ -1,12 +1,11 @@
 package org.apromore.portal.dialogController.similarityclusters;
 
-import java.util.Set;
-
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSettingsType;
 import org.apromore.model.ClusteringParameterType;
 import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.ConstrainedProcessIdsType;
+import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
@@ -15,10 +14,14 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Slider;
 import org.zkoss.zul.Window;
+
+import java.text.SimpleDateFormat;
+import java.util.Set;
 
 /**
  * Creates the ZK window for similarity clusters invoked through the menu.
@@ -38,14 +41,12 @@ public class SimilarityClustersController extends BaseController {
     private Button btnCancel;
     private Button btnCreate;
     private Button btnGed;
-
     private Listbox algorithmListbox;
     private Slider maxdistance;
 
     /**
      * Creates the dialog to create and show similarity clusters.
-     *
-     * @param mainC
+     * @param mainC the main controller
      * @throws org.zkoss.zk.ui.SuspendNotAllowedException
      * @throws InterruptedException
      */
@@ -54,6 +55,7 @@ public class SimilarityClustersController extends BaseController {
         this.scWindow = (Window) Executions.createComponents("macros/similarityclusters.zul", null, null);
         this.btnOK = (Button) this.scWindow.getFellow("similarityclustersOKbutton");
         this.btnCancel = (Button) this.scWindow.getFellow("similarityclustersCancelbutton");
+        Label lblBuildDate = (Label) this.scWindow.getFellow("GEDBuildDate");
 
         // In-Memory Clustering
         this.algorithmListbox = (Listbox) this.scWindow.getFellow("algorithm");
@@ -61,6 +63,55 @@ public class SimilarityClustersController extends BaseController {
         this.btnCreate = (Button) this.scWindow.getFellow("similarityclustersCreateButton");
         this.btnGed = (Button) this.scWindow.getFellow("similarityclustersCreateGED");
 
+        defineEventListeners();
+        populateGEDMatrixBuildDate(lblBuildDate);
+
+        this.scWindow.doModal();
+    }
+
+    /**
+     * Start the create Clusters.
+     */
+    protected final void doCreateSimilarityClusters() {
+        ClusterSettingsType settings = new ClusterSettingsType();
+        initAlgorithm(settings);
+        initMaxDistance(settings);
+        initConstrainedProcessIds(settings);
+        getService().createClusters(settings);
+        Messagebox.show("Clustering Completed!");
+    }
+
+    /**
+     * Create the GED Matrix so we can build the clusters.
+     */
+    protected void doCreateGedMatrix() {
+        getService().createGedMatrix();
+        Messagebox.show("GED Matrix Construction Completed!");
+    }
+
+    /**
+     * the cancel button was pressed. close the window.
+     */
+    protected final void doCancel() {
+        this.scWindow.detach();
+    }
+
+    /**
+     * @throws InterruptedException of Messagebox
+     */
+    protected final void doShowSimilarityClusters() throws InterruptedException {
+        try {
+            mainController.displaySimilarityClusters(initFilterConstraints());
+        } catch (Exception e) {
+            Messagebox.show("Search failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        } finally {
+            this.scWindow.detach();
+        }
+    }
+
+
+    /* Defines the Event Listeners for the class. */
+    private void defineEventListeners() {
         this.btnCreate.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -91,32 +142,22 @@ public class SimilarityClustersController extends BaseController {
                 doCancel();
             }
         });
-
-        this.scWindow.doModal();
     }
 
+    /* Initialises the Filter Constraints */
+    private ClusterFilterType initFilterConstraints() {
+        ClusterFilterType filterType = new ClusterFilterType();
+        ClusteringSummaryType summary = getService().getClusteringSummary();
+        filterType.setMinClusterSize(summary.getMinClusterSize());
+        filterType.setMaxClusterSize(summary.getMaxClusterSize());
 
-    /**
-     * Start the create Clusters.
-     */
-    protected final void doCreateSimilarityClusters() {
-        ClusterSettingsType settings = new ClusterSettingsType();
-        initAlgorithm(settings);
-        initMaxDistance(settings);
-        initConstrainedProcessIds(settings);
-        getService().createClusters(settings);
-        Messagebox.show("Clustering Completed!");
+        filterType.setMinAvgFragmentSize(summary.getMinAvgFragmentSize());
+        filterType.setMaxAvgFragmentSize(summary.getMaxAvgFragmentSize());
+
+        filterType.setMinBCR(summary.getMinBCR());
+        filterType.setMaxBCR(summary.getMaxBCR());
+        return filterType;
     }
-
-
-    /**
-     * Create the GED Matrix so we can build the clusters.
-     */
-    protected void doCreateGedMatrix() {
-        getService().createGedMatrix();
-        Messagebox.show("GED Matrix Construction Completed!");
-    }
-
 
     private void initAlgorithm(ClusterSettingsType settings) {
         settings.setAlgorithm(algorithmListbox.getSelectedItem().getValue().toString());
@@ -138,38 +179,20 @@ public class SimilarityClustersController extends BaseController {
         settings.setConstrainedProcessIds(processIds);
     }
 
-    /**
-     *
-     */
-    protected final void doCancel() {
-        this.scWindow.detach();
-    }
-
-    /**
-     * @throws InterruptedException of Messagebox
-     */
-    protected final void doShowSimilarityClusters() throws InterruptedException {
-        try {
-            mainController.displaySimilarityClusters(initFilterConstraints());
-        } catch (Exception e) {
-            Messagebox.show("Search failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        } finally {
-            this.scWindow.detach();
+    /* Populates the GED Matrix Latest Build Date */
+    private void populateGEDMatrixBuildDate(Label lblBuildDate) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
+        StringBuilder sb = new StringBuilder();
+        GedMatrixSummaryType gedMatrixSummary = getService().getGedMatrixSummary();
+        if (gedMatrixSummary.getBuildDate() == null) {
+            sb.append("Never");
+        } else {
+            if (!gedMatrixSummary.isBuilt()) {
+                sb.append("Currently Running, Started ");
+            }
+            sb.append(dateFormatter.format(gedMatrixSummary.getBuildDate()));
         }
-    }
-
-    private ClusterFilterType initFilterConstraints() {
-        ClusterFilterType filterType = new ClusterFilterType();
-        ClusteringSummaryType summary = getService().getClusteringSummary();
-        filterType.setMinClusterSize(summary.getMinClusterSize());
-        filterType.setMaxClusterSize(summary.getMaxClusterSize());
-
-        filterType.setMinAvgFragmentSize(summary.getMinAvgFragmentSize());
-        filterType.setMaxAvgFragmentSize(summary.getMaxAvgFragmentSize());
-
-        filterType.setMinBCR(summary.getMinBCR());
-        filterType.setMaxBCR(summary.getMaxBCR());
-        return filterType;
+        lblBuildDate.setValue(sb.toString());
     }
 
 }
