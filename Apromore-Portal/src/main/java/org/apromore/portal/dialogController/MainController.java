@@ -350,7 +350,7 @@ public class MainController extends BaseController {
             SignavioController.version = version;
             SignavioController.params = requestParameterTypes;
 
-            String url = "macros/OpenModelInSignavio.zul";
+            String url = "macros/openModelInSignavio.zul";
             
             instruction += "window.open('" + url + "','_black'); "; //'top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'
 

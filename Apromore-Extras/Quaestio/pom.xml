@@ -97,29 +97,6 @@
             <artifactId>javabdd</artifactId>
             <version>1.0b2</version>
         </dependency>
-        <!--
-        <dependency>
-          <groupId>java</groupId>
-          <artifactId>plugin</artifactId>
-          <version>1.7.0</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apromore</groupId>
-          <artifactId>epml-schema</artifactId>
-          <version>1.1</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apromore</groupId>
-          <artifactId>yawl-schema</artifactId>
-          <version>1.1</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apromore.plugin</groupId>
-          <artifactId>canoniser-bpmn</artifactId>
-          <version>1.1</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cmap-schema</artifactId>

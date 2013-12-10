@@ -49,7 +49,7 @@ public class SaveAsDialogController extends BaseController {
         this.version = version;
         this.editSession = editSession;
         this.save = isNormalSave;
-        this.saveAsW = (Window) Executions.createComponents("SaveAsDialog.zul", null, null);
+        this.saveAsW = (Window) Executions.createComponents("saveAsDialog.zul", null, null);
         this.modelData = data;
         this.originalVersionNumber = this.editSession.getCurrentVersionNumber();
         if (isNormalSave) {

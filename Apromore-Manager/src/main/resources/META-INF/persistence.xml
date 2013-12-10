@@ -49,7 +49,7 @@
         <class>org.apromore.dao.model.Resource</class>
         <class>org.apromore.dao.model.Object</class>
         <class>org.apromore.dao.model.Metric</class>
-        <class>org.apromore.dao.model.QueuedTaskHolder</class>
+        <class>org.apromore.dao.model.HistoryEvent</class>
     </persistence-unit>
 
 </persistence>

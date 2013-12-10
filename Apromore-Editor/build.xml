@@ -2,7 +2,7 @@
 <project name="Signavio Core Components - Main Build Script" >
 
     <!-- PROPERTIES -->
-    <!--<property file="user.properties"/>-->
+    <property file="user.properties"/>
     <property file="build.properties"/>
 
     <property name="build" value="build"/>

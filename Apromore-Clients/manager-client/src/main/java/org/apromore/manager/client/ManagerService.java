@@ -8,6 +8,7 @@ import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
+import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
@@ -118,6 +119,11 @@ public interface ManagerService {
      * Create a GED Matrix used in the Cluster Creation.
      */
     void createGedMatrix();
+
+    /**
+     * Used to get some basic details about the GED matrix.
+     */
+    GedMatrixSummaryType getGedMatrixSummary();
 
     /**
      * Create a Cluster.

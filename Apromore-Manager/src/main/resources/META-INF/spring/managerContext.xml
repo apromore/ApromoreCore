@@ -14,9 +14,7 @@
     <!-- Aspects -->
     <aop:aspectj-autoproxy />
 
-    <!--<bean id="loggingStatsTimerAspect" class="org.apromore.aop.TimerStatsInterceptor"/>-->
-    <!--<bean id="loggingTimerAspect" class="org.apromore.aop.TimerInterceptor"/>-->
-    <!--<bean id="loggingMethodAspect" class="org.apromore.aop.LoggingInterceptor"/>-->
+    <bean id="HistoryEventAspect" class="org.apromore.aop.HistoryEventAspect"/>
 
     <!-- Import other Application Context used to construct the Spring context. -->
     <import resource="manager-osgi-context.xml" />

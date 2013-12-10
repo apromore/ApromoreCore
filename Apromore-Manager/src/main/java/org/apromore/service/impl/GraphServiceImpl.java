@@ -168,7 +168,7 @@ public class GraphServiceImpl implements GraphService {
         return cpfNode;
     }
 
-    /* Populate the Node with the Event Node details. */
+    /* Populate the Node with the Auditable Node details. */
     private INode constructEventNode(final Node node, Canonical canonical) {
         INode cpfNode = new CPFNode();
         cpfNode.setGraph(canonical);
