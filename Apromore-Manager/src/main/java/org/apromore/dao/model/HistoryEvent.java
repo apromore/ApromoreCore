@@ -83,7 +83,7 @@ public class HistoryEvent implements Serializable {
         this.status = newStatus;
     }
 
-    @Column(name = "occurDate")
+    @Column(name = "occurDate", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getOccurDate() {
         return this.occurDate;

@@ -51,23 +51,13 @@ public class ContentServiceImpl implements ContentService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentServiceImpl.class);
 
+    @Inject
     private NodeRepository nRepository;
+    @Inject
     private EdgeRepository eRepository;
+    @Inject
     private ExpressionRepository exRepository;
 
-
-    /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     * @param nRepo Node Repository.
-     * @param eRepo Edge Repository.
-     * @param exRepo Expression Repository.
-     */
-    @Inject
-    public ContentServiceImpl(final NodeRepository nRepo, final EdgeRepository eRepo, final ExpressionRepository exRepo) {
-        nRepository = nRepo;
-        eRepository = eRepo;
-        exRepository = exRepo;
-    }
 
 
     /**

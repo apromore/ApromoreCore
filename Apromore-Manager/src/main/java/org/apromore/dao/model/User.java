@@ -1,5 +1,9 @@
 package org.apromore.dao.model;
 
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,10 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import org.eclipse.persistence.annotations.Cache;
-import org.eclipse.persistence.annotations.CacheCoordinationType;
-import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the process in apromore.
@@ -61,6 +61,7 @@ public class User implements Serializable {
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
     private List<SearchHistory> searchHistories = new ArrayList<>();
+    private List<HistoryEvent> historyEvents = new ArrayList<>();
 
 
     /**
@@ -308,5 +309,30 @@ public class User implements Serializable {
      */
     public void setSearchHistories(final List<SearchHistory> newSearchHistories) {
         this.searchHistories = newSearchHistories;
+    }
+
+    public void addSearchHistory(SearchHistory newSearchHistory) {
+        this.searchHistories.add(newSearchHistory);
+    }
+
+    /**
+     * Get the historyEvents for the Object.
+     * @return Returns the historyEvents.
+     */
+    @OneToMany(mappedBy = "user")
+    public List<HistoryEvent> getHistoryEvents() {
+        return this.historyEvents;
+    }
+
+    /**
+     * Set the historyEvents for the Object.
+     * @param newHistoryEvents The historyEvents to set.
+     */
+    public void setHistoryEvents(final List<HistoryEvent> newHistoryEvents) {
+        this.historyEvents = newHistoryEvents;
+    }
+
+    public void addHistoryEvent(HistoryEvent newHistoryEvent) {
+        this.historyEvents.add(newHistoryEvent);
     }
 }
