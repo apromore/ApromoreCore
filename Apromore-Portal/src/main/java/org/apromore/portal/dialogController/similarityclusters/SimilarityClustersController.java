@@ -40,7 +40,7 @@ public class SimilarityClustersController extends BaseController {
     private Button btnOK;
     private Button btnCancel;
     private Button btnCreate;
-    private Button btnGed;
+//    private Button btnGed;
     private Listbox algorithmListbox;
     private Slider maxdistance;
 
@@ -61,7 +61,7 @@ public class SimilarityClustersController extends BaseController {
         this.algorithmListbox = (Listbox) this.scWindow.getFellow("algorithm");
         this.maxdistance = (Slider) this.scWindow.getFellow("maxdistance");
         this.btnCreate = (Button) this.scWindow.getFellow("similarityclustersCreateButton");
-        this.btnGed = (Button) this.scWindow.getFellow("similarityclustersCreateGED");
+//        this.btnGed = (Button) this.scWindow.getFellow("similarityclustersCreateGED");
 
         defineEventListeners();
         populateGEDMatrixBuildDate(lblBuildDate);
@@ -81,13 +81,13 @@ public class SimilarityClustersController extends BaseController {
         Messagebox.show("Clustering Completed!");
     }
 
-    /**
-     * Create the GED Matrix so we can build the clusters.
-     */
-    protected void doCreateGedMatrix() {
-        getService().createGedMatrix();
-        Messagebox.show("GED Matrix Construction Completed!");
-    }
+//    /**
+//     * Create the GED Matrix so we can build the clusters.
+//     */
+//    protected void doCreateGedMatrix() {
+//        getService().createGedMatrix();
+//        Messagebox.show("GED Matrix Construction Completed!");
+//    }
 
     /**
      * the cancel button was pressed. close the window.
@@ -118,12 +118,12 @@ public class SimilarityClustersController extends BaseController {
                 doCreateSimilarityClusters();
             }
         });
-        this.btnGed.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                doCreateGedMatrix();
-            }
-        });
+//        this.btnGed.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(final Event event) throws Exception {
+//                doCreateGedMatrix();
+//            }
+//        });
         this.btnOK.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
