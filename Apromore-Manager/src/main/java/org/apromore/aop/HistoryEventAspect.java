@@ -5,24 +5,8 @@ import org.apromore.service.HistoryEventService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.ParserContext;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This Aspect audits methods surrounded by {@link Event}
@@ -70,9 +54,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 public class HistoryEventAspect {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HistoryEventAspect.class);
-
 
     @Inject
     private HistoryEventService historyEventService;
