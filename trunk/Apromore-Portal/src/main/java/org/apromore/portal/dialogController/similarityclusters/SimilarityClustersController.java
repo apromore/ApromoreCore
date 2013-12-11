@@ -181,7 +181,7 @@ public class SimilarityClustersController extends BaseController {
 
     /* Populates the GED Matrix Latest Build Date */
     private void populateGEDMatrixBuildDate(Label lblBuildDate) {
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         StringBuilder sb = new StringBuilder();
         GedMatrixSummaryType gedMatrixSummary = getService().getGedMatrixSummary();
         if (gedMatrixSummary.getBuildDate() == null) {
