@@ -5,10 +5,10 @@ import org.apromore.dao.UserRepository;
 import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.StatusEnum;
+import org.apromore.dao.model.User;
 import org.apromore.service.HistoryEventService;
 import org.apromore.util.SecurityUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class HistoryEventServiceImpl implements HistoryEventService {
 
     @Inject
@@ -43,7 +43,12 @@ public class HistoryEventServiceImpl implements HistoryEventService {
         historyEvent.setStatus(status);
         historyEvent.setType(historyType);
         historyEvent.setOccurDate(new Date());
-        historyEvent.setUser(userRepo.findByUsername(SecurityUtils.getLoggedInUser()));
+
+        User user = userRepo.findByUsername(SecurityUtils.getLoggedInUser());
+        if (user != null) {
+            historyEvent.setUser(user);
+            user.addHistoryEvent(historyEvent);
+        }
 
         return historyRepo.save(historyEvent);
     }

@@ -190,7 +190,7 @@ public class SimilarityClustersController extends BaseController {
             if (!gedMatrixSummary.isBuilt()) {
                 sb.append("Currently Running, Started ");
             }
-            sb.append(dateFormatter.format(gedMatrixSummary.getBuildDate()));
+            sb.append(dateFormatter.format(gedMatrixSummary.getBuildDate().toGregorianCalendar().getTime()));
         }
         lblBuildDate.setValue(sb.toString());
     }
