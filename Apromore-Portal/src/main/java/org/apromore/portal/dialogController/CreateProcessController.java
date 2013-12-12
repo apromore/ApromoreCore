@@ -114,7 +114,7 @@ public class CreateProcessController extends BaseController {
             this.nativeTypesLB.appendChild(cbi);
             cbi.setLabel(this.formats_ext.get(it.next()));
 
-            if ("XPDL 2.1".compareTo(cbi.getLabel()) == 0) {
+            if ("BPMN 2.0".compareTo(cbi.getLabel()) == 0) {
                 cbi.setSelected(true);
             }
         }
