@@ -717,12 +717,12 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
         tx = -shapeSize.upperLeft().x + (this.children.length ? (margin / 2) : 0);
         ty = -shapeSize.upperLeft().y + (this.children.length ? (margin / 2) : 0);
 
-        f.setAttributeNS(null, "width", Math.min.apply(Math, [width + margin, this.imageMaxWidth || undefined].compact()));
-        f.setAttributeNS(null, "height", Math.min.apply(Math, [height + margin, this.imageMaxHeight || undefined].compact()));
-        f.childNodes[1].firstChild.setAttributeNS(null, "transform", "translate(" + tx + ", " + ty + ")");
-        f.childNodes[1].setAttributeNS(null, "transform", "scale(1)");
-        f.childNodes[1].setAttributeNS(null, "transform", "");
-        f.childNodes[1].removeAttributeNS(null, "transform");
+        svgClone.setAttributeNS(null, "width", Math.min.apply(Math, [width + margin, this.imageMaxWidth || undefined].compact()));
+        svgClone.setAttributeNS(null, "height", Math.min.apply(Math, [height + margin, this.imageMaxHeight || undefined].compact()));
+        svgClone.childNodes[1].firstChild.setAttributeNS(null, "transform", "translate(" + tx + ", " + ty + ")");
+        svgClone.childNodes[1].setAttributeNS(null, "transform", "scale(1)");
+        svgClone.childNodes[1].setAttributeNS(null, "transform", "");
+        svgClone.childNodes[1].removeAttributeNS(null, "transform");
 
         try {
             var svgCont = svgClone.childNodes[1].childNodes[1];

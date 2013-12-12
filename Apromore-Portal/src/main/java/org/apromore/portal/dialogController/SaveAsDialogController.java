@@ -94,7 +94,11 @@ public class SaveAsDialogController extends BaseController {
         if (isNormalSave) {
             this.modelName.setReadonly(true);
             this.branchName.setText(this.editSession.getOriginalBranchName());
-            this.versionNumber.setText(String.format("%1.1f", new BigDecimal(this.editSession.getMaxVersionNumber()).add(VERSION_INCREMENT)));
+            if (version.isEmpty()) {
+                this.versionNumber.setText("1.0");
+            } else {
+                this.versionNumber.setText(String.format("%1.1f", new BigDecimal(this.editSession.getMaxVersionNumber()).add(VERSION_INCREMENT)));
+            }
         } else {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);

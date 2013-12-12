@@ -333,6 +333,11 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setLastUpdate(lastUpdate);
         verType.setVersionNumber(pmv.getVersionNumber());
         verType.setRanking("");
+        if (pmv.getNumEdges() == 0 && pmv.getNumVertices() == 0) {
+            verType.setEmpty(Boolean.TRUE);
+        } else {
+            verType.setEmpty(Boolean.FALSE);
+        }
 
         if (nativeType != null && !nativeType.equals("")) {
             annType.setNativeType(nativeType);
@@ -400,9 +405,9 @@ public class UIHelper implements UserInterfaceHelper {
 
     /* Builds the list from a process record. */
     private ProcessSummaryType buildProcessList(List<Integer> proIds, ProcessVersionsType similarProcesses, Process process) {
-        ProcessSummaryType processSummary = null;
+        ProcessSummaryType processSummary;
         if (proIds != null && (proIds.isEmpty() || !proIds.contains(process.getId()))) {
-            return processSummary;
+            return null;
         }
         processSummary = new ProcessSummaryType();
         processSummary.setId(process.getId());
@@ -445,6 +450,12 @@ public class UIHelper implements UserInterfaceHelper {
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
                 }
+                if (processModelVersion.getNumEdges() == 0 && processModelVersion.getNumVertices() == 0) {
+                    versionSummary.setEmpty(Boolean.TRUE);
+                } else {
+                    versionSummary.setEmpty(Boolean.FALSE);
+                }
+
                 buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), processModelVersion.getVersionNumber());
 
                 processSummary.getVersionSummaries().add(versionSummary);
