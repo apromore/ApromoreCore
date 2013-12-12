@@ -97,7 +97,7 @@
                                     <groupId>com.processconfiguration</groupId>
                                     <artifactId>quaestio</artifactId>
                                     <version>1.0</version>
-                                    <classifier>jar-with-dependencies</classifier>
+                                    <!--<classifier>jar-with-dependencies</classifier>-->
                                     <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
                                     <destFileName>quaestio-applet.jar</destFileName>
                                 </artifactItem>

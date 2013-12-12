@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -42,18 +43,8 @@ import java.util.Set;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
-    private UserRepository userRepository;
-
-
-    /**
-     * Default Constructor allowing Spring to Autowire for testing and normal use.
-     *
-     * @param userRepo User Repository.
-     */
     @Inject
-    public UsernamePasswordAuthenticationProvider(final UserRepository userRepo) {
-        userRepository = userRepo;
-    }
+    private UserRepository userRepository;
 
 
     @Transactional
@@ -81,6 +72,10 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         UsernamePasswordAuthenticationToken authenticated = new UsernamePasswordAuthenticationToken(original.getPrincipal(),
                 original.getCredentials(), authorities);
         authenticated.setDetails(UserMapper.convertUserTypes(user));
+
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+        SecurityContextHolder.getContext().setAuthentication(authenticated);
+
         return authenticated;
     }
 
