@@ -28,35 +28,95 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<inherited>true</inherited>-->
+                <!--<configuration>-->
+                    <!--<descriptorRefs>-->
+                        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                    <!--</descriptorRefs>-->
+                    <!--<archive>-->
+                        <!--<index>true</index>-->
+                        <!--<manifest>-->
+                            <!--<addClasspath>true</addClasspath>-->
+                            <!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+                            <!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+                            <!--<mainClass>com.processconfiguration.quaestio.Main</mainClass>-->
+                        <!--</manifest>-->
+                        <!--<manifestEntries>-->
+                            <!--<Permissions>all-permissions</Permissions>-->
+                            <!--<Trusted-Only>true</Trusted-Only>-->
+                        <!--</manifestEntries>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>make-my-applet-jar</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jarsigner-plugin</artifactId>-->
+                <!--<version>1.2</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>sign</id>-->
+                        <!--<goals>-->
+                            <!--<goal>sign</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<keystore>src/main/keystore/signing-jar.keystore</keystore>-->
+                    <!--<alias>applet</alias>-->
+                    <!--<storepass>applet</storepass>-->
+                    <!--<keypass>applet</keypass>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.processconfiguration.quaestio.Main</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Permissions>all-permissions</Permissions>
-                            <Trusted-Only>true</Trusted-Only>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
                 <executions>
                     <execution>
-                        <id>make-my-applet-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.processconfiguration.quaestio.Main</mainClass>
+                                    <manifestEntries>
+                                        <Permissions>all-permissions</Permissions>
+                                        <Trusted-Only>true</Trusted-Only>
+                                    </manifestEntries>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -85,17 +145,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
-            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>bpmncmap</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.javabdd</groupId>
-            <artifactId>javabdd</artifactId>
-            <version>1.0b2</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
@@ -107,6 +161,13 @@
             <artifactId>dcl-schema</artifactId>
             <version>1.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.sf.javabdd</groupId>
+            <artifactId>javabdd</artifactId>
+            <version>1.0b2</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
