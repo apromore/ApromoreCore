@@ -37,4 +37,5 @@ public class ApromoreUsernamePasswordAuthenticationFilter extends UsernamePasswo
         authRequest.setDetails(authenticationDetailsSource.buildDetails(request, authRequest));
     }
 
+
 }

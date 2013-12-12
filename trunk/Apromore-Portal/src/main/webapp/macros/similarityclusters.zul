@@ -29,14 +29,14 @@
             </row>
             <row spans="2">
                 <div align="center">
-                    <!--<button id="similarityclustersCreateGED" label="Create GED Matrix" image="img/ok.png" />-->
-                    <button id="similarityclustersCreateButton" label="Create Clusters" image="img/ok.png" />
+                    <!--<button id="similarityclustersCreateGED" label="Create GED Matrix" image="img/select.png" />-->
+                    <button id="similarityclustersCreateButton" label="Create Clusters" image="img/select.png" />
                     <button id="similarityclustersOKbutton" label="Show Clusters" image="img/search.png" />
                 </div>
             </row>
             <row spans="2">
                 <div align="center">
-                    <button id="similarityclustersCancelbutton" label="Cancel" image="img/cancel2.png" />
+                    <button id="similarityclustersCancelbutton" label="Cancel" image="img/cross.png" />
                 </div>
             </row>
         </rows>
