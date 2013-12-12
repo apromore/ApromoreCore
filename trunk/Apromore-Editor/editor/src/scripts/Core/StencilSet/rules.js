@@ -1090,65 +1090,58 @@ ORYX.Core.StencilSet.Rules = {
      */
     getLayoutingRules: function (shape, edgeShape, orientation) {
         if (!shape || !(shape instanceof ORYX.Core.Shape)) {
-            return
+            return;
         }
-
-        var layout = {"in": {}, "out": {}};
-
-        var parseValues = function (o, v, n) {
-            if (o && o[v]) {
-                ["t", "r", "b", "l"].each(function (d) {
-                    layout[v][d] = Math.max(o[v][d], layout[v][d] || 0);
-                });
+        var layout = {
+            "in": {},
+            "out": {}
+        };
+        var a = function (rule, dir, orien) {
+            if (rule && rule[dir]) {
+                ["t", "r", "b", "l"].each(function (k) {
+                    layout[dir][k] = Math.max(rule[dir][k], layout[dir][k] || 0)
+                })
             }
-            if (o && o[g + "s"] instanceof Array) {
+            if (rule && rule[dir + "s"] instanceof Array) {
                 ["t", "r", "b", "l"].each(function (n) {
-                    var k = undefined;
-                    if (n) {
-                        k = o[v + "s"].find(function (q) {
-                            return !q.edgeRole && n === q.orientation
+                    var foundRule = undefined;
+                    if (orien) {
+                        foundRule = rule[dir + "s"].find(function (o) {
+                            return !o.edgeRole && orien === o.orientation
                         })
                     }
-                    if (!k) {
-                        k = o[v + "s"].find(function (q) {
-                            return !q.edgeRole && !q.orientation
+                    if (!foundRule) {
+                        foundRule = rule[dir + "s"].find(function (o) {
+                            return !o.edgeRole && !o.orientation
                         })
                     }
                     var m = undefined;
-                    if (n && e instanceof ORYX.Core.Edge) {
-                        m = o[v + "s"].find(function (q) {
-                            return this._hasRole(e, q.edgeRole) && n === q.orientation
+                    if (orien && edgeShape instanceof ORYX.Core.Edge) {
+                        m = rule[dir + "s"].find(function (o) {
+                            return this._hasRole(edgeShape, o.edgeRole) && orien === o.orientation
                         }.bind(this))
                     }
                     if (!m) {
-                        m = o[v + "s"].find(function (q) {
-                            return this._hasRole(e, q.edgeRole) && !q.orientation
+                        m = rule[dir + "s"].find(function (o) {
+                            return this._hasRole(edgeShape, o.edgeRole) && !o.orientation
                         }.bind(this))
                     }
-                    d[g][n] = Math.max(m ? m[n] : k[n], d[g][n] || 0)
+                    layout[dir][n] = Math.max(m ? m[n] : foundRule[n], layout[dir][n] || 0)
                 }.bind(this))
             }
         }.bind(this);
-
-        // For each role
-        shape.getStencil().roles().each(function (role) {
-            // check if there are layout information
-            if (this._layoutRules[role]) {
-                // if so, parse those information to the 'layout' variable
-                parseValues(this._layoutRules[role], "in", orientation);
-                parseValues(this._layoutRules[role], "out", orientation);
+        shape.getStencil().roles().each(function (rule) {
+            if (this._layoutRules[rule]) {
+                a(this._layoutRules[rule], "in", orientation);
+                a(this._layoutRules[rule], "out", orientation)
             }
         }.bind(this));
-
-        // Make sure, that every attribute has an value,
-        // otherwise set 1
-        ["in", "out"].each(function (v) {
-            ["t", "r", "b", "l"].each(function (d) {
-                layout[v][d] = layout[v][d] !== undefined ? layout[v][d] : 1;
-            });
+        ["in", "out"].each(function (f) {
+            ["t", "r", "b", "l"].each(function (g) {
+                layout[f][g] = layout[f][g] !== undefined ? layout[f][g] : 1
+            })
         });
-
-        return layout;
+        return layout
     },
 
     /** End layouting rules' methods */
