@@ -21,7 +21,7 @@
     </bean>
 
     <bean id="httpSender" class="org.springframework.ws.transport.http.HttpComponentsMessageSender"
-          p:connectionTimeout="120000" />
+          p:connectionTimeout="240000" />
 
     <bean id="serviceMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"
           p:contextPath="org.apromore.model" />
