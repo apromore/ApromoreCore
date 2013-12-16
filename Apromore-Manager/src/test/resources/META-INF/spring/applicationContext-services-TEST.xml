@@ -10,6 +10,8 @@
 
     <context:component-scan base-package="org.apromore"/>
 
+    <bean id="simpleAuditedService" class="org.apromore.aop.SimpleAuditedService" />
+
     <!-- ************************** WebServices ************************** -->
 
     <sws:annotation-driven/>
