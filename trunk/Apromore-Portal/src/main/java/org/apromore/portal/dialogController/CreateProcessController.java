@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.util.CollectionUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -42,26 +44,15 @@ public class CreateProcessController extends BaseController {
     private final Window createProcessW;
 
     private final MainController mainC;
-    private final Button okB;
-    private final Button cancelB;
-    private final Button resetB;
     private final Textbox processNameT;
     private final Textbox versionNumberT;
-    private final Radiogroup rankingRG;
-    private final Row domainR;
-    private final Row ownerR;
-    private final Row nativeTypesR;
     private final Listbox nativeTypesLB;
-    private final HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
-    // is associated with the native type v (<xpdl,XPDL 1.2>)
 
-    private final SelectDynamicListController ownerCB;
     private final SelectDynamicListController domainCB;
 
     public CreateProcessController(final MainController mainC, final HashMap<String, String> formats_ext) throws SuspendNotAllowedException,
             InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
-        this.formats_ext = formats_ext;
 
         this.createProcessW = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
         this.createProcessW.setTitle("Create new process ");
@@ -70,17 +61,17 @@ public class CreateProcessController extends BaseController {
         this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
         Row versionNameR = (Row) processNameR.getNextSibling();
         this.versionNumberT = (Textbox) versionNameR.getFirstChild().getNextSibling();
-        this.domainR = (Row) versionNameR.getNextSibling();
-        this.ownerR = (Row) this.domainR.getNextSibling();
-        this.nativeTypesR = (Row) this.ownerR.getNextSibling();
-        this.nativeTypesLB = (Listbox) this.nativeTypesR.getFirstChild().getNextSibling();
-        Row rankingR = (Row) this.nativeTypesR.getNextSibling();
-        this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
+        Row domainR = (Row) versionNameR.getNextSibling();
+        Row ownerR = (Row) domainR.getNextSibling();
+        Row nativeTypesR = (Row) ownerR.getNextSibling();
+        this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
+        Row rankingR = (Row) nativeTypesR.getNextSibling();
+        Radiogroup rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
         Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
         Div buttonsD = (Div) buttonsR.getFirstChild();
-        this.okB = (Button) buttonsD.getFirstChild();
-        this.cancelB = (Button) this.okB.getNextSibling();
-        this.resetB = (Button) this.cancelB.getNextSibling();
+        Button okB = (Button) buttonsD.getFirstChild();
+        Button cancelB = (Button) okB.getNextSibling();
+        Button resetB = (Button) cancelB.getNextSibling();
         List<String> domains = this.mainC.getDomains();
         this.domainCB = new SelectDynamicListController(domains);
         this.domainCB.setReference(domains);
@@ -88,31 +79,33 @@ public class CreateProcessController extends BaseController {
         this.domainCB.setWidth("85%");
         this.domainCB.setHeight("100%");
         this.domainCB.setAttribute("hflex", "1");
-        this.domainR.appendChild(domainCB);
+        domainR.appendChild(domainCB);
         List<String> usernames = this.mainC.getUsers();
-        this.ownerCB = new SelectDynamicListController(usernames);
-        this.ownerCB.setReference(usernames);
-        this.ownerCB.setAutodrop(true);
-        this.ownerCB.setWidth("85%");
-        this.ownerCB.setHeight("100%");
-        this.ownerCB.setAttribute("hflex", "1");
-        this.ownerR.appendChild(ownerCB);
+        SelectDynamicListController ownerCB = new SelectDynamicListController(usernames);
+        ownerCB.setReference(usernames);
+        ownerCB.setAutodrop(true);
+        ownerCB.setWidth("85%");
+        ownerCB.setHeight("100%");
+        ownerCB.setAttribute("hflex", "1");
+        ownerR.appendChild(ownerCB);
 
         // set row visibility at creation time
-        this.nativeTypesR.setVisible(true);
+        nativeTypesR.setVisible(true);
         versionNameR.setVisible(false);
         rankingR.setVisible(false);
 
         // default values
-        this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
+        ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
 
-        Set<String> extensions = this.formats_ext.keySet();
-        Iterator<String> it = extensions.iterator();
+        Set<String> extensions = formats_ext.keySet();
+        List<String> sorted = CollectionUtil.asSortedList(extensions);
+
+        Iterator<String> it = sorted.iterator();
         Listitem cbi;
         while (it.hasNext()) {
             cbi = new Listitem();
             this.nativeTypesLB.appendChild(cbi);
-            cbi.setLabel(this.formats_ext.get(it.next()));
+            cbi.setLabel(formats_ext.get(it.next()));
 
             if ("BPMN 2.0".compareTo(cbi.getLabel()) == 0) {
                 cbi.setSelected(true);
@@ -121,27 +114,25 @@ public class CreateProcessController extends BaseController {
         // empty fields
         reset();
 
-        this.okB.addEventListener("onClick", new EventListener<Event>() {
+        okB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createProcess();
             }
         });
-
         this.createProcessW.addEventListener("onOK", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createProcess();
             }
         });
-
-        this.cancelB.addEventListener("onClick", new EventListener<Event>() {
+        cancelB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 cancel();
             }
         });
-        this.resetB.addEventListener("onClick", new EventListener<Event>() {
+        resetB.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 reset();
