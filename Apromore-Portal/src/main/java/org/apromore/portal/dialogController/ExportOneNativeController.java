@@ -14,6 +14,7 @@ import org.apromore.model.PluginInfo;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionExport;
+import org.apromore.portal.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -122,7 +123,8 @@ public class ExportOneNativeController extends BaseController {
         }
         // - Available native formats
         Set<String> extensions = this.formats_ext.keySet();
-        for (final String extension : extensions) {
+        List<String> sorted = CollectionUtil.asSortedList(extensions);
+        for (final String extension : sorted) {
             cbi = new Listitem();
             this.formatsLB.appendChild(cbi);
             cbi.setLabel(this.formats_ext.get(extension));
