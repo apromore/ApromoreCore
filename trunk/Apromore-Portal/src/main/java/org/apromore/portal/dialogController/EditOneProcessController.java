@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
@@ -11,6 +12,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.util.CollectionUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -75,7 +77,8 @@ public class EditOneProcessController extends BaseController {
         // build native format listbox
         HashMap<String, String> formats = mainC.getNativeTypes();
         Set<String> extensions = formats.keySet();
-        Iterator<String> it = extensions.iterator();
+        List<String> sorted = CollectionUtil.asSortedList(extensions);
+        Iterator<String> it = sorted.iterator();
         Listitem cbi;
         while (it.hasNext()) {
             String label = formats.get(it.next());
