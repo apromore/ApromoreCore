@@ -11,9 +11,14 @@
 
 <?link rel="shortcut icon" href="img/favicon.ico" ?>
 
-<zk xmlns:h="xhtml" xmlns:n="native">
+<zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
 
     <window id="main" title="AProMoRe" border="none" contentStyle="overflow:auto;">
+        <h:script type="text/javascript">
+            if (zk.ie || zk.ie7 || zk.ie8) {
+                alert("Sorry, we don't support Internet Explorer! some features might not work correctly.");
+            }
+        </h:script>
 
         <html>
         <h:body class="signin signin-horizontal" >

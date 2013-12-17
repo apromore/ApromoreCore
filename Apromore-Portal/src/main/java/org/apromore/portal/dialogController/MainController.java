@@ -116,10 +116,6 @@ public class MainController extends BaseController {
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
-            if (EventQueues.exists(Constants.EVENT_MESSAGE_SAVE, EventQueues.SESSION)) {
-                System.out.println("Event Queues enabled.");
-            }
-
             moreButton.addEventListener("onClick",
                     new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
