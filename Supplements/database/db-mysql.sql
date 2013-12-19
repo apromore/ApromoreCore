@@ -210,7 +210,7 @@ CREATE TABLE `canonical` (
 
 CREATE TABLE `fragment_version` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uri` varchar(40),
+  `uri` varchar(256),
   `fragmentId` int(11) DEFAULT NULL,
   `clusterId` int(11) DEFAULT NULL,
   `child_mapping_code` varchar(20000),
@@ -246,7 +246,7 @@ CREATE TABLE `fragment_version_dag` (
 
 CREATE TABLE `node` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uri` varchar(40),
+  `uri` varchar(256),
   `subVersionId` int(11) DEFAULT NULL,
   `originalId` varchar(200) DEFAULT NULL,
   `netId` varchar(200) DEFAULT NULL,
@@ -304,7 +304,7 @@ CREATE TABLE `cancel_nodes` (
 
 CREATE TABLE `edge` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uri` varchar(40),
+  `uri` varchar(256),
   `sourceNodeId` int(11) DEFAULT NULL,
   `targetNodeId` int(11) DEFAULT NULL,
   `cancelNodeId` int(11) DEFAULT NULL,
@@ -423,8 +423,8 @@ CREATE TABLE `membership` (
   `password_salt` varchar(100) NOT NULL,
   `mobile_pin` varchar(100) DEFAULT NULL,
   `email` varchar(200) NOT NULL,
-  `password_question` varchar(50) DEFAULT NULL,
-  `password_answer` varchar(50) DEFAULT NULL,
+  `password_question` varchar(100) DEFAULT NULL,
+  `password_answer` varchar(100) DEFAULT NULL,
   `is_approved` boolean not null default 1,
   `is_locked` boolean not null default 1,
   `date_created` datetime NOT NULL,
@@ -513,7 +513,7 @@ CREATE TABLE `workspace` (
 CREATE TABLE `object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `processModelVersionId` int(11) NOT NULL,
-  `uri` varchar(40),
+  `uri` varchar(256),
   `netId` varchar(40),
   `name` varchar(255),
   `configurable` boolean not null default 0,
@@ -558,7 +558,7 @@ CREATE TABLE `object_ref_attribute` (
 CREATE TABLE `resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `processModelVersionId` int(11) DEFAULT NULL,
-  `uri` varchar(40),
+  `uri` varchar(256),
   `originalId` varchar(40),
   `name` varchar(255),
   `configurable` boolean not null default 0,
