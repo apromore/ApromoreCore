@@ -10,6 +10,7 @@ import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -51,6 +52,9 @@ public class SignavioController extends BaseController {
                             params);
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
 
+            // Store the data in the session
+            Sessions.getCurrent().setAttribute("editSession", editSession);
+
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
             String JSON_DATA = "jsonData";
@@ -79,7 +83,8 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, true, eventToString(event));
+                    EditSessionType edSes = (EditSessionType) Sessions.getCurrent().getAttribute("editSession");
+                    new SaveAsDialogController(process, version, edSes, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
@@ -89,7 +94,8 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, false, eventToString(event));
+                    EditSessionType edSes = (EditSessionType) Sessions.getCurrent().getAttribute("editSession");
+                    new SaveAsDialogController(process, version, edSes, false, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
@@ -102,7 +108,7 @@ public class SignavioController extends BaseController {
      * YAWL models package their event data as an array of {@link String}s, EPML packages it as a {@link String}; this function
      * hides the difference.
      *
-     * @param event
+     * @param event ZK event
      * @throws RuntimeException if the data associated with <var>event</var> is neither a {@link String} nor an array of {@link String}s
      */
     private static String eventToString(final Event event) {
