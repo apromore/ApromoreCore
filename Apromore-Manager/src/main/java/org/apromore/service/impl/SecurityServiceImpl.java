@@ -9,7 +9,6 @@ import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.model.UserType;
 import org.apromore.service.SecurityService;
 import org.apromore.util.MailUtil;
 import org.springframework.stereotype.Service;
