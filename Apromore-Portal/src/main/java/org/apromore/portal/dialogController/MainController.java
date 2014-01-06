@@ -348,7 +348,7 @@ public class MainController extends BaseController {
 
             String url = "macros/openModelInSignavio.zul";
             
-            instruction += "window.open('" + url + "','_black'); "; //'top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'
+            instruction += "window.open('" + url + "','_blank'); "; //'top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'
 
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
