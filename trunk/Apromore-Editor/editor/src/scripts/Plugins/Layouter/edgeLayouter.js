@@ -65,6 +65,7 @@ new function(){
 		 */
 		doLayout: function(edge){
 			// Get from and to node
+console.log("EdgeLayouter: doLayout");
 			var from 	= edge.getIncomingNodes()[0]; 
 			var to 		= edge.getOutgoingNodes()[0];
 			
@@ -87,8 +88,9 @@ new function(){
 		 * @param {Object} edge Edge between from and to
 		 */
 		getPositions : function(from, to, edge){
-			
-			// Get absolute bounds
+            console.log("EdgeLayouter: getPositions");
+
+            // Get absolute bounds
 			var ab = from.absoluteBounds();
 			var bb = to.absoluteBounds();
 			
@@ -279,7 +281,8 @@ new function(){
 		 * @param {Object} b
 		 */
 		setDockers: function(edge, a, b){
-			if (!edge){ return }
+console.log("EdgeLayouter: setDockers");
+            if (!edge){ return }
 			
 			// Remove all dockers (implicit,
 			// start and end dockers will not removed)
@@ -297,7 +300,7 @@ new function(){
 			// Update all dockers from the edge
 			edge.dockers.each(function(docker){
 				docker.update()
-			})
+			});
 			
 			// Update edge
 			//edge.refresh();
