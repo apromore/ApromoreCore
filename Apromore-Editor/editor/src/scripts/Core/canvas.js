@@ -334,7 +334,6 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
      * @methodOf ORYX.Core.Canvas.prototype
      */
     addShapeObjects: function (shapeObjects, langs, eventHandler) {
-        "use strict";
         try {
             if (!shapeObjects) {
                 return;
@@ -358,7 +357,7 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
                 // Create a new Shape
                 var ShapeClass = (stencil.type() === "node") ? ORYX.Core.Node : ORYX.Core.Edge;
                 var newShape = new ShapeClass({
-                    'eventHandlerCallback': eventHandler
+                    eventHandlerCallback: eventHandler
                 }, stencil);
 
                 // Set the resource id
@@ -397,14 +396,13 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
                 resourceId: this.resourceId
             });
 
-
             // prepare deserialisation parameter
             shapes.each(
                 function (shape) {
                     var properties = [];
                     for (var field in shape.json.properties) {
                         properties.push({
-                            prefix: 'oryx',
+                            prefix: "oryx",
                             name: field,
                             value: shape.json.properties[field]
                         });
@@ -414,8 +412,8 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
                     shape.json.outgoing.each(function (out) {
                         if (out) {
                             properties.push({
-                                prefix: 'raziel',
-                                name: 'outgoing',
+                                prefix: "raziel",
+                                name: "outgoing",
                                 value: "#" + out.resourceId
                             });
                         }
@@ -425,11 +423,11 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
                     // (because of a bug, the first outgoing is taken when there is no target,
                     // can be removed after some time)
                     if (shape.object instanceof ORYX.Core.Edge) {
-                        var target = shape.json.target;
+                        var target = shape.json.target || shape.json.outgoing[0];
                         if (target) {
                             properties.push({
-                                prefix: 'raziel',
-                                name: 'target',
+                                prefix: "raziel",
+                                name: "target",
                                 value: "#" + target.resourceId
                             });
                         }
@@ -450,8 +448,8 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
                     // Dockers [{x:40, y:50}, {x:30, y:60}] => "40 50 30 60  #"
                     if (shape.json.dockers) {
                         properties.push({
-                            prefix: 'oryx',
-                            name: 'dockers',
+                            prefix: "oryx",
+                            name: "dockers",
                             value: shape.json.dockers.inject("", function (dockersStr, docker) {
                                 return dockersStr + docker.x + " " + docker.y + " ";
                             }) + " #"
@@ -460,8 +458,8 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
 
                     // Parent
                     properties.push({
-                        prefix: 'raziel',
-                        name: 'parent',
+                        prefix: "raziel",
+                        name: "parent",
                         value: shape.json.parent
                     });
 
@@ -731,23 +729,23 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
         }
 
         if (escapeText) {
-            $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'tspan')).each(function (elem) {
+            $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, "tspan")).each(function (elem) {
                 elem.textContent = elem.textContent.escapeHTML();
             });
 
-            $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'text')).each(function (elem) {
+            $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, "text")).each(function (elem) {
                 if (elem.childNodes.length == 0)
                     elem.textContent = elem.textContent.escapeHTML();
             });
         }
 
         // generating absolute urls for the pdf-exporter
-        $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'image')).each(function (elem) {
+        $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, "image")).each(function (elem) {
             elem.parentNode.removeChild(elem);
         });
 
         // escape all links
-        $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'a')).each(function (elem) {
+        $A(svgClone.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, "a")).each(function (elem) {
             elem.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", (elem.getAttributeNS("http://www.w3.org/1999/xlink", "href") || "").escapeHTML());
         });
 

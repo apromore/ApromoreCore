@@ -488,26 +488,30 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
             }).bind(this));
         },
 
-        migrateOldGlossarySchema: function (b, a) {
-            if (b && a) {
-                if ("string" == typeof a && b.refToView().length && ORYX.Utils.isOldGlossarySchema(a)) {
-                    this.setGlossaryLinks(b.origin(), ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(a));
-                    a = ORYX.Utils.glossaryTitle(a)
+        migrateOldGlossarySchema: function (value, value2) {
+            if (value && value2) {
+                if ("string" == typeof value2 && value.refToView().length && ORYX.Utils.isOldGlossarySchema(value2)) {
+                    this.setGlossaryLinks(value.origin(), ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(value2));
+                    value2 = ORYX.Utils.glossaryTitle(value2)
                 } else {
-                    if (b.type() === ORYX.CONFIG.TYPE_GLOSSARY_LINK) {
-                        if ("string" == typeof a && ORYX.Utils.isOldGlossarySchema(a)) {
-                            a = ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(a)
+                    if (value.type() === ORYX.CONFIG.TYPE_GLOSSARY_LINK) {
+                        if ("string" == typeof value2 && ORYX.Utils.isOldGlossarySchema(value2)) {
+                            value2 = ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(value2)
                         } else {
-                            if (a instanceof Array) {
-                                a = a.map(function (c) {
-                                    return ORYX.Utils.isOldGlossarySchema(c) ? ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(c) : c
-                                })
+                            if (value2 instanceof Array) {
+                                value2 = value2.map(
+                                    function (newVAL) {
+                                        return ORYX.Utils.isOldGlossarySchema(newVAL) ?
+                                            ORYX.CONFIG.GLOSSARY_PATH + "/" + ORYX.Utils.getGlossaryId(newVAL) :
+                                            newVAL
+                                    }
+                                )
                             }
                         }
                     }
                 }
             }
-            return a
+            return value2
         },
 
         toString: function () {
