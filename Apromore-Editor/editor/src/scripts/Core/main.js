@@ -627,7 +627,6 @@ ORYX.Editor = {
      * @return {Ext.Component} dom reference to the current region or null if specified region is unknown
      */
     addToRegion: function (region, component, title) {
-
         if (region.toLowerCase && this.layout_regions[region.toLowerCase()]) {
             var current_region = this.layout_regions[region.toLowerCase()];
 
@@ -1130,7 +1129,7 @@ ORYX.Editor = {
                     this.jsonObject = jsonObject;
                     this.noSelection = noSelectionAfterImport;
                     this.facade = facade;
-                    this.shapes;
+                    this.shapes = undefined;
                     this.connections = [];
                     this.parents = new Hash();
                     this.selection = this.facade.getSelection();
@@ -1138,42 +1137,46 @@ ORYX.Editor = {
                 },
 
                 execute: function () {
-                    if (!this.shapes) {
-                        this.shapes = this.loadSerialized(this.jsonObject);
-                        this.shapes.each(function (shape) {
-                            if (shape.getDockers) {
-                                var dockers = shape.getDockers();
-                                if (dockers) {
-                                    if (dockers.length > 0) {
-                                        this.connections.push([dockers.first(), dockers.first().getDockedShape(), dockers.first().referencePoint]);
-                                    }
-                                    if (dockers.length > 1) {
-                                        this.connections.push([dockers.last(), dockers.last().getDockedShape(), dockers.last().referencePoint]);
+                    try {
+                        if (!this.shapes) {
+                            this.shapes = this.loadSerialized(this.jsonObject);
+                            this.shapes.each(function (shape) {
+                                if (shape.getDockers) {
+                                    var dockers = shape.getDockers();
+                                    if (dockers) {
+                                        if (dockers.length > 0) {
+                                            this.connections.push([dockers.first(), dockers.first().getDockedShape(), dockers.first().referencePoint]);
+                                        }
+                                        if (dockers.length > 1) {
+                                            this.connections.push([dockers.last(), dockers.last().getDockedShape(), dockers.last().referencePoint]);
+                                        }
                                     }
                                 }
-                            }
-                            this.parents[shape.id] = shape.parent;
-                        }.bind(this));
+                                this.parents[shape.id] = shape.parent;
+                            }.bind(this));
 
-                    } else {
-                        this.shapes.each(function (shape) {
-                            this.parents[shape.id].add(shape);
-                        }.bind(this));
+                        } else {
+                            this.shapes.each(function (shape) {
+                                this.parents[shape.id].add(shape);
+                            }.bind(this));
 
-                        this.connections.each(function (con) {
-                            con[0].setDockedShape(con[1]);
-                            con[0].setReferencePoint(con[2]);
-                            con[0].update();
-                        });
+                            this.connections.each(function (con) {
+                                con[0].setDockedShape(con[1]);
+                                con[0].setReferencePoint(con[2]);
+                                con[0].update();
+                            });
+                        }
+
+                        this.facade.getCanvas().update();
+                        if (!this.noSelection) {
+                            this.facade.setSelection(this.shapes);
+                        } else {
+                            this.facade.updateSelection();
+                        }
+                        this.facade.getCanvas().updateSize();
+                    } catch (err) {
+                        console.log("ImportJSON error: " + err.message);
                     }
-
-                    this.facade.getCanvas().update();
-                    if (!this.noSelection) {
-                        this.facade.setSelection(this.shapes);
-                    } else {
-                        this.facade.updateSelection();
-                    }
-                    this.facade.getCanvas().updateSize();
                 },
 
                 rollback: function () {
@@ -1185,7 +1188,7 @@ ORYX.Editor = {
                     this.facade.getCanvas().update();
                     this.facade.setSelection(selection);
                 }
-            })
+            });
 
             var command = new commandClass(jsonObject, this.loadSerialized.bind(this), noSelectionAfterImport, this._getPluginFacade());
             this.executeCommands([command]);
@@ -1224,7 +1227,7 @@ ORYX.Editor = {
             return shapes.map(function (shape) {
                 return collectResourceIds(shape.childShapes).concat(shape.resourceId);
             }).flatten();
-        }
+        };
         var resourceIds = collectResourceIds(jsonObject.childShapes);
 
         // Replace each resource id by a new one
@@ -1647,9 +1650,6 @@ ORYX.Editor = {
 
     updateSelection: function () {
         this.setSelection(this.selection, this._subSelection, true);
-        /*var s = this.selection;
-         this.setSelection();
-         this.setSelection(s);*/
     },
 
     getCanvas: function () {
@@ -1670,9 +1670,7 @@ ORYX.Editor = {
 	*		}
      */
     createShape: function (option) {
-
         if (option && option.serialize && option.serialize instanceof Array) {
-
             var type = option.serialize.find(function (obj) {
                 return (obj.prefix + "-" + obj.name) == "oryx-type"
             });
@@ -1713,7 +1711,6 @@ ORYX.Editor = {
 
         // when there is a template, inherit the properties.
         if (option.template) {
-
             newShapeObject._jsonStencil.properties = option.template._jsonStencil.properties;
             newShapeObject.postProcessProperties();
         }
@@ -1725,22 +1722,22 @@ ORYX.Editor = {
             canvas.add(newShapeObject);
         }
 
-
         // Set the position
-        var point = option.position ? option.position : {x: 100, y: 200};
-
+        var point = option.position ? option.position : {
+            x: 100, y: 200
+        };
 
         var con;
         // If there is create a shape and in the argument there is given an ConnectingType and is instance of an edge
         if (option.connectingType && option.connectedShape && !(newShapeObject instanceof ORYX.Core.Edge)) {
-
             // there will be create a new Edge
-            con = new ORYX.Core.Edge({'eventHandlerCallback': this.handleEvents.bind(this)}, sset.stencil(option.connectingType));
+            con = new ORYX.Core.Edge({
+                eventHandlerCallback: this.handleEvents.bind(this)
+            }, sset.stencil(option.connectingType));
 
             // And both endings dockers will be referenced to the both shapes
             con.dockers.first().setDockedShape(option.connectedShape);
-
-            var magnet = option.connectedShape.getDefaultMagnet()
+            var magnet = option.connectedShape.getDefaultMagnet();
             var cPoint = magnet ? magnet.bounds.center() : option.connectedShape.bounds.midPoint();
             con.dockers.first().setReferencePoint(cPoint);
             con.dockers.last().setDockedShape(newShapeObject);
@@ -1748,13 +1745,10 @@ ORYX.Editor = {
 
             // The Edge will be added to the canvas and be updated
             canvas.add(con);
-            //con.update();
-
         }
 
         // Move the new Shape to the position
         if (newShapeObject instanceof ORYX.Core.Edge && option.connectedShape) {
-
             newShapeObject.dockers.first().setDockedShape(option.connectedShape);
 
             if (option.connectedShape instanceof ORYX.Core.Node) {
@@ -1763,22 +1757,26 @@ ORYX.Editor = {
             } else {
                 newShapeObject.dockers.first().setReferencePoint(option.connectedShape.bounds.midPoint());
             }
-
         } else {
-
-            var b = newShapeObject.bounds
+            var b = newShapeObject.bounds;
             if (newShapeObject instanceof ORYX.Core.Node && newShapeObject.dockers.length == 1) {
-                b = newShapeObject.dockers.first().bounds
+                b = newShapeObject.dockers.first().bounds;
             }
-
+            if (newShapeObject instanceof ORYX.Core.Edge) {
+                b.extend({
+                    x: 0,
+                    y: 1
+                });
+                point.x -= 8;
+                point.y -= 8;
+            }
             b.centerMoveTo(point);
 
             var upL = b.upperLeft();
-            b.moveBy(-Math.min(upL.x, 0), -Math.min(upL.y, 0))
+            b.moveBy(-Math.min(upL.x, 0), -Math.min(upL.y, 0));
 
             var lwR = b.lowerRight();
             b.moveBy(-Math.max(lwR.x - canvas.bounds.width(), 0), -Math.max(lwR.y - canvas.bounds.height(), 0))
-
         }
 
         // Update the shape
@@ -1802,7 +1800,6 @@ ORYX.Editor = {
     },
 
     deleteShape: function (shape) {
-
         if (!shape || !shape.parent) {
             return
         }
