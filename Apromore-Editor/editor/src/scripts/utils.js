@@ -44,6 +44,28 @@ ORYX.Utils = {
             return results[1];
         }
     },
+    isGlossaryEntry: function (a) {
+        return typeof a === "string" && (this.isOldGlossarySchema(a) || a.startsWith("/glossary/"))
+    },
+    isOldGlossarySchema: function (a) {
+        return typeof a === "string" && !! a.match(/\glossary\:\/\/.+\/[\w\W]+\;\;/g)
+    },
+    getGlossaryId: function (a) {
+        if (ORYX.Utils.isOldGlossarySchema(a)) {
+            return (a || "").split(";;").invoke("replace", /\glossary\:\/\//g, "").invoke("replace", /\/[\w\W]+/g, "").first()
+        }
+        return ""
+    },
+    glossaryTitle: function (a) {
+        if (ORYX.Utils.isOldGlossarySchema(a)) {
+            return (a || "").replace(/;;$/, "").replace(/\glossary\:\/\/.+?\//g, "")
+        }
+        return ""
+    },
+    getInGlossarySchema: function (b, a) {
+        b = (b || "").replace(/([\/]|glossary)/g, "");
+        return "glossary://" + b + "/" + a + ";;"
+    },
     isIPad: function () {
         return !!Ext.isIPad;
     },

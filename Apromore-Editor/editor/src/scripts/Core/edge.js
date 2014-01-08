@@ -70,13 +70,12 @@ ORYX.Core.Edge = {
         this.attachedNodePositionData = new Hash();
 
         var stencilNode = this.node.childNodes[0].childNodes[0];
-        stencilNode = ORYX.Editor.graft("http://www.w3.org/2000/svg", stencilNode, ['g', {
+        stencilNode = ORYX.Editor.graft("http://www.w3.org/2000/svg", stencilNode, ["g", {
             "pointer-events": "painted"
         }]);
 
         //Add to the EventHandler
         this.addEventHandlers(stencilNode.parentNode);
-
 
         this._oldBounds = this.bounds.clone();
 
@@ -86,14 +85,11 @@ ORYX.Core.Edge = {
         if (stencil instanceof Array) {
             this.deserialize(stencil);
         }
-
     },
 
     _update: function (force) {
         if (this._dockerUpdated || this.isChanged || force) {
-
             this.dockers.invoke("update");
-
             if (false && (this.bounds.width() === 0 || this.bounds.height() === 0)) {
                 var width = this.bounds.width();
                 var height = this.bounds.height();
@@ -428,7 +424,9 @@ ORYX.Core.Edge = {
             this._oldBounds = this.bounds.clone();
         }
 
-
+        if (this.parent && !this.node.parentNode) {
+            this.parent.getEdgeContainer().appendChild(this.node)
+        }
     },
 
     /**
@@ -494,15 +492,15 @@ ORYX.Core.Edge = {
         /* Case: Node was just added */
         if (!this.attachedNodePositionData[node.getId()]) {
             this.attachedNodePositionData[node.getId()] = new Object();
-            this.attachedNodePositionData[node.getId()]
-                .relativDistanceFromDocker1 = 0;
+            this.attachedNodePositionData[node.getId()].relativDistanceFromDocker1 = 0;
             this.attachedNodePositionData[node.getId()].node = node;
             this.attachedNodePositionData[node.getId()].segment = new Object();
             this.findEdgeSegmentForNode(node);
-        } else if (node.isChanged) {
-            this.findEdgeSegmentForNode(node);
+        } else {
+            if (node.isChanged) {
+                this.findEdgeSegmentForNode(node);
+            }
         }
-
 
     },
 
@@ -664,7 +662,7 @@ ORYX.Core.Edge = {
             };
             docker.bounds.moveBy(off);
             docker._dockedShapeBounds.moveBy(off);
-        }
+        };
 
         updateDocker(this.dockers.first());
         updateDocker(this.dockers.last());
@@ -677,18 +675,16 @@ ORYX.Core.Edge = {
         arguments.callee.$.refresh.apply(this, arguments);
 
         //TODO consider points for marker mids
-        var lastPoint;
         this._paths.each((function (path, index) {
-            var dockers = this._dockersByPath[path.id];
+            var lastPoint = undefined;
+            var dockers = this._dockersByPath.values()[0];  //this._dockersByPath[path.id];
             var c = undefined;
             var d = undefined;
             if (lastPoint) {
                 d = "M" + lastPoint.x + " " + lastPoint.y;
-            }
-            else {
+            } else {
                 c = dockers[0].bounds.center();
                 lastPoint = c;
-
                 d = "M" + c.x + " " + c.y;
             }
 
@@ -876,54 +872,40 @@ ORYX.Core.Edge = {
         var endDocker = this.dockers[index + 1];
 
         /* Adjust the position of edge's child nodes */
-        var segmentElements =
-            this.getAttachedNodePositionDataForSegment(startDocker, endDocker);
-
-        var lengthSegmentPart1 = ORYX.Core.Math.getDistancePointToPoint(
-            startDocker.bounds.center(),
-            docker.bounds.center());
-        var lengthSegmentPart2 = ORYX.Core.Math.getDistancePointToPoint(
-            endDocker.bounds.center(),
-            docker.bounds.center());
+        var segmentElements = this.getAttachedNodePositionDataForSegment(startDocker, endDocker);
+        var lengthSegmentPart1 = ORYX.Core.Math.getDistancePointToPoint(startDocker.bounds.center(),  docker.bounds.center());
+        var lengthSegmentPart2 = ORYX.Core.Math.getDistancePointToPoint(endDocker.bounds.center(), docker.bounds.center());
 
         if (!(lengthSegmentPart1 + lengthSegmentPart2)) {
             return;
         }
 
         var relativDockerPosition = lengthSegmentPart1 / (lengthSegmentPart1 + lengthSegmentPart2);
-
         segmentElements.each(function (nodePositionData) {
             /* Assign child node to the new segment */
             if (nodePositionData.value.relativDistanceFromDocker1 < relativDockerPosition) {
                 /* Case: before added Docker */
                 nodePositionData.value.segment.docker2 = docker;
-                nodePositionData.value.relativDistanceFromDocker1 =
-                    nodePositionData.value.relativDistanceFromDocker1 / relativDockerPosition;
+                nodePositionData.value.relativDistanceFromDocker1 = nodePositionData.value.relativDistanceFromDocker1 / relativDockerPosition;
             } else {
                 /* Case: after added Docker */
                 nodePositionData.value.segment.docker1 = docker;
                 var newFullDistance = 1 - relativDockerPosition;
-                var relativPartOfSegment =
-                    nodePositionData.value.relativDistanceFromDocker1
-                        - relativDockerPosition;
-
-                nodePositionData.value.relativDistanceFromDocker1 =
-                    relativPartOfSegment / newFullDistance;
-
+                var relativPartOfSegment = nodePositionData.value.relativDistanceFromDocker1 - relativDockerPosition;
+                nodePositionData.value.relativDistanceFromDocker1 = relativPartOfSegment / newFullDistance;
             }
-        })
+        });
 
 
         // Update all labels reference points
         this.getLabels().each(function (label) {
-
             var ref = label.getReferencePoint();
-            if (!ref) {
-                return;
+            if (!ref || !ref.intersection) {
+                return
             }
+
             var index = this.dockers.indexOf(docker);
             if (index >= ref.segment.fromIndex && index <= ref.segment.toIndex) {
-
                 var segment = this.findSegment(ref.intersection);
                 if (!segment) {
                     // Choose whether the first of the last segment
@@ -931,16 +913,13 @@ ORYX.Core.Edge = {
                     segment.toDocker = this.dockers[this.dockers.indexOf(from) + 1]; // The next one if the to docker
                 }
 
-                var fromPosition = segment.fromDocker.bounds.center(), toPosition = segment.toDocker.bounds.center();
-
+                var fromPosition = segment.fromDocker.bounds.center(),
+                    toPosition = segment.toDocker.bounds.center();
                 var intersection = ORYX.Core.Math.getPointOfIntersectionPointLine(
                     fromPosition, 		// P1 - Center of the first docker
                     toPosition, 		// P2 - Center of the second docker
                     ref.intersection, 	// P3 - Center of the label
                     true);
-                //var oldDistance = ORYX.Core.Math.getDistanceBetweenTwoPoints(ref.segment.fromPosition, ref.segment.toPosition, ref.intersection);
-                //intersection = ORYX.Core.Math.getPointBetweenTwoPoints(fromPosition, toPosition, isNaN(oldDistance) ? 0.5 : (lengthOld*oldDistance)/lengthNew);
-
                 // Update the reference point
                 this.updateReferencePointOfLabel(label, intersection, segment.fromDocker, segment.toDocker, true);
             }
@@ -1429,7 +1408,7 @@ ORYX.Core.Edge = {
         //init interaction path
         this._paths.each((function (path) {
             var iPath = path.cloneNode(false);
-            iPath.setAttributeNS(null, "id", undefined);
+            iPath.setAttributeNS(null, "id", (iPath.getAttributeNS(null, "id") || "") + "_z");
             iPath.setAttributeNS(null, "stroke-width", 10);
             iPath.setAttributeNS(null, "visibility", "hidden");
             iPath.setAttributeNS(null, "stroke-dasharray", null);
@@ -1460,8 +1439,6 @@ ORYX.Core.Edge = {
         this.propertiesChanged.each(function (pair) {
             pair.value = true;
         });
-
-        //this._update(true);
     },
 
     /**
@@ -1500,10 +1477,7 @@ ORYX.Core.Edge = {
      * Calls when a docker has changed
      */
     _dockerChanged: function () {
-
-        //this._update(true);
         this._dockerUpdated = true;
-
     },
 
     serialize: function () {
@@ -1520,10 +1494,10 @@ ORYX.Core.Edge = {
             value += " # ";
         }).bind(this));
         result.push({
-            name: 'dockers',
-            prefix: 'oryx',
+            name: "dockers",
+            prefix: "oryx",
             value: value,
-            type: 'literal'
+            type: "literal"
         });
 
         //add parent triple dependant on the dockedShapes
@@ -1579,20 +1553,18 @@ ORYX.Core.Edge = {
 
         //serialize target and source
         var lastDocker = this.dockers.last();
-
         var target = lastDocker.getDockedShape();
 
         if (target) {
             result.push({
-                name: 'target',
-                prefix: 'raziel',
-                value: '#' + ERDF.__stripHashes(target.resourceId),
-                type: 'resource'
+                name: "target",
+                prefix: "raziel",
+                value: "#" + ERDF.__stripHashes(target.resourceId),
+                type: "resource"
             });
         }
 
         try {
-            //result = this.getStencil().serialize(this, result);
             var serializeEvent = this.getStencil().serialize();
 
             /*
@@ -1619,8 +1591,6 @@ ORYX.Core.Edge = {
 
     deserialize: function (data) {
         try {
-            //data = this.getStencil().deserialize(this, data);
-
             var deserializeEvent = this.getStencil().deserialize();
 
             /*
@@ -1638,13 +1608,11 @@ ORYX.Core.Edge = {
                     data = deserializeEvent.result;
                 }
             }
-        }
-        catch (e) {
-        }
+        } catch (e) { }
 
         // Set the outgoing shapes
         var target = data.find(function (ser) {
-            return (ser.prefix + "-" + ser.name) == 'raziel-target'
+            return (ser.prefix + "-" + ser.name) == "raziel-target"
         });
         var targetShape;
         if (target) {
@@ -1652,18 +1620,15 @@ ORYX.Core.Edge = {
         }
 
         var outgoing = data.findAll(function (ser) {
-            return (ser.prefix + "-" + ser.name) == 'raziel-outgoing'
+            return (ser.prefix + "-" + ser.name) == "raziel-outgoing"
         });
         outgoing.each((function (obj) {
-            // TODO: Look at Canvas
             if (!this.parent) {
                 return
             }
-            ;
 
             // Set outgoing Shape
             var next = this.getCanvas().getChildShapeByResourceId(obj.value);
-
             if (next) {
                 if (next == targetShape) {
                     // If this is an edge, set the last docker to the next shape
@@ -1672,16 +1637,9 @@ ORYX.Core.Edge = {
                 } else if (next instanceof ORYX.Core.Edge) {
                     //Set the first docker of the next shape
                     next.dockers.first().setDockedShape(this);
-                    //next.dockers.first().setReferencePoint({x: this.bounds.width() / 2.0, y: this.bounds.height() / 2.0});
                 }
-                /*else if(next.dockers.length > 0) { //next is a node and next has a docker
-                 next.dockers.first().setDockedShape(this);
-                 next.dockers.first().setReferencePoint({x: this.bounds.width() / 2.0, y: this.bounds.height() / 2.0});
-                 }*/
             }
-
         }).bind(this));
-
 
         var oryxDockers = data.find(function (obj) {
             return (obj.prefix === "oryx" &&
@@ -1703,19 +1661,19 @@ ORYX.Core.Edge = {
                             while (this._dockersByPath[path.id].length > 2) {
                                 this.removeDocker(this._dockersByPath[path.id][1]);
                             }
-                        }
-                        else {
+                        } else {
                             while (this._dockersByPath[path.id].length > 1) {
                                 this.removeDocker(this._dockersByPath[path.id][0]);
                             }
                         }
 
                         var dockersByPath = this._dockersByPath[path.id];
-
                         if (index === 0) {
                             //set position of first docker
                             var x = parseFloat(values.shift());
                             var y = parseFloat(values.shift());
+                            x = x || x === 0 ? x : 10;
+                            y = y || y === 0 ? y : 10;
 
                             if (dockersByPath.first().getDockedShape()) {
                                 dockersByPath.first().setReferencePoint({
@@ -1731,6 +1689,8 @@ ORYX.Core.Edge = {
                         //set position of last docker
                         y = parseFloat(values.pop());
                         x = parseFloat(values.pop());
+                        x = x || x === 0 ? x : 10;
+                        y = y || y === 0 ? y : 10;
 
                         if (dockersByPath.last().getDockedShape()) {
                             dockersByPath.last().setReferencePoint({
@@ -1748,10 +1708,6 @@ ORYX.Core.Edge = {
 
                             var newDocker = this.createDocker();
                             newDocker.bounds.centerMoveTo(x, y);
-
-                            //this.dockers = this.dockers.without(newDocker);
-                            //this.dockers.splice(this.dockers.indexOf(dockersByPath.last()), 0, newDocker);
-                            //dockersByPath.splice(this.dockers.indexOf(dockersByPath.last()), 0, newDocker);
                         }
                     }
                 }
