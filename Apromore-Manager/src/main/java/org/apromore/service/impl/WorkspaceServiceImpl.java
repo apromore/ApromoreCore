@@ -246,7 +246,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             }
 
             // Move up the tree one and start again. null = root folder that everyone has access.
-            if (folder.getParentFolder().getId() != null) {
+            if (folder.getParentFolder() != null && folder.getParentFolder().getId() != null) {
                 updateFolderSecurity(folder.getParentFolder().getId(), users);
             }
         }

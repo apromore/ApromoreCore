@@ -92,7 +92,7 @@ public final class Import {
                         "domain",
                         "documentation",
                         "created",
-                        "lastUpdate", noCanoniserParameters);
+                        "lastUpdate", true, noCanoniserParameters);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to load file {} due to {}", file.getName(), e.getMessage());

@@ -22,8 +22,6 @@ DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
 DROP TABLE IF EXISTS `folder`;
-DROP TABLE IF EXISTS `folder_process`;
-DROP TABLE IF EXISTS `folder_subfolder`;
 DROP TABLE IF EXISTS `folder_user`;
 DROP TABLE IF EXISTS `fragment`;
 DROP TABLE IF EXISTS `fragment_user`;
