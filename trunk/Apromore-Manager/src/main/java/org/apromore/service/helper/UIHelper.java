@@ -414,6 +414,7 @@ public class UIHelper implements UserInterfaceHelper {
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
         processSummary.setRanking(process.getRanking());
+        processSummary.setMakePublic(process.getPublicModel());
         if (process.getNativeType() != null) {
             processSummary.setOriginalNativeType(process.getNativeType().getNatType());
         }

@@ -21,6 +21,10 @@
                     <label value="Remove entanglements"/>
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
                 </row>
+                <row id="makePublic">
+                    <label value="Make Process Public"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                </row>
                 <row id="mergeAlgoChoice">
                     <label value="Algorithm (please choose one)" width="100%"/>
                     <listbox width="100%"/>

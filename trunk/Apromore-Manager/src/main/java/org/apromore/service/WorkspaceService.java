@@ -4,6 +4,7 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
 import org.apromore.dao.model.ProcessUser;
+import org.apromore.dao.model.User;
 
 import java.util.List;
 
@@ -15,6 +16,11 @@ import java.util.List;
  */
 public interface WorkspaceService {
 
+    /**
+     * Finds a folders and returns it.
+     * @param folderId the id oif the folder to find.
+     * @return the found folder or null.
+     */
     Folder getFolder(Integer folderId);
 
     List<FolderUser> getFolderUsers(Integer folderId);
@@ -44,5 +50,12 @@ public interface WorkspaceService {
     String removeFolderPermissions(Integer folderId, String userId);
 
     String removeProcessPermissions(Integer processId, String userId);
-    
+
+    /**
+     * Updates the Folders security so all users now have read access to that folder (from the root folder up).
+     * NOTE: this method is recursive, we update this folder then move up the folder tree until the root.
+     * @param folderId the folder we have a public model in.
+     * @param users all the users we giving access.
+     */
+    void updateFolderSecurity(Integer folderId, List<User> users);
 }

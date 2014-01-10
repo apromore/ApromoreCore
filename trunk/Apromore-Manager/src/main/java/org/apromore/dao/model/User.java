@@ -230,7 +230,7 @@ public class User implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ProcessUser> getProcessUsers() {
         return this.processUsers;
     }
@@ -284,7 +284,7 @@ public class User implements Serializable {
         this.foldersForModifiedById = foldersForModifiedById;
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Process> getProcesses() {
         return this.processes;
     }

@@ -24,11 +24,12 @@ public interface MergeService {
      * @param folderId    The folder we are going to store the new model in.
      * @param parameters  the algorithm photos
      * @param ids         ID'd of the processes to merge.
+     * @param makePublic  do we make this new model public?
      * @return the new process summary of the newly merged process
      * @throws ExceptionMergeProcess if the merge failed
      */
     ProcessModelVersion mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
-        ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess;
+        ParametersType parameters, ProcessVersionIdsType ids, boolean makePublic) throws ExceptionMergeProcess;
 
 
 }

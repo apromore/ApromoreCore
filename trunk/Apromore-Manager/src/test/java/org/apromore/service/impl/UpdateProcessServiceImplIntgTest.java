@@ -74,7 +74,7 @@ public class UpdateProcessServiceImplIntgTest {
         String domain = "Tests";
         String lastUpdate = "12/12/2011";
         String created = "12/12/2011";
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process

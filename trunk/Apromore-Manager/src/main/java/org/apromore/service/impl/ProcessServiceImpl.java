@@ -210,14 +210,14 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Double, String, org.apromore.service.model.CanonisedProcess, String, String, String, String)
+     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Double, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName, final Double versionNumber,
             final String natType, final CanonisedProcess cpf, final String domain, final String documentation,
-            final String created, final String lastUpdate) throws ImportException {
+            final String created, final String lastUpdate, final boolean publicModel) throws ImportException {
         LOGGER.debug("Executing operation canoniseProcess");
 
         if (cpf == null) {
@@ -233,7 +233,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
-            Process process = insertProcess(processName, user, nativeType, domain, folderId);
+            Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
 
             pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
@@ -698,7 +698,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* Inserts a new process into the DB. */
     private Process insertProcess(final String processName, final User user, final NativeType nativeType, final String domain,
-            final Integer folderId) throws ImportException {
+            final Integer folderId, final String created, final boolean publicModel) throws ImportException {
         LOGGER.debug("Executing operation Insert Process");
         Process process = new Process();
 
@@ -707,6 +707,8 @@ public class ProcessServiceImpl implements ProcessService {
             process.setUser(user);
             process.setDomain(domain);
             process.setNativeType(nativeType);
+            process.setCreateDate(created);
+            process.setPublicModel(publicModel);
             if (folderId != null) {
                 process.setFolder(workspaceSrv.getFolder(folderId));
             }
