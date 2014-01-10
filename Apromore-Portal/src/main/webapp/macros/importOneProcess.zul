@@ -39,6 +39,10 @@
                 <row spans="1,2">
                     <label value="Domain" width="100%" tooltiptext="optional"/>
                 </row>
+                <row id="makePublic" spans="1,2">
+                    <label value="Make Process Public"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                </row>
                 <row spans="1,2" id="canoniserSelectionRow">
                     <label value="Canoniser" width="100%" tooltiptext="Canoniser used for this Process" />
                 </row>

@@ -50,12 +50,14 @@ public interface ProcessService {
      * @param documentation any documentation that is required
      * @param created       the time created
      * @param lastUpdate    the time last updated
+     * @param publicModel   is this a public model?
      * @return the processSummaryType
      * @throws ImportException if the import process failed for any reason.
      *
      */
     ProcessModelVersion importProcess(String username, Integer folderId, String processName, Double versionNumber, String nativeType,
-            CanonisedProcess cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
+            CanonisedProcess cpf, String domain, String documentation, String created, String lastUpdate, boolean publicModel)
+            throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.

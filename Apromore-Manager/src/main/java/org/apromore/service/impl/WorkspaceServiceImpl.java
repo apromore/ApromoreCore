@@ -1,10 +1,5 @@
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.FolderUserRepository;
 import org.apromore.dao.ProcessRepository;
@@ -23,6 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -223,6 +223,32 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
             process.setFolder(folder);
             processRepo.save(process);
+        }
+    }
+
+    /**
+     * @see org.apromore.service.WorkspaceService#updateFolderSecurity(Integer, java.util.List)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateFolderSecurity(final Integer folderId, final List<User> users) {
+        if (folderId != null && !folderId.equals(0)) {
+            Folder folder = getFolder(folderId);
+
+            // Update the Users for this folder.
+            for (User user : users) {
+                FolderUser folderUser = folderUserRepo.findByFolderAndUser(folder, user);
+                if (folderUser == null) {
+                    // We only want to create new permissions, we don't want to change existing permissions.
+                    createFolderUser(folder, user, true, false, false);
+                }
+            }
+
+            // Move up the tree one and start again. null = root folder that everyone has access.
+            if (folder.getParentFolder().getId() != null) {
+                updateFolderSecurity(folder.getParentFolder().getId(), users);
+            }
         }
     }
 

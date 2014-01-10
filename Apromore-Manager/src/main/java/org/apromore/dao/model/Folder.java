@@ -1,5 +1,6 @@
 package org.apromore.dao.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -229,7 +230,7 @@ public class Folder implements Serializable {
      * Getter for the role collection.
      * @return Returns the roles.
      */
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<FolderUser> getFolderUsers() {
         return this.folderUsers;
     }
@@ -243,7 +244,7 @@ public class Folder implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Process> getProcesses() {
         return this.processes;
     }
@@ -252,7 +253,7 @@ public class Folder implements Serializable {
         this.processes = processes;
     }
 
-    @OneToMany(mappedBy = "parentFolder")
+    @OneToMany(mappedBy = "parentFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Folder> getSubFolders() {
         return this.subFolders;
     }

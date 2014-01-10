@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -52,6 +53,7 @@ public class ImportOneProcessController extends BaseController {
     private final Textbox creationDateTb;
     private final Textbox processNameTb;
     private final Textbox versionNumberTb;
+    private final Checkbox makePublicCb;
     private final SelectDynamicListController domainCB;
     private final SelectDynamicListController ownerCB;
     private final InputStream nativeProcess; // the input stream read from uploaded file
@@ -93,14 +95,16 @@ public class ImportOneProcessController extends BaseController {
         Row lastUpdateR = (Row) rows.getChildren().get(4);
         Row documentationR = (Row) rows.getChildren().get(5);
         Row domainR = (Row) rows.getChildren().get(6);
+        Row publicR = (Row) rows.getChildren().get(7);
 
         this.processNameTb = (Textbox) processNameR.getChildren().get(1);
         this.versionNumberTb = (Textbox) versionNumberR.getChildren().get(1);
         this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
         this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
         this.documentationTb = (Textbox) documentationR.getChildren().get(1);
+        this.makePublicCb = (Checkbox) publicR.getChildren().get(1);
 
-        Div buttonsD = (Div) domainR.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getFirstChild();
+        Div buttonsD = (Div) publicR.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getFirstChild();
         this.okButton = (Button) buttonsD.getFirstChild();
         this.okForAllButton = (Button) buttonsD.getChildren().get(1);
         this.cancelButton = (Button) buttonsD.getChildren().get(2);
@@ -282,6 +286,7 @@ public class ImportOneProcessController extends BaseController {
         this.creationDateTb.setValue(readCreated);
         this.lastUpdateTb.setValue(readLastupdate);
         this.defaultOwner.setValue(readAuthor);
+        this.makePublicCb.setChecked(false);
     }
 
     private void cancel() throws InterruptedException, IOException {
@@ -310,7 +315,7 @@ public class ImportOneProcessController extends BaseController {
             Double version = Double.valueOf(this.versionNumberTb.getValue());
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
                     version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
-                    this.lastUpdateTb.getValue(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    this.lastUpdateTb.getValue(), this.makePublicCb.isChecked(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
 
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);

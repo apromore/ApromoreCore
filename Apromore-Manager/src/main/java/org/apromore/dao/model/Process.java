@@ -43,6 +43,7 @@ public class Process implements Serializable {
     private String domain;
     private String ranking;
     private String createDate;
+    private boolean publicModel;
 
     private User user;
     private Folder folder;
@@ -101,6 +102,15 @@ public class Process implements Serializable {
         this.ranking = newRanking;
     }
 
+    @Column(name = "public_model")
+    public boolean getPublicModel() {
+        return this.publicModel;
+    }
+
+    public void setPublicModel(final boolean newPublicModel) {
+        this.publicModel = newPublicModel;
+    }
+
     @Column(name = "createDate")
     public String getCreateDate() {
         return this.createDate;
@@ -109,6 +119,7 @@ public class Process implements Serializable {
     public void setCreateDate(final String newCreationDate) {
         this.createDate = newCreationDate;
     }
+
 
     @ManyToOne
     @JoinColumn(name = "folderId")

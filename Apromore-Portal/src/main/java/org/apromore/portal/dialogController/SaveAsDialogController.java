@@ -125,6 +125,7 @@ public class SaveAsDialogController extends BaseController {
         Integer processId = this.process.getId();
         String created = this.version.getCreationDate();
         String branch = this.branchName.getText();
+        boolean makePublic = this.process.isMakePublic();
         Double versionNo = Double.valueOf(versionNumber.getText());
 
         if (branch == null || branch.equals("")) {
@@ -141,7 +142,7 @@ public class SaveAsDialogController extends BaseController {
                         folderId = UserSessionManager.getCurrentFolder().getId();
                     }
                     getService().importProcess(userName, folderId, nativeType, processName, versionNo, is, domain, null, created, null,
-                            pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                            makePublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
                 } else {
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, process.getName(),
                             editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);

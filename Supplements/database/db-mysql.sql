@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-USE `Apromore`;
+USE `apromore`;
 
 DROP VIEW IF EXISTS `apromore`.`keywords`;
 
@@ -105,6 +105,7 @@ CREATE TABLE `process` (
   `folderId` int(11) DEFAULT NULL,
   `ranking` varchar(10) DEFAULT NULL,
   `createDate` varchar(40) DEFAULT NULL,
+  `public_model` boolean NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_process2` (`nativeTypeId`),
   KEY `fk_users` (`owner`),
@@ -360,26 +361,6 @@ CREATE TABLE `folder` (
   CONSTRAINT `folder_folder` FOREIGN KEY (`parentId`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `folder_modified_by` FOREIGN KEY (`modifiedById`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `folder_workspace` FOREIGN KEY (`workspaceId`) REFERENCES `workspace` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `folder_process` (
-  `folderId` int(11) DEFAULT NULL,
-  `processId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`folderId` , `processId`),
-  KEY `folder_process_folder` (`folderId`),
-  KEY `folder_process_process` (`processId`),
-  CONSTRAINT `folder_process_folder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `folder_process_process` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `folder_subfolder` (
-  `parentId` int(11) NOT NULL,
-  `childId` int(11) NOT NULL,
-  PRIMARY KEY (`parentId` , `childId`),
-  KEY `folder_subfolder_parent` (`parentId`),
-  KEY `folder_subfolder_child` (`childId`),
-  CONSTRAINT `folder_subfolder_child` FOREIGN KEY (`childId`) REFERENCES `folder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `folder_subfolder_parent` FOREIGN KEY (`parentId`) REFERENCES `folder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `folder_user` (
