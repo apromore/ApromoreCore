@@ -319,6 +319,7 @@ public class ManagerPortalEndpoint {
             String domain = payload.getDomain();
             Integer folderId = payload.getFolderId();
             String username = payload.getUsername();
+            boolean makePublic = payload.isMakePublic();
             ParametersType parameters = new ParametersType();
             for (ParameterType p : payload.getParameters().getParameter()) {
                 ParameterType param = new ParameterType();
@@ -335,7 +336,7 @@ public class ManagerPortalEndpoint {
                 id.setVersionNumber(t.getVersionNumber());
                 ids.getProcessVersionId().add(id);
             }
-            ProcessModelVersion pmv = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids);
+            ProcessModelVersion pmv = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids, makePublic);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                     "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username);
 
@@ -557,6 +558,7 @@ public class ManagerPortalEndpoint {
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
             String lastUpdate = editSession.getLastUpdate();
+            boolean publicModel = editSession.isPublicModel();
 
             DataHandler handler = payload.getProcessDescription();
             PluginParameters xmlCanoniserProperties = payload.getCanoniserParameters();
@@ -566,9 +568,12 @@ public class ManagerPortalEndpoint {
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
             ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
-                    domain, "", creationDate, lastUpdate);
+                    domain, "", creationDate, lastUpdate, publicModel);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                     nativeType, domain, creationDate, lastUpdate, username);
+            if (publicModel) {
+                workspaceSrv.updateFolderSecurity(folderId, userSrv.findAllUsers());
+            }
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {

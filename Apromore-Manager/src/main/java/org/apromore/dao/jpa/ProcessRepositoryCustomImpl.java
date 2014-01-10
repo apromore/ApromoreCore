@@ -26,6 +26,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
 
 
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process p ";
+    private static final String GET_ALL_PRO_PUBLIC_JPA = "p.publicModel = true ";
     private static final String GET_ALL_PRO_SORT_JPA = " ORDER by p.id";
 
 
@@ -41,7 +42,10 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
         StringBuilder strQry = new StringBuilder(0);
         strQry.append(GET_ALL_PROCESSES_JPA);
         if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(" where ").append(conditions);
+            strQry.append(" WHERE ").append(conditions);
+            strQry.append(" AND ").append(GET_ALL_PRO_PUBLIC_JPA);
+        } else {
+            strQry.append(" WHERE ").append(GET_ALL_PRO_PUBLIC_JPA);
         }
         strQry.append(GET_ALL_PRO_SORT_JPA);
 

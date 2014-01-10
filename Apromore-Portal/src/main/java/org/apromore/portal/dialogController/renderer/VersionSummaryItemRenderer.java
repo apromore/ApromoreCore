@@ -33,20 +33,25 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
 
     private Component renderVersionAnnotations(VersionSummaryType version) {
         Listbox annotationLB = new Listbox();
+        Listitem annotationsI = new Listitem();
         annotationLB.setMold("select");
         annotationLB.setRows(1);
         annotationLB.setWidth("100%");
         annotationLB.setStyle(Constants.UNSELECTED_VERSION);
-        for (int i = 0; i < version.getAnnotations().size(); i++) {
-            String language = version.getAnnotations().get(i).getNativeType();
-            for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
-                Listitem annotationsI = new Listitem();
-                annotationLB.appendChild(annotationsI);
-                String annotationName = version.getAnnotations().get(i).getAnnotationName().get(k);
-                annotationsI.setLabel(annotationName + " (" + language + ")");
+        if (version.getAnnotations().size() > 0) {
+            for (int i = 0; i < version.getAnnotations().size(); i++) {
+                String language = version.getAnnotations().get(i).getNativeType();
+                for (int k = 0; k < version.getAnnotations().get(i).getAnnotationName().size(); k++) {
+                    annotationLB.appendChild(annotationsI);
+                    annotationsI.setLabel(version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + language + ")");
+                }
             }
+            annotationLB.selectItem(annotationLB.getItemAtIndex(version.getAnnotations().size() - 1));
+        } else {
+            annotationLB.appendChild(annotationsI);
+            annotationsI.setLabel("No Annotations Found!");
+            annotationLB.selectItem(annotationLB.getItemAtIndex(0));
         }
-        annotationLB.selectItem(annotationLB.getItemAtIndex(version.getAnnotations().size() - 1));
         return wrapIntoListCell(annotationLB);
     }
 

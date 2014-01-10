@@ -70,13 +70,13 @@ public class MergeServiceImpl implements MergeService {
 
 
     /**
-     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, Integer, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
+     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, Integer, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType, boolean)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion mergeProcesses(String processName, String version, String domain, String username, String algo, Integer folderId,
-            ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
+            ParametersType parameters, ProcessVersionIdsType ids, final boolean makePublic) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<>();
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
             models.add(processModelVersionRepo.getProcessModelVersion(cpf.getProcessId(), cpf.getBranchName(), cpf.getVersionNumber()));
@@ -95,7 +95,7 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
 
             // This fails as we need to specify a native type and pass in the model.
-            pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created);
+            pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created, makePublic);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException | JAXBException ie) {

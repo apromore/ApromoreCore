@@ -1,18 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
@@ -29,6 +16,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -39,6 +27,17 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import javax.activation.DataHandler;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 public class CreateProcessController extends BaseController {
 
     private final Window createProcessW;
@@ -47,6 +46,7 @@ public class CreateProcessController extends BaseController {
     private final Textbox processNameT;
     private final Textbox versionNumberT;
     private final Listbox nativeTypesLB;
+    private final Checkbox makePublicCb;
 
     private final SelectDynamicListController domainCB;
 
@@ -63,11 +63,17 @@ public class CreateProcessController extends BaseController {
         this.versionNumberT = (Textbox) versionNameR.getFirstChild().getNextSibling();
         Row domainR = (Row) versionNameR.getNextSibling();
         Row ownerR = (Row) domainR.getNextSibling();
+
         Row nativeTypesR = (Row) ownerR.getNextSibling();
         this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
+
         Row rankingR = (Row) nativeTypesR.getNextSibling();
         Radiogroup rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
-        Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
+
+        Row publicR = (Row) rankingR.getNextSibling();
+        this.makePublicCb = (Checkbox) publicR.getFirstChild().getNextSibling();
+
+        Row buttonsR = (Row) publicR.getNextSibling().getNextSibling();
         Div buttonsD = (Div) buttonsR.getFirstChild();
         Button okB = (Button) buttonsD.getFirstChild();
         Button cancelB = (Button) okB.getNextSibling();
@@ -151,6 +157,7 @@ public class CreateProcessController extends BaseController {
                 String processName = this.processNameT.getValue();
                 String owner = UserSessionManager.getCurrentUser().getUsername();
                 String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
+                boolean makePublic = this.makePublicCb.isChecked();
                 Double versionNumber = 1.0d;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
                 String creationDate = dateFormat.format(new Date());
@@ -166,7 +173,7 @@ public class CreateProcessController extends BaseController {
                 }
 
                 ImportProcessResultType importResult = getService().importProcess(owner, folderId, nativeType, processName, versionNumber,
-                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, new HashSet<RequestParameterType<?>>());
+                        initialNativeFormat.getInputStream(), domain, null, creationDate, null, makePublic, new HashSet<RequestParameterType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
                 this.mainC.showPluginMessages(importResult.getMessage());

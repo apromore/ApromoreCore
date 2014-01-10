@@ -396,7 +396,8 @@ CREATE TABLE process
    nativeTypeId int,
    folderId int,
    ranking varchar(10),
-   createDate varchar(40)
+   createDate varchar(40),
+   public_model bit DEFAULT 0 NOT NULL
 )
 ;
 CREATE TABLE process_branch

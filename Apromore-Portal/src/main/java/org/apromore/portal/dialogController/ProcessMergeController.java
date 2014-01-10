@@ -29,6 +29,7 @@ public class ProcessMergeController extends BaseController {
     private Window processMergeW;
     private Listbox algosLB;
     private Checkbox removeEnt;
+    private Checkbox makePublic;
     private Row mergethreshold;
     private Row labelthreshold;
     private Row contextthreshold;
@@ -68,14 +69,15 @@ public class ProcessMergeController extends BaseController {
         mergeDomainR.appendChild(domainCB);
 
         Row removeEntR = (Row) this.processMergeW.getFellow("removeEnt");
+        Row makePubicR = (Row) this.processMergeW.getFellow("makePublic");
         Row algoChoiceR = (Row) this.processMergeW.getFellow("mergeAlgoChoice");
-        Row buttonsR = (Row) this.processMergeW.getFellow("mergeButtons");
 
         this.OKbutton = (Button) this.processMergeW.getFellow("mergeOKButton");
         Button cancelButton = (Button) this.processMergeW.getFellow("mergeCancelButton");
 
         this.selectedProcessVersions = selectedProcessVersions;
         this.removeEnt = (Checkbox) removeEntR.getFirstChild().getNextSibling();
+        this.makePublic = (Checkbox) makePubicR.getFirstChild().getNextSibling();
         this.mergethreshold = (Row) this.processMergeW.getFellow("mergethreshold");
         this.labelthreshold = (Row) this.processMergeW.getFellow("labelthreshold");
         this.contextthreshold = (Row) this.processMergeW.getFellow("contextthreshold");
@@ -142,7 +144,7 @@ public class ProcessMergeController extends BaseController {
                 }
                 ProcessSummaryType result = getService().mergeProcesses(selectedProcessVersions, this.processNameT.getValue(),
                         this.versionNameT.getValue(), this.domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername(), folderId,
-                        this.algosLB.getSelectedItem().getLabel(), this.removeEnt.isChecked(),
+                        this.makePublic.isChecked(), this.algosLB.getSelectedItem().getLabel(), this.removeEnt.isChecked(),
                         ((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.contextthreshold.getFirstChild().getNextSibling()).getValue(),

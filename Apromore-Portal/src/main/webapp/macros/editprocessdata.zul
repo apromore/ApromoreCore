@@ -41,6 +41,10 @@ and CreateProcessController.java for creating process purpose.
                         <radio label="uncheck all"/>
                     </radiogroup>
                 </row>
+                <row id="makePublic">
+                    <label value="Make Process Public"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                </row>
                 <row spans="3">
                     <label value="*: mandatory fields"/>
                 </row>

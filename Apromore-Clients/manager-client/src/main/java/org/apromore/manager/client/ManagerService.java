@@ -210,6 +210,7 @@ public interface ManagerService {
      * @param mergedDomain the new process model domain name
      * @param mergedUsername the new process model username who modified/merged
      * @param folderId the folder we are going to save the document in.
+     * @param makePublic do we make this new model public?
      * @param method the method of search algorithm
      * @param removeEntanglements remove the entanglements
      * @param mergeThreshold the Model Threshold
@@ -221,8 +222,9 @@ public interface ManagerService {
      * @return the processSummaryType from the WebService
      */
     ProcessSummaryType mergeProcesses(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, String mergedProcessName,
-            String mergedVersionName, String mergedDomain, String mergedUsername, Integer folderId, String method, boolean removeEntanglements,
-            double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight);
+            String mergedVersionName, String mergedDomain, String mergedUsername, Integer folderId, boolean makePublic, String method,
+            boolean removeEntanglements, double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight,
+            double subnWeight, double skipeWeight);
 
     /**
      * Export the process model in a particular format.
@@ -251,13 +253,14 @@ public interface ManagerService {
      * @param documentation any documentation that is needed with this process
      * @param created the date and time created
      * @param lastUpdate the date and time last updated
+     * @param makePublic is this process public?
      * @param canoniserProperties canoniser properties to use
      * @return ProcessSummary List of processes after the import.
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, Double versionNumber,
-            InputStream xml_process, String domain, String documentation, String created, String lastUpdate,
+            InputStream xml_process, String domain, String documentation, String created, String lastUpdate, boolean makePublic,
             Set<RequestParameterType<?>> canoniserProperties) throws Exception;
 
     /**

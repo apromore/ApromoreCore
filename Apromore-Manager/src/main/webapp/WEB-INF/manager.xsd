@@ -309,6 +309,7 @@
         <xs:attribute name="lastUpdate" type="xs:string"/>
         <xs:attribute name="withAnnotation" type="xs:boolean"/>
         <xs:attribute name="annotation" type="xs:string"/>
+        <xs:attribute name="publicModel" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="NativeTypesType">
@@ -432,6 +433,7 @@
         <xs:attribute name="id" type="xs:int"/>
         <xs:attribute name="domain" type="xs:string"/>
         <xs:attribute name="ranking" type="xs:string"/>
+        <xs:attribute name="makePublic" type="xs:boolean"/>
         <xs:attribute name="last_version" type="xs:double"/>
         <xs:attribute name="owner" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
@@ -928,6 +930,7 @@
         <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="FolderId" type="xs:int"/>
         <xs:attribute name="Algorithm" type="xs:string"/>
+        <xs:attribute name="MakePublic" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="MergeProcessesOutputMsgType">

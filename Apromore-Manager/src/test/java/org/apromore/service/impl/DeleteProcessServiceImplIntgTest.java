@@ -1,23 +1,11 @@
 package org.apromore.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.NameValuePair;
 import org.apromore.service.model.ProcessData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +16,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Unit test the ProcessService Implementation.
@@ -65,7 +64,7 @@ public class DeleteProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Delete Process
@@ -89,7 +88,7 @@ public class DeleteProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process
