@@ -41,6 +41,6 @@ public interface FolderUserRepository extends JpaRepository<FolderUser, Integer>
      * @return the list of found records
      */
     @Query("SELECT fu FROM FolderUser fu JOIN fu.folder f JOIN fu.user u LEFT JOIN f.parentFolder f1 " +
-            "WHERE ((?1 = 0 AND f1 IS NULL) OR (f1.id = ?1)) AND (u.rowGuid = ?2) order by f1.name asc")
+            "WHERE ((?1 = 0 AND f1 IS NULL) OR (f1.id = ?1)) AND (u.rowGuid = ?2) order by f.name asc")
     List<FolderUser> findByParentFolderAndUser(final Integer parentFolderId, final String userGuid);
 }
