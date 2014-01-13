@@ -89,7 +89,7 @@ public class TranslateNodeAnnotations {
 
                 }
             }
-            if (element.getGraphics() != null) {
+            if (element.getGraphics() != null && element.getGraphics().getDimension() != null) {
                 size.setHeight(element.getGraphics().getDimension().getX());
                 size.setWidth(element.getGraphics().getDimension().getY());
                 graphT.setSize(size);
