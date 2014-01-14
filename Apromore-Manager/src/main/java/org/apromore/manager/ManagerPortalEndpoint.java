@@ -290,8 +290,12 @@ public class ManagerPortalEndpoint {
             Double preVersion = payload.getPreVersion();
             Double newVersion = payload.getNewVersion();
             String ranking = payload.getRanking();
+            boolean isPublic = payload.isMakePublic();
 
-            procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking);
+            procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
+//            if (isPublic) {
+//                workspaceSrv.removePublicStatus(processId);
+//            }
 
             result.setCode(0);
             result.setMessage("");
