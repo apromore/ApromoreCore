@@ -86,9 +86,10 @@ public interface ProcessService {
      * @param preVersion the before version.
      * @param newVersion the old version.
      * @param ranking the ranking of this model.
+     * @param isPublic is this model public.
      */
     void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-        final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException;
+        final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException;
 
     /**
      * Add a new ProcessModelVersion record into the DB.

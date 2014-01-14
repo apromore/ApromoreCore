@@ -368,10 +368,11 @@ public interface ManagerService {
      * @param preVersion the before version
      * @param newVersion the after version
      * @param ranking the ranking of the new model
+     * @param isPublic is the model public.
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void editProcessData(Integer processId, String processName, String domain, String username, Double preVersion, Double newVersion, String ranking)
-            throws Exception;
+    void editProcessData(Integer processId, String processName, String domain, String username, Double preVersion, Double newVersion,
+            String ranking, boolean isPublic) throws Exception;
 
     /**
      * Send the users details to be persisted.
