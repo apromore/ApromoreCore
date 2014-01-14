@@ -337,13 +337,13 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String, Double, Double, String)
+     * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String, Double, Double, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-            final Double preVersion, final Double newVersion, final String ranking) throws UpdateProcessException {
+            final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
         try {
             ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
@@ -353,6 +353,7 @@ public class ProcessServiceImpl implements ProcessService {
             process.setName(processName);
             process.setRanking(ranking);
             process.setUser(userSrv.findUserByLogin(username));
+            process.setPublicModel(isPublic);
             processModelVersion.setVersionNumber(newVersion);
 
             updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
@@ -685,14 +686,16 @@ public class ProcessServiceImpl implements ProcessService {
     /* Update a list of native process models with this new meta data, */
     private void updateNative(final Native natve, final String processName, final String username, final Double version)
             throws CanoniserException, JAXBException {
-        String natType = natve.getNativeType().getNatType();
-        InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
+        if (natve != null) {
+            String natType = natve.getNativeType().getNatType();
+            InputStream inStr = new ByteArrayInputStream(natve.getContent().getBytes());
 
-        //TODO why is this done here? apromore should not know about native format outside of canonisers
-        if (natType.compareTo("XPDL 2.1") == 0) {
-            PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-            StreamUtil.copyParam2XPDL(pakType, processName, version.toString(), username, null, null);
-            natve.setContent(StreamUtil.marshallXPDL(pakType));
+            //TODO why is this done here? apromore should not know about native format outside of canonisers
+            if (natType.compareTo("XPDL 2.1") == 0) {
+                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
+                StreamUtil.copyParam2XPDL(pakType, processName, version.toString(), username, null, null);
+                natve.setContent(StreamUtil.marshallXPDL(pakType));
+            }
         }
     }
 

@@ -12,6 +12,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
@@ -38,6 +39,7 @@ public class EditOneProcessDataController extends BaseController {
     private VersionSummaryType preVersion;
     private Textbox processNameT;
     private Textbox versionNumberT;
+    private Checkbox makePublicCb;
     private Radiogroup rankingRG;
     private SelectDynamicListController ownerCB;
     private SelectDynamicListController domainCB;
@@ -72,7 +74,11 @@ public class EditOneProcessDataController extends BaseController {
         this.r5 = (Radio) this.r4.getNextSibling();
         this.r6 = (Radio) this.r5.getNextSibling();
 
-        Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
+        Row publicR = (Row) rankingR.getNextSibling();
+        this.makePublicCb = (Checkbox) publicR.getFirstChild().getNextSibling();
+        //this.makePublicCb.setDisabled(true);
+
+        Row buttonsR = (Row) publicR.getNextSibling().getNextSibling();
         Div buttonsD = (Div) buttonsR.getFirstChild();
         Button okB = (Button) buttonsD.getFirstChild();
         Button cancelB = (Button) okB.getNextSibling();
@@ -97,6 +103,7 @@ public class EditOneProcessDataController extends BaseController {
         this.ownerCB.setAttribute("hflex", "1");
         ownerR.appendChild(ownerCB);
 
+        //publicR.setVisible(false);
         cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size() > 0);
         this.r6.setChecked(true);
         reset();
@@ -141,6 +148,7 @@ public class EditOneProcessDataController extends BaseController {
         String username = this.ownerCB.getValue();
         Double preVersion = this.preVersion.getVersionNumber();
         Double newVersion = Double.valueOf(this.versionNumberT.getValue());
+        boolean isPublic = this.makePublicCb.isChecked();
         String ranking = null;
         if (this.rankingRG.getSelectedItem() != null && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
             ranking = this.rankingRG.getSelectedItem().getLabel();
@@ -148,7 +156,7 @@ public class EditOneProcessDataController extends BaseController {
         if (this.processNameT.getValue().compareTo("") == 0 || this.versionNumberT.getValue().compareTo("") == 0) {
             Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
         } else {
-            getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking);
+            getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
             this.editDataListProcessesC.getEditedList().add(this);
             this.editDataListProcessesC.deleteFromToBeEdited(this);
             closePopup();
@@ -174,6 +182,7 @@ public class EditOneProcessDataController extends BaseController {
         this.versionNumberT.setValue(this.preVersion.getVersionNumber().toString());
         this.domainCB.setValue(this.process.getDomain());
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
+        this.makePublicCb.setChecked(this.process.isMakePublic());
         if (this.preVersion.getRanking() != null) {
             r0.setChecked("0".compareTo(this.preVersion.getRanking()) == 0);
             r1.setChecked("1".compareTo(this.preVersion.getRanking()) == 0);

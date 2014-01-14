@@ -867,13 +867,13 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String)
+     * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String, boolean)
      *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
-                                final Double preVersion, final Double newVersion, final String ranking) throws Exception {
+            final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -884,6 +884,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setNewVersion(newVersion);
         msg.setPreVersion(preVersion);
         msg.setRanking(ranking);
+        msg.setMakePublic(isPublic);
 
         JAXBElement<EditProcessDataInputMsgType> request = WS_CLIENT_FACTORY.createEditProcessDataRequest(msg);
 

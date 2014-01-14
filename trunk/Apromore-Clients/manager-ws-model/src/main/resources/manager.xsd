@@ -649,6 +649,7 @@
         <xs:attribute name="ranking" type="xs:string"/>
         <xs:attribute name="newVersion" type="xs:double"/>
         <xs:attribute name="preVersion" type="xs:double"/>
+        <xs:attribute name="makePublic" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="EditProcessDataOutputMsgType">
