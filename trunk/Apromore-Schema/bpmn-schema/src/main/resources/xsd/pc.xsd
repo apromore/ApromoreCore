@@ -51,6 +51,12 @@
   </xsd:complexType>
 </xsd:element>
 
+<xsd:element name="configurationMapping">
+  <xsd:complexType>
+    <xsd:attribute name="href" type="xsd:anyURI" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
 <xsd:simpleType name="tGatewayType">
   <xsd:restriction base="xsd:NMTOKEN">
     <xsd:enumeration value="data-based_exclusive"/>

@@ -19,7 +19,7 @@ import org.zkoss.zul.Applet;
 import org.zkoss.zul.Window;
 
 // Local packages
-//import com.processconfiguration.cmap.CMAP;
+import com.processconfiguration.ConfigurationMapping;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
@@ -29,6 +29,7 @@ import org.apromore.model.VersionSummaryType;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TDocumentation;
+import org.omg.spec.bpmn._20100524.model.TExtensionElements;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 
 /**
@@ -88,9 +89,12 @@ public class ConfigureController extends BaseController {
                     TDefinitions bpmn = ((JAXBElement<TDefinitions>) context.createUnmarshaller().unmarshal(new StreamSource(exportFormatResult.getNative().getInputStream()))).getValue();
                     String cmapURLString = null;
                     for (JAXBElement<? extends TRootElement> root: bpmn.getRootElement()) {
-                        for (TDocumentation documentation: root.getValue().getDocumentation()) {
-                            for (Object object: documentation.getContent()) {
-                                cmapURLString = object.toString();
+                        TExtensionElements extensionElements = root.getValue().getExtensionElements();
+                        if (extensionElements != null) {
+                            for (Object object: extensionElements.getAny()) {
+                                if (object instanceof ConfigurationMapping) {
+                                    cmapURLString = ((ConfigurationMapping) object).getHref();
+                                }
                             }
                         }
                     }

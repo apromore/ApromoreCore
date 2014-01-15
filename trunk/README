@@ -30,6 +30,9 @@ Edit the following configuration properties:
 - Apromore-Editor/build.properties: fileSystemRootDirectory = C:/Development/Temp/signarvio-root (Or something equivalent in non windows systems)
   This needs to reference an empty directory with write permission
 
+- Apromore-FileStore/src/main/webapp/WEB-INF/web.xml: web-app/servlet/init-param[param-name='rootpath']/param-value = C:/Development/Temp/webdav-root (Or something equivalent in non windows systems)
+  This is the local directory which will be accessible via WebDAV at http://localhost:9000/filestore/dav
+
 At this point MySQL isn't required for the builds at it now uses H2. To run Apromore after the build you will need MySQL setup.
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 

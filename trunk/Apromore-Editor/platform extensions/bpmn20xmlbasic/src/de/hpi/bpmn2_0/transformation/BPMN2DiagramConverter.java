@@ -65,6 +65,7 @@ import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationMapping;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
@@ -260,11 +261,14 @@ public class BPMN2DiagramConverter {
             diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
             diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
 
-            // Kludge for the AotF project - use the Signavio-editable documentation field on the top-level JSON
-            // element to set the BPMN root element's documentation field.
+            // For Configurable BPMN, look for the pc:configurationMapping element
             for (BaseElement root: definitions.getRootElement()) {
-                for (Documentation doc: root.getDocumentation()) {
-                    diagram.setProperty("documentation", doc.getText());
+                ExtensionElements extensionElements = root.getExtensionElements();
+                if (extensionElements != null) {
+                    ConfigurationMapping configurationMapping = extensionElements.getFirstExtensionElementOfType(ConfigurationMapping.class);
+                    if (configurationMapping != null) {
+                        diagram.setProperty("cmap", configurationMapping.getHref());
+                    }
                 }
             }
 
