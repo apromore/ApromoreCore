@@ -76,7 +76,6 @@ public class EditOneProcessDataController extends BaseController {
 
         Row publicR = (Row) rankingR.getNextSibling();
         this.makePublicCb = (Checkbox) publicR.getFirstChild().getNextSibling();
-        //this.makePublicCb.setDisabled(true);
 
         Row buttonsR = (Row) publicR.getNextSibling().getNextSibling();
         Div buttonsD = (Div) buttonsR.getFirstChild();
