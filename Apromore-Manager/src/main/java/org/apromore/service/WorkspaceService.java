@@ -3,6 +3,7 @@ package org.apromore.service;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessUser;
 import org.apromore.dao.model.User;
 
@@ -54,8 +55,20 @@ public interface WorkspaceService {
     /**
      * Updates the Folders security so all users now have read access to that folder (from the root folder up).
      * NOTE: this method is recursive, we update this folder then move up the folder tree until the root.
-     * @param folderId the folder we have a public model in.
+     * @param folder the folder we have a public model in.
      * @param users all the users we giving access.
      */
-    void updateFolderSecurity(Integer folderId, List<User> users);
+    void updatePublicFoldersForUsers(final Folder folder, final List<User> users);
+
+    /**
+     * Creates the public status for the users to have read rights to this model.
+     * @param process the process.
+     */
+    void createPublicStatusForUsers(final Process process);
+
+    /**
+     * Removes all users from having access to this model, except the owner.
+     * @param process the process model we are restricting access to.
+     */
+    void removePublicStatusForUsers(final Process process);
 }

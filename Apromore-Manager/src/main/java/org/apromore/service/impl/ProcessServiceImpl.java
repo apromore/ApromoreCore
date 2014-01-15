@@ -236,8 +236,13 @@ public class ProcessServiceImpl implements ProcessService {
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
 
             pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
-            workspaceSrv.addProcessToFolder(process.getId(), folderId);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
+            workspaceSrv.addProcessToFolder(process.getId(), folderId);
+
+            if (publicModel) {
+                workspaceSrv.createPublicStatusForUsers(process);
+                workspaceSrv.updatePublicFoldersForUsers(workspaceSrv.getFolder(folderId), userSrv.findAllUsers());
+            }
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
@@ -317,7 +322,7 @@ public class ProcessServiceImpl implements ProcessService {
 
                         anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
                     } else if (annName == null) {
-                        anf = annotationSrv.preProcess(null, format, cpt, anf);
+                        anf = annotationSrv.preProcess(null, format, cpt, null);
                     }
 
                     dp = canoniserSrv.deCanonise(format, cpt, anf, canoniserProperties);
@@ -345,10 +350,18 @@ public class ProcessServiceImpl implements ProcessService {
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
             final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
+
         try {
+            boolean updatePublicSecurity = false;
+
             ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
             ProcessBranch branch = processModelVersion.getProcessBranch();
             Process process = processRepo.findOne(processId);
+
+            if (process.getPublicModel() != isPublic) {
+                updatePublicSecurity = true;
+            }
+
             process.setDomain(domain);
             process.setName(processName);
             process.setRanking(ranking);
@@ -357,6 +370,14 @@ public class ProcessServiceImpl implements ProcessService {
             processModelVersion.setVersionNumber(newVersion);
 
             updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
+            if (updatePublicSecurity) {
+                if (isPublic) {
+                    workspaceSrv.createPublicStatusForUsers(process);
+                    workspaceSrv.updatePublicFoldersForUsers(process.getFolder(), userSrv.findAllUsers());
+                } else {
+                    workspaceSrv.removePublicStatusForUsers(process);
+                }
+            }
 
             processRepo.save(process);
             processModelVersionRepo.save(processModelVersion);
