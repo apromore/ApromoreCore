@@ -166,6 +166,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JPanel jPanel_A2 = null;
 	private JButton jButton_answerPerform = null;
 	private JButton jButton_answerUndo = null;
+	private JButton jButton_answerSave = null;
 	private JScrollPane jScrollPane_enabledQ = null;
 	private JList jList_enabledQ = null;
 	private JPanel jPanel_Q = null;
@@ -2717,6 +2718,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			jPanel_A2.add(getJButton_answerPerform(), null);
 			jPanel_A2.add(getJButton_answerDefault(), null);
 			jPanel_A2.add(getJButton_answerUndo(), null);
+			jPanel_A2.add(getJButton_answerSave(), null);
 		}
 		return jPanel_A2;
 	}
@@ -2751,6 +2753,22 @@ public class Main extends JPanel implements ListSelectionListener,
 			jButton_answerUndo.setEnabled(false);
 		}
 		return jButton_answerUndo;
+	}
+
+	/**
+	 * This method initializes jButton_answerSave
+	 * 
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton_answerSave() {
+		if (jButton_answerSave == null) {
+			jButton_answerSave = new JButton();
+			jButton_answerSave.setText("Save");
+			jButton_answerSave.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jButton_answerSave.addActionListener(this);
+			jButton_answerSave.setEnabled(false);
+		}
+		return jButton_answerSave;
 	}
 
 	/**
@@ -2963,7 +2981,13 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JMenuItem getExitMenuItem() {
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
-			exitMenuItem.setText("Exit");
+			if (System.getProperty("os.name").toLowerCase().indexOf("mac") != -1) {
+				exitMenuItem.setText("Quit");
+                        	exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+                                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
+			} else {
+				exitMenuItem.setText("Exit");
+			}
 			exitMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			exitMenuItem.addActionListener(new ActionListener() {
@@ -3055,7 +3079,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	// cutMenuItem.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN,
 	// 11));
 	// cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-	// Event.CTRL_MASK, true));
+	// Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 	// }
 	// return cutMenuItem;
 	// }
@@ -3072,7 +3096,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	// copyMenuItem.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN,
 	// 11));
 	// copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-	// Event.CTRL_MASK, true));
+	// Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 	// }
 	// return copyMenuItem;
 	// }
@@ -3089,7 +3113,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	// pasteMenuItem.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN,
 	// 11));
 	// pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-	// Event.CTRL_MASK, true));
+	// Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 	// }
 	// return pasteMenuItem;
 	// }
@@ -3107,7 +3131,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			LinkCMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			LinkCMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
-					Event.CTRL_MASK, true));
+					Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 			LinkCMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -3118,6 +3142,23 @@ public class Main extends JPanel implements ListSelectionListener,
 		return LinkCMenuItem;
 	}
 
+        /**
+         * Save action.
+         *
+         * User invokes this by either the File menu or the Save button.
+         */
+	private javax.swing.Action saveAction = new javax.swing.AbstractAction() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			try {
+				fInModel.update(getPartiallyConfiguredModel());
+				System.err.println("Successfully updated");
+			} catch (Exception ex) {
+				System.err.println("Failed to update: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+		}
+	};
+
 	/**
          * This method initializes jMenuItem
          * 
@@ -3127,23 +3168,13 @@ public class Main extends JPanel implements ListSelectionListener,
 		if (saveModelMenuItem == null) {
 			saveModelMenuItem = new JMenuItem();
 			saveModelMenuItem.setText("Save Process Model");
-			saveModelMenuItem.setEnabled(true);
+			saveModelMenuItem.setEnabled(false);
 			saveModelMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			saveModelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					Event.META_MASK, true));
+					Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 			saveModelMenuItem
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							try {
-								fInModel.update(getPartiallyConfiguredModel());
-								System.err.println("Successfully updated");
-							} catch (Exception ex) {
-								System.err.println("Failed to update: " + ex.getMessage());
-								ex.printStackTrace();
-							}
-						}
-					});
+					.addActionListener(saveAction);
 		}
 		return saveModelMenuItem;
 	}
@@ -3156,12 +3187,12 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JMenuItem getSaveCMenuItem() {
 		if (saveCMenuItem == null) {
 			saveCMenuItem = new JMenuItem();
-			saveCMenuItem.setText("Save Partial Domian Configuration");
+			saveCMenuItem.setText("Save Partial Domain Configuration");
 			saveCMenuItem.setEnabled(false);
 			saveCMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			saveCMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					Event.CTRL_MASK, true));
+					Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | Event.SHIFT_MASK, true));
 		}
 		return saveCMenuItem;
 	}
@@ -3179,7 +3210,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			exportMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			exportMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
-					Event.CTRL_MASK, true));
+					Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 			exportMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -3202,7 +3233,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			openCMMenuItem.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			openCMMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-					Event.CTRL_MASK, true));
+					Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), true));
 			openCMMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ev) {
 					// clear File
@@ -3897,8 +3928,8 @@ public class Main extends JPanel implements ListSelectionListener,
 
 			for (String fID : currentS.vs.keySet()) {// restores the facts
 														// values in bddc
-														// exatcly to the state
-														// beinf restored
+														// exactly to the state
+														// being restored
 				valueNEW = currentS.vs.get(fID);
 				if (valueNEW.equals("unset"))
 					bddc.setFact(fID, "u" + fID);
@@ -3923,7 +3954,11 @@ public class Main extends JPanel implements ListSelectionListener,
 
 			validQ.clear();
 			updateValidQ();
+
+		} else if (command.equals("Save")) {
+			saveAction.actionPerformed(e);
 		}
+
 		if (command.equals("Answer") || command.equals("Default Answer")) {// common
 																			// activities
 			validQ.removeElement(selectedQ);// the question is no more valid
@@ -3969,6 +4004,14 @@ public class Main extends JPanel implements ListSelectionListener,
 				getJDialog_AskToSave().setVisible(true);// prompt to export
 														// result
 			}
+		}
+
+		// Saving is allowed as long as there are answered questions
+		if (jButton_answerSave != null) {
+			jButton_answerSave.setEnabled(answeredQ != null && answeredQ.getSize() > 0);
+		}
+                if (saveModelMenuItem != null) {
+			saveModelMenuItem.setEnabled(answeredQ != null && answeredQ.getSize() > 0);
 		}
 
 		/// Hack for AotF demo

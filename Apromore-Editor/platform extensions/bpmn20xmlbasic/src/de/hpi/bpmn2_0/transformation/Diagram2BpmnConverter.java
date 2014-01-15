@@ -57,6 +57,7 @@ import de.hpi.bpmn2_0.model.event.SignalEventDefinition;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.signavio.SignavioMessageName;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationMapping;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.model.gateway.GatewayWithDefaultFlow;
@@ -1902,15 +1903,18 @@ public class Diagram2BpmnConverter {
 
         this.insertDiagramsForLinkedSubprocesses();
 
-        // Copy the top-level JSON shape's documentation property to the BPMN root elements
-        {
-            String documentation = this.diagram.getProperty("documentation");
-            if (documentation != null) {
+        // Copy the top-level JSON shape's cmap property to the BPMN root elements
+	{
+            String cmap = this.diagram.getProperty("cmap");
+            if (cmap != null) {
                 for (BaseElement root: this.definitions.getRootElement()) {
-                    root.getDocumentation().add(new Documentation(documentation));
+                    // Add the configurationMapping
+                    ConfigurationMapping configurationMapping = new ConfigurationMapping();
+                    configurationMapping.setHref(cmap);
+                    root.getOrCreateExtensionElements().add(configurationMapping);
                 }
             }
-        }
+	}
 
         // Insert Synergia <variants> extension element if variants are present
         if (!this.state.variantMap.isEmpty()) {

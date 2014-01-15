@@ -140,7 +140,7 @@ public class QuaestioApplet extends JApplet {
                     }
 
                     add(main.getJContentPane());
-                    setJMenuBar(main.getJJMenuBar());
+                    //setJMenuBar(main.getJJMenuBar());  // No menu bar when embedded in the Apromore portal web application
 
                     main.log("Exiting applet init");
                 }

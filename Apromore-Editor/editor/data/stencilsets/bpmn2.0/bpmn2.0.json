@@ -481,6 +481,17 @@
 			"name" : "diagram",
 			"properties" : [
 				{
+					"id":"cmap",
+					"type":"String",
+					"title":"Configuration mapping",
+					"value":"",
+					"description":"URL of the configuration mapping to a questionnaire.",
+					"description_de":"URL der Konfiguration, die zu einem Fragebogen abbildet.",
+					"readonly":false,
+					"optional":true,
+					"configurationExtension":true
+				},
+				{
 					"id":"version",
 					"type":"String",
 					"title":"Version",
