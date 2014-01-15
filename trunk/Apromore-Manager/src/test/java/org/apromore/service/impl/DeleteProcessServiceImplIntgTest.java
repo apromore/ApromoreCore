@@ -62,7 +62,7 @@ public class DeleteProcessServiceImplIntgTest {
         String branch = "MAIN";
 
         // Insert Process
-        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Test1.epml"), "text/xml"));
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
@@ -86,13 +86,13 @@ public class DeleteProcessServiceImplIntgTest {
         String branch = "MAIN";
 
         // Insert Process
-        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Test2.epml"), "text/xml"));
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process
-        stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Test2.epml"), "text/xml"));
+        stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
 
         // Delete Process

@@ -40,7 +40,7 @@ public interface ProcessUserRepository extends JpaRepository<ProcessUser, Intege
      * @return the list of ProcessUser records
      */
     @Query("SELECT pu FROM ProcessUser pu JOIN pu.process p JOIN pu.user u " +
-            "WHERE (p.folder IS NULL) AND ((u.rowGuid = ?1) OR (p.publicModel = true))")
+            "WHERE (p.folder IS NULL) AND (u.rowGuid = ?1)")
     List<ProcessUser> findRootProcessesByUser(final String userId);
 
     /**
@@ -50,6 +50,6 @@ public interface ProcessUserRepository extends JpaRepository<ProcessUser, Intege
      * @return the list of processUser records
      */
     @Query("SELECT pu FROM ProcessUser pu JOIN pu.process p JOIN pu.user u JOIN p.folder f " +
-            "WHERE (f.id = ?1) AND ((u.rowGuid = ?2) OR (p.publicModel = true))")
+            "WHERE (f.id = ?1) AND (u.rowGuid = ?2)")
     List<ProcessUser> findAllProcessesInFolderForUser(final Integer folderId, final String userId);
 }

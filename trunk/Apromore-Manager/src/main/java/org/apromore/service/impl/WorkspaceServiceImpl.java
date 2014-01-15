@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -227,15 +229,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     /**
-     * @see org.apromore.service.WorkspaceService#updateFolderSecurity(Integer, java.util.List)
+     * @see org.apromore.service.WorkspaceService#updatePublicFoldersForUsers(org.apromore.dao.model.Folder, java.util.List)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public void updateFolderSecurity(final Integer folderId, final List<User> users) {
-        if (folderId != null && !folderId.equals(0)) {
-            Folder folder = getFolder(folderId);
-
+    public void updatePublicFoldersForUsers(final Folder folder, final List<User> users) {
+        if (folder != null) {
             // Update the Users for this folder.
             for (User user : users) {
                 FolderUser folderUser = folderUserRepo.findByFolderAndUser(folder, user);
@@ -247,10 +247,46 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
             // Move up the tree one and start again. null = root folder that everyone has access.
             if (folder.getParentFolder() != null && folder.getParentFolder().getId() != null) {
-                updateFolderSecurity(folder.getParentFolder().getId(), users);
+                updatePublicFoldersForUsers(folder.getParentFolder(), users);
             }
         }
     }
+
+    /**
+     * @see org.apromore.service.WorkspaceService#createPublicStatusForUsers(org.apromore.dao.model.Process)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void createPublicStatusForUsers(final Process process) {
+        List<User> users = userRepo.findAll();
+
+        for (User user : users) {
+            if (!process.getUser().getId().equals(user.getId())) {
+                createProcessUser(process, user, true, false, false);
+            }
+        }
+    }
+
+    /**
+     * @see org.apromore.service.WorkspaceService#removePublicStatusForUsers(org.apromore.dao.model.Process)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void removePublicStatusForUsers(final Process process) {
+        Set<ProcessUser> freshProcessUserList = new HashSet<>();
+        for (ProcessUser processUser : process.getProcessUsers()) {
+            if (!processUser.getUser().getId().equals(process.getUser().getId())) {
+                processUser.getUser().getProcessUsers().remove(processUser);
+                processUserRepo.delete(processUser);
+            } else {
+                freshProcessUserList.add(processUser);
+            }
+        }
+        process.setProcessUsers(freshProcessUserList);
+    }
+
 
 
 
@@ -303,6 +339,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             processUser.setHasRead(hasRead);
             processUser.setHasWrite(hasWrite);
             processUser.setHasOwnership(hasOwnership);
+
+            process.getProcessUsers().add(processUser);
+            user.getProcessUsers().add(processUser);
         } else {
             processUser.setHasRead(hasRead);
             processUser.setHasWrite(hasWrite);

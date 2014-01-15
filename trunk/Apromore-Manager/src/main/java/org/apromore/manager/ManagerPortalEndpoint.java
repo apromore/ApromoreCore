@@ -293,8 +293,8 @@ public class ManagerPortalEndpoint {
             boolean isPublic = payload.isMakePublic();
 
             procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
-//            if (isPublic) {
-//                workspaceSrv.removePublicStatus(processId);
+//            if (!isPublic) {
+//                workspaceSrv.removePublicStatusForUsers(processId);
 //            }
 
             result.setCode(0);
@@ -575,9 +575,6 @@ public class ManagerPortalEndpoint {
                     domain, "", creationDate, lastUpdate, publicModel);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                     nativeType, domain, creationDate, lastUpdate, username);
-            if (publicModel) {
-                workspaceSrv.updateFolderSecurity(folderId, userSrv.findAllUsers());
-            }
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {
