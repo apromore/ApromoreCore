@@ -13,6 +13,7 @@
 
 <xsd:import namespace="http://www.omg.org/spec/DD/20100524/DI" schemaLocation="DI.xsd"/>
 
+<!--
 <xsd:annotation>
   <xsd:appinfo>
     <jaxb:globalBindings>
@@ -20,6 +21,7 @@
     </jaxb:globalBindings>
   </xsd:appinfo>
 </xsd:annotation>
+-->
 
 <xsd:element name="variants">
   <xsd:complexType>
@@ -46,6 +48,12 @@
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="configurationMapping">
+  <xsd:complexType>
+    <xsd:attribute name="href" type="xsd:anyURI" use="required"/>
   </xsd:complexType>
 </xsd:element>
 

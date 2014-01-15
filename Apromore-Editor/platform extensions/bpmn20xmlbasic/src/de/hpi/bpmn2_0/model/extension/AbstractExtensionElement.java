@@ -6,6 +6,7 @@ import de.hpi.bpmn2_0.model.extension.signavio.SignavioMetaData;
 import de.hpi.bpmn2_0.model.extension.signavio.SignavioType;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotation;
+import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationMapping;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 @XmlSeeAlso({
 	Configurable.class,
         ConfigurationAnnotation.class,
+        ConfigurationMapping.class,
         SignavioMetaData.class,
         SignavioType.class,
         SignavioLabel.class,
