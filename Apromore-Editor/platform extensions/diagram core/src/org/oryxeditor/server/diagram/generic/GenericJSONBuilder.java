@@ -39,7 +39,7 @@ public class GenericJSONBuilder {
 
     protected <S extends GenericShape<S, D>, D extends GenericDiagram<S, D>> JSONObject parseModelInternal(GenericDiagram<S, D> diagram) throws JSONException {//<S,D,?,?>
         JSONObject json = new JSONObject();
-        json.put("resourceId", diagram.getResourceId().toString());
+        json.put("resourceId", diagram.getResourceId());
         json.put("properties", parseProperties(diagram));
         json.put("stencil", parseStencil(diagram.getStencilId()));
         json.put("childShapes", parseChildShapesRecursive(diagram.getChildShapesReadOnly()));
@@ -93,7 +93,7 @@ public class GenericJSONBuilder {
 
     protected <S extends GenericShape<S, ?>> JSONObject parseShape(S childShape) throws JSONException {
         JSONObject shapeJson = new JSONObject();
-        shapeJson.put("resourceId", childShape.getResourceId().toString());
+        shapeJson.put("resourceId", childShape.getResourceId());
         shapeJson.put("properties", parseProperties(childShape));
         shapeJson.put("stencil", parseStencil(childShape.getStencilId()));
         shapeJson.put("childShapes", parseChildShapesRecursive(childShape.getChildShapesReadOnly()));
@@ -202,7 +202,7 @@ public class GenericJSONBuilder {
      */
     protected <S extends GenericShape<S, ?>> JSONObject parseTarget(S target) throws JSONException {
         JSONObject targetObject = new JSONObject();
-        targetObject.put("resourceId", target.getResourceId().toString());
+        targetObject.put("resourceId", target.getResourceId());
         return targetObject;
     }
 
@@ -249,7 +249,7 @@ public class GenericJSONBuilder {
             for (S outgoing : outgoings) {
                 JSONObject outgoingObject = new JSONObject();
 
-                outgoingObject.put("resourceId", outgoing.getResourceId().toString());
+                outgoingObject.put("resourceId", outgoing.getResourceId());
                 outgoingsArray.put(outgoingObject);
             }
 
@@ -295,7 +295,7 @@ public class GenericJSONBuilder {
             JSONArray extensionsArray = new JSONArray();
 
             for (String extension : extensions)
-                extensionsArray.put(extension.toString());
+                extensionsArray.put(extension);
 
             return extensionsArray;
         }
@@ -313,8 +313,8 @@ public class GenericJSONBuilder {
     protected JSONObject parseStencilSet(StencilSetReference stencilSetRef) throws JSONException {
         if (stencilSetRef != null) {
             JSONObject stencilSetObject = new JSONObject();
-            stencilSetObject.put("url", stencilSetRef.getUrl() != null ? stencilSetRef.getUrl().toString() : null);
-            stencilSetObject.put("namespace", stencilSetRef.getNamespace() != null ? stencilSetRef.getNamespace().toString() : null);
+            stencilSetObject.put("url", stencilSetRef.getUrl() != null ? stencilSetRef.getUrl() : null);
+            stencilSetObject.put("namespace", stencilSetRef.getNamespace() != null ? stencilSetRef.getNamespace() : null);
             return stencilSetObject;
         }
 

@@ -56,7 +56,7 @@ public class BPMNImportServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
         String bpmnData = req.getParameter("data");
-        OutputStream out = null;;
+        OutputStream out = null;
 
         /* Transform and return as JSON */
         try {

@@ -2,7 +2,28 @@ package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packges
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.bpmn.Constants;
+import org.apromore.canoniser.bpmn.JAXBConstants;
+import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
+import org.apromore.canoniser.bpmn.cpf.CpfNetType;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.TaskType;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCollaboration;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -30,28 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.bpmn.Constants;
-import org.apromore.canoniser.bpmn.JAXBConstants;
-import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
-import org.apromore.canoniser.bpmn.cpf.CpfNetType;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.TaskType;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
-import org.omg.spec.bpmn._20100524.model.TCollaboration;
-import org.omg.spec.bpmn._20100524.model.TDefinitions;
-import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
-import org.omg.spec.bpmn._20100524.model.TFlowElement;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TGateway;
-import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
-import org.omg.spec.bpmn._20100524.model.TParallelGateway;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TRootElement;
-import org.omg.spec.bpmn._20100524.model.TSubProcess;
-import org.xml.sax.SAXException;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 // Local packages
 

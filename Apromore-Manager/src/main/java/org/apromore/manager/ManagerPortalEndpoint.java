@@ -342,7 +342,7 @@ public class ManagerPortalEndpoint {
             }
             ProcessModelVersion pmv = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids, makePublic);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
-                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username);
+                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
 
             res.setProcessSummary(process);
             result.setCode(0);
@@ -574,7 +574,7 @@ public class ManagerPortalEndpoint {
             ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
                     domain, "", creationDate, lastUpdate, publicModel);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
-                    nativeType, domain, creationDate, lastUpdate, username);
+                    nativeType, domain, creationDate, lastUpdate, username, publicModel);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {

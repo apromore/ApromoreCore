@@ -23,10 +23,11 @@ public interface UserInterfaceHelper {
      * @param created       the Date create
      * @param lastUpdate    the Date Last Updated
      * @param username      the user who updated the
+     * @param isPublic      Is this model public.
      * @return the created Process Summary
      */
     ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv, String nativeType,
-        String domain, String created, String lastUpdate, String username);
+        String domain, String created, String lastUpdate, String username, boolean isPublic);
 
 
     /**
