@@ -1,13 +1,7 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
-// Local packages
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
@@ -24,6 +18,14 @@ import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+// Local packages
 
 /**
  * Canoniser for Business Process Model and Notation (BPMN) 2.0.

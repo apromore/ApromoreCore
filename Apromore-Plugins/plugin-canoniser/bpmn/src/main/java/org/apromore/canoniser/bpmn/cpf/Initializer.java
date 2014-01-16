@@ -1,14 +1,7 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import org.w3c.dom.Element;
 
-// Local packages
 import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
@@ -18,12 +11,34 @@ import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.WorkType;
-import org.omg.spec.bpmn._20100524.model.*;
+import org.omg.spec.bpmn._20100524.model.TActivity;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TComplexGateway;
+import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
+import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TExtensionElements;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TInputOutputSpecification;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.w3c.dom.Element;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+// Local packages
 
 /**
  * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.

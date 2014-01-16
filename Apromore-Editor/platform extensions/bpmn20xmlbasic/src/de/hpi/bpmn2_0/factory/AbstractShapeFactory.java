@@ -22,18 +22,13 @@
  */
 package de.hpi.bpmn2_0.factory;
 
-import java.util.Map;
-
-import org.oryxeditor.server.diagram.Bounds;
-import org.oryxeditor.server.diagram.generic.GenericShape;
-
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNShape;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.signavio.SignavioMetaData;
-import de.hpi.bpmn2_0.model.extension.synergia.Variants;
-import de.hpi.bpmn2_0.util.DiagramHelper;
+import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.generic.GenericShape;
 
 /**
  * Abstract factory to handle all types {@link BPMNShape} objects.

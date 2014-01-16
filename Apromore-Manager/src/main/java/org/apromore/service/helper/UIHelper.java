@@ -312,10 +312,10 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /**
-     * @see UserInterfaceHelper#createProcessSummary(org.apromore.dao.model.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String)
+     * @see UserInterfaceHelper#createProcessSummary(org.apromore.dao.model.Process, org.apromore.dao.model.ProcessBranch, org.apromore.dao.model.ProcessModelVersion, String, String, String, String, String, boolean)
      */
     public ProcessSummaryType createProcessSummary(Process process, ProcessBranch branch, ProcessModelVersion pmv, String nativeType,
-            String domain, String created, String lastUpdate, String username) {
+            String domain, String created, String lastUpdate, String username, boolean isPublic) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
         AnnotationsType annType = new AnnotationsType();
@@ -327,6 +327,7 @@ public class UIHelper implements UserInterfaceHelper {
         proType.setLastVersion(pmv.getVersionNumber());
         proType.setOriginalNativeType(nativeType);
         proType.setOwner(username);
+        proType.setMakePublic(isPublic);
 
         verType.setName(branch.getBranchName());
         verType.setCreationDate(created);
