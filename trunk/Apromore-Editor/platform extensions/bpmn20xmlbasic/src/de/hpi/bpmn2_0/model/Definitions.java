@@ -361,7 +361,7 @@ public class Definitions {
      */
     public List<BPMNDiagram> getDiagram() {
         if (diagram == null) {
-            diagram = new ArrayList<BPMNDiagram>();
+            diagram = new ArrayList<>();
         }
         return this.diagram;
     }

@@ -185,13 +185,7 @@ public class CreateProcessController extends BaseController {
                 editProcess(importResult.getProcessSummary());
                 closePopup();
             }
-        } catch (WrongValueException e) {
-            e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (ExceptionImport e) {
-            e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (IOException e) {
+        } catch (WrongValueException | IOException | ExceptionImport e) {
             e.printStackTrace();
             Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }

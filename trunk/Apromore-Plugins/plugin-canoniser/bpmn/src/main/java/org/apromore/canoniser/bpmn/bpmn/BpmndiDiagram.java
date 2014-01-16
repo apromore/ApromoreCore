@@ -16,15 +16,12 @@ import org.apromore.anf.SimulationType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
-import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataAssociation;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TDataObjectReference;
 import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
-import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TMessageFlow;
 import org.omg.spec.bpmn._20100524.model.TParticipant;
@@ -51,7 +48,8 @@ public class BpmndiDiagram extends BPMNDiagram {
      * @param anf  an ANF model, never <code>null</code>
      * @param initializer  BPMN document construction state
      */
-    public BpmndiDiagram(final AnnotationsType anf, final Initializer initializer) {
+    public
+    BpmndiDiagram(final AnnotationsType anf, final Initializer initializer) {
         final BpmndiObjectFactory bpmndiObjectFactory = new BpmndiObjectFactory();
 
         // Create BPMNDiagram

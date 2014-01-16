@@ -23,34 +23,14 @@
 
 package de.hpi.bpmn2_0.transformation;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
-
-import com.sun.xml.bind.IDResolver;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import org.json.JSONObject;
-import org.oryxeditor.server.diagram.Bounds;
-import org.oryxeditor.server.diagram.Point;
-import org.oryxeditor.server.diagram.StencilSetReference;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicShape;
-
 import com.processconfiguration.DefinitionsIDResolver;
+import com.sun.xml.bind.IDResolver;
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.Documentation;
+import de.hpi.bpmn2_0.model.FlowElement;
+import de.hpi.bpmn2_0.model.Process;
+import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNDiagram;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNEdge;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNShape;
@@ -58,16 +38,38 @@ import de.hpi.bpmn2_0.model.bpmndi.di.DiagramElement;
 import de.hpi.bpmn2_0.model.connector.Edge;
 import de.hpi.bpmn2_0.model.connector.MessageFlow;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.model.event.BoundaryEvent;
-import de.hpi.bpmn2_0.model.extension.AbstractExtensionElement;
+import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationMapping;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
-import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
+import de.hpi.bpmn2_0.model.gateway.Gateway;
+import de.hpi.diagram.SignavioUUID;
+import org.json.JSONException;
+import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.Point;
+import org.oryxeditor.server.diagram.StencilSetReference;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Converter that transforms BPMN {@link Definitions} to a native {@link BasicDiagram}
@@ -78,20 +80,20 @@ import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 public class BPMN2DiagramConverter {
 
     private static final Logger logger = Logger.getLogger(BPMN2DiagramConverter.class.getCanonicalName());
-    
+
     private String rootDir;
-    
+
+
     public BPMN2DiagramConverter(String rootDir) {
         this.rootDir = rootDir;
     }
     
     public List<BasicDiagram> getDiagramFromBpmn20(Definitions definitions) {
-
         // Reverse mapping for the bpmnElement attribute
-        final Map<BaseElement,DiagramElement> bpmndiMap = new HashMap<BaseElement,DiagramElement>();
+        final Map<BaseElement,DiagramElement> bpmndiMap = new HashMap<>();
 
         // ResourceIDs of all Messages which are decorators on a MessageFlow rather than residing on the canvas
-        final Set<String> messageRefSet = new HashSet<String>();
+        final Set<String> messageRefSet = new HashSet<>();
 
         // Populate bpmndiMap and messageRefSet
         logger.fine("Populating id map");
@@ -158,16 +160,14 @@ public class BPMN2DiagramConverter {
 
                         if (that.getSourceRef() == null) {
                             logger.warning(that.getId() + " has no sourceRef attribute");
-                        }
-                        else {
+                        } else {
                             that.getSourceRef().getOutgoing().add(that);
                             precedingEdge.setSourceElement(bpmndiMap.get(that.getSourceRef()));
                         }
 
                         if (that.getTargetRef() == null) {
                             logger.warning(that.getId() + " has no targetRef attribute");
-                        }
-                        else {
+                        } else {
                             that.getTargetRef().getIncoming().add(that);
                             precedingEdge.setTargetElement(bpmndiMap.get(that.getTargetRef()));
                         }
@@ -189,14 +189,12 @@ public class BPMN2DiagramConverter {
         }
 
         // Create a set of IDs for sequence flows which are configured to be absent
-        final Set<SequenceFlow> absentInConfiguration = new HashSet<SequenceFlow>();
+        final Set<SequenceFlow> absentInConfiguration = new HashSet<>();
 
         for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
             for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
                 logger.finer("Re-scanning " + element.getId());
                 element.acceptVisitor(new AbstractVisitor() {
-                    BPMNEdge precedingEdge = null;
-
                     @Override public void visitBpmnEdge(BPMNEdge that) {
                         that.getBpmnElement().acceptVisitor(this);
                     }
@@ -215,7 +213,7 @@ public class BPMN2DiagramConverter {
                         switch (that.getGatewayDirection()) {
                         case CONVERGING:
                         case MIXED:
-                            List absentInflows = new ArrayList(that.getIncomingSequenceFlows());
+                            List<SequenceFlow> absentInflows = new ArrayList<>(that.getIncomingSequenceFlows());
                             absentInflows.removeAll(configurable.getConfiguration().getSourceRefs());
                             absentInConfiguration.addAll(absentInflows);
                             break;
@@ -225,7 +223,7 @@ public class BPMN2DiagramConverter {
                         switch (that.getGatewayDirection()) {
                         case DIVERGING:
                         case MIXED:
-                            List absentOutflows = new ArrayList(that.getOutgoingSequenceFlows());
+                            List<SequenceFlow> absentOutflows = new ArrayList<>(that.getOutgoingSequenceFlows());
                             absentOutflows.removeAll(configurable.getConfiguration().getTargetRefs());
                             absentInConfiguration.addAll(absentOutflows);
                             break;
@@ -236,7 +234,7 @@ public class BPMN2DiagramConverter {
         }
 
         // This will be our return value
-        List<BasicDiagram> diagrams = new ArrayList<BasicDiagram>();
+        List<BasicDiagram> diagrams = new ArrayList<>();
         
         logger.fine("Generating JSON diagram from BPMN JAXB");
         for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
@@ -254,7 +252,6 @@ public class BPMN2DiagramConverter {
             // Additional properties
             diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
             diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
-            //diagram.setProperty("documentation",      bpmnDiagram.getDocumentation());
             diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
             diagram.setProperty("name",               bpmnDiagram.getName());
             diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
@@ -272,19 +269,6 @@ public class BPMN2DiagramConverter {
                 }
             }
 
-            /*
-            // Handle extension elements
-            if (bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements() != null) {
-                            for (AbstractExtensionElement extensionElement : bpmnDiagram.getBPMNPlane().getBpmnElement().getExtensionElements().getAny()) {
-                    if (extensionElement instanceof Variants) {
-                        for (Variants.Variant variant : ((Variants) extensionElement).getVariant()) {
-                            logger.fine("Variant " + variant.getId() + " name=" + variant.getName());
-                        }
-                    }
-                }
-            }
-            */
-
             // Child elements
             for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
                 BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
@@ -301,36 +285,32 @@ public class BPMN2DiagramConverter {
     }
     
     public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
-
         // Parse BPMN from XML to JAXB
-        Unmarshaller unmarshaller = null;
+        Unmarshaller unmarshaller;
         try {
             StreamSource source = new StreamSource(new StringReader(bpmnString));
             unmarshaller = newContext().createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
             Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
-            
-            //return definitions;
 
             logger.fine("Parsed BPMN");
 
-            // Convert BPMN to JSON
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
+            if (definitions.getDiagram() == null || definitions.getDiagram().isEmpty()) {
+                definitions = converter.createDiagram(definitions);
+            }
+
             List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
             logger.fine("Diagrams=" + diagrams);
-            String data = "";
-            for(BasicDiagram diagram : diagrams) {
+            String data;
+            for (BasicDiagram diagram : diagrams) {
                 data = diagram.getString();
-                writeJson(data, jsonStream);
-                break;
+                writeJson(data, jsonStream, encoding);
+                //break;
             }
-        } catch (JSONException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (JAXBException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (JSONException | IOException | JAXBException e) {
+            e.printStackTrace();
         }
     }
 
@@ -339,18 +319,13 @@ public class BPMN2DiagramConverter {
      * @throws JAXBException if the context can't be instantiated
      */
     private static JAXBContext newContext() throws JAXBException {
-        return JAXBContext.newInstance(Definitions.class,
-                                       Configurable.class,
-                                       ConfigurationAnnotationAssociation.class,
-                                       ConfigurationAnnotationShape.class,
-                                       Variants.class);
+        return JAXBContext.newInstance(Definitions.class, Configurable.class, ConfigurationAnnotationAssociation.class, ConfigurationAnnotationShape.class,
+            Variants.class);
     }
 
     /**
      * Take a BPMN XML file as input and generate an equivalent Signavio JSON file as output.
-     *
      * Synergia extensions for configurable BPMN are additionally supported in the input file.
-     *
      * @param args  first argument is the path of a BPMN XML file
      */
     public static void main(String[] args) throws JAXBException, JSONException {
@@ -360,18 +335,22 @@ public class BPMN2DiagramConverter {
             // Parse BPMN from XML to JAXB
             Unmarshaller unmarshaller = newContext().createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-            Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class)
-                                                  .getValue();
+            Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class).getValue();
 
             logger.fine("Parsed BPMN");
 
             // Convert BPMN to JSON
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
-            //converter.getBPMN(bpmnData, "UTF-8", res.getOutputStream());
+            if (definitions.getDiagram() == null || definitions.getDiagram().isEmpty()) {
+                definitions = converter.createDiagram(definitions);
+            }
+
             List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
             logger.fine("Diagrams=" + diagrams);
-            for(BasicDiagram diagram : diagrams) System.out.println(diagram.getString());
+            for (BasicDiagram diagram : diagrams) {
+                System.out.println(diagram.getString());
+            }
 
             logger.info("Completed test for " + args[0]);
         } catch (Throwable t) {
@@ -379,10 +358,105 @@ public class BPMN2DiagramConverter {
         }
     }
 
-    private void writeJson(String json, OutputStream jsonStream) throws JSONException, IOException {
-        //BasicDiagram diagram = context.getDiagram(0);
-        //JSONObject jsonDiagram = GenericJSONBuilder.parseModel(diagram);
-        OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, "UTF-8");
+    // Used to create the BPMN diagram, the basic data needed to visualise the diagram.
+    private Definitions createDiagram(Definitions definitions) {
+        BPMNDiagram diagram = new BPMNDiagram();
+        for (BaseElement element : definitions.getRootElement()) {
+            diagram.getBPMNPlane().setBpmnElement(element);
+
+            // Process the Nodes
+            for (final FlowElement flow : ((Process) element).getFlowElement()) {
+                if (!(flow instanceof SequenceFlow)) {
+                    diagram.getBPMNPlane().getDiagramElement().add(constructFlowNodes(flow));
+                }
+            }
+
+            // Now for the Edges
+            for (final FlowElement flow : ((Process) element).getFlowElement()) {
+                if (flow instanceof SequenceFlow) {
+                    diagram.getBPMNPlane().getDiagramElement().add(constructEdgeNodes(diagram.getBPMNPlane().getDiagramElement(), (SequenceFlow)flow));
+                }
+            }
+        }
+        definitions.getDiagram().add(diagram);
+        return definitions;
+    }
+
+    private BPMNEdge constructEdgeNodes(List<DiagramElement> diagramElement, SequenceFlow flow) {
+        BPMNEdge diagramElem = null;
+        if (flow != null) {
+            diagramElem = new BPMNEdge();
+            diagramElem.setId(SignavioUUID.generate());
+            diagramElem.setBpmnElement(flow);
+            diagramElem.setSourceElement(findDiagramElement(diagramElement, flow.getSourceRef()));
+            diagramElem.setTargetElement(findDiagramElement(diagramElement, flow.getTargetRef()));
+            diagramElem.getWaypoint().add(new de.hpi.bpmn2_0.model.bpmndi.dc.Point(0, 0));
+            diagramElem.getWaypoint().add(new de.hpi.bpmn2_0.model.bpmndi.dc.Point(0, 0));
+        }
+        return diagramElem;
+    }
+
+    private BPMNShape constructFlowNodes(FlowElement flow) {
+        BPMNShape diagramElem = null;
+        if (flow != null) {
+            diagramElem = new BPMNShape();
+            diagramElem.setId(SignavioUUID.generate());
+            diagramElem.setBpmnElement(flow);
+            diagramElem.setIsHorizontal(true);
+
+            if (flow instanceof Event) {
+                diagramElem.setBounds(createEventBounds());
+            } else if (flow instanceof Activity) {
+                diagramElem.setBounds(createTaskBounds());
+            } else if (flow instanceof Gateway) {
+                diagramElem.setBounds(createGatewayBounds());
+            }
+        }
+        return diagramElem;
+    }
+
+    private de.hpi.bpmn2_0.model.bpmndi.dc.Bounds createEventBounds() {
+        de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+        bound.setX(0.0);
+        bound.setY(0.0);
+        bound.setWidth(30.0);
+        bound.setHeight(30.0);
+        return bound;
+    }
+
+    private de.hpi.bpmn2_0.model.bpmndi.dc.Bounds createTaskBounds() {
+        de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+        bound.setX(0.0);
+        bound.setY(0.0);
+        bound.setWidth(100.0);
+        bound.setHeight(80.0);
+        return bound;
+    }
+
+    private de.hpi.bpmn2_0.model.bpmndi.dc.Bounds createGatewayBounds() {
+        de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+        bound.setX(0.0);
+        bound.setY(0.0);
+        bound.setWidth(40.0);
+        bound.setHeight(40.0);
+        return bound;
+    }
+
+
+    private DiagramElement findDiagramElement(List<DiagramElement> diagramElements, final FlowElement flowElement) {
+        for (final DiagramElement diagramElement : diagramElements) {
+            if (diagramElement instanceof BPMNShape) {
+                if (((BPMNShape)diagramElement).getBpmnElement().equals(flowElement)) {
+                    return diagramElement;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private void writeJson(String json, OutputStream jsonStream, String encoding) throws JSONException, IOException {
+        OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, encoding);
         outWriter.write(json);
         outWriter.flush();
     }

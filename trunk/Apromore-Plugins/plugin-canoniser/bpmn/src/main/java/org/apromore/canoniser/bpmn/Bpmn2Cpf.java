@@ -1,18 +1,20 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.JAXBException;
-import org.xml.sax.SAXException;
 
-// Local packages
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessage;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
+import java.util.List;
+
+// Local packages
 
 /**
  * Command line tool for canonizing BPMN files.
@@ -28,8 +30,8 @@ public class Bpmn2Cpf {
      */
     public static void main(String[] arg) throws CanoniserException, JAXBException, SAXException {
 
-        List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
-        List<CanonicalProcessType> cpfs = new ArrayList<CanonicalProcessType>();
+        List<AnnotationsType> anfs = new ArrayList<>();
+        List<CanonicalProcessType> cpfs = new ArrayList<>();
 
         // Read BPMN from the input stream
         PluginResult result = new BPMN20Canoniser().canonise(System.in, anfs, cpfs, null);

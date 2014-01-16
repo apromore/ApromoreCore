@@ -16,21 +16,6 @@
  */
 package org.apromore.service.impl;
 
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -106,6 +91,21 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Element;
 import org.wfmc._2008.xpdl2.PackageType;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of the ProcessService Contract.

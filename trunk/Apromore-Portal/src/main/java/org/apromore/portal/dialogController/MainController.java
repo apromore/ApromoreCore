@@ -325,7 +325,7 @@ public class MainController extends BaseController {
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
-
+        editSession.setPublicModel(process.isMakePublic());
         editSession.setOriginalBranchName(version.getName());
         editSession.setCurrentVersionNumber(version.getVersionNumber());
         editSession.setMaxVersionNumber(findMaxVersion(process));
