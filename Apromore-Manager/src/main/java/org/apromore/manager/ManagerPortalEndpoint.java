@@ -7,8 +7,8 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
-import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.HistoryEnum;
+import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.StatusEnum;
@@ -293,9 +293,6 @@ public class ManagerPortalEndpoint {
             boolean isPublic = payload.isMakePublic();
 
             procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking, isPublic);
-//            if (!isPublic) {
-//                workspaceSrv.removePublicStatusForUsers(processId);
-//            }
 
             result.setCode(0);
             result.setMessage("");
@@ -413,6 +410,7 @@ public class ManagerPortalEndpoint {
         result.setMessage("");
         return WS_OBJECT_FACTORY.createReadAllUsersResponse(res);
     }
+
 
     @PayloadRoot(localPart = "DeleteProcessVersionsRequest", namespace = NAMESPACE)
     @ResponsePayload

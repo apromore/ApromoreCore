@@ -1,12 +1,5 @@
 package org.apromore.manager.service;
 
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
-import javax.xml.bind.JAXBElement;
-
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ProcessSummariesType;
@@ -43,6 +36,13 @@ import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBElement;
+
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 /**
  * Test the Manager Portal Endpoint WebService.
@@ -86,7 +86,6 @@ public class ReadProcessSummariesEndpointUnitTest {
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
                 clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, secSrv, wrkSrv, uiHelper);
     }
-
 
 
     @Test

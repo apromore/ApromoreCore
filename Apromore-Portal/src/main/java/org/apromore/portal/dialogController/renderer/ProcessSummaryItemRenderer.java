@@ -60,6 +60,19 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
         listItem.appendChild(renderProcessOwner(process));
+
+//        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                final ProcessSummaryType process,
+//                final VersionSummaryType version,
+//                final String nativeType,
+//                final String annotation,
+//                final String readOnly,
+//                Set<RequestParameterType<?>> requestParameterTypes
+//                mainController.editProcess(process,  ,process.getOriginalNativeType(), );
+//            }
+//        });
     }
 
     /* Used to render folders in the list of process models. */

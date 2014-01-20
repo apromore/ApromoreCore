@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS `role_permission`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `user_role`;
 DROP TABLE IF EXISTS `workspace`;
+DROP TABLE IF EXISTS `edit_session`;
 DROP TABLE IF EXISTS `process_model_attribute`;
 DROP TABLE IF EXISTS `node_attribute`;
 DROP TABLE IF EXISTS `edge_attribute`;
