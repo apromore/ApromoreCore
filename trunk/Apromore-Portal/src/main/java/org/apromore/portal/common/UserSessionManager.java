@@ -6,13 +6,12 @@ import java.util.List;
 import org.apromore.model.FolderType;
 import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Executions;
 
 public class UserSessionManager {
 
-//    private static final String USER_ID = "USER_ID";
-//    private static final String USER_NAME = "USER_NAME";
     private static final String USER = "USER";
     private static final String CURRENT_FOLDER = "CURRENT_FOLDER";
     private static final String CURRENT_SECURITY_ITEM = "CURRENT_SECURITY_ITEM";
@@ -23,6 +22,7 @@ public class UserSessionManager {
     private static final String MAIN_CONTROLLER = "MAIN_CONTROLLER";
     private static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     private static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
+    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
 
 
     private UserSessionManager() { }
@@ -38,6 +38,17 @@ public class UserSessionManager {
         } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
             setCurrentUser((UserType) SecurityContextHolder.getContext().getAuthentication().getDetails());
             return (UserType) Executions.getCurrent().getSession().getAttribute(USER);
+        }
+        return null;
+    }
+
+    public static void setEditSession(String id, SignavioSession session) {
+        Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
+    }
+
+    public static SignavioSession getEditSession(String id) {
+        if (Executions.getCurrent().getSession().getAttribute(SIGNAVIO_SESSION + id) != null) {
+            return (SignavioSession) Executions.getCurrent().getSession().getAttribute(SIGNAVIO_SESSION + id);
         }
         return null;
     }

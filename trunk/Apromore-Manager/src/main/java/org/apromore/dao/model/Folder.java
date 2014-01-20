@@ -54,8 +54,6 @@ public class Folder implements Serializable {
     private Set<Folder> subFolders = new HashSet<>();
     private Set<Process> folderProcesses = new HashSet<>();
     private Set<FolderUser> folderUsers = new HashSet<>();
-//    private Set<Folder> foldersForChildId = new HashSet<>();
-//    private Set<Folder> foldersForParentId = new HashSet<>();
 
 
     /**
@@ -274,30 +272,4 @@ public class Folder implements Serializable {
     public void setFolderProcesses(Set<Process> newFolderProcesses) {
         this.folderProcesses = newFolderProcesses;
     }
-
-//    @ManyToMany
-//    @JoinTable(name = "folder_subfolder",
-//            joinColumns = { @JoinColumn(name = "parentId", nullable = false) },
-//            inverseJoinColumns = { @JoinColumn(name = "childId", nullable = false) }
-//    )
-//    public Set<Folder> getFoldersForChildId() {
-//        return this.foldersForChildId;
-//    }
-//
-//    public void setFoldersForChildId(Set<Folder> foldersForChildId) {
-//        this.foldersForChildId = foldersForChildId;
-//    }
-//
-//    @ManyToMany
-//    @JoinTable(name = "folder_subfolder",
-//            joinColumns = { @JoinColumn(name = "childId", nullable = false) },
-//            inverseJoinColumns = { @JoinColumn(name = "parentId", nullable = false) }
-//    )
-//    public Set<Folder> getFoldersForParentId() {
-//        return this.foldersForParentId;
-//    }
-//
-//    public void setFoldersForParentId(Set<Folder> foldersForParentId) {
-//        this.foldersForParentId = foldersForParentId;
-//    }
 }
