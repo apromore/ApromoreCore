@@ -5,12 +5,13 @@ import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -26,17 +27,28 @@ import java.util.Set;
  */
 public class SignavioController extends BaseController {
 
-    public static EditSessionType editSession;
-    public static MainController mainC;
-    public static ProcessSummaryType process;
-    public static VersionSummaryType version;
-    public static Set<RequestParameterType<?>> params;
-
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
+
+    private MainController mainC;
+
+    private EditSessionType editSession;
+    private ProcessSummaryType process;
+    private VersionSummaryType version;
+    private Set<RequestParameterType<?>> params;
+
 
     public SignavioController() {
         super();
+
+        if (Executions.getCurrent().getParameter("id") != null) {
+            SignavioSession session = UserSessionManager.getEditSession(Executions.getCurrent().getParameter("id"));
+
+            editSession = session.getEditSession();
+            mainC = session.getMainC();
+            process = session.getProcess();
+            version = session.getVersion();
+            params =  session.getParams();
+        }
 
         Map<String, String> param = new HashMap<>();
         try {
@@ -51,9 +63,6 @@ public class SignavioController extends BaseController {
                             editSession.getUsername(),
                             params);
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-
-            // Store the data in the session
-            Sessions.getCurrent().setAttribute("editSession", editSession);
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
@@ -83,8 +92,7 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    EditSessionType edSes = (EditSessionType) Sessions.getCurrent().getAttribute("editSession");
-                    new SaveAsDialogController(process, version, edSes, true, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
@@ -94,8 +102,7 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    EditSessionType edSes = (EditSessionType) Sessions.getCurrent().getAttribute("editSession");
-                    new SaveAsDialogController(process, version, edSes, false, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession, false, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }

@@ -154,6 +154,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * Default Constructor.
+     *
      * @param webServiceTemplate the webservice template
      */
     public ManagerServiceClient(WebServiceTemplate webServiceTemplate) {
@@ -162,7 +163,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#readUserByUsername(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -180,7 +181,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#resetUserPassword(String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -199,7 +200,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#searchUsers(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -217,7 +218,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#readUserByEmail(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -239,7 +240,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#readAllUsers()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -470,7 +471,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#readDomains()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -488,7 +489,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#readNativeTypes()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -507,7 +508,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getFragment(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -525,7 +526,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#createGedMatrix()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -538,7 +539,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#createGedMatrix()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -569,7 +570,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getPairwiseDistances(java.util.List)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -589,7 +590,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusteringSummary()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -607,7 +608,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusterSummaries(org.apromore.model.ClusterFilterType)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -625,7 +626,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getCluster(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -643,7 +644,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#getClusters(org.apromore.model.ClusterFilterType)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -661,7 +662,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#readProcessSummaries(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -680,7 +681,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#runAPQLExpression(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -703,7 +704,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, double, double, double, double, double, double)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -728,15 +729,15 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#mergeProcesses(java.util.Map, String, String, String, String, Integer, boolean, String, boolean, double, double, double, double, double, double)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ProcessSummaryType mergeProcesses(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
-            final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
-            final Integer folderId, final boolean makePublic, final String method, final boolean removeEntanglements,
-            final double mergeThreshold, final double labelThreshold, final double contextThreshold, final double skipnWeight,
-            final double subnWeight, final double skipeWeight) {
+                                             final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
+                                             final Integer folderId, final boolean makePublic, final String method, final boolean removeEntanglements,
+                                             final double mergeThreshold, final double labelThreshold, final double contextThreshold, final double skipnWeight,
+                                             final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing MergeProcessesRequest.....");
 
         MergeProcessesInputMsgType msg = new MergeProcessesInputMsgType();
@@ -759,7 +760,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#exportFormat(int, String, String, Double, String, String, Boolean, String, java.util.Set)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -793,13 +794,13 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#importProcess(String, java.lang.Integer, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, boolean, java.util.Set)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ImportProcessResultType importProcess(final String username, final Integer folderId, final String nativeType, final String processName,
-            final Double versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
-            final String lastUpdate, final boolean makePublic, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+                                                 final Double versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
+                                                 final String lastUpdate, final boolean makePublic, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -830,13 +831,13 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Double, String, java.io.InputStream)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
-            final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
-            final Double originalVersionNumber, final String preVersion, final InputStream native_is)
+                              final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
+                              final Double originalVersionNumber, final String preVersion, final InputStream native_is)
             throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
@@ -868,12 +869,12 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String, boolean)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
-            final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws Exception {
+                                final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -897,7 +898,7 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see ManagerService#writeUser(org.apromore.model.UserType)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -919,12 +920,12 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * @see org.apromore.manager.client.ManagerService#writeAnnotation(Integer, String, boolean, Integer, String, String, java.io.InputStream)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void writeAnnotation(final Integer editSessionCode, final String annName, final boolean isNew, final Integer processId,
-            final String version, final String nat_type, final InputStream native_is) throws Exception {
+                                final String version, final String nat_type, final InputStream native_is) throws Exception {
         LOGGER.debug("Preparing WriteAnnotationRequest.....");
 
         WriteAnnotationInputMsgType msg = new WriteAnnotationInputMsgType();
@@ -945,9 +946,10 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+
     /**
      * @see ManagerService#deleteProcessVersions(java.util.Map)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -1038,7 +1040,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     public NativeMetaData readNativeMetaData(final String nativeType, final String canoniserName, final String canoniserVersion,
-            final InputStream nativeProcess) throws Exception {
+                                             final InputStream nativeProcess) throws Exception {
         ReadNativeMetaDataInputMsgType msg = new ReadNativeMetaDataInputMsgType();
         msg.setCanoniserName(canoniserName);
         msg.setCanoniserVersion(canoniserVersion);
@@ -1062,7 +1064,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner,
-            final String processName, final String versionName, final String creationDate) throws Exception {
+                                               final String processName, final String versionName, final String creationDate) throws Exception {
         ReadInitialNativeFormatInputMsgType msg = new ReadInitialNativeFormatInputMsgType();
         msg.setCanoniserName(canoniserName);
         msg.setCanoniserVersion(canoniserVersion);
@@ -1118,7 +1120,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     public PluginMessages deployProcess(final String branchName, final String processName, final Double versionName, final String nativeType,
-            final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
+                                        final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
         LOGGER.debug("Preparing deployProcess ...");
 
         DeployProcessInputMsgType msg = new DeployProcessInputMsgType();

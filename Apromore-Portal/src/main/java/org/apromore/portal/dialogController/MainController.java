@@ -1,17 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
@@ -29,6 +17,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -56,6 +45,19 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
@@ -311,13 +313,12 @@ public class MainController extends BaseController {
      * @param nativeType the native type of the process
      * @param annotation the annotation of that process
      * @param readOnly is this model readonly or not
-     * @param requestParameterTypes
+     * @param requestParameterTypes request parameters types.
      * @throws InterruptedException
      */
     public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
             final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
         String instruction = "";
-        int offsetH = 100, offsetV = 200;
 
         EditSessionType editSession = new EditSessionType();
         editSession.setDomain(process.getDomain());
@@ -327,6 +328,7 @@ public class MainController extends BaseController {
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
         editSession.setPublicModel(process.isMakePublic());
         editSession.setOriginalBranchName(version.getName());
+        editSession.setOriginalVersionNumber(version.getVersionNumber());
         editSession.setCurrentVersionNumber(version.getVersionNumber());
         editSession.setMaxVersionNumber(findMaxVersion(process));
 
@@ -340,14 +342,11 @@ public class MainController extends BaseController {
         }
 
         try {
-            SignavioController.editSession = editSession;
-            SignavioController.mainC = this;
-            SignavioController.process = process;
-            SignavioController.version = version;
-            SignavioController.params = requestParameterTypes;
+            String id = UUID.randomUUID().toString();
+            SignavioSession session = new SignavioSession(editSession, this, process, version, requestParameterTypes);
+            UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/openModelInSignavio.zul";
-            
+            String url = "macros/openModelInSignavio.zul?id="+id;
             instruction += "window.open('" + url + "','_blank'); "; //'top=" + offsetH + ",left=" + offsetV + ",height=600,width=800,scrollbars=1,resizable=1'
 
             Clients.evalJavaScript(instruction);
