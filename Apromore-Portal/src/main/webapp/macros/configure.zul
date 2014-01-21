@@ -1,4 +1,4 @@
-<window width="826px" closable="true" position="center" title="Configure process model">
+<window width="826px" closable="true" position="center" title="Configure process model with Quaestio">
     <applet id="quaestio"
          codebase="applets/"
          archive="quaestio-applet.jar"
