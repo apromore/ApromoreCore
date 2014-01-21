@@ -27,7 +27,6 @@ import com.processconfiguration.DefinitionsIDResolver;
 import com.sun.xml.bind.IDResolver;
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.Documentation;
 import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.Activity;

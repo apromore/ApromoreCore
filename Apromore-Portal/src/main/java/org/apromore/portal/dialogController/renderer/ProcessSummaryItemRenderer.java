@@ -1,10 +1,13 @@
 package org.apromore.portal.dialogController.renderer;
 
+import java.util.HashSet;
 import java.util.List;
 
+import org.apromore.model.AnnotationsType;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -61,18 +64,16 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderProcessLastVersion(process));
         listItem.appendChild(renderProcessOwner(process));
 
-//        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-//            @Override
-//            public void onEvent(Event event) throws Exception {
-//                final ProcessSummaryType process,
-//                final VersionSummaryType version,
-//                final String nativeType,
-//                final String annotation,
-//                final String readOnly,
-//                Set<RequestParameterType<?>> requestParameterTypes
-//                mainController.editProcess(process,  ,process.getOriginalNativeType(), );
-//            }
-//        });
+        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
+                String annotation = getLastestAnnotation(version.getAnnotations());
+                mainController.editProcess(process, version, process.getOriginalNativeType(), annotation,
+                        "false", new HashSet<RequestParameterType<?>>());
+            }
+        });
+
     }
 
     /* Used to render folders in the list of process models. */
@@ -186,7 +187,8 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
      * Display in hbox versionRanking, 5 stars according to ranking (0...5).
      * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
      * process version directly by interacting with the stars displayed.
-     * @param ranking
+     * @param rankingHb the Horizontal box to display it
+     * @param ranking the ranking to display
      */
     private void displayRanking(Hbox rankingHb, String ranking) {
         String imgFull = Constants.STAR_FULL_ICON;
@@ -222,6 +224,23 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     public static Double roundToDecimals(Double num, int places) {
         int temp = (int) ((num * Math.pow(10, places)));
         return ((double) temp) / Math.pow(10, places);
+    }
+
+    private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
+        VersionSummaryType result = null;
+        for (VersionSummaryType version : versionSummaries) {
+            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) < 0)) {
+                result = version;
+            }
+        }
+        return result;
+    }
+
+    private String getLastestAnnotation(List<AnnotationsType> annotations) {
+        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
+            return annotations.get(annotations.size() - 1).getAnnotationName().get(0);
+        }
+        return null;
     }
 
 }
