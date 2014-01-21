@@ -23,6 +23,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -210,9 +211,9 @@ public abstract class BaseListboxController extends BaseController {
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
-                Messagebox.show("Please select item to rename", "Attention", Messagebox.OK, Messagebox.ERROR);
+                getMainController().getMenu().editData();
             }
-        } catch (DialogException e) {
+        } catch (DialogException | ParseException | ExceptionAllUsers | ExceptionDomains e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -303,7 +304,6 @@ public abstract class BaseListboxController extends BaseController {
         for (FolderType folderId : folders) {
             mainController.getService().deleteFolder(folderId.getId());
         }
-        //mainController.baseListboxController.refreshContent();
         mainController.reloadProcessSummaries();
     }
 
