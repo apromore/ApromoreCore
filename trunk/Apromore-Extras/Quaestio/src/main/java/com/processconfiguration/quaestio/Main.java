@@ -520,49 +520,54 @@ public class Main extends JPanel implements ListSelectionListener,
 	 */
 	private JPanel getJContentPane_FI() {
 		if (jContentPane_FI == null) {
-			GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
-			gridBagConstraints38.gridx = 0;
-			gridBagConstraints38.anchor = GridBagConstraints.EAST;
-			gridBagConstraints38.insets = new Insets(0, 0, 0, 4);
-			gridBagConstraints38.gridy = 3;
-			GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
-			gridBagConstraints26.fill = GridBagConstraints.BOTH;
-			gridBagConstraints26.gridy = 2;
-			gridBagConstraints26.weightx = 1.0;
-			gridBagConstraints26.weighty = 2.7;
-			gridBagConstraints26.gridheight = 1;
-			gridBagConstraints26.gridx = 0;
-			GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
-			gridBagConstraints24.fill = java.awt.GridBagConstraints.HORIZONTAL;
-			gridBagConstraints24.gridy = -1;
-			gridBagConstraints24.weightx = 0.0;
-			gridBagConstraints24.ipadx = 0;
-			gridBagConstraints24.gridwidth = 1;
-			gridBagConstraints24.gridheight = 1;
-			gridBagConstraints24.anchor = java.awt.GridBagConstraints.CENTER;
-			gridBagConstraints24.insets = new Insets(0, 0, 4, 0);
-			gridBagConstraints24.gridx = -1;
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.fill = GridBagConstraints.BOTH;
-			gridBagConstraints21.gridy = 4;
-			gridBagConstraints21.weightx = 1.0;
-			gridBagConstraints21.weighty = 1.5;
-			gridBagConstraints21.gridx = 0;
-			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-			gridBagConstraints19.fill = GridBagConstraints.BOTH;
-			gridBagConstraints19.gridy = 1;
-			gridBagConstraints19.weightx = 1.0;
-			gridBagConstraints19.weighty = 2.7;
-			gridBagConstraints19.gridx = 0;
 			jContentPane_FI = new JPanel();
 			jContentPane_FI.setLayout(new GridBagLayout());
 			jContentPane_FI.setBorder(javax.swing.BorderFactory
 					.createEmptyBorder(8, 8, 8, 8));
-			jContentPane_FI.add(getJScrollPane_FDep(), gridBagConstraints21);
+
+			GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
+			gridBagConstraints24.gridx = 0;
+			gridBagConstraints24.gridy = 0;
+			gridBagConstraints24.gridwidth = 1;
+			gridBagConstraints24.gridheight = 1;
+			//gridBagConstraints24.weightx = 0.0;
+			//gridBagConstraints24.anchor = java.awt.GridBagConstraints.CENTER;
+			//gridBagConstraints24.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints24.fill = java.awt.GridBagConstraints.BOTH;
+			//gridBagConstraints24.insets = new Insets(0, 0, 4, 0);
+			//gridBagConstraints24.ipadx = 0;
 			jContentPane_FI.add(getJPanel_F(), gridBagConstraints24);
+
+			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+			gridBagConstraints19.gridx = 0;
+			gridBagConstraints19.gridy = 1;
+			gridBagConstraints19.weightx = 1.0;
+			gridBagConstraints19.weighty = 2.7;
+			gridBagConstraints19.fill = GridBagConstraints.BOTH;
 			jContentPane_FI.add(getJScrollPane_FG(), gridBagConstraints19);
+
+			GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
+			gridBagConstraints26.gridx = 0;
+			gridBagConstraints26.gridy = 2;
+			gridBagConstraints26.gridheight = 1;
+			gridBagConstraints26.weightx = 1.0;
+			gridBagConstraints26.weighty = 2.7;
+			gridBagConstraints26.fill = GridBagConstraints.BOTH;
 			jContentPane_FI.add(getJScrollPane_FC(), gridBagConstraints26);
+
+			GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
+			gridBagConstraints38.gridx = 0;
+			gridBagConstraints38.gridy = 3;
+			gridBagConstraints38.anchor = GridBagConstraints.EAST;
+			gridBagConstraints38.insets = new Insets(0, 0, 0, 4);
 			jContentPane_FI.add(getJButton_legendC(), gridBagConstraints38);
+
+			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+			gridBagConstraints21.gridx = 0;
+			gridBagConstraints21.gridy = 4;
+			gridBagConstraints21.weightx = 1.0;
+			gridBagConstraints21.weighty = 1.5;
+			gridBagConstraints21.fill = GridBagConstraints.BOTH;
 			jContentPane_FI.add(getJScrollPane_FDep(), gridBagConstraints21);
 		}
 		return jContentPane_FI;
@@ -706,174 +711,136 @@ public class Main extends JPanel implements ListSelectionListener,
 	 */
 	private JPanel getJPanel_F() {
 		if (jPanel_F == null) {
-			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-			gridBagConstraints28.fill = GridBagConstraints.BOTH;
-			gridBagConstraints28.gridy = 3;
-			gridBagConstraints28.weightx = 1.0;
-			gridBagConstraints28.gridwidth = 8;
-			gridBagConstraints28.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints28.gridx = 2;
-			GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
-			gridBagConstraints27.gridx = 0;
-			gridBagConstraints27.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints27.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints27.ipadx = 0;
-			gridBagConstraints27.ipady = 5;
-			gridBagConstraints27.gridy = 3;
-			jLabel_FinQ = new JLabel();
-			jLabel_FinQ.setEnabled(true);
-			jLabel_FinQ.setForeground(Color.black);
-			jLabel_FinQ.setPreferredSize(new Dimension(30, 16));
-			jLabel_FinQ.setText("Questions:");
-			jLabel_FinQ.setFont(new Font("Dialog", Font.PLAIN, 12));
-			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-			gridBagConstraints25.fill = GridBagConstraints.BOTH;
-			gridBagConstraints25.gridy = 2;
-			gridBagConstraints25.weightx = 0.4;
-			gridBagConstraints25.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints25.anchor = GridBagConstraints.WEST;
-			gridBagConstraints25.gridwidth = 1;
-			gridBagConstraints25.ipadx = 100;
-			gridBagConstraints25.gridx = 2;
-			GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
-			gridBagConstraints23.fill = GridBagConstraints.BOTH;
-			gridBagConstraints23.gridy = 2;
-			gridBagConstraints23.weightx = 0.7;
-			gridBagConstraints23.gridwidth = 6;
-			gridBagConstraints23.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints23.ipadx = 50;
-			gridBagConstraints23.gridx = 4;
-			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-			gridBagConstraints22.fill = GridBagConstraints.BOTH;
-			gridBagConstraints22.gridy = 1;
-			gridBagConstraints22.weightx = 1.0;
-			gridBagConstraints22.gridwidth = 8;
-			gridBagConstraints22.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints22.gridx = 2;
-			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-			gridBagConstraints20.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints20.gridy = 2;
-			gridBagConstraints20.ipadx = 40;
-			gridBagConstraints20.ipady = 5;
-			gridBagConstraints20.anchor = GridBagConstraints.EAST;
-			gridBagConstraints20.weightx = 0.0;
-			gridBagConstraints20.fill = GridBagConstraints.NONE;
-			gridBagConstraints20.gridx = 3;
-			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
-			gridBagConstraints18.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints18.gridy = 2;
-			gridBagConstraints18.ipadx = 0;
-			gridBagConstraints18.ipady = 5;
-			gridBagConstraints18.anchor = GridBagConstraints.WEST;
-			gridBagConstraints18.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints18.gridx = 0;
-			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-			gridBagConstraints17.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints17.gridx = 2;
-			gridBagConstraints17.gridy = 0;
-			gridBagConstraints17.ipadx = 0;
-			gridBagConstraints17.ipady = 1;
-			gridBagConstraints17.weightx = 0.0;
-			gridBagConstraints17.gridwidth = 4;
-			gridBagConstraints17.anchor = GridBagConstraints.WEST;
-			gridBagConstraints17.insets = new Insets(2, 2, 2, 2);
-			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-			gridBagConstraints16.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints16.gridy = 0;
-			gridBagConstraints16.ipadx = 0;
-			gridBagConstraints16.ipady = 7;
-			gridBagConstraints16.anchor = GridBagConstraints.EAST;
-			gridBagConstraints16.fill = GridBagConstraints.NONE;
-			gridBagConstraints16.gridx = 8;
-			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-			gridBagConstraints15.insets = new Insets(2, 2, 2, 2);
-			gridBagConstraints15.gridy = 1;
-			gridBagConstraints15.ipadx = 0;
-			gridBagConstraints15.ipady = 7;
-			gridBagConstraints15.anchor = GridBagConstraints.WEST;
-			gridBagConstraints15.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints15.gridx = 0;
-			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints14.gridx = 9;
-			gridBagConstraints14.gridy = 0;
-			gridBagConstraints14.ipadx = 25;
-			gridBagConstraints14.ipady = 1;
-			gridBagConstraints14.weightx = 0.4;
-			gridBagConstraints14.gridwidth = 1;
-			gridBagConstraints14.insets = new Insets(2, 2, 2, 2);
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.insets = new Insets(0, 2, 2, 2);
-			gridBagConstraints13.gridy = 0;
-			gridBagConstraints13.ipadx = 0;
-			gridBagConstraints13.ipady = 7;
-			gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints13.anchor = GridBagConstraints.WEST;
-			gridBagConstraints13.gridx = 0;
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.setRows(4);
-			gridLayout.setColumns(4);
-			jLabel_FID = new JLabel();
-			jLabel_FID.setEnabled(true);
-			jLabel_FID.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-			jLabel_FID.setMinimumSize(new java.awt.Dimension(23, 14));
-			jLabel_FID.setPreferredSize(new java.awt.Dimension(23, 14));
-			jLabel_FID.setText("ID: ");
-			jLabel_FID.setForeground(java.awt.Color.black);
-			jLabel_FID.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jPanel_F = new JPanel();
+			jPanel_F.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+			jPanel_F.setLayout(new GridBagLayout());
+			//jPanel_F.setPreferredSize(new java.awt.Dimension(370, 150));
+			//jPanel_F.setMinimumSize(new java.awt.Dimension(370, 150));
+
+			// Description:
 			jLabel_FDescription = new JLabel();
 			jLabel_FDescription.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
-			jLabel_FDescription.setMinimumSize(new Dimension(22, 14));
-			jLabel_FDescription.setPreferredSize(new Dimension(22, 14));
 			jLabel_FDescription.setHorizontalAlignment(SwingConstants.LEFT);
 			jLabel_FDescription.setText("Description:");
 			jLabel_FDescription.setForeground(java.awt.Color.black);
-			jLabel_FDescription.setBorder(BorderFactory.createEmptyBorder(2, 2,
-					4, 2));
+			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			gridBagConstraints13.gridx = 0;
+			gridBagConstraints13.gridy = 0;
+			gridBagConstraints13.anchor = GridBagConstraints.WEST;
+			jPanel_F.add(jLabel_FDescription, gridBagConstraints13);
+
+			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+			gridBagConstraints17.gridx = 1;
+			gridBagConstraints17.gridy = 0;
+			gridBagConstraints17.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints17.weightx = 2.0;
+			gridBagConstraints17.gridwidth = 2;
+			jPanel_F.add(getJTextField_FDescription(), gridBagConstraints17);
+
+			// ID:
+			jLabel_FID = new JLabel();
+			jLabel_FID.setEnabled(true);
+			jLabel_FID.setText("ID: ");
+			jLabel_FID.setForeground(java.awt.Color.black);
+			jLabel_FID.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jLabel_FID.setHorizontalAlignment(SwingConstants.RIGHT);
+			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+			gridBagConstraints16.gridx = 3;
+			gridBagConstraints16.gridy = 0;
+			gridBagConstraints16.weightx = 0.0;
+			gridBagConstraints16.fill = GridBagConstraints.NONE;
+			gridBagConstraints16.anchor = GridBagConstraints.EAST;
+			jPanel_F.add(jLabel_FID, gridBagConstraints16);
+
+			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+			gridBagConstraints14.gridx = 4;
+			gridBagConstraints14.gridy = 0;
+			gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints14.weightx = 1.0;
+			jPanel_F.add(getJTextField_FID(), gridBagConstraints14);
+
+			// Impact:
 			jLabel_FImpact = new JLabel();
 			jLabel_FImpact.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
-			jLabel_FImpact.setMinimumSize(new Dimension(22, 14));
-			jLabel_FImpact.setPreferredSize(new Dimension(22, 14));
 			jLabel_FImpact.setHorizontalAlignment(SwingConstants.LEFT);
 			jLabel_FImpact.setText("Impact Level:");
 			jLabel_FImpact.setForeground(java.awt.Color.black);
-			jLabel_FImpact.setBorder(BorderFactory
-					.createEmptyBorder(2, 2, 4, 2));
-			jLabel_FMan = new JLabel();
-			jLabel_FMan.setText("Mandatory: ");
-			jLabel_FMan.setEnabled(true);
-			jLabel_FMan.setFont(new java.awt.Font("Dialog",
-					java.awt.Font.PLAIN, 12));
-			jLabel_FMan.setForeground(java.awt.Color.black);
-			jLabel_FMan.setMaximumSize(new Dimension(22, 16));
-			jLabel_FMan.setMinimumSize(new Dimension(22, 16));
-			jLabel_FMan.setPreferredSize(new Dimension(22, 16));
+			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+			gridBagConstraints15.gridx = 0;
+			gridBagConstraints15.gridy = 1;
+			gridBagConstraints15.anchor = GridBagConstraints.WEST;
+			jPanel_F.add(jLabel_FImpact, gridBagConstraints15);
+
+			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+			gridBagConstraints22.gridx = 1;
+			gridBagConstraints22.gridy = 1;
+			gridBagConstraints22.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints22.weightx = 1.0;
+			gridBagConstraints22.gridwidth = 4;
+			jPanel_F.add(getJTextField_FI(), gridBagConstraints22);
+
+			// Default value:
 			jLabel_FDef = new JLabel();
 			jLabel_FDef.setText("Default value: ");
 			jLabel_FDef.setEnabled(true);
 			jLabel_FDef.setFont(new java.awt.Font("Dialog",
 					java.awt.Font.PLAIN, 12));
 			jLabel_FDef.setForeground(java.awt.Color.black);
-			jLabel_FDef.setPreferredSize(new java.awt.Dimension(30, 16));
-
-			jPanel_F = new JPanel();
-			jPanel_F.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-			jPanel_F.setLayout(new GridBagLayout());
-			jPanel_F.setPreferredSize(new java.awt.Dimension(70, 100));
-			jPanel_F.setMinimumSize(new java.awt.Dimension(70, 100));
-			jPanel_F.add(jLabel_FDescription, gridBagConstraints13);
-			jPanel_F.add(getJTextField_FID(), gridBagConstraints14);
-			jPanel_F.add(jLabel_FImpact, gridBagConstraints15);
-			jPanel_F.add(jLabel_FID, gridBagConstraints16);
-			jPanel_F.add(getJTextField_FDescription(), gridBagConstraints17);
+			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+			gridBagConstraints18.gridx = 0;
+			gridBagConstraints18.gridy = 2;
+			gridBagConstraints18.anchor = GridBagConstraints.WEST;
 			jPanel_F.add(jLabel_FDef, gridBagConstraints18);
-			jPanel_F.add(jLabel_FMan, gridBagConstraints20);
-			jPanel_F.add(getJTextField_FI(), gridBagConstraints22);
-			jPanel_F.add(getJTextField_FMan(), gridBagConstraints23);
+
+			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
+			gridBagConstraints25.gridx = 1;
+			gridBagConstraints25.gridy = 2;
+			gridBagConstraints25.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints25.weightx = 1.0;
 			jPanel_F.add(getJTextField_FDef(), gridBagConstraints25);
+
+			// Mandatory:
+			jLabel_FMan = new JLabel();
+			jLabel_FMan.setText("Mandatory: ");
+			jLabel_FMan.setEnabled(true);
+			jLabel_FMan.setFont(new java.awt.Font("Dialog",
+					java.awt.Font.PLAIN, 12));
+			jLabel_FMan.setForeground(java.awt.Color.black);
+			jLabel_FMan.setHorizontalAlignment(SwingConstants.RIGHT);
+			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
+			gridBagConstraints20.gridx = 2;
+			gridBagConstraints20.gridy = 2;
+			gridBagConstraints20.anchor = GridBagConstraints.EAST;
+			gridBagConstraints20.gridwidth = 2;
+			jPanel_F.add(jLabel_FMan, gridBagConstraints20);
+
+			GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
+			gridBagConstraints23.gridx = 4;
+			gridBagConstraints23.gridy = 2;
+			gridBagConstraints23.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints23.weightx = 1.0;
+			jPanel_F.add(getJTextField_FMan(), gridBagConstraints23);
+
+			// Questions:
+			jLabel_FinQ = new JLabel();
+			jLabel_FinQ.setEnabled(true);
+			jLabel_FinQ.setForeground(Color.black);
+			jLabel_FinQ.setText("Questions:");
+			jLabel_FinQ.setFont(new Font("Dialog", Font.PLAIN, 12));
+			GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
+			gridBagConstraints27.gridx = 0;
+			gridBagConstraints27.gridy = 3;
+			gridBagConstraints27.anchor = GridBagConstraints.WEST;
 			jPanel_F.add(jLabel_FinQ, gridBagConstraints27);
+
+			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
+			gridBagConstraints28.gridx = 1;
+			gridBagConstraints28.gridy = 3;
+			gridBagConstraints28.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints28.weightx = 1.0;
+			gridBagConstraints28.gridwidth = 4;
 			jPanel_F.add(getJTextField_FinQ(), gridBagConstraints28);
 		}
 		return jPanel_F;
@@ -1057,7 +1024,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			jTextArea_About.setWrapStyleWord(true);
 			jTextArea_About.setLineWrap(true);
 			jTextArea_About
-					.setText("\n   Synergia - Quaestio v. 1.0. Copyright Process Configuration\u24B8 2006-2013\n\n\n"
+					.setText("\n   Synergia - Quaestio v. 1.0. Copyright Process Configuration\u24B8 2006-2014\n\n\n"
 							+ "           Contributors:\n"
 							+ "                        Marcello La Rosa\n"
 							+ "                        Possakorn Pitayarojanakul\n"
@@ -1990,11 +1957,11 @@ public class Main extends JPanel implements ListSelectionListener,
                 frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
                                 Main.class.getResource("/icons/Q4.gif")));
                 frame.setLocation(new java.awt.Point(100, 100));
-                frame.setMinimumSize(new java.awt.Dimension(800, 600));
-                frame.setSize(826, 600);
+                frame.setMinimumSize(new java.awt.Dimension(900, 600));
+                frame.setSize(900, 600);
                 frame.setJMenuBar(application.getJJMenuBar());
                 frame.setContentPane(application.getJContentPane());
-                frame.setTitle("Synergia - Quaestio v. 0.9");
+                frame.setTitle("Synergia - Quaestio v. 1.0");
                 application.setVisible(true);
                 frame.pack();
 		frame.setVisible(true);
@@ -2763,7 +2730,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JButton getJButton_answerSave() {
 		if (jButton_answerSave == null) {
 			jButton_answerSave = new JButton();
-			jButton_answerSave.setText("Save");
+			jButton_answerSave.setText("Save model");
 			jButton_answerSave.setFont(new Font("Dialog", Font.PLAIN, 12));
 			jButton_answerSave.addActionListener(this);
 			jButton_answerSave.setEnabled(false);
