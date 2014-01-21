@@ -368,7 +368,7 @@ public class MenuController extends Menubar {
      * @throws org.apromore.portal.exception.ExceptionAllUsers
      * @throws org.apromore.portal.exception.ExceptionDomains
      */
-    private void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers, ParseException {
+    protected void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers, ParseException {
         mainC.eraseMessage();
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
 

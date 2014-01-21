@@ -655,15 +655,20 @@ public class ProcessServiceImpl implements ProcessService {
                 propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
                         pmVersion.getFragmentVersions(), versionNumber);
                 pmVersion.setNativeType(nativeType);
+
+                processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+                if (processModelVersion == null) {
+                    createNewProcessModelVersion(pmVersion, rootFragment.getCurrentFragment(), rootFragment.getFragmentVersions(), versionNumber);
+                    processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+                }
+                processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
+                processModelVersion.setOriginalId(cpf.getCpt().getUri());
+                processModelVersion.setNumEdges(graph.countEdges());
+                processModelVersion.setNumVertices(graph.countVertices());
+                processModelVersion.setLockStatus(Constants.NO_LOCK);
+                processModelVersion.setNativeType(nativeType);
             }
 
-            processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
-            processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
-            processModelVersion.setOriginalId(cpf.getCpt().getUri());
-            processModelVersion.setNumEdges(graph.countEdges());
-            processModelVersion.setNumVertices(graph.countVertices());
-            processModelVersion.setLockStatus(Constants.NO_LOCK);
-            processModelVersion.setNativeType(nativeType);
         } else {
             LOGGER.error("unable to find the Process Model to update.");
         }
