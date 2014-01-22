@@ -145,6 +145,10 @@
         <!-- Schemas -->
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>cmap-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
         </dependency>
         <dependency>
