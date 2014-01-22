@@ -159,7 +159,7 @@ CREATE TABLE `process_model_version` (
   `canonicalId` int(11) DEFAULT NULL,
   `nativeTypeId` int(11) DEFAULT NULL,
   `originalId` varchar(200),
-  `version_number` double,
+  `version_number` varchar(15),
   `change_propagation` int,
   `lock_status` int,
   `num_nodes` int,

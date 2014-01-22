@@ -47,7 +47,7 @@ public class ExportOneNativeController extends BaseController {
     private final Listbox formatsLB;
     private final int processId;
     private final String versionName;
-    private final Double versionNumber;
+    private final String versionNumber;
     private final HashMap<String, String> formats_ext;
     // <k, v> belongs to nativeTypes: the file extension k
     // is associated with the native type v (<xpdl,XPDL 1.2>)
@@ -57,7 +57,7 @@ public class ExportOneNativeController extends BaseController {
     private SelectDynamicListController canoniserCB;
 
     public ExportOneNativeController(final ExportListNativeController exportListControllerC, final MainController mainC, final int processId,
-            final String processName, final String originalType, final String versionName, Double versionNumber,
+            final String processName, final String originalType, final String versionName, String versionNumber,
             final List<AnnotationsType> annotations, final HashMap<String, String> formats_ext) throws SuspendNotAllowedException, InterruptedException {
 
         this.mainC = mainC;
@@ -190,7 +190,7 @@ public class ExportOneNativeController extends BaseController {
             canoniserInfos = getService().readCanoniserInfo(nativeType);
 
             if (canoniserInfos.size() >= 1) {
-                List<String> canoniserNames = new ArrayList<String>();
+                List<String> canoniserNames = new ArrayList<>();
                 for (PluginInfo cInfo: canoniserInfos) {
                     canoniserNames.add(cInfo.getName());
                 }
@@ -207,8 +207,7 @@ public class ExportOneNativeController extends BaseController {
                 canoniserCB.setSelectedIndex(0);
                 canoniserSelectionRow.appendChild(canoniserCB);
 
-                canoniserCB.addEventListener("onSelect", new EventListener() {
-
+                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         if (event instanceof SelectEvent) {
@@ -272,7 +271,7 @@ public class ExportOneNativeController extends BaseController {
                 processName = this.processNameL.getValue().replaceAll(":", "_");
                 processName = this.processNameL.getValue().replaceAll(";", "_");
                 String filename = processName + "." + ext;
-                String annotation = null;
+                String annotation;
                 Boolean withAnnotation;
                 if (this.annotationsLB.getSelectedItem() != null) {
                     annotation = this.annotationsLB.getSelectedItem().getValue();
@@ -281,8 +280,8 @@ public class ExportOneNativeController extends BaseController {
                     annotation = format;
                     withAnnotation = false;
                 }
-                ExportFormatResultType exportResult = getService().exportFormat(this.processId, processName, this.versionName, this.versionNumber,
-                        format, annotation, withAnnotation, UserSessionManager.getCurrentUser().getUsername(),
+                ExportFormatResultType exportResult = getService().exportFormat(this.processId, processName, this.versionName,
+                        this.versionNumber, format, annotation, withAnnotation, UserSessionManager.getCurrentUser().getUsername(),
                         pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
                 try (InputStream native_is = exportResult.getNative().getInputStream()) {
                     this.mainC.showPluginMessages(exportResult.getMessage());

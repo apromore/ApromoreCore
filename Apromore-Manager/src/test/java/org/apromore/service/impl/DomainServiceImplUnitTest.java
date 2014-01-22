@@ -43,6 +43,6 @@ public class DomainServiceImplUnitTest {
         List<String> serviceProcesses = domainServiceImpl.findAllDomains();
         verify(procDAOJpa);
         assertThat(serviceProcesses.size(), equalTo(processes.size()));
-        assertThat(serviceProcesses.get(0), equalTo(processes.get(0).toString()));
+        assertThat(serviceProcesses.get(0), equalTo(processes.get(0)));
     }
 }

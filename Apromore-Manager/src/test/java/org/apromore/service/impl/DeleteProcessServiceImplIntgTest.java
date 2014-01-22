@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
@@ -51,6 +52,7 @@ public class DeleteProcessServiceImplIntgTest {
     private String domain = "Tests";
     private String created = "12/12/2011";
     private String lastUpdate = "12/12/2011";
+    private Version version = new Version(1,0);
 
 
 
@@ -64,12 +66,12 @@ public class DeleteProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
-        deleteList.add(new ProcessData(pst.getId(), 1.0d));
+        deleteList.add(new ProcessData(pst.getId(), version));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again
@@ -88,7 +90,7 @@ public class DeleteProcessServiceImplIntgTest {
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process
@@ -97,7 +99,7 @@ public class DeleteProcessServiceImplIntgTest {
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
-        deleteList.add(new ProcessData(pst.getId(), 1.0d));
+        deleteList.add(new ProcessData(pst.getId(), version));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again

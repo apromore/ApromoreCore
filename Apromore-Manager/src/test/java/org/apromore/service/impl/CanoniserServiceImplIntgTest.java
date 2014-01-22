@@ -1,25 +1,5 @@
 package org.apromore.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import javax.activation.DataSource;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apromore.TestData;
 import org.apromore.anf.ANFSchema;
@@ -28,6 +8,7 @@ import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ImportException;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -56,6 +37,25 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
+import javax.activation.DataSource;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * Unit test the CanoniserService Implementation.
  * 
@@ -82,9 +82,9 @@ public class CanoniserServiceImplIntgTest {
 
     @Before
     public void setUp() {
-        epmlCanoniserRequest = new HashSet<RequestParameterType<?>>();
-        epmlCanoniserRequest.add(new RequestParameterType<Boolean>("addFakeEvents", true));
-        emptyCanoniserRequest = new HashSet<RequestParameterType<?>>();
+        epmlCanoniserRequest = new HashSet<>();
+        epmlCanoniserRequest.add(new RequestParameterType<>("addFakeEvents", true));
+        emptyCanoniserRequest = new HashSet<>();
     }
 
 
@@ -101,20 +101,18 @@ public class CanoniserServiceImplIntgTest {
         assertThat(cp.getCpt(), notNullValue());
 
         String username = "james";
-        String cpfURI = "12325335343353";
         String domain = "Airport";
         String created = "12/12/2011";
         String lastUpdate = "12/12/2011";
+        Version version = new Version(1, 0);
 
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, nativeType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, nativeType, cp, domain, "", created, lastUpdate, true);
 
         assertThat(pst, notNullValue());
     }
 
     @Test(expected = JAXBException.class)
     public void deCanoniseWithoutAnnotationsFailure() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "Canonical";
         InputStream cpf = new ByteArrayDataSource("<XML/>", "text/xml").getInputStream();
         cSrv.deCanonise(name, getTypeFromXML(cpf), null, emptyCanoniserRequest);
@@ -122,8 +120,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithIncorrectType() throws IOException {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "Canonical";
         InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
 
@@ -132,17 +128,13 @@ public class CanoniserServiceImplIntgTest {
             fail();
         } catch (CanoniserException e) {
             assertTrue(e.getCause() instanceof PluginNotFoundException);
-        } catch (JAXBException e) {
-            fail();
-        } catch (SAXException e) {
+        } catch (JAXBException | SAXException e) {
             fail();
         }
     }
 
     @Test
     public void deCanoniseWithoutAnnotationsSuccessXPDL() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "XPDL 2.1";
         InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
 
@@ -154,8 +146,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithAnnotationsSuccessXPDL() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "XPDL 2.1";
         InputStream cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
         DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
@@ -168,8 +158,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithoutAnnotationsSuccessEPML() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "EPML 2.0";
         InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
 
@@ -190,8 +178,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithAnnotationsSuccessEPML() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
         String name = "EPML 2.0";
         InputStream cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
         DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
@@ -234,7 +220,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void canoniseEPML() throws Exception {
-        String uri = "1234567890";
         String nativeType = "EPML 2.0";
 
         InputStream data = new ByteArrayInputStream(TestData.EPML.getBytes());
@@ -246,7 +231,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void canoniseEPML2() throws Exception {
-        String uri = "1234567890";
         String nativeType = "EPML 2.0";
 
         InputStream data = new ByteArrayInputStream(TestData.EPML5.getBytes());
@@ -258,7 +242,6 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void canonisePNML() throws Exception {
-        String uri = "1234567890";
         String nativeType = "PNML 1.3.2";
 
         InputStream data = new ByteArrayInputStream(TestData.PNML.getBytes());
@@ -277,7 +260,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void canoniseOrderfulfilmentFromYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void canoniseOrderfulfilmentFromYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/orderfulfillment.yawl", "YAWL_models/orderfulfillment.ybkp");
 
         if (LOGGER.isDebugEnabled()) {
@@ -302,8 +285,7 @@ public class CanoniserServiceImplIntgTest {
     public void convertOrderfulfilmentFromYAWLToEPML() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/orderfulfillment.yawl", "YAWL_models/orderfulfillment.ybkp");
         try {
-            DecanonisedProcess decanonisedEPML = cSrv.deCanonise("EPML 2.0", oFCanonised.getCpt(), null,
-                    new HashSet<RequestParameterType<?>>());
+            cSrv.deCanonise("EPML 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
             fail("Should throw exception because State is not supported!");
         } catch (CanoniserException e) {
         }
@@ -350,7 +332,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void convertPaymentSubnetFromYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertPaymentSubnetFromYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/PaymentSubnet.yawl", "YAWL_models/orderfulfillment.ybkp");
 
         if (LOGGER.isDebugEnabled()) {
@@ -425,7 +407,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void convertSimpleMakeTripFromYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertSimpleMakeTripFromYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/SimpleMakeTripProcess.yawl", null);
 
         if (LOGGER.isDebugEnabled()) {
@@ -500,7 +482,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void convertCreditCardApplicationFromYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertCreditCardApplicationFromYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/CreditApplicationProcess.yawl", null);
 
         if (LOGGER.isDebugEnabled()) {
@@ -525,8 +507,7 @@ public class CanoniserServiceImplIntgTest {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/CreditApplicationProcess.yawl", null);
 
         try {
-            DecanonisedProcess decanonisedEPML = cSrv.deCanonise("EPML 2.0", oFCanonised.getCpt(), null,
-                    new HashSet<RequestParameterType<?>>());
+            cSrv.deCanonise("EPML 2.0", oFCanonised.getCpt(), null, new HashSet<RequestParameterType<?>>());
             fail();
         } catch (CanoniserException e) {
 
@@ -577,7 +558,7 @@ public class CanoniserServiceImplIntgTest {
 
     @Ignore
     @Test
-    public void convertInsuranceClaimHandlingFromXPDLToYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertInsuranceClaimHandlingFromXPDLToYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess canonised = canoniseXPDLProcess("models/InsuranceClaimHandling.xpdl");
 
         if (LOGGER.isDebugEnabled()) {
@@ -594,7 +575,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void convertEPMLToYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertEPMLToYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess canonised = canoniseEPMLProcess("models/1An_ka9y.epml");
 
         if (LOGGER.isDebugEnabled()) {
@@ -611,7 +592,7 @@ public class CanoniserServiceImplIntgTest {
     }
 
     @Test
-    public void convertInsuranceClaimEPMLToYAWL() throws CanoniserException, IOException, PropertyException, JAXBException, SAXException {
+    public void convertInsuranceClaimEPMLToYAWL() throws CanoniserException, IOException, JAXBException, SAXException {
         CanonisedProcess canonised = canoniseEPMLProcess("models/sun1.epml");
 
         if (LOGGER.isDebugEnabled()) {
@@ -633,20 +614,20 @@ public class CanoniserServiceImplIntgTest {
             if (yawlOrgFile != null) {
                 try (InputStream oFProcessOrgData = ClassLoader.getSystemResourceAsStream(yawlOrgFile)) {
 
-                    HashSet<RequestParameterType<?>> yawlParameters = new HashSet<RequestParameterType<?>>();
-                    yawlParameters.add(new RequestParameterType<InputStream>("readOrgData", oFProcessOrgData));
+                    HashSet<RequestParameterType<?>> yawlParameters = new HashSet<>();
+                    yawlParameters.add(new RequestParameterType<>("readOrgData", oFProcessOrgData));
                     oFCanonised = cSrv.canonise("YAWL 2.2", oFProcess, yawlParameters);
 
                 }
             } else {
-                HashSet<RequestParameterType<?>> yawlParameters = new HashSet<RequestParameterType<?>>();
+                HashSet<RequestParameterType<?>> yawlParameters = new HashSet<>();
                 oFCanonised = cSrv.canonise("YAWL 2.2", oFProcess, yawlParameters);
             }
         }
         return oFCanonised;
     }
 
-    private void saveCanonisedProcess(final CanonisedProcess canonisedProcess, final String fileName) throws PropertyException, JAXBException,
+    private void saveCanonisedProcess(final CanonisedProcess canonisedProcess, final String fileName) throws JAXBException,
             SAXException, IOException {
         try (FileOutputStream fileOutputStream = new FileOutputStream("target/" + fileName)) {
             CPFSchema.marshalCanonicalFormat(fileOutputStream, canonisedProcess.getCpt(), true);
@@ -665,7 +646,7 @@ public class CanoniserServiceImplIntgTest {
     private CanonisedProcess canoniseXPDLProcess(String fileName) throws CanoniserException, IOException {
         CanonisedProcess oFCanonised;
         try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream(fileName)) {
-            HashSet<RequestParameterType<?>> xpdlParameters = new HashSet<RequestParameterType<?>>();
+            HashSet<RequestParameterType<?>> xpdlParameters = new HashSet<>();
             oFCanonised = cSrv.canonise("XPDL 2.1", oFProcess, xpdlParameters);
         }
         return oFCanonised;
@@ -674,8 +655,8 @@ public class CanoniserServiceImplIntgTest {
     private CanonisedProcess canoniseEPMLProcess(String fileName) throws CanoniserException, IOException {
         CanonisedProcess oFCanonised;
         try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream(fileName)) {
-            HashSet<RequestParameterType<?>> epmlParameters = new HashSet<RequestParameterType<?>>();
-            epmlParameters.add(new RequestParameterType<Boolean>("addFakeProperties", true));
+            HashSet<RequestParameterType<?>> epmlParameters = new HashSet<>();
+            epmlParameters.add(new RequestParameterType<>("addFakeProperties", true));
             oFCanonised = cSrv.canonise("EPML 2.0", oFProcess, epmlParameters);
         }
         return oFCanonised;

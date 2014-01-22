@@ -57,7 +57,7 @@ public class MutableTreeIntgTest {
         CanonisedProcess cp = cSrv.canonise("XPDL 2.1", input, new HashSet<RequestParameterType<?>>());
         Canonical g = converter.convert(cp.getCpt());
 
-        RPST<CPFEdge, CPFNode> rpst = new RPST<CPFEdge, CPFNode>(g);
+        RPST<CPFEdge, CPFNode> rpst = new RPST<>(g);
         for (IRPSTNode<CPFEdge, CPFNode> node : rpst.getRPSTNodes()) {
             if (rpst.isRoot(node)) {
                 assertThat(node.getEntry(), nullValue());

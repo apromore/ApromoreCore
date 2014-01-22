@@ -58,7 +58,7 @@ public class CanoniserServiceImplUnitTest {
     
     @Test
     public void testListByNativeType() throws PluginNotFoundException {
-        HashSet<Canoniser> canoniserSet = new HashSet<Canoniser>();
+        HashSet<Canoniser> canoniserSet = new HashSet<>();
         canoniserSet.add(mockCanoniser);
 
         expect(mockProvider.listByNativeType("test")).andReturn(canoniserSet).anyTimes();

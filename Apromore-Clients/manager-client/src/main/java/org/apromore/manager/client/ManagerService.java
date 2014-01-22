@@ -239,7 +239,7 @@ public interface ManagerService {
      * @return the request process model as a Stream
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ExportFormatResultType exportFormat(int processId, String processName, String branch, Double versionNumber, String nativeType,
+    ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
             String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
             throws Exception;
 
@@ -260,7 +260,7 @@ public interface ManagerService {
      * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, Double versionNumber,
+    ImportProcessResultType importProcess(String username, Integer folderId, String nativeType, String processName, String versionNumber,
             InputStream xml_process, String domain, String documentation, String created, String lastUpdate, boolean makePublic,
             Set<RequestParameterType<?>> canoniserProperties) throws Exception;
 
@@ -335,7 +335,7 @@ public interface ManagerService {
      * @return any messages that the Deployment Plugin produced
      * @throws Exception in case of any error
      */
-    PluginMessages deployProcess(String branchName, String processName, Double versionName, String nativeType, String pluginName,
+    PluginMessages deployProcess(String branchName, String processName, String versionName, String nativeType, String pluginName,
             String pluginVersion, Set<RequestParameterType<?>> deploymentProperties) throws Exception;
 
     /**
@@ -356,7 +356,7 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
     void updateProcess(Integer sessionCode, String username, String nativeType, Integer processId, String domain, String processName,
-            String originalBranchName, String newBranchName, Double versionNumber, Double originalVersionNumber,
+            String originalBranchName, String newBranchName, String versionNumber, String originalVersionNumber,
             String preVersion, InputStream native_is) throws Exception;
 
     /**
@@ -372,7 +372,7 @@ public interface ManagerService {
      * @param isPublic is the model public.
      * @throws Exception ... change to be something more relevant TODO: Fix Exception
      */
-    void editProcessData(Integer processId, String processName, String domain, String username, Double preVersion, Double newVersion,
+    void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion,
             String ranking, boolean isPublic) throws Exception;
 
     /**

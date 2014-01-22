@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.manager.ManagerPortalEndpoint;
@@ -113,7 +114,7 @@ public class ExportProcessEndpointUnitTest {
         msg.setProcessId(123);
         msg.setProcessName("test");
         msg.setBranchName("1.0");
-        msg.setVersionNumber(1.0);
+        msg.setVersionNumber("1.0");
         msg.setWithAnnotations(true);
 
         PluginParameters properties = new PluginParameters();
@@ -130,14 +131,15 @@ public class ExportProcessEndpointUnitTest {
         JAXBElement<ExportFormatInputMsgType> request = new ObjectFactory().createExportFormatRequest(msg);
 
         CanonisedProcess cp = new CanonisedProcess();
-        ArrayList<PluginMessage> pluginMsg = new ArrayList<PluginMessage>();
+        ArrayList<PluginMessage> pluginMsg = new ArrayList<>();
         pluginMsg.add(new PluginMessageImpl("test"));
         cp.setMessages(pluginMsg);
 
+        Version version = new Version(msg.getVersionNumber());
         ExportFormatResultType exportFormatResultType = new ExportFormatResultType();
         exportFormatResultType.setMessage(new PluginMessages());
         exportFormatResultType.setNative(new DataHandler(TestData.EPML, "text/xml"));
-        expect(procSrv.exportProcess(eq(msg.getProcessName()), eq(msg.getProcessId()), eq(msg.getBranchName()), eq(msg.getVersionNumber()),
+        expect(procSrv.exportProcess(eq(msg.getProcessName()), eq(msg.getProcessId()), eq(msg.getBranchName()), eq(version),
                 eq(msg.getFormat()), eq(msg.getAnnotationName()), EasyMock.anyBoolean(), anyObject(Set.class))).andReturn(exportFormatResultType);
         replayAll();
 

@@ -19,8 +19,8 @@ public class ExportListNativeController extends BaseController {
             HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
         this.mainC = mainC;
-        this.toExportList = new ArrayList<ExportOneNativeController>();
-        this.exportedList = new ArrayList<ExportOneNativeController>();
+        this.toExportList = new ArrayList<>();
+        this.exportedList = new ArrayList<>();
         Set<ProcessSummaryType> keySet = processVersions.keySet();
         for (final ProcessSummaryType process : keySet) {
             for (final VersionSummaryType version : processVersions.get(process)) {
@@ -34,14 +34,14 @@ public class ExportListNativeController extends BaseController {
 
     public List<ExportOneNativeController> getExportedList() {
         if (exportedList == null) {
-            exportedList = new ArrayList<ExportOneNativeController>();
+            exportedList = new ArrayList<>();
         }
         return this.exportedList;
     }
 
     public List<ExportOneNativeController> getToExportList() {
         if (toExportList == null) {
-            toExportList = new ArrayList<ExportOneNativeController>();
+            toExportList = new ArrayList<>();
         }
         return this.toExportList;
     }

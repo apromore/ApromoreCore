@@ -264,6 +264,7 @@ import java.util.List;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
@@ -442,6 +443,8 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         // Find the branches for a RootFragment.
+        Version pmVersion;
+        Version lastVersion;
         for (ProcessBranch branch : pro.getProcessBranches()) {
             for (ProcessModelVersion processModelVersion : branch.getProcessModelVersions()) {
                 versionSummary = new VersionSummaryType();
@@ -458,21 +461,28 @@ public class UIHelper implements UserInterfaceHelper {
                     versionSummary.setEmpty(Boolean.FALSE);
                 }
 
-                buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), processModelVersion.getVersionNumber());
+                pmVersion = new Version(processModelVersion.getVersionNumber());
+                buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), pmVersion);
 
                 processSummary.getVersionSummaries().add(versionSummary);
 
-                if (processSummary.getLastVersion() == null || processSummary.getLastVersion() < processModelVersion.getVersionNumber()) {
+                if (processSummary.getLastVersion() == null) {
                     processSummary.setLastVersion(processModelVersion.getVersionNumber());
+                } else {
+                    lastVersion = new Version(processSummary.getLastVersion());
+                    if (lastVersion.compareTo(pmVersion) < 0) {
+                        processSummary.setLastVersion(processModelVersion.getVersionNumber());
+                    }
                 }
             }
         }
     }
 
     /* Builds the list of Native Summaries for a version summary. */
-    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName, Double maxVersion) {
+    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary, String branchName,
+            Version maxVersion) {
         AnnotationsType annotation;
-        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion);
+        List<Annotation> annotations = aRepository.findAnnotationByCanonical(processSummary.getId(), branchName, maxVersion.toString());
 
         for (Annotation ann : annotations) {
             annotation = new AnnotationsType();

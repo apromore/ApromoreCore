@@ -125,7 +125,7 @@ public class ProcessDetailsController extends BaseController {
         String creationDate = version.getCreationDate();
         String lastUpdate = version.getLastUpdate();
         String versionName = version.getName();
-        Double versionNumber = version.getVersionNumber();
+        String versionNumber = version.getVersionNumber();
 
         /*
            * for each grid attribute is associated an history whose elements are

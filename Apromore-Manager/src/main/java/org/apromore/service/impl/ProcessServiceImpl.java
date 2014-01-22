@@ -29,6 +29,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
@@ -210,14 +211,14 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Double, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, org.apromore.dao.dataObject.Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName, final Double versionNumber,
-            final String natType, final CanonisedProcess cpf, final String domain, final String documentation,
-            final String created, final String lastUpdate, final boolean publicModel) throws ImportException {
+    public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName,
+            final Version version, final String natType, final CanonisedProcess cpf, final String domain,
+            final String documentation, final String created, final String lastUpdate, final boolean publicModel) throws ImportException {
         LOGGER.debug("Executing operation canoniseProcess");
 
         if (cpf == null) {
@@ -235,7 +236,7 @@ public class ProcessServiceImpl implements ProcessService {
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
 
-            pmv = addProcess(process, processName, versionNumber, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
+            pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
 
@@ -253,13 +254,13 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Double, Double, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
+     * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Version, Version, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
-            final String newBranchName, final Double versionNumber, final Double originalVersionNumber, final User user, final String lockStatus,
+            final String newBranchName, final Version versionNumber, final Version originalVersionNumber, final User user, final String lockStatus,
             final NativeType nativeType, final CanonisedProcess cpf) throws ImportException, RepositoryException {
         ProcessModelVersion pmv;
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
@@ -284,11 +285,11 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Double, String, String, boolean, java.util.Set)
+     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version, String, String, boolean, java.util.Set)
      * {@inheritDoc}
      */
     @Override
-    public ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Double version,
+    public ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
             final String format, final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
             throws ExportFormatException {
         try {
@@ -296,11 +297,11 @@ public class ProcessServiceImpl implements ProcessService {
 
             // Work out if we are looking at the original format or native format for this model.
             if (isRequestForNativeFormat(processId, branch, version, format)) {
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(nativeRepo.getNative(processId, branch, version, format).getContent(),
-                        "text/xml")));
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(
+                        nativeRepo.getNative(processId, branch, version.toString(), format).getContent(), "text/xml")));
             } else if (isRequestForAnnotationsOnly(format)) {
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch, version,
-                        AnnotationHelper.getAnnotationName(annName)).getContent(), "text/xml")));
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(annotationRepo.getAnnotation(processId, branch,
+                        version.toString(), AnnotationHelper.getAnnotationName(annName)).getContent(), "text/xml")));
             } else {
                 CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
                 Process process;
@@ -311,7 +312,7 @@ public class ProcessServiceImpl implements ProcessService {
                     AnnotationsType anf = null;
                     process = processRepo.findOne(processId);
                     if (withAnn) {
-                        Annotation ann = annotationRepo.getAnnotation(processId, branch, version, annName);
+                        Annotation ann = annotationRepo.getAnnotation(processId, branch, version.toString(), annName);
                         if (ann != null) {
                             String annotation = ann.getContent();
                             if (annotation != null && !annotation.equals("")) {
@@ -342,19 +343,19 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String, Double, Double, String, boolean)
+     * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String, Version, Version, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-            final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
+            final Version preVersion, final Version newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException {
         LOGGER.debug("Executing operation update process meta data.");
 
         try {
             boolean updatePublicSecurity = false;
 
-            ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion);
+            ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion.toString());
             ProcessBranch branch = processModelVersion.getProcessBranch();
             Process process = processRepo.findOne(processId);
 
@@ -367,7 +368,7 @@ public class ProcessServiceImpl implements ProcessService {
             process.setRanking(ranking);
             process.setUser(userSrv.findUserByLogin(username));
             process.setPublicModel(isPublic);
-            processModelVersion.setVersionNumber(newVersion);
+            processModelVersion.setVersionNumber(newVersion.toString());
 
             updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
             if (updatePublicSecurity) {
@@ -389,18 +390,18 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see ProcessService#addProcessModelVersion(ProcessBranch, FragmentVersion, Double, int, int)
+     * @see ProcessService#addProcessModelVersion(ProcessBranch, FragmentVersion, Version, int, int)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final FragmentVersion rootFragmentVersion,
-                final Double versionNumber, final int numVertices, final int numEdges) throws ExceptionDao {
+                final Version version, final int numVertices, final int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
 
         pmv.setProcessBranch(branch);
         pmv.setRootFragmentVersion(rootFragmentVersion);
-        pmv.setVersionNumber(versionNumber);
+        pmv.setVersionNumber(version.toString());
         pmv.setNumVertices(numVertices);
         pmv.setNumEdges(numEdges);
         pmv.setCreateDate(SimpleDateFormat.getDateInstance().format(new Date()));
@@ -439,7 +440,7 @@ public class ProcessServiceImpl implements ProcessService {
             canonical.setProperty(Constants.PROCESS_NAME, processName);
             canonical.setProperty(Constants.BRANCH_NAME, branchName);
             canonical.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
-            canonical.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
+            canonical.setProperty(Constants.VERSION_NUMBER, pmv.getVersionNumber());
             canonical.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
             canonical.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
             if (pmv.getProcessBranch().getProcess().getNativeType() != null) {
@@ -484,14 +485,14 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see ProcessService#getProcessModelVersion(Integer, String, String, Double, boolean)
+     * @see ProcessService#getProcessModelVersion(Integer, String, String, Version, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName, final Double version,
-            final boolean lock) throws LockFailedException {
-        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version);
+    public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName,
+            final Version version, final boolean lock) throws LockFailedException {
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version.toString());
 
         if (pmv == null) {
             return null;
@@ -520,7 +521,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = false)
     public void propagateChangesWithLockRelease(final FragmentVersion originalFragment, final FragmentVersion updatedFragment,
-            final Set<FragmentVersion> composingFragments, final Double newVersionNumber) throws RepositoryException {
+            final Set<FragmentVersion> composingFragments, final Version newVersionNumber) throws RepositoryException {
         // create new versions for all process models, which use this fragment as the root fragment, and unlock those process models.
         List<ProcessModelVersion> usedProcessModels = processModelVersionRepo.getUsedProcessModelVersions(originalFragment);
         for (ProcessModelVersion pmv : usedProcessModels) {
@@ -557,7 +558,7 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessModelVersion pvid;
         for (ProcessData entry : models) {
             try {
-                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber());
+                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber().toString());
 
                 if (pvid != null) {
                     Process process = pvid.getProcessBranch().getProcess();
@@ -601,7 +602,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* Does the processing of ImportProcess. */
     @Transactional(readOnly = false)
-    private ProcessModelVersion addProcess(final Process process, final String processName, final Double versionNumber, final String branchName,
+    private ProcessModelVersion addProcess(final Process process, final String processName, final Version version, final String branchName,
             final String created, final String lastUpdated, final CanonisedProcess cpf, NativeType nativeType) throws ImportException {
         Canonical can;
         OperationContext rootFragment;
@@ -610,7 +611,7 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());
-            pmv = createProcessModelVersion(branch, versionNumber, can, cpf.getCpt().getUri());
+            pmv = createProcessModelVersion(branch, version, can, cpf.getCpt().getUri());
             pmv.setNativeType(nativeType);
             if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
                 rootFragment = decomposerSrv.decompose(can, pmv);
@@ -628,8 +629,8 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* Update an existing process with some changes. */
     @Transactional(readOnly = false)
-    private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Double versionNumber,
-            Double originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType)  throws RepositoryException {
+    private ProcessModelVersion updateExistingProcess(Integer processId, String processName, String originalBranchName, Version version,
+            Version originalVersionNumber, String lockStatus, CanonisedProcess cpf, NativeType nativeType)  throws RepositoryException {
         Canonical graph;
         OperationContext rootFragment;
         ProcessModelVersion processModelVersion = null;
@@ -641,11 +642,12 @@ public class ProcessServiceImpl implements ProcessService {
             throw new RepositoryException("Process Name, Branch Name and Version Number need to be supplied to update a process model!");
         }
 
-        ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, originalVersionNumber);
+        ProcessModelVersion pmVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName,
+                originalVersionNumber.toString());
         if (pmVersion != null) {
-            if (versionNumber.equals(pmVersion.getVersionNumber())) {
+            if (version.toString().equals(pmVersion.getVersionNumber())) {
                 LOGGER.error("CONFLICT! The process model " + processName + " - " + originalBranchName + " has been updated by another user." +
-                        "\nThis process model version number: " + versionNumber + "\nCurrent process model version number: " +
+                        "\nThis process model version number: " + version + "\nCurrent process model version number: " +
                         pmVersion.getVersionNumber());
             }
 
@@ -653,13 +655,13 @@ public class ProcessServiceImpl implements ProcessService {
             rootFragment = decomposerSrv.decompose(graph, pmVersion);
             if (rootFragment != null) {
                 propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
-                        pmVersion.getFragmentVersions(), versionNumber);
+                        pmVersion.getFragmentVersions(), version);
                 pmVersion.setNativeType(nativeType);
 
-                processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+                processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
                 if (processModelVersion == null) {
-                    createNewProcessModelVersion(pmVersion, rootFragment.getCurrentFragment(), rootFragment.getFragmentVersions(), versionNumber);
-                    processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, versionNumber);
+                    createNewProcessModelVersion(pmVersion, rootFragment.getCurrentFragment(), rootFragment.getFragmentVersions(), version);
+                    processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
                 }
                 processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
                 processModelVersion.setOriginalId(cpf.getCpt().getUri());
@@ -710,7 +712,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Update a list of native process models with this new meta data, */
-    private void updateNative(final Native natve, final String processName, final String username, final Double version)
+    private void updateNative(final Native natve, final String processName, final String username, final Version version)
             throws CanoniserException, JAXBException {
         if (natve != null) {
             String natType = natve.getNativeType().getNatType();
@@ -779,14 +781,14 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Double versionNumber,
+    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version,
             final Canonical proModGrap, final String netId) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
 
         processModel.setProcessBranch(branch);
         processModel.setOriginalId(netId);
-        processModel.setVersionNumber(versionNumber);
+        processModel.setVersionNumber(version.toString());
         processModel.setNumEdges(proModGrap.countEdges());
         processModel.setNumVertices(proModGrap.countVertices());
         processModel.setLockStatus(Constants.NO_LOCK);
@@ -948,7 +950,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     private void propagateToParentsWithLockRelease(FragmentVersion parent, FragmentVersion originalFragment, FragmentVersion updatedFragment,
-            Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException {
+            Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException {
         LOGGER.debug("Propagating - fragment: " + originalFragment + ", parent: " + parent);
         FragmentVersion newParent = createNewFragmentVersionByReplacingChild(parent, originalFragment, updatedFragment);
         composingFragments.add(newParent);
@@ -1012,7 +1014,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private void createNewProcessModelVersion(ProcessModelVersion pmv, FragmentVersion rootFragment,
-            Set<FragmentVersion> composingFragments, final Double newVersionNumber) throws RepositoryException {
+            Set<FragmentVersion> composingFragments, final Version newVersionNumber) throws RepositoryException {
         try {
             ProcessModelVersion pdo = addProcessModelVersion(pmv.getProcessBranch(), rootFragment, newVersionNumber, 0, 0);
             for (FragmentVersion fragVersion : composingFragments) {
@@ -1025,8 +1027,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /* Did the request ask for the model in the same format as it was originally added? */
-    private boolean isRequestForNativeFormat(Integer processId, String branch, Double version, String format) {
-        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branch, version);
+    private boolean isRequestForNativeFormat(Integer processId, String branch, Version version, String format) {
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branch, version.toString());
         return pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 

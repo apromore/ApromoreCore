@@ -34,7 +34,7 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Integer>
      */
     @Query("SELECT a FROM Annotation a JOIN a.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
             "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3 AND a.name = ?4")
-    Annotation getAnnotation(final Integer processId, final String branchName, final Double versionNumber, final String annName);
+    Annotation getAnnotation(final Integer processId, final String branchName, final String versionNumber, final String annName);
 
     /**
      * Find the native record by the branch it is associated with.
@@ -45,7 +45,7 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Integer>
      */
     @Query("SELECT a FROM Annotation a JOIN a.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
             "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3")
-    List<Annotation> findAnnotationByCanonical(final Integer processId, final String branchName, final Double versionNumber);
+    List<Annotation> findAnnotationByCanonical(final Integer processId, final String branchName, final String versionNumber);
 
 
 }

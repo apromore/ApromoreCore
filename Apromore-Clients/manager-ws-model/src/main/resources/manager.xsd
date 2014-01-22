@@ -257,7 +257,7 @@
             <xs:element name="DeploymentParameters" type="tns:PluginParameters" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="processName" type="xs:string"/>
-        <xs:attribute name="versionName" type="xs:double"/>
+        <xs:attribute name="versionName" type="xs:string"/>
         <xs:attribute name="branchName" type="xs:string"/>
         <xs:attribute name="nativeType" type="xs:string"/>
         <xs:attribute name="deploymentPluginName" type="xs:string" use="optional"/>
@@ -298,9 +298,9 @@
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="processId" type="xs:int"/>
         <xs:attribute name="processName" type="xs:string"/>
-        <xs:attribute name="currentVersionNumber" type="xs:double"/>
-        <xs:attribute name="maxVersionNumber" type="xs:double"/>
-        <xs:attribute name="originalVersionNumber" type="xs:double"/>
+        <xs:attribute name="currentVersionNumber" type="xs:string"/>
+        <xs:attribute name="maxVersionNumber" type="xs:string"/>
+        <xs:attribute name="originalVersionNumber" type="xs:string"/>
         <xs:attribute name="originalBranchName" type="xs:string"/>
         <xs:attribute name="newBranchName" type="xs:string"/>
         <xs:attribute name="createNewBranch" type="xs:boolean"/>
@@ -434,7 +434,7 @@
         <xs:attribute name="domain" type="xs:string"/>
         <xs:attribute name="ranking" type="xs:string"/>
         <xs:attribute name="makePublic" type="xs:boolean"/>
-        <xs:attribute name="last_version" type="xs:double"/>
+        <xs:attribute name="last_version" type="xs:string"/>
         <xs:attribute name="owner" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
@@ -450,7 +450,7 @@
         <xs:attribute name="last_update" type="xs:string"/>
         <xs:attribute name="creation_date" type="xs:string"/>
         <xs:attribute name="score" type="xs:double"/>
-        <xs:attribute name="versionNumber" type="xs:double"/>
+        <xs:attribute name="versionNumber" type="xs:string"/>
         <xs:attribute name="empty" type="xs:boolean"/>
     </xs:complexType>
 
@@ -476,7 +476,7 @@
     <xs:complexType name="ProcessVersion_idType">
         <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="branchName" type="xs:string"/>
-        <xs:attribute name="VersionNumber" type="xs:double"/>
+        <xs:attribute name="VersionNumber" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="ProcessVersionType">
@@ -647,8 +647,8 @@
         <xs:attribute name="domain" type="xs:string"/>
         <xs:attribute name="owner" type="xs:string"/>
         <xs:attribute name="ranking" type="xs:string"/>
-        <xs:attribute name="newVersion" type="xs:double"/>
-        <xs:attribute name="preVersion" type="xs:double"/>
+        <xs:attribute name="newVersion" type="xs:string"/>
+        <xs:attribute name="preVersion" type="xs:string"/>
         <xs:attribute name="makePublic" type="xs:boolean" />
     </xs:complexType>
 
@@ -841,7 +841,7 @@
         <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="ProcessName" type="xs:string"/>
         <xs:attribute name="BranchName" type="xs:string"/>
-        <xs:attribute name="versionNumber" type="xs:double"/>
+        <xs:attribute name="versionNumber" type="xs:string"/>
         <xs:attribute name="AnnotationName" type="xs:string"/>
         <xs:attribute name="withAnnotations" type="xs:boolean"/>
         <xs:attribute name="Owner" type="xs:string"/>
@@ -871,7 +871,7 @@
         <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="ProcessName" type="xs:string"/>
         <xs:attribute name="BranchName" type="xs:string"/>
-        <xs:attribute name="VersionNumber" type="xs:double"/>
+        <xs:attribute name="VersionNumber" type="xs:string"/>
     </xs:complexType>
 
     <!-- DataAccess Data Types -->

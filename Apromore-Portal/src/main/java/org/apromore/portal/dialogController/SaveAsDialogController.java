@@ -10,6 +10,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.dto.Version;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -41,7 +42,7 @@ public class SaveAsDialogController extends BaseController {
     private EditSessionType editSession;
     private boolean save;
     private String modelData;
-    private Double originalVersionNumber;
+    private String originalVersionNumber;
 
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
@@ -126,7 +127,7 @@ public class SaveAsDialogController extends BaseController {
         String created = this.version.getCreationDate();
         String branch = this.branchName.getText();
         boolean makePublic = this.process.isMakePublic();
-        Double versionNo = Double.valueOf(versionNumber.getText());
+        String versionNo = versionNumber.getText();
 
         if (branch == null || branch.equals("")) {
             branch = "MAIN";
@@ -161,9 +162,12 @@ public class SaveAsDialogController extends BaseController {
         boolean valid = true;
         String message = "";
         String title = "Missing Fields";
+
+        Version newVersion = new Version(versionNumber.getText());
+        Version curVersion = new Version(editSession.getCurrentVersionNumber());
         try {
             if (this.save) {
-                if (new Double(versionNumber.getText()) < this.editSession.getCurrentVersionNumber()) {
+                if (newVersion.compareTo(curVersion) < 0) {
                     valid = false;
                     message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
                     title = "Wrong Version Number";

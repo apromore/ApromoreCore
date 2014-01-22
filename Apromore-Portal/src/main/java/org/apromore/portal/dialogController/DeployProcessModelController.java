@@ -1,11 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
@@ -27,6 +21,12 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Deploy Process Window
@@ -70,16 +70,13 @@ public class DeployProcessModelController extends BaseController {
 
         readDeploymentPluginInfos(nativeTypeBox.getValue());
 
-        okButton.addEventListener("onClick", new EventListener() {
-
+        okButton.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 deployProcess(event);
             }
         });
-
-       cancelButton.addEventListener("onClick", new EventListener() {
-
+        cancelButton.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 closeWindow();
@@ -117,8 +114,7 @@ public class DeployProcessModelController extends BaseController {
                 canoniserCB.setSelectedIndex(0);
                 canoniserSelectionRow.appendChild(canoniserCB);
 
-                canoniserCB.addEventListener("onSelect", new EventListener() {
-
+                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
                     @Override
                     public void onEvent(final Event event) throws Exception {
                         if (event instanceof SelectEvent) {
@@ -168,7 +164,7 @@ public class DeployProcessModelController extends BaseController {
     }
 
     private void deployProcess(final Event event) throws InterruptedException {
-        Double lastVersion = selectedProcess.getKey().getLastVersion();
+        String lastVersion = selectedProcess.getKey().getLastVersion();
         String name = selectedProcess.getKey().getName();
         String branch = "MAIN";
         Clients.showBusy(deployProcessW, "Deploying process...");
