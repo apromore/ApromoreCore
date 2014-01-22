@@ -1029,7 +1029,7 @@ public class ProcessServiceImpl implements ProcessService {
     /* Did the request ask for the model in the same format as it was originally added? */
     private boolean isRequestForNativeFormat(Integer processId, String branch, Version version, String format) {
         ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branch, version.toString());
-        return pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
+        return pmv != null && pmv.getNativeType() != null && pmv.getNativeType().getNatType().equals(format);
     }
 
     /* Did the request ask for the Annotations for this model without the actual model? */
