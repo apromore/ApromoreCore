@@ -5,6 +5,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.HistoryEnum;
@@ -287,8 +288,8 @@ public class ManagerPortalEndpoint {
             String processName = payload.getProcessName();
             String domain = payload.getDomain();
             String username = payload.getOwner();
-            Double preVersion = payload.getPreVersion();
-            Double newVersion = payload.getNewVersion();
+            Version preVersion = new Version(payload.getPreVersion());
+            Version newVersion = new Version(payload.getNewVersion());
             String ranking = payload.getRanking();
             boolean isPublic = payload.isMakePublic();
 
@@ -424,7 +425,7 @@ public class ManagerPortalEndpoint {
         try {
             List<ProcessData> processVersions = new ArrayList<>();
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
-                processVersions.add(new ProcessData(p.getProcessId(), p.getVersionNumber()));   //new NameValuePair(p.getProcessName(), p.getBranchName(), p.getVersionNumber())
+                processVersions.add(new ProcessData(p.getProcessId(), new Version(p.getVersionNumber())));
             }
             procSrv.deleteProcessModel(processVersions);
 
@@ -451,13 +452,14 @@ public class ManagerPortalEndpoint {
             EditSessionType editType = payload.getEditSession();
             InputStream native_is = payload.getNative().getInputStream();
             NativeType natType = frmSrv.findNativeType(editType.getNativeType());
+            Version orignialVersion = new Version(editType.getOriginalVersionNumber());
+            Version currentVersion = new Version(editType.getCurrentVersionNumber());
 
             Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
             CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
-                    editType.getCurrentVersionNumber(), editType.getOriginalVersionNumber(),
-                    secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
+                    currentVersion, orignialVersion, secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
 
             result.setCode(0);
             result.setMessage("");
@@ -520,7 +522,7 @@ public class ManagerPortalEndpoint {
             Integer processId = payload.getProcessId();
             String name = payload.getProcessName();
             String branch = payload.getBranchName();
-            Double version = payload.getVersionNumber();
+            Version version = new Version(payload.getVersionNumber());
             String format = payload.getFormat();
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
@@ -555,7 +557,7 @@ public class ManagerPortalEndpoint {
             Integer folderId = editSession.getFolderId();
             String username = editSession.getUsername();
             String processName = editSession.getProcessName();
-            Double versionNumber = editSession.getCurrentVersionNumber();
+            Version version = new Version(editSession.getCurrentVersionNumber());
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
@@ -569,7 +571,7 @@ public class ManagerPortalEndpoint {
 
             Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
-            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, versionNumber, nativeType, canonisedProcess,
+            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, version, nativeType, canonisedProcess,
                     domain, "", creationDate, lastUpdate, publicModel);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
                     nativeType, domain, creationDate, lastUpdate, username, publicModel);

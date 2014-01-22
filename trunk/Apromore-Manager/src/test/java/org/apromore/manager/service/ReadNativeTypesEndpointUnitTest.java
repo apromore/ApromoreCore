@@ -98,7 +98,7 @@ public class ReadNativeTypesEndpointUnitTest {
         msg.setEmpty("");
         JAXBElement<ReadNativeTypesInputMsgType> request = new ObjectFactory().createReadNativeTypesRequest(msg);
 
-        List<NativeType> procSummary = new ArrayList<NativeType>();
+        List<NativeType> procSummary = new ArrayList<>();
         expect(frmSrv.findAllFormats()).andReturn(procSummary);
 
         replayAll();

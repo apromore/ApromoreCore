@@ -1,18 +1,20 @@
 package org.apromore.service.model;
 
+import org.apromore.dao.dataObject.Version;
+
 /**
  * @author Chathura Ekanayake
  */
 public class ProcessData {
 
     private Integer id;
-    private Double versionNumber;
+    private Version versionNumber;
 
 
     public ProcessData() {
     }
 
-    public ProcessData(Integer id, Double versionNumber) {
+    public ProcessData(Integer id, Version versionNumber) {
         this.id = id;
         this.versionNumber = versionNumber;
     }
@@ -25,11 +27,11 @@ public class ProcessData {
         this.id = id;
     }
 
-    public Double getVersionNumber() {
+    public Version getVersionNumber() {
         return versionNumber;
     }
 
-    public void setVersionNumber(Double versionNumber) {
+    public void setVersionNumber(Version versionNumber) {
         this.versionNumber = versionNumber;
     }
 }

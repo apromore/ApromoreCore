@@ -43,18 +43,16 @@ public class DeploymentServiceImplUnitTest {
     public void setup() {
         mockDeploymentPlugin = createMock(DeploymentPlugin.class);
 
-        deploymentSet = new HashSet<DeploymentPlugin>();
+        deploymentSet = new HashSet<>();
         deploymentSet.add(mockDeploymentPlugin);
 
-        //provider = new DeploymentPluginProvider()
-        //provider.setDeploymentPluginSet(deploymentSet);
         myService = new DeploymentServiceImpl(provider);
     }
 
     @Test
     public void testFindDeploymentPlugins() throws PluginNotFoundException {
-        HashSet<ParameterType<?>> mandatoryProperties = new HashSet<ParameterType<?>>();
-        ParameterType<String> prop = new PluginParameterType<String>("test", "test", String.class, "test", true);
+        HashSet<ParameterType<?>> mandatoryProperties = new HashSet<>();
+        ParameterType<String> prop = new PluginParameterType<>("test", "test", String.class, "test", true);
         mandatoryProperties.add(prop);
         expect(mockDeploymentPlugin.getNativeType()).andReturn("test");
         expect(mockDeploymentPlugin.getName()).andReturn("test");
@@ -74,8 +72,8 @@ public class DeploymentServiceImplUnitTest {
 
     @Test
     public void testDeployProcess() throws PluginException {
-        HashSet<RequestParameterType<?>> mandatoryProperties = new HashSet<RequestParameterType<?>>();
-        RequestParameterType<String> prop = new RequestParameterType<String>("test", "test");
+        HashSet<RequestParameterType<?>> mandatoryProperties = new HashSet<>();
+        RequestParameterType<String> prop = new RequestParameterType<>("test", "test");
         mandatoryProperties.add(prop);
 
         CanonicalProcessType cpf = new CanonicalProcessType();

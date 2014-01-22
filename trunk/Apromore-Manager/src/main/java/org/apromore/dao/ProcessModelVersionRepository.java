@@ -39,7 +39,7 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      */
     @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
             "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3")
-    ProcessModelVersion getProcessModelVersion(Integer processId, String branchName, Double versionNumber);
+    ProcessModelVersion getProcessModelVersion(Integer processId, String branchName, String versionNumber);
 
     /**
      * find the current process model version for the process and version details provided.
@@ -47,9 +47,10 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
      * @param versionNumber the version Number
      * @return the process model version.
      */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
+    @Query("SELECT pmv FROM ProcessModelVersion pmv JOIN pmv.processBranch pb " +
+            "JOIN pb.process p " +
             "WHERE p.id = ?1 AND pmv.versionNumber = ?2")
-    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, double versionNumber);
+    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String versionNumber);
 
     /**
      * find the current process model version for the process name and branch provided.
@@ -66,22 +67,6 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
             "                 (SELECT pb1.id FROM Process p1, ProcessBranch pb1 WHERE p1.id = pb1.process.id " +
             "                    AND p1.name = ?1 AND pb1.branchName = ?2))")
     ProcessModelVersion getCurrentProcessModelVersion(String processName, String branchName);
-
-    /**
-     * find the current process model version for the process id and branch provided.
-     * @param processId the process name
-     * @param branchName the branch name
-     * @return the process model version.
-     */
-    @Query("SELECT pmv FROM ProcessModelVersion pmv WHERE pmv.processBranch.id = " +
-            "   (SELECT pb.id FROM Process p, ProcessBranch pb WHERE p.id = pb.process.id " +
-            "       AND p.id = ?1 AND pb.branchName = ?2)" +
-            "       AND pmv.versionNumber = " +
-            "          (SELECT max(pmv1.versionNumber) from ProcessModelVersion pmv1 " +
-            "              WHERE pmv1.processBranch.id = " +
-            "                 (SELECT pb1.id FROM Process p1, ProcessBranch pb1 WHERE p1.id = pb1.process.id " +
-            "                    AND p1.id = ?1 AND pb1.branchName = ?2))")
-    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String branchName);
 
     /**
      * Returns all the ProcessModels for all version or the latest versions.

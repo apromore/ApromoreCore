@@ -145,8 +145,8 @@ public class EditOneProcessDataController extends BaseController {
         String processName = this.processNameT.getValue();
         String domain = this.domainCB.getValue();
         String username = this.ownerCB.getValue();
-        Double preVersion = this.preVersion.getVersionNumber();
-        Double newVersion = Double.valueOf(this.versionNumberT.getValue());
+        String preVersion = this.preVersion.getVersionNumber();
+        String newVersion = this.versionNumberT.getValue();
         boolean isPublic = this.makePublicCb.isChecked();
         String ranking = null;
         if (this.rankingRG.getSelectedItem() != null && "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel()) != 0) {
@@ -178,7 +178,7 @@ public class EditOneProcessDataController extends BaseController {
 
     protected void reset() {
         this.processNameT.setValue(this.process.getName());
-        this.versionNumberT.setValue(this.preVersion.getVersionNumber().toString());
+        this.versionNumberT.setValue(this.preVersion.getVersionNumber());
         this.domainCB.setValue(this.process.getDomain());
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
         this.makePublicCb.setChecked(this.process.isMakePublic());

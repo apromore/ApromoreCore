@@ -22,7 +22,7 @@ class ApromoreProcessModel implements ProcessModel {
 
 	private int    processId;
 	private String branch;
-	private double version;
+	private String version;
 
 	/**
          * Constructor.
@@ -33,7 +33,7 @@ class ApromoreProcessModel implements ProcessModel {
          * @param branch     the branch name of the process model
 	 * @param version    the version number of the process model
          */
-	ApromoreProcessModel(final int processId, String branch, double version) throws Exception {
+	ApromoreProcessModel(final int processId, String branch, String version) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
 		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
@@ -81,7 +81,7 @@ class ApromoreProcessModel implements ProcessModel {
 		bpmn.marshal(baos, true);
 
 		// Send to the server
-		double newVersion = version + 0.1d;
+        String newVersion = String.valueOf(Integer.valueOf(version) + 0.1d);
 		manager.updateProcess(
 			0,			// session code
 			null,			// user name

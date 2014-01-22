@@ -307,7 +307,7 @@ public class MenuController extends Menubar {
     @SuppressWarnings("unchecked")
     protected HashMap<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() throws ParseException {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
-        Double versionNumber;
+        String versionNumber;
         mainC.eraseMessage();
 
         if (mainC.getBaseListboxController() instanceof ProcessListboxController) {

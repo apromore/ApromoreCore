@@ -35,7 +35,7 @@ public class ProcessModelVersion implements Serializable {
 
     private Integer id;
     private String originalId;
-    private Double versionNumber;
+    private String versionNumber;
     private String createDate;
     private String lastUpdateDate;
     private Integer changePropagation;
@@ -90,11 +90,11 @@ public class ProcessModelVersion implements Serializable {
     }
 
     @Column(name = "version_number")
-    public Double getVersionNumber() {
+    public String getVersionNumber() {
         return this.versionNumber;
     }
 
-    public void setVersionNumber(final Double newVersionNumber) {
+    public void setVersionNumber(final String newVersionNumber) {
         this.versionNumber = newVersionNumber;
     }
 

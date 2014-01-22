@@ -1,18 +1,5 @@
 package org.apromore.manager.service;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isNull;
-import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
-import javax.xml.bind.JAXBElement;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.LockFailedException;
@@ -56,6 +43,19 @@ import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBElement;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 public class DeployProcessEndpointUnitTest {
 
@@ -106,17 +106,16 @@ public class DeployProcessEndpointUnitTest {
         request.getValue().setBranchName(branchName);
         String processName = "test";
         request.getValue().setProcessName(processName);
-        Double versionName = 1.0d;
+        String versionName = "1.0";
         request.getValue().setVersionName(versionName);
         String nativeType = "Test 2.1";
         request.getValue().setNativeType(nativeType);
         PluginParameters pluginProperties = new PluginParameters();
         request.getValue().setDeploymentParameters(pluginProperties);
 
-        Canonical cpf = new Canonical();
         expect(procSrv.getCurrentProcessModel(processName, branchName, false)).andReturn(new CanonicalProcessType());
-        //expect(convertor.convert(cpf)).andReturn(new CanonicalProcessType());
-        expect(deploymentService.deployProcess(eq(nativeType), anyObject(CanonicalProcessType.class), isNull(AnnotationsType.class), anyObject(HashSet.class))).andReturn(new ArrayList<PluginMessage>());
+        expect(deploymentService.deployProcess(eq(nativeType), anyObject(CanonicalProcessType.class), isNull(AnnotationsType.class),
+                anyObject(HashSet.class))).andReturn(new ArrayList<PluginMessage>());
 
         replayAll();
 
