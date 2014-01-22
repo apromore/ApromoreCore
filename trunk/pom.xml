@@ -429,6 +429,11 @@
                 <artifactId>annotation-epml</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-yawl</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
 
             <!-- Metric Calculations -->
             <dependency>

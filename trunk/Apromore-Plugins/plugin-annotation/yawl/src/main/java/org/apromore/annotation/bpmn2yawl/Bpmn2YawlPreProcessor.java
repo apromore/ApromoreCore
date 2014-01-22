@@ -1,8 +1,4 @@
-package org.apromore.annotation.epml2bpmn;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+package org.apromore.annotation.bpmn2yawl;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -24,23 +20,27 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessageImpl;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * EPML to BPMN Pre Processor.
- * Used to manipulate the ANF of the BPMN output when the input process langauge was EPML.
+ * BPMN to YAWL Pre Processor.
+ * Used to manipulate the BPMN of the YAWL output when the input process langauge was BPMN.
  * Used to change the size of the shapes as each language has different sizes elements.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Component("epml2bpmnPreAnnotationProcessor")
-public class Epml2BpmnPreProcessor extends DefaultAbstractAnnotationProcessor {
+@Component("bpmn2yawlPreAnnotationProcessor")
+public class Bpmn2YawlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
     private static final BigDecimal divisor = new BigDecimal(2.0);
-    private static final BigDecimal newEventHeight = new BigDecimal(30.0);
-    private static final BigDecimal newEventWidth = new BigDecimal(30.0);
-    private static final BigDecimal newTaskHeight = new BigDecimal(80.0);
-    private static final BigDecimal newTaskWidth = new BigDecimal(100.0);
-    private static final BigDecimal newGatewayHeight = new BigDecimal(40.0);
-    private static final BigDecimal newGatewayWidth = new BigDecimal(40.0);
+    private static final BigDecimal newEventHeight = new BigDecimal(32.0);
+    private static final BigDecimal newEventWidth = new BigDecimal(32.0);
+    private static final BigDecimal newTaskHeight = new BigDecimal(32.0);
+    private static final BigDecimal newTaskWidth = new BigDecimal(32.0);
+    private static final BigDecimal newGatewayHeight = new BigDecimal(32.0);
+    private static final BigDecimal newGatewayWidth = new BigDecimal(43.0);
 
     @Override
     @SuppressWarnings("unchecked")
