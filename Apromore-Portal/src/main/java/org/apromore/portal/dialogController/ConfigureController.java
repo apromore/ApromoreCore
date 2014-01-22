@@ -53,7 +53,6 @@ public class ConfigureController extends BaseController {
         this.mainC = mainC;
 
         this.configureW = (Window) Executions.createComponents("macros/configure.zul", null, null);
-        this.configureW.setTitle("Configure process model");
 
         Applet configureA = (Applet) this.configureW.getFellow("quaestio");
 
