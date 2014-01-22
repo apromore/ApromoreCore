@@ -103,7 +103,12 @@ public class PluginPropertiesHelper {
 
     private void addOptionalParameter(final PluginParameter prop) throws InterruptedException {
         Row propertyRow = new Row();
-        Label labelName = new Label(prop.getName() + " *");
+        Label labelName;
+        if (prop.isIsMandatory()) {
+            labelName = new Label(prop.getName() + " *");
+        } else {
+            labelName = new Label(prop.getName());
+        }
         if (prop.getDescription() != null) {
             labelName.setTooltip(prop.getDescription());
         }

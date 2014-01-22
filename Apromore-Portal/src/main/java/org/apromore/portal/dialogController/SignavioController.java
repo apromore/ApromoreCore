@@ -52,6 +52,8 @@ public class SignavioController extends BaseController {
 
         Map<String, String> param = new HashMap<>();
         try {
+            this.setTitle(editSession.getProcessName() + " (" + editSession.getNativeType() + ")");
+
             ExportFormatResultType exportResult =
                     getService().exportFormat(editSession.getProcessId(),
                             editSession.getProcessName(),
