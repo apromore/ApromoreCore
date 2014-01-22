@@ -193,7 +193,7 @@
         <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
     </path>
 
-    <!-- Read test.bpmn.xml and generate test.json from it -->
+    <!-- Read test.bpmn and generate test.json from it -->
     <target name="bpmn2json">
         <echo message="Executing from ${basedir}"/>
         <java classname="de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter" fork="yes" output="test.json" logError="yes">
@@ -250,6 +250,14 @@
             <jvmarg value="-enableassertions"/>
             <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
             <arg value="test2.json"/>
+        </java>
+    </target>
+
+    <!-- Read test-configured.bpmn and generate test3.bpmn from it -->
+    <target name="cbpmn2bpmn">
+        <java classname="com.processconfiguration.ConfigurationAlgorithm" classpathref="executable.path" fork="yes" input="test-configured.bpmn" output="test3.bpmn" logError="yes">
+            <jvmarg value="-enableassertions"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
         </java>
     </target>
 
