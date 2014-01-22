@@ -11,7 +11,7 @@
     <!-- enable classpath scanning -->
     <context:component-scan base-package="org.apromore.annotation.aml2bpmn"/>
     <context:component-scan base-package="org.apromore.annotation.cpf2bpmn"/>
-    <context:component-scan base-package="org.apromore.annotation.bpmn2yawl"/>
+    <context:component-scan base-package="org.apromore.annotation.epml2bpmn"/>
 
     <osgi:service ref="aml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
     <osgi:service ref="cpf2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>

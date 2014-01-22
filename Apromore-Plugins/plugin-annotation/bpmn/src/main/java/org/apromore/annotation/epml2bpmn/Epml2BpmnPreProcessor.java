@@ -1,4 +1,4 @@
-package org.apromore.annotation.bpmn2yawl;
+package org.apromore.annotation.epml2bpmn;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
