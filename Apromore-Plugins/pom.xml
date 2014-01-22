@@ -79,6 +79,7 @@
         <module>plugin-annotation/bpmn</module>
         <module>plugin-annotation/xpdl</module>
         <module>plugin-annotation/epml</module>
+        <module>plugin-annotation/yawl</module>
 
         <!-- Metrics Plugins -->
         <module>plugin-toolbox/plugin-metric/size</module>
@@ -174,6 +175,11 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>annotation-epml</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-yawl</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
 

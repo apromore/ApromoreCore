@@ -1,6 +1,6 @@
 <listbox id="processVersionsListbox" vflex="true" hflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process!">
     <listhead sizable="true">
-        <listheader hflex="min" label="Name" sort="auto(name)"/>
+        <listheader hflex="min" label="Branch" sort="auto(name)"/>
         <listheader hflex="min" label="Version" sort="auto(name)"/>
         <listheader hflex="min" label="Last Update" sort="auto(lastUpdate)"/>
         <listheader hflex="min" label="Annotation(s)"/>
