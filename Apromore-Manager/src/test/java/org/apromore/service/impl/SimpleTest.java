@@ -75,7 +75,5 @@ public class SimpleTest {
         IOUtils.invokeDOT("target/", "outputRpst.png", rpst.toDOT());
         IOUtils.invokeDOT("target/", "outputRF.png", rf.toDOT());
 
-        //ProcessModelVersion pst = pSrv.importProcess(username, name, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
-        //assertThat(pst, notNullValue());
     }
 }

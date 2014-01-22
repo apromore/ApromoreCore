@@ -35,14 +35,6 @@ public interface FragmentVersionDagRepository extends JpaRepository<FragmentVers
     List<FragmentVersionDag> getChildMappings(Integer fragmentId);
 
     /**
-     * Returns all the child mappings for the FragmentId.
-     * @param parentUri the fragment uri
-     * @return the list of child fragments
-     */
-    @Query("SELECT fvd FROM FragmentVersionDag fvd WHERE fvd.fragmentVersion.uri = ?1")
-    List<FragmentVersionDag> getChildMappingsByURI(String parentUri);
-
-    /**
      * Delete all the Child relationships for this Fragment Version.
      * @param fragmentVersion the fragment version we want to remove all the children
      */

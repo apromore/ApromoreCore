@@ -1,5 +1,6 @@
 package org.apromore.service.helper;
 
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
@@ -95,8 +96,9 @@ public class UIHelperImplIntgTest {
         String domain = "TEST";
         String created = "01/01/2011";
         String lastUpdate = "01/01/2011";
+        Version version = new Version(1, 0);
 
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, nativeType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, nativeType, cp, domain, "", created, lastUpdate, true);
 
         assertThat(pst, notNullValue());
     }

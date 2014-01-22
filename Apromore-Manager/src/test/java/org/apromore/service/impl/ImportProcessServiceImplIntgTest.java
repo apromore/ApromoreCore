@@ -1,15 +1,6 @@
 package org.apromore.service.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-
-import javax.activation.DataHandler;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.HashSet;
-
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
@@ -24,6 +15,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.activation.DataHandler;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import java.util.HashSet;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the UserService Implementation.
@@ -45,11 +44,9 @@ public class ImportProcessServiceImplIntgTest {
     private CanoniserService cSrv;
     @Inject
     private ProcessService pSrv;
-    @PersistenceContext
-    private EntityManager em;
 
     private String username = "james";
-    private String version = "1.0";
+    private Version version = new Version(1,0);
     private String domain = "Tests";
     private String created = "12/12/2011";
     private String lastUpdate = "12/12/2011";
@@ -60,11 +57,10 @@ public class ImportProcessServiceImplIntgTest {
     public void testImportProcessWithSingleEdgeInEPML() throws Exception {
         String natType = "EPML 2.0";
         String name = "Test EPML 1";
-        String cpfURI = "1";
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, natType, cp, domain, "", created, lastUpdate, true);
 
         assertThat(pst, notNullValue());
     }
@@ -74,11 +70,10 @@ public class ImportProcessServiceImplIntgTest {
     public void testImportProcessWithJoinAndSplitInEPML() throws Exception {
         String natType = "EPML 2.0";
         String name = "Test EPML 2";
-        String cpfURI = "2";
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, natType, cp, domain, "", created, lastUpdate, true);
 
         assertThat(pst, notNullValue());
     }
@@ -88,11 +83,10 @@ public class ImportProcessServiceImplIntgTest {
     public void testImportProcessWithObjectsResourcesInEPML() throws Exception {
         String natType = "EPML 2.0";
         String name = "Test XPDL 1";
-        String cpfURI = "3";
 
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/SAP_1_2.epml"), "text/xml"));
         CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, natType, cp, domain, "", created, lastUpdate, true);
 
         assertThat(pst, notNullValue());
     }

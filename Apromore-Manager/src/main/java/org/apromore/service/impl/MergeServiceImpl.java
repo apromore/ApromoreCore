@@ -1,29 +1,20 @@
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ToolboxData;
 import org.apromore.toolbox.similaritySearch.tools.MergeProcesses;
@@ -33,6 +24,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of the MergeService Contract.
@@ -48,8 +47,6 @@ public class MergeServiceImpl implements MergeService {
     private ProcessModelVersionRepository processModelVersionRepo;
     private CanoniserService canoniserSrv;
     private ProcessService processSrv;
-    private UserInterfaceHelper ui;
-
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -57,15 +54,13 @@ public class MergeServiceImpl implements MergeService {
      * @param processModelVersionRepository Annotation Repository.
      * @param canoniserService              Canoniser Service.
      * @param processService                Native Type repository.
-     * @param uiHelper                      the User Interface Helper.
      */
     @Inject
     public MergeServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
-            final ProcessService processService, final UserInterfaceHelper uiHelper) {
+            final ProcessService processService) {
         processModelVersionRepo = processModelVersionRepository;
         canoniserSrv = canoniserService;
         processSrv = processService;
-        ui = uiHelper;
     }
 
 
@@ -95,7 +90,8 @@ public class MergeServiceImpl implements MergeService {
             String created = sf.format(new Date());
 
             // This fails as we need to specify a native type and pass in the model.
-            pmv = processSrv.importProcess(username, folderId, processName, 1.0d, null, cp, domain, "", created, created, makePublic);
+            Version importVersion = new Version(1, 0);
+            pmv = processSrv.importProcess(username, folderId, processName, importVersion, null, cp, domain, "", created, created, makePublic);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException | JAXBException ie) {

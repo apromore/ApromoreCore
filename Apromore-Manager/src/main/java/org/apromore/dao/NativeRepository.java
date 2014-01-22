@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * Interface domain model Data access object Native.
  *
@@ -16,17 +14,6 @@ import java.util.List;
  */
 @Repository
 public interface NativeRepository extends JpaRepository<Native, Integer> {
-
-//    /**
-//     * Find the native record by the branch it is associated with.
-//     * @param processId   the processId
-//     * @param branchName the branch name we are trying to get the native format.
-//     * @param versionNumber the processModelVersion version
-//     * @return the native, a list of them for all the different canonical versions.
-//     */
-//    @Query("SELECT n FROM Native n JOIN n.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p " +
-//            "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3")
-//    List<Native> findNativeByCanonical(final Integer processId, String branchName, final Double versionNumber);
 
     /**
      * Find the Native record by the branch and native type.
@@ -38,6 +25,6 @@ public interface NativeRepository extends JpaRepository<Native, Integer> {
      */
     @Query("SELECT n FROM Native n JOIN n.processModelVersion pmv JOIN pmv.processBranch pb JOIN pb.process p JOIN n.nativeType nt " +
             "WHERE p.id = ?1 AND pb.branchName = ?2 AND pmv.versionNumber = ?3 AND nt.natType = ?4")
-    Native getNative(final Integer processId, final String branchName, final Double version, final String nativeType);
+    Native getNative(final Integer processId, final String branchName, final String version, final String nativeType);
 
 }

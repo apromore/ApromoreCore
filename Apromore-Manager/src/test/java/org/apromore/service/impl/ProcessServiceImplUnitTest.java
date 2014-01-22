@@ -14,6 +14,7 @@ import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessBranch;
@@ -76,48 +77,6 @@ public class ProcessServiceImplUnitTest {
         service = new ProcessServiceImpl(annDao, natDao, branchDao, proDao, fvDao, fvdDao, pmvDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
 
-
-//    @Test
-//    public void testExportFormatGetCanonical() throws Exception {
-//        Integer processId = 123;
-//        String version = "1.2";
-//        String name = "processName";
-//        String format = "Canonical";
-//
-//        List<ProcessModelVersion> pmvs = new ArrayList<ProcessModelVersion>(1);
-//        ProcessModelVersion pmv = new ProcessModelVersion();
-//        FragmentVersion rootFragmentVersion = new FragmentVersion();
-//        rootFragmentVersion.setId(1111);
-//        rootFragmentVersion.setUri("1234567890");
-//        ProcessBranch branch = new ProcessBranch();
-//        branch.setId(9999);
-//        pmv.setId(8888);
-//        pmv.setRootFragmentVersion(rootFragmentVersion);
-//        pmv.setProcessBranch(branch);
-//        pmv.setVersionNumber(9.1d);
-//        pmvs.add(pmv);
-//
-//        DataSource result = new ByteArrayDataSource("<xml/>", "text/xml");
-//        DecanonisedProcess dp = new DecanonisedProcess();
-//        dp.setNativeFormat(result.getInputStream());
-//        CanonicalProcessType cpt = new CanonicalProcessType();
-//        Canonical cpf = new Canonical();
-//        Set<RequestParameterType<?>> optionalProperties = new HashSet<RequestParameterType<?>>(0);
-//
-//        expect(pmvDao.getCurrentProcessModelVersion(name, version)).andReturn(pmvs);
-//        expect(composerSrv.compose(pmv.getRootFragmentVersion())).andReturn(cpf);
-//        expect(convertor.convert(cpf)).andReturn(cpt);
-//        expect(canSrv.CPFtoString(cpt)).andReturn("<xml/>");
-//
-//        replayAll();
-//
-//        ExportFormatResultType data = service.exportProcess(name, processId, version, format, "", false, optionalProperties);
-//
-//        verifyAll();
-//
-//        MatcherAssert.assertThat(data, Matchers.notNullValue());
-//    }
-
     @Test
     public void testExportFormatGetAnnotation() throws Exception {
         Integer processId = 123;
@@ -125,7 +84,7 @@ public class ProcessServiceImplUnitTest {
         String name = "processName";
         String format = "EPML 2.0";
         String subStr = "MN";
-        Double versionNumber = 1.0;
+        Version versionNumber = new Version(1,0);
 
         NativeType natType = new NativeType();
         natType.setNatType("EPML 2.0");
@@ -147,8 +106,8 @@ public class ProcessServiceImplUnitTest {
         pmv.setNativeType(natType);
         pmv.setProcessBranch(branch);
 
-        expect(pmvDao.getProcessModelVersion(processId, version, versionNumber)).andReturn(pmv);
-        expect(natDao.getNative(processId, version, versionNumber, format)).andReturn(nat);
+        expect(pmvDao.getProcessModelVersion(processId, version, versionNumber.toString())).andReturn(pmv);
+        expect(natDao.getNative(processId, version, versionNumber.toString(), format)).andReturn(nat);
 
         replay(pmvDao, natDao);
 

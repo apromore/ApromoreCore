@@ -16,15 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface ProcessBranchRepository extends JpaRepository<ProcessBranch, Integer> {
 
     /**
-     * Returns a single Process Branch based on the primary Key.
-     * @param processId the process Id
-     * @param branchName the branch name
-     * @return the found processBranch
-     */
-    @Query("SELECT b FROM ProcessBranch b WHERE b.process.id = ?1 AND b.branchName = ?2")
-    ProcessBranch getProcessBranchByProcessBranchName(Integer processId, String branchName);
-
-    /**
      * Returns the count of process branches that has used a particular process model version as it's source.
      * @param processModelVersion the process model version we are looking at
      * @return the count of branches, 0 or more

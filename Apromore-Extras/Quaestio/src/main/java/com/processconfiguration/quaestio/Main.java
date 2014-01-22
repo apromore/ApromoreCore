@@ -1974,9 +1974,9 @@ public class Main extends JPanel implements ListSelectionListener,
 					throw new IllegalArgumentException("-apromore_model without id/branch/version");
 				}
 				application.setLinkedProcessModel(
-					new ApromoreProcessModel(Integer.valueOf(args[i+1]).intValue(),  // process ID
+					new ApromoreProcessModel(Integer.valueOf(args[i+1]),  // process ID
 					                         args[i+2],                              // branch
-					                         Double.valueOf(args[i+3]))              // version number
+					                         args[i+3])              // version number
 				);
 				i += 3;
                                 break;
@@ -2041,7 +2041,7 @@ public class Main extends JPanel implements ListSelectionListener,
          *
          * @param processName  the name of a process on the Apromore server
          */
-	private void openApromoreProcess(final int processId, String branch, double version) throws Exception {
+	private void openApromoreProcess(final int processId, String branch, String version) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
 		ManagerService manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
@@ -2083,8 +2083,8 @@ public class Main extends JPanel implements ListSelectionListener,
 			null,		// process name
 			null,		// original branch name
 			null,		// new branch name
-			0d,		// version number
-			0d,		// original version number
+			"0.0",		// version number
+            "0.0",		// original version number
 			null,		// pre-version
 			new ByteArrayInputStream(baos.toByteArray())
 		);

@@ -759,14 +759,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#exportFormat(int, String, String, Double, String, String, Boolean, String, java.util.Set)
+     * @see ManagerService#exportFormat(int, String, String, String, String, String, Boolean, String, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ExportFormatResultType exportFormat(final int processId, final String processName, final String branchName, final Double versionNumber,
-                                               final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
-                                               final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+    public ExportFormatResultType exportFormat(final int processId, final String processName, final String branchName, final String versionNumber,
+            final String nativeType, final String annotationName, final Boolean withAnnotations, final String owner,
+            final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
@@ -793,14 +793,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#importProcess(String, java.lang.Integer, String, String, java.lang.Double, java.io.InputStream, String, String, String, String, boolean, java.util.Set)
+     * @see ManagerService#importProcess(String, java.lang.Integer, String, String, String, java.io.InputStream, String, String, String, String, boolean, java.util.Set)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ImportProcessResultType importProcess(final String username, final Integer folderId, final String nativeType, final String processName,
-                                                 final Double versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
-                                                 final String lastUpdate, final boolean makePublic, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
+            final String versionNumber, final InputStream xmlProcess, final String domain, final String documentation, final String created,
+            final String lastUpdate, final boolean makePublic, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -830,14 +830,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, Double, Double, String, java.io.InputStream)
+     * @see ManagerService#updateProcess(Integer, String, String, Integer, String, String, String, String, String, String, String, java.io.InputStream)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void updateProcess(final Integer sessionCode, final String username, final String nativeType, final Integer processId,
-                              final String domain, final String processName, final String originalBranchName, final String newBranchName, final Double versionNumber,
-                              final Double originalVersionNumber, final String preVersion, final InputStream native_is)
+            final String domain, final String processName, final String originalBranchName, final String newBranchName,
+            final String versionNumber, final String originalVersionNumber, final String preVersion, final InputStream native_is)
             throws Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
@@ -868,13 +868,13 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#editProcessData(Integer, String, String, String, Double, Double, String, boolean)
+     * @see ManagerService#editProcessData(Integer, String, String, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
-                                final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws Exception {
+            final String preVersion, final String newVersion, final String ranking, final boolean isPublic) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -1119,8 +1119,8 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
-    public PluginMessages deployProcess(final String branchName, final String processName, final Double versionName, final String nativeType,
-                                        final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
+    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType,
+            final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
         LOGGER.debug("Preparing deployProcess ...");
 
         DeployProcessInputMsgType msg = new DeployProcessInputMsgType();

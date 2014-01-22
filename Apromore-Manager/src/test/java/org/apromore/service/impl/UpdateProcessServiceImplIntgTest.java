@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
@@ -64,6 +65,8 @@ public class UpdateProcessServiceImplIntgTest {
         String natType = "EPML 2.0";
         String name = "AudioTest2";
         String branch = "MAIN";
+        Version initialVersion = new Version(1,0);
+        Version updatedVersion = new Version(1,1);
 
         NativeType nativeType = fSrv.findNativeType(natType);
 
@@ -74,18 +77,18 @@ public class UpdateProcessServiceImplIntgTest {
         String domain = "Tests";
         String lastUpdate = "12/12/2011";
         String created = "12/12/2011";
-        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, 1.0d, natType, cp, domain, "", created, lastUpdate, true);
+        ProcessModelVersion pst = pSrv.importProcess(username, 0, name, initialVersion, natType, cp, domain, "", created, lastUpdate, true);
         assertThat(pst, notNullValue());
 
         // Update process
         stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/Audio.epml"), "text/xml"));
         cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>(0));
         User user = sSrv.getUserByName("james");
-        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", 1.1d, pst.getVersionNumber(), user, Constants.LOCKED, nativeType, cp);
+        pSrv.updateProcess(pst.getId(), name, branch, "testBranch", updatedVersion, initialVersion, user, Constants.LOCKED, nativeType, cp);
 
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
-        deleteList.add(new ProcessData(pst.getId(), 1.1d));
+        deleteList.add(new ProcessData(pst.getId(), updatedVersion));
         pSrv.deleteProcessModel(deleteList);
 
         // Try and Find it again

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessBranch;
@@ -55,7 +56,7 @@ public interface ProcessService {
      * @throws ImportException if the import process failed for any reason.
      *
      */
-    ProcessModelVersion importProcess(String username, Integer folderId, String processName, Double versionNumber, String nativeType,
+    ProcessModelVersion importProcess(String username, Integer folderId, String processName, Version versionNumber, String nativeType,
             CanonisedProcess cpf, String domain, String documentation, String created, String lastUpdate, boolean publicModel)
             throws ImportException;
 
@@ -73,7 +74,7 @@ public interface ProcessService {
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
-    ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Double version,
+    ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
             final String nativeType, final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
             throws ExportFormatException;
 
@@ -89,7 +90,7 @@ public interface ProcessService {
      * @param isPublic is this model public.
      */
     void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
-        final Double preVersion, final Double newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException;
+        final Version preVersion, final Version newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException;
 
     /**
      * Add a new ProcessModelVersion record into the DB.
@@ -101,7 +102,7 @@ public interface ProcessService {
      * @return the found Process Model Version
      * @throws ExceptionDao if the DAO found an issue.
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Double versionNumber,
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, FragmentVersion rootFragmentVersion, Version versionNumber,
             int numVertices, int numEdges) throws ExceptionDao;
 
     /**
@@ -117,8 +118,8 @@ public interface ProcessService {
      * @param nativeType the native format.
      * @param cpf the process model graph.
      */
-    ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName, Double versionNumber,
-            Double originalVersionNumber, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
+    ProcessModelVersion updateProcess(Integer processId, String processName, String originalBranchName, String newBranchName,
+            Version versionNumber, Version originalVersionNumber, User user, String lockStatus, NativeType nativeType, CanonisedProcess cpf)
             throws ImportException, RepositoryException;
 
 
@@ -161,7 +162,7 @@ public interface ProcessService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Double version,
+    CanonicalProcessType getProcessModelVersion(Integer processId, String processName, String branchName, final Version version,
         boolean lock) throws LockFailedException;
 
 
@@ -177,7 +178,7 @@ public interface ProcessService {
      * @param newVersionNumber the new version number of the process model version.
      */
     void propagateChangesWithLockRelease(FragmentVersion originalFragment, FragmentVersion updatedFragment,
-        Set<FragmentVersion> composingFragments, Double newVersionNumber) throws RepositoryException;
+        Set<FragmentVersion> composingFragments, Version newVersionNumber) throws RepositoryException;
 
 
     /**

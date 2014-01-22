@@ -158,7 +158,7 @@ public class CreateProcessController extends BaseController {
                 String owner = UserSessionManager.getCurrentUser().getUsername();
                 String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
                 boolean makePublic = this.makePublicCb.isChecked();
-                Double versionNumber = 1.0d;
+                String versionNumber = "1.0";
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
                 String creationDate = dateFormat.format(new Date());
 

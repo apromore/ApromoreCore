@@ -18,6 +18,7 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.Version;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -634,14 +635,16 @@ public class MainController extends BaseController {
     }
 
     /* From a list of version summary types find the max version number. */
-    private Double findMaxVersion(ProcessSummaryType process) {
-        Double max = 0.0;
+    private String findMaxVersion(ProcessSummaryType process) {
+        Version versionNum;
+        Version max = new Version(0, 0);
         for (VersionSummaryType version : process.getVersionSummaries()) {
-            if (version.getVersionNumber() > max) {
-                max = version.getVersionNumber();
+            versionNum = new Version(version.getVersionNumber());
+            if (versionNum.compareTo(max) > 0) {
+                max = versionNum;
             }
         }
-        return max;
+        return max.toString();
     }
 
 
