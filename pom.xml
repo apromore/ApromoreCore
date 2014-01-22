@@ -467,6 +467,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
+                <artifactId>cmap-schema</artifactId>
+                <version>${apromore.schema.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
                 <artifactId>cpf-schema</artifactId>
                 <version>${apromore.schema.version}</version>
             </dependency>

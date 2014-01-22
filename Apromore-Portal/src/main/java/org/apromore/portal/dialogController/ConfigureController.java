@@ -20,6 +20,7 @@ import org.zkoss.zul.Window;
 
 // Local packages
 import com.processconfiguration.ConfigurationMapping;
+import com.processconfiguration.cmap.CMAP;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
@@ -110,7 +111,6 @@ public class ConfigureController extends BaseController {
                     System.err.println("Not attempting to find QML URL from Cmap");
                 } else {
                     try {
-                        /*
                         HttpURLConnection c = (HttpURLConnection) cmapURL.openConnection();
                         c.setRequestMethod("GET");
                         c.addRequestProperty("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");  // Base64 encoded "admin:password"
@@ -123,8 +123,6 @@ public class ConfigureController extends BaseController {
                                                       .unmarshal(new StreamSource(c.getInputStream()));
                         System.err.println("QML field from Cmap: " + cmap.getQml());
                         qmlURL = new URL(cmapURL, cmap.getQml());
-                        */
-                        qmlURL = new URL(cmapURL, "Airport.qml");  // gave up fighting with OSGI, just hardcode the QML filename for now
                         System.err.println("QML URL from Cmap: " + qmlURL);
                     } catch (Exception e) {
                         System.err.println("Unable to run QML URL from Cmap");
