@@ -1,11 +1,5 @@
 package org.apromore.annotation.bpmn2epml;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
@@ -26,6 +20,10 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessageImpl;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * BPMN to EPML Post Processor.
  * Used to manipulate the ANF of the BPMN output when the input process langauge was EPML.
@@ -37,12 +35,12 @@ import org.springframework.stereotype.Component;
 public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
     private static final BigDecimal divisor = new BigDecimal(2.0);
-    private static final BigDecimal newEventHeight = new BigDecimal(41.0);
-    private static final BigDecimal newEventWidth = new BigDecimal(81.0);
-    private static final BigDecimal newTaskHeight = new BigDecimal(41.0);
-    private static final BigDecimal newTaskWidth = new BigDecimal(81.0);
-    private static final BigDecimal newGatewayHeight = new BigDecimal(21.0);
-    private static final BigDecimal newGatewayWidth = new BigDecimal(21.0);
+    private static final BigDecimal newEventHeight = new BigDecimal(60.0);
+    private static final BigDecimal newEventWidth = new BigDecimal(100.0);
+    private static final BigDecimal newTaskHeight = new BigDecimal(60.0);
+    private static final BigDecimal newTaskWidth = new BigDecimal(100.0);
+    private static final BigDecimal newGatewayHeight = new BigDecimal(30.0);
+    private static final BigDecimal newGatewayWidth = new BigDecimal(30.0);
 
     @Override
     @SuppressWarnings("unchecked")
@@ -84,7 +82,7 @@ public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
                     } else if (node instanceof RoutingType) {
                         manipulateGateway(annotation, node, annotations);
                         if (node instanceof SplitType) {
-                            manipulateSplit(cpf, anf, annotation, node);
+                            //manipulateSplit(cpf, anf, annotation, node);
                         }
                     }
                 }

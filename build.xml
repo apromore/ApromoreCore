@@ -26,6 +26,7 @@
     <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/"/>
     <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
     <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
+    <property name="dir-metric" location="${basedir}/Apromore-Plugins/plugin-toolbox/plugin-metric/"/>
 
     <fileset id="pickupRepo" dir=".">
         <include name="Apromore-Assembly/**/*.plan"/>
@@ -204,6 +205,11 @@
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
             <fileset dir="${dir-deploy}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-metric}">
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>

@@ -1,21 +1,20 @@
 package org.apromore.annotation.xpdl2epml;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.math.BigDecimal;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
-import org.apromore.annotation.xpdl2epml.Xpdl2EpmlPreProcessor;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test that the Bpmn2Epml Pre Processor does what it's suppose to.
@@ -38,12 +37,12 @@ public class Xpdl2EpmlPreProcessorUnitTest {
         assertThat(anf.getAnnotation().size(), equalTo(3));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(60.0));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(80.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(50.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(70.5));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(160.0));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(180.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(150.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(170.5));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().size(),  equalTo(2));
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().get(0).getX().doubleValue(),  equalTo(100.5));

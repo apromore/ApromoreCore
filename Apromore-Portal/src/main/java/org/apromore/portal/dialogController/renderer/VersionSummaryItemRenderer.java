@@ -1,15 +1,32 @@
 package org.apromore.portal.dialogController.renderer;
 
+import org.apromore.model.AnnotationsType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
+import java.util.HashSet;
+import java.util.List;
+
 public class VersionSummaryItemRenderer implements ListitemRenderer {
+
+    private MainController mainController;
+
+
+    public VersionSummaryItemRenderer(MainController main) {
+        this.mainController = main;
+    }
 
     /*
      * (non-Javadoc)
@@ -17,18 +34,27 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
      */
     @Override
     public void render(Listitem listItem, Object obj, int index) {
-        renderVersionSummary(listItem, (VersionSummaryType) obj);
+        renderVersionSummary(listItem, (VersionDetailType) obj);
     }
 
-    private void renderVersionSummary(Listitem listItem, VersionSummaryType version) {
-        listItem.appendChild(renderVersionName(version));
-        listItem.appendChild(renderVersionVersion(version));
-        listItem.appendChild(renderVersionLastUpdate(version));
-        listItem.appendChild(renderVersionAnnotations(version));
+    private void renderVersionSummary(final Listitem listItem, final VersionDetailType data) {
+        listItem.appendChild(renderVersionName(data.getVersion()));
+        listItem.appendChild(renderVersionVersion(data.getVersion()));
+        listItem.appendChild(renderVersionLastUpdate(data.getVersion()));
+        listItem.appendChild(renderVersionAnnotations(data.getVersion()));
+
+        listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                AnnotationsType annotation = getLastestAnnotation(data.getVersion().getAnnotations());
+                mainController.editProcess(data.getProcess(), data.getVersion(), annotation.getNativeType(),
+                        annotation.getAnnotationName().get(0), "false", new HashSet<RequestParameterType<?>>());
+            }
+        });
     }
 
     private Component renderVersionVersion(VersionSummaryType version) {
-        return wrapIntoListCell(new Label(version.getVersionNumber().toString()));
+        return wrapIntoListCell(new Label(version.getVersionNumber()));
     }
 
     private Component renderVersionAnnotations(VersionSummaryType version) {
@@ -73,39 +99,10 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
         return lc;
     }
 
-//    /**
-//     * Display in hbox versionRanking, 5 stars according to ranking (0...5).
-//     * Pre-condition: ranking is a non empty string. TODO: allow users to rank a
-//     * process version directly by interacting with the stars displayed.
-//     *
-//     * @param ranking
-//     */
-//    private void displayRanking(Hbox rankingHb, String ranking) {
-//        String imgFull = Constants.STAR_FULL_ICON;
-//        String imgMid = Constants.STAR_MID_ICON;
-//        String imgBlank = Constants.STAR_BLK_ICON;
-//        Image star;
-//        Float rankingF = Float.parseFloat(ranking);
-//        int fullStars = rankingF.intValue();
-//        int i;
-//        for (i = 1; i <= fullStars; i++) {
-//            star = new Image();
-//            rankingHb.appendChild(star);
-//            star.setSrc(imgFull);
-//        }
-//        if (i <= 5) {
-//            if (Math.floor(rankingF) != rankingF) {
-//                star = new Image();
-//                star.setSrc(imgMid);
-//                rankingHb.appendChild(star);
-//                i = i + 1;
-//            }
-//            for (int j = i; j <= 5; j++) {
-//                star = new Image();
-//                star.setSrc(imgBlank);
-//                rankingHb.appendChild(star);
-//            }
-//        }
-//    }
-
+    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
+        if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
+            return annotations.get(annotations.size() - 1);
+        }
+        return null;
+    }
 }

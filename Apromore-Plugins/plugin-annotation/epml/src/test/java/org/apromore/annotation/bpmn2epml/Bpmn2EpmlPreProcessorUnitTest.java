@@ -37,12 +37,12 @@ public class Bpmn2EpmlPreProcessorUnitTest {
         assertThat(anf.getAnnotation().size(), equalTo(3));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(60.0));
-        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(80.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getX().doubleValue(),  equalTo(50.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(0)).getPosition().get(0).getY().doubleValue(),  equalTo(70.5));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().size(),  equalTo(1));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(160.0));
-        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(180.0));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getX().doubleValue(),  equalTo(150.5));
+        assertThat(((GraphicsType) anf.getAnnotation().get(1)).getPosition().get(0).getY().doubleValue(),  equalTo(170.5));
 
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().size(),  equalTo(2));
         assertThat(((GraphicsType) anf.getAnnotation().get(2)).getPosition().get(0).getX().doubleValue(),  equalTo(100.5));

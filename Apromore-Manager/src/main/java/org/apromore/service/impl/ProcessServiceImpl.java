@@ -657,20 +657,19 @@ public class ProcessServiceImpl implements ProcessService {
                 propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
                         pmVersion.getFragmentVersions(), version);
                 pmVersion.setNativeType(nativeType);
-
-                processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
-                if (processModelVersion == null) {
-                    createNewProcessModelVersion(pmVersion, rootFragment.getCurrentFragment(), rootFragment.getFragmentVersions(), version);
-                    processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
-                }
-                processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
-                processModelVersion.setOriginalId(cpf.getCpt().getUri());
-                processModelVersion.setNumEdges(graph.countEdges());
-                processModelVersion.setNumVertices(graph.countVertices());
-                processModelVersion.setLockStatus(Constants.NO_LOCK);
-                processModelVersion.setNativeType(nativeType);
             }
 
+            processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
+            if (processModelVersion.getRootFragmentVersion() == null) {
+                assert rootFragment != null;
+                processModelVersion.setRootFragmentVersion(rootFragment.getCurrentFragment());
+            }
+            processModelVersion.getProcessBranch().setCurrentProcessModelVersion(processModelVersion);
+            processModelVersion.setOriginalId(cpf.getCpt().getUri());
+            processModelVersion.setNumEdges(graph.countEdges());
+            processModelVersion.setNumVertices(graph.countVertices());
+            processModelVersion.setLockStatus(Constants.NO_LOCK);
+            processModelVersion.setNativeType(nativeType);
         } else {
             LOGGER.error("unable to find the Process Model to update.");
         }

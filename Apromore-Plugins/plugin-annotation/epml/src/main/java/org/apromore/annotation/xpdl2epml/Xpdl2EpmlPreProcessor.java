@@ -35,12 +35,12 @@ import org.springframework.stereotype.Component;
 public class Xpdl2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
     private static final BigDecimal divisor = new BigDecimal(2.0);
-    private static final BigDecimal newEventHeight = new BigDecimal(41.0);
-    private static final BigDecimal newEventWidth = new BigDecimal(81.0);
-    private static final BigDecimal newTaskHeight = new BigDecimal(41.0);
-    private static final BigDecimal newTaskWidth = new BigDecimal(81.0);
-    private static final BigDecimal newGatewayHeight = new BigDecimal(21.0);
-    private static final BigDecimal newGatewayWidth = new BigDecimal(21.0);
+    private static final BigDecimal newEventHeight = new BigDecimal(60.0);
+    private static final BigDecimal newEventWidth = new BigDecimal(100.0);
+    private static final BigDecimal newTaskHeight = new BigDecimal(60.0);
+    private static final BigDecimal newTaskWidth = new BigDecimal(100.0);
+    private static final BigDecimal newGatewayHeight = new BigDecimal(30.0);
+    private static final BigDecimal newGatewayWidth = new BigDecimal(30.0);
 
     @Override
     @SuppressWarnings("unchecked")
