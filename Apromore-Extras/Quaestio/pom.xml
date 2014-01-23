@@ -28,59 +28,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-assembly-plugin</artifactId>-->
-                <!--<inherited>true</inherited>-->
-                <!--<configuration>-->
-                    <!--<descriptorRefs>-->
-                        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
-                    <!--</descriptorRefs>-->
-                    <!--<archive>-->
-                        <!--<index>true</index>-->
-                        <!--<manifest>-->
-                            <!--<addClasspath>true</addClasspath>-->
-                            <!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
-                            <!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
-                            <!--<mainClass>com.processconfiguration.quaestio.Main</mainClass>-->
-                        <!--</manifest>-->
-                        <!--<manifestEntries>-->
-                            <!--<Permissions>all-permissions</Permissions>-->
-                            <!--<Trusted-Only>true</Trusted-Only>-->
-                        <!--</manifestEntries>-->
-                    <!--</archive>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>make-my-applet-jar</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>single</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jarsigner-plugin</artifactId>-->
-                <!--<version>1.2</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>sign</id>-->
-                        <!--<goals>-->
-                            <!--<goal>sign</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<keystore>src/main/keystore/signing-jar.keystore</keystore>-->
-                    <!--<alias>applet</alias>-->
-                    <!--<storepass>applet</storepass>-->
-                    <!--<keypass>applet</keypass>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -133,10 +80,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <keystore>src/main/keystore/signing-jar.keystore</keystore>
-                    <alias>applet</alias>
-                    <storepass>applet</storepass>
-                    <keypass>applet</keypass>
+                    <keystore>${dsig.keystore}</keystore>
+                    <alias>${dsig.alias}</alias>
+                    <storepass>${dsig.storepass}</storepass>
+                    <keypass>${dsig.keypass}</keypass>
                 </configuration>
             </plugin>
         </plugins>
