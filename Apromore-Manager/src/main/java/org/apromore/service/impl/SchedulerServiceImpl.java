@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,7 @@ import javax.inject.Inject;
  * @author Cameron James
  * @since 1.0
  */
+@Service
 public class SchedulerServiceImpl implements SchedulerService {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
@@ -73,4 +75,5 @@ public class SchedulerServiceImpl implements SchedulerService {
 
         LOGGER.info("GED Matrix Computation Completed!");
     }
+
 }

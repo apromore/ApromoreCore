@@ -1,6 +1,6 @@
-package org.apromore.dto;
+package org.apromore.portal.dto;
 
-import org.apromore.dao.dataObject.Version;
+import org.apromore.portal.dialogController.dto.Version;
 import org.junit.Assert;
 import org.junit.Test;
 
