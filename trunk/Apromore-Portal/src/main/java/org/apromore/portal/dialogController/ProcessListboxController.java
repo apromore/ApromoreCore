@@ -33,7 +33,12 @@ public class ProcessListboxController extends BaseListboxController {
                 if (getListBox().getSelectedItems().size() == 1) {
                     Object obj = getListModel().getSelection().iterator().next();
                     if (obj instanceof ProcessSummaryType) {
+                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                         getMainController().displayProcessVersions((ProcessSummaryType) obj);
+                    } if (obj instanceof FolderType) {
+                        List<Integer> folders = new ArrayList<>();
+                        folders.add(((FolderType) obj).getId());
+                        UserSessionManager.setSelectedFolderIds(folders);
                     }
                 } else if (getListBox().getSelectedItems().size() == 0) {
                     getMainController().clearProcessVersions();

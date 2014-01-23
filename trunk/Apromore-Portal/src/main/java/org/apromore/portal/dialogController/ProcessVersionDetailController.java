@@ -1,9 +1,11 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.renderer.VersionSummaryItemRenderer;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
@@ -20,7 +22,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
         super(mainController);
 
         listBox = ((Listbox) Executions.createComponents("macros/detail/processVersionsDetail.zul", getMainController(), null));
-        listBox.setItemRenderer(new VersionSummaryItemRenderer());
+        listBox.setItemRenderer(new VersionSummaryItemRenderer(mainController));
         listBox.setModel(new ListModelList());
 
         ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Process Details");
@@ -33,7 +35,11 @@ public class ProcessVersionDetailController extends BaseDetailController {
         getListModel().clearSelection();
         getListModel().clear();
         List<VersionSummaryType> versionSummaries = data.getVersionSummaries();
-        getListModel().addAll(versionSummaries);
+        List<VersionDetailType> details = new ArrayList<>();
+        for (VersionSummaryType version : data.getVersionSummaries()) {
+            details.add(new VersionDetailType(data, version));
+        }
+        getListModel().addAll(details);
         if (versionSummaries.size() > 0) {
             getListModel().addToSelection(versionSummaries.get(versionSummaries.size() - 1));
         }

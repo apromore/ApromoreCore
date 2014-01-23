@@ -6,19 +6,17 @@ import org.zkoss.zul.Window;
 
 public class ShortMessageController extends Window {
 
-    private Window shortmessage;
     private Label message;
     private Image image;
 
     public ShortMessageController(Window win) {
-        this.shortmessage = win;
-        this.message = (Label) this.shortmessage.getFellow("message");
-        this.image = (Image) this.shortmessage.getFellow("image");
+        this.message = (Label) win.getFellow("message");
+        this.image = (Image) win.getFellow("image");
     }
 
     public void displayMessage(String mes) {
         this.message.setValue(mes);
-        this.image.setVisible(true);
+        this.image.setVisible(false);
     }
 
     public void eraseMessage() {

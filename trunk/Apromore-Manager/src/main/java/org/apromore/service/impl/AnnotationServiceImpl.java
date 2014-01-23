@@ -101,7 +101,7 @@ public class AnnotationServiceImpl implements AnnotationService {
                 }
             }
         } catch (PluginNotFoundException | AnnotationProcessorException e) {
-            LOGGER.error("Plugin not found for '" + sourceType + "' and '" + targetType + "'.");
+            LOGGER.warn("Plugin not found for '" + sourceType + "' and '" + targetType + "'.");
         }
 
         if (result == null || result.getAnnotationsType() == null) {

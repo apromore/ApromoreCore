@@ -388,14 +388,18 @@ public class Version implements Comparable<Version> {
             return result;
         }
 
-        result = minor - other.minor;
-        if (result != 0) {
-            return result;
+        if (minor != null) {
+            result = minor - other.minor;
+            if (result != 0) {
+                return result;
+            }
         }
 
-        result = micro - other.micro;
-        if (result != 0) {
-            return result;
+        if (micro != null) {
+            result = micro - other.micro;
+            if (result != 0) {
+                return result;
+            }
         }
 
         return qualifier.compareTo(other.qualifier);

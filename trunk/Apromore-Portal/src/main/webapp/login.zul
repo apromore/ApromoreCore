@@ -138,18 +138,11 @@
                                         <h:h4 class="welcome">
                                             <h:small>Advanced Process Modelling Repository</h:small>
                                         </h:h4>
-                                        <h:p><small>Apromore is an open and extensible repository to store and disclose business process models of a variety
-                                            of types and languages, such as BPMN, eEPCs, BPEL, YAWL, Workflow nets. Beyond that, Apromore provides
-                                            state-of-the-art features to facilitate the management of large process model collections.</small>
-                                        </h:p>
-                                        <h:br class="margin-mm "/>
                                         <h:p>
-                                            <h:ol>
-                                                <h:li><small>Evaluation, concerned with establishing the adherence of process models to various quality notions. It will be possible to evaluate process models with respect to correctness criteria (syntactic quality), to usability issues such as understandability and maintainability (pragmatic quality), or assess them against well-know benchmarking frameworks.</small></h:li>
-                                                <h:li><small>Filtering, offering capabilities to determine similarities between processes. This is an essential task as part of the increased focus on services that can be re-used in multiple processes (e.g. fraud detection in multiple claims processes). It will be possible to check the conformance of a process model to given industry standards, represented in the form of reference models or business patterns for specific domains (e.g. approval), and to track extensions to a model over time and their relations with the originating reference models.</small></h:li>
-                                                <h:li><small>Clever Design, supporting the creation, modification and completion of process models, on the basis of existing content. For example, it will be possible to individualize a reference model to a specific context, such as a new organization or project; to create a new process model from the merge of a collection of similar models (e.g. as part of an integration project that results from a merger or an acquisition); or to complete a process model based on a collection of business patterns.</small></h:li>
-                                                <h:li><small>Presentation, providing support for improving the understanding of large process models and collections thereof. For example, it will be possible to highlight the most followed process flow depending on the user context, or zoom out from a process model while abstracting away irrelevant details. Moreover, advanced reports on process model statistics, such as number of users and density of decisions, will enrich the more traditional visual representation of process models.</small></h:li>
-                                            </h:ol>
+                                            <small>Apromore is an open-source repository to store and disclose business process models of a variety of types and languages, such as BPMN, eEPCs, AML and YAWL. Most importantly, Apromore aims to provide state-of-the-art features to facilitate the management of large process model collections, including features to evaluate, filter, design and present large collections of business process models. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.</small>
+                                        </h:p>
+                                        <h:p>
+                                            <h:img src="img/apromore_logo.png"/>
                                         </h:p>
                                         <!--<h:br class="margin-mm "/>-->
                                         <!--<h:p>-->
@@ -185,18 +178,11 @@
                                             <h:small>Advanced Process Modelling Repository</h:small>
                                         </h:h4>
                                         <h:hr class="margin-mm "/>
-                                        <h:p><small>Apromore is an open and extensible repository to store and disclose business process models of a variety
-                                            of types and languages, such as BPMN, eEPCs, BPEL, YAWL, Workflow nets. Beyond that, Apromore provides
-                                            state-of-the-art features to facilitate the management of large process model collections.</small>
-                                        </h:p>
-                                        <h:br class="margin-mm "/>
                                         <h:p>
-                                            <h:ol>
-                                                <h:li><small>Evaluation, concerned with establishing the adherence of process models to various quality notions. It will be possible to evaluate process models with respect to correctness criteria (syntactic quality), to usability issues such as understandability and maintainability (pragmatic quality), or assess them against well-know benchmarking frameworks.</small></h:li>
-                                                <h:li><small>Filtering, offering capabilities to determine similarities between processes. This is an essential task as part of the increased focus on services that can be re-used in multiple processes (e.g. fraud detection in multiple claims processes). It will be possible to check the conformance of a process model to given industry standards, represented in the form of reference models or business patterns for specific domains (e.g. approval), and to track extensions to a model over time and their relations with the originating reference models.</small></h:li>
-                                                <h:li><small>Clever Design, supporting the creation, modification and completion of process models, on the basis of existing content. For example, it will be possible to individualize a reference model to a specific context, such as a new organization or project; to create a new process model from the merge of a collection of similar models (e.g. as part of an integration project that results from a merger or an acquisition); or to complete a process model based on a collection of business patterns.</small></h:li>
-                                                <h:li><small>Presentation, providing support for improving the understanding of large process models and collections thereof. For example, it will be possible to highlight the most followed process flow depending on the user context, or zoom out from a process model while abstracting away irrelevant details. Moreover, advanced reports on process model statistics, such as number of users and density of decisions, will enrich the more traditional visual representation of process models.</small></h:li>
-                                            </h:ol>
+                                            <small>Apromore is an open-source repository to store and disclose business process models of a variety of types and languages, such as BPMN, eEPCs, AML and YAWL. Most importantly, Apromore aims to provide state-of-the-art features to facilitate the management of large process model collections, including features to evaluate, filter, design and present large collections of business process models. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.</small>
+                                        </h:p>
+                                        <h:p>
+                                            <h:img src="img/apromore_logo.png"/>
                                         </h:p>
                                     </h:div>
                                 </h:div>
@@ -278,7 +264,7 @@
 
             <h:footer class="footer">
                 <h:div class="web-description span12">
-                    <h:h5><![CDATA[ &copy; ]]> 2009-2013, The Apromore Initiative.</h:h5>
+                    <h:h5><![CDATA[ &copy; ]]> 2009-2014, The Apromore Initiative.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
                 </h:div>

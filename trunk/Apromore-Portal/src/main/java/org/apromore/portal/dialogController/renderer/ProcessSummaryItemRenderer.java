@@ -73,7 +73,6 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
                         "false", new HashSet<RequestParameterType<?>>());
             }
         });
-
     }
 
     /* Used to render folders in the list of process models. */
@@ -124,7 +123,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getLastVersion().toString()));
+        return wrapIntoListCell(new Label(process.getLastVersion()));
     }
 
     protected Listcell renderProcessDomain(final ProcessSummaryType process) {
@@ -160,7 +159,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         List<VersionSummaryType> processVersions = process.getVersionSummaries();
         // find the score of the latest version, if any: this a one which will  be displayed with the process
         int i = 0;
-        while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion().toString()) != 0) {
+        while (i < processVersions.size() && processVersions.get(i).getName() != null && processVersions.get(i).getName().compareTo(process.getLastVersion()) != 0) {
             i++;
         }
 
@@ -229,7 +228,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
     private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
         VersionSummaryType result = null;
         for (VersionSummaryType version : versionSummaries) {
-            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) < 0)) {
+            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
                 result = version;
             }
         }
