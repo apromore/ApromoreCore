@@ -1,4 +1,4 @@
-package org.apromore.annotation.bpmn2yawl;
+package org.apromore.annotation.epml2bpmn;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
