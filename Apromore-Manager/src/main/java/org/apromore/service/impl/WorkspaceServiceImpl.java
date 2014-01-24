@@ -287,6 +287,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         process.setProcessUsers(freshProcessUserList);
     }
 
+    /**
+     * @see org.apromore.service.WorkspaceService#updateUsersPublicModels(org.apromore.dao.model.User)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateUsersPublicModels(User user) {
+        List<Process> processes = processRepo.findAll();
+        for (Process process : processes) {
+            createProcessUser(process, user, true, false, false);
+            createFolderUser(process.getFolder(), user, true, false, false);
+        }
+    }
+
 
 
 

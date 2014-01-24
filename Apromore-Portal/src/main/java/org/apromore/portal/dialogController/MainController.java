@@ -348,7 +348,7 @@ public class MainController extends BaseController {
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInSignavio.zul?id=" + id;
-            instruction += "window.open('" + url + "','" + editSession.getProcessName() + " (" + editSession.getNativeType() + ")" + "');";
+            instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {

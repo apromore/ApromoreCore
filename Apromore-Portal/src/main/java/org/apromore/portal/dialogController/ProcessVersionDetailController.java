@@ -53,9 +53,9 @@ public class ProcessVersionDetailController extends BaseDetailController {
         getListModel().clear();
     }
 
-    public VersionSummaryType getSelectedVersion() {
+    public VersionDetailType getSelectedVersion() {
         if (getListModel().getSelection().size() == 1) {
-            return (VersionSummaryType) getListModel().getSelection().iterator().next();
+            return (VersionDetailType) getListModel().getSelection().iterator().next();
         } else {
             return null;
         }

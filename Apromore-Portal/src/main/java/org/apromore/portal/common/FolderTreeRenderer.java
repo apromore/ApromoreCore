@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apromore.model.FolderType;
 import org.apromore.portal.dialogController.MainController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -26,6 +28,7 @@ import org.zkoss.zul.Treerow;
  */
 public class FolderTreeRenderer implements TreeitemRenderer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FolderTreeRenderer.class.getName());
     private MainController mainC;
 
 
@@ -40,8 +43,8 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         Treerow dataRow = new Treerow();
         dataRow.setParent(treeItem);
         treeItem.setValue(ctn);
-        if (folder.getParentId() == null || folder.getParentId() == 0 ||
-                checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
+
+        if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
             treeItem.setOpen(true);
             if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
                 treeItem.setSelected(true);
@@ -56,6 +59,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         } else {
             hl.appendChild(new Image("/img/folder24.png"));
         }
+
         hl.appendChild(new Label(folder.getFolderName()));
         hl.setSclass("h-inline-block");
         Treecell treeCell = new Treecell();
@@ -97,17 +101,19 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                     if (html != null) {
                         List<FolderType> availableFolders = mainC.getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
-                        if (selectedFolder.getFolders().size() == 0)
+                        if (selectedFolder.getFolders().size() == 0) {
                             for (FolderType folderType : availableFolders) {
                                 selectedFolder.getFolders().add(folderType);
                             }
+                        }
 
                         UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
                         UserSessionManager.setCurrentFolder(selectedFolder);
 
                         mainC.reloadProcessSummaries();
                     }
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
+                    LOGGER.error("FolderTree Renderer failed to render an item", ex);
                 }
             }
         });

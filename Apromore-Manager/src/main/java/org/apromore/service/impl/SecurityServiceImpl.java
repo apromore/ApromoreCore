@@ -10,6 +10,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.SecurityService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.util.MailUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -42,6 +43,7 @@ public class SecurityServiceImpl implements SecurityService {
     private RoleRepository roleRepo;
     private PermissionRepository permissionRepo;
     private MembershipRepository membershipRepo;
+    private WorkspaceService workspaceService;
 
 
     /**
@@ -51,11 +53,13 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Inject
     public SecurityServiceImpl(final UserRepository userRepository, final RoleRepository roleRepository,
-            final PermissionRepository permissionRepository, final MembershipRepository membershipRepository) {
+            final PermissionRepository permissionRepository, final MembershipRepository membershipRepository,
+            final WorkspaceService wrkSrv) {
         userRepo = userRepository;
         roleRepo = roleRepository;
         permissionRepo = permissionRepository;
         membershipRepo = membershipRepository;
+        workspaceService = wrkSrv;
     }
 
 
@@ -151,6 +155,8 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         userRepo.save(user);
+
+        workspaceService.updateUsersPublicModels(user);
 
         user.setMembership(user.getMembership());
         user.getMembership().setUser(user);

@@ -1,15 +1,9 @@
 package org.apromore.portal.dialogController;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -23,6 +17,13 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class MenuController extends Menubar {
 
@@ -47,6 +48,7 @@ public class MenuController extends Menubar {
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
         Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
+        exactMatchingMI.setDisabled(true);
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
@@ -315,13 +317,13 @@ public class MenuController extends Menubar {
         if (mainC.getBaseListboxController() instanceof ProcessListboxController) {
             ArrayList<VersionSummaryType> versionList;
 
-            VersionSummaryType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
+            VersionDetailType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
             Set<Object> selectedProcesses = (Set<Object>) mainC.getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
                     versionList = new ArrayList<>();
                     if (selectedVersion != null) {
-                        versionList.add(selectedVersion);
+                        versionList.add(selectedVersion.getVersion());
                     } else {
                         for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
                             versionNumber = ((ProcessSummaryType) obj).getLastVersion();

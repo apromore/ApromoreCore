@@ -19,6 +19,7 @@ package org.apromore.service.impl;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
+import org.apromore.aop.Event;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -33,6 +34,7 @@ import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Object;
@@ -216,6 +218,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
+    @Event(message = HistoryEnum.IMPORT_PROCESS_MODEL)
     public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName,
             final Version version, final String natType, final CanonisedProcess cpf, final String domain,
             final String documentation, final String created, final String lastUpdate, final boolean publicModel) throws ImportException {
@@ -259,6 +262,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
+    @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
     public ProcessModelVersion updateProcess(final Integer processId, final String processName, final String originalBranchName,
             final String newBranchName, final Version versionNumber, final Version originalVersionNumber, final User user, final String lockStatus,
             final NativeType nativeType, final CanonisedProcess cpf) throws ImportException, RepositoryException {
