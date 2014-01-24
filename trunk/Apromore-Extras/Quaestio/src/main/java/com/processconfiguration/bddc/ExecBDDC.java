@@ -46,7 +46,7 @@ public class ExecBDDC extends JFrame implements BDDService {
 			else if (osName.startsWith("Solaris"))
 				osName = "./bddc/bddcS";
 			else if (osName.startsWith("Mac OS X"))
-				osName = "/Users/raboczi/Project/apromore/Extras/Quaestio/bddc/bddcM";
+				osName = "./bddc/bddcM";
 			else {
 				System.err
 						.println("Operating System not supported or os.name protected. Assume Windows architecture.");
