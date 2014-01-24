@@ -198,6 +198,8 @@ public class MenuController extends Menubar {
         if (selectedProcessVersions.size() == 1) {
             try {
                 new ConfigureController(this.mainC, selectedProcessVersions);
+            } catch (ConfigureException e) {
+                Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
             } catch (RuntimeException e) {
                 Messagebox.show("Unable to configure model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
             }
