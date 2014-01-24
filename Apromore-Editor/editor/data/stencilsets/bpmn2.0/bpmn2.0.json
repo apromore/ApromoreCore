@@ -6594,7 +6594,7 @@
 							"title_de":"Bedingter Fluss",
 							"value":"Expression",
 							"icon" : "connector/list/type.expression.png",
-							"refToView":""
+							"refToView":"conditional"
 						},
 						{
 							"id":"default",
