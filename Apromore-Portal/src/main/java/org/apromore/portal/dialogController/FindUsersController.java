@@ -92,16 +92,16 @@ public class FindUsersController extends BaseController {
                     if (processedItems.size() > 0) {
                         Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
                         lstUsers.getItems().clear();
-                        for (Listitem processedItem : processedItems) {
-                            lstUsers.getSelectedItems().remove(processedItem);
-                        }
+//                        for (Listitem processedItem : processedItems) {
+//                            lstUsers.getSelectedItems().remove(processedItem);
+//                        }
                     }
                 } else {
-                    Messagebox.show("Please select at least one record to save.", "Attention", Messagebox.OK,
-                            Messagebox.ERROR);
+                    Messagebox.show("Please select at least one record to save.", "Attention", Messagebox.OK, Messagebox.ERROR);
                 }
             }
         });
+
         btnSearch.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 if (txtSearch.getText().isEmpty()) {

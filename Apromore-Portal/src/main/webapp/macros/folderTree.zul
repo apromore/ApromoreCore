@@ -1,8 +1,7 @@
 <panel height="100%" id="pnlFolderTree">
     <panelchildren>
         <style>
-            .h-inline-block
-            {
+            .h-inline-block {
                 display: inline-block;
                 _display: inline;
             }

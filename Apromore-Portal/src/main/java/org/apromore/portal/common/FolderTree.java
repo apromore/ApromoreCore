@@ -45,8 +45,7 @@ public class FolderTree {
         if (loadAll) {
             ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId);
             for (ProcessSummaryType process : processes.getProcessSummary()) {
-                FolderTreeNode childNode = new FolderTreeNode(process, null, true, FolderTreeNodeTypes.Process);
-                node.add(childNode);
+                node.add(new FolderTreeNode(process, null, true, FolderTreeNodeTypes.Process));
             }
         }
 
