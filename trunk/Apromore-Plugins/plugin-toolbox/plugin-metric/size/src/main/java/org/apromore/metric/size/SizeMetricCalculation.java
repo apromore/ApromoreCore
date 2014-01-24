@@ -18,6 +18,6 @@ public class SizeMetricCalculation extends DefaultAbstractMetricProcessor {
     public MetricPluginResult calculate(Canonical model, PluginRequest request) {
         MetricPluginResult result = new MetricPluginResult();
         result.setMetricResults((double) model.getNodes().size());
-        return null;
+        return result;
     }
 }

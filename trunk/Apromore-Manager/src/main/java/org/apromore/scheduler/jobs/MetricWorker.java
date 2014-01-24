@@ -1,7 +1,9 @@
 package org.apromore.scheduler.jobs;
 
+import org.apromore.aop.Event;
 import org.apromore.dao.MetricRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.Metric;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
@@ -72,13 +74,14 @@ public class MetricWorker implements Worker {
     }
 
     /* Runs the Calculations for a ProcessModelVersion. */
+    @Event(message = HistoryEnum.METRIC_COMPUTATION)
     private Iterable<Metric> runCalculations(Collection<MetricPlugin> metricPlugins, ProcessModelVersion pmv) throws ExceptionDao {
         List<Metric> metrics = new ArrayList<>();
 
         Metric metric;
         MetricPluginResult result;
         for (MetricPlugin plugin : metricPlugins) {
-            if (metricRepo.findByNameAndProcessModelVersion(plugin.getName(), pmv) != null) {
+            if (metricRepo.findByNameAndProcessModelVersion(plugin.getName(), pmv) == null) {
                 result = plugin.calculate(composerSrv.compose(pmv.getRootFragmentVersion()), null);
 
                 if (result != null) {

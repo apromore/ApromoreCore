@@ -17,16 +17,16 @@ public class SecuritySetupController extends BaseController {
     private MainController mainController;
     private FindUsersController findUsersController;
     private PermissionsController permissionsController;
+    private FolderTreeController folderTreeController;
 
     public SecuritySetupController(MainController mainController) throws DialogException {
-
         this.mainController = mainController;
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, null);
 
-            FolderTreeController folderTreeController = new FolderTreeController(this, win);
             this.permissionsController = new PermissionsController(this, win);
             this.findUsersController = new FindUsersController(this, win);
+            this.folderTreeController = new FolderTreeController(this, win);
 
             win.doModal();
 
@@ -39,7 +39,6 @@ public class SecuritySetupController extends BaseController {
         } catch (Exception e) {
             throw new DialogException("Error in controller: " + e.getMessage());
         }
-
     }
 
     public PermissionsController getPermissionsController(){
@@ -48,6 +47,10 @@ public class SecuritySetupController extends BaseController {
 
     public FindUsersController getFindUsersController(){
         return this.findUsersController;
+    }
+
+    public FolderTreeController getFolderTreeController(){
+        return this.folderTreeController;
     }
 
     public MainController getMainController(){
