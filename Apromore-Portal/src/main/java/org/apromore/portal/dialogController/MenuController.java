@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -317,13 +316,13 @@ public class MenuController extends Menubar {
         if (mainC.getBaseListboxController() instanceof ProcessListboxController) {
             ArrayList<VersionSummaryType> versionList;
 
-            VersionDetailType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
+            VersionSummaryType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
             Set<Object> selectedProcesses = (Set<Object>) mainC.getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
                     versionList = new ArrayList<>();
                     if (selectedVersion != null) {
-                        versionList.add(selectedVersion.getVersion());
+                        versionList.add(selectedVersion);
                     } else {
                         for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
                             versionNumber = ((ProcessSummaryType) obj).getLastVersion();

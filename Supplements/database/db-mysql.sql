@@ -74,7 +74,7 @@ CREATE TABLE `history_event` (
   `occurDate` datetime DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `un_history` (`type` , `occurDate`),
+  UNIQUE KEY `un_history` (`status`, `type` , `occurDate`),
   CONSTRAINT `fk_history_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
