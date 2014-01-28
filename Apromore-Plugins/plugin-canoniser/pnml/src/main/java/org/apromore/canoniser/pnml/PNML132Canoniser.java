@@ -64,12 +64,10 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
 			return newPluginResult();
 
-		} catch (JAXBException e) {
-			throw new CanoniserException(e);
-		} catch (SAXException e) {
+		} catch (JAXBException | SAXException e) {
 			throw new CanoniserException(e);
 		}
-	}
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -116,7 +114,6 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
     @Override
     public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
             final Date processCreated, final PluginRequest request) {
-        //TODO generate initial empty PNML
         try {
             marshalNativeFormat(new PnmlType(), nativeOutput);
         } catch (JAXBException e) {
@@ -130,7 +127,6 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
      */
     @Override
     public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
-        //TODO read metadata from PNML
         return new CanoniserMetadataResult();
     }
 

@@ -30,9 +30,8 @@ import org.apromore.pnml.PnmlType;
 
 public class PNML2Canonical {
 
-    private long ids = System.currentTimeMillis(); // Change to 6121980 when
-    // testing
-    //private long ids = 6121980;
+    private long ids = System.currentTimeMillis();
+
     DataHandler data = new DataHandler();
     TranslatePetriNet tpn = new TranslatePetriNet();
     RemoveDuplicateXORS removeDuplicatexors = new RemoveDuplicateXORS();
@@ -77,11 +76,6 @@ public class PNML2Canonical {
 
     void main(PnmlType pnml) throws CanoniserException {
         data.setCanonicalProcess(new CanonicalProcessType());
-        //TODO FM extension
-//        TypeAttribute att = new TypeAttribute();
-//        att.setTypeRef("IntialFormat");
-//        att.setValue("PNML");
-//        data.getCanonicalProcess().getAttribute().add(att);
 
         if (pnml.getNet() != null && pnml.getNet().size() > 0) {
             for (int i = 0; i < pnml.getNet().size(); i++) {
@@ -94,8 +88,6 @@ public class PNML2Canonical {
                     data.put_id_map(pnet.getId(), String.valueOf(ids));
                     data.setRootId(ids);
                     data.getNet().setId(String.valueOf(ids++));
-
-                    // data.getCanonicalProcess().setVersion(pnet.getType());
                     data.getCanonicalProcess().getNet().add(data.getNet());
                 }
             }

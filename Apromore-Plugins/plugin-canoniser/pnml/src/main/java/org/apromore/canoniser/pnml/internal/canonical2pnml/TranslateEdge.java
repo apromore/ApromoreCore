@@ -8,13 +8,9 @@ import org.apromore.pnml.ArcNameType;
 import org.apromore.pnml.ArcType;
 
 public class TranslateEdge {
+
     DataHandler data;
-    long ids;
-    org.apromore.pnml.NetType pnet;
-    String newarcid = null;
-    String updatedarcid = null;
-    String updateph = null;
-    ArcType newarc;
+    private long ids;
 
     public void setValues(DataHandler data, long ids) {
         this.data = data;
@@ -24,21 +20,21 @@ public class TranslateEdge {
     public void translateArc(EdgeType edge) {
         ArcType arc = new ArcType();
 
-        NodeType source = new NodeType();
         org.apromore.pnml.NodeType arcsource = new org.apromore.pnml.NodeType();
-        NodeType target = new NodeType();
         org.apromore.pnml.NodeType arctarget = new org.apromore.pnml.NodeType();
-        source = data.get_nodeRefMap_value(edge.getSourceId());
-        target = data.get_nodeRefMap_value(edge.getTargetId());
+
+        NodeType source = data.get_nodeRefMap_value(edge.getSourceId());
+        NodeType target = data.get_nodeRefMap_value(edge.getTargetId());
+
         data.put_id_map(edge.getId(), String.valueOf(ids));
         arc.setId(String.valueOf(ids++));
+
         if (data.get_tempmap().containsKey(source.getName())) {
-            arcsource = (org.apromore.pnml.NodeType) data
-                    .get_tempmap_value(source.getName());
+            arcsource = (org.apromore.pnml.NodeType) data.get_tempmap_value(source.getName());
         }
+
         if (data.get_tempmap().containsKey(target.getName())) {
-            arctarget = (org.apromore.pnml.NodeType) data
-                    .get_tempmap_value(target.getName());
+            arctarget = (org.apromore.pnml.NodeType) data.get_tempmap_value(target.getName());
         }
 
         arc.setSource(arcsource);

@@ -17,7 +17,6 @@ import org.apromore.cpf.XORSplitType;
 public class TranslateNet {
     DataHandler data;
     long ids;
-    TranslateAnnotations ta = new TranslateAnnotations();
     TranslateNode tn = new TranslateNode();
     TranslateEdge te = new TranslateEdge();
     TranslateOperators to = new TranslateOperators();
@@ -25,63 +24,53 @@ public class TranslateNet {
     TranslateOriginalIDS moids = new TranslateOriginalIDS();
     AnnotationsType annotations;
 
-    public void setValues(DataHandler data, long ids,
-                          AnnotationsType annotations) {
+    public void setValues(DataHandler data, long ids, AnnotationsType annotations) {
         this.data = data;
         this.ids = ids;
         this.annotations = annotations;
     }
 
     public void translateNet(NetType net) {
-
         for (NodeType node : net.getNode()) {
             if (node instanceof WorkType) {
-                if (node instanceof TaskType || node instanceof EventType)
-
-                {
-
+                if (node instanceof TaskType || node instanceof EventType)  {
                     tn.setValues(data, ids);
                     if (node instanceof TaskType) {
-
                         tn.translateTask((TaskType) node);
-
-                    } else if (node instanceof EventType) {
-
+                    } else {
                         tn.translateEvent(node);
                     }
-
                     ids = tn.getIds();
                 }
+
             } else if (node instanceof RoutingType) {
                 if (node instanceof StateType) {
                     tn.setValues(data, ids);
                     tn.translateState(node);
-
                     ids = tn.getIds();
-                } else if (node instanceof ANDJoinType
-                        || node instanceof ANDSplitType
-                        || node instanceof XORJoinType
-                        || node instanceof XORSplitType) {
 
+                } else if (node instanceof ANDJoinType || node instanceof ANDSplitType || node instanceof XORJoinType
+                        || node instanceof XORSplitType) {
                     to.setValues(data, ids);
                     to.translate(node);
                     ids = to.getIds();
                 }
             }
-            data.put_nodeRefMap(node.getId(), node);
 
+            data.put_nodeRefMap(node.getId(), node);
         }
 
         for (EdgeType edge : net.getEdge()) {
-            if (edge instanceof EdgeType) {
-
+            if (edge != null) {
                 te.setValues(data, ids);
                 te.translateArc(edge);
-
                 ids = te.getIds();
             }
+
+            assert edge != null;
             data.put_edgeRefMap(edge.getId(), edge);
         }
+
         tt.setValues(data, ids);
         tt.translate(annotations);
         ids = tt.getIds();

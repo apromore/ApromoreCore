@@ -8,6 +8,7 @@ import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 
 public class TranslateTransition {
+
     DataHandler data;
     long ids;
 
@@ -22,7 +23,8 @@ public class TranslateTransition {
         tt.setValues(data, ids);
         boolean translated = tt.translateTrigger(tran);
         ids = tt.getIds();
-        if (translated == false) {
+
+        if (!translated) {
             TaskType task = new TaskType();
 
             data.put_objectmap(String.valueOf(ids), task);

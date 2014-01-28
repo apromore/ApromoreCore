@@ -6,6 +6,7 @@ import org.apromore.cpf.StateType;
 import org.apromore.pnml.PlaceType;
 
 public class TranslatePlace {
+
     DataHandler data;
     long ids;
 
@@ -23,7 +24,6 @@ public class TranslatePlace {
         }
         node.setOriginalID(place.getId());
         data.getNet().getNode().add(node);
-
     }
 
     public void translateEvent(PlaceType place) {
@@ -39,7 +39,6 @@ public class TranslatePlace {
     }
 
     public void translateInput(PlaceType place) {
-
         EventType node = new EventType();
         StateType state = new StateType();
         data.setInputEdge(new EdgeType());
@@ -56,7 +55,6 @@ public class TranslatePlace {
         data.getInputEdge().setTargetId(state.getId());
         data.getNet().getNode().add(node);
         data.getNet().getNode().add(state);
-
     }
 
     public void translateOutput(PlaceType place) {

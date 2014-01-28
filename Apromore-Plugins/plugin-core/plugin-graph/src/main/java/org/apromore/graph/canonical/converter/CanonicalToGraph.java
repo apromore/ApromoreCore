@@ -429,6 +429,7 @@ public class CanonicalToGraph {
         for (EdgeType edge : edgeTypes) {
             source = nodes.get(edge.getSourceId());
             target = nodes.get(edge.getTargetId());
+
             if (source != null && target != null) {
                 graph.addEdge(edge.getId(), source, target);
 
