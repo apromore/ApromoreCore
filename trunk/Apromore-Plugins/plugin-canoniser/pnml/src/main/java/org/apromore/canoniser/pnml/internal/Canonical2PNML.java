@@ -25,11 +25,11 @@ import org.apromore.canoniser.pnml.internal.canonical2pnml.UpdateSpecialOperator
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionType;
 
 public class Canonical2PNML {
+
     DataHandler data = new DataHandler();
     RemoveConnectorTasks removeConnectorTasks = new RemoveConnectorTasks();
     RemoveEvents removeEvents = new RemoveEvents();
@@ -61,12 +61,6 @@ public class Canonical2PNML {
     }
 
     public Canonical2PNML(CanonicalProcessType cproc, AnnotationsType annotations, String filename) {
-        //TODO FM extension
-//        for (Object obj : cproc.getAttribute()) {
-//            if (obj instanceof TypeAttribute) {
-//                data.setInitialType(((TypeAttribute) obj).getValue());
-//            }
-//        }
         for (ResourceTypeType res : cproc.getResourceType()) {
             data.put_resourcemap(String.valueOf(res.getId()), res);
         }
@@ -105,7 +99,7 @@ public class Canonical2PNML {
                 TransitionType obj = data.getSubnet().get(0);
                 TranslateSubnet ts = new TranslateSubnet();
 
-                ts.setValue(data, ((TransitionType) obj).getId());
+                ts.setValue(data, obj.getId());
                 data.getSubnet().remove(0);
                 ts.addSubnet();
                 data = ts.getdata();
@@ -120,25 +114,21 @@ public class Canonical2PNML {
      *
      * @since 1.0
      */
-    private void main(CanonicalProcessType cproc, AnnotationsType annotations,
-                      DataHandler data1) {
-
+    private void main(CanonicalProcessType cproc, AnnotationsType annotations, DataHandler data1) {
         for (NetType net : cproc.getNet()) {
-
             tn.setValues(data, ids, annotations);
             tn.translateNet(net);
             ids = tn.getIds();
         }
+
         TranslateHumanResources thr = new TranslateHumanResources();
         thr.setValues(data, ids);
         thr.translate(cproc);
         ids = thr.getIds();
 
         data.getNet().setId("noID");
-        data.getNet().setType(
-                "http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
+        data.getNet().setType("http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
         data.getPnml().getNet().add(data.getNet());
-
     }
 
 }

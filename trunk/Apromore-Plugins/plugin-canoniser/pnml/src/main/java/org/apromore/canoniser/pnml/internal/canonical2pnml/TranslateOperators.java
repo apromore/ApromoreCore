@@ -22,26 +22,22 @@ public class TranslateOperators {
     }
 
     public void translate(NodeType node) {
-        if (data.get_specialoperators().containsKey(
-                "andsplitjoin-" + node.getName())) {
+        if (data.get_specialoperators().containsKey("andsplitjoin-" + node.getName())) {
             TranslateANDSplitJoin tasj = new TranslateANDSplitJoin();
             tasj.setValues(data, ids);
             tasj.translate(node);
             ids = tasj.getIds();
-        } else if (data.get_specialoperators().containsKey(
-                "xorsplitjoin-" + node.getName())) {
+        } else if (data.get_specialoperators().containsKey("xorsplitjoin-" + node.getName())) {
             TranslateXORSplitJoin txsj = new TranslateXORSplitJoin();
             txsj.setValues(data, ids);
             txsj.translate(node);
             ids = txsj.getIds();
-        } else if (data.get_specialoperators().containsKey(
-                "andjoinxorsplit-" + node.getName())) {
+        } else if (data.get_specialoperators().containsKey("andjoinxorsplit-" + node.getName())) {
             TranslateANDJoinXORSplit tajxs = new TranslateANDJoinXORSplit();
             tajxs.setValues(data, ids);
             tajxs.translate(node);
             ids = tajxs.getIds();
-        } else if (data.get_specialoperators().containsKey(
-                "xorjoinandsplit-" + node.getName())) {
+        } else if (data.get_specialoperators().containsKey("xorjoinandsplit-" + node.getName())) {
             TranslateXORJoinANDSplit txjas = new TranslateXORJoinANDSplit();
             txjas.setValues(data, ids);
             txjas.translate(node);
@@ -55,8 +51,8 @@ public class TranslateOperators {
             test.setText(node.getName());
             tran.setId(String.valueOf(ids++));
             tran.setName(test);
-            if (node instanceof ANDJoinType
-                    && node.getOriginalID().contains("op")) {
+
+            if (node instanceof ANDJoinType && node.getOriginalID().contains("op")) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");
@@ -64,8 +60,7 @@ public class TranslateOperators {
                 op.setType(102);
                 trantool.setOrientation(3);
                 trantool.setOperator(op);
-            } else if (node instanceof ANDSplitType
-                    && node.getOriginalID().contains("op")) {
+            } else if (node instanceof ANDSplitType && node.getOriginalID().contains("op")) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");
@@ -94,25 +89,22 @@ public class TranslateOperators {
                 data.put_dupsplitMap(node.getOriginalID(), tran);
                 data.addxorconnectors(node);
             }
+
             if (trantool.getTool() != null) {
                 if (data.get_triggermap().containsKey(tran.getName().getText())) {
-                    trantool.setTrigger((TransitionToolspecificType.Trigger) data.get_triggermap_value(tran
-                            .getName().getText()));
+                    trantool.setTrigger((TransitionToolspecificType.Trigger) data.get_triggermap_value(tran.getName().getText()));
                 }
-                if (data.get_resourcepositionmap().containsKey(
-                        tran.getName().getText())) {
+                if (data.get_resourcepositionmap().containsKey(tran.getName().getText())) {
                     trantool.setTransitionResource((TransitionToolspecificType.TransitionResource) data
                             .get_resourcepositionmap_value(tran.getName().getText()));
                 }
                 tran.getToolspecific().add(trantool);
             }
+
             data.getNet().getTransition().add(tran);
             data.put_pnmlRefMap(tran.getId(), tran);
             data.put_tempmap(tran.getName().getText(), tran);
-            data.put_originalid_map(
-                    BigInteger.valueOf(Long.valueOf(tran.getId())),
-                    node.getOriginalID());
-
+            data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())), node.getOriginalID());
         }
     }
 

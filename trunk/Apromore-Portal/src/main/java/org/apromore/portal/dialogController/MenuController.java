@@ -40,7 +40,9 @@ public class MenuController extends Menubar {
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
+        copyMI.setDisabled(true);
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
+        pasteMI.setDisabled(true);
         Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");

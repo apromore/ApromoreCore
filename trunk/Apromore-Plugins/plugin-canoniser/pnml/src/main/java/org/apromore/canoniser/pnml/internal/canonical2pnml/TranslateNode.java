@@ -28,7 +28,6 @@ public class TranslateNode {
     public void setValues(DataHandler data, long ids) {
         this.data = data;
         this.ids = ids;
-
     }
 
     public void translateTask(TaskType task) {
@@ -39,14 +38,17 @@ public class TranslateNode {
         NodeNameType test = new NodeNameType();
         data.put_id_map(task.getId(), String.valueOf(ids));
         tran.setId(String.valueOf(ids++));
+
         if (task.getName() != null) {
             test.setText(task.getName());
             tran.setName(test);
         }
+
         if (task.getSubnetId() != null) {
             isSub = true;
             data.setSubnet(tran);
         }
+
         if (data.get_triggermap().containsKey(tran.getName().getText())) {
             trantool.setTool("WoPeD");
             trantool.setVersion("1.0");
@@ -108,12 +110,13 @@ public class TranslateNode {
                     }
                 }
             }
+
             if (isSub) {
                 trantool.setSubprocess(true);
             }
             tran.getToolspecific().add(ttt);
-
         }
+
         if (trantool.getTool() == null && ttt.getTool() == null && isSub) {
             TransitionToolspecificType sub = new TransitionToolspecificType();
             sub.setTool("WoPeD");
@@ -127,9 +130,8 @@ public class TranslateNode {
         if (task.getName() != null) {
             data.put_tempmap(tran.getName().getText(), tran);
         }
-        data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())),
-                task.getOriginalID());
 
+        data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())), task.getOriginalID());
     }
 
     public void translateEvent(NodeType node) {
@@ -138,10 +140,12 @@ public class TranslateNode {
             NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
+
             if (node.getName() != null) {
                 test.setText(node.getName());
                 tran.setName(test);
             }
+
             TransitionToolspecificType ttt = new TransitionToolspecificType();
             ttt.setTool("WoPeD");
             ttt.setVersion("1.0");
@@ -171,10 +175,12 @@ public class TranslateNode {
             NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
+
             if (node.getName() != null) {
                 test.setText(node.getName());
                 tran.setName(test);
             }
+
             TransitionToolspecificType ttt = new TransitionToolspecificType();
             ttt.setTool("WoPeD");
             ttt.setVersion("1.0");
@@ -202,40 +208,42 @@ public class TranslateNode {
             NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             place.setId(String.valueOf(ids++));
+
             if (node.getName() != null) {
                 test.setText(node.getName());
                 place.setName(test);
             }
+
             data.getNet().getPlace().add(place);
             data.put_pnmlRefMap(place.getId(), place);
+
             if (node.getName() != null) {
                 data.put_tempmap(place.getName().getText(), place);
             }
-            data.put_originalid_map(
-                    BigInteger.valueOf(Long.valueOf(place.getId())),
-                    node.getOriginalID());
+
+            data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), node.getOriginalID());
         }
     }
 
     public void translateState(NodeType node) {
-
         PlaceType place = new PlaceType();
         NodeNameType test = new NodeNameType();
         data.put_id_map(node.getId(), String.valueOf(ids));
         place.setId(String.valueOf(ids++));
+
         if (node.getName() != null) {
             test.setText(node.getName());
             place.setName(test);
         }
+
         data.getNet().getPlace().add(place);
         data.put_pnmlRefMap(place.getId(), place);
+
         if (node.getName() != null) {
             data.put_tempmap(place.getName().getText(), place);
         }
-        data.put_originalid_map(
-                BigInteger.valueOf(Long.valueOf(place.getId())),
-                node.getOriginalID());
 
+        data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), node.getOriginalID());
     }
 
     public long getIds() {
