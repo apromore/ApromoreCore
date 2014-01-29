@@ -1,6 +1,5 @@
-package org.apromore.dto;
+package org.apromore.helper;
 
-import org.apromore.dao.dataObject.Version;
 import org.junit.Assert;
 import org.junit.Test;
 
