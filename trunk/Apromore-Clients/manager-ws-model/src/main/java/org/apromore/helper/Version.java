@@ -1,4 +1,4 @@
-package org.apromore.dao.dataObject;
+package org.apromore.helper;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 

@@ -1,6 +1,6 @@
 package org.apromore.service.model;
 
-import org.apromore.dao.dataObject.Version;
+import org.apromore.helper.Version;
 
 /**
  * @author Chathura Ekanayake

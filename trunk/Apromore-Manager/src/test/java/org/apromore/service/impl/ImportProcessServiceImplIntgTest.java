@@ -1,7 +1,7 @@
 package org.apromore.service.impl;
 
-import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.helper.Version;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;

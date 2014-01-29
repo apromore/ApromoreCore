@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessBranch;
@@ -16,6 +15,7 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;

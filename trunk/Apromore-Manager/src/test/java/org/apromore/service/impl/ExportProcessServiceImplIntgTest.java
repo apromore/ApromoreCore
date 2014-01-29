@@ -1,8 +1,8 @@
 package org.apromore.service.impl;
 
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
