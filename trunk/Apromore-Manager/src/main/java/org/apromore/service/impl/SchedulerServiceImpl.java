@@ -44,7 +44,7 @@ public class SchedulerServiceImpl implements SchedulerService {
      * {@inheritDoc}
      */
     @Override
-    @Scheduled(cron = "0 45 17 * * *")
+    @Scheduled(cron = "0 0 21 * * *")
     public void runMetricCalculations() {
         LOGGER.info("Starting Execution of the Metric Calculation Job!");
 
