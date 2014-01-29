@@ -12,10 +12,10 @@ import java.util.List;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
+import org.apromore.helper.Version;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;

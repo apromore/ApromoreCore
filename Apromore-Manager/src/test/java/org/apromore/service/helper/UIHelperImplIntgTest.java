@@ -1,7 +1,7 @@
 package org.apromore.service.helper;
 
-import org.apromore.dao.dataObject.Version;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;

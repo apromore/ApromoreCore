@@ -15,9 +15,9 @@ import java.util.Set;
 
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.dao.dataObject.Version;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
+import org.apromore.helper.Version;
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;

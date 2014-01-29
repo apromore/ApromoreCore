@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 
+import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
 import org.springframework.context.ApplicationContext;
@@ -20,9 +21,9 @@ class ApromoreProcessModel implements ProcessModel {
 
 	private ExportFormatResultType exportFormatResult;
 
-	private int    processId;
-	private String branch;
-	private String version;
+	private int     processId;
+	private String  branch;
+	private Version version;
 
 	/**
          * Constructor.
@@ -31,22 +32,22 @@ class ApromoreProcessModel implements ProcessModel {
          *
          * @param processId  the ID of the process model
          * @param branch     the branch name of the process model
-	 * @param version    the version number of the process model
+	 * @param versionString    the version number of the process model
          */
-	ApromoreProcessModel(final int processId, String branch, String version) throws Exception {
+	ApromoreProcessModel(final int processId, String branch, String versionString) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
 		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
 
-		this.processId = processId;
-		this.branch    = branch;
-		this.version   = version;
+		this.processId     = processId;
+		this.branch        = branch;
+		this.version       = new Version(versionString);
 
 		exportFormatResult = manager.exportFormat(
 			processId,		// process ID
 			null,                   // process name
 			branch,                 // branch
-			version,                // version number,
+			version.toString(),     // version number,
 			NATIVE_TYPE,            // nativeType,
 			null,                   // annotation name,
 			false,                  // with annotations?
@@ -81,7 +82,7 @@ class ApromoreProcessModel implements ProcessModel {
 		bpmn.marshal(baos, true);
 
 		// Send to the server
-        String newVersion = String.valueOf(Integer.valueOf(version) + 0.1d);
+                Version newVersion = new Version(version.getMajor(), version.getMinor() + 1);
 		manager.updateProcess(
 			0,			// session code
 			null,			// user name
@@ -91,8 +92,8 @@ class ApromoreProcessModel implements ProcessModel {
 			"non-null dummy",	// process name
 			branch,			// original branch name
 			branch,			// new branch name
-			newVersion,		// version number
-			version,		// original version number
+			newVersion.toString(),	// version number
+			version.toString(),	// original version number
 			null,			// pre-version
 			new ByteArrayInputStream(baos.toByteArray())
 		);
