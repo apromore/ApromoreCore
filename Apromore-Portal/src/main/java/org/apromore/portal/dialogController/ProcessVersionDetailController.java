@@ -26,6 +26,7 @@ public class ProcessVersionDetailController extends BaseDetailController {
         listBox.setModel(new ListModelList());
 
         ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Process Details");
+        ((South) getMainController().getFellow("leftInnerSouthPanel")).setOpen(false);
 
         appendChild(listBox);
     }
@@ -55,7 +56,13 @@ public class ProcessVersionDetailController extends BaseDetailController {
 
     public VersionSummaryType getSelectedVersion() {
         if (getListModel().getSelection().size() == 1) {
-            return (VersionSummaryType) getListModel().getSelection().iterator().next();
+            Object obj = getListModel().getSelection().iterator().next();
+            if (obj instanceof VersionSummaryType) {
+                return (VersionSummaryType) obj;
+            } else if (obj instanceof VersionDetailType) {
+                return ((VersionDetailType) obj).getVersion();
+            }
+            return null;
         } else {
             return null;
         }
