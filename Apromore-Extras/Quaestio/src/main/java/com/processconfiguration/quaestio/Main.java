@@ -3922,7 +3922,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			validQ.clear();
 			updateValidQ();
 
-		} else if (command.equals("Save")) {
+		} else if (command.equals("Save model")) {
 			saveAction.actionPerformed(e);
 		}
 
