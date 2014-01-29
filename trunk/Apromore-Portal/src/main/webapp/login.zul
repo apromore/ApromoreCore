@@ -136,7 +136,7 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Modelling Repository</h:small>
+                                            <h:small>Advanced Process Model Repository</h:small>
                                         </h:h4>
                                         <h:p>
                                             Apromore is an open-source repository to store and disclose business process models of a variety of types and languages, such as BPMN, eEPCs, AML and YAWL. Most importantly, Apromore aims to provide state-of-the-art features to facilitate the management of large process model collections, including features to evaluate, filter, design and present large collections of business process models. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
@@ -175,7 +175,7 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Modelling Repository</h:small>
+                                            <h:small>Advanced Process Model Repository</h:small>
                                         </h:h4>
                                         <h:hr class="margin-mm "/>
                                         <h:p>
