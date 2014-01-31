@@ -615,8 +615,7 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
             can = converter.convert(cpf.getCpt());
-            pmv = createProcessModelVersion(branch, version, can, cpf.getCpt().getUri());
-            pmv.setNativeType(nativeType);
+            pmv = createProcessModelVersion(branch, version, nativeType, can, cpf.getCpt().getUri());
             if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
                 rootFragment = decomposerSrv.decompose(can, pmv);
                 if (rootFragment != null) {
@@ -660,7 +659,6 @@ public class ProcessServiceImpl implements ProcessService {
             if (rootFragment != null) {
                 propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion(), rootFragment.getCurrentFragment(),
                         pmVersion.getFragmentVersions(), version);
-                pmVersion.setNativeType(nativeType);
             }
 
             processModelVersion = processModelVersionRepo.getProcessModelVersion(processId, originalBranchName, version.toString());
@@ -784,7 +782,7 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
-    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version,
+    private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch, final Version version, NativeType nativeType,
             final Canonical proModGrap, final String netId) {
         String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date());
         ProcessModelVersion processModel = new ProcessModelVersion();
@@ -797,6 +795,7 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setLockStatus(Constants.NO_LOCK);
         processModel.setCreateDate(now);
         processModel.setLastUpdateDate(now);
+        processModel.setNativeType(nativeType);
 
         branch.setCurrentProcessModelVersion(processModel);
 

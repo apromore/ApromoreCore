@@ -119,7 +119,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
     }
 
     private Set<String> getNameSet(final List<? extends VariableBaseType> varList) {
-        Set<String> nameSet = new HashSet<String>();
+        Set<String> nameSet = new HashSet<>();
         for (VariableBaseType varMapping : varList) {
             nameSet.add(varMapping.getName());
         }

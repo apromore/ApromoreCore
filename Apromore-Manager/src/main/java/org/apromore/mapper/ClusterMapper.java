@@ -32,6 +32,7 @@ public class ClusterMapper {
 
     public static ClusterSummaryType convertClusterInfoToClusterSummaryType(Cluster c) {
         ClusterSummaryType ct = new ClusterSummaryType();
+        ct.setClusterLabel(Integer.toString(c.getSize()));
         ct.setClusterId(c.getId());
         ct.setClusterSize(c.getSize());
         ct.setMedoidId(c.getMedoidId());
@@ -44,6 +45,7 @@ public class ClusterMapper {
 
     public static ClusterType convertClusterToClusterType(org.apromore.service.model.Cluster c) {
         ClusterType ct = new ClusterType();
+        ct.setClusterLabel(Integer.toString(c.getCluster().getSize()));
         ct.setClusterId(c.getCluster().getId().toString());
         ct.setClusterSize(c.getCluster().getSize());
         ct.setMedoidId(c.getCluster().getMedoidId());
@@ -66,7 +68,7 @@ public class ClusterMapper {
                 patype.setProcessName(pa.getProcessName());
                 patype.setBranchName(pa.getProcessBranchName());
                 patype.setProcessVersionId(pa.getProcessVersionId());
-                patype.setProcessVersionNumber(pa.getProcessVersionNumber().toString());
+                patype.setProcessVersionNumber(pa.getProcessVersionNumber());
                 fd.getProcessAssociations().add(patype);
             }
 

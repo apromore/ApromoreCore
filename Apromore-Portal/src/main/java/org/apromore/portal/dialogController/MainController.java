@@ -18,7 +18,7 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
-import org.apromore.portal.dialogController.dto.Version;
+import org.apromore.helper.Version;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -147,7 +147,6 @@ public class MainController extends BaseController {
                     new EventListener<Event>() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            System.out.println(event.getName());
                             if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
                                 clearProcessVersions();
                                 reloadProcessSummaries();
@@ -609,9 +608,10 @@ public class MainController extends BaseController {
         }
 
         // Otherwise create new Listbox
-        this.baseFilterController = new SimilarityClustersFilterController(this);
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseListboxController = new SimilarityClustersListboxController(this, (SimilarityClustersFilterController) this.baseFilterController,
+        this.baseFilterController = new SimilarityClustersFilterController(this);
+        this.baseListboxController = new SimilarityClustersListboxController(this,
+                (SimilarityClustersFilterController) this.baseFilterController,
                 (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();

@@ -65,9 +65,9 @@ public class XPDLPackage extends XPDLThing {
             getWorkflowProcesses().createAndDistributeMapping(mapping);
         }
 
-        for (Entry<String, XPDLThing> x : mapping.entrySet()) {
-            System.out.println(x.getKey() + " " + x.getValue() + "\n");
-        }
+//        for (Entry<String, XPDLThing> x : mapping.entrySet()) {
+//            System.out.println(x.getKey() + " " + x.getValue() + "\n");
+//        }
     }
 
     public XPDLArtifacts getArtifacts() {

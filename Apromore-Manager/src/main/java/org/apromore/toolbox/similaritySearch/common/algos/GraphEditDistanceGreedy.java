@@ -210,7 +210,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                             }
                         } else {
                             // CASE 5: Non deterministic choice (Choose a random candidate)
-                            System.out.println("oops ...");
+//                            System.out.println("oops ...");
                             deterministic = false;
                             couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                         }

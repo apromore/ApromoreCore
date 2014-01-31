@@ -1,17 +1,3 @@
-/**
- * Canonical2EPML is a class for converting an CanonicalProcessType
- *  object into a TypeEPML object.
- * A Canonical2EPML object encapsulates the state of the main
- * component resulted from the canonization process.  This
- * state information includes the TypeEpml object which hold a header
- * for the rest of the EPML elements.
- * <p>
- *
- * @author Abdul
- * @version     %I%, %G%
- * @since 1.0
- */
-
 package org.apromore.canoniser.epml.internal;
 
 import de.epml.ObjectFactory;
@@ -87,6 +73,19 @@ import java.util.Set;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+/**
+ * Canonical2EPML is a class for converting an CanonicalProcessType
+ *  object into a TypeEPML object.
+ * A Canonical2EPML object encapsulates the state of the main
+ * component resulted from the canonization process.  This
+ * state information includes the TypeEpml object which hold a header
+ * for the rest of the EPML elements.
+ * <p>
+ *
+ * @author Abdul
+ * @version     %I%, %G%
+ * @since 1.0
+ */
 public class Canonical2EPML {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2EPML.class);
@@ -119,13 +118,12 @@ public class Canonical2EPML {
         return epml;
     }
 
+
     /**
      * Validating EPCs models against the Event-Function rule. The fake functions and events will be added as needed. The algorithm will also
      * minimized them as much as possible. It verifies the functions and events elements one by one until the last element. This method will only be
      * called if the addFakes boolean value is defined and true.
-     * 
-     * @param epc
-     *            the header for an EPCs modelass
+     * @param epc the header for an EPCs modelass
      * @since 1.0
      */
     private void validate_model(final TypeEPC epc) {
@@ -480,7 +478,9 @@ public class Canonical2EPML {
         }
 
         for (TypeFunction func : subnet_list) {
-            func.getToProcess().setLinkToEpcId(id_map.get(func.getToProcess().getLinkToEpcId().toString()));
+            if (func.getToProcess() != null) {
+                func.getToProcess().setLinkToEpcId(id_map.get(func.getToProcess().getLinkToEpcId().toString()));
+            }
         }
         /* TODO dummy value set elsewhere is not adequate!  Must reinstate this code somehow.
         for (TypeProcessInterface pi : pi_list) {
@@ -622,7 +622,9 @@ public class Canonical2EPML {
             func.setDefRef(find_def_id("function", func.getName()));
             if (task.getSubnetId() != null) {
                 if (cpfIdMap.get(task.getSubnetId()) != null) {
-                    func.getToProcess().setLinkToEpcId(cpfIdMap.get(task.getSubnetId()));
+                    if (func.getToProcess() != null) {
+                        func.getToProcess().setLinkToEpcId(cpfIdMap.get(task.getSubnetId()));
+                    }
                 }
                 subnet_list.add(func);
             }
@@ -753,7 +755,6 @@ public class Canonical2EPML {
             xor.setName(node.getName());
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCXor(xor));
             epcRefMap.put(xor.getId(), xor);
-            //event_list.add(node.getId());
         } else if (node instanceof XORJoinType) {
             TypeXOR xor = new TypeXOR();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
@@ -768,7 +769,6 @@ public class Canonical2EPML {
             or.setName(node.getName());
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCOr(or));
             epcRefMap.put(or.getId(), or);
-            //event_list.add(node.getId());
         } else if (node instanceof ORJoinType) {
             TypeOR or = new TypeOR();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
@@ -778,7 +778,16 @@ public class Canonical2EPML {
             epcRefMap.put(or.getId(), or);
         } else if (node instanceof StateType) {
             // Not Supported
-            throw new CanoniserException("State is not supported by EPC!");
+            //throw new CanoniserException("State is not supported by EPC!");
+
+            // TODO: Need to let the user know we put an event in the place of a State join.
+            TypeEvent event = new TypeEvent();
+            id_map.put(node.getId(), BigInteger.valueOf(ids));
+            event.setId(BigInteger.valueOf(ids++));
+            event.setName(node.getName());
+            event.setDefRef(find_def_id("event", event.getName()));
+            epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCEvent(event));
+            epcRefMap.put(event.getId(), event);
         }
     }
 

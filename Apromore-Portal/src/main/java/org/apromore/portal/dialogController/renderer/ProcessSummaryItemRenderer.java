@@ -68,8 +68,8 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
-                String annotation = getLastestAnnotation(version.getAnnotations());
-                mainController.editProcess(process, version, process.getOriginalNativeType(), annotation,
+                AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
+                mainController.editProcess(process, version, annotation.getNativeType(), annotation.getAnnotationName().get(0),
                         "false", new HashSet<RequestParameterType<?>>());
             }
         });
@@ -235,9 +235,10 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         return result;
     }
 
-    private String getLastestAnnotation(List<AnnotationsType> annotations) {
+
+    private AnnotationsType getLastestAnnotation(List<AnnotationsType> annotations) {
         if (annotations.size() > 0 && annotations.get(annotations.size() - 1) != null) {
-            return annotations.get(annotations.size() - 1).getAnnotationName().get(0);
+            return annotations.get(annotations.size() - 1);
         }
         return null;
     }

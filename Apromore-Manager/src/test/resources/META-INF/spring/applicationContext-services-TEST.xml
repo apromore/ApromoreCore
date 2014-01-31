@@ -70,7 +70,9 @@
     <bean id="epml2xpdlPreAnnotationProcessor" class="org.apromore.annotation.epml2xpdl.Epml2XpdlPreProcessor" />
     <bean id="bpmn2epmlPreAnnotationProcessor" class="org.apromore.annotation.bpmn2epml.Bpmn2EpmlPreProcessor" />
     <bean id="xpdl2epmlPreAnnotationProcessor" class="org.apromore.annotation.xpdl2epml.Xpdl2EpmlPreProcessor" />
+    <bean id="yawl2epmlPreAnnotationProcessor" class="org.apromore.annotation.yawl2epml.Yawl2EpmlPreProcessor" />
     <bean id="bpmn2yawlPreAnnotationProcessor" class="org.apromore.annotation.bpmn2yawl.Bpmn2YawlPreProcessor" />
+    <bean id="epml2yawlPreAnnotationProcessor" class="org.apromore.annotation.epml2yawl.Epml2YawlPreProcessor" />
 
     <!-- Beans used for OSGi setup. -->
     <bean id="arisCanoniser" class="org.apromore.canoniser.aris.ArisCanoniser" />

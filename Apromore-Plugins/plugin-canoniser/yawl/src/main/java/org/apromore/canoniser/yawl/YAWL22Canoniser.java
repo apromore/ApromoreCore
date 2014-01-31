@@ -76,7 +76,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new PluginParameterType<InputStream>("readOrgData", "YAWL Organisational Data", InputStream.class,
+        resourceDataInput = new PluginParameterType<>("readOrgData", "YAWL Organisational Data", InputStream.class,
                 "File (.ybkp) containing the organisational data used during import of the YAWL workflow.", false, Canoniser.CANONISE_PARAMETER);
         registerParameter(resourceDataInput);
     }
@@ -119,11 +119,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             LOGGER.info("Finished canonising {}", getNativeType());
             return canoniserResult;
 
-        } catch (final JAXBException e) {
-            throw new CanoniserException(e);
-        } catch (final SAXException e) {
-            throw new CanoniserException(e);
-        } catch (PluginPropertyNotFoundException e) {
+        } catch (final JAXBException | PluginPropertyNotFoundException | SAXException e) {
             throw new CanoniserException(e);
         }
     }
@@ -150,18 +146,16 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
                 LOGGER.debug("Decanonising without Annotation");
                 canonical2yawl.convertToYAWL(canonicalFormat);
             }
-            YAWLSchema.marshalYAWLFormat(nativeOutput, canonical2yawl.getYAWL(), true);
+            YAWLSchema.marshalYAWLFormat(nativeOutput, canonical2yawl.getYAWL(), false);
 
             OutputStream orgDataOutput = new ByteArrayOutputStream();
-            YAWLOrgDataSchema.marshalYAWLOrgDataFormat(orgDataOutput, canonical2yawl.getOrgData(), true);
+            YAWLOrgDataSchema.marshalYAWLOrgDataFormat(orgDataOutput, canonical2yawl.getOrgData(), false);
             canoniserResult.setYawlOrgData(orgDataOutput);
 
             LOGGER.info("Finished decanonising {}", getNativeType());
             return canoniserResult;
 
-        } catch (final JAXBException e) {
-            throw new CanoniserException(e);
-        } catch (final SAXException e) {
+        } catch (final JAXBException | SAXException e) {
             throw new CanoniserException(e);
         }
     }

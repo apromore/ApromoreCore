@@ -457,6 +457,22 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
 	
 	setPopular: function() {
 		this._jsonProp.popular = true;
-	}
-	
+	},
+
+    rowDelimiter: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonProp, "rowDelimiter");
+    },
+
+    itemDelimiter: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonProp, "rowDelimiter");
+    },
+
+    viewPrefix: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonProp, "viewPrefix");
+    },
+
+    viewSuffix: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonProp, "viewSuffix");
+    }
+
 });

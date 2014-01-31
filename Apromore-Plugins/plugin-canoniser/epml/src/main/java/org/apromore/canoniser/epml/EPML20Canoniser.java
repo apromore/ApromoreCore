@@ -69,7 +69,6 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
             canonicalFormat.add(epml2canonical.getCPF());
 
             return newPluginResult();
-
         } catch (JAXBException | SAXException e) {
             throw new CanoniserException(e);
         }
