@@ -55,6 +55,7 @@ ORYX.Core.StencilSet.ComplexPropertyItem = Clazz.extend({
 		this._namespace = namespace;
 		this._property = property;
 		this._items = new Hash();
+        this._complexItems = {};
 		
 		//init all values
 		if(!jsonItem.name) {
@@ -122,8 +123,32 @@ ORYX.Core.StencilSet.ComplexPropertyItem = Clazz.extend({
 	items: function() {
 		return this._items.values();
 	},
-	
-	disable: function() {
+
+    complexItems: function () {
+        return $H(this._complexItems).values()
+    },
+
+    complexItem: function (key) {
+        if (key) {
+            return this._complexItems[key.toLowerCase()]
+        } else {
+            return null
+        }
+    },
+
+    disable: function() {
 		return this._jsonItem.disable;
-	}
+	},
+
+    includeInView: function () {
+        return this._jsonItem.includeInView
+    },
+
+    viewPrefix: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonItem, "viewPrefix")
+    },
+
+    viewSuffix: function () {
+        return ORYX.Core.StencilSet.getTranslation(this._jsonItem, "viewSuffix")
+    }
 });

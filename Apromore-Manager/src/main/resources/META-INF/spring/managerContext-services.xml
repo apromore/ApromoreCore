@@ -25,24 +25,7 @@
         <bean id="loggingInterceptor" class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
         <bean id="soapLoggingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor"
             p:logRequest="true" p:logResponse="true" p:logFault="true"/>
-        <!--<bean id="securityInterceptor" class="org.springframework.ws.soap.security.xwss.XwsSecurityInterceptor">-->
-            <!--<property name="policyConfiguration" value="/WEB-INF/securityPolicy.xml"/>-->
-            <!--<property name="callbackHandlers">-->
-                <!--<list>-->
-                    <!--<ref bean="callbackHandler"/>-->
-                <!--</list>-->
-            <!--</property>-->
-        <!--</bean>-->
     </sws:interceptors>
-
-    <!--<bean id="callbackHandler" class="org.springframework.ws.soap.security.xwss.callback.SimplePasswordValidationCallbackHandler">-->
-        <!--<property name="users">-->
-            <!--<props>-->
-                <!--<prop key="admin">secret</prop>-->
-                <!--<prop key="user">pass</prop>-->
-            <!--</props>-->
-        <!--</property>-->
-    <!--</bean>-->
 
     <bean id="marshallingMethodProcessor" class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor"
         p:marshaller-ref="jaxb2Marshaller" p:unmarshaller-ref="jaxb2Marshaller"/>

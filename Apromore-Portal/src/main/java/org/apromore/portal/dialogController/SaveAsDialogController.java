@@ -5,12 +5,13 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 
 import org.apromore.canoniser.Canoniser;
+import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.dto.Version;
+
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;

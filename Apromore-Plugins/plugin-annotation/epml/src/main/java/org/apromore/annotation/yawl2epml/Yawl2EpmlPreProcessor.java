@@ -1,4 +1,4 @@
-package org.apromore.annotation.bpmn2epml;
+package org.apromore.annotation.yawl2epml;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -25,14 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * BPMN to EPML Post Processor.
- * Used to manipulate the ANF of the BPMN output when the input process langauge was EPML.
+ * YAWL to EPML Post Processor.
+ * Used to manipulate the ANF of the EPML output when the input process langauge was EPML.
  * Used to change the size of the shapes as each language has different sizes elements.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Component("bpmn2epmlPreAnnotationProcessor")
-public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
+@Component("yawl2epmlPreAnnotationProcessor")
+public class Yawl2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
 
     private static final BigDecimal divisor = new BigDecimal(2.0);
     private static final BigDecimal newEventHeight = new BigDecimal(60.0);
@@ -81,9 +81,9 @@ public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
                         manipulateTask(annotation, node, annotations);
                     } else if (node instanceof RoutingType) {
                         manipulateGateway(annotation, node, annotations);
-//                        if (node instanceof SplitType) {
-//                            //manipulateSplit(cpf, anf, annotation, node);
-//                        }
+                        if (node instanceof SplitType) {
+                            manipulateSplit(cpf, anf, annotation, node);
+                        }
                     }
                 }
             }
@@ -158,7 +158,6 @@ public class Bpmn2EpmlPreProcessor extends DefaultAbstractAnnotationProcessor {
                     }
                     index++;
                 }
-
             }
         }
     }

@@ -14,13 +14,13 @@ public class Edge {
         this.fromG = fromG;
     }
 
-    public void printLabels() {
-        System.out.print("\n\t");
-        for (String l : labels) {
-            System.out.print(l + ",");
-        }
-        System.out.print("\n");
-    }
+//    public void printLabels() {
+//        System.out.print("\n\t");
+//        for (String l : labels) {
+//            System.out.print(l + ",");
+//        }
+//        System.out.print("\n");
+//    }
 
     public Graphics getToG() {
         return toG;

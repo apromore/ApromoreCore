@@ -616,11 +616,13 @@ public class ManagerPortalEndpoint {
         LOGGER.trace("Executing operation getGedMatrixSummary");
         GetGedMatrixSummaryOutputMsgType res = new GetGedMatrixSummaryOutputMsgType();
         GedMatrixSummaryType gedMatrixSummary = new GedMatrixSummaryType();
+        ResultType result = new ResultType();
 
         try {
             HistoryEvent gedMatrix = clusterService.getGedMatrixLastExecutionTime();
             GregorianCalendar calendar = new GregorianCalendar();
             if (gedMatrix == null) {
+                gedMatrixSummary.setBuilt(false);
                 gedMatrixSummary.setBuildDate(null);
             } else if (gedMatrix.getStatus() == StatusEnum.FINISHED && gedMatrix.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
                 gedMatrixSummary.setBuilt(true);
@@ -632,10 +634,16 @@ public class ManagerPortalEndpoint {
                 gedMatrixSummary.setBuildDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
             }
 
-            res.setGedMatrixSummary(gedMatrixSummary);
+            result.setCode(0);
+            result.setMessage("");
         } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();
+            LOGGER.error("Returing the GED Matrix Summary failed!", e);
+            result.setCode(-1);
+            result.setMessage(e.getMessage());
         }
+
+        gedMatrixSummary.setResult(result);
+        res.setGedMatrixSummary(gedMatrixSummary);
 
         return WS_OBJECT_FACTORY.createGetGedMatrixSummaryResponse(res);
     }
