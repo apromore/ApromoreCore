@@ -65,8 +65,7 @@ new function(){
 		 */
 		doLayout: function(edge){
 			// Get from and to node
-console.log("EdgeLayouter: doLayout");
-			var from 	= edge.getIncomingNodes()[0]; 
+			var from 	= edge.getIncomingNodes()[0];
 			var to 		= edge.getOutgoingNodes()[0];
 			
 			// Return if one is null
@@ -77,7 +76,6 @@ console.log("EdgeLayouter: doLayout");
 			if (positions.length > 0){
 				this.setDockers(edge, positions[0].a, positions[0].b);
 			}
-				
 		},
 		
 		/**
@@ -88,8 +86,6 @@ console.log("EdgeLayouter: doLayout");
 		 * @param {Object} edge Edge between from and to
 		 */
 		getPositions : function(from, to, edge){
-            console.log("EdgeLayouter: getPositions");
-
             // Get absolute bounds
 			var ab = from.absoluteBounds();
 			var bb = to.absoluteBounds();
@@ -100,7 +96,33 @@ console.log("EdgeLayouter: doLayout");
 			
 			var am = ab.midPoint();
 			var bm = bb.midPoint();
-		
+
+            var es = edge.getStencil().keepState();
+            if (es && edge.dockers.length <= 3) {
+                var folt = from.getOverlap(to);
+                if (folt) {
+                    var xm = Math.round(Math.min(ab.lowerRight().x, bb.lowerRight().x) - Math.max(ab.upperLeft().x, bb.upperLeft().x));
+                    var ym = Math.round(Math.min(ab.lowerRight().y, bb.lowerRight().y) - Math.max(ab.upperLeft().y, bb.upperLeft().y));
+                    var mn = 12;
+                    if (xm > mn || ym > mn) {
+                        var fp = edge.dockers.first().getAbsoluteReferencePoint();
+                        var lp = edge.dockers.last().getAbsoluteReferencePoint();
+                        if (folt.isIncluded({
+                            x: xm > 0 ? fp.x : folt.center().x,
+                            y: xm > 0 ? folt.center().y : fp.y
+                        }) && d.isIncluded({
+                            x: xm > 0 ? lp.x : folt.center().x,
+                            y: xm > 0 ? folt.center().y : lp.y
+                        })) {
+                            return []
+                        }
+                    } else {
+                        edge.dockers.first().setReferencePoint(am);
+                        edge.dockers.last().setReferencePoint(bm)
+                    }
+                }
+            }
+
 			// Get first and last reference point
 			var first = Object.clone(edge.dockers.first().referencePoint);
 			var last = Object.clone(edge.dockers.last().referencePoint);
@@ -118,7 +140,7 @@ console.log("EdgeLayouter: doLayout");
 			
 			// Calc center position, between a and b
 			// depending on there weight
-			var m = {}
+			var m = {};
 			m.x = a.x < b.x ? 
 					(((b.x - bb.width()/2) - (a.x + ab.width()/2))/2) + (a.x + ab.width()/2): 
 					(((a.x - ab.width()/2) - (b.x + bb.width()/2))/2) + (b.x + bb.width()/2);
@@ -141,7 +163,7 @@ console.log("EdgeLayouter: doLayout");
 			if (!ab.isIncluded(b.x, a.y)&&!bb.isIncluded(b.x, a.y)) {
 				positions.push({
 					a : {x:b.x+off(last,bm,"x"),y:a.y+off(first,am,"y")},
-					z : this.getWeight(from, a.x < b.x ? "r" : "l", to, a.y < b.y ? "t" : "b", edge)
+					z : this.getWeight(from, a.x < b.x ? "r" : "l", to, a.y < b.y ? "t" : "b", edge) * (es ? 2 : 1)
 				});
 			}
 						
@@ -150,14 +172,14 @@ console.log("EdgeLayouter: doLayout");
 			if (!ab.isIncluded(a.x, b.y)&&!bb.isIncluded(a.x, b.y)) {
 				positions.push({
 					a : {x:a.x+off(first,am,"x"),y:b.y+off(last,bm,"y")},
-					z : this.getWeight(from, a.y < b.y ? "b" : "t", to, a.x < b.x ? "l" : "r", edge)
+					z : this.getWeight(from, a.y < b.y ? "b" : "t", to, a.x < b.x ? "l" : "r", edge) * (es ? 2 : 1)
 				});
 			}
 						
 			// Checks  --+
 			//           |
 			//           +--->
-			if (!ab.isIncluded(m.x, a.y)&&!bb.isIncluded(m.x, b.y)) {
+			if ((!ab.isIncluded(m.x, a.y)&&!bb.isIncluded(m.x, b.y)) || (!ab.isIncluded(m.x, a.y) && bb.isIncluded(m.x, a.y))) {
 				positions.push({
 					a : {x:m.x,y:a.y+off(first,am,"y")},
 					b : {x:m.x,y:b.y+off(last,bm,"y")},
@@ -169,22 +191,24 @@ console.log("EdgeLayouter: doLayout");
 			//        +---+
 			//            |
 			//            V
-			if (!ab.isIncluded(a.x, m.y)&&!bb.isIncluded(b.x, m.y)) {
-				positions.push({
-					a : {x:a.x+off(first,am,"x"),y:m.y},
-					b : {x:b.x+off(last,bm,"x"),y:m.y},
+            if ((!ab.isIncluded(a.x, m.y) && !bb.isIncluded(b.x, m.y)) || (!ab.isIncluded(a.x, b.y) && bb.isIncluded(a.x, b.y))) {
+                positions.push({
+					a : { x: a.x + off(first, am, "x"), y: m.y},
+					b : { x: b.x + off(last, bm, "x"), y: m.y},
 					z : this.getWeight(from, "b", to, "t", edge, a.y > b.y)
 				});
 			}	
 			
 			// Sort DESC of weights
-			return positions.sort(function(a,b){ return a.z < b.z ? 1 : (a.z == b.z ? -1 : -1)});
+			return positions.sort(function(a, b) {
+                return a.z < b.z ? 1 : (a.z == b.z ? -1 : -1)
+            });
 		},
 		
 		/**
 		 * Returns a offset for the pos to the center of the bounds
 		 * 
-		 * @param {Object} val
+		 * @param {Object} pos
 		 * @param {Object} pos2
 		 * @param {String} dir Direction x|y
 		 */
@@ -203,7 +227,6 @@ console.log("EdgeLayouter: doLayout");
 		 * @param {Boolean} reverse Reverse the direction (e.g. "r" -> "l")
 		 */
 		getWeight: function(from, d1, to, d2, edge, reverse){
-			
 			d1 = (d1||"").toLowerCase();
 			d2 = (d2||"").toLowerCase();
 			
@@ -240,33 +263,32 @@ console.log("EdgeLayouter: doLayout");
 			 */
 			var sameDirection = function(direction, center1, center2){
 				switch(direction){
-					case "t": return Math.abs(center1.x - center2.x) < 2 && center1.y < center2.y
-					case "r": return center1.x > center2.x && Math.abs(center1.y - center2.y) < 2
-					case "b": return Math.abs(center1.x - center2.x) < 2 && center1.y > center2.y
-					case "l": return center1.x < center2.x && Math.abs(center1.y - center2.y) < 2
-					default: return false;
+					case "t":
+                        return Math.abs(center1.x - center2.x) < 2 && center1.y < center2.y;
+					case "r":
+                        return center1.x > center2.x && Math.abs(center1.y - center2.y) < 2;
+					case "b":
+                        return Math.abs(center1.x - center2.x) < 2 && center1.y > center2.y;
+					case "l":
+                        return center1.x < center2.x && Math.abs(center1.y - center2.y) < 2;
+					default:
+                        return false;
 				}
-			}
+			};
 
 			// Check if there are same incoming edges from 'from'
-			var sameIncomingFrom = from
-								.getIncomingShapes()
-								.findAll(function(a){ return a instanceof ORYX.Core.Edge})
-								.any(function(e){ 
-									return sameDirection(d1, e.dockers[e.dockers.length-2].bounds.center(), e.dockers.last().bounds.center());
-								});
+			var sameIncomingFrom = from.getIncomingShapes().findAll(function(a) {
+                return a instanceof ORYX.Core.Edge;
+            }).any(function(e) {
+                    return sameDirection(d1, e.dockers[e.dockers.length-2].bounds.center(), e.dockers.last().bounds.center());
+			    });
 
 			// Check if there are same outgoing edges from 'to'
-			var sameOutgoingTo = to
-								.getOutgoingShapes()
-								.findAll(function(a){ return a instanceof ORYX.Core.Edge})
-								.any(function(e){ 
-									return sameDirection(d2, e.dockers[1].bounds.center(), e.dockers.first().bounds.center());
-								});
-			
-			// If there are equivalent edges, set 0
-			//fromWeight = sameIncomingFrom ? 0 : fromWeight;
-			//toWeight = sameOutgoingTo ? 0 : toWeight;
+			var sameOutgoingTo = to.getOutgoingShapes().findAll(function(a) {
+                return a instanceof ORYX.Core.Edge
+            }).any(function(e) {
+				    return sameDirection(d2, e.dockers[1].bounds.center(), e.dockers.first().bounds.center());
+			    });
 			
 			// Get the sum of "out" and the direction plus "in" and the direction 						
 			return (sameIncomingFrom||sameOutgoingTo?0:fromWeight+toWeight);
@@ -280,8 +302,7 @@ console.log("EdgeLayouter: doLayout");
 		 * @param {Object} a
 		 * @param {Object} b
 		 */
-		setDockers: function(edge, a, b){
-console.log("EdgeLayouter: setDockers");
+		setDockers: function(edge, a, b) {
             if (!edge){ return }
 			
 			// Remove all dockers (implicit,
@@ -305,9 +326,7 @@ console.log("EdgeLayouter: setDockers");
 			// Update edge
 			//edge.refresh();
 			edge._update(true);
-			
 		}
 	});
 	
-	
-}()
+}();

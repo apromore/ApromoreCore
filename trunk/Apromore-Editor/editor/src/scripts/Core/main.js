@@ -142,15 +142,17 @@ ORYX.Editor = {
         // Load particular stencilset
         if (ORYX.CONFIG.BACKEND_SWITCH) {
             var ssUrl = (model.stencilset.namespace || model.stencilset.url).replace("#", "%23");
+console.log("1: ssurl: " + ORYX.CONFIG.STENCILSET_HANDLER + ssUrl);
             ORYX.Core.StencilSet.loadStencilSet(ORYX.CONFIG.STENCILSET_HANDLER + ssUrl, this.id);
         } else {
             var ssUrl = model.stencilset.url;
+console.log("2: ssurl: " + ORYX.CONFIG.STENCILSET_HANDLER + ssUrl);
             ORYX.Core.StencilSet.loadStencilSet(ssUrl, this.id);
         }
 
         this._loadStencilSetExtensionConfig();
 
-        //Load predefined StencilSetExtensions
+        // Load predefined StencilSetExtensions
         if (!!ORYX.CONFIG.SSEXTS) {
             ORYX.CONFIG.SSEXTS.each(function (ssext) {
                 this.loadSSExtension(ssext.namespace);
@@ -158,6 +160,7 @@ ORYX.Editor = {
         }
 
         // CREATES the canvas
+console.log("model.stencil: " + model.stencil);
         this._createCanvas(model.stencil ? model.stencil.id : null, model.properties, langs);
 
         // GENERATES the whole EXT.VIEWPORT

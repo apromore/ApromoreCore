@@ -22,9 +22,6 @@
  **/
 package de.hpi.epc.layouting;
 
-import java.util.Iterator;
-import java.util.Random;
-
 import de.hpi.epc.layouting.model.EPCType;
 import de.hpi.layouting.grid.Grid;
 import de.hpi.layouting.grid.Grid.Cell;
@@ -32,6 +29,8 @@ import de.hpi.layouting.model.LayoutingBounds;
 import de.hpi.layouting.model.LayoutingBoundsImpl;
 import de.hpi.layouting.model.LayoutingDockers;
 import de.hpi.layouting.model.LayoutingElement;
+
+import java.util.Random;
 
 /**
  * Simple layouting of edges based on the edge layouter of team Royal Fawn.
@@ -76,36 +75,36 @@ public class EPCEdgeLayouter {
         this.edge = edge;
         this.grid = grid;
 
-        displayEdge(edge);
-        displayGrid(grid);
+//        displayEdge(edge);
+//        displayGrid(grid);
 
         calculateGlobals();
         pickLayoutForEdge();
     }
 
-    private void displayEdge(LayoutingElement edge) {
-        System.out.println("Incoming: " + edge.getIncomingLinks().size() + " - Outgoing: " + edge.getOutgoingLinks().size());
-    }
-
-    private void displayGrid(Grid<LayoutingElement> grid) {
-        Cell<LayoutingElement> cell;
-        Iterator<Cell<LayoutingElement>> cells;
-
-        for (Grid.Row<LayoutingElement> row : grid) {
-            cells = row.iterator();
-            while (cells.hasNext()) {
-                cell = cells.next();
-
-                if (cell != null && cell.getValue() != null) {
-                    if (cell != null) {
-                        System.out.println("CELL: " + cell.getValue().getId() + " - " + cell.getValue().getType());
-                    } else {
-                        System.out.println("Cell empty");
-                    }
-                }
-            }
-        }
-    }
+//    private void displayEdge(LayoutingElement edge) {
+//        System.out.println("Incoming: " + edge.getIncomingLinks().size() + " - Outgoing: " + edge.getOutgoingLinks().size());
+//    }
+//
+//    private void displayGrid(Grid<LayoutingElement> grid) {
+//        Cell<LayoutingElement> cell;
+//        Iterator<Cell<LayoutingElement>> cells;
+//
+//        for (Grid.Row<LayoutingElement> row : grid) {
+//            cells = row.iterator();
+//            while (cells.hasNext()) {
+//                cell = cells.next();
+//
+//                if (cell != null && cell.getValue() != null) {
+//                    if (cell != null) {
+//                        System.out.println("CELL: " + cell.getValue().getId() + " - " + cell.getValue().getType());
+//                    } else {
+//                        System.out.println("Cell empty");
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private void calculateGlobals() {
         // should both be only one !

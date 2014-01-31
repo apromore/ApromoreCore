@@ -11,8 +11,10 @@
     <!-- enable classpath scanning -->
     <context:component-scan base-package="org.apromore.annotation.bpmn2epml"/>
     <context:component-scan base-package="org.apromore.annotation.xpdl2epml"/>
+    <context:component-scan base-package="org.apromore.annotation.yawl2epml"/>
 
     <osgi:service ref="bpmn2epmlPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
     <osgi:service ref="xpdl2epmlPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
+    <osgi:service ref="yawl2epmlPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
 
 </beans:beans>
