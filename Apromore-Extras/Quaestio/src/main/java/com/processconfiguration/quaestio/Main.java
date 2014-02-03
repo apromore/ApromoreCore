@@ -251,7 +251,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JPanel jPanel_save = null;
 	private JPanel jPanel_save0 = null;
 	private JPanel jPanel_save1 = null;
-	private JPanel jPanel_save2 = null;
+	protected JPanel jPanel_save2 = null;
 	private JPanel jPanel_saveTxt = null;
 	private JButton jButton_Export = null;
 	private JButton jButton_Discard = null;
@@ -1434,7 +1434,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JPanel getJPanel_save2() {
+	protected JPanel getJPanel_save2() {
 		if (jPanel_save2 == null) {
 			GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
 			gridBagConstraints34.gridx = 0;
@@ -1744,14 +1744,14 @@ public class Main extends JPanel implements ListSelectionListener,
 	 * 
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton_Discard() {
+	protected JButton getJButton_Discard() {
 		if (jButton_Discard == null) {
 			jButton_Discard = new JButton();
 			jButton_Discard.setMaximumSize(new Dimension(86, 25));
 			jButton_Discard.setMinimumSize(new Dimension(86, 25));
 			jButton_Discard.setPreferredSize(new Dimension(86, 25));
 			jButton_Discard.setFont(new Font("Dialog", Font.PLAIN, 11));
-			jButton_Discard.setText("Cancel");
+			jButton_Discard.setText("Continue");
 			jButton_Discard.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					getJDialog_AskToSave().setVisible(false);
@@ -1775,13 +1775,20 @@ public class Main extends JPanel implements ListSelectionListener,
 			jTextArea_save.setEditable(false);
 			jTextArea_save.setLineWrap(true);
 			jTextArea_save.setWrapStyleWord(true);
-			jTextArea_save.setText("All the facts have been set correctly.\n"
-					+ "\nClick Export DCL to export this configuration.\n"
-					+ "Click Individualize to link this configuration to a\n"
-					+ "process model and individualize the latter.");
+			jTextArea_save.setText(getSaveText());
 		}
 		return jTextArea_save;
 	}
+
+        /**
+         * @return explanatory text presented within {@link #jTextArea_save}.
+         */
+        protected String getSaveText() {
+            return "All the facts have been set correctly.\n"
+		+ "\nClick Export DCL to export this configuration.\n"
+		+ "Click Individualize to link this configuration to a\n"
+		+ "process model and individualize the latter.";
+        }
 
 	// this method tries to give the default answer to an input question and
 	// returns true if the default answer can be given, otherwise it returns
@@ -1975,8 +1982,9 @@ public class Main extends JPanel implements ListSelectionListener,
 				}
 				application.setLinkedProcessModel(
 					new ApromoreProcessModel(Integer.valueOf(args[i+1]),  // process ID
-					                         args[i+2],                              // branch
-					                         args[i+3])              // version number
+					                         args[i+2],                   // branch
+					                         args[i+3],                   // version number
+					                         application)
 				);
 				i += 3;
                                 break;
@@ -3923,6 +3931,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			updateValidQ();
 
 		} else if (command.equals("Save model")) {
+			//testLiveConnect();
 			saveAction.actionPerformed(e);
 		}
 
@@ -3996,6 +4005,13 @@ public class Main extends JPanel implements ListSelectionListener,
 		}
 		/// End hack for AotF demo
 	}
+
+        /** Test code, method overridden in {@link QuaestioApplet}. */
+	/*
+	protected void testLiveConnect() {
+		System.out.println("Triggered testLiveConnect entry point");
+	}
+	*/
 
 	/**
          * @return the BPMN process model with the current questionnaire answers applied according to the cmap
