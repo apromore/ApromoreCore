@@ -1,9 +1,5 @@
 package org.apromore.portal.dialogController.similarityclusters;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apromore.model.ClusterSummaryType;
 import org.apromore.model.FragmentData;
 import org.apromore.portal.dialogController.BaseDetailController;
@@ -13,7 +9,10 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Window;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Controlling the Listbox displaying the fragments that belong to a selected cluster
@@ -38,6 +37,7 @@ public class SimilarityClustersFragmentsListboxController extends BaseDetailCont
         this.listBox = ((Listbox) Executions.createComponents(ZUL_PAGE, getMainController(), null));
 
         ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Cluster Details");
+        ((South) getMainController().getFellow("leftInnerSouthPanel")).setOpen(true);
 
         getListBox().setItemRenderer(new SimilarityFragmentsItemRenderer());
         getListBox().setModel(new ListModelList());

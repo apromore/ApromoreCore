@@ -69,8 +69,8 @@ public class DMatrix {
         generator.addGedCalc(new CanonicalGEDDeterministicGreedyCalc(DissimilarityMatrix.GED_THRESHOLD, DissimilarityMatrix.LED_CUTOFF));
         //generator.addGedCalc(new jBPTGEDCalc(DissimilarityMatrix.GED_THRESHOLD));
 
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         generator.computeDissimilarity();
-        System.out.println(System.currentTimeMillis() - start);
+//        System.out.println(System.currentTimeMillis() - start);
     }
 }

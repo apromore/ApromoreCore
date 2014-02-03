@@ -8,32 +8,32 @@
     <rows>
         <row>
             <label value="Min Size"/>
-            <slider id="minclustersize" curpos="4" maxpos="100" mold="scale" width="100%"/>
+            <slider id="minclustersize" mold="scale" width="100%"/>
             <label id="minclustersizeLabel" value="${minclustersize.curpos}"/>
         </row>
         <row>
             <label value="Max Size"/>
-            <slider id="maxclustersize" curpos="8" maxpos="100" mold="scale" width="100%"/>
+            <slider id="maxclustersize" mold="scale" width="100%"/>
             <label value="${maxclustersize.curpos}"/>
         </row>
         <row>
             <label value="Min Average Fragment Size"/>
-            <slider id="minavgfragmentsize" curpos="5" maxpos="100" mold="scale" width="100%"/>
+            <slider id="minavgfragmentsize" mold="scale" width="100%"/>
             <label value="${minavgfragmentsize.curpos}"/>
         </row>
         <row>
             <label value="Max Average Fragment Size"/>
-            <slider id="maxavgfragmentsize" curpos="15" maxpos="100" mold="scale" width="100%"/>
+            <slider id="maxavgfragmentsize" mold="scale" width="100%"/>
             <label value="${maxavgfragmentsize.curpos}"/>
         </row>
         <row>
             <label value="Min Benefit Cost Ratio"/>
-            <slider id="minbcr" curpos="0" maxpos="100" mold="scale" width="100%"/>
+            <slider id="minbcr" mold="scale" width="100%"/>
             <label value="${minbcr.curpos}"/>
         </row>
         <row>
             <label value="Max Benefit Cost Ratio"/>
-            <slider id="maxbcr" curpos="50" maxpos="100" mold="scale" width="100%"/>
+            <slider id="maxbcr" mold="scale" width="100%"/>
             <label value="${maxbcr.curpos}"/>
         </row>
     </rows>

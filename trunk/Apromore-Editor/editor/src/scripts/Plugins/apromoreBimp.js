@@ -44,7 +44,7 @@ ORYX.Plugins.ApromoreBimp = ORYX.Plugins.AbstractPlugin.extend({
     sendToBimp:function () {
         if (this.getDiagramType() == 'xpdl' || this.getDiagramType() == 'bpmn') {
             this.form = new Ext.form.FormPanel({
-                url: "http://bimp.cs.ut.ee/uploadsignavio",
+                url: ORYX.CONFIG.BIMP_URL,
                 method: "POST",
                 items: new Ext.form.Hidden({
                     name: "file"

@@ -56,14 +56,21 @@ ORYX.Plugins.PropertyWindow = {
 		
 		/* The currently selected shapes whos properties will shown */
 		this.shapeSelection = new Hash();
-		this.shapeSelection.shapes = new Array();
-		this.shapeSelection.commonProperties = new Array();
+		this.shapeSelection.shapes = [];
+		this.shapeSelection.commonProperties = [];
 		this.shapeSelection.commonPropertiesValues = new Hash();
 
 		this.suppressedProperties = new Hash();
 		this.updaterFlag = false;
 
-		// creating the store for the model.
+        var metaData = this.facade.getModelMetaData();
+        var langs = (metaData.languages || []).sort(function (k, h) {
+            return k.position - h.position
+        }).pluck("rel");
+        this.defaultLanguage = langs.first();
+        this.languages = langs;
+
+        // creating the store for the model.
         	this.dataSource = new Ext.data.GroupingStore({
 			proxy: new Ext.data.MemoryProxy(this.properties),
 			reader: new Ext.data.ArrayReader({}, [
@@ -154,7 +161,7 @@ ORYX.Plugins.PropertyWindow = {
 			items: [
 				this.grid 
 			]
-		}), ORYX.I18N.PropertyWindow.title)
+		}), ORYX.I18N.PropertyWindow.title);
 
 		// Register on Events
 		this.grid.on('beforeedit', this.beforeEdit, this, true);
@@ -171,8 +178,20 @@ ORYX.Plugins.PropertyWindow = {
 		//this.dataSource.sort('name');
 
 	},
-	
-	// Select the Canvas when the editor is ready
+
+    reduceLanguage: function (lang) {
+        return lang
+    },
+
+    getActiveLanguage: function () {
+        return this.facade.getCanvas().getLanguage()
+    },
+
+    getAllLanguages: function () {
+        return [].concat(this.getActiveLanguage(), this.languages).uniq()
+    },
+
+    // Select the Canvas when the editor is ready
 	selectDiagram: function() {
 		this.shapeSelection.shapes = [this.facade.getCanvas()];
 		
@@ -188,6 +207,7 @@ ORYX.Plugins.PropertyWindow = {
 			return false
 		}
 	},
+
 	tooltipRenderer: function(value, p, record) {
 		/* Prepare tooltip */
 		p.cellAttr = 'title="' + record.data.gridProperties.tooltip + '"';
@@ -195,7 +215,6 @@ ORYX.Plugins.PropertyWindow = {
 	},
 	
 	renderer: function(value, p, record) {
-		
 		p.cellAttr = 'title="' + record.data.gridProperties.tooltip + '"';
 
 		if(value instanceof Date) {
@@ -425,13 +444,13 @@ ORYX.Plugins.PropertyWindow = {
 
 	// extended by Kerstin (start)	
 	dialogClosed: function(data) {
-		var row = this.field ? this.field.row : this.row 
+		var row = this.field ? this.field.row : this.row;
 		this.scope.afterEdit({
 			grid:this.scope.grid, 
 			record:this.scope.grid.getStore().getAt(row), 
 			//value:this.scope.grid.getStore().getAt(this.row).get("value")
 			value: data
-		})
+		});
 		// reopen the text field of the complex list field again
 		this.scope.grid.startEditing(row, this.col);
 	},
@@ -477,77 +496,103 @@ ORYX.Plugins.PropertyWindow = {
 			}
 		}.bind(this));
 	},
-	
+
+    getStencilSetOfSelection: function () {
+        var stencils = new Hash();
+        this.shapeSelection.shapes.each(function (shape) {
+            stencils[shape.getStencil().id()] = shape.getStencil()
+        });
+        return stencils
+    },
+
 	/**
 	 * Identifies the common Properties of the selected shapes.
 	 */
 	identifyCommonProperties: function() {
 		this.shapeSelection.commonProperties.clear();
-		
-                /*
-                 * A common property is a property, that is part of
-                 * the stencil definition of the first and all other stencils.
-                 */
-                var firstShape = this.shapeSelection.shapes.first();
-                var comparingShapes = this.shapeSelection.shapes.without(firstShape);
-
-                var isPropertySuppressed = function(property, shape) {
-                        if (property.id() == "absentinconfiguration") {
-
-                                var countSequenceFlows = function(shapes) {
-                                        var n = 0;
-                                        shapes.each(function(s) {
-                                                if (s.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#SequenceFlow") { n++; }
-                                        });
-                                        return n;
-                                };
-
-                                // If this is one of several outgoing flows from a configurable gateway, may be absentinconfiguration
-                                var source = shape.getSource();
-                                if (source.properties["oryx-configurable"] && countSequenceFlows(source.getOutgoingShapes()) > 1) { return false; }
-
-                                // If this is one of several incoming flows to a configurable gateway, may be absentinconfiguration
-                                var target = shape.getTarget();
-                                if (target.properties["oryx-configurable"] && countSequenceFlows(target.getIncomingShapes()) > 1) { return false; }
-
-                                // Otherwise, cannot be absentinconfiguration
-                                return true;
-                        }
-
-                        // Other properties are not suppressed
-                        return false;
+        var stencils = this.getStencilSetOfSelection();
+        var first = stencils.values().first();
+        var rest = stencils.values().without(first);
+        if (rest.length == 0) {
+            this.shapeSelection.commonProperties = this.reorder(first.properties())
+        } else {
+            var d = new Hash();
+            var h = new Hash();
+            first.properties().each(function (item) {
+                if (item.alwaysAppearInMultiselect()) {
+                    h[item.namespace() + "-" + item.id() + "-" + item.type()] = item
+                } else {
+                    d[item.namespace() + "-" + item.id() + "-" + item.type()] = item
                 }
-
-                var properties = new Hash();
-		this.suppressedProperties = new Hash();
-
-                firstShape.getStencil().properties().each((function(property){
-                        if (isPropertySuppressed(property, firstShape)) {
-				this.suppressedProperties["oryx-" + property.id()] = true;
-			}
-                        properties[property.namespace() + '-' + property.id()
-                                                + '-' + property.type()] = property;
-                }).bind(this));
-
-                // Calculate intersection of properties.
-
-                comparingShapes.each(function(shape){
-                        var intersection = new Hash();
-                        shape.getStencil().properties().each(function(property){
-                                if (!isPropertySuppressed(property, shape)) {
-					this.suppressedProperties["oryx-" + property.id()] = true;
-				}
-                                if(properties[property.namespace() + '-' + property.id()
-                                                                + '-' + property.type()]){
-                                        intersection[property.namespace() + '-' + property.id()
-                                                                        + '-' + property.type()] = property;
-                                }
-                        });
-                        properties = intersection;
+            });
+            rest.each(function (k) {
+                var m = new Hash();
+                k.properties().each(function (item) {
+                    if (item.alwaysAppearInMultiselect()) {
+                        h[item.namespace() + "-" + item.id() + "-" + item.type()] = item
+                    } else {
+                        if (d[item.namespace() + "-" + item.id() + "-" + item.type()]) {
+                            m[item.namespace() + "-" + item.id() + "-" + item.type()] = item
+                        }
+                    }
                 });
-
-                this.shapeSelection.commonProperties = properties.values();
+                d = m
+            });
+            h.each(function (item) {
+                d[item.key] = item.value
+            });
+            this.shapeSelection.commonProperties = this.reorder(d.values());
+            if (this.shapeSelection.shapes.length > 1) {
+                this.shapeSelection.commonProperties = this.shapeSelection.commonProperties.findAll(function (item) {
+                    return item.type() !== ORYX.CONFIG.TYPE_DIAGRAM_LINK
+                })
+            }
+        }
 	},
+
+    isTranslation: function (stensil) {
+        var isTrans = false;
+        var id = stensil.id();
+        this.languages.each(function (g) {
+            if (id.endsWith("_" + g)) {
+                isTrans = true;
+                throw $break
+            }
+        });
+        return isTrans;
+    },
+
+    isTranslatable: (function () {
+        var types = [ORYX.CONFIG.TYPE_TEXT, ORYX.CONFIG.TYPE_STRING, ORYX.CONFIG.TYPE_COMPLEX];
+        return function (item) {
+            return types.include(item.type())
+        }
+    }()),
+
+    addTranslations: function (stensil, stensils, list) {
+        var id = stensil.id();
+        this.languages.each(function (h) {
+            stensils.each(function (k) {
+                if (k.id() === id + "_" + h) {
+                    list.push(k)
+                }
+            })
+        })
+    },
+
+    reorder: function (stensils) {
+        var orderedList = [];
+        stensils.each(function (stensil) {
+            if (this.isTranslation(stensil)) {
+                return
+            }
+            orderedList.push(stensil);
+            if (this.isTranslatable(stensil)) {
+                this.addTranslations(stensil, stensils, orderedList)
+            }
+        }.bind(this));
+        return orderedList;
+    },
 	
 	onSelectionChanged: function(event) {
 		/* Event to call afterEdit method */

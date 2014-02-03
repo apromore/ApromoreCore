@@ -685,7 +685,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             // Check is the ProcessModelVersion used by any other Branch (Check the sourceProcessModelVersionId column in branch).
             if (processBranchRepo.countProcessModelBeenForked(pmv) > 0) {
-                LOGGER.error("There are other branches forked from this Process Model.");
+                throw new Exception("There are other branches forked from this Process Model.");
             } else {
                 deleteFragmentVersion(pmv.getRootFragmentVersion(), true);
             }

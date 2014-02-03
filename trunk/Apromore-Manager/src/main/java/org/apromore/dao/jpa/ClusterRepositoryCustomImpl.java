@@ -65,10 +65,9 @@ public class ClusterRepositoryCustomImpl implements ClusterRepositoryCustom {
     @Override
     @SuppressWarnings("unchecked")
     public List<Cluster> getFilteredClusters(final ClusterFilter filter) {
-        Query query = em.createQuery("SELECT c FROM Cluster c WHERE (c.size > :minClusterSize OR c.size = :minClusterSize) " +
-                "AND (c.size < :maxClusterSize OR c.size = :maxClusterSize) AND (c.avgFragmentSize > :minAvgFragmentSize OR c.avgFragmentSize = :minAvgFragmentSize) " +
-                "AND (c.avgFragmentSize < :maxAvgFragmentSize OR c.avgFragmentSize = :maxAvgFragmentSize) " +
-                "AND (c.BCR > :minBCR OR c.BCR = :minBCR) AND (c.BCR < :maxBCR OR c.BCR = :maxBCR)");
+        Query query = em.createQuery("SELECT c FROM Cluster c WHERE (c.size >= :minClusterSize) " +
+                "AND (c.size <= :maxClusterSize) AND (c.avgFragmentSize >= :minAvgFragmentSize) " +
+                "AND (c.avgFragmentSize <= :maxAvgFragmentSize) AND (c.BCR >= :minBCR) AND (c.BCR <= :maxBCR)");
         query.setParameter("minClusterSize", filter.getMinClusterSize());
         query.setParameter("maxClusterSize", filter.getMaxClusterSize());
         query.setParameter("minAvgFragmentSize", filter.getMinAverageFragmentSize());

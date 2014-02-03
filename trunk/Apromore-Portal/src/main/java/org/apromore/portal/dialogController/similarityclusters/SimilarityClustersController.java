@@ -118,12 +118,6 @@ public class SimilarityClustersController extends BaseController {
                 doCreateSimilarityClusters();
             }
         });
-//        this.btnGed.addEventListener("onClick", new EventListener<Event>() {
-//            @Override
-//            public void onEvent(final Event event) throws Exception {
-//                doCreateGedMatrix();
-//            }
-//        });
         this.btnOK.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {

@@ -33,7 +33,7 @@ public class BaseController extends Window {
                 url = "http://b3mn.org/stencilset/bpmn2.0#";
                 break;
             case "PNML 1.3.2":
-                url = "";
+                url = "http://b3mn.org/stencilset/petrinet#";
                 break;
             case "YAWL 2.2":
                 url = "http://b3mn.org/stencilset/yawl2.2#";
@@ -76,6 +76,9 @@ public class BaseController extends Window {
                 break;
             case "BPMN 2.0":
                 exportPath = "/editor/editor/bpmnexport";
+                break;
+            case "PNML 1.3.2":
+                exportPath = "/editor/editor/pnmlexport";
                 break;
             case "YAWL 2.2":
                 exportPath = "/editor/editor/yawlexport";
