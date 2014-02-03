@@ -2,13 +2,24 @@ package com.processconfiguration.quaestio;
 
 // Java 2 Standard classes
 
-import javax.swing.JApplet;
-import javax.swing.SwingUtilities;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
+import javax.swing.JApplet;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+/*
+// Third party classes
+import netscape.javascript.JSException;
+import netscape.javascript.JSObject;
+*/
 
 // Local classes
 
@@ -24,12 +35,59 @@ public class QuaestioApplet extends JApplet {
                 Main main;
                 public void run() {
                     main = new Main() {
+
                         @Override
                         protected void browse(final URL url) throws Exception {
                             main.log("Browse " + url);
                             getAppletContext().showDocument(url, "target");
                             main.log("Browsed " + url);
                         }
+
+                        @Override
+                        protected JPanel getJPanel_save2() {
+                            if (jPanel_save2 == null) {
+                                GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
+                                gridBagConstraints34.gridx = 0;
+                                gridBagConstraints34.insets = new Insets(4, 4, 6, 20);
+                                gridBagConstraints34.gridy = 0;
+                                GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
+                                gridBagConstraints35.gridx = 1;
+                                gridBagConstraints35.insets = new Insets(4, 16, 6, 4);
+                                gridBagConstraints35.gridy = 0;
+                                GridBagConstraints gridBagConstraints36 = new GridBagConstraints();
+                                gridBagConstraints36.gridx = 2;
+                                gridBagConstraints36.insets = new Insets(4, 40, 6, 4);
+                                gridBagConstraints36.gridy = 0;
+                                jPanel_save2 = new JPanel();
+                                jPanel_save2.setLayout(new GridBagLayout());
+                                jPanel_save2.add(getJButton_Discard(), gridBagConstraints36);
+                            }
+                            return jPanel_save2;
+                        }
+
+                        /** @inheritDoc */
+                        @Override
+                        protected String getSaveText() { 
+                            return "All the facts have been set correctly.\n"
+                                + "\nRemember to Save Model before closing this window!";
+                        }
+
+			/*
+                        @Override
+                        protected void testLiveConnect() {
+                            try {
+                                JSObject window = JSObject.getWindow(QuaestioApplet.this);
+                                window.eval("alert('showModel');");
+                                //window.eval("showModel();");
+                                window.eval("ORYX.Plugins.ApromoreSave.apromoreSave(null,null);");
+                                window.eval("alert('shownModel');");
+                            } catch (JSException e) {
+                                e.printStackTrace();
+                            } catch (NoClassDefFoundError e) {
+                                e.printStackTrace();
+                            }
+                        }
+			*/
                     };
 
                     try {
@@ -95,7 +153,7 @@ public class QuaestioApplet extends JApplet {
                             String branch    = matcher.group(2);
                             String version   = matcher.group(3);
 
-                            main.setLinkedProcessModel(new ApromoreProcessModel(processID, branch, version));
+                            main.setLinkedProcessModel(new ApromoreProcessModel(processID, branch, version, main));
 
                         } catch (Exception e) {
                             showStatus("Unable to read model " + model);
