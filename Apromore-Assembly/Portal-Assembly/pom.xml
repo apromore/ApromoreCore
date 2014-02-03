@@ -171,11 +171,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
             <scope>provided</scope>

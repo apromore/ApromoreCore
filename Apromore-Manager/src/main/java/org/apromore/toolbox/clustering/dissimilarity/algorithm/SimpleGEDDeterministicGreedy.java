@@ -131,7 +131,7 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
                             couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                         }
                     } else {
-                        System.out.println("oops ...");
+//                        System.out.println("oops ...");
                         deterministic = false;
                         couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                     }

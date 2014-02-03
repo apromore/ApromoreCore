@@ -86,7 +86,7 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
         }
 
         var msg = Ext.Msg.wait("Waiting for BPStruct to process model.");
-        new Ajax.Request('/editor/editor/bpstruct', {
+        new Ajax.Request(ORYX.CONFIG.BPSTRUCT_URL, {
             parameters: {'data': json, 'type': this.getDiagramType()},
             method: 'POST',
             asynchronous: true,

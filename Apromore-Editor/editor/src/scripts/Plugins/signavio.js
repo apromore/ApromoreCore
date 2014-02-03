@@ -50,7 +50,7 @@ new function(){
 		} catch(e){
 			return 0;
 		}	
-	}
+	};
 	
 	
 	/**
@@ -97,7 +97,7 @@ new function(){
 
 		mask.first().show({duration:0.3});
 
-	}
+	};
 			
 	// When body is loaded, show overlay		
 	Ext.onReady(Signavio.Helper.ShowMask);
@@ -114,7 +114,7 @@ new function(){
 			}
 
 		}.bind(this), 2000)
-	}
+	};
 			
 	Signavio.Plugins.Loading = {
 	
@@ -143,7 +143,7 @@ new function(){
 				}
 			}()
 		}
-	}
+	};
 	
 	Signavio.Plugins.Loading = Clazz.extend(Signavio.Plugins.Loading);
 

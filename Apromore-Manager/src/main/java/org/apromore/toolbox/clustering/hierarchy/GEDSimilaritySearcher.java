@@ -87,7 +87,7 @@ public class GEDSimilaritySearcher {
         resultsFragments = new ArrayList<>();
 
         nfrag = containmentRelation.getNumberOfFragments();
-        System.out.println("Fragments to compare: " + nfrag);
+//        System.out.println("Fragments to compare: " + nfrag);
         reportingInterval = 0;
         comparedFragments = 0;
 
@@ -135,7 +135,7 @@ public class GEDSimilaritySearcher {
             reportingInterval = 0;
             double percentage = (double) comparedFragments * 100 / nfrag;
             percentage = (double) Math.round((percentage * 1000)) / 1000d;
-            System.out.println(comparedFragments + " compared out of " + nfrag + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + resultsFragments.size());
+//            System.out.println(comparedFragments + " compared out of " + nfrag + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + resultsFragments.size());
             LOGGER.info(comparedFragments + " compared out of " + nfrag + " | " + percentage + " % completed. | Elapsed time: " + duration + " s");
         }
     }

@@ -85,7 +85,6 @@ ORYX.Plugins.Save = Clazz.extend({
     },
 
     updateTitle: function () {
-
         var value = window.document.title;
         var docElement = document.getElementsByTagName("title")[0];
         if (docElement) {
@@ -106,12 +105,10 @@ ORYX.Plugins.Save = Clazz.extend({
         if (this.changeDifference !== 0 || (this.facade.getModelMetaData()['new'] && this.facade.getCanvas().getChildShapes().size() > 0)) {
             return ORYX.I18N.Save.unsavedData;
         }
-
     },
 
 
     saveSynchronously: function (forceNew, modelInfo) {
-
         if (!modelInfo) {
             return;
         }
@@ -141,20 +138,11 @@ ORYX.Plugins.Save = Clazz.extend({
             '<p><label for="edit_model_summary">' + ORYX.I18N.Save.dialogLabelDesc + '</label><textarea rows="5" name="summary" id="edit_model_summary" onfocus="this.className = \'activated\'" onblur="this.className = \'\'">{summary}</textarea></p>',
             (modelMeta.versioning) ? '<p><label for="edit_model_comment">' + ORYX.I18N.Save.dialogLabelComment + '</label><textarea rows="5" name="comment" id="edit_model_comment" onfocus="this.className = \'activated\'" onblur="this.className = \'\'">{comment}</textarea></p>' : '',
             '<p><label for="edit_model_type">' + ORYX.I18N.Save.dialogLabelType + '</label><input type="text" name="type" class="text disabled" value="{type}" disabled="disabled" id="edit_model_type" /></p>',
-
             '</fieldset>',
-
-            '</form>')
+            '</form>');
 
         // Create the callback for the template
         callback = function (form) {
-
-            // raise loading enable event
-            /*this.facade.raiseEvent({
-             type: ORYX.CONFIG.EVENT_LOADING_ENABLE,
-             text: ORYX.I18N.Save.saving
-             });*/
-
             var title = form.elements["title"].value.strip();
             title = title.length == 0 ? defaultData.title : title;
 
