@@ -35,29 +35,34 @@ ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		300;
 ORYX.CONFIG.APPNAME = 					'Signavio';
 ORYX.CONFIG.WEB_URL = 					"explorer";
 
+ORYX.CONFIG.PDF_EXPORT_URL = "/editor/editor/pdf";
+ORYX.CONFIG.BPSTRUCT_URL = "/editor/editor/bpstruct";
+ORYX.CONFIG.BIMP_URL = "http://bimp.cs.ut.ee/uploadsignavio";
+ORYX.CONFIG.DIAGRAM_PRINTER_URL = "/printsvg";
+ORYX.CONFIG.LICENSE_URL = "/LICENSE";
+
 ORYX.CONFIG.BLANK_IMAGE = ORYX.CONFIG.LIBS_PATH + '/ext-2.0.2/resources/images/default/s.gif';
 
 
 /* Show grid line while dragging */
 ORYX.CONFIG.SHOW_GRIDLINE = 			false;
 
-	/* Editor-Mode */
+/* Editor-Mode */
 ORYX.CONFIG.MODE_READONLY =				"readonly";
 ORYX.CONFIG.MODE_FULLSCREEN =			"fullscreen";
 ORYX.CONFIG.WINDOW_HEIGHT = 			400;	
 ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY = true;
 
-	/* Plugins */
+/* Plugins */
 ORYX.CONFIG.PLUGINS_ENABLED =			true;
 ORYX.CONFIG.PLUGINS_FOLDER =			"Plugins/";
-
 ORYX.CONFIG.BPMN20_SCHEMA_VALIDATION_ON = true;
 
-	/* Namespaces */
+/* Namespaces */
 ORYX.CONFIG.NAMESPACE_ORYX =			"http://www.b3mn.org/oryx";
 ORYX.CONFIG.NAMESPACE_SVG =				"http://www.w3.org/2000/svg";
 
-	/* UI */
+/* UI */
 ORYX.CONFIG.CANVAS_WIDTH =				1485; 
 ORYX.CONFIG.CANVAS_HEIGHT =				1050;
 ORYX.CONFIG.CANVAS_RESIZE_INTERVAL =	300;
@@ -75,25 +80,21 @@ ORYX.CONFIG.OFFSET_EDGE_LABEL_TOP =		8;
 ORYX.CONFIG.OFFSET_EDGE_LABEL_BOTTOM =	8;
 ORYX.CONFIG.OFFSET_EDGE_BOUNDS =		5;
 ORYX.CONFIG.COPY_MOVE_OFFSET =			30;
-	
 ORYX.CONFIG.BORDER_OFFSET =				14;
-
 ORYX.CONFIG.MAX_NUM_SHAPES_NO_GROUP	=	12;
-
 ORYX.CONFIG.SHAPEMENU_CREATE_OFFSET_CORNER = 30;
 ORYX.CONFIG.SHAPEMENU_CREATE_OFFSET = 45;
 
-	/* Shape-Menu Align */
+/* Shape-Menu Align */
 ORYX.CONFIG.SHAPEMENU_RIGHT =			"Oryx_Right";
 ORYX.CONFIG.SHAPEMENU_BOTTOM =			"Oryx_Bottom";
 ORYX.CONFIG.SHAPEMENU_LEFT =			"Oryx_Left";
 ORYX.CONFIG.SHAPEMENU_TOP =				"Oryx_Top";
 
-
-	/* Morph-Menu Item */
+/* Morph-Menu Item */
 ORYX.CONFIG.MORPHITEM_DISABLED =		"Oryx_MorphItem_disabled";
 
-	/* Property type names */
+/* Property type names */
 ORYX.CONFIG.TYPE_STRING =				"string";
 ORYX.CONFIG.TYPE_BOOLEAN =				"boolean";
 ORYX.CONFIG.TYPE_INTEGER =				"integer";
@@ -108,16 +109,14 @@ ORYX.CONFIG.TYPE_TEXT =					"text";
 ORYX.CONFIG.TYPE_EPC_FREQ = 			"epcfrequency";
 ORYX.CONFIG.TYPE_GLOSSARY_LINK =		"glossarylink";
 
-	
-	/* Vertical line distance of multiline labels */
+/* Vertical line distance of multiline labels */
 ORYX.CONFIG.LABEL_LINE_DISTANCE =		2;
 ORYX.CONFIG.LABEL_DEFAULT_LINE_HEIGHT =	12;
 
-	/* Open Morph Menu with Hover */
+/* Open Morph Menu with Hover */
 ORYX.CONFIG.ENABLE_MORPHMENU_BY_HOVER = false;
 
-
-	/* Editor constants come here */
+/* Editor constants come here */
 ORYX.CONFIG.EDITOR_ALIGN_BOTTOM =		0x01;
 ORYX.CONFIG.EDITOR_ALIGN_MIDDLE =		0x02;
 ORYX.CONFIG.EDITOR_ALIGN_TOP =			0x04;
@@ -126,7 +125,7 @@ ORYX.CONFIG.EDITOR_ALIGN_CENTER =		0x10;
 ORYX.CONFIG.EDITOR_ALIGN_RIGHT =		0x20;
 ORYX.CONFIG.EDITOR_ALIGN_SIZE =			0x30;
 
-	/* Event types */
+/* Event types */
 ORYX.CONFIG.EVENT_MOUSEDOWN =			"mousedown";
 ORYX.CONFIG.EVENT_MOUSEUP =				"mouseup";
 ORYX.CONFIG.EVENT_MOUSEOVER =			"mouseover";
@@ -135,9 +134,7 @@ ORYX.CONFIG.EVENT_MOUSEMOVE =			"mousemove";
 ORYX.CONFIG.EVENT_DBLCLICK =			"dblclick";
 ORYX.CONFIG.EVENT_KEYDOWN =				"keydown";
 ORYX.CONFIG.EVENT_KEYUP =				"keyup";
-
 ORYX.CONFIG.EVENT_LOADED =				"editorloaded";
-	
 ORYX.CONFIG.EVENT_EXECUTE_COMMANDS =		"executeCommands";
 ORYX.CONFIG.EVENT_STENCIL_SET_LOADED =		"stencilSetLoaded";
 ORYX.CONFIG.EVENT_SELECTION_CHANGED =		"selectionchanged";
@@ -176,31 +173,26 @@ ORYX.CONFIG.EVENT_LAYOUT = 					"layout.dolayout";
 ORYX.CONFIG.EVENT_GLOSSARY_LINK_EDIT = 		"glossary.link.edit";
 ORYX.CONFIG.EVENT_GLOSSARY_SHOW =			"glossary.show.info";
 ORYX.CONFIG.EVENT_GLOSSARY_NEW =			"glossary.show.new";
-ORYX.CONFIG.EVENT_DOCKERDRAG = 				"dragTheDocker";	
-	
+ORYX.CONFIG.EVENT_DOCKERDRAG = 				"dragTheDocker";
 ORYX.CONFIG.EVENT_SHOW_PROPERTYWINDOW =		"propertywindow.show";
 ORYX.CONFIG.EVENT_ABOUT_TO_SAVE = "file.aboutToSave";
 	
-	/* Selection Shapes Highlights */
+/* Selection Shapes Highlights */
 ORYX.CONFIG.SELECTION_HIGHLIGHT_SIZE =				5;
 ORYX.CONFIG.SELECTION_HIGHLIGHT_COLOR =				"#4444FF";
 ORYX.CONFIG.SELECTION_HIGHLIGHT_COLOR2 =			"#9999FF";
-	
 ORYX.CONFIG.SELECTION_HIGHLIGHT_STYLE_CORNER = 		"corner";
 ORYX.CONFIG.SELECTION_HIGHLIGHT_STYLE_RECTANGLE = 	"rectangle";
-	
 ORYX.CONFIG.SELECTION_VALID_COLOR =					"#00FF00";
 ORYX.CONFIG.SELECTION_INVALID_COLOR =				"#FF0000";
-
-
 ORYX.CONFIG.DOCKER_DOCKED_COLOR =		"#00FF00";
 ORYX.CONFIG.DOCKER_UNDOCKED_COLOR =		"#FF0000";
 ORYX.CONFIG.DOCKER_SNAP_OFFSET =		10;
 		
-	/* Copy & Paste */
+/* Copy & Paste */
 ORYX.CONFIG.EDIT_OFFSET_PASTE =			10;
 
-	/* Key-Codes */
+/* Key-Codes */
 ORYX.CONFIG.KEY_CODE_X = 				88;
 ORYX.CONFIG.KEY_CODE_C = 				67;
 ORYX.CONFIG.KEY_CODE_V = 				86;
@@ -212,7 +204,7 @@ ORYX.CONFIG.KEY_CODE_RIGHT =			39;
 ORYX.CONFIG.KEY_CODE_UP =				38;
 ORYX.CONFIG.KEY_CODE_DOWN =				40;
 
-	// TODO Determine where the lowercase constants are still used and remove them from here.
+// TODO Determine where the lowercase constants are still used and remove them from here.
 ORYX.CONFIG.KEY_Code_enter =			12;
 ORYX.CONFIG.KEY_Code_left =				37;
 ORYX.CONFIG.KEY_Code_right =			39;
@@ -220,16 +212,13 @@ ORYX.CONFIG.KEY_Code_top =				38;
 ORYX.CONFIG.KEY_Code_bottom =			40;
 
 /* Supported Meta Keys */
-	
 ORYX.CONFIG.META_KEY_META_CTRL = 		"metactrl";
 ORYX.CONFIG.META_KEY_ALT = 				"alt";
 ORYX.CONFIG.META_KEY_SHIFT = 			"shift";
 
 /* Key Actions */
-
 ORYX.CONFIG.KEY_ACTION_DOWN = 			"down";
 ORYX.CONFIG.KEY_ACTION_UP = 			"up";
-
 
 ORYX.CONFIG.REMOTE_WINDOW_HEIGHT_DEFAULT = 300;
 ORYX.CONFIG.REMOTE_WINDOW_WIDTH_DEFAULT = 300;

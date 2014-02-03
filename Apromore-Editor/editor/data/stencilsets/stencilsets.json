@@ -56,7 +56,15 @@
             "uri":"/epc/epc.json",
             "icon_url":"/diagrams/epc-22x22.png",
             "visible":true
-        },        
+        },
+        {
+            "title":"Petrinets",
+            "namespace":"http://b3mn.org/stencilset/petrinet#",
+            "description":"Petrinets specification.",
+            "uri":"/petrinets/petrinet.json",
+            "icon_url":"/petrinets/petrinets.png",
+            "visible":true
+        },
         {
             "title":"YAWL Workflow (YAWL 2.2)",
             "namespace":"http://b3mn.org/stencilset/yawl2.2#",

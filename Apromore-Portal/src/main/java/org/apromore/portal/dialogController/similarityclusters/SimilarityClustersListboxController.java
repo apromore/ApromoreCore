@@ -35,10 +35,12 @@ public class SimilarityClustersListboxController extends BaseListboxController {
      * @param filterController    controlling the current search filter.
      * @param fragmentsController controlling the listbox with fragments.
      */
+    @SuppressWarnings("unchecked")
     public SimilarityClustersListboxController(final MainController mainController, final SimilarityClustersFilterController filterController,
             final SimilarityClustersFragmentsListboxController fragmentsController) {
         super(mainController, ZUL_PAGE, new SimilarityClustersItemRenderer());
         this.filterController = filterController;
+        this.filterController.setVisible(true);
 
         Button btnShowVisualisation = (Button) getMainController().getFellow("showVisualisation");
         btnShowVisualisation.setVisible(true);
@@ -46,8 +48,6 @@ public class SimilarityClustersListboxController extends BaseListboxController {
             @Override
             public void onEvent(final Event event) throws Exception {
                 if (getListModel().getSelection().size() > 0) {
-                    // We can assume it will always be a ArrayList of ClusterType here, because we initialize it in that way.
-                    @SuppressWarnings("unchecked")
                     List<ClusterSummaryType> selectedClusters = new ArrayList<ClusterSummaryType>(getListModel().getInnerList());
                     selectedClusters.retainAll(getListModel().getSelection());
                     setAttribute(ClusterVisualisationController.CLUSTER_RESULT_ATTRIBUTE_NAME, selectedClusters, SESSION_SCOPE);
@@ -104,7 +104,7 @@ public class SimilarityClustersListboxController extends BaseListboxController {
      */
     private String buildRefreshMessage() {
         String message;
-        message = "SimilarityClusters found " + getListModel().size();
+        message = "Found " + getListModel().size();
         if (getListModel().size() > 1) {
             message += " clusters.";
         } else {
