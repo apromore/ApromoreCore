@@ -47,8 +47,13 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 AnnotationsType annotation = getLastestAnnotation(data.getVersion().getAnnotations());
-                mainController.editProcess(data.getProcess(), data.getVersion(), annotation.getNativeType(),
+                if (annotation != null) {
+                    mainController.editProcess(data.getProcess(), data.getVersion(), annotation.getNativeType(),
                         annotation.getAnnotationName().get(0), "false", new HashSet<RequestParameterType<?>>());
+                } else {
+                    mainController.editProcess(data.getProcess(), data.getVersion(), data.getProcess().getOriginalNativeType(),
+                            null, "false", new HashSet<RequestParameterType<?>>());
+                }
             }
         });
     }
