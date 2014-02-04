@@ -85,7 +85,7 @@ new function(){
 		 * @param {Object} to Shape where the edge is leading to
 		 * @param {Object} edge Edge between from and to
 		 */
-		getPositions : function(from, to, edge){
+		getPositions: function(from, to, edge){
             // Get absolute bounds
 			var ab = from.absoluteBounds();
 			var bb = to.absoluteBounds();

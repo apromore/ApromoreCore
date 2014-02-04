@@ -90,7 +90,7 @@ ORYX.Core.StencilSet.Stencil = {
 			throw "ORYX.Core.StencilSet.Stencil(construct): Title is not defined.";
 		}
 
-		if(!this._jsonStencil.description) { this._jsonStencil.description = ""; };
+		if(!this._jsonStencil.description) { this._jsonStencil.description = ""; }
 		if(!this._jsonStencil.groups) { this._jsonStencil.groups = []; }
 		if(!this._jsonStencil.roles) { this._jsonStencil.roles = []; }
 		
@@ -113,21 +113,21 @@ ORYX.Core.StencilSet.Stencil = {
 		// init serialize callback
 		if(!this._jsonStencil.serialize) {
 			this._jsonStencil.serialize = {};
-			//this._jsonStencil.serialize = function(shape, data) { return data;};
 		}
 		
 		// init deserialize callback
 		if(!this._jsonStencil.deserialize) {
 			this._jsonStencil.deserialize = {};
-			//this._jsonStencil.deserialize = function(shape, data) { return data;};
 		}
 		
 		// init layout callback
 		if(!this._jsonStencil.layout) {
-			this._jsonStencil.layout = []
-			//this._jsonStencil.layout = function() {return true;}
+			this._jsonStencil.layout = [];
 		}
-		
+
+        if (!this._jsonStencil.keepState) {
+            this._jsonStencil.keepState = false
+        }
 		//TODO does not work correctly, if the url does not exist
 		//How to guarantee that the view is loaded correctly before leaving the constructor???
 		var url = source + "view/" + jsonStencil.view;
@@ -302,7 +302,11 @@ ORYX.Core.StencilSet.Stencil = {
 		return this._jsonStencil.deserialize;
 		//return this._jsonStencil.deserialize(shape, data);
 	},
-	
+
+    keepState: function () {
+        return this._jsonStencil.keepState;
+    },
+
 	// in which case is targetShape used?
 //	layout: function(shape, targetShape) {
 //		return this._jsonStencil.layout(shape, targetShape);

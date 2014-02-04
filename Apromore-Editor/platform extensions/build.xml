@@ -8,6 +8,7 @@
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="jpdl" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="xpdl" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="yawl" inheritall="true"/>
+        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="petrinet" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="syntaxchecker" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpstruct" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="pdf" inheritall="true"/>

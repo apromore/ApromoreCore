@@ -49,6 +49,8 @@
                                 <source>/platform extensions/diagram core/src</source>
                                 <source>/platform extensions/epc/src</source>
                                 <source>/platform extensions/jpdl/src</source>
+                                <source>/platform extensions/pdf/src</source>
+                                <source>/platform extensions/petrinet/src</source>
                                 <source>/platform extensions/syntaxchecker/src</source>
                                 <source>/platform extensions/xpdl/src</source>
                                 <source>/platform extensions/yawl/src</source>

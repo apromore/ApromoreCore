@@ -25,7 +25,7 @@ public final class Constants {
     public static final String ANNOTATIONS = "Annotations";
     public static final String CANONICAL = "Canonical";
 
-    public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
+    public static final String RELEASE_NOTES = "http://apromore-build.qut.edu.au/confluence/display/AP/Release+Notes";
     public static final String MORE_INFO = "http://apromore.org/";
 
     public static final String FOLDER_ICON = "/img/icon/folder-22x22.png";
