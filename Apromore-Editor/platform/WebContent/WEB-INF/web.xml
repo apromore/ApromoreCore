@@ -250,6 +250,28 @@
     </servlet-mapping>
 
     <servlet>
+        <display-name>PNMLImport</display-name>
+        <servlet-name>PNMLImportServlet</servlet-name>
+        <servlet-class>org.apromore.common.converters.pnml.servlet.SimplePNMLExporter</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PNMLImportServlet</servlet-name>
+        <url-pattern>/editor/pnmlimport</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <display-name>PNMLExport</display-name>
+        <servlet-name>PNMLExportServlet</servlet-name>
+        <servlet-class>org.apromore.common.converters.pnml.servlet.SimplePNMLExporter</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PNMLExportServlet</servlet-name>
+        <url-pattern>/editor/pnmlexport</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <display-name>BPStruct</display-name>
         <servlet-name>BPStructServlet</servlet-name>
         <servlet-class>org.apromore.common.converters.bpstruct.servlet.BPStructServlet</servlet-class>
