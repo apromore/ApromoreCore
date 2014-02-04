@@ -98,7 +98,7 @@ public class ProcessBranch implements Serializable {
         this.process = newProcess;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "currentProcessModelVersion")
     public ProcessModelVersion getCurrentProcessModelVersion() {
         return this.currentProcessModelVersion;
@@ -108,7 +108,7 @@ public class ProcessBranch implements Serializable {
         this.currentProcessModelVersion = newCurrentProcessModelVersion;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sourceProcessModelVersion")
     public ProcessModelVersion getSourceProcessModelVersion() {
         return this.sourceProcessModelVersion;

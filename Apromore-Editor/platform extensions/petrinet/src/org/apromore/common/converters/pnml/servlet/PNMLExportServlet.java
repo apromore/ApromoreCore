@@ -57,7 +57,8 @@ import de.hpi.petrinet.serialization.PetriNetPNMLExporter.Tool;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class SimplePNMLExporter extends HttpServlet {
+public class PNMLExportServlet extends HttpServlet {
+
 	private static final long serialVersionUID = -8374877061121257562L;
 	private Tool tool;
 	
@@ -68,8 +69,9 @@ public class SimplePNMLExporter extends HttpServlet {
 
 			String rdf = req.getParameter("data");
 			String tool = req.getParameter("tool");
-			if(tool!=null && tool.equals("lola"))
+			if(tool!=null && tool.equals("lola")) {
 				this.setTool( Tool.LOLA);
+            }
 			DocumentBuilder builder;
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			builder = factory.newDocumentBuilder();
@@ -100,25 +102,25 @@ public class SimplePNMLExporter extends HttpServlet {
 
 	protected void processDocument(Document document, Document pnmlDoc) {
 		String type = new StencilSetUtil().getStencilSet(document);
-		if (type.equals("ibpmn.json"))
+		if (type.equals("ibpmn.json")) {
 			processIBPMN(document, pnmlDoc);
-		else if (type.equals("bpmn.json") || type.equals("bpmnexec.json") || type.equals("bpmnexecutable.json"))
+        } else if (type.equals("bpmn.json") || type.equals("bpmnexec.json") || type.equals("bpmnexecutable.json")) {
 			processBPMN(document, pnmlDoc);
-		else if (type.equals("bpmn1.1.json"))
+        } else if (type.equals("bpmn1.1.json")) {
 			processBPMN11(document, pnmlDoc);
-		else if (type.equals("interactionpetrinets.json"))
+        } else if (type.equals("interactionpetrinets.json")) {
 			processIPN(document, pnmlDoc);
-		else if (type.equals("petrinet.json"))
+        } else if (type.equals("petrinet.json")) {
 			processPN(document, pnmlDoc);
+        }
 	}
 	
 	protected void processBPMN(Document document, Document pnmlDoc) {
 		BPMNRDFImporter importer = new BPMNRDFImporter(document);
-		BPMNDiagram diagram = (BPMNDiagram) importer.loadBPMN();
+		BPMNDiagram diagram = importer.loadBPMN();
 		new Preprocessor(diagram, new BPMNFactory()).process();
 
 		PetriNet net = new StandardConverter(diagram).convert();
-
 		PetriNetPNMLExporter exp = new PetriNetPNMLExporter();
 		exp.setTargetTool(getTool());
 		exp.savePetriNet(pnmlDoc, net);
@@ -126,11 +128,10 @@ public class SimplePNMLExporter extends HttpServlet {
 
 	protected void processBPMN11(Document document, Document pnmlDoc) {
 		BPMN11RDFImporter importer = new BPMN11RDFImporter(document);
-		BPMNDiagram diagram = (BPMNDiagram) importer.loadBPMN();
+		BPMNDiagram diagram = importer.loadBPMN();
 		new Preprocessor(diagram, new BPMNFactory()).process();
 
 		PetriNet net = new StandardConverter(diagram).convert();
-
 		PetriNetPNMLExporter exp = new PetriNetPNMLExporter();
 		exp.setTargetTool(getTool());
 		exp.savePetriNet(pnmlDoc, net);
@@ -138,10 +139,9 @@ public class SimplePNMLExporter extends HttpServlet {
 
 	protected void processIBPMN(Document document, Document pnmlDoc) {
 		IBPMNRDFImporter importer = new IBPMNRDFImporter(document);
-		BPMNDiagram diagram = (IBPMNDiagram) importer.loadIBPMN();
+		BPMNDiagram diagram = importer.loadIBPMN();
 
 		PetriNet net = new IBPMNConverter(diagram).convert();
-
 		InteractionNetPNMLExporter exp = new InteractionNetPNMLExporter();
 		exp.setTargetTool(getTool());
 		exp.savePetriNet(pnmlDoc, net);
@@ -149,7 +149,7 @@ public class SimplePNMLExporter extends HttpServlet {
 
 	protected void processIPN(Document document, Document pnmlDoc) {
 		InteractionNetRDFImporter importer = new InteractionNetRDFImporter(document);
-		InteractionNet net = (InteractionNet) importer.loadInteractionNet();
+		InteractionNet net = importer.loadInteractionNet();
 		
 		InteractionNetPNMLExporter exp = new InteractionNetPNMLExporter();
 		exp.setTargetTool(getTool());
@@ -158,7 +158,7 @@ public class SimplePNMLExporter extends HttpServlet {
 	
 	protected void processPN(Document document, Document pnmlDoc) {
 		PTNetRDFImporter importer = new PTNetRDFImporter(document);
-		PTNet net = (PTNet) importer.loadPTNet();
+		PTNet net = importer.loadPTNet();
 		
 		PetriNetPNMLExporter exp = new PetriNetPNMLExporter();
 		exp.setTargetTool(getTool());

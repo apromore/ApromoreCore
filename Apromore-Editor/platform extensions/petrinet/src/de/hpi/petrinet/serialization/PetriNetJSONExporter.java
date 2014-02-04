@@ -16,18 +16,17 @@ public class PetriNetJSONExporter {
     private static PetriNetJSONExporter eINSTANCE = null;
 
     public static PetriNetJSONExporter getInstance() {
-        if (eINSTANCE == null)
+        if (eINSTANCE == null) {
             eINSTANCE = new PetriNetJSONExporter();
+        }
 
         return eINSTANCE;
     }
 
     protected PetriNetJSONExporter() {
-
     }
 
     public JSONObject getJSONForPetriNet(PetriNet pn) {
-
         JSONObject json = new JSONObject();
 
         int id = 0;
@@ -41,14 +40,14 @@ public class PetriNetJSONExporter {
         }
 
         try {
-
             JSONArray shapeArray = new JSONArray();
 
-            for (Node n : pn.getNodes())
+            for (Node n : pn.getNodes()) {
                 shapeArray.put(getJSONForNode(pn, n));
-
-            for (FlowRelationship f : pn.getFlowRelationships())
+            }
+            for (FlowRelationship f : pn.getFlowRelationships()) {
                 shapeArray.put(getJSONForFlow(f));
+            }
 
             json.put("resourceId", "oryx-canvas123");
             json.put("properties", getJSONProperties());
@@ -57,14 +56,11 @@ public class PetriNetJSONExporter {
             json.put("bounds", getJSONBoundsForNet());
             json.put("stencilset", getJSONStencilSet());
             json.put("ssextensions", new JSONArray());
-
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return json;
-
     }
 
     protected JSONObject getJSONForFlow(FlowRelationship f) throws JSONException {
@@ -120,12 +116,11 @@ public class PetriNetJSONExporter {
 
         nodeProperties.put("id", n.getId());
         if (n instanceof Transition) {
-
-            if (n instanceof LabeledTransition)
+            if (n instanceof LabeledTransition) {
                 nodeProperties.put("title", ((LabeledTransition) n).getLabel());
-            else
+            } else {
                 nodeProperties.put("title", "");
-
+            }
             nodeProperties.put("firetype", "Automatic");
             nodeProperties.put("href", "");
             nodeProperties.put("omodel", "");
@@ -133,9 +128,9 @@ public class PetriNetJSONExporter {
             nodeProperties.put("guard", "");
             nodeProperties.put("communicationchannel", "");
             nodeProperties.put("communicationtype", "Default");
+
         } else if (n instanceof Place) {
             nodeProperties.put("title", "");
-
             if (pn.getInitialMarking() == null) {
                 nodeProperties.put("numberoftokens", "");
                 nodeProperties.put("numberoftokens_text", "");
@@ -145,7 +140,6 @@ public class PetriNetJSONExporter {
                 nodeProperties.put("numberoftokens_text", pn.getInitialMarking().getNumTokens((Place) n));
                 nodeProperties.put("numberoftokens_drawing", pn.getInitialMarking().getNumTokens((Place) n));
             }
-
             nodeProperties.put("external", false);
             nodeProperties.put("exttype", "Push");
             nodeProperties.put("href", "");
@@ -163,10 +157,11 @@ public class PetriNetJSONExporter {
         nodeObject.put("resourceId", n.getResourceId());
 
         if (n instanceof Transition) {
-            if (n instanceof LabeledTransition)
+            if (n instanceof LabeledTransition) {
                 nodeObject.put("stencil", new JSONObject("{\"id\":\"Transition\"}"));
-            else
+            } else {
                 nodeObject.put("stencil", new JSONObject("{\"id\":\"VerticalEmptyTransition\"}"));
+            }
         } else if (n instanceof Place) {
             nodeObject.put("stencil", new JSONObject("{\"id\":\"Place\"}"));
         } else {
@@ -177,12 +172,11 @@ public class PetriNetJSONExporter {
         nodeObject.put("childShapes", new JSONArray());
 
         JSONArray outArray = new JSONArray();
-
-        for (FlowRelationship f : n.getOutgoingFlowRelationships())
+        for (FlowRelationship f : n.getOutgoingFlowRelationships()) {
             outArray.put(new JSONObject("{\"resourceId\":\"" + f.getResourceId() + "\"}"));
+        }
 
         nodeObject.put("outgoing", outArray);
-
         nodeObject.put("bounds", this.getJSONBounds(n.getBounds()));
         nodeObject.put("dockers", new JSONArray());
 
