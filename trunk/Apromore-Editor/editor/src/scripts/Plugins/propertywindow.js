@@ -807,8 +807,6 @@ ORYX.Plugins.PropertyWindow = {
 							
 							editorInput.on('keyup', function(input, event) {
 								this.editDirectly(key, input.getValue());
-								console.log(input.getValue());
-								alert("huhu");
 							}.bind(this));
 							
 							editorGrid = new Ext.Editor(editorInput);							

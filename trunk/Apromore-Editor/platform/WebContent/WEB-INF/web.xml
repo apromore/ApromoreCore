@@ -252,7 +252,7 @@
     <servlet>
         <display-name>PNMLImport</display-name>
         <servlet-name>PNMLImportServlet</servlet-name>
-        <servlet-class>org.apromore.common.converters.pnml.servlet.SimplePNMLExporter</servlet-class>
+        <servlet-class>org.apromore.common.converters.pnml.servlet.PNMLImportServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -263,7 +263,7 @@
     <servlet>
         <display-name>PNMLExport</display-name>
         <servlet-name>PNMLExportServlet</servlet-name>
-        <servlet-class>org.apromore.common.converters.pnml.servlet.SimplePNMLExporter</servlet-class>
+        <servlet-class>org.apromore.common.converters.pnml.servlet.PNMLExportServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
