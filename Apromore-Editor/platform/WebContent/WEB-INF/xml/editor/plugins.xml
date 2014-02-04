@@ -106,7 +106,12 @@
 		<plugin source="epcLayouter.js" name="ORYX.Plugins.EPCLayouter">
 			<requires namespace="http://b3mn.org/stencilset/epc#"/>
 		</plugin>
-        
+
+        <plugin source="petrinet.js" name="ORYX.Plugins.PetriNet">
+            <requires namespace="http://b3mn.org/stencilset/petrinet#"/>
+        </plugin>
+
+
         <!-- Added for Test purposes -->
         <plugin source="file.js" name="ORYX.Plugins.Save"/>
         <plugin source="pdf.js" name="ORYX.Plugins.File"/>

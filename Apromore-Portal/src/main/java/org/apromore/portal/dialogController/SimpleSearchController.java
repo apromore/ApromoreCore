@@ -83,7 +83,9 @@ public class SimpleSearchController extends BaseController {
                         it.next().setLabel(previousSearches.get(j).getSearch());
                     } else {
                         it = null;
-                        new Comboitem(previousSearches.get(j).getSearch()).setParent(this);
+                        if (j < previousSearches.size()) {
+                            new Comboitem(previousSearches.get(j).getSearch()).setParent(this);
+                        }
                     }
                 }
 

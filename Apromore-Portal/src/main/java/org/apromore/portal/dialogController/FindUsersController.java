@@ -50,6 +50,7 @@ public class FindUsersController extends BaseController {
                 btnSave.setDisabled(true);
             }
         });
+
         btnSave.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 Integer selectedId = UserSessionManager.getCurrentSecurityItem();
@@ -92,9 +93,6 @@ public class FindUsersController extends BaseController {
                     if (processedItems.size() > 0) {
                         Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
                         lstUsers.getItems().clear();
-//                        for (Listitem processedItem : processedItems) {
-//                            lstUsers.getSelectedItems().remove(processedItem);
-//                        }
                     }
                 } else {
                     Messagebox.show("Please select at least one record to save.", "Attention", Messagebox.OK, Messagebox.ERROR);
