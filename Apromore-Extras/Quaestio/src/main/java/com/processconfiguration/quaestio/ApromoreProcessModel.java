@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,10 +30,11 @@ class ApromoreProcessModel implements ProcessModel {
 
 	private ExportFormatResultType exportFormatResult;
 
-	private int       processId;
-	private String    branch;
-	private Version   version;
-	private Component parent;
+	private int        processId;
+	private String     branch;
+	private Version    version;
+	private Component  parent;
+	private SaveDialog saveDialog;
 
 	/**
          * Constructor.
@@ -89,13 +91,20 @@ class ApromoreProcessModel implements ProcessModel {
 	 */
 	public void update(final BpmnDefinitions bpmn) throws Exception {
 
-                // Generate the default next version and branch
-                Version newVersion = new Version(version.getMajor(), version.getMinor() + 1);
+		// Determine the default next version and branch
+		Version newVersion = new Version(version.getMajor(), version.getMinor() + 1);
+		String  newBranch  = branch;
 
                 // Present a UI to validate or edit the next version and branch
-                JDialog saveDialog = new SaveDialog(bpmn, newVersion, branch);
+		if (saveDialog == null) {
+			saveDialog = new SaveDialog();
+			saveDialog.pack();
+		}
+		saveDialog.setModel(bpmn);
+		saveDialog.setVersion(new Version(version.getMajor(), version.getMinor() + 1));
+		saveDialog.setBranch(branch);
 		saveDialog.setLocationRelativeTo(parent);
-                saveDialog.show();
+                saveDialog.setVisible(true);
 	}
 
 	/**
@@ -104,8 +113,9 @@ class ApromoreProcessModel implements ProcessModel {
          * @param bpmn the updated process model
 	 * @param newVersion  the version number of the update
 	 * @param newBranch  the branch of the update
+	 * @return whether the update was successful
 	 */
-	void commit(final BpmnDefinitions bpmn, final Version newVersion, final String newBranch) {
+	boolean commit(final BpmnDefinitions bpmn, final Version newVersion, final String newBranch) {
 		try {
 			// Serialize
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -131,6 +141,8 @@ class ApromoreProcessModel implements ProcessModel {
 			this.version = newVersion;
 			this.branch  = newBranch;
 
+			return true;
+
 		} catch (Exception e) {
 			String message = e.getMessage();
 
@@ -145,6 +157,8 @@ class ApromoreProcessModel implements ProcessModel {
 			JOptionPane.showMessageDialog(null, message, "Unable to save model", JOptionPane.ERROR_MESSAGE);
 			System.err.println("Cause was " + e.getCause());
 			e.printStackTrace();
+
+			return false;
 		}
 	}
 
@@ -153,10 +167,11 @@ class ApromoreProcessModel implements ProcessModel {
          */
 	private class SaveDialog extends JDialog {
 
+		private BpmnDefinitions     model;
 		private JFormattedTextField versionField;
 		private JTextField          branchField;
 
-		SaveDialog(final BpmnDefinitions bpmn, final Version version, final String branch) {
+		SaveDialog() {
 
 			versionField = new JFormattedTextField(new JFormattedTextField.AbstractFormatterFactory() {
                                         public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
@@ -169,42 +184,55 @@ class ApromoreProcessModel implements ProcessModel {
                                                         }
                                                 };
                                         }
-                                }, version);
+                                }, null);
 
-			branchField = new JTextField(branch);
+			branchField = new JTextField("BRANCH");
+
+			setLayout(new GridBagLayout());
+			//setSize(600, 400);
+			setTitle("Save");
 
 			// Populate the dialog
 
-			JPanel formPanel = new JPanel();
-			formPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-			formPanel.setLayout(new GridBagLayout());
 			{
 				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.gridx  = 0;
-				gbc.gridy  = 0;
-				gbc.anchor = GridBagConstraints.WEST;
-				formPanel.add(new JLabel("Version Number"), gbc);
+				gbc.gridx   = 0;
+				gbc.gridy   = 0;
+				gbc.anchor  = GridBagConstraints.WEST;
+				gbc.fill    = GridBagConstraints.HORIZONTAL;
+				gbc.weightx = 0.1;
+				gbc.weighty = 1.0;
+				gbc.insets  = new Insets(20, 20, 5, 5); 
+				add(new JLabel("Version Number"), gbc);
 			}
 			{
 				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.gridx = 1;
-				gbc.gridy = 0;
-				gbc.fill  = GridBagConstraints.HORIZONTAL;
-				formPanel.add(versionField, gbc);
+				gbc.gridx   = 1;
+				gbc.gridy   = 0;
+				gbc.fill    = GridBagConstraints.HORIZONTAL;
+				gbc.weightx = 1.0;
+				gbc.insets  = new Insets(20, 5, 5, 20); 
+				add(versionField, gbc);
 			}
 			{
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.gridx  = 0;
 				gbc.gridy  = 1;
 				gbc.anchor = GridBagConstraints.WEST;
-				formPanel.add(new JLabel("Branch Name"), gbc);
+				gbc.fill  = GridBagConstraints.HORIZONTAL;
+				gbc.weightx = 0.1;
+				gbc.weighty = 1.0;
+				gbc.insets  = new Insets(5, 20, 20, 5); 
+				add(new JLabel("Branch Name"), gbc);
 			}
 			{
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.gridx = 1;
 				gbc.gridy = 1;
 				gbc.fill  = GridBagConstraints.HORIZONTAL;
-				formPanel.add(branchField, gbc);
+				gbc.weightx = 1.0;
+				gbc.insets  = new Insets(5, 5, 20, 20); 
+				add(branchField, gbc);
 			}
 
 			JPanel buttonPanel = new JPanel();
@@ -212,26 +240,43 @@ class ApromoreProcessModel implements ProcessModel {
 			buttonPanel.add(new JButton(new AbstractAction("Save") {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Saving");
-					ApromoreProcessModel.this.commit(
-						bpmn,
+					boolean success = ApromoreProcessModel.this.commit(
+						model,
 						(Version) versionField.getValue(),
 						branchField.getText()
 					);
+					if (success) {
+						SaveDialog.this.setVisible(false);
+					}
 					System.out.println("Saved");
 				}
 			}));
 			buttonPanel.add(new JButton(new AbstractAction("Cancel") {
 				public void actionPerformed(ActionEvent e) {
-					SaveDialog.this.dispose();
+					SaveDialog.this.setVisible(false);
 				}
 			}));
 
-			setLayout(new BorderLayout());
-			//setSize(600, 400);
-			setTitle("Save");
-			add(formPanel, BorderLayout.CENTER);
-			add(buttonPanel, BorderLayout.SOUTH);
-			pack();
+			{
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.gridx     = 0;
+				gbc.gridy     = 2;
+				gbc.gridwidth = 2;
+				gbc.anchor    = GridBagConstraints.SOUTHEAST;
+				add(buttonPanel, gbc);
+			}
+		}
+
+		void setModel(final BpmnDefinitions newModel) {
+			model = newModel;
+		}
+
+		void setVersion(final Version newVersion) {
+			versionField.setValue(newVersion);
+		}
+
+		void setBranch(final String newBranch) {
+			branchField.setText(newBranch);
 		}
 	}
 }
