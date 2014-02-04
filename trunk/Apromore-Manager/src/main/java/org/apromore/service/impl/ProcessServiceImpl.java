@@ -325,7 +325,11 @@ public class ProcessServiceImpl implements ProcessService {
                             }
                         }
 
-                        anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
+                        if (ann != null && !process.getNativeType().getNatType().equalsIgnoreCase(ann.getNatve().getNativeType().getNatType())) {
+                            anf = annotationSrv.preProcess(ann.getNatve().getNativeType().getNatType(), format, cpt, anf);
+                        } else {
+                            anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
+                        }
                     } else if (annName == null) {
                         anf = annotationSrv.preProcess(null, format, cpt, null);
                     }
@@ -574,10 +578,7 @@ public class ProcessServiceImpl implements ProcessService {
                     if (branches.size() > 1 || (branches.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
                         ProcessBranch branch = pvid.getProcessBranch();
                         List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
-                        branch.setCurrentProcessModelVersion(getPreviousVersion(pmvs, pvid));
-                        branch.getProcessModelVersions().remove(pvid);
-                        deleteProcessModelVersion(pvid);
-                        processBranchRepo.save(branch);
+                        updateBranch(pmvs, pvid, branch);
                     } else {
                         deleteProcessModelVersion(pvid);
                         processRepo.delete(process);
@@ -590,13 +591,45 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+
+    private void updateBranch(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid, ProcessBranch branch) throws ExceptionDao {
+        ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvid);
+        if (newCurrent == null) {
+            newCurrent = getNextVersion(pmvs, pvid);
+        }
+        branch.setCurrentProcessModelVersion(newCurrent);
+        branch.getProcessModelVersions().remove(pvid);
+        processBranchRepo.save(branch);
+
+        deleteProcessModelVersion(pvid);
+    }
+
     private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid) {
         ProcessModelVersion result = null;
         for (ProcessModelVersion pmv : pmvs) {
+            if (pmv.equals(pvid)) {
+                continue;
+            }
             if (result == null) {
                 result = pmv;
             }
             if (pmv.getId() < pvid.getId() && pmv.getId() > result.getId()) {
+                result = pmv;
+            }
+        }
+        return result;
+    }
+
+    private ProcessModelVersion getNextVersion(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid) {
+        ProcessModelVersion result = null;
+        for (ProcessModelVersion pmv : pmvs) {
+            if (pmv.equals(pvid)) {
+                continue;
+            }
+            if (result == null) {
+                result = pmv;
+            }
+            if (pmv.getId() > pvid.getId() && pmv.getId() < result.getId()) {
                 result = pmv;
             }
         }

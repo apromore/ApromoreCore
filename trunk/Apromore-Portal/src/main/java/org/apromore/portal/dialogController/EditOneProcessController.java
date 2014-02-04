@@ -187,14 +187,20 @@ public class EditOneProcessController extends BaseController {
     }
 
     /**
-     * If the native type is selected is the same as process original type then disable the annotations lb.
+     * If the native type is selected is the same as process original type then disable the annotations lb. But if the annotation format type isn't the same as the process native type (i.e. someone saved a bpmn as an epml) the don't disable.
      */
     protected void syncAnnotationLB() {
         if (nativeTypesLB.getSelectedItem() != null) {
-            String selected = nativeTypesLB.getSelectedItem().getLabel();
-            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(selected)) {
-                annotationsLB.setDisabled(true);
-                annotationOnlyCB.setDisabled(true);
+            Listitem selected = nativeTypesLB.getSelectedItem();
+            if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(selected.getLabel())) {
+                Listitem annotation = annotationsLB.getSelectedItem();
+                if (annotation != null && annotation.getLabel().contains(process.getOriginalNativeType())) {
+                    annotationsLB.setDisabled(true);
+                    annotationOnlyCB.setDisabled(true);
+                } else {
+                    annotationsLB.setDisabled(false);
+                    annotationOnlyCB.setDisabled(false);
+                }
             } else {
                 annotationsLB.setDisabled(false);
                 annotationOnlyCB.setDisabled(noAnnotationI.isSelected());
