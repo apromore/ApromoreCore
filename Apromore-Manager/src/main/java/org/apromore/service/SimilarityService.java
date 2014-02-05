@@ -14,17 +14,18 @@ public interface SimilarityService {
 
     /**
      * Search for similar processes.
-     *
      * @param processId      the processId
      * @param versionName    the name of the version we are looking for
      * @param latestVersions are we looking at the latest version or all processes
+     * @param folderId       what folder are we going to search in.
+     * @param userId         the user running the search. make sure we only see his processes.
      * @param method         the search algorithm
      * @param params         the params used for the
      * @return the processSummaryTypes for the found models
      * @throws ExceptionSearchForSimilar
      */
-    ProcessSummariesType SearchForSimilarProcesses(Integer processId, String versionName, Boolean latestVersions, String method,
-                                                   ParametersType params) throws ExceptionSearchForSimilar;
+    ProcessSummariesType SearchForSimilarProcesses(Integer processId, String versionName, Boolean latestVersions, Integer folderId,
+        String userId, String method, ParametersType params) throws ExceptionSearchForSimilar;
 
 
 }

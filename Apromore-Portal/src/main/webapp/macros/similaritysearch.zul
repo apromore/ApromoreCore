@@ -1,61 +1,74 @@
+<?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
+
 <!-- similaritysearch window has controller SimilaritySearchController -->
-<window width="360px" closable="false" position="center" title="Search for similar processes">
-    <vbox>
-        <grid>
-            <columns sizable="true">
-                <column width="50%"></column>
-                <column width="50%"></column>
-            </columns>
-            <rows>
-                <row id="similaritySearchAlgoChoice">
-                    <label value="Algorithm (please choose one)" width="100%" />
-                    <listbox width="100%" />
-                </row>
-                <row id="modelthreshold" visible="false">
-                    <label value="Model sim. threshold" width="100%" />
-                    <doublebox value="0.6" width="100%" />
-                </row>
-                <row id="labelthreshold" visible="false">
-                    <label value="Label sim. threshold" width="100%" />
-                    <doublebox value="0.6" width="100%" />
-                </row>
-                <row id="contextthreshold" visible="false">
-                    <label value="Context sim. threshold" width="100%" />
-                    <doublebox value="0.75" width="100%" />
-                </row>
-                <row id="skipeweight" visible="false">
-                    <label value="Skip-e weight" width="100%" />
-                    <doublebox value="1" width="100%" />
-                </row>
-                <row id="subeweight" visible="false">
-                    <label value="Sub-e weight" width="100%" />
-                    <doublebox value="1" width="100%" />
-                </row>
-                <row id="skipnweight" visible="false">
-                    <label value="Skip-n weight" width="100%" />
-                    <doublebox value="1" width="100%" />
-                </row>
-                <row id="subnweight" visible="false">
-                    <label value="Sub-n weight" width="100%" />
-                    <doublebox value="1" width="100%" />
-                </row>
-                <row spans="2">
-                    <hbox width="100%">
-                        <radiogroup id="allVersionsChoiceRG" >
-                            <radio id="latestVersions" label="Search latest versions only" checked="true" />
-                            <radio id="allVersions" label="Search all versions" />
-                        </radiogroup>
-                    </hbox>
-                </row>
-                <row id="similaritySearchButtons" spans="2">
-                    <div align="center">
-                        <button id="similaritySearchOKbutton" label="OK" image="img/ok.png" disabled="true">
-                        </button>
-                        <button id="similaritySearchCancelbutton" label="Cancel" image="img/cancel2.png">
-                        </button>
-                    </div>
-                </row>
-            </rows>
-        </grid>
-    </vbox>
+<window width="580px" closable="false" position="center" title="Search for similar processes">
+
+    <hbox spacing="0" width="100%" widths="40%,60%" height="360px">
+        <borderlayout vflex="true" width="100%">
+            <center title="My Workspace" flex="true">
+                <FolderTree id="mainTree"/>
+            </center>
+        </borderlayout>
+        <splitter id="s2" collapse="before"/>
+
+            <vbox>
+                <grid>
+                    <columns sizable="true">
+                        <column width="50%"></column>
+                        <column width="50%"></column>
+                    </columns>
+                    <rows>
+                        <row id="similaritySearchAlgoChoice">
+                            <label value="Algorithm (please choose one)" width="100%" />
+                            <listbox width="100%" />
+                        </row>
+                        <row id="modelthreshold" visible="false">
+                            <label value="Model sim. threshold" width="100%" />
+                            <doublebox value="0.6" width="100%" />
+                        </row>
+                        <row id="labelthreshold" visible="false">
+                            <label value="Label sim. threshold" width="100%" />
+                            <doublebox value="0.6" width="100%" />
+                        </row>
+                        <row id="contextthreshold" visible="false">
+                            <label value="Context sim. threshold" width="100%" />
+                            <doublebox value="0.75" width="100%" />
+                        </row>
+                        <row id="skipeweight" visible="false">
+                            <label value="Skip-e weight" width="100%" />
+                            <doublebox value="1" width="100%" />
+                        </row>
+                        <row id="subeweight" visible="false">
+                            <label value="Sub-e weight" width="100%" />
+                            <doublebox value="1" width="100%" />
+                        </row>
+                        <row id="skipnweight" visible="false">
+                            <label value="Skip-n weight" width="100%" />
+                            <doublebox value="1" width="100%" />
+                        </row>
+                        <row id="subnweight" visible="false">
+                            <label value="Sub-n weight" width="100%" />
+                            <doublebox value="1" width="100%" />
+                        </row>
+                        <row spans="2">
+                            <hbox width="100%">
+                                <radiogroup id="allVersionsChoiceRG" >
+                                    <radio id="latestVersions" label="Search latest versions only" checked="true" />
+                                    <radio id="allVersions" label="Search all versions" />
+                                </radiogroup>
+                            </hbox>
+                        </row>
+                        <row id="similaritySearchButtons" spans="2">
+                            <div align="center">
+                                <button id="similaritySearchOKbutton" label="OK" image="img/ok.png" disabled="true">
+                                </button>
+                                <button id="similaritySearchCancelbutton" label="Cancel" image="img/cancel2.png">
+                                </button>
+                            </div>
+                        </row>
+                    </rows>
+                </grid>
+            </vbox>
+
+    </hbox>
 </window>

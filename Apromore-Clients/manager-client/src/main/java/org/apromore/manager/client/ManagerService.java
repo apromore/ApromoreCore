@@ -193,6 +193,8 @@ public interface ManagerService {
      * @param versionName the version name of the process model search criteria
      * @param method the method of search algorithm
      * @param latestVersions only search the latest version.
+     * @param folderId from which folder to search under.
+     * @param userId which user is running this query.
      * @param modelThreshold the Model Threshold
      * @param labelThreshold the Label Threshold
      * @param contextThreshold the Context Threshold
@@ -201,7 +203,9 @@ public interface ManagerService {
      * @param skipeWeight the Skip E weight
      * @return processSummary type for the Web Service
      */
-    ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight);
+    ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, int folderId,
+            String userId, double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight,
+            double skipeWeight);
 
     /**
      * Merge two or more processes.

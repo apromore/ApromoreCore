@@ -15,18 +15,18 @@ import org.zkoss.zul.Window;
 public class SecuritySetupController extends BaseController {
 
     private MainController mainController;
-    private FindUsersController findUsersController;
-    private PermissionsController permissionsController;
-    private FolderTreeController folderTreeController;
+    private SecurityFindUsersController findUsersController;
+    private SecurityPermissionsController permissionsController;
+    private SecurityFolderTreeController folderTreeController;
 
     public SecuritySetupController(MainController mainController) throws DialogException {
         this.mainController = mainController;
         try {
             final Window win = (Window) Executions.createComponents("/macros/securitySetup.zul", null, null);
 
-            this.permissionsController = new PermissionsController(this, win);
-            this.findUsersController = new FindUsersController(this, win);
-            this.folderTreeController = new FolderTreeController(this, win);
+            this.permissionsController = new SecurityPermissionsController(this, win);
+            this.findUsersController = new SecurityFindUsersController(this, win);
+            this.folderTreeController = new SecurityFolderTreeController(this, win);
 
             win.doModal();
 
@@ -41,15 +41,15 @@ public class SecuritySetupController extends BaseController {
         }
     }
 
-    public PermissionsController getPermissionsController(){
+    public SecurityPermissionsController getPermissionsController(){
         return this.permissionsController;
     }
 
-    public FindUsersController getFindUsersController(){
+    public SecurityFindUsersController getFindUsersController(){
         return this.findUsersController;
     }
 
-    public FolderTreeController getFolderTreeController(){
+    public SecurityFolderTreeController getFolderTreeController(){
         return this.folderTreeController;
     }
 

@@ -1,11 +1,16 @@
 package org.apromore.service.impl;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.FolderRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.exception.SerializationException;
-import org.apromore.model.*;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessVersionType;
+import org.apromore.model.ProcessVersionsType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +41,7 @@ public class SimilarityServiceImpl implements SimilarityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
     private ProcessModelVersionRepository processModelVersionRepo;
+    private FolderRepository folderRepo;
     private CanoniserService canoniserSrv;
     private UserInterfaceHelper ui;
 
@@ -43,28 +50,31 @@ public class SimilarityServiceImpl implements SimilarityService {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      *
      * @param processModelVersionRepository Process Model Version Repository.
+     * @param folderRepository he folder repository.
      * @param uiHelper user interface helper
      */
     @Inject
-    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final CanoniserService canoniserService,
-             final UserInterfaceHelper uiHelper) {
+    public SimilarityServiceImpl(final ProcessModelVersionRepository processModelVersionRepository, final FolderRepository folderRepository,
+             final CanoniserService canoniserService, final UserInterfaceHelper uiHelper) {
         processModelVersionRepo = processModelVersionRepository;
+        folderRepo = folderRepository;
         canoniserSrv = canoniserService;
         ui = uiHelper;
     }
 
 
     /**
-     * @see org.apromore.service.SimilarityService#SearchForSimilarProcesses(Integer, String, Boolean, String, org.apromore.model.ParametersType)
+     * @see org.apromore.service.SimilarityService#SearchForSimilarProcesses(Integer, String, Boolean, Integer, String, String, org.apromore.model.ParametersType)
      *      {@inheritDoc}
      */
     public ProcessSummariesType SearchForSimilarProcesses(final Integer processId, final String branchName, final Boolean latestVersions,
-            final String method, final ParametersType params) throws ExceptionSearchForSimilar {
+            final Integer folderId, final String userId, final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         LOGGER.debug("Starting Similarity Search...");
 
         ProcessVersionsType similarProcesses = null;
         ProcessModelVersion query = processModelVersionRepo.getLatestProcessModelVersion(processId, branchName);
-        List<ProcessModelVersion> models = processModelVersionRepo.getLatestProcessModelVersions();
+        List<ProcessModelVersion> models = getProcessModelVersionsToSearchAgainst(folderId, userId, latestVersions);
+
         try {
             ToolboxData data = convertModelsToCPT(models, query);
             data = getParametersForSearch(data, method, params);
@@ -78,6 +88,23 @@ public class SimilarityServiceImpl implements SimilarityService {
         }
 
         return ui.buildProcessSummaryList("", similarProcesses);
+    }
+
+    private List<ProcessModelVersion> getProcessModelVersionsToSearchAgainst(int folderId, String userGuid, Boolean latestVersions) {
+        List<ProcessModelVersion> models;
+        if (folderId == 0) {
+            // We are searching the whole Repo.
+            if (latestVersions) {
+                models = processModelVersionRepo.getLatestProcessModelVersions();
+            } else {
+                models = processModelVersionRepo.findAll();
+            }
+        } else {
+            // We have a folder, Get all processes in the folder and in all folders underneath this one.
+            models = new ArrayList<>();
+            models.addAll(folderRepo.getProcessModelVersionByFolderUserRecursive(folderId, userGuid));
+        }
+        return models;
     }
 
 
