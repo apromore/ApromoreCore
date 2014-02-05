@@ -1,4 +1,6 @@
-package org.apromore.dao.model;
+package org.apromore.dao.dataObject;
+
+import org.apromore.dao.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

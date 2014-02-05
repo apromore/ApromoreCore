@@ -1,7 +1,7 @@
 package org.apromore.service;
 
+import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessUser;

@@ -39,11 +39,13 @@ public class MenuController extends Menubar {
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
+        Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
         copyMI.setDisabled(true);
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
         pasteMI.setDisabled(true);
-        Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
+        Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
+        moveMI.setDisabled(true);
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
@@ -144,7 +146,7 @@ public class MenuController extends Menubar {
      * @throws SuspendNotAllowedException
      * @throws InterruptedException
      */
-    protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException {
+    protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         this.mainC.eraseMessage();
         if (selectedProcessVersions.size() == 1 && selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).size() == 1) {

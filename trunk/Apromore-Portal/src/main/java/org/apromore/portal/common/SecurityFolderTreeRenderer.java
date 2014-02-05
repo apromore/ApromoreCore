@@ -2,8 +2,7 @@ package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.PermissionsController;
+import org.apromore.portal.dialogController.SecurityPermissionsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
@@ -20,29 +19,23 @@ import org.zkoss.zul.Treerow;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Igor
- * Date: 2/07/12
- * Time: 7:04 PM
- * To change this template use File | Settings | File Templates.
+ * Handles the item render for the Folder Tree list.
+ * @author Igor
  */
 public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityFolderTreeRenderer.class.getName());
 
-    private MainController mainC;
-    private PermissionsController permissionsController;
+    private SecurityPermissionsController permissionsController;
 
     public SecurityFolderTreeRenderer() {
     }
 
-    public SecurityFolderTreeRenderer(MainController mainController, PermissionsController permissionsController) {
-        mainC = mainController;
+    public SecurityFolderTreeRenderer(SecurityPermissionsController permissionsController) {
         this.permissionsController = permissionsController;
     }
 
-    public void setController(MainController mainController, PermissionsController permissionsController) {
-        this.mainC = mainController;
+    public void setController(SecurityPermissionsController permissionsController) {
         this.permissionsController = permissionsController;
     }
 
@@ -110,7 +103,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                     }
 
                     UserSessionManager.setCurrentSecurityOwnership(hasOwnership);
-                    permissionsController.loadUsers(selectedId, clickedNodeValue.getType());
+                    UserSessionManager.setCurrentSecurityItem(selectedId);
+                    UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
+                    if (permissionsController != null) {
+                        permissionsController.loadUsers(selectedId, clickedNodeValue.getType());
+                    }
                 } catch (Exception ex) {
                     LOGGER.error("SecurityFolderTree Renderer failed to render an item", ex);
                 }

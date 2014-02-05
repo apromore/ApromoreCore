@@ -1,11 +1,10 @@
 package org.apromore.portal.dialogController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.exception.DialogException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -19,13 +18,13 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimilaritySearchController extends BaseController {
 
     private MainController mainC;
-    private MenuController menuC;
     private Window similaritySearchW;
-    private Row algoChoiceR;
-    private Row buttonsR;
     private Listbox algosLB;
     private Row modelthreshold;
     private Row labelthreshold;
@@ -35,28 +34,25 @@ public class SimilaritySearchController extends BaseController {
     private Row skipnweight;
     private Row subnweight;
     private Button OKbutton;
-    private Button CancelButton;
     private Radiogroup allVersionsChoiceRG;
     private ProcessSummaryType process;
     private VersionSummaryType version;
 
     public SimilaritySearchController(MainController mainC, MenuController menuC, ProcessSummaryType process, VersionSummaryType version)
-            throws SuspendNotAllowedException, InterruptedException {
+            throws SuspendNotAllowedException, InterruptedException, DialogException {
         this.mainC = mainC;
-        this.menuC = menuC;
         this.version = version;
         this.process = process;
         this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
 
-        this.algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
-        this.buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");
+        FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW);
 
+        Row algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
+        Row buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");
         this.OKbutton = (Button) this.similaritySearchW.getFellow("similaritySearchOKbutton");
-        this.CancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
+        Button cancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
 
         this.allVersionsChoiceRG = (Radiogroup) this.similaritySearchW.getFellow("allVersionsChoiceRG");
-
-        // get parameter rows
         this.modelthreshold = (Row) this.similaritySearchW.getFellow("modelthreshold");
         this.labelthreshold = (Row) this.similaritySearchW.getFellow("labelthreshold");
         this.contextthreshold = (Row) this.similaritySearchW.getFellow("contextthreshold");
@@ -65,7 +61,7 @@ public class SimilaritySearchController extends BaseController {
         this.skipnweight = (Row) this.similaritySearchW.getFellow("skipnweight");
         this.subnweight = (Row) this.similaritySearchW.getFellow("subnweight");
 
-        this.algosLB = (Listbox) this.algoChoiceR.getFirstChild().getNextSibling();
+        this.algosLB = (Listbox) algoChoiceR.getFirstChild().getNextSibling();
         // build the listbox to choose algo
         Listitem listItem = new Listitem();
         listItem.setLabel("Greedy");
@@ -96,7 +92,7 @@ public class SimilaritySearchController extends BaseController {
                         searchSimilarProcesses();
                     }
                 });
-        this.CancelButton.addEventListener("onClick",
+        cancelButton.addEventListener("onClick",
                 new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         cancel();
@@ -115,10 +111,15 @@ public class SimilaritySearchController extends BaseController {
         try {
             ProcessSummariesType resultToDisplay;
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
+            Integer folderId = UserSessionManager.getCurrentSecurityItem();
+            if (folderId == null) {
+                folderId = 0;
+            }
+
             ProcessSummariesType result = getService().searchForSimilarProcesses(
                     process.getId(), version.getName(),
                     this.algosLB.getSelectedItem().getLabel(),
-                    latestVersions,
+                    latestVersions, folderId, UserSessionManager.getCurrentUser().getId(),
                     ((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
                     ((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
                     ((Doublebox) this.contextthreshold.getFirstChild().getNextSibling()).getValue(),

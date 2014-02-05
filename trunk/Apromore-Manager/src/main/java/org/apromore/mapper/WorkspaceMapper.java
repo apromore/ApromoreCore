@@ -1,14 +1,14 @@
 package org.apromore.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
 import org.apromore.dao.model.ProcessUser;
 import org.apromore.model.FolderType;
 import org.apromore.model.UserFolderType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.

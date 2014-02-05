@@ -24,7 +24,6 @@ public interface SecurityService {
      * Get a particular User.
      * @param username the username of the user we are searching for.
      * @return the Found User
-     * @throws org.apromore.exception.UserNotFoundException when the user can not be found in the system
      */
     User getUserByName(String username);
 

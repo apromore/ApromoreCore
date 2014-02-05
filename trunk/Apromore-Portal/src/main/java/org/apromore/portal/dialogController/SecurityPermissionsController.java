@@ -20,12 +20,12 @@ import org.zkoss.zul.Window;
 /**
  * Used to setup permissions for processes and users.
  */
-public class PermissionsController extends BaseController {
+public class SecurityPermissionsController extends BaseController {
 
     private Listbox lstPermissions;
     private SecuritySetupController securitySetupController;
 
-    public PermissionsController(SecuritySetupController securitySetupController, Window win) throws DialogException {
+    public SecurityPermissionsController(SecuritySetupController securitySetupController, Window win) throws DialogException {
         this.securitySetupController = securitySetupController;
         this.lstPermissions = (Listbox)win.getFellow("existingPermissions").getFellow("lstPermissions");
     }

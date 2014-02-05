@@ -372,6 +372,8 @@ public class ManagerPortalEndpoint {
             Integer processId = payload.getProcessId();
             String versionName = payload.getVersionName();
             Boolean latestVersions = payload.isLatestVersions();
+            Integer folderId = payload.getFolderId();
+            String userId = payload.getUserId();
             ParametersType paramsT = new ParametersType();
             for (ParameterType p : payload.getParameters().getParameter()) {
                 ParameterType paramT = new ParameterType();
@@ -379,7 +381,10 @@ public class ManagerPortalEndpoint {
                 paramT.setName(p.getName());
                 paramT.setValue(p.getValue());
             }
-            ProcessSummariesType processes = simSrv.SearchForSimilarProcesses(processId, versionName, latestVersions, algo, paramsT);
+
+            ProcessSummariesType processes = simSrv.SearchForSimilarProcesses(processId, versionName, latestVersions, folderId, userId,
+                    algo, paramsT);
+
             res.setProcessSummaries(processes);
             result.setCode(0);
             result.setMessage("");
