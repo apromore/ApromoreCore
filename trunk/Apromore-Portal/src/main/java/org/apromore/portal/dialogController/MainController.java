@@ -73,7 +73,7 @@ public class MainController extends BaseController {
     private static final String HOST_NAME = "Host";
     private static final String VERSION_NUMBER = "version.number";
     private static final String BUILD_DATE = "version.builddate";
-    private static final String WELCOME_TEXT = "Welcome to AProMoRe (%s %s)";
+    private static final String WELCOME_TEXT = "Welcome to Apromore (%s %s)";
 
     private MenuController menu;
     private SimpleSearchController simplesearch;

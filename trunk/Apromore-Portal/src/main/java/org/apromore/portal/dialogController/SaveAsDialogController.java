@@ -3,6 +3,8 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
@@ -94,12 +96,24 @@ public class SaveAsDialogController extends BaseController {
                 });
 
         if (isNormalSave) {
+            String branchName = null;
+            BigDecimal versionNumber;
+            BigDecimal currentVersion = new BigDecimal(editSession.getCurrentVersionNumber());
+            BigDecimal maxVersion = new BigDecimal(editSession.getMaxVersionNumber());
+
+            versionNumber = createNewVersionNumber(currentVersion);
+            if (maxVersion.compareTo(currentVersion) > 0) {
+                branchName = createNewBranchName(this.editSession.getOriginalBranchName());
+            } else {
+                branchName = this.editSession.getOriginalBranchName();
+            }
+
             this.modelName.setReadonly(true);
-            this.branchName.setText(this.editSession.getOriginalBranchName());
+            this.branchName.setText(branchName);
             if (version.isEmpty()) {
                 this.versionNumber.setText("1.0");
             } else {
-                this.versionNumber.setText(String.format("%1.1f", new BigDecimal(this.editSession.getMaxVersionNumber()).add(VERSION_INCREMENT)));
+                this.versionNumber.setText(String.format("%1.1f", versionNumber));
             }
         } else {
             this.branchName.setText("MAIN");
@@ -109,6 +123,7 @@ public class SaveAsDialogController extends BaseController {
 
         this.saveAsW.doModal();
     }
+
 
     protected void cancel() throws Exception {
         closePopup();
@@ -203,4 +218,24 @@ public class SaveAsDialogController extends BaseController {
         }
         return valid;
     }
+
+    private String createNewBranchName(String currBranchName) {
+        String branchName;
+        if (currBranchName.equalsIgnoreCase("Main") || !currBranchName.matches("B[0-9]+")) {
+            branchName = "B1";
+        } else {
+            Integer branchVersionNumber = 0;
+            Matcher matcher = Pattern.compile("\\d+").matcher(currBranchName);
+            if (matcher.find()) {
+                branchVersionNumber = Integer.valueOf(matcher.group());
+            }
+            branchName = "B" + branchVersionNumber + 1;
+        }
+        return branchName;
+    }
+
+    private BigDecimal createNewVersionNumber(BigDecimal currentVersion) {
+        return (currentVersion).add(VERSION_INCREMENT);
+    }
+
 }

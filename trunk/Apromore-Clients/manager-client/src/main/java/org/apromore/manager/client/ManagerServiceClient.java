@@ -661,15 +661,16 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#readProcessSummaries(String)
+     * @see ManagerService#readProcessSummaries(Integer, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType readProcessSummaries(final String searchCriteria) {
+    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
+        msg.setFolderId(folderId);
         msg.setSearchExpression(searchCriteria);
 
         JAXBElement<ReadProcessSummariesInputMsgType> request = WS_CLIENT_FACTORY.createReadProcessSummariesRequest(msg);

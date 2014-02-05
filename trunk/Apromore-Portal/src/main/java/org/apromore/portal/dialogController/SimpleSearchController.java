@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.portal.common.Constants;
@@ -103,8 +104,9 @@ public class SimpleSearchController extends BaseController {
      * @throws Exception
      */
     private void processSearch() throws Exception {
+        FolderType folder = UserSessionManager.getCurrentFolder();
         String query = previousSearchesCB.getValue();
-        ProcessSummariesType processSummaries = getService().readProcessSummaries(query);
+        ProcessSummariesType processSummaries = getService().readProcessSummaries(folder.getId(), query);
         int nbAnswers = processSummaries.getProcessSummary().size();
         String message = "Search returned " + nbAnswers;
         if (nbAnswers > 1) {

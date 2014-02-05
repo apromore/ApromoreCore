@@ -40,7 +40,7 @@ public interface WorkspaceService {
 
     List<FolderTreeNode> getWorkspaceFolderTree(String userId);
 
-    List<Folder> getBreadcrumbs(String userId, Integer folderId);
+    List<Folder> getBreadcrumbs(Integer folderId);
 
     List<FolderUser> getSubFolders(String userId, Integer folderId);
 

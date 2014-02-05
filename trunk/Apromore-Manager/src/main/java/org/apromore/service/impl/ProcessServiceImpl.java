@@ -189,21 +189,20 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#readProcessSummaries(String)
+     * @see org.apromore.service.ProcessService#readProcessSummaries(Integer, String)
      *      {@inheritDoc}
      */
     @Override
-    public ProcessSummariesType readProcessSummaries(final String searchExpression) {
+    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
         ProcessSummariesType processSummaries = null;
 
         try {
             // Firstly, do we need to use the searchExpression
             SearchExpressionBuilder seb = new SearchExpressionBuilder();
             String conditions = seb.buildSearchConditions(searchExpression);
-            //LOGGER.debug("Search Expression Builder output: " + conditions);
 
             // Now... Build the Object tree from this list of processes.
-            processSummaries = ui.buildProcessSummaryList(conditions, null);
+            processSummaries = ui.buildProcessSummaryList(folderId, conditions, null);
         } catch (UnsupportedEncodingException usee) {
             LOGGER.error("Failed to get Process Summaries: " + usee.toString());
         }
@@ -213,12 +212,11 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, org.apromore.dao.dataObject.Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    @Event(message = HistoryEnum.IMPORT_PROCESS_MODEL)
     public ProcessModelVersion importProcess(final String username, final Integer folderId, final String processName,
             final Version version, final String natType, final CanonisedProcess cpf, final String domain,
             final String documentation, final String created, final String lastUpdate, final boolean publicModel) throws ImportException {

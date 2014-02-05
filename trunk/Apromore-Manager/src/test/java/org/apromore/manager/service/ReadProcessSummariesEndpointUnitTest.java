@@ -93,11 +93,12 @@ public class ReadProcessSummariesEndpointUnitTest {
         String searchExpression = "";
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
+        msg.setFolderId(0);
         msg.setSearchExpression(searchExpression);
         JAXBElement<ReadProcessSummariesInputMsgType> request = new ObjectFactory().createReadProcessSummariesRequest(msg);
 
         ProcessSummariesType procSummary = new ProcessSummariesType();
-        expect(procSrv.readProcessSummaries(searchExpression)).andReturn(procSummary);
+        expect(procSrv.readProcessSummaries(0, searchExpression)).andReturn(procSummary);
 
         replayAll();
 

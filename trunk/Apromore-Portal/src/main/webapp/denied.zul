@@ -1,4 +1,4 @@
-<?page title="AProMoRe" contentType="text/html;charset=UTF-8"?>
+<?page title="Apromore" contentType="text/html;charset=UTF-8"?>
 <zk>
 
     <style src="css/apromore.css"/>
@@ -10,7 +10,7 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
 
-    <window title="AProMoRe" border="none" contentStyle="overflow:auto;">
+    <window title="Apromore" border="none" contentStyle="overflow:auto;">
 
         <html>
         <h:body class="signin signin-horizontal" xmlns:h="http://www.w3.org/1999/xhtml">

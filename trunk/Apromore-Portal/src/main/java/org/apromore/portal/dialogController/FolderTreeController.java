@@ -17,7 +17,7 @@ public class FolderTreeController extends BaseController {
     public FolderTreeController(Window win) throws DialogException {
         Tree tree = (Tree) win.getFellow("mainTree").getFellow("folderTree");
 
-        FolderTreeModel model = new FolderTreeModel(new FolderTree(true).getRoot());
+        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
         tree.setItemRenderer(new MiscFolderTreeRenderer());
         tree.setModel(model);
     }

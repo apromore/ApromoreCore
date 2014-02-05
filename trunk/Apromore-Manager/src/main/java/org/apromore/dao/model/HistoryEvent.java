@@ -27,11 +27,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
-@Table(name = "history_event",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"type", "occurDate"})
-        }
-)
+@Table(name = "history_event")
 @Configurable("history_event")
 @Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class HistoryEvent implements Serializable {

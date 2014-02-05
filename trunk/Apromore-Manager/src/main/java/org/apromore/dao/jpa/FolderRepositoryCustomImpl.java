@@ -5,6 +5,7 @@ import org.apromore.dao.FolderUserRepository;
 import org.apromore.dao.ProcessUserRepository;
 import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.FolderUser;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessUser;
@@ -77,6 +78,33 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
         return processes;
     }
 
+    /**
+     * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(int, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Process> getProcessByFolderUserRecursive(int parentFolderId, String userId) {
+        List<Process> processes = new ArrayList<>();
+        processes.addAll(getProcesses(processUserRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+
+        for (FolderUser folder : folderUserRepository.findByParentFolderAndUser(parentFolderId, userId)) {
+            processes.addAll(getProcessByFolderUserRecursive(folder.getFolder().getId(), userId));
+        }
+
+        return processes;
+    }
+
+
+
+    private List<Process> getProcesses(List<ProcessUser> processUsers) {
+        List<Process> processes = new ArrayList<>();
+
+        for (ProcessUser ps : processUsers) {
+            processes.add(ps.getProcess());
+        }
+
+        return processes;
+    }
 
     private List<ProcessModelVersion> getProcessModelVersions(List<ProcessUser> processUsers) {
         List<ProcessModelVersion> pmvs = new ArrayList<>();
