@@ -272,4 +272,9 @@ public class Folder implements Serializable {
     public void setFolderProcesses(Set<Process> newFolderProcesses) {
         this.folderProcesses = newFolderProcesses;
     }
+
+    public void addFolderProcess(Process newFolderProcess) {
+        this.folderProcesses.add(newFolderProcess);
+    }
+
 }

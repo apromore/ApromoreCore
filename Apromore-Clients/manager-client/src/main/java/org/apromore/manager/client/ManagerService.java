@@ -175,10 +175,11 @@ public interface ManagerService {
 
     /**
      * Get the Process Summaries from the Apromore Manager.
+     * @param folderId the folder we are currently asking for the process Ids.
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    ProcessSummariesType readProcessSummaries(String searchCriteria);
+    ProcessSummariesType readProcessSummaries(Integer folderId, String searchCriteria);
 
     /**
      * Takes an APQL expression and tells the manager to excute it and return a result.

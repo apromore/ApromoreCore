@@ -33,10 +33,11 @@ public interface ProcessService {
     /**
      * Loads all the process Summaries. It will either get all or use the keywords parameter
      * to load a subset of the processes.
+     * @param folderId the folder we are currently in.
      * @param searchExpression the search expression to limit the search.
      * @return The ProcessSummariesType used for Webservices.
      */
-    ProcessSummariesType readProcessSummaries(final String searchExpression);
+    ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchExpression);
 
     /**
      * Import a Process.

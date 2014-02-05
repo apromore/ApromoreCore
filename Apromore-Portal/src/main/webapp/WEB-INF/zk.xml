@@ -4,7 +4,7 @@
     <!-- Defines the application's name -->
     <preference>
         <name>org.zkoss.zk.ui.WebApp.name</name>
-        <value>AProMoRe</value>
+        <value>Apromore</value>
     </preference>
 
     <!-- Turn on if you want to debug JavaScript.
