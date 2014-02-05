@@ -24,7 +24,7 @@ import org.zkoss.zul.Window;
 /**
  * Controller used to find user in apromore and display them. usually for Security.
  */
-public class FindUsersController extends BaseController {
+public class SecurityFindUsersController extends BaseController {
 
     private MainController mainController;
     private Button btnSave;
@@ -32,7 +32,7 @@ public class FindUsersController extends BaseController {
     private Listbox lstUsers;
 
     @SuppressWarnings("unchecked")
-    public FindUsersController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
+    public SecurityFindUsersController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
         this.mainController = securitySetupController.getMainController();
         this.lstUsers = (Listbox) win.getFellow("findUsers").getFellow("lstUsers");
         Button btnSearch = (Button) win.getFellow("findUsers").getFellow("btnSearch");

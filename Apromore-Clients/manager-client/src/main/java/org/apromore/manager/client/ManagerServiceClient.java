@@ -703,14 +703,14 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, double, double, double, double, double, double)
+     * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, int, String, double, double, double, double, double, double)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
     public ProcessSummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
-                                                          final Boolean latestVersions, final double modelThreshold, final double labelThreshold, final double contextThreshold,
-                                                          final double skipnWeight, final double subnWeight, final double skipeWeight) {
+            final Boolean latestVersions, final int folderId, final String userId, final double modelThreshold, final double labelThreshold,
+            final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing SearchForSimilarProcessesRequest.....");
 
         SearchForSimilarProcessesInputMsgType msg = new SearchForSimilarProcessesInputMsgType();
@@ -718,6 +718,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setProcessId(processId);
         msg.setVersionName(versionName);
         msg.setLatestVersions(latestVersions);
+        msg.setFolderId(folderId);
+        msg.setUserId(userId);
         msg.setParameters(SearchForSimilarProcessesHelper.setParams(method, modelThreshold, labelThreshold, contextThreshold, skipnWeight,
                 skipeWeight, subnWeight));
 
