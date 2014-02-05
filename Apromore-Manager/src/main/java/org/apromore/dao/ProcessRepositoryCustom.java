@@ -21,6 +21,13 @@ public interface ProcessRepositoryCustom  {
      */
     List<Process> findAllProcesses(final String conditions);
 
+    /**
+     * Find all the Processes based on the Conditions and folder. This could be done Using Specifications?
+     * @param folderId the folder to search in.
+     * @param conditions the conditions
+     * @return the list of processes.
+     */
+    List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

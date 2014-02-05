@@ -1,4 +1,4 @@
-<?page title="AProMoRe - Advanced process model repository" contentType="text/html;charset=UTF-8" ?>
+<?page title="Apromore - Advanced process model repository" contentType="text/html;charset=UTF-8" ?>
 
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>

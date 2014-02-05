@@ -257,12 +257,9 @@
 //}
 package org.apromore.service.helper;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
+import org.apromore.dao.FolderRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
@@ -281,6 +278,10 @@ import org.apromore.service.WorkspaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
 * Used By the Services to generate the data objects used by the UI.
 *
@@ -292,7 +293,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
-
+    private FolderRepository fRepository;
     private WorkspaceService workspaceService;
 
 
@@ -300,13 +301,15 @@ public class UIHelper implements UserInterfaceHelper {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepository Annotations Repository.
      * @param processRepository process Repository.
+     * @param folderRepository folder repository.
      * @param workspaceService Workspace Services.
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository, final ProcessRepository processRepository,
-                    final WorkspaceService workspaceService) {
+            final FolderRepository folderRepository, final WorkspaceService workspaceService) {
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
+        this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
     }
 
@@ -355,17 +358,17 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /**
-     * @see UserInterfaceHelper#buildProcessSummaryList(String, org.apromore.model.ProcessVersionsType)
+     * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
-    public ProcessSummariesType buildProcessSummaryList(String conditions, ProcessVersionsType similarProcesses) {
+    public ProcessSummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses) {
         ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
 
         processSummaries.setTotalProcessCount(pRepository.count());
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
-        List<Process> processes = pRepository.findAllProcesses(conditions);
+        List<Process> processes = pRepository.findAllProcessesByFolder(folderId, conditions);
 
         for (Process process : processes) {
             processSummaryType = buildProcessList(proIds, similarProcesses, process);
@@ -386,7 +389,7 @@ public class UIHelper implements UserInterfaceHelper {
         ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
 
-        processSummaries.setTotalProcessCount(pRepository.count());
+        processSummaries.setTotalProcessCount((long) fRepository.getProcessByFolderUserRecursive(folderId, userId).size());
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<ProcessUser> processes = workspaceService.getUserProcessesOrig(userId, folderId);

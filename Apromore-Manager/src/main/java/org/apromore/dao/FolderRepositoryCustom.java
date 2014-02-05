@@ -1,6 +1,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
+import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 
 import java.util.List;
@@ -29,5 +30,14 @@ public interface FolderRepositoryCustom {
      * @return the list of ProcessModelVersion.
      */
     List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(int parentFolderId, String userId);
+
+
+    /**
+     * Get all the processes in a folder and all of it's sub folders to the end of the tree.
+     * @param parentFolderId the parent's folders Id
+     * @param userId the users Id.
+     * @return the list of ProcessModelVersion.
+     */
+    List<Process> getProcessByFolderUserRecursive(int parentFolderId, String userId);
 
 }

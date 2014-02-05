@@ -87,7 +87,7 @@ public class SimilarityServiceImpl implements SimilarityService {
             LOGGER.error("Failed to perform the similarity search.", se);
         }
 
-        return ui.buildProcessSummaryList("", similarProcesses);
+        return ui.buildProcessSummaryList(folderId, "", similarProcesses);
     }
 
     private List<ProcessModelVersion> getProcessModelVersionsToSearchAgainst(int folderId, String userGuid, Boolean latestVersions) {

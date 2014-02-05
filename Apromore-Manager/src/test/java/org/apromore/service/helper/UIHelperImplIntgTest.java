@@ -64,7 +64,7 @@ public class UIHelperImplIntgTest {
     public void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
-        ProcessSummariesType processSummaries = uiSrv.buildProcessSummaryList("", null);
+        ProcessSummariesType processSummaries = uiSrv.buildProcessSummaryList(0, "", null);
 
         assertThat(processSummaries, notNullValue());
         assertThat(processSummaries.getProcessSummary().size(), greaterThan(0));

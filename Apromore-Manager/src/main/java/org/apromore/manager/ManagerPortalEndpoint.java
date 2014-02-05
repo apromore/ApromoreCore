@@ -957,7 +957,7 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
 
         try {
-            ProcessSummariesType processes = procSrv.readProcessSummaries(payload.getSearchExpression());
+            ProcessSummariesType processes = procSrv.readProcessSummaries(payload.getFolderId(), payload.getSearchExpression());
             result.setCode(0);
             result.setMessage("");
             res.setProcessSummaries(processes);
@@ -1278,7 +1278,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        List<FolderType> folderTypes = WorkspaceMapper.convertFolderListToFolderTypes(workspaceSrv.getBreadcrumbs(payload.getUserId(), payload.getFolderId()));
+        List<FolderType> folderTypes = WorkspaceMapper.convertFolderListToFolderTypes(workspaceSrv.getBreadcrumbs(payload.getFolderId()));
         for (FolderType ft : folderTypes) {
             res.getFolders().add(ft);
         }
