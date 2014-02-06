@@ -389,7 +389,7 @@ public class UIHelper implements UserInterfaceHelper {
         ProcessSummaryType processSummaryType;
         ProcessSummariesType processSummaries = new ProcessSummariesType();
 
-        processSummaries.setTotalProcessCount((long) fRepository.getProcessByFolderUserRecursive(folderId, userId).size());
+        processSummaries.setTotalProcessCount(pRepository.count()); //(long) fRepository.getProcessByFolderUserRecursive(folderId, userId).size()
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<ProcessUser> processes = workspaceService.getUserProcessesOrig(userId, folderId);
