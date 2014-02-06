@@ -46,6 +46,7 @@ public class MiscFolderTreeRenderer implements TreeitemRenderer {
                 treeItem.setOpen(true);
                 if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
                     treeItem.setSelected(true);
+                    UserSessionManager.setCurrentSecurityItem(folder.getId());
                 }
             } else {
                 treeItem.setOpen(false);

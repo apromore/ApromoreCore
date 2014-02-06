@@ -79,13 +79,17 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     }
 
     /**
-     * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(int, String)
+     * @see FolderRepositoryCustom#getProcessByFolderUserRecursive(Integer, String)
      * {@inheritDoc}
      */
     @Override
-    public List<Process> getProcessByFolderUserRecursive(int parentFolderId, String userId) {
+    public List<Process> getProcessByFolderUserRecursive(Integer parentFolderId, String userId) {
         List<Process> processes = new ArrayList<>();
+        if (parentFolderId == 0) {
+            parentFolderId = null;
+        }
         processes.addAll(getProcesses(processUserRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+
 
         for (FolderUser folder : folderUserRepository.findByParentFolderAndUser(parentFolderId, userId)) {
             processes.addAll(getProcessByFolderUserRecursive(folder.getFolder().getId(), userId));

@@ -13,6 +13,7 @@ import java.util.List;
  * Time: 6:56 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("unchecked")
 public class FolderTree {
 
     private FolderTreeNode root;
@@ -33,19 +34,25 @@ public class FolderTree {
 
     private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId) {
         for (FolderType folder : folders) {
-            FolderTreeNode childNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
+            FolderTreeNode childNode = new FolderTreeNode(folder, null, !loadAll, FolderTreeNodeTypes.Folder);
 
             if (folder.getFolders().size() > 0) {
                 node.add(buildTree(childNode, folder.getFolders(), folder.getId()));
             } else {
                 node.add(childNode);
+                if (loadAll) {
+                    ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folder.getId());
+                    for (ProcessSummaryType process : processes.getProcessSummary()) {
+                        childNode.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+                    }
+                }
             }
         }
 
         if (loadAll) {
             ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId);
             for (ProcessSummaryType process : processes.getProcessSummary()) {
-                node.add(new FolderTreeNode(process, null, true, FolderTreeNodeTypes.Process));
+                node.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 
