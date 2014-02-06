@@ -26,8 +26,9 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
 
 
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process p ";
+    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM Process p JOIN p.folder f ";
     private static final String GET_ALL_PUBLIC_JPA = "p.publicModel = true ";
-    private static final String GET_ALL_FOLDER_JPA = "p.folderId = ";
+    private static final String GET_ALL_FOLDER_JPA = "f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
 
@@ -62,7 +63,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES_JPA);
+        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" WHERE ").append(conditions);
             strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);

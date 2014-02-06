@@ -5,7 +5,7 @@
 
     <hbox spacing="0" width="100%" widths="40%,60%" height="360px">
         <borderlayout vflex="true" width="100%">
-            <center title="My Workspace" flex="true">
+            <center title="Select Folder" flex="true">
                 <FolderTree id="mainTree"/>
             </center>
         </borderlayout>
