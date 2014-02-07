@@ -2,6 +2,8 @@ package com.processconfiguration.quaestio;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -97,7 +99,9 @@ class ApromoreProcessModel implements ProcessModel {
 
                 // Present a UI to validate or edit the next version and branch
 		if (saveDialog == null) {
-			saveDialog = new SaveDialog();
+			Container ancestor = SwingUtilities.getAncestorOfClass(Frame.class, parent);
+			System.err.println("Quaestio save dialog modal parent is " + ancestor);
+			saveDialog = new SaveDialog((Frame) ancestor);
 			saveDialog.pack();
 		}
 		saveDialog.setModel(bpmn);
@@ -171,7 +175,13 @@ class ApromoreProcessModel implements ProcessModel {
 		private JFormattedTextField versionField;
 		private JTextField          branchField;
 
-		SaveDialog() {
+		/**
+                 * User interface for editing the version and branch before saving the model.
+                 *
+                 * @param parent  currently ignored, but provided in case we ever want to make the dialog modal
+                 */
+		SaveDialog(Frame parent) {
+			super(parent, false);
 
 			versionField = new JFormattedTextField(new JFormattedTextField.AbstractFormatterFactory() {
                                         public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
