@@ -210,6 +210,12 @@ ORYX.I18N.SyntaxChecker.noErrors = "There are no syntax errors.";
 ORYX.I18N.SyntaxChecker.invalid = "Invalid answer from server.";
 ORYX.I18N.SyntaxChecker.checkingMessage = "Checking ...";
 
+if(!ORYX.I18N.ConfigurationExtension) ORYX.I18N.ConfigurationExtension = {};
+
+ORYX.I18N.ConfigurationExtension.name = "Configuration";
+ORYX.I18N.ConfigurationExtension.group = "Configuration";
+ORYX.I18N.ConfigurationExtension.desc = "Show/Hide Variants";
+
 if(!ORYX.I18N.Undo) ORYX.I18N.Undo = {};
 
 ORYX.I18N.Undo.group = "Undo";
@@ -401,6 +407,12 @@ ORYX.I18N.SyntaxChecker.MESSAGEFLOW_START_MUST_BE_PARTICIPANT = "The message flo
 ORYX.I18N.SyntaxChecker.MESSAGEFLOW_END_MUST_BE_PARTICIPANT = "The message flow's target must be a participant.";
 ORYX.I18N.SyntaxChecker.CONV_LINK_CANNOT_CONNECT_CONV_NODES = "The conversation link must connect a communication or sub conversation node with a participant.";
 
+/** Synergia configurable BPMN extensions 06.02.2014 */
+ORYX.I18N.TGatewayType = Array();
+ORYX.I18N.TGatewayType["data-based_exclusive"] = "Data-based exclusive";
+ORYX.I18N.TGatewayType["event-based_exclusive"] = "Event-based exclusive";
+ORYX.I18N.TGatewayType["inclusive"] = "Inclusive";
+ORYX.I18N.TGatewayType["parallel"] = "Parallel";
 
 /** New Language Properties 24.04.2012 - YAWL Extension */
 /** YAWL Plugin **/
