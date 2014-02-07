@@ -1,22 +1,26 @@
 package org.apromore.common.converters.pnml;
 
-import de.hpi.PTnet.PTNet;
-import de.hpi.PTnet.serialization.PTNetRDFImporter;
-import de.hpi.petrinet.PetriNet;
-import de.hpi.petrinet.serialization.PetriNetPNMLExporter;
-import de.hpi.petrinet.serialization.PetriNetPNMLExporter.Tool;
-import org.apromore.common.converters.pnml.servlet.StencilSetUtil;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import de.hpi.diagram.SignavioUUID;
+import org.apromore.common.converters.pnml.context.PNMLConversionContext;
+import org.apromore.common.converters.pnml.handler.PNMLHandler;
+import org.apromore.common.converters.pnml.handler.PNMLHandlerFactory;
+import org.jbpt.petri.Flow;
+import org.jbpt.petri.Marking;
+import org.jbpt.petri.NetSystem;
+import org.jbpt.petri.Place;
+import org.jbpt.petri.Transition;
+import org.jbpt.petri.io.PNMLSerializer;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.StencilSetReference;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
 import javax.servlet.ServletOutputStream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 /**
  * Takes the pnml data and creates a PNML object and converts it into JSON for the editor to visualise.
@@ -25,71 +29,69 @@ import java.io.OutputStream;
  */
 public class PNMLToJSONConverter {
 
-    private Tool tool;
-
     /**
      * Does the conversion from pnml to json.
-     *
      * @param pnmlData   the pnml data
      * @param encoding   the string encoding format
      * @param jsonStream the output stream.
      */
-    public void convert(String pnmlData, String encoding, ServletOutputStream jsonStream)
-            throws IOException, SAXException, ParserConfigurationException {
-        convert(new ByteArrayInputStream(pnmlData.getBytes(encoding)), jsonStream);
-    }
-
-    /**
-     * @param pnmlStream source stream in Signavio JSON format
-     * @param jsonStream destination stream to receive EPML 2.0 format
-     */
-    public void convert(final InputStream pnmlStream, final OutputStream jsonStream)
-            throws IOException, SAXException, ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(pnmlStream);
-        Document pnmlDoc = builder.newDocument();
-
-        processDocument(document, pnmlDoc);
-
-        String jsonRepresentation = RdfJsonTransformation.toJson(pnmlDoc, "").toString();
-
-        jsonStream.write(jsonRepresentation.getBytes());
-    }
-
-
-    protected void processDocument(Document document, Document pnmlDoc) throws IOException {
-        String type = new StencilSetUtil().getStencilSet(document);
-        //if (type.equals("petrinet.json")) {
-            processPetriNet(document, pnmlDoc);
-        //} else {
-        //    throw new IOException("Sorry, not Implemented!");
-        //}
-    }
-
-
-    protected void processPetriNet(Document document, Document pnmlDoc) {
-        PTNetRDFImporter importer = new PTNetRDFImporter(document);
-        PTNet net = importer.loadPTNet();
-
-        PetriNetPNMLExporter exp = new PetriNetPNMLExporter();
-        convertNetToDocumentUsing(pnmlDoc, net, exp);
-    }
-
-    private void convertNetToDocumentUsing(Document pnmlDoc, PetriNet net, PetriNetPNMLExporter exp) {
-        exp.setTargetTool(getTool());
-        if (net.getInitialMarking().getNumTokens() == 0) {
-            net.getInitialMarking().setNumTokens(net.getInitialPlace(), 1);
+    public void convert(String pnmlData, String encoding, ServletOutputStream jsonStream) {
+        try {
+            PNMLSerializer pnmlSerializer = new PNMLSerializer();
+            NetSystem pnmlNet = pnmlSerializer.parse(pnmlData.getBytes(encoding));
+            convertPNML(pnmlNet, jsonStream);
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
         }
-        exp.savePetriNet(pnmlDoc, net);
     }
 
+    /* Convert the PNML to JSON. */
+    private void convertPNML(NetSystem pnmlNet, ServletOutputStream jsonStream) throws JSONException, IOException {
+        PNMLConversionContext context = new PNMLConversionContext();
+        PNMLHandlerFactory converterFactory = new PNMLHandlerFactory(context);
+        context.setConverterFactory(converterFactory);
 
-    public Tool getTool() {
-        return this.tool;
+        String stencilSetNs = "http://b3mn.org/stencilset/petrinet#";
+        BasicDiagram diagram = new BasicDiagram(SignavioUUID.generate(), pnmlNet.getName(), new StencilSetReference(stencilSetNs));
+
+        Bounds bounds = new Bounds();
+        bounds.setCoordinates(0, 0, 600, 600);
+        diagram.setBounds(bounds);
+        diagram.setProperty("title", pnmlNet.getName());
+
+        context.addDiagram(diagram);
+
+        Marking marking = pnmlNet.getMarking();
+        for (Transition transition : pnmlNet.getTransitions()) {
+            PNMLHandler converter = converterFactory.createNodeConverter(transition, marking);
+            if (converter != null) {
+                diagram.addChildShape(converter.convert());
+            }
+        }
+        for (Place place : pnmlNet.getPlaces()) {
+            PNMLHandler converter = converterFactory.createNodeConverter(place, marking);
+            if (converter != null) {
+                diagram.addChildShape(converter.convert());
+            }
+        }
+        for (Flow flow : pnmlNet.getFlow()) {
+            PNMLHandler converter = converterFactory.createEdgeConverter(flow);
+            if (converter != null) {
+                diagram.addChildShape(converter.convert());
+            }
+        }
+
+        writeJson(context, jsonStream);
     }
 
-    public void setTool(Tool tool) {
-        this.tool = tool;
+    /* Convert the basic diagram to json in an output stream. */
+    private void writeJson(final PNMLConversionContext context, final OutputStream jsonStream) throws JSONException, IOException {
+        BasicDiagram diagram = context.getDiagram(0);
+        assert diagram != null;
+        JSONObject jsonDiagram = GenericJSONBuilder.parseModel(diagram);
+        OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, "UTF-8");
+        jsonDiagram.write(outWriter);
+        outWriter.flush();
     }
+
 }
