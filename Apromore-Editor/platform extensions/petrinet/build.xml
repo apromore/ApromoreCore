@@ -4,6 +4,7 @@
     <property name="target" value="target"/>
     <property name="src" value="src"/>
     <property name="build" value="build"/>
+    <property name="lib" value="lib" />
     <property name="platform-lib" value="../../platform/WebContent/WEB-INF/lib"/>
     <property name="platform-web-inf" value="../../platform/WebContent/WEB-INF/"/>
 

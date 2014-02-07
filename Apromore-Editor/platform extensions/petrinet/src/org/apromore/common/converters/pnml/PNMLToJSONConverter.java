@@ -4,6 +4,7 @@ import de.hpi.diagram.SignavioUUID;
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
 import org.apromore.common.converters.pnml.handler.PNMLHandler;
 import org.apromore.common.converters.pnml.handler.PNMLHandlerFactory;
+import org.apromore.common.converters.pnml.layouter.PetriNetLayouter;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.Marking;
 import org.jbpt.petri.NetSystem;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
 import javax.servlet.ServletOutputStream;
@@ -54,6 +56,9 @@ public class PNMLToJSONConverter {
         String stencilSetNs = "http://b3mn.org/stencilset/petrinet#";
         BasicDiagram diagram = new BasicDiagram(SignavioUUID.generate(), pnmlNet.getName(), new StencilSetReference(stencilSetNs));
 
+        PetriNetLayouter layouter = new PetriNetLayouter(pnmlNet);
+        layouter.layout();
+
         Bounds bounds = new Bounds();
         bounds.setCoordinates(0, 0, 600, 600);
         diagram.setBounds(bounds);
@@ -61,17 +66,26 @@ public class PNMLToJSONConverter {
 
         context.addDiagram(diagram);
 
+        BasicShape shape;
         Marking marking = pnmlNet.getMarking();
         for (Transition transition : pnmlNet.getTransitions()) {
             PNMLHandler converter = converterFactory.createNodeConverter(transition, marking);
             if (converter != null) {
-                diagram.addChildShape(converter.convert());
+                shape = converter.convert();
+                if (layouter.getBounds(shape.getResourceId()) != null) {
+                    shape.setBounds(layouter.getBounds(shape.getResourceId()));
+                }
+                diagram.addChildShape(shape);
             }
         }
         for (Place place : pnmlNet.getPlaces()) {
             PNMLHandler converter = converterFactory.createNodeConverter(place, marking);
             if (converter != null) {
-                diagram.addChildShape(converter.convert());
+                shape = converter.convert();
+                if (layouter.getBounds(shape.getResourceId()) != null) {
+                    shape.setBounds(layouter.getBounds(shape.getResourceId()));
+                }
+                diagram.addChildShape(shape);
             }
         }
         for (Flow flow : pnmlNet.getFlow()) {
