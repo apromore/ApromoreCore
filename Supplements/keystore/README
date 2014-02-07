@@ -21,6 +21,7 @@ EXAMPLE OF CREATING A SIGNED KEY
 Creating a local.keystore file containing a keypair:
 
 	keytool -genkey -alias myalias -keyalg RSA -sigalg SHA1withRSA -keysize 2048 -validity 1825 \
+		 -ext ExtendedKeyUsage=serverAuth,clientAuth,codeSigning \
 		 -keystore local.keystore -storepass password -keypass password \
 		 -dname "CN=apromore.example.com, OU=Department of BPM, O=Example Co, L=Brisbane, ST=Queensland, C=AU"
 
@@ -29,8 +30,10 @@ Generate a Certificate Signing Request myalias.certreq:
 	keytool -certreq -alias myalias -keystore local.keystore -storepass password -keypass password -file myalias.certreq
 
 Send the CA the contents of myalias.certreq.
+CA sends back a signed certificate, e.g. ca_signed_certificate.p7b
 
-(to be continued -- add certificate chain from CA to local.keystore)
+	keytool -importcert -trustcacerts -alias myalias -file ca_signed_certificate.p7b \
+		-keystore local.keystore -storepass password -keypass password
 
 Configure Maven to use the new key in the top level pom.xml:
 
@@ -39,3 +42,7 @@ Configure Maven to use the new key in the top level pom.xml:
         <dsig.alias>myalias</dsig.alias>
         <dsig.storepass>password</dsig.storepass>
         <dsig.keypass>password</dsig.keypass>
+
+Rebuild with Maven.
+
+	mvn clean install
