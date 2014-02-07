@@ -149,6 +149,19 @@
 
 
 
+    <!-- Servlets from the Oryx Downloader -->
+    <servlet>
+        <display-name>Oryx Legacy File Download Servlet</display-name>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>org.oryxeditor.server.MultiDownloader</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/editor/download</url-pattern>
+    </servlet-mapping>
+
+
     <!-- Servlets from the Oryx Editor -->
     <servlet>
         <display-name>BPMN Importer</display-name>
