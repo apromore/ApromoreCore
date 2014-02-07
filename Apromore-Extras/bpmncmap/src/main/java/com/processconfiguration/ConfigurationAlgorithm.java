@@ -892,7 +892,13 @@ public abstract class ConfigurationAlgorithm {
 
                         // Create the replacement gateway
                         TGatewayType gatewayType = gatewayConfigurationType(gateway);
-                        assert gatewayType != null: "Null gateway type for " + gateway.getId();
+                        //assert gatewayType != null: "Null gateway type for " + gateway.getId();
+
+                        // If no gateway type is defined (usually because there's only one flow) default to an XOR
+                        if (gatewayType == null) {
+                            gatewayType = TGatewayType.DATA_BASED_EXCLUSIVE;
+                        }
+
                         switch (gatewayType) {
                         case DATA_BASED_EXCLUSIVE:
                             reconfiguredGateway = new TExclusiveGateway();
