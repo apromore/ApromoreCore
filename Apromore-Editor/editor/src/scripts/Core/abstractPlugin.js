@@ -213,16 +213,15 @@ ORYX.Plugins.AbstractPlugin = Clazz.extend({
 				newElement.type="hidden";
 				newElement.value = value;
 				return newElement
-			}
+			};
 			
 			submitForm.appendChild( createHiddenElement("download", content) );
 			submitForm.appendChild( createHiddenElement("file", filename) );
 			
-			
 			submitForm.method = "POST";
 			win.document.write("</body></html>");
 			win.document.close();
-			submitForm.action= ORYX.PATH + "/download";
+			submitForm.action= "/editor/download";
 			submitForm.submit();
 		}		
 	},

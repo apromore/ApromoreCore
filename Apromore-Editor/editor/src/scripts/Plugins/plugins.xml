@@ -101,9 +101,9 @@
 		</plugin>
 		
 		<!-- The following Plugin are needed for EPC Stencil Set -->
-		<plugin source="epcSupport.js" name="ORYX.Plugins.EPCSupport">
-			<requires namespace="http://b3mn.org/stencilset/epc#"/>
-		</plugin>	
+		<!--<plugin source="epcSupport.js" name="ORYX.Plugins.EPCSupport">-->
+			<!--<requires namespace="http://b3mn.org/stencilset/epc#"/>-->
+		<!--</plugin>	-->
 		<plugin source="epcLayouter.js" name="ORYX.Plugins.EPCLayouter">
 			<requires namespace="http://b3mn.org/stencilset/epc#"/>
 		</plugin>

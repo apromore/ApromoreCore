@@ -632,15 +632,15 @@ ORYX.Editor = {
 
             current_region.add(component);
 
-            ORYX.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height)
+            ORYX.Log.debug("original dimensions of region %0: %1 x %2", current_region.region, current_region.width, current_region.height);
 
             // update dimensions of region if required.
             if (!current_region.width && component.initialConfig && component.initialConfig.width) {
-                ORYX.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width)
+                ORYX.Log.debug("resizing width of region %0: %1", current_region.region, component.initialConfig.width);
                 current_region.setWidth(component.initialConfig.width)
             }
             if (component.initialConfig && component.initialConfig.height) {
-                ORYX.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height)
+                ORYX.Log.debug("resizing height of region %0: %1", current_region.region, component.initialConfig.height);
                 var current_height = current_region.height || 0;
                 current_region.height = component.initialConfig.height + current_height;
                 current_region.setHeight(component.initialConfig.height + current_height)
@@ -713,7 +713,6 @@ ORYX.Editor = {
         if (match && (!match.engaged || (match.engaged === 'false'))) {
             var loadedStencilSetsNamespaces = this.getStencilSets().keys();
             var facade = this._getPluginFacade();
-            var newPlugin;
             var me = this;
             ORYX.Log.debug("Initializing plugin '%0'", match.name);
 
@@ -797,7 +796,7 @@ ORYX.Editor = {
             // Get the plugins from the available plugins (those who are in the plugins.xml)
             ORYX.availablePlugins = $A(ORYX.availablePlugins).findAll(function (value) {
                 return ORYX.MashupAPI.loadablePlugins.include(value.name)
-            })
+            });
 
             // Add those plugins to the list, which are only in the loadablePlugins list
             ORYX.MashupAPI.loadablePlugins.each(function (className) {
@@ -871,8 +870,7 @@ ORYX.Editor = {
             method: 'GET',
             asynchronous: false,
             onSuccess: (function (transport) {
-                var jsonObject = Ext.decode(transport.responseText);
-                this.ss_extensions_def = jsonObject;
+                this.ss_extensions_def = Ext.decode(transport.responseText);
             }).bind(this),
             onFailure: (function (transport) {
                 ORYX.Log.error("Editor._loadStencilSetExtensionConfig: Loading stencil set extension configuration file failed." + transport);

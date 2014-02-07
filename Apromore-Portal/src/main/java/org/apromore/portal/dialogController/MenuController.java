@@ -50,8 +50,8 @@ public class MenuController extends Menubar {
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
-        Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
-        exactMatchingMI.setDisabled(true);
+        //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
+        //exactMatchingMI.setDisabled(true);
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
