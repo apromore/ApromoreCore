@@ -33,27 +33,27 @@ ORYX.Plugins.JSONSupport = ORYX.Plugins.AbstractPlugin.extend({
         arguments.callee.$.construct.apply(this, arguments);
         
         this.facade.offer({
-            'name': ORYX.I18N.JSONSupport.exp.name,
-            'functionality': this.exportJSON.bind(this),
-            'group': ORYX.I18N.JSONSupport.exp.group,
+            name: ORYX.I18N.JSONSupport.exp.name,
+            functionality: this.exportJSON.bind(this),
+            group: ORYX.I18N.JSONSupport.exp.group,
             dropDownGroupIcon: ORYX.PATH + "images/export2.png",
-			'icon': ORYX.PATH + "images/page_white_javascript.png",
-            'description': ORYX.I18N.JSONSupport.exp.desc,
-            'index': 0,
-            'minShape': 0,
-            'maxShape': 0
+			icon: ORYX.PATH + "images/page_white_javascript.png",
+            description: ORYX.I18N.JSONSupport.exp.desc,
+            index: 0,
+            minShape: 0,
+            maxShape: 0
         });
         
         this.facade.offer({
-            'name': ORYX.I18N.JSONSupport.imp.name,
-            'functionality': this.showImportDialog.bind(this),
-            'group': ORYX.I18N.JSONSupport.imp.group,
+            name: ORYX.I18N.JSONSupport.imp.name,
+            functionality: this.showImportDialog.bind(this),
+            group: ORYX.I18N.JSONSupport.imp.group,
             dropDownGroupIcon: ORYX.PATH + "images/import.png",
-			'icon': ORYX.PATH + "images/page_white_javascript.png",
-            'description': ORYX.I18N.JSONSupport.imp.desc,
-            'index': 1,
-            'minShape': 0,
-            'maxShape': 0
+			icon: ORYX.PATH + "images/page_white_javascript.png",
+            description: ORYX.I18N.JSONSupport.imp.desc,
+            index: 1,
+            minShape: 0,
+            maxShape: 0
         });
     },
     
@@ -64,10 +64,8 @@ ORYX.Plugins.JSONSupport = ORYX.Plugins.AbstractPlugin.extend({
     
     /**
      * Opens a upload dialog.
-     *
      */
     showImportDialog: function(successCallback){
-    
         var form = new Ext.form.FormPanel({
             baseCls: 'x-plain',
             labelWidth: 50,
@@ -108,8 +106,7 @@ ORYX.Plugins.JSONSupport = ORYX.Plugins.AbstractPlugin.extend({
             items: [form],
             buttons: [{
                 text: ORYX.I18N.JSONSupport.imp.btnImp,
-                handler: function(){
-                
+                handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
                         msg: ORYX.I18N.JSONSupport.imp.progress
                     });

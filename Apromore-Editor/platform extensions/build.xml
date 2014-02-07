@@ -2,6 +2,7 @@
 <project name="Signavio Core Components - Platform Extension Build Script" default="build-all" >
 
     <target name="build-all">
+        <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="downloader" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="diagram core" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="bpmn20xmlbasic" inheritall="true"/>
         <ant antfile="build.xml" target="com.signavio.extension.copy2Platform" dir="epc" inheritall="true"/>

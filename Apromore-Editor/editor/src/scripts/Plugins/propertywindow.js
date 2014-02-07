@@ -101,7 +101,7 @@ ORYX.Plugins.PropertyWindow = {
 		var parent = this;
 		
 		// creating the column model of the grid.
-		this.columnModel = new Ext.grid.ColumnModel({
+        this.columnModel = new Ext.grid.ColumnModel({
 		    columns: [
 			{
 				//id: 'name',
