@@ -24,7 +24,6 @@
  */
 package org.apromore.common.converters.pnml.servlet;
 
-import org.apromore.common.converters.epml.EPMLToJSONConverter;
 import org.apromore.common.converters.pnml.PNMLToJSONConverter;
 
 import javax.servlet.ServletException;
