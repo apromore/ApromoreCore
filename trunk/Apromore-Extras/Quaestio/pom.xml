@@ -89,6 +89,14 @@
         </plugins>
     </build>
     <dependencies>
+	<!-- Needed for LiveConnect
+        <dependency>
+            <groupId>java</groupId>
+            <artifactId>plugin</artifactId>
+            <version>1.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+	-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>

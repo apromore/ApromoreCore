@@ -5,6 +5,7 @@ package com.processconfiguration.quaestio;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -206,5 +207,12 @@ public class QuaestioApplet extends JApplet {
             System.err.println("Failed to initialize applet, exception message: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void start() {
+        System.out.println("Applet starting");
+        Window ancestor = SwingUtilities.getWindowAncestor(this);
+        ancestor.toFront();  // this is actually to force modal dialogs to the front, rather than the applet window
+        System.out.println("Applet started");
     }
 }
