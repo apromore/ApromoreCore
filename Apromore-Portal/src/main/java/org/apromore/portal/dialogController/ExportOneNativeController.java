@@ -125,10 +125,12 @@ public class ExportOneNativeController extends BaseController {
         Set<String> extensions = this.formats_ext.keySet();
         List<String> sorted = CollectionUtil.asSortedList(extensions);
         for (final String extension : sorted) {
-            cbi = new Listitem();
-            this.formatsLB.appendChild(cbi);
-            cbi.setLabel(this.formats_ext.get(extension));
-            cbi.setValue(this.formats_ext.get(extension));
+            if (!extension.equalsIgnoreCase("aml")) {
+                cbi = new Listitem();
+                this.formatsLB.appendChild(cbi);
+                cbi.setLabel(this.formats_ext.get(extension));
+                cbi.setValue(this.formats_ext.get(extension));
+            }
         }
         formatsLB.setSelectedItem((Listitem) formatsLB.getFirstChild());
 
