@@ -600,6 +600,11 @@
             <artifactId>annotation-yawl</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>annotation-pnml</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apromore.plugin</groupId>

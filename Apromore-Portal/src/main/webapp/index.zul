@@ -91,7 +91,7 @@
                             </south>
                         </borderlayout>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="true">
+                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="true" autoscroll="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>

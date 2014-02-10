@@ -24,7 +24,11 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
-import de.epml.*;
+import de.epml.TypeArc;
+import de.epml.TypeFlow;
+import de.epml.TypeMove;
+import de.epml.TypeMove2;
+import de.epml.TypeRelation;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
