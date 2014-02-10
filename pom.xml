@@ -88,10 +88,10 @@
         <ant.version>1.8.3</ant.version>
 
         <!-- Digital signature for applet signing -->
-        <dsig.keystore>${project.parent.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
-        <dsig.alias>applet</dsig.alias>
-        <dsig.storepass>applet</dsig.storepass>
-        <dsig.keypass>applet</dsig.keypass>
+        <dsig.keystore>/Users/cameron/apromore.keystore</dsig.keystore>
+        <dsig.alias>apromore</dsig.alias>
+        <dsig.storepass>password</dsig.storepass>
+        <dsig.keypass>password</dsig.keypass>
 
         <!-- Apromore Dependency Versions -->
         <manager-client.version>1.1</manager-client.version>
@@ -438,6 +438,11 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>annotation-yawl</artifactId>
+                <version>${apromore.annotation.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>annotation-pnml</artifactId>
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
 

@@ -25,13 +25,12 @@
 package org.apromore.common.converters.pnml.handler;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
-import org.apromore.common.converters.pnml.handler.impl.TypeFlowHandler;
+import org.apromore.common.converters.pnml.handler.impl.TypeArcHandler;
 import org.apromore.common.converters.pnml.handler.impl.TypePlaceHandler;
 import org.apromore.common.converters.pnml.handler.impl.TypeTransitionHandler;
-import org.jbpt.petri.Flow;
-import org.jbpt.petri.Marking;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
+import org.apromore.pnml.ArcType;
+import org.apromore.pnml.PlaceType;
+import org.apromore.pnml.TransitionType;
 
 public class PNMLHandlerFactory {
 
@@ -41,18 +40,18 @@ public class PNMLHandlerFactory {
         this.context = context;
     }
 
-    public PNMLHandler createNodeConverter(final Object obj, final Marking marking) {
-        if (obj instanceof Transition) {
-            return new TypeTransitionHandler(context, (Transition) obj);
-        } else if (obj instanceof Place) {
-            return new TypePlaceHandler(context, (Place) obj, marking);
+    public PNMLHandler createNodeConverter(final Object obj) {
+        if (obj instanceof TransitionType) {
+            return new TypeTransitionHandler(context, (TransitionType) obj);
+        } else if (obj instanceof PlaceType) {
+            return new TypePlaceHandler(context, (PlaceType) obj);
         }
         return null;
     }
 
     public PNMLHandler createEdgeConverter(final Object obj) {
-        if (obj instanceof Flow) {
-            return new TypeFlowHandler(context, (Flow) obj);
+        if (obj instanceof ArcType) {
+            return new TypeArcHandler(context, (ArcType) obj);
         }
         return null;
     }

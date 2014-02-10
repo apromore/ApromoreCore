@@ -25,9 +25,11 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
+import org.apromore.pnml.GraphicsNodeType;
+import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
-import java.math.BigInteger;
 import java.util.Map;
 
 /**
@@ -48,11 +50,25 @@ public abstract class NodeHandler extends PNMLHandlerImpl {
     public BasicShape convert() {
         BasicShape shape = createShape();
         shape.setProperties(convertProperties());
+        if (getGraphics() != null) {
+            shape.setBounds(convertGraphics(getGraphics()));
+        }
         getContext().addShape(getShapeId(), shape);
         return shape;
     }
 
+    protected Bounds convertGraphics(GraphicsNodeType graphics) {
+        Bounds bounds = new Bounds();
+        Point leftUpper = new Point(graphics.getPosition().getX(), graphics.getPosition().getY());
+        Point rightLower = new Point(graphics.getPosition().getX().add(graphics.getDimension().getX()),
+                                     graphics.getPosition().getY().add(graphics.getDimension().getY()));
+        bounds.setCoordinates(leftUpper, rightLower);
+        return bounds;
+    }
+
     abstract protected Map<String, String> convertProperties();
+
+    abstract protected GraphicsNodeType getGraphics();
 
     abstract protected BasicShape createShape();
 

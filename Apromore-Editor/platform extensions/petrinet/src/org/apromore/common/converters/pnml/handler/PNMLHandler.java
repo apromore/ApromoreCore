@@ -33,7 +33,6 @@ public interface PNMLHandler {
 
     /**
      * Convert the PNML Object to a Shape
-     *
      * @return the converted PNML object as a Signavio Shape
      */
     public BasicShape convert();

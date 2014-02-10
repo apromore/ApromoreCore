@@ -98,12 +98,17 @@ public class GenericJSONBuilder {
         shapeJson.put("stencil", parseStencil(childShape.getStencilId()));
         shapeJson.put("childShapes", parseChildShapesRecursive(childShape.getChildShapesReadOnly()));
         shapeJson.put("outgoing", parseOutgoings(childShape.getOutgoingsReadOnly()));
+        shapeJson.put("incoming", parseIncomings(childShape.getIncomingsReadOnly()));
         shapeJson.put("bounds", parseBounds(childShape.getBounds()));
         shapeJson.put("dockers", parseDockers(childShape.getDockersReadOnly()));
         shapeJson.put("labels", parseLabelSettings(childShape.getLabelSettings()));
         if (childShape instanceof GenericEdge) {
-            if (((GenericEdge<S, ?>) childShape).getTarget() != null)
+            if (((GenericEdge<S, ?>) childShape).getTarget() != null) {
                 shapeJson.put("target", parseTarget(((GenericEdge<S, ?>) childShape).getTarget()));
+                if (((GenericEdge<S, ?>) childShape).getSource() != null) {
+                    shapeJson.put("source", parseTarget(((GenericEdge<S, ?>) childShape).getSource()));
+                }
+            }
         }
 
         return shapeJson;
@@ -259,11 +264,35 @@ public class GenericJSONBuilder {
         return new JSONArray();
     }
 
+    /**
+     * Delivers the correct JSON Object for outgoings
+     *
+     * @param incomings
+     * @return
+     * @throws JSONException
+     */
+    protected <S extends GenericShape<S, ?>> JSONArray parseIncomings(List<S> incomings) throws JSONException {
+        if (incomings != null) {
+            JSONArray incomingsArray = new JSONArray();
+
+            for (S incoming : incomings) {
+                JSONObject incomingObject = new JSONObject();
+
+                incomingObject.put("resourceId", incoming.getResourceId());
+                incomingsArray.put(incomingObject);
+            }
+
+            return incomingsArray;
+        }
+
+        return new JSONArray();
+    }
+
 
     /**
      * Delivers the correct JSON Object for properties
      *
-     * @param properties
+     * @param shape
      * @return
      * @throws JSONException
      */

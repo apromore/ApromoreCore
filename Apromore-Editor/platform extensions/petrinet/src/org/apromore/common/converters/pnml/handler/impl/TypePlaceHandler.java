@@ -25,8 +25,8 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
-import org.jbpt.petri.Marking;
-import org.jbpt.petri.Place;
+import org.apromore.pnml.GraphicsNodeType;
+import org.apromore.pnml.PlaceType;
 import org.oryxeditor.server.diagram.basic.BasicNode;
 
 import java.util.HashMap;
@@ -34,24 +34,30 @@ import java.util.Map;
 
 public class TypePlaceHandler extends NodeHandler {
 
-    final Place place;
-    final Marking marking;
+    final PlaceType place;
 
 
-    public TypePlaceHandler(PNMLConversionContext context, Place place, Marking marking) {
+    public TypePlaceHandler(PNMLConversionContext context, PlaceType place) {
         super(context);
         this.place = place;
-        this.marking = marking;
     }
 
 
     @Override
     protected Map<String, String> convertProperties() {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("title", place.getName());
-        hashMap.put("description", place.getDescription());
-        hashMap.put("numberOfTokens", marking.get(place).toString());
+        hashMap.put("title", place.getName().getText());
+        if (place.getInitialMarking() != null) {
+            hashMap.put("numberoftokens", place.getInitialMarking().getText());
+            hashMap.put("numberoftokens_drawing", place.getInitialMarking().getText());
+            hashMap.put("numberoftokens_text", place.getInitialMarking().getText());
+        }
         return hashMap;
+    }
+
+    @Override
+    protected GraphicsNodeType getGraphics() {
+        return place.getGraphics();
     }
 
     @Override

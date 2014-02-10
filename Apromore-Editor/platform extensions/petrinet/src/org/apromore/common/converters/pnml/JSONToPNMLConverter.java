@@ -24,22 +24,27 @@
  */
 package org.apromore.common.converters.pnml;
 
-import de.epml.ObjectFactory;
-import org.apromore.common.converters.epml.IdFactory;
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
-import org.jbpt.petri.io.PNMLSerializer;
-import org.jbpt.throwable.SerializationException;
+import org.apromore.pnml.ArcType;
+import org.apromore.pnml.DimensionType;
+import org.apromore.pnml.GraphicsNodeType;
+import org.apromore.pnml.NetType;
+import org.apromore.pnml.NodeNameType;
+import org.apromore.pnml.NodeType;
+import org.apromore.pnml.PNMLSchema;
+import org.apromore.pnml.PlaceType;
+import org.apromore.pnml.PnmlType;
+import org.apromore.pnml.PositionType;
+import org.apromore.pnml.TransitionType;
 import org.json.JSONException;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 import org.oryxeditor.server.diagram.basic.BasicShape;
+import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -54,7 +59,6 @@ public class JSONToPNMLConverter {
 
     private static final Logger LOGGER = Logger.getLogger(JSONToPNMLConverter.class.getCanonicalName());
 
-    public static final String PNML_CONTEXT = "org.apromore.pnml";
 
     /**
      * @param jsonStream source stream in Signavio JSON format
@@ -64,12 +68,9 @@ public class JSONToPNMLConverter {
         try {
             String json = new Scanner(jsonStream, "UTF-8").useDelimiter("\\A").next();
             BasicDiagram diagram = BasicDiagramBuilder.parseJson(json);
-            NetSystem pnml = toPNML(diagram);
-
-            String serializePetriNet = PNMLSerializer.serializePetriNet(pnml);
-            //marshalPNMLFormat(pnmlStream, pnml, false);
-            //EPMLSchema.marshalEPMLFormat(pnmlStream, pnml, false);
-        } catch (JSONException | SerializationException e) {
+            PnmlType pnml = toPNML(diagram);
+            PNMLSchema.marshalPNMLFormat(pnmlStream, pnml, false /* is validating */);
+        } catch (JAXBException | JSONException | SAXException e) {
             e.printStackTrace();
         }
     }
@@ -80,7 +81,7 @@ public class JSONToPNMLConverter {
      * @return the translation of the <var>diagram</var> into PNML
      * @throws RuntimeException if <var>diagram</var> contains an unsupported stencil ID
      */
-    public NetSystem toPNML(final BasicDiagram diagram) {
+    public PnmlType toPNML(final BasicDiagram diagram) {
         final Map<BasicShape, BasicShape> sourceMap = new HashMap<>();
         final Map<BasicShape, BasicShape> targetMap = new HashMap<>();
 
@@ -97,60 +98,108 @@ public class JSONToPNMLConverter {
         }
 
         // Second pass, during which the EPML model is created and populated
-        NetSystem pnml = new NetSystem();
-        pnml.setId(diagram.getResourceId());
-        pnml.setName(diagram.getProperty("title"));
+        PnmlType pnml = new PnmlType();
+        NetType net = new NetType();
+        net.setId(diagram.getResourceId());
+
+        NetType.Name name = new NetType.Name();
+        name.setText(diagram.getProperty("title"));
+        net.setName(name);
         for (BasicShape shape : diagram.getAllShapesReadOnly()) {
             switch (shape.getStencilId()) {
                 case "Transition":
-                    pnml.addTransition(createTransition(shape));
+                    net.getTransition().add(createTransition(shape));
                     break;
                 case "VerticalEmptyTransition":
-                    pnml.addTransition(createTransition(shape));
+                    net.getTransition().add(createTransition(shape));
                     break;
                 case "Place":
-                    pnml.addPlace(createPlace(shape));
+                    net.getPlace().add(createPlace(shape));
                     break;
                 case "Arc":
-                    Node source = findNode(pnml, shape, sourceMap);
-                    Node target = findNode(pnml, shape, targetMap);
-                    pnml.addFlow(source, target);
+                    ArcType arc = new ArcType();
+                    arc.setId(shape.getResourceId());
+                    arc.setSource(findNode(net, shape, sourceMap));
+                    arc.setTarget(findNode(net, shape, targetMap));
+                    net.getArc().add(arc);
                     break;
                 default:
                     throw new RuntimeException("Unsupported stencil ID: " + shape.getStencilId());
             }
         }
 
+        pnml.getNet().add(net);
+
         return pnml;
     }
 
-    private Node findNode(NetSystem pnml, BasicShape shape, Map<BasicShape, BasicShape> nodeMap) {
-        Node resultNode = null;
+    private NodeType findNode(NetType net, BasicShape shape, Map<BasicShape, BasicShape> nodeMap) {
         BasicShape result = nodeMap.get(shape);
 
-        for (Node node : pnml.getNodes()) {
+        for (NodeType node : net.getPlace()) {
             if (node.getId().equalsIgnoreCase(result.getResourceId())) {
-                resultNode = node;
+                return node;
+            }
+        }
+        for (NodeType node : net.getTransition()) {
+            if (node.getId().equalsIgnoreCase(result.getResourceId())) {
+                return node;
             }
         }
 
-        return resultNode;
+        return null;
     }
 
-    private Place createPlace(BasicShape shape) {
-        Place place = new Place();
+    private PlaceType createPlace(BasicShape shape) {
+        PlaceType place = new PlaceType();
         place.setId(shape.getResourceId());
-        place.setLabel(shape.getProperty("title"));
+
+        NodeNameType name = new NodeNameType();
+        name.setText(shape.getProperty("title"));
+        place.setName(name);
+
+        if (shape.hasProperty("numberoftokens")) {
+            PlaceType.InitialMarking marking = new PlaceType.InitialMarking();
+            marking.setText(shape.getProperty("numberoftokens"));
+            place.setInitialMarking(marking);
+        }
+
+        place.setGraphics(createNodeGraphics(shape));
+
         return place;
     }
 
-    private Transition createTransition(BasicShape shape) {
-        Transition transition = new Transition();
+    private TransitionType createTransition(BasicShape shape) {
+        TransitionType transition = new TransitionType();
         transition.setId(shape.getResourceId());
         if (shape.getStencilId().equals("Transition")) {
-            transition.setLabel(shape.getProperty("title"));
+            NodeNameType name = new NodeNameType();
+            name.setText(shape.getProperty("title"));
+            transition.setName(name);
         }
+        transition.setGraphics(createNodeGraphics(shape));
         return transition;
+    }
+
+
+    private GraphicsNodeType createNodeGraphics(BasicShape shape) {
+        BigDecimal lowerX = new BigDecimal(shape.getBounds().getLowerLeft().getX());
+        BigDecimal lowerY = new BigDecimal(shape.getBounds().getLowerLeft().getY());
+        PositionType position = new PositionType();
+        position.setX(lowerX);
+        position.setY(lowerY);
+
+        lowerX = new BigDecimal(shape.getBounds().getWidth());
+        lowerY = new BigDecimal(shape.getBounds().getHeight());
+        DimensionType dimension = new DimensionType();
+        dimension.setX(lowerX);
+        dimension.setY(lowerY);
+
+        GraphicsNodeType graphicsNodeType = new GraphicsNodeType();
+        graphicsNodeType.setDimension(dimension);
+        graphicsNodeType.setPosition(position);
+
+        return graphicsNodeType;
     }
 
 }

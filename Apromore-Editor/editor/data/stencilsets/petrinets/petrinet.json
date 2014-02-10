@@ -397,7 +397,7 @@
 					"length":""
 				},
 				{
-                    "id":"numberOfTokens",
+                    "id":"numberoftokens",
                     "type":"Integer",
                     "title":"# Tokens",
                     "title_de":"# Tokens",

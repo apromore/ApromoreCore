@@ -112,6 +112,11 @@
             <requires namespace="http://b3mn.org/stencilset/petrinet#"/>
         </plugin>
 
+        <plugin source="bpmnLayouter.js" name="ORYX.Plugins.BpmnLayouter">
+            <requires namespace="http://b3mn.org/stencilset/petrinet#"/>
+            <requires namespace="http://b3mn.org/stencilset/yawl2.2#"/>
+        </plugin>
+
 
         <!-- Added for Test purposes -->
         <plugin source="file.js" name="ORYX.Plugins.Save"/>

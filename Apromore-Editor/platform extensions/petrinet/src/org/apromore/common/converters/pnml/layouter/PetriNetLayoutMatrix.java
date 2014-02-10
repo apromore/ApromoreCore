@@ -1,7 +1,9 @@
 package org.apromore.common.converters.pnml.layouter;
 
-import org.jbpt.petri.Node;
+import org.apromore.pnml.NodeType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -12,30 +14,31 @@ import java.util.Vector;
  */
 public class PetriNetLayoutMatrix {
 
-    private final Vector<Vector<Node>> data;
-    public int sizeCols;
-    public int sizeRows;
+    private List<List<NodeType>> data;
+    private int cols;
+    private int rows;
+
 
     public PetriNetLayoutMatrix() {
-        sizeCols = 0;
-        sizeRows = 0;
-        data = new Vector<>(sizeRows);
+        cols = 0;
+        rows = 0;
+        data = new ArrayList<>();
     }
 
-    public void set(int row, int col, Node val) {
+    public void set(int row, int col, NodeType val) {
         ensureSize(row + 1, col + 1);
         data.get(row).set(col, val);
     }
 
-    public Node get(int row, int col) {
-        if (row >= sizeRows || col >= sizeCols)
+    public NodeType get(int row, int col) {
+        if (row >= rows || col >= cols)
             return null;
 
         return data.get(row).get(col);
     }
 
-    public boolean contains(Node node) {
-        for (Vector<Node> col : data) {
+    public boolean contains(NodeType node) {
+        for (List<NodeType> col : data) {
             if (col.contains(node)) return true;
         }
 
@@ -48,22 +51,39 @@ public class PetriNetLayoutMatrix {
     }
 
     protected void ensureSizeRows(int sizeRows) {
-        if (this.sizeRows <= sizeRows) {
-            this.sizeRows = sizeRows;
+        if (this.rows <= sizeRows) {
+            this.rows = sizeRows;
             while (data.size() <= sizeRows) {
-                data.add(new Vector<Node>());
+                data.add(new Vector<NodeType>());
             }
         }
     }
 
     protected void ensureSizeCols(int sizeCols) {
-        if (this.sizeCols <= sizeCols) {
-            this.sizeCols = sizeCols;
-            for (Vector<Node> col : data) {
+        if (this.cols <= sizeCols) {
+            this.cols = sizeCols;
+            for (List<NodeType> col : data) {
                 while (col.size() <= sizeCols) {
                     col.add(null);
                 }
             }
         }
+    }
+
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
     }
 }
