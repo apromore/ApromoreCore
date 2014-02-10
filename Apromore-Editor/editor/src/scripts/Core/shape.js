@@ -139,6 +139,107 @@ ORYX.Core.Shape = {
      */
     refresh: function() {
         arguments.callee.$.refresh.apply(this, arguments);
+
+        // BEGIN ADDITION FOR CONFIGURABLE TASK LABELS
+
+                // Populate the <table> within a configuration annotation, based on the "variants" property of an annotated shape
+                var refreshconfigurationannotation = function(annotated, annotation) {
+                        try {
+                                var svgElem = annotation.node.ownerDocument.getElementById(annotation.id + "text");
+                                var variants = annotated.properties["oryx-variants"];
+                                if (!variants || variants == "") {
+                                        svgElem.getElementsByTagName("body")[0].innerHTML="Unset";
+                                }
+                                else {
+                                        var a = annotated.properties["oryx-variants"].evalJSON();
+                                        var rows = "";
+                                        for (i=0; i<a.totalCount; i++) {
+                                                rows += "<tr><td>" + a.items[i].id;
+                                                if (a.items[i].name) { rows += "</td><td>" + a.items[i].name; }
+                                                if (a.items[i].type) { rows += "</td><td>" + ORYX.I18N.TGatewayType[a.items[i].type]; }
+                                                rows += "</td></tr>";
+                                        }
+                                        svgElem.getElementsByTagName("body")[0].innerHTML="<table>"+rows+"</table>";
+                                }
+                        }
+                        catch(err) {
+                                console.error("Unable to render ConfigurationAnnotation " + annotation.resourceId + ": " + err.message);
+                        }
+                };
+
+                // Traverse from configuration annotation to the annotated shape
+                if (this.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation") {
+                        var connected = false;
+                        var f = (function(method) {
+                                this[method]().each((function(association,n) {
+                                        if (association.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#Association_Undirected") {
+                                                // Look for an element with a "variants" property at the other end of the association
+                                                association[method]().each((function(annotated,m) {
+                                                        connected = true;
+                                                        refreshconfigurationannotation(annotated, this);
+                                                }).bind(this));
+                                        }
+                                }).bind(this));
+                        }).bind(this);;
+                        f("getIncomingShapes");
+                        f("getOutgoingShapes");
+
+                        // Blank if not connected to a configured shape
+                        if (!connected) {
+                                this.node.ownerDocument.getElementById(this.id + "text").getElementsByTagName("body")[0].innerHTML="Unconnected";
+                        }
+                }
+
+                // Traverse outwards from an association between an annotated shape and the configuration annotation
+                else if (this.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#Association_Undirected") {
+                        var isAttachedToConfigurationAnnotation = false;
+                        var f = (function(method, method2) {
+                                this[method]().each((function(annotation) {
+                                        if (annotation.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation") {
+                                                isAttachedToConfigurationAnnotation = true;
+                                                this[method2]().each((function(annotated) {
+                                                        refreshconfigurationannotation(annotated, annotation);
+                                                }).bind(this));
+                                        }
+                                }).bind(this));
+                        }).bind(this);
+                        f("getIncomingShapes", "getOutgoingShapes");
+                        f("getOutgoingShapes", "getIncomingShapes");
+
+                        if (isAttachedToConfigurationAnnotation) {
+                                this.node.setAttributeNS(null, "class", "configuration-extension");
+                        }
+                        else {
+                                this.node.removeAttributeNS(null, "class");
+                        }
+                }
+
+                // Traverse from annotated shape to the configuration annotation
+                if (this.properties["oryx-variants"]) {
+                        var hasAnnotation = false;
+                        var f = (function(method) {
+                                this[method]().each((function(association, n) {
+                                        if (association.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#Association_Undirected") {
+                                                // Look for a configuration annotation at the source of the association
+                                                association[method]().each((function(annotation, m) {
+                                                        if (annotation.getStencil().id() == "http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation") {
+                                                                hasAnnotation = true;
+                                                                refreshconfigurationannotation(this, annotation);
+                                                        }
+                                                }).bind(this));
+                                        }
+                                }).bind(this));
+                        }).bind(this);
+                        f("getIncomingShapes");
+                        f("getOutgoingShapes");
+
+                        if (!hasAnnotation) {
+                                //console.warn(this.resourceId + " lacks an annotation")
+                        }
+                }
+
+        // END ADDITION FOR CONFIGURABLE TASK LABELS
+
         if (this.node.ownerDocument) {
             var c = function (e) {
                 return this.node.ownerDocument.getElementById(e) || Ext.fly(this.node).child("[id=" + e + "]", true)
@@ -312,7 +413,32 @@ ORYX.Core.Shape = {
                                         }
                                         break;
                                     case ORYX.CONFIG.TYPE_COMPLEX:
-                                        var x = this._labels[o];
+                                      // BEGIN ADDITION FOR CONFIGURATION VARIANTS
+                                      if (p == "text_variants") {
+                                            var label = this._labels[o];
+                                            if (label) {
+                                                // Label with comma-separated list of configuration IDs
+                                                try {
+                                                    var variants = this.properties["oryx-variants"].evalJSON();
+                                                    var formatted = "";
+                                                    for (i = 0; i < variants.totalCount; i++) {
+                                                        formatted += variants.items[i].id;
+                                                        if (i < variants.totalCount - 1) {
+                                                            formatted += ",";
+                                                        }
+                                                    }
+                                                    label.text(formatted);
+                                                }
+                                                catch (err) {
+                                                    // variants probably wasn't a populated list
+                                                    label.text("");
+                                                }
+                                            }
+                                      }
+
+                                      else {
+                                      // END ADDITION FOR CONFIGURATION VARIANTS
+
                                         if (x) {
                                             var n = function (J, I) {
                                                 var C = "";
@@ -401,6 +527,7 @@ ORYX.Core.Shape = {
                                             };
                                             x.text(n(g, h))
                                         }
+                                      }
                                         break
                                 }
                             }
