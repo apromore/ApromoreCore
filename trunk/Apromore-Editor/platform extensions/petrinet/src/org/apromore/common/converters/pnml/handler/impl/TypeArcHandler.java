@@ -25,18 +25,25 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
-import org.jbpt.petri.Flow;
+import org.apromore.pnml.ArcType;
+import org.apromore.pnml.GraphicsArcType;
+import org.apromore.pnml.NodeType;
+import org.apromore.pnml.PositionType;
+import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
+import sun.net.www.content.audio.basic;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeFlowHandler extends PNMLHandlerImpl {
+public class TypeArcHandler extends PNMLHandlerImpl {
 
-    private final Flow arc;
+    private final ArcType arc;
 
-    public TypeFlowHandler(PNMLConversionContext context, Flow arc) {
+    public TypeArcHandler(PNMLConversionContext context, ArcType arc) {
         super(context);
         this.arc = arc;
     }
@@ -47,26 +54,25 @@ public class TypeFlowHandler extends PNMLHandlerImpl {
     }
 
 
-    private BasicEdge createControlFlowShape(Flow typeFlow) {
+    private BasicEdge createControlFlowShape(ArcType typeFlow) {
         BasicEdge basicEdge = new BasicEdge(arc.getId(), "Arc");
-        connectEdge(basicEdge, typeFlow.getSource().getId(), typeFlow.getTarget().getId());
+        connectEdge(basicEdge, (NodeType) typeFlow.getSource(), (NodeType) typeFlow.getTarget());
         return basicEdge;
     }
 
-    private void connectEdge(BasicEdge basicEdge, String source, String target) {
-        List<BasicShape> outgoings = new ArrayList<>();
-        BasicShape outgoingShape = getContext().getShape(target);
-        if (outgoingShape != null) {
-            outgoings.add(outgoingShape);
-        }
-        basicEdge.setOutgoingsAndUpdateTheirIncomings(outgoings);
+    private void connectEdge(BasicEdge basicEdge, NodeType source, NodeType target) {
+        BasicShape incomingShape = getContext().getShape(source.getId());
+        basicEdge.connectToASource(incomingShape);
+        basicEdge.addDocker(deriveDockerFromShape(incomingShape));
 
-        List<BasicShape> incomings = new ArrayList<>();
-        BasicShape incomingShape = getContext().getShape(source);
-        if (incomingShape != null) {
-            incomings.add(incomingShape);
-        }
-        basicEdge.setIncomingsAndUpdateTheirOutgoings(incomings);
+        BasicShape outgoingShape = getContext().getShape(target.getId());
+        basicEdge.connectToATarget(outgoingShape);
+        basicEdge.addDocker(deriveDockerFromShape(outgoingShape));
+    }
+
+    private Point deriveDockerFromShape(BasicShape shape) {
+        Bounds bounds = shape.getBounds();
+        return bounds.getMiddle();
     }
 
 }

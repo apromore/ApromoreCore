@@ -80,6 +80,7 @@
         <module>plugin-annotation/xpdl</module>
         <module>plugin-annotation/epml</module>
         <module>plugin-annotation/yawl</module>
+        <module>plugin-annotation/pnml</module>
 
         <!-- Metrics Plugins -->
         <module>plugin-toolbox/plugin-metric/size</module>

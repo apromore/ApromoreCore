@@ -1,97 +1,100 @@
 package org.apromore.common.converters.pnml.layouter;
 
-import org.jbpt.petri.NetSystem;
-import org.jbpt.petri.Node;
-import org.jbpt.petri.Place;
-import org.jbpt.petri.Transition;
+import org.apromore.pnml.NodeType;
+import org.apromore.pnml.PnmlType;
 import org.oryxeditor.server.diagram.Bounds;
-import org.oryxeditor.server.diagram.Point;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class PetriNetLayouter {
 
-    private NetSystem net;
+    private PnmlType net;
     private PetriNetLayoutMatrix matrix;
-    private Map<Node, Bounds> boundsMap = new HashMap<>();
+    private Map<NodeType, Bounds> boundsMap = new HashMap<>();
 
-    public PetriNetLayouter(NetSystem net) {
+    public PetriNetLayouter(PnmlType net) {
         this.net = net;
     }
 
     public void layout() {
         matrix = new PetriNetLayoutMatrix();
-        buildLayoutMatrix();
-        setBounds();
+        //buildLayoutMatrix();
+       // setBounds();
     }
-
-    private void setBounds() {
-        Node node;
-        for (int row = 0; row < matrix.sizeRows; row++) {
-            for (int col = 0; col < matrix.sizeCols; col++) {
-                node = matrix.get(row, col);
-                if (node != null) {
-                    int height;
-                    int width;
-                    int margin = 80;
-                    int x = margin + 100 * col;
-                    int y = margin + 100 * row;
-                    if (node instanceof Place) {
-                        height = 30;
-                        width = 30;
-                    } else if (node instanceof Transition) {
-                        height = 40;
-                        width = 80;
-                    } else {
-                        height = 50;
-                        width = 10;
-                    }
-                    Bounds bounds = new Bounds(new Point(x - width / 2, y - height / 2), new Point(x + width / 2, y + height / 2));
-                    boundsMap.put(node, bounds);
-                }
-            }
-        }
-    }
-
-    public void buildLayoutMatrix() {
-        takeStep(getStartNodes(), 0);
-    }
-
-    public void takeStep(Collection<Node> nodes, int step) {
-        if (nodes.size() == 0) {
-            return;
-        }
-
-        int i = 0;
-        Collection<Node> nextNodes = new LinkedList<>();
-        for (Node node : nodes) {
-            matrix.set(i, step, node);
-            nextNodes = net.getDirectSuccessors(node);
-            i++;
-        }
-
-        step++;
-        takeStep(nextNodes, step);
-    }
-
-    public Collection<Node> getStartNodes() {
-        return net.getSourceNodes();
-    }
-
-    public Map<Node, Bounds> getBounds() {
-        return boundsMap;
-    }
-
-    public Bounds getBounds(String id) {
-        for (Map.Entry<Node, Bounds> bounds : boundsMap.entrySet()) {
-            if (bounds.getKey().getId().equals(id)) {
-                return bounds.getValue();
-            }
-        }
-        return null;
-    }
+//
+//    private void setBounds() {
+//        NodeType node;
+//        for (int row = 0; row < matrix.getRows(); row++) {
+//            for (int col = 0; col < matrix.getCols(); col++) {
+//                node = matrix.get(row, col);
+//                if (node != null) {
+//                    int height;
+//                    int width;
+//                    int margin = 80;
+//                    int x = margin + 100 * col;
+//                    int y = margin + 100 * row;
+//                    if (node instanceof PlaceType) {
+//                        height = 30;
+//                        width = 30;
+//                    } else if (node instanceof TransitionType) {
+//                        height = 40;
+//                        width = 80;
+//                    } else {
+//                        height = 50;
+//                        width = 10;
+//                    }
+//                    Bounds bounds = new Bounds(new Point(x - width / 2, y - height / 2), new Point(x + width / 2, y + height / 2));
+//                    boundsMap.put(node, bounds);
+//                }
+//            }
+//        }
+//    }
+//
+//    public void buildLayoutMatrix() {
+//        takeStep(getStartNodes(), 0);
+//    }
+//
+//    public void takeStep(Collection<NodeType> nodes, int column) {
+//        if (nodes.size() == 0) {
+//            return;
+//        }
+//
+//        int row = 0;
+//        Collection<NodeType> nextNodes = new LinkedList<>();
+//        for (NodeType node : nodes) {
+//            matrix.set(row, column, node);
+//            nextNodes = net.getDirectSuccessors(node);
+//            row++;
+//        }
+//
+//        takeStep(nextNodes, ++column);
+//    }
+//
+//    public Collection<NodeType> getStartNodes() {
+//        return net.getSourceNodes();
+//    }
+//
+//    public Map<NodeType, Bounds> getBounds() {
+//        return boundsMap;
+//    }
+//
+//    public Bounds getBounds(String id) {
+//        List<NodeType> startNodes = new LinkedList<>();
+//
+//        for(PlaceType place : net.getNet().get(0).getPlace()){
+//            if(place.getIncomingFlowRelationships().size() == 0){
+//                startNodes.add(place);
+//            }
+//        }
+//
+//        for(TransitionType transition : net.getNet().get(0).getTransition()){
+//            if(transition.getIncomingFlowRelationships().size() == 0){
+//                startNodes.add(transition);
+//            }
+//        }
+//
+//        return startNodes;
+//    }
 
 }
