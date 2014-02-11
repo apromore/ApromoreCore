@@ -90,7 +90,7 @@
         <!-- Digital signature for applet signing -->
         <dsig.keystore>${project.parent.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
         <dsig.alias>applet</dsig.alias>
-        <dsig.storepass>applet</disg.storepass>
+        <dsig.storepass>applet</dsig.storepass>
         <dsig.keypass>applet</dsig.keypass>
 
         <!-- Apromore Dependency Versions -->
