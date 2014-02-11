@@ -7,6 +7,7 @@
     <property name="lib" value="lib" />
     <property name="platform-lib" value="../../platform/WebContent/WEB-INF/lib"/>
     <property name="platform-web-inf" value="../../platform/WebContent/WEB-INF/"/>
+    <property name="pnml-schema-dir" value="../../../Apromore-Schema/pnml-schema"/>
 
     <!-- SPECIFY A UNIQUE NAME FOR YOUR EXTENSION -->
     <property name="jar-file" value="platform-extension-petrinet"/>
@@ -20,6 +21,9 @@
     <target name="com.signavio.extension.compile" depends="com.signavio.extension.clean">
         <mkdir dir="${build}"/>
         <javac srcdir="${src}" destdir="${build}" debug="on" target="1.7" includeantruntime="false">
+            <src path="${src}"/>
+            <src path="${pnml-schema-dir}/src/main/java"/>
+            <src path="${pnml-schema-dir}/target/generated-sources/src"/>
             <classpath id="libs">
                 <fileset dir="${platform-lib}">
                     <include name="**/*.jar"/>
