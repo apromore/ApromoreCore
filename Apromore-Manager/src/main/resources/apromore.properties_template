@@ -1,5 +1,5 @@
 # Application info
-Host = http://localhost:9000/
+Host = http://@SITE_HOST@:@SITE_PORT@/
 OryxEndPoint_xpdl = editor/openFromApromore?
 OryxEndPoint_epml = editor/openFromApromore?
 
