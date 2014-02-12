@@ -1,0 +1,3 @@
+hostname=@SITE_HOST@
+port=@SITE_PORT@
+manager-url=manager/services/manager
