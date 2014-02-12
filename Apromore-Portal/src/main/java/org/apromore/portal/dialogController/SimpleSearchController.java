@@ -85,7 +85,7 @@ public class SimpleSearchController extends BaseController {
                     } else {
                         it = null;
                         if (j < previousSearches.size()) {
-                            new Comboitem(previousSearches.get(j).getSearch()).setParent(this);
+                            new Comboitem(previousSearches.get(j).getSearch()).setParent(previousSearchesCB);
                         }
                     }
                 }
@@ -105,6 +105,9 @@ public class SimpleSearchController extends BaseController {
      */
     private void processSearch() throws Exception {
         FolderType folder = UserSessionManager.getCurrentFolder();
+        if (folder == null) {
+            throw new Exception("Search requires a folder to be selected");
+        }
         String query = previousSearchesCB.getValue();
         ProcessSummariesType processSummaries = getService().readProcessSummaries(folder.getId(), query);
         int nbAnswers = processSummaries.getProcessSummary().size();
