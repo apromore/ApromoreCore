@@ -2,6 +2,7 @@
 <project name="Signavio Core Components - Main Build Script" >
 
     <!-- PROPERTIES -->
+    <property file="../site.properties"/>
     <property file="user.properties"/>
     <property file="build.properties"/>
 

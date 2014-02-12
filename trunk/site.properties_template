@@ -1,0 +1,16 @@
+#
+# Site-specific configuration
+#
+
+site.host = localhost
+site.port = 9000
+
+editor.dir    = /tmp/repo-Apromore-Editor
+filestore.dir = /tmp/repo-Apromore-FileStore
+
+# Configuration for applet code signing.  This is used by the Quaestio component
+dsig.keystore  = ${project.parent.basedir}/Supplements/keystore/signing-jar.keystore
+dsig.alias     = applet
+dsig.storepass = applet
+dsig.keypass   = applet
+
