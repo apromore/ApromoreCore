@@ -32,4 +32,15 @@
         <constructor-arg ref="messageFactory"/>
     </bean>
 
+    <!-- for clients connecting from outside a redirector (e.g. mapoping port 80 to port 9000) -->
+
+    <bean id="managerClientExternal" class="org.apromore.manager.client.ManagerServiceClient" >
+        <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerExternalServiceTemplate" />
+    </bean>
+
+    <bean id="managerExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
+          p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
+          p:defaultUri="http://${hostname}:${externalport}/${manager-url}">
+        <constructor-arg ref="messageFactory"/>
+    </bean>
 </beans>

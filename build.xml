@@ -86,6 +86,7 @@
             <filterset>
                 <filter token="SITE_HOST" value="${site.host}"/>
                 <filter token="SITE_PORT" value="${site.port}"/>
+                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
             </filterset>
         </copy>
         <copy file="Apromore-Manager/src/main/resources/apromore.properties_template"
