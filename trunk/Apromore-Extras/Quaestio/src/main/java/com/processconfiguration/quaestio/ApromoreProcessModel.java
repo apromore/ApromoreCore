@@ -51,7 +51,7 @@ class ApromoreProcessModel implements ProcessModel {
 	ApromoreProcessModel(final int processId, String branch, String versionString, final Component parent) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
-		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClient");
+		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClientExternal");
 
 		this.processId     = processId;
 		this.branch        = branch;
