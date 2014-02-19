@@ -363,7 +363,7 @@ CREATE TABLE `folder` (
 
 CREATE TABLE `folder_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `folderId` int(11) NOT NULL,
+  `folderId` int(11) DEFAULT NULL,
   `userId` int(11) NOT NULL,
   `has_read` boolean not null default 1,
   `has_write` boolean not null default 1,
