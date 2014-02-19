@@ -71,7 +71,7 @@ public class FolderUser implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "folderId", nullable = false)
+    @JoinColumn(name = "folderId", nullable = true)
     public Folder getFolder() {
         return this.folder;
     }
