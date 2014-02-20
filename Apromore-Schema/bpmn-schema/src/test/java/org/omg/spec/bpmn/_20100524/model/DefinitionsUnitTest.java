@@ -45,7 +45,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class DefinitionsTest {
+public class DefinitionsUnitTest {
 
     /**
      * Shared JAXB parsing context.
