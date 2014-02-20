@@ -2,12 +2,17 @@ package org.apromore.canoniser.epml;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
 
+import de.epml.CorrectedEPML;
 import de.epml.EPMLSchema;
 import de.epml.TypeCoordinates;
 import de.epml.TypeDirectory;
@@ -62,14 +67,21 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
     public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
             final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
         try {
-            JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(nativeInput, false);
+            CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(nativeInput));
+            ByteArrayInputStream epmlInput = new ByteArrayInputStream(correctedEPML.toByteArray());
+
+            // Parse the EPML into its Java (JAXB) object model
+            JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(epmlInput, false);
+
+            // Translate EPML to CPF
             EPML2Canonical epml2canonical = new EPML2Canonical(nativeElement.getValue());
 
             annotationFormat.add(epml2canonical.getANF());
             canonicalFormat.add(epml2canonical.getCPF());
 
             return newPluginResult();
-        } catch (JAXBException | SAXException e) {
+
+        } catch (JAXBException | SAXException | TransformerException e) {
             throw new CanoniserException(e);
         }
 

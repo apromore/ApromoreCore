@@ -24,12 +24,15 @@
  */
 package org.apromore.common.converters.epml.servlet;
 
-import org.apromore.common.converters.epml.EPMLToJSONConverter;
-
+import java.io.StringReader;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.stream.StreamSource;
+
+import de.epml.CorrectedEPML;
+import org.apromore.common.converters.epml.EPMLToJSONConverter;
 
 /**
  * EPMLImportServlet converts a EPML specification (.epml file) to the JSON
@@ -45,18 +48,20 @@ public class EPMLImportServlet extends HttpServlet {
 
 
     /* (non-Javadoc)
-      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-      */
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
-        String epmlData = req.getParameter("data");
 
         /* Transform and return as JSON */
         try {
             res.setContentType("application/json");
             res.setStatus(200);
+
+            CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(new StringReader(req.getParameter("data"))));
             EPMLToJSONConverter epmlConverter = new EPMLToJSONConverter();
-            epmlConverter.convert(epmlData, "UTF-8", res.getOutputStream());
+            epmlConverter.convert(correctedEPML.toString(), "UTF-8", res.getOutputStream());
+
         } catch (Exception e) {
             try {
                 e.printStackTrace();
