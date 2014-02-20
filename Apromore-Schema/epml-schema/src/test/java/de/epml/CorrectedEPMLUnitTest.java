@@ -49,17 +49,55 @@ public class CorrectedEPMLUnitTest {
         return expected.toString();
     }
 
+    /**
+     * Correct an input EPML and check whether it matched the expected output.
+     *
+     * @param input  the input EPML
+     * @param output  the expected corrected EPML
+     * @throws TransformerException if unable to buffer test data
+     */
+    private void assertCorrected(String output, String input) throws TransformerException {
+
+        CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(input)));
+        String expected = getResourceAsString(output);
+
+        assertEquals(expected.toString(), correctedEPML.toString());
+    }
+
     // Test cases
 
     /**
-     * Test that correct EPML passes through untouched.
+     * Correct EPML should be passed through untouched.
      */
-    @Ignore
-    @Test public final void test1() throws TransformerException {
+    @Test public final void test00correct() throws TransformerException {
+        assertCorrected("00correct.epml", "00correct.epml");
+    }
 
-        CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream("test1.epml")));
-        String expected = getResourceAsString("test1-expected.epml");
+    /**
+     * If the top-level <code>&lt;epml&gt;</code> element isn't namespaced, make it so.
+     */
+    @Test public final void test01noNamespace() throws TransformerException {
+        assertCorrected("00correct.epml", "01no-namespace.epml");
+    }
 
-        assertEquals(expected.toString(), correctedEPML.toString());
+    /**
+     * If <code>&lt;coordinates&gt;</code> are missing, add one.
+     */
+    @Test public final void test02noCoordinates() throws TransformerException {
+        assertCorrected("02no-coordinates-corrected.epml", "02no-coordinates.epml");
+    }
+
+    /**
+     * If EPCs occur outside any <code>&lt;directory&gt;</code>, add one.
+     */
+    @Test public final void test03noDirectory() throws TransformerException {
+        assertCorrected("03no-directory-corrected.epml", "03no-directory.epml");
+    }
+
+    /**
+     * Change <code>epc/@id</code> to <code>epc/@epcId</code>.
+     */
+    @Test public final void test04epcWithoutEpcId() throws TransformerException {
+        assertCorrected("00correct.epml", "04epcWithoutEpcId.epml");
     }
 }
