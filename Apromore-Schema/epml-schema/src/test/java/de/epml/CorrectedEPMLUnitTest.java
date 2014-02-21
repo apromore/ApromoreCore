@@ -146,7 +146,6 @@ public class CorrectedEPMLUnitTest {
     /**
      * Zero <code>epc/@epcId</code> needs renumbering.
      */
-    @Ignore
     @Test public final void test12zeroEpcId() throws Exception {
         assertCorrected("12zero-epcId-corrected.epml", "12zero-epcId.epml");
     }
@@ -154,9 +153,15 @@ public class CorrectedEPMLUnitTest {
     /**
      * Zero <code>event/@id</code> needs renumbering.
      */
-    @Ignore
     @Test public final void test13zeroEventId() throws Exception {
         assertCorrected("13zero-event-id-corrected.epml", "13zero-event-id.epml");
+    }
+
+    /**
+     * Zero <code>arc/@id</code> needs renumbering.
+     */
+    @Test public final void test14zeroArcId() throws Exception {
+        assertCorrected("14zero-arc-id-corrected.epml", "14zero-arc-id.epml");
     }
 
     /**
@@ -166,5 +171,12 @@ public class CorrectedEPMLUnitTest {
      */
     @Test public final void test20correct() throws Exception {
         assertCorrected("20correct.epml", "20correct.epml");
+    }
+
+    /**
+     * Interacting renumberings of epc, event and arc identifiers.
+     */
+    @Test public final void test21interactingIdRenumberings() throws Exception {
+        assertCorrected("21interacting-id-renumberings-corrected.epml", "21interacting-id-renumberings.epml");
     }
 }
