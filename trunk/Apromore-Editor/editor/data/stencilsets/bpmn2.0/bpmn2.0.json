@@ -2077,71 +2077,18 @@
 					"wrapLines":true
 				},
 				{
-					"id":"configurable",
-					"type":"Boolean",
-					"title":"Configurable",
-					"title_de":"Konfigurierbar",
-					"value":"false",
-					"description":"Defines whether the gateway is configurable.",
-					"description_de":"Definiert, ob der Kommunikationsrechner konfigurierbar ist.",
-					"readonly":false,
-					"optional":false,
-					"configurationExtension":true,
-					"refToView":"thick_bg_frame"
-				},		
-				{
-					"id":"variants",
-					"type":"Complex",
-					"title":"Variants",
-					"value":"",
-					"description":"The type of gateway for different variants.",
-					"description_de":"Der Typ des Kommunikationsrechners für verschiedene Varianten.",
-					"readonly":false,
-					"optional":true,
-					"configurationExtension":true,
-					"editortitle":"Editor for Variants",
-					"complexItems": [
-						{
-							"id":"id",
-							"name":"Variant",
-							"name_de":"Variante",
-							"type":"String",
-							"value":"",
-							"width":100,
-							"optional":false 
-						},
-						{
-							"id":"type",
-							"name":"Gateway Type",
-							"type":"Choice",
-							"value":"data-based_exclusive",
-							"width":150,
-							"optional":false,
-							"items":[
-								{
-									"id":"c1",
-									"title":"Inclusive",
-									"value":"inclusive"
-								},
-								{
-									"id":"c2",
-									"title":"Parallel",
-									"value":"parallel"
-								},
-								{
-									"id":"c3",
-									"title":"Data-based Exclusive",
-									"value":"data-based_exclusive"
-								},
-								{
-									"id":"c4",
-									"title":"Event-based Exclusive",
-									"value":"event-based_exclusive"
-								}
-							]
-						}
-					]
-				}
+                                        "id":"configurable",
+                                        "type":"Boolean",
+                                        "title":"Configurable",
+                                        "title_de":"Konfigurierbar",
+                                        "value":"false",
+                                        "description":"Defines whether the gateway is configurable.",
+                                        "description_de":"Definiert, ob der Kommunikationsrechner konfigurierbar ist.",
+                                        "readonly":false,
+                                        "optional":false,
+                                        "configurationExtension":true,
+                                        "refToView":"thick_bg_frame"
+                                }
 			]
 		},
 		{
@@ -3375,6 +3322,54 @@
 							"title":"Data-based Exclusive",
 							"value":"data-based_exclusive"
 						}
+					]
+				},
+				{
+                                        "id":"variants",
+                                        "type":"Complex",
+                                        "title":"Variants",
+                                        "value":"",
+                                        "description":"The type of gateway for different variants.",
+                                        "description_de":"Der Typ des Kommunikationsrechners für verschiedene Varianten.",
+                                        "readonly":false,
+                                        "optional":true,
+                                        "configurationExtension":true,
+                                        "editortitle":"Editor for Variants",
+                                        "complexItems": [
+                                                {
+                                                        "id":"id",
+                                                        "name":"Variant",
+                                                        "name_de":"Variante",
+                                                        "type":"String",
+                                                        "value":"",
+                                                        "width":100,
+                                                        "optional":false
+                                                },
+                                                {
+                                                        "id":"type",
+                                                        "name":"Gateway Type",
+                                                        "type":"Choice",
+                                                        "value":"data-based_exclusive",
+                                                        "width":150,
+                                                        "optional":false,
+                                                        "items":[
+                                                                {
+                                                                        "id":"c1",
+                                                                        "title":"Inclusive",
+                                                                        "value":"inclusive"
+                                                                },
+                                                                {
+                                                                        "id":"c2",
+                                                                        "title":"Parallel",
+                                                                        "value":"parallel"
+                                                                },
+								{
+                                                                        "id":"c3",
+                                                                        "title":"Data-based Exclusive",
+                                                                        "value":"data-based_exclusive"
+                                                                }
+                                                        ]
+                                                }
 					]
 				}
 			],
