@@ -2,14 +2,20 @@ package de.epml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.StringReader;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -62,14 +68,23 @@ public class CorrectedEPMLUnitTest {
      * @throws SAXException if <code>output</code> is not well-formed XML
      * @throws TransformerException if unable to buffer test data
      */
-    private void assertCorrected(String output, String input) throws JAXBException, SAXException, TransformerException {
-
-        EPMLSchema.unmarshalEPMLFormat(getResourceAsStream(output), true);  // just checking schema-validity
+    private void assertCorrected(final String output, final String input) throws IOException, SAXException, TransformerException {
         String expected = getResourceAsString(output);
 
+        // Validate that the expected EPML is valid according to the (corrected) EPML 2.0 schema
+        Validator validator = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
+                                           .newSchema(new StreamSource(getResourceAsStream("xsd/EPML_2.0.xsd_corrected")))
+                                           .newValidator();
+        validator.setErrorHandler(new ErrorHandler() {
+            public void error(SAXParseException e)      { throw new Error("Test data " + output + " invalid", e); }
+            public void fatalError(SAXParseException e) { throw new Error("Test data " + output + " fatally invalid", e); }
+            public void warning(SAXParseException e)    { /* ignore */ }
+        });
+        validator.validate(new StreamSource(new StringReader(expected)));
+
+        // Perform the actual test assertion
         CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(input)));
         assertEquals(expected.toString(), correctedEPML.toString());
-
     }
 
     // Test cases
