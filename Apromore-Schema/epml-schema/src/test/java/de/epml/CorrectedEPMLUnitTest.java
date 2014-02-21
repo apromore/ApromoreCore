@@ -85,6 +85,10 @@ public class CorrectedEPMLUnitTest {
         // Perform the actual test assertion
         CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(input)));
         assertEquals(expected.toString(), correctedEPML.toString());
+
+        // Correction is idempotent: once something is correct, correcting it again should cause no changes
+        CorrectedEPML recorrectedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(output)));
+        assertEquals(expected.toString(), recorrectedEPML.toString());
     }
 
     // Test cases
