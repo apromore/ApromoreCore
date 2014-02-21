@@ -2,12 +2,14 @@ package de.epml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -52,52 +54,102 @@ public class CorrectedEPMLUnitTest {
     /**
      * Correct an input EPML and check whether it matched the expected output.
      *
+     * This also sanity checks that the <code>output</code> is schema-valid.
+     *
      * @param input  the input EPML
      * @param output  the expected corrected EPML
+     * @throws JAXBException if unable to unmarshal <code>output</code> as a JAXB object model
+     * @throws SAXException if <code>output</code> is not well-formed XML
      * @throws TransformerException if unable to buffer test data
      */
-    private void assertCorrected(String output, String input) throws TransformerException {
+    private void assertCorrected(String output, String input) throws JAXBException, SAXException, TransformerException {
 
-        CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(input)));
+        EPMLSchema.unmarshalEPMLFormat(getResourceAsStream(output), true);  // just checking schema-validity
         String expected = getResourceAsString(output);
 
+        CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(getResourceAsStream(input)));
         assertEquals(expected.toString(), correctedEPML.toString());
+
     }
 
     // Test cases
 
     /**
      * Correct EPML should be passed through untouched.
+     *
+     * Events without arcs.
      */
-    @Test public final void test00correct() throws TransformerException {
+    @Test public final void test00correct() throws Exception {
         assertCorrected("00correct.epml", "00correct.epml");
     }
 
     /**
      * If the top-level <code>&lt;epml&gt;</code> element isn't namespaced, make it so.
      */
-    @Test public final void test01noNamespace() throws TransformerException {
+    @Test public final void test01noNamespace() throws Exception {
         assertCorrected("00correct.epml", "01no-namespace.epml");
     }
 
     /**
      * If <code>&lt;coordinates&gt;</code> are missing, add one.
      */
-    @Test public final void test02noCoordinates() throws TransformerException {
+    @Test public final void test02noCoordinates() throws Exception {
         assertCorrected("02no-coordinates-corrected.epml", "02no-coordinates.epml");
     }
 
     /**
      * If EPCs occur outside any <code>&lt;directory&gt;</code>, add one.
      */
-    @Test public final void test03noDirectory() throws TransformerException {
+    @Test public final void test03noDirectory() throws Exception {
         assertCorrected("03no-directory-corrected.epml", "03no-directory.epml");
     }
 
     /**
      * Change <code>epc/@id</code> to <code>epc/@epcId</code>.
      */
-    @Test public final void test04epcWithoutEpcId() throws TransformerException {
+    @Test public final void test04epcWithoutEpcId() throws Exception {
         assertCorrected("00correct.epml", "04epcWithoutEpcId.epml");
+    }
+
+    /**
+     * Correct EPML should be passed through untouched.
+     *
+     * Technically this model is incorrect since the events don't alternate with functions, but
+     * the schema isn't expected to police that.
+     */
+    @Test public final void test10correct() throws Exception {
+        assertCorrected("10correct.epml", "10correct.epml");
+    }
+
+    /**
+     * Generate new <code>arc/@id</code> in case of clashes.
+     */
+    @Test public final void test11arcIdClashes() throws Exception {
+        assertCorrected("11arc-id-clashes-corrected.epml", "11arc-id-clashes.epml");
+    }
+
+    /**
+     * Zero <code>epc/@epcId</code> needs renumbering.
+     */
+    @Ignore
+    @Test public final void test12zeroEpcId() throws Exception {
+        assertCorrected("12zero-epcId-corrected.epml", "12zero-epcId.epml");
+    }
+
+    /**
+     * Zero <code>event/@id</code> needs renumbering.
+     */
+    @Ignore
+    @Test public final void test13zeroEventId() throws Exception {
+        assertCorrected("13zero-event-id-corrected.epml", "13zero-event-id.epml");
+    }
+
+    /**
+     * Correct EPML should be passed through untouched.
+     *
+     * Empty EPC.
+     */
+    @Test public final void test20correct() throws Exception {
+        assertCorrected("20correct.epml", "20correct.epml");
     }
 }
