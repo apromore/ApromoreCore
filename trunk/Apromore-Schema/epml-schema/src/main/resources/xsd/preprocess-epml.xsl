@@ -17,6 +17,7 @@
     </xsl:for-each>
 </xsl:variable>
 
+<!--
 <xsl:variable name="max-arc-id">
     <xsl:choose>
     <xsl:when test="//arc/@id">
@@ -30,6 +31,7 @@
     <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
 </xsl:variable>
+-->
 
 <!-- If the top level <epml> element isn't namespaced, add the right namespace -->
 <!-- If there's no top level <coordinates>, insert one -->
