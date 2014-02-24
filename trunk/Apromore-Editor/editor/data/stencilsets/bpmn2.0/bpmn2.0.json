@@ -3661,7 +3661,7 @@
 					"description_de":"Ändern Sie die Rahmenfarbe für eine visuelle Unterscheidung.",
 					"readonly":false,
 					"optional":false,
-					"refToView":["border", "captionDisableAntialiasing"],
+					"refToView":["border", "caption", "captionDisableAntialiasing"],
 					"fill":false,
 					"stroke":true
 				}
@@ -6623,7 +6623,7 @@
 					"readonly":false,
 					"optional":true,
 					"refToView":"absent-in-configuration",
-					"configurationExtension":true,
+					"configurationExtension":true
 				},
 				{
 					"id":"variants",

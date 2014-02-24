@@ -39,15 +39,15 @@ new function(){
 			this.facade.registerOnEvent(ORYX.CONFIG.EVENT_PROPWINDOW_PROP_CHANGED, this.handlePropertyChanged.bind(this));
 			this.facade.registerOnEvent('layout.bpmn2_0.pool', this.handleLayoutPool.bind(this));
 			this.facade.registerOnEvent('layout.bpmn2_0.subprocess', this.handleSubProcess.bind(this));
-			this.facade.registerOnEvent(ORYX.CONFIG.EVENT_SHAPEREMOVED, this.handleShapeRemove.bind(this));
-			//this.facade.registerOnEvent('layout.bpmn11.lane', this.handleLayoutLane.bind(this));
+            this.facade.registerOnEvent(ORYX.CONFIG.EVENT_BPMN20_HASHCHILD, this.handleHashChild.bind(this));
+            this.facade.registerOnEvent(ORYX.CONFIG.EVENT_SHAPEREMOVED, this.handleShapeRemove.bind(this));
 
 			this.facade.registerOnEvent(ORYX.CONFIG.EVENT_LOADED, this.afterLoad.bind(this));
 			
 
 			this.namespace = undefined;
 		},
-		
+
 		/**
 		 * Force to update every pool
 		 */
@@ -110,7 +110,7 @@ new function(){
 					} else {
 						return false;
 					}
-				}.bind(this))
+				}.bind(this));
 				
 				if (unselectLanes.length > 0 && pools.length > 0){
 					selection = selection.without.apply(selection, unselectLanes);
@@ -177,7 +177,14 @@ new function(){
 		},
 		
 		hashedSubProcesses: {},
-		
+
+        handleHashChild: function (b) {
+            var a = b.shape;
+            if (a) {
+                this.hashChildShapes(a)
+            }
+        },
+
 		hashChildShapes: function(shape){
 			var children = shape.getChildNodes();
 			children.each(function(child){
@@ -209,8 +216,9 @@ new function(){
 			var offset = sh.absoluteXY();
 			offset.x -= this.hashedSubProcesses[sh.id].x;
 			offset.y -= this.hashedSubProcesses[sh.id].y;
-			
-			var resized = this.hashedSubProcesses[sh.id].width !== sh.bounds.width() || this.hashedSubProcesses[sh.id].height !== sh.bounds.height();
+
+			var resized = Math.abs(this.hashedSubProcesses[sh.id].width - sh.bounds.width()) > 1 ||
+                Math.abs(this.hashedSubProcesses[sh.id].height !== sh.bounds.height()) > 1;
 			
 			this.hashedSubProcesses[sh.id] = sh.absoluteXY();
 			this.hashedSubProcesses[sh.id].width 	= sh.bounds.width();
@@ -233,11 +241,8 @@ new function(){
 			var children = shape.getChildNodes(true);
 			
 			// Get all nodes
-			var dockers = children
-				// Get all incoming and outgoing edges
-				.map(function(node){
-					return [].concat(node.getIncomingShapes())
-							.concat(node.getOutgoingShapes())
+			var dockers = children.map(function(node){
+					return [].concat(node.getIncomingShapes()).concat(node.getOutgoingShapes())
 				})
 				// Flatten all including arrays into one
 				.flatten()
@@ -253,7 +258,7 @@ new function(){
 				.flatten();
 	
 			var abs = shape.absoluteBounds();
-			abs.moveBy(-offset.x, -offset.y)
+			abs.moveBy(-offset.x, -offset.y);
 			var obj = {};
 			dockers.each(function(docker){
 				
@@ -275,7 +280,7 @@ new function(){
 						var previousIsOver = index !== 0 ? abs.isIncluded(docker.parent.dockers[index-1].bounds.center()) : false;
 						var nextIsOver = index !== size-1 ? abs.isIncluded(docker.parent.dockers[index+1].bounds.center()) : false;
 						
-						if (!previousIsOver && !nextIsOver){ return; }
+						if (!previousIsOver && !nextIsOver){ return }
 						
 						var ref = docker.parent.dockers[previousIsOver ? index-1 : index+1];
 						if (Math.abs(-Math.abs(ref.bounds.center().x-docker.bounds.center().x)) < 2){
@@ -283,7 +288,7 @@ new function(){
 						} else if(Math.abs(-Math.abs(ref.bounds.center().y-docker.bounds.center().y)) < 2){
 							off.x = 0;
 						} else {
-							return;
+							return
 						}
 					}
 					
@@ -293,13 +298,13 @@ new function(){
 					docker:docker,
 					offset:off
 				}
-			})
+			});
 			
 			// Set dockers
 			this.facade.executeCommands([new ORYX.Core.MoveDockersCommand(obj)]);
 				
 		},
-		
+
 		/**
 		 * DragDocker.Docked Handler
 		 *
@@ -312,16 +317,17 @@ new function(){
 			
 			if(edge.getStencil().id() === namespace + "SequenceFlow") {
 				var isGateway = edgeSource.getStencil().groups().find(function(group) {
-						if(group == "Gateways") 
+						if(group == "Gateways") {
 							return group;
+                        }
 					});
-				if(!isGateway && (edge.properties["oryx-conditiontype"] == "Expression"))
+				if(!isGateway && (edge.properties["oryx-conditiontype"] == "Expression")) {
 					// show diamond on edge source
 					edge.setProperty("oryx-showdiamondmarker", true);
-				else 
+                } else {
 					// do not show diamond on edge source
 					edge.setProperty("oryx-showdiamondmarker", false);
-				
+                }
 				// update edge rendering
 				//edge.update();
 				
@@ -338,16 +344,13 @@ new function(){
 			var shapes = option.elements;
 			var propertyKey = option.key;
 			var propertyValue = option.value;
-			
 			var changed = false;
 			shapes.each(function(shape){
-				if((shape.getStencil().id() === namespace + "SequenceFlow") &&
-					(propertyKey === "oryx-conditiontype")) {
-					
-					if(propertyValue != "Expression")
+				if((shape.getStencil().id() === namespace + "SequenceFlow") && (propertyKey === "oryx-conditiontype")) {
+					if (propertyValue != "Expression") {
 						// Do not show the Diamond
 						shape.setProperty("oryx-showdiamondmarker", false);
-					else {
+                    } else {
 						var incomingShapes = shape.getIncomingShapes();
 						
 						if(!incomingShapes) {
@@ -356,27 +359,31 @@ new function(){
 						
 						var incomingGateway = incomingShapes.find(function(aShape) {
 							var foundGateway = aShape.getStencil().groups().find(function(group) {
-								if(group == "Gateways") 
+								if(group == "Gateways") {
 									return group;
+                                }
 							});
-							if(foundGateway)
+							if(foundGateway) {
 								return foundGateway;
+                            }
 						});
 						
-						if(!incomingGateway) 
+						if(!incomingGateway) {
 							// show diamond on edge source
 							shape.setProperty("oryx-showdiamondmarker", true);
-						else
+                        } else {
 							// do not show diamond
 							shape.setProperty("oryx-showdiamondmarker", false);
+                        }
 					}
 					
 					changed = true;
 				}
 			}.bind(this));
 			
-			if(changed) {this.facade.getCanvas().update();}
-			
+			if(changed) {
+                this.facade.getCanvas().update();
+            }
 		},
 		
 		hashedPoolPositions : {},
@@ -389,8 +396,6 @@ new function(){
 		 * @param {Object} event
 		 */
 		handleLayoutPool: function(event){
-			
-			
 			var pool = event.shape;
 			var selection = this.facade.getSelection(); 
 			var currentShape = selection.include(pool) ? pool : selection.first();
