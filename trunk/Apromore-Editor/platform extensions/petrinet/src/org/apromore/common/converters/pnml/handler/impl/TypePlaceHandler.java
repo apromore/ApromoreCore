@@ -50,7 +50,13 @@ public class TypePlaceHandler extends NodeHandler {
         if (place.getInitialMarking() != null) {
             hashMap.put("numberoftokens", place.getInitialMarking().getText());
             hashMap.put("numberoftokens_drawing", place.getInitialMarking().getText());
-            hashMap.put("numberoftokens_text", place.getInitialMarking().getText());
+            try {
+                if (place.getInitialMarking().getText() != null && Integer.parseInt(place.getInitialMarking().getText()) >= 5) {
+                     hashMap.put("numberoftokens_text", place.getInitialMarking().getText());
+                }
+            } catch (NumberFormatException nfe) {
+                // Do nothing, we don't need to show anything in the editor.
+            }
         }
         return hashMap;
     }

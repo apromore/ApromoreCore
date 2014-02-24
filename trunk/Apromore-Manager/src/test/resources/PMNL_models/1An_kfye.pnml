@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pnml>
+<net id="workflownet" type="http://www.informatik.hu-berlin.de/top/pnml/basicPNML.rng">
+    <place id="place_0">
+        <graphics>
+            <position x="140" y="33" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p4</text>
+         </name>
+    </place>
+    <place id="place_1">
+        <graphics>
+            <position x="16" y="49" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p3</text>
+         </name>
+    </place>
+    <place id="place_2">
+        <graphics>
+            <position x="16" y="17" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p2</text>
+         </name>
+    </place>
+    <transition id="trans_0">
+        <graphics>
+            <position  x="78" y="33" />
+            <dimension x="64" y="35" />
+        </graphics>
+        <name>
+            <text>Application\nfor Investment\nSupport</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Application\nfor Investment\nSupport</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <arc id="arc_0" source="place_2" target="trans_0">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="19" />
+                <point x="28" y="20" />
+                <point x="34" y="22" />
+                <point x="40" y="24" />
+                <end x="45" y="25" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_1" source="trans_0" target="place_0">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="111" y="33" />
+                <point x="117" y="33" />
+                <point x="123" y="33" />
+                <point x="128" y="33" />
+                <end x="133" y="33" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_2" source="place_1" target="trans_0">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="47" />
+                <point x="28" y="46" />
+                <point x="34" y="44" />
+                <point x="40" y="42" />
+                <end x="45" y="41" />
+            </spline>
+        </toolspecific>
+    </arc>
+</net>
+</pnml>
