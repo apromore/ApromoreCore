@@ -52,7 +52,6 @@ public class Folder implements Serializable {
 
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
-    private Set<Process> folderProcesses = new HashSet<>();
     private Set<FolderUser> folderUsers = new HashSet<>();
 
 
@@ -258,23 +257,6 @@ public class Folder implements Serializable {
 
     public void setSubFolders(Set<Folder> newSubFolders) {
         this.subFolders = newSubFolders;
-    }
-
-    @ManyToMany
-    @JoinTable(name = "folder_process",
-            joinColumns = { @JoinColumn(name = "folderId", nullable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "processId", nullable = false) }
-    )
-    public Set<Process> getFolderProcesses() {
-        return this.folderProcesses;
-    }
-
-    public void setFolderProcesses(Set<Process> newFolderProcesses) {
-        this.folderProcesses = newFolderProcesses;
-    }
-
-    public void addFolderProcess(Process newFolderProcess) {
-        this.folderProcesses.add(newFolderProcess);
     }
 
 }
