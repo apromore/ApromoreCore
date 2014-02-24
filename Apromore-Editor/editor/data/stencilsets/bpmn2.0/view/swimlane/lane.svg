@@ -18,7 +18,12 @@
 	</defs>
 	
   	<rect id="border_invisible" class="stripable-element-force" oryx:resize="vertical horizontal" x="0" y="0" width="600" height="250" fill="none" stroke-width="10" stroke="white" visibility="hidden" pointer-events="stroke"/>		
-	<rect id="border" oryx:resize="vertical horizontal" x="0" y="0" width="600" height="250" stroke="black" stroke-width="1" fill="url(#background) white" pointer-events="none" />
+	<rect id="border"
+	    oryx:resize="vertical horizontal"
+	    x="0"
+	    y="0"
+	    width="600"
+	    height="250" stroke="black" stroke-width="1" fill="url(#background) white" pointer-events="none" />
 	
 	
 	<rect 
@@ -29,7 +34,7 @@
 		width="30"
 		height="248"
 		stroke="black"
-		stroke-width="0"
+		stroke-width="1"
 		fill="white"
 		visibility="hidden"
 		class="stripable-element-force"
@@ -45,7 +50,7 @@
         id="captionDisableAntialiasing"
     />
 	
-	<!--rect 
+	<!--rect
 		id="captionDisableAntialiasing"
 		oryx:anchors="left top bottom"
 		x="0"
