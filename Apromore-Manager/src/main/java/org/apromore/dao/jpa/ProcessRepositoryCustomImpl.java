@@ -62,15 +62,22 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @Override
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions) {
+        boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
         strQry.append(GET_ALL_PROCESSES_FOLDER_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" WHERE ").append(conditions);
             strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
+            whereAdded = true;
+        } //else {
+        //   strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
+        //}
+        if (whereAdded) {
+            strQry.append(" AND ");
         } else {
-            strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
+            strQry.append(" WHERE ");
         }
-        strQry.append(" AND ").append(GET_ALL_FOLDER_JPA).append(folderId);
+        strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
