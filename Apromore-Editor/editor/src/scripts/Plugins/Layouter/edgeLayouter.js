@@ -110,7 +110,7 @@ new function(){
                         if (folt.isIncluded({
                             x: xm > 0 ? fp.x : folt.center().x,
                             y: xm > 0 ? folt.center().y : fp.y
-                        }) && d.isIncluded({
+                        }) && folt.isIncluded({
                             x: xm > 0 ? lp.x : folt.center().x,
                             y: xm > 0 ? folt.center().y : lp.y
                         })) {

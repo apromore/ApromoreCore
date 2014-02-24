@@ -926,6 +926,9 @@ ORYX.Plugins.ShapeMenu = {
 		var tmpBounds = undefined;
 
 		this.shapes.each(function(value) {
+            if (!value || !value.node || !value.node.parentNode) {
+                return
+            }
 			var a = value.node.getScreenCTM();
 			var upL = value.absoluteXY();
 			a.e = a.a*upL.x;
@@ -943,6 +946,9 @@ ORYX.Plugins.ShapeMenu = {
 
 		});
 
+        if (!newBounds) {
+            return
+        }
 		this.bounds = newBounds;
 		//this.bounds.moveBy({x:document.documentElement.scrollLeft, y:document.documentElement.scrollTop});
 
@@ -956,15 +962,16 @@ ORYX.Plugins.ShapeMenu = {
 			topButtonGroup = 0;
 		var bottom = 0,
 			bottomButtonGroup;
-		var right = 0
+		var right = 0,
 			rightButtonGroup = 0;
-		var size = 22;
-		
-		this.getWillShowButtons().sortBy(function(button) {
+		var size = Ext.isIPad ? 30 : 22;
+
+        var showB = this.getWillShowButtons();
+        showB.sortBy(function(button) {
 			return button.group;
 		});
-		
-		this.getWillShowButtons().each(function(button){
+
+        showB.each(function(button){
 			
 			var numOfButtonsPerLevel = this.getNumberOfButtonsPerLevel(button.align);
 
@@ -974,7 +981,7 @@ ORYX.Plugins.ShapeMenu = {
 					left = 0;
 					leftButtonGroup = button.group;
 				}
-				var x = Math.floor(left / numOfButtonsPerLevel)
+				var x = Math.floor(left / numOfButtonsPerLevel);
 				var y = left % numOfButtonsPerLevel;
 				
 				button.setLevel(x);
