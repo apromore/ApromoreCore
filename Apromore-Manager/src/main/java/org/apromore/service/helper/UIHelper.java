@@ -358,6 +358,7 @@ public class UIHelper implements UserInterfaceHelper {
 
 
     /**
+     * Used for the Search on the Main Screen Page
      * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
@@ -380,8 +381,8 @@ public class UIHelper implements UserInterfaceHelper {
         return processSummaries;
     }
 
-
     /**
+     * Used by get the list of processes for  user (main page).
      * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
