@@ -70,11 +70,20 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
                 AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
                 if (annotation != null) {
-                    mainController.editProcess(process, version, annotation.getNativeType(), annotation.getAnnotationName().get(0),
+                    mainController.editProcess(process, version, getNativeType(annotation.getNativeType()), annotation.getAnnotationName().get(0),
                         "false", new HashSet<RequestParameterType<?>>());
                 } else {
-                    mainController.editProcess(process, version, process.getOriginalNativeType(), null, "false",                            new HashSet<RequestParameterType<?>>());
+                    mainController.editProcess(process, version, getNativeType(process.getOriginalNativeType()), null, "false",                            new HashSet<RequestParameterType<?>>());
                 }
+            }
+
+            /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */
+            private String getNativeType(String origNativeType) {
+                String nativeType = origNativeType;
+                if (origNativeType == null || origNativeType.isEmpty()) {
+                    nativeType = "BPMN 2.0";
+                }
+                return nativeType;
             }
         });
     }
