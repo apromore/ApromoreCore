@@ -22,6 +22,7 @@ import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
+import org.apromore.pnml.NetType;
 import org.apromore.pnml.PnmlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,7 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
     public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
             final Date processCreated, final PluginRequest request) {
         try {
-            marshalNativeFormat(new PnmlType(), nativeOutput);
+            marshalNativeFormat(createEmptyPNML(), nativeOutput);
         } catch (JAXBException e) {
             LOGGER.error("Could not create initial PNML", e);
         }
@@ -130,4 +131,16 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
         return new CanoniserMetadataResult();
     }
 
+
+
+    private PnmlType createEmptyPNML() {
+        PnmlType pnml = new PnmlType();
+
+        NetType net = new NetType();
+        net.setId("noID");
+        net.setType("http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
+
+        pnml.getNet().add(net);
+        return pnml;
+    }
 }
