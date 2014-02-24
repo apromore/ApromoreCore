@@ -1,0 +1,1070 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pnml>
+<net id="workflownet" type="http://www.informatik.hu-berlin.de/top/pnml/basicPNML.rng">
+    <place id="place_0">
+        <graphics>
+            <position x="202" y="349" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p32</text>
+         </name>
+    </place>
+    <place id="place_1">
+        <graphics>
+            <position x="304" y="253" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p88</text>
+         </name>
+    </place>
+    <place id="place_2">
+        <graphics>
+            <position x="88" y="97" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p70</text>
+         </name>
+    </place>
+    <place id="place_3">
+        <graphics>
+            <position x="202" y="253" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p55</text>
+         </name>
+    </place>
+    <place id="place_4">
+        <graphics>
+            <position x="88" y="509" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p39</text>
+         </name>
+    </place>
+    <place id="place_5">
+        <graphics>
+            <position x="16" y="113" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p36</text>
+         </name>
+    </place>
+    <place id="place_6">
+        <graphics>
+            <position x="202" y="317" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p35</text>
+         </name>
+    </place>
+    <place id="place_7">
+        <graphics>
+            <position x="202" y="221" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p33</text>
+         </name>
+    </place>
+    <place id="place_8">
+        <graphics>
+            <position x="406" y="253" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p31</text>
+         </name>
+    </place>
+    <place id="place_9">
+        <graphics>
+            <position x="202" y="477" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p30</text>
+         </name>
+    </place>
+    <place id="place_10">
+        <graphics>
+            <position x="202" y="285" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p29</text>
+         </name>
+    </place>
+    <place id="place_11">
+        <graphics>
+            <position x="202" y="413" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p28</text>
+         </name>
+    </place>
+    <place id="place_12">
+        <graphics>
+            <position x="202" y="381" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p27</text>
+         </name>
+    </place>
+    <place id="place_13">
+        <graphics>
+            <position x="16" y="145" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p23</text>
+         </name>
+    </place>
+    <place id="place_14">
+        <graphics>
+            <position x="16" y="17" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p22</text>
+         </name>
+    </place>
+    <place id="place_15">
+        <graphics>
+            <position x="16" y="81" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p21</text>
+         </name>
+    </place>
+    <place id="place_16">
+        <graphics>
+            <position x="202" y="189" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p20</text>
+         </name>
+    </place>
+    <place id="place_17">
+        <graphics>
+            <position x="88" y="158" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p19</text>
+         </name>
+    </place>
+    <place id="place_18">
+        <graphics>
+            <position x="202" y="509" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p18</text>
+         </name>
+    </place>
+    <place id="place_19">
+        <graphics>
+            <position x="304" y="349" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p17</text>
+         </name>
+    </place>
+    <place id="place_20">
+        <graphics>
+            <position x="202" y="541" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p16</text>
+         </name>
+    </place>
+    <place id="place_21">
+        <graphics>
+            <position x="16" y="177" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p14</text>
+         </name>
+    </place>
+    <place id="place_22">
+        <graphics>
+            <position x="88" y="365" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p13</text>
+         </name>
+    </place>
+    <place id="place_23">
+        <graphics>
+            <position x="16" y="49" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p12</text>
+         </name>
+    </place>
+    <place id="place_24">
+        <graphics>
+            <position x="16" y="445" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p11</text>
+         </name>
+    </place>
+    <place id="place_25">
+        <graphics>
+            <position x="202" y="445" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p10</text>
+         </name>
+    </place>
+    <place id="place_26">
+        <graphics>
+            <position x="202" y="127" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>p9</text>
+         </name>
+    </place>
+    <transition id="trans_0">
+        <graphics>
+            <position  x="145" y="445" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t52</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_1">
+        <graphics>
+            <position  x="145" y="413" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t60</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_2">
+        <graphics>
+            <position  x="145" y="541" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t47</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_3">
+        <graphics>
+            <position  x="52" y="49" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t71</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_4">
+        <graphics>
+            <position  x="145" y="509" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t49</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_5">
+        <graphics>
+            <position  x="145" y="381" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t58</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_6">
+        <graphics>
+            <position  x="145" y="349" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t68</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_7">
+        <graphics>
+            <position  x="52" y="17" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t77</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_8">
+        <graphics>
+            <position  x="145" y="312" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t62</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_9">
+        <graphics>
+            <position  x="145" y="278" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t54</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_10">
+        <graphics>
+            <position  x="145" y="245" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t66</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_11">
+        <graphics>
+            <position  x="253" y="253" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t44</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_12">
+        <graphics>
+            <position  x="145" y="97" />
+            <dimension x="56" y="53" />
+        </graphics>
+        <name>
+            <text>Creation\nof Master\nRecord\nfor Tangible\nAssets</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Creation\nof Master\nRecord\nfor Tangible\nAssets</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <transition id="trans_13">
+        <graphics>
+            <position  x="145" y="158" />
+            <dimension x="46" y="35" />
+        </graphics>
+        <name>
+            <text>Creation\nof Group\nAsset</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Creation\nof Group\nAsset</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <transition id="trans_14">
+        <graphics>
+            <position  x="355" y="253" />
+            <dimension x="43" y="43" />
+        </graphics>
+        <name>
+            <text>Asset\nMaster\nRecord\nChange</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Asset\nMaster\nRecord\nChange</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <transition id="trans_15">
+        <graphics>
+            <position  x="253" y="349" />
+            <dimension x="43" y="25" />
+        </graphics>
+        <name>
+            <text>Mass\nChange</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Mass\nChange</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <transition id="trans_16">
+        <graphics>
+            <position  x="145" y="206" />
+            <dimension x="49" y="25" />
+        </graphics>
+        <name>
+            <text>Asset\nShutdown</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+            <logevent>
+                <name>Asset\nShutdown</name>
+                <type>unknown:normal</type>
+            </logevent>
+        </toolspecific>
+    </transition>
+    <transition id="trans_17">
+        <graphics>
+            <position  x="52" y="177" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t73</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_18">
+        <graphics>
+            <position  x="52" y="145" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t79</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_19">
+        <graphics>
+            <position  x="145" y="477" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t64</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_20">
+        <graphics>
+            <position  x="52" y="113" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t81</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_21">
+        <graphics>
+            <position  x="52" y="81" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t75</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <transition id="trans_22">
+        <graphics>
+            <position  x="52" y="445" />
+            <dimension x="13" y="13" />
+        </graphics>
+        <name>
+            <text>t38</text>
+         </name>
+        <toolspecific tool="ProM" version="5.2">
+        </toolspecific>
+    </transition>
+    <arc id="arc_0" source="place_22" target="trans_9">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="89" y="358" />
+                <point x="93" y="345" />
+                <point x="101" y="315" />
+                <point x="117" y="296" />
+                <point x="122" y="291" />
+                <point x="128" y="286" />
+                <point x="133" y="283" />
+                <end x="138" y="281" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_1" source="place_1" target="trans_14">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="311" y="253" />
+                <point x="316" y="253" />
+                <point x="322" y="253" />
+                <point x="328" y="253" />
+                <end x="333" y="253" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_2" source="place_4" target="trans_4">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="509" />
+                <point x="104" y="509" />
+                <point x="121" y="509" />
+                <point x="133" y="509" />
+                <end x="138" y="509" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_3" source="place_13" target="trans_18">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="145" />
+                <point x="28" y="145" />
+                <point x="34" y="145" />
+                <point x="40" y="145" />
+                <end x="45" y="145" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_4" source="trans_3" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="57" y="56" />
+                <point x="63" y="64" />
+                <point x="74" y="78" />
+                <point x="81" y="87" />
+                <end x="84" y="91" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_5" source="place_22" target="trans_16">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="89" y="358" />
+                <point x="92" y="333" />
+                <point x="103" y="251" />
+                <point x="117" y="229" />
+                <point x="118" y="227" />
+                <point x="120" y="225" />
+                <point x="121" y="223" />
+                <end x="125" y="219" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_6" source="place_22" target="trans_8">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="93" y="359" />
+                <point x="98" y="352" />
+                <point x="108" y="341" />
+                <point x="117" y="333" />
+                <point x="122" y="328" />
+                <point x="129" y="324" />
+                <point x="134" y="320" />
+                <end x="138" y="317" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_7" source="trans_14" target="place_8">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="377" y="253" />
+                <point x="383" y="253" />
+                <point x="389" y="253" />
+                <point x="394" y="253" />
+                <end x="399" y="253" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_8" source="trans_21" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="59" y="84" />
+                <point x="64" y="86" />
+                <point x="71" y="89" />
+                <point x="76" y="92" />
+                <end x="81" y="94" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_9" source="trans_0" target="place_25">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="445" />
+                <point x="161" y="445" />
+                <point x="178" y="445" />
+                <point x="190" y="445" />
+                <end x="195" y="445" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_10" source="trans_4" target="place_18">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="509" />
+                <point x="161" y="509" />
+                <point x="178" y="509" />
+                <point x="190" y="509" />
+                <end x="195" y="509" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_11" source="trans_6" target="place_6">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="345" />
+                <point x="162" y="339" />
+                <point x="180" y="329" />
+                <point x="191" y="323" />
+                <end x="196" y="320" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_12" source="place_22" target="trans_6">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="363" />
+                <point x="105" y="360" />
+                <point x="122" y="356" />
+                <point x="133" y="352" />
+                <end x="138" y="351" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_13" source="place_0" target="trans_15">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="209" y="349" />
+                <point x="214" y="349" />
+                <point x="220" y="349" />
+                <point x="226" y="349" />
+                <end x="231" y="349" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_14" source="trans_16" target="place_16">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="171" y="198" />
+                <point x="178" y="197" />
+                <point x="184" y="194" />
+                <point x="190" y="193" />
+                <end x="195" y="191" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_15" source="place_3" target="trans_11">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="209" y="253" />
+                <point x="217" y="253" />
+                <point x="231" y="253" />
+                <point x="241" y="253" />
+                <end x="246" y="253" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_16" source="trans_1" target="place_11">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="413" />
+                <point x="161" y="413" />
+                <point x="178" y="413" />
+                <point x="190" y="413" />
+                <end x="195" y="413" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_17" source="place_22" target="trans_1">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="93" y="371" />
+                <point x="98" y="377" />
+                <point x="108" y="388" />
+                <point x="117" y="397" />
+                <point x="122" y="401" />
+                <point x="128" y="404" />
+                <point x="133" y="407" />
+                <end x="138" y="409" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_18" source="place_21" target="trans_17">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="177" />
+                <point x="28" y="177" />
+                <point x="34" y="177" />
+                <point x="40" y="177" />
+                <end x="45" y="177" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_19" source="trans_20" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="59" y="110" />
+                <point x="64" y="108" />
+                <point x="71" y="105" />
+                <point x="76" y="102" />
+                <end x="81" y="100" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_20" source="trans_18" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="57" y="138" />
+                <point x="63" y="130" />
+                <point x="74" y="116" />
+                <point x="81" y="107" />
+                <end x="84" y="103" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_21" source="place_23" target="trans_3">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="49" />
+                <point x="28" y="49" />
+                <point x="34" y="49" />
+                <point x="40" y="49" />
+                <end x="45" y="49" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_22" source="place_4" target="trans_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="513" />
+                <point x="105" y="518" />
+                <point x="122" y="528" />
+                <point x="133" y="534" />
+                <end x="138" y="537" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_23" source="place_22" target="trans_10">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="88" y="358" />
+                <point x="89" y="340" />
+                <point x="95" y="292" />
+                <point x="117" y="262" />
+                <point x="121" y="257" />
+                <point x="127" y="252" />
+                <point x="133" y="250" />
+                <end x="138" y="248" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_24" source="place_14" target="trans_7">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="17" />
+                <point x="28" y="17" />
+                <point x="34" y="17" />
+                <point x="40" y="17" />
+                <end x="45" y="17" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_25" source="place_2" target="trans_12">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="97" />
+                <point x="100" y="97" />
+                <point x="106" y="97" />
+                <point x="112" y="97" />
+                <end x="117" y="97" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_26" source="trans_19" target="place_9">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="477" />
+                <point x="161" y="477" />
+                <point x="178" y="477" />
+                <point x="190" y="477" />
+                <end x="195" y="477" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_27" source="trans_15" target="place_19">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="275" y="349" />
+                <point x="281" y="349" />
+                <point x="287" y="349" />
+                <point x="292" y="349" />
+                <end x="297" y="349" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_28" source="trans_13" target="place_26">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="169" y="145" />
+                <point x="176" y="141" />
+                <point x="185" y="136" />
+                <point x="191" y="133" />
+                <end x="196" y="131" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_29" source="place_22" target="trans_5">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="367" />
+                <point x="105" y="370" />
+                <point x="122" y="374" />
+                <point x="133" y="378" />
+                <end x="138" y="379" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_30" source="trans_11" target="place_1">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="260" y="253" />
+                <point x="268" y="253" />
+                <point x="282" y="253" />
+                <point x="292" y="253" />
+                <end x="297" y="253" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_31" source="trans_22" target="place_4">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="56" y="452" />
+                <point x="63" y="464" />
+                <point x="75" y="485" />
+                <point x="82" y="499" />
+                <end x="85" y="503" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_32" source="trans_5" target="place_12">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="381" />
+                <point x="161" y="381" />
+                <point x="178" y="381" />
+                <point x="190" y="381" />
+                <end x="195" y="381" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_33" source="trans_17" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="55" y="170" />
+                <point x="61" y="156" />
+                <point x="75" y="125" />
+                <point x="83" y="109" />
+                <end x="85" y="104" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_34" source="trans_22" target="place_22">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="55" y="438" />
+                <point x="61" y="424" />
+                <point x="75" y="393" />
+                <point x="83" y="377" />
+                <end x="85" y="372" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_35" source="place_22" target="trans_0">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="90" y="372" />
+                <point x="93" y="385" />
+                <point x="101" y="411" />
+                <point x="117" y="429" />
+                <point x="122" y="434" />
+                <point x="128" y="437" />
+                <point x="133" y="440" />
+                <end x="138" y="442" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_36" source="trans_10" target="place_7">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="242" />
+                <point x="162" y="238" />
+                <point x="179" y="230" />
+                <point x="190" y="226" />
+                <end x="195" y="224" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_37" source="trans_7" target="place_2">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="55" y="24" />
+                <point x="61" y="39" />
+                <point x="75" y="69" />
+                <point x="83" y="85" />
+                <end x="85" y="90" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_38" source="place_17" target="trans_13">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="95" y="158" />
+                <point x="101" y="158" />
+                <point x="108" y="158" />
+                <point x="116" y="158" />
+                <end x="121" y="158" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_39" source="place_24" target="trans_22">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="445" />
+                <point x="28" y="445" />
+                <point x="34" y="445" />
+                <point x="40" y="445" />
+                <end x="45" y="445" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_40" source="place_5" target="trans_20">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="113" />
+                <point x="28" y="113" />
+                <point x="34" y="113" />
+                <point x="40" y="113" />
+                <end x="45" y="113" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_41" source="place_22" target="trans_19">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="88" y="372" />
+                <point x="90" y="389" />
+                <point x="96" y="433" />
+                <point x="117" y="461" />
+                <point x="121" y="466" />
+                <point x="127" y="470" />
+                <point x="133" y="472" />
+                <end x="138" y="474" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_42" source="trans_6" target="place_0">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="349" />
+                <point x="161" y="349" />
+                <point x="178" y="349" />
+                <point x="190" y="349" />
+                <end x="195" y="349" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_43" source="place_15" target="trans_21">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="23" y="81" />
+                <point x="28" y="81" />
+                <point x="34" y="81" />
+                <point x="40" y="81" />
+                <end x="45" y="81" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_44" source="trans_9" target="place_3">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="275" />
+                <point x="162" y="271" />
+                <point x="180" y="263" />
+                <point x="190" y="258" />
+                <end x="195" y="256" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_45" source="trans_8" target="place_10">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="308" />
+                <point x="162" y="304" />
+                <point x="180" y="296" />
+                <point x="190" y="290" />
+                <end x="195" y="288" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_46" source="trans_2" target="place_20">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="152" y="541" />
+                <point x="161" y="541" />
+                <point x="178" y="541" />
+                <point x="190" y="541" />
+                <end x="195" y="541" />
+            </spline>
+        </toolspecific>
+    </arc>
+    <arc id="arc_47" source="trans_12" target="place_26">
+        <toolspecific tool="ProM" version="5.2">
+            <spline>
+                <point x="173" y="112" />
+                <point x="180" y="115" />
+                <point x="186" y="118" />
+                <point x="191" y="121" />
+                <end x="196" y="123" />
+            </spline>
+        </toolspecific>
+    </arc>
+</net>
+</pnml>
