@@ -40,6 +40,9 @@ import de.epml.EPMLSchema;
 import de.epml.ObjectFactory;
 import de.epml.TEpcElement;
 import de.epml.TypeArc;
+import de.epml.TypeAttribute;
+import de.epml.TypeAttrType;
+import de.epml.TypeAttrTypes;
 import de.epml.TypeCoordinates;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
@@ -48,14 +51,18 @@ import de.epml.TypeFlow;
 import de.epml.TypeGraphics;
 import de.epml.TypeMove;
 import de.epml.TypeMove2;
+import de.epml.TypeObject;
 import de.epml.TypePosition;
 import de.epml.TypeProcessInterface;
+import de.epml.TypeRelation;
+import de.epml.TypeRole;
 import de.epml.TypeToProcess;
 import org.json.JSONException;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
+import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.xml.sax.SAXException;
 
@@ -97,22 +104,8 @@ public class JSONToEPMLConverter {
      * @throws RuntimeException if <var>diagram</var> contains an unsupported stencil ID
      */
     public TypeEPML toEPML(final BasicDiagram diagram) {
-        final Map<BasicShape, BasicShape> sourceMap = new HashMap<>();  // for each edge, what is its source node?
-        final Map<BasicShape, BasicShape> targetMap = new HashMap<>();  // for each edge, what is its target node?
 
-        // First pass, during which the EPC topology is examined (i.e. sourceMap and targetMap are populated)
-        for (BasicShape shape : diagram.getAllShapesReadOnly()) {
-            if (shape.isNode()) {
-                for (BasicShape incoming : shape.getIncomingsReadOnly()) {
-                    targetMap.put(incoming, shape);
-                }
-                for (BasicShape outgoing : shape.getOutgoingsReadOnly()) {
-                    sourceMap.put(outgoing, shape);
-                }
-            }
-        }
-
-        // Second pass, during which the EPML model is created and populated
+        boolean  isRolePresent = false;  // are any role EPC elements present?
         TypeEPML epml = factory.createTypeEPML();
 
         TypeCoordinates coordinates = factory.createTypeCoordinates();
@@ -121,40 +114,59 @@ public class JSONToEPMLConverter {
         epml.setCoordinates(coordinates);
 
         TypeEPC epc = factory.createTypeEPC();
-        epc.setEpcId(new BigInteger("1" /*diagram.getResourceId()*/));  // TODO: 1 is a dummy value
-        epc.setName("dummy" /* diagram.getProperty("title") */);
+        try {
+            epc.setEpcId(new BigInteger(diagram.getResourceId()));
+        } catch (NumberFormatException e) {
+            LOGGER.warning("JSON for EPML model had diagram id \"" + diagram.getResourceId() + "\"; substituting 1 instead");
+            epc.setEpcId(BigInteger.ONE);
+        }
+        epc.setName(diagram.getProperty("title"));
         for (BasicShape shape : diagram.getAllShapesReadOnly()) {
             switch (shape.getStencilId()) {
-                case "system":
-                    LOGGER.info("eEPC extension found that isn't currently supported!");
-                    break;
                 case "AndConnector":
                     epc.getEventAndFunctionAndRole().add(factory.createTypeEPCAnd(populateElement(factory.createTypeAND(), shape)));
                     break;
+
+                case "ControlFlow":
+                case "Relation":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCArc(populateArc(factory.createTypeArc(), (BasicEdge) shape)));
+                    break;
+
+                case "Data":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCObject(populateElement(factory.createTypeObject(), shape)));
+                    break;
+
                 case "Event":
                     epc.getEventAndFunctionAndRole().add(factory.createTypeEPCEvent(populateElement(factory.createTypeEvent(), shape)));
                     break;
+
                 case "Function":
                     epc.getEventAndFunctionAndRole().add(factory.createTypeEPCFunction(populateElement(factory.createTypeFunction(), shape)));
                     break;
-                case "ControlFlow":
-                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCArc(populateArc(factory.createTypeArc(), shape, sourceMap, targetMap)));
-                    break;
+
                 case "OrConnector":
                     epc.getEventAndFunctionAndRole().add(factory.createTypeEPCOr(populateElement(factory.createTypeOR(), shape)));
                     break;
-                case "ProcessInterface":
-                    TypeProcessInterface processInterface = populateElement(factory.createTypeProcessInterface(), shape);
 
-                    TypeToProcess toProcess = factory.createTypeToProcess();
-                    toProcess.setLinkToEpcId(new BigInteger("1"));  // TODO: 1 is a dummy value; need to actually populate it
-                    processInterface.setToProcess(toProcess);
-
-                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCProcessInterface(processInterface));
+                case "Position":
+                case "Organization":
+                case "System":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCRole(populateElement(factory.createTypeRole(), shape)));
+                    isRolePresent = true;
                     break;
+
+                case "ProcessInterface":
+                    epc.getEventAndFunctionAndRole().add(factory.createTypeEPCProcessInterface(populateElement(factory.createTypeProcessInterface(), shape)));
+                    break;
+
+                case "TextNote":
+                    LOGGER.warning("EPML Text Note with id " + shape.getResourceId() + " is unsupported and will be ignored.");
+                    break;
+
                 case "XorConnector":
                     epc.getEventAndFunctionAndRole().add(factory.createTypeEPCXor(populateElement(factory.createTypeXOR(), shape)));
                     break;
+
                 default:
                     throw new RuntimeException("Unsupported stencil ID: " + shape.getStencilId());
             }
@@ -163,6 +175,16 @@ public class JSONToEPMLConverter {
         TypeDirectory directory = factory.createTypeDirectory();
         directory.getEpcOrDirectory().add(epc);
         epml.getDirectory().add(directory);
+
+        // If any roles are present, need to include the attribute definition for "roletype"
+        if (isRolePresent) {
+            TypeAttrTypes attrTypes = factory.createTypeAttrTypes();
+            TypeAttrType attrType = factory.createTypeAttrType();
+            attrType.setDescription("Apromore understands \"IT system\" and \"Organizational Unit\", and treats all others as Position");
+            attrType.setTypeId("roletype");
+            attrTypes.getAttributeType().add(attrType);
+            epml.getAttributeTypes().add(attrTypes);
+        }
 
         return epml;
     }
@@ -191,34 +213,65 @@ public class JSONToEPMLConverter {
      * @param shape the Signavio JSON object corresponding to the <var>arc</var>
      * @return <var>arc</var>
      */
-    private TypeArc populateArc(final TypeArc arc, final BasicShape shape, final Map<BasicShape, BasicShape> sourceMap,
-        final Map<BasicShape, BasicShape> targetMap) {
-        BasicShape sourceShape = sourceMap.get(shape);
-        BasicShape targetShape = targetMap.get(shape);
+    private TypeArc populateArc(final TypeArc arc,
+                                final BasicEdge edge) {
 
-        arc.setId(getId(shape.getResourceId()));
+        // Find the edge's source
+        BasicShape sourceShape = null;
+        for (BasicShape incoming: edge.getIncomingsReadOnly()) {
+            sourceShape = incoming;
+        }
+        assert sourceShape != null: "Shape with id " + edge.getResourceId() + " not present in source map";
 
-        TypeFlow flow = factory.createTypeFlow();
-        flow.setSource(getId(sourceShape.getResourceId()));
-        flow.setTarget(getId(targetShape.getResourceId()));
-        arc.setFlow(flow);
+        // Find the edge's target
+        BasicShape targetShape = null;
+        for (BasicShape outgoing: edge.getOutgoingsReadOnly()) {
+            targetShape = outgoing;
+        }
+        assert targetShape != null: "Shape with id " + edge.getResourceId() + " not present in target map";
 
+        // Set an arc/@id
+        arc.setId(getId(edge.getResourceId()));
+
+        // Set either an arc/flow or arc/relation
+        switch (edge.getStencilId()) {
+        case "ControlFlow":
+            TypeFlow flow = factory.createTypeFlow();
+            flow.setSource(getId(sourceShape.getResourceId()));
+            flow.setTarget(getId(targetShape.getResourceId()));
+            arc.setFlow(flow);
+            break;
+
+        case "Relation":
+            TypeRelation relation = factory.createTypeRelation();
+            relation.setSource(getId(sourceShape.getResourceId()));
+            relation.setTarget(getId(targetShape.getResourceId()));
+            relation.setType("role");  // TODO: "role" is a dummy value: could also be "input", "output" or "any"
+            arc.setRelation(relation);
+            break;
+
+        default:
+            throw new RuntimeException("Unsupported arc stencil ID: " + edge.getStencilId());
+        }
+
+        // Set an arc/graphics
         TypeMove move = factory.createTypeMove();
-        for (int i = 0; i < shape.getDockersReadOnly().size(); i++) {
-            Point point = shape.getDockersReadOnly().get(i);
+        for (int i = 0; i < edge.getDockersReadOnly().size(); i++) {
+            Point point = edge.getDockersReadOnly().get(i);
             Point origin = new Point(0, 0);
 
             // If this edge is connected to a source node, the first waypoint's coordinates are relative to that node
             // If this edge is connected to a target node, the last waypoint's coordinates are relative to that node
             if (i == 0 && sourceShape != null) {
                 origin = sourceShape.getBounds().getUpperLeft();
-            } else if (i == shape.getDockersReadOnly().size() - 1 && targetShape != null) {
+            } else if (i == edge.getDockersReadOnly().size() - 1 && targetShape != null) {
                 origin = targetShape.getBounds().getUpperLeft();
             }
 
             move.getPosition().add(toMove2(point, origin));
         }
         arc.getGraphics().add(move);
+
         return arc;
     }
 
@@ -237,8 +290,54 @@ public class JSONToEPMLConverter {
     private <T extends TEpcElement> T populateElement(final T element, final BasicShape shape) {
         element.setId(getId(shape.getResourceId()));
         element.setName(shape.getProperty("title"));
+        element.setDescription(shape.getProperty("description"));
         element.setGraphics(toGraphics(shape.getBounds()));
+        // TODO: element.setDefRef(???)
+
+        switch (shape.getStencilId()) {
+        case "Data":
+            String type = shape.getProperty("type");
+            if (type == null) {
+                LOGGER.warning("EPML data object with id " + shape.getResourceId() + " had no type; guessing \"input\".");
+                type = "input";
+            }
+            ((TypeObject) element).setType(type);
+            break;
+
+        case "Organization":
+            populateRole((TypeRole) element, "Organizational Unit");
+            break;
+
+        case "Position":
+            // default role when we don't know a roletype, so don't add an attribute element
+            break;
+
+        case "ProcessInterface":
+            TypeToProcess toProcess = factory.createTypeToProcess();
+            toProcess.setLinkToEpcId(new BigInteger("1"));  // TODO: 1 is a dummy value; need to actually populate it
+            ((TypeProcessInterface) element).setToProcess(toProcess);
+            break;
+
+        case "System":
+            populateRole((TypeRole) element, "IT system");
+            break;
+        }
+
         return element;
+    }
+
+    /**
+     * Add an <code>&lt;attribute&gt;</code> element to an EPML role; called by {@link populateElement} which
+     * sets all the other attributes, so you probably don't want to call this on its own.
+     *
+     * @param role  the element to populate
+     * @param roletypeAttributeValue  the value for the <code>role/attribute/@value</code> XML attribute
+     */
+    private void populateRole(final TypeRole role, final String roletypeAttributeValue) {
+        TypeAttribute attribute = factory.createTypeAttribute();
+        attribute.setTypeRef("roletype");
+        attribute.setValue(roletypeAttributeValue);
+        role.getAttribute().add(attribute);
     }
 
     /**

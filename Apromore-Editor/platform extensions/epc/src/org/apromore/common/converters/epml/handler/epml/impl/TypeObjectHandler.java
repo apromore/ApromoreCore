@@ -25,6 +25,7 @@ public class TypeObjectHandler extends NodeHandler {
         HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("title", object.getName());
         hashMap.put("description", object.getDescription());
+        hashMap.put("type", object.getType());
         return hashMap;
     }
 
