@@ -47,11 +47,13 @@ public class TypeRoleHandler extends NodeHandler {
     @Override
     protected BasicShape createShape() {
         for (TypeAttribute attribute : role.getAttribute()) {
-            if ("IT system".equals(attribute.getValue())) {
-                return new BasicNode(getShapeId().toString(), "System");
-            }
-            if ("Organizational Unit".equals(attribute.getValue())) {
-                return new BasicNode(getShapeId().toString(), "Organization");
+            if ("roletype".equals(attribute.getTypeRef())) {
+                switch (attribute.getValue()) {
+                case "IT system":
+                    return new BasicNode(getShapeId().toString(), "System");
+                case "Organizational Unit":
+                    return new BasicNode(getShapeId().toString(), "Organization");
+                }
             }
         }
 
