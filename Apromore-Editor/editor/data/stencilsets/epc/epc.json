@@ -633,6 +633,54 @@
 					"wrapLines":true
 				},				
 				{
+					"id":"isOptional",
+					"type":"Boolean",
+					"title":"Is optional?",
+					"title_de":"Ist optional?",
+					"value":false,
+					"description":"Whether the data object is required, rather than merely permitted",
+					"description_de":"Ob das Dokument benötigt wird, eher als bloß die Erlaubnis gehabt",
+					"tooltip":"",
+					"readonly":false,
+					"optional":true
+				},				
+				{
+					"id":"isConsumed",
+					"type":"Boolean",
+					"title":"Is consumed?",
+					"title_de":"Wird verbraucht?",
+					"value":false,
+					"description":"Whether the data object can be used only once",
+					"description_de":"Ob das Dokument nur einmal benutzt werden kann",
+					"tooltip":"",
+					"readonly":false,
+					"optional":true
+				},				
+				{
+					"id":"isInitial",
+					"type":"Boolean",
+					"title":"Is initial?",
+					"title_de":"Ist zuerst?",
+					"value":false,
+					"description":"Whether the data object is an externally-visible process input",
+					"description_de":"Ob das Dokument ein extern-sichtbarer Prozessinput ist",
+					"tooltip":"",
+					"readonly":false,
+					"optional":true
+				},				
+				{
+					"id":"isOptional",
+					"type":"Boolean",
+					"title":"Is final?",
+					"title_de":"Ist abschließend?",
+					"value":false,
+					"description":"Whether the data object is an externally-visible process output",
+					"description_de":"Ob das Dokument eine extern-sichtbare Prozessausgabe ist",
+					"tooltip":"",
+					"readonly":false,
+					"optional":true
+				},				
+				{
 					"id":"bgColor",
 					"type":"Color",
 					"title":"Background Color",
