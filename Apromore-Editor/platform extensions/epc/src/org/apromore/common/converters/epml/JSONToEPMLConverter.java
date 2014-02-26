@@ -246,7 +246,7 @@ public class JSONToEPMLConverter {
             TypeRelation relation = factory.createTypeRelation();
             relation.setSource(getId(sourceShape.getResourceId()));
             relation.setTarget(getId(targetShape.getResourceId()));
-            relation.setType("role");  // TODO: "role" is a dummy value: could also be "input", "output" or "any"
+            relation.setType(findRelationType(edge, sourceShape, targetShape));
             arc.setRelation(relation);
             break;
 
@@ -275,6 +275,39 @@ public class JSONToEPMLConverter {
         return arc;
     }
 
+    /**
+     * @param edge  a JSON edge representing an EPML Relation, never <code>null</code>
+     * @param sourceShape  the <var>edge</var>'s source shape, <code>null</code> if not connected
+     * @param targetShape  the <var>edge</var>'s target shape, <code>null</code> if not connected
+     * @return the relation's type, one of "any", "input", "output" or "role"
+     */
+    String findRelationType(final BasicEdge edge, final BasicShape sourceShape, final BasicShape targetShape) {
+
+        if (sourceShape != null) {
+            switch (sourceShape.getStencilId()) {
+            case "Data":
+                return "input";
+            case "Position":
+            case "Organization":
+            case "System":
+                return "role";
+            }
+        }
+
+        if (targetShape != null) {
+            switch (targetShape.getStencilId()) {
+            case "Data":
+                return "output";
+            case "Position":
+            case "Organization":
+            case "System":
+                return "role";
+            }
+        }
+
+        return "Yes".equals(edge.getProperty("informationflow")) ? "any" : "role";
+    }
+
     private TypeMove2 toMove2(final Point point, final Point origin) {
         TypeMove2 move2 = factory.createTypeMove2();
         move2.setX(new BigDecimal(point.getX() + origin.getX()));
@@ -296,12 +329,7 @@ public class JSONToEPMLConverter {
 
         switch (shape.getStencilId()) {
         case "Data":
-            String type = shape.getProperty("type");
-            if (type == null) {
-                LOGGER.warning("EPML data object with id " + shape.getResourceId() + " had no type; guessing \"input\".");
-                type = "input";
-            }
-            ((TypeObject) element).setType(type);
+            populateObject((TypeObject) element, shape);
             break;
 
         case "Organization":
@@ -324,6 +352,85 @@ public class JSONToEPMLConverter {
         }
 
         return element;
+    }
+
+    /**
+     * @param object  the element to populate
+     * @param shape  the JSON shape corresponding to the <var>object</var>
+     */
+    private void populateObject(final TypeObject object, final BasicShape shape) {
+
+            object.setType(findObjectType(shape));
+
+            if (shape.hasProperty("isOptional")) {
+                object.setOptional(shape.getPropertyBoolean("isOptional"));
+            }
+
+            if (shape.hasProperty("isConsumed")) {
+                object.setConsumed(shape.getPropertyBoolean("isConsumed"));
+            }
+
+            if (shape.hasProperty("isInitial")) {
+                object.setInitial(shape.getPropertyBoolean("isInitial"));
+            }
+
+            if (shape.hasProperty("isFinal")) {
+                object.setFinal(shape.getPropertyBoolean("isFinal"));
+            }
+    }
+
+    /**
+     * @param shape  a JSON shape representing an EPML Object
+     * @return either "input" or "output"
+     */
+    private String findObjectType(final BasicShape shape) {
+
+            // Is this object the target of any relation?
+            boolean hasIncomingRelations = false;
+            for (BasicShape incoming: shape.getIncomingsReadOnly()) {
+                if ("Relation".equals(incoming.getStencilId()) && "Yes".equals(incoming.getProperty("informationflow"))) {
+                    hasIncomingRelations = true;
+                }
+            }
+
+            // Is this object the source of any relation?
+            boolean hasOutgoingRelations = false;
+            for (BasicShape outgoing: shape.getOutgoingsReadOnly()) {
+                if ("Relation".equals(outgoing.getStencilId()) && "Yes".equals(outgoing.getProperty("informationflow"))) {
+                    hasOutgoingRelations = true;
+                }
+            }
+
+            // Determine this object's type based on the relations connected to it, or as a fallback the "type" JSON property
+            String type         = null;
+            String declaredType = shape.getProperty("type");
+
+            if (hasOutgoingRelations) {
+                type = "input";
+                if (declaredType != null && !type.equals(declaredType)) {
+                    LOGGER.warning("EPML data object with id " + shape.getResourceId() + " changed type from " + declaredType + " to " + type);
+                }
+                if (hasIncomingRelations) {
+                    LOGGER.warning("EPML data object with id " + shape.getResourceId() + " has both incoming and outgoing relations");
+                }
+            }
+            else if (hasIncomingRelations) {
+                type = "output";
+                if (declaredType != null && !type.equals(declaredType)) {
+                    LOGGER.warning("EPML data object with id " + shape.getResourceId() + " changed type from " + declaredType + " to " + type);
+                }
+                assert !hasOutgoingRelations;
+            }
+            else if ("input".equals(declaredType) || "output".equals(declaredType)) {
+                type = declaredType;
+            }
+            else {
+                type = "input";
+                LOGGER.warning("EPML data object with id " + shape.getResourceId() + " had no type; guessing \"input\".");
+            }
+            assert type != null;
+
+            return type;
     }
 
     /**

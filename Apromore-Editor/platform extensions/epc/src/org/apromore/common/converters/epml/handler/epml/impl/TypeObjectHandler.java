@@ -45,7 +45,14 @@ public class TypeObjectHandler extends NodeHandler {
 
     @Override
     protected BasicShape createShape() {
-        return new BasicNode(getShapeId().toString(), "Data");
+        BasicShape shape = new BasicNode(getShapeId().toString(), "Data");
+
+        shape.setProperty("isOptional", object.isOptional());
+        shape.setProperty("isConsumed", object.isConsumed());
+        shape.setProperty("isInitial", object.isInitial());
+        shape.setProperty("isFinal", object.isFinal());
+
+        return shape;
     }
 
     @Override
