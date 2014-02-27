@@ -123,7 +123,7 @@ public class PNMLToJSONConverter {
 
 
     /**
-     * Command line filter converting a EPML-formatted standard input stream into a Signavio JSON-formatted standard output stream.
+     * Command line filter converting a PNML-formatted standard input stream into a Signavio JSON-formatted standard output stream.
      *
      * @param args  first argument names the input file
      * @throws java.io.FileNotFoundException  if <code>args[0]</code> isn't the name of a file

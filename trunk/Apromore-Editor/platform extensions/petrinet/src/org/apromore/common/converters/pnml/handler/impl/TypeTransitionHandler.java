@@ -44,7 +44,9 @@ public class TypeTransitionHandler extends NodeHandler {
     @Override
     protected Map<String, String> convertProperties() {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("title", transition.getName().getText());
+        if (transition.getName() != null) {
+            hashMap.put("title", transition.getName().getText());
+        }
         return hashMap;
     }
 
