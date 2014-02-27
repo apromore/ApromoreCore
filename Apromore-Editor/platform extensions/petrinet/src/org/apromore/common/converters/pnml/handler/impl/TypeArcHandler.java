@@ -26,6 +26,7 @@ package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
 import org.apromore.pnml.ArcType;
+import org.apromore.pnml.ArcTypeType;
 import org.apromore.pnml.GraphicsArcType;
 import org.apromore.pnml.NodeType;
 import org.apromore.pnml.PositionType;
@@ -33,13 +34,15 @@ import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
-import sun.net.www.content.audio.basic;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TypeArcHandler extends PNMLHandlerImpl {
+
+    private static final Logger LOGGER = Logger.getLogger(TypeArcHandler.class.getCanonicalName());
 
     private final ArcType arc;
 
@@ -54,9 +57,23 @@ public class TypeArcHandler extends PNMLHandlerImpl {
     }
 
 
-    private BasicEdge createControlFlowShape(ArcType typeFlow) {
+    private BasicEdge createControlFlowShape(ArcType arc) {
         BasicEdge basicEdge = new BasicEdge(arc.getId(), "Arc");
-        connectEdge(basicEdge, (NodeType) typeFlow.getSource(), (NodeType) typeFlow.getTarget());
+
+        // Handle arc/type if present
+        ArcTypeType type = arc.getType();
+        if (type != null) {
+            switch (type.getText()) {
+            case "reset":
+                basicEdge.setProperty("reset", true);
+                break;
+            default:
+                LOGGER.warning("Unsupported PNML arc type: " + type.getText());
+                break;
+            }
+        }
+
+        connectEdge(basicEdge, (NodeType) arc.getSource(), (NodeType) arc.getTarget());
         return basicEdge;
     }
 

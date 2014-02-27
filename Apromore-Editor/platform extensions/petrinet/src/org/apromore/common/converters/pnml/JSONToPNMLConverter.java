@@ -25,6 +25,7 @@
 package org.apromore.common.converters.pnml;
 
 import org.apromore.pnml.ArcType;
+import org.apromore.pnml.ArcTypeType;
 import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsNodeType;
 import org.apromore.pnml.NetType;
@@ -121,6 +122,11 @@ public class JSONToPNMLConverter {
                     arc.setId(shape.getResourceId());
                     arc.setSource(findNode(net, shape, sourceMap));
                     arc.setTarget(findNode(net, shape, targetMap));
+                    if (Boolean.TRUE.equals(shape.getPropertyBoolean("reset"))) {
+                        ArcTypeType type = new ArcTypeType();
+                        type.setText("reset");
+                        arc.setType(type);
+                    }
                     net.getArc().add(arc);
                     break;
                 default:

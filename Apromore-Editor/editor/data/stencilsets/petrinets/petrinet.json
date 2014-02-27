@@ -576,6 +576,17 @@
 					"length":""
 				},
 				{
+					"id":"reset",
+					"type":"Boolean",
+					"title":"Reset arc",
+					"value":false,
+					"description":"Is this a resetting flow?",
+					"tooltip":"When the target of a resetting flow receives a token, the source of the resetting flow loses all tokens",
+					"readonly":false,
+					"optional":true,
+					"refToView":"reset"
+				},
+				{
 					"id":"transformation",
 					"type":"String",
 					"title":"Transformation href",

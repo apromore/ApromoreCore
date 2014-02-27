@@ -238,6 +238,7 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element minOccurs="0" name="inscription" type="arcNameType"/>
+            <xs:element minOccurs="0" name="type" type="arcTypeType"/>  <!-- Apromore/PNML 2009 extension -->
             <xs:element minOccurs="0" name="graphics" type="graphicsArcType"/>
             <xs:element minOccurs="0" maxOccurs="unbounded" name="toolspecific" type="arcToolspecificType"/>
         </xs:sequence>
@@ -279,6 +280,14 @@
         <xs:sequence>
             <xs:element name="text" type="xs:int"/>
             <xs:element minOccurs="0" name="graphics" type="annotationGraphisType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="arcTypeType">
+        <xs:annotation>
+            <xs:documentation>Apromore extension for the sake of representing reset arcs, compatible with PNML 2009</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="text" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="graphicsSimpleType">
