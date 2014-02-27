@@ -43,6 +43,8 @@ import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -190,17 +192,13 @@ public class JSONToPNMLConverter {
 
 
     private GraphicsNodeType createNodeGraphics(BasicShape shape) {
-        BigDecimal lowerX = new BigDecimal(shape.getBounds().getLowerLeft().getX());
-        BigDecimal lowerY = new BigDecimal(shape.getBounds().getLowerLeft().getY());
         PositionType position = new PositionType();
-        position.setX(lowerX);
-        position.setY(lowerY);
+        position.setX(new BigDecimal(shape.getBounds().getLowerLeft().getX()));
+        position.setY(new BigDecimal(shape.getBounds().getLowerLeft().getY()));
 
-        lowerX = new BigDecimal(shape.getBounds().getWidth());
-        lowerY = new BigDecimal(shape.getBounds().getHeight());
         DimensionType dimension = new DimensionType();
-        dimension.setX(lowerX);
-        dimension.setY(lowerY);
+        dimension.setX(new BigDecimal(shape.getBounds().getWidth()));
+        dimension.setY(new BigDecimal(shape.getBounds().getHeight()));
 
         GraphicsNodeType graphicsNodeType = new GraphicsNodeType();
         graphicsNodeType.setDimension(dimension);
@@ -209,4 +207,13 @@ public class JSONToPNMLConverter {
         return graphicsNodeType;
     }
 
+    /**
+     * Command line filter converting a Signavio JSON-formatted standard input stream into an PNML-formatted standard output stream.
+     *
+     * @param args first argument names the input file
+     * @throw FileNotFoundException  if <code>args[0]</code> isn't the name of a file
+     */
+    public static void main(String args[]) throws FileNotFoundException {
+        new JSONToPNMLConverter().convert(new FileInputStream(args[0]), System.out);
+    }
 }

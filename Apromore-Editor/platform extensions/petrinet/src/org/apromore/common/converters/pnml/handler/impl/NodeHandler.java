@@ -59,9 +59,14 @@ public abstract class NodeHandler extends PNMLHandlerImpl {
 
     protected Bounds convertGraphics(GraphicsNodeType graphics) {
         Bounds bounds = new Bounds();
-        Point leftUpper = new Point(graphics.getPosition().getX(), graphics.getPosition().getY());
-        Point rightLower = new Point(graphics.getPosition().getX().add(graphics.getDimension().getX()),
-                                     graphics.getPosition().getY().add(graphics.getDimension().getY()));
+        Point leftUpper = new Point(
+            graphics.getPosition().getX(),
+            graphics.getPosition().getY().subtract(graphics.getDimension().getY())
+        );
+        Point rightLower = new Point(
+            graphics.getPosition().getX().add(graphics.getDimension().getX()),
+            graphics.getPosition().getY()
+        );
         bounds.setCoordinates(leftUpper, rightLower);
         return bounds;
     }
