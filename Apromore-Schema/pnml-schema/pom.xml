@@ -37,6 +37,7 @@
                 <configuration>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
+                    <generatePackage>org.apromore.pnml</generatePackage>
                 </configuration>
             </plugin>
             <plugin>
