@@ -102,6 +102,7 @@ public class JSONToPNMLConverter {
         PnmlType pnml = new PnmlType();
         NetType net = new NetType();
         net.setId(diagram.getResourceId());
+        net.setType("http://www.yasper.org/specs/epnml-1.1");
 
         NetType.Name name = new NetType.Name();
         name.setText(diagram.getProperty("title"));
@@ -164,7 +165,7 @@ public class JSONToPNMLConverter {
         name.setText(shape.getProperty("title"));
         place.setName(name);
 
-        if (shape.hasProperty("numberoftokens")) {
+        if (shape.hasProperty("numberoftokens") && !"".equals(shape.getProperty("numberoftokens"))) {
             PlaceType.InitialMarking marking = new PlaceType.InitialMarking();
             marking.setText(shape.getProperty("numberoftokens"));
             place.setInitialMarking(marking);
