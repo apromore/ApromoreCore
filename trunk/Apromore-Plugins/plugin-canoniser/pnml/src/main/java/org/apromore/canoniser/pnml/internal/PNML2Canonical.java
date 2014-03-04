@@ -78,7 +78,7 @@ public class PNML2Canonical {
         data.setCanonicalProcess(new CanonicalProcessType());
 
         if (pnml.getNet() != null && pnml.getNet().size() > 0) {
-            for (int i = 0; i < pnml.getNet().size(); i++) {
+            //for (int i = 0; i < pnml.getNet().size(); i++) {
                 for (org.apromore.pnml.NetType pnet : pnml.getNet()) {
                     NetType net = new NetType();
                     data.setNet(net);
@@ -90,7 +90,7 @@ public class PNML2Canonical {
                     data.getNet().setId(String.valueOf(ids++));
                     data.getCanonicalProcess().getNet().add(data.getNet());
                 }
-            }
+            //}
         }
     }
 

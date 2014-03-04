@@ -4,7 +4,14 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.PNML2Canonical;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.NamespaceFilter;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.CpfObjectFactory;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectFactory;
+import org.apromore.cpf.WorkType;
 import org.apromore.pnml.PnmlType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,23 +33,80 @@ import javax.xml.transform.sax.SAXSource;
 
 import static org.junit.Assert.assertTrue;
 
-@Ignore
 public class PNML2CanonicalUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PNML2CanonicalUnitTest.class.getName());
 
+    /**
+     * Test that PNML reset arcs are canonized into CPF cancellation sets.
+     */
     @Test
-    public void testNothing() {
-        assertTrue(true);
+    public void testReset1() throws Exception {
+
+        CanonicalProcessType cpf = canonise("Reset1");
+
+        // Inspect the test result
+        WorkType cancellingNode = null;
+        for (NetType net: cpf.getNet()) {
+            for (NodeType node: net.getNode()) {
+                if (node instanceof WorkType && "t2".equals(node.getName())) {
+                    cancellingNode = (WorkType) node;
+                }
+            }
+        }
+        assertNotNull(cancellingNode);
+        assertEquals(3, cancellingNode.getCancelNodeId().size());
+        assertEquals(2, cancellingNode.getCancelEdgeId().size());
     }
 
     /**
-     * @param args
+     * Test that PNML reset arcs are canonized into CPF cancellation sets.
+     *
+     * The added complication compared to {@link testReset1} is additional routing nodes around task <code>t2</code>.
      */
-    @SuppressWarnings("unchecked")
-    public void main(String[] args) {
-        File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_cpf_anf");
-        File folder = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_original_pnml");
+    @Test
+    public void testReset2() throws Exception {
+
+        CanonicalProcessType cpf = canonise("Reset2");
+
+        // Inspect the test result
+        WorkType cancellingNode = null;
+        for (NetType net: cpf.getNet()) {
+            for (NodeType node: net.getNode()) {
+                if (node instanceof WorkType && "t2".equals(node.getName())) {
+                    cancellingNode = (WorkType) node;
+                }
+            }
+        }
+        assertNotNull(cancellingNode);
+        assertEquals(3, cancellingNode.getCancelNodeId().size());
+        assertEquals(2, cancellingNode.getCancelEdgeId().size());
+    }
+
+    private CanonicalProcessType canonise(final String fileName) throws Exception {
+
+        // Parse <filename>.pnml into a test instance of PNML2Canonical
+        JAXBElement<PnmlType> rootElement = (JAXBElement<PnmlType>) 
+            JAXBContext.newInstance("org.apromore.pnml")
+                       .createUnmarshaller()
+                       .unmarshal(new FileInputStream("src/test/resources/PNML_testcases/" + fileName + ".pnml"));
+        CanonicalProcessType cpf = new PNML2Canonical(rootElement.getValue()).getCPF();
+        assert cpf != null;
+
+        // Serialize <fileName>.cpf out from the test instance
+        Marshaller m = JAXBContext.newInstance(/*"org.apromore.cpf"*/ CpfObjectFactory.class).createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        m.marshal(CpfObjectFactory.getInstance().createCanonicalProcess(cpf), new File("target/" + fileName + ".cpf"));
+
+        return cpf;
+    }
+
+    @Test
+    public void testWoped() {
+        File foldersave = new File("target");
+        assert foldersave.isDirectory();
+        File folder = new File("src/test/resources/PNML_testcases/woped_cases_expected_pnml");
+        assert folder.isDirectory();
         FileFilter fileFilter = new FileFilter() {
             public boolean accept(File file) {
                 return file.isFile();
@@ -80,10 +144,10 @@ public class PNML2CanonicalUnitTest {
 
                     PNML2Canonical pn = new PNML2Canonical(pnml, filename_without_path);
 
-                    jc = JAXBContext.newInstance("org.apromore.cpf");
+                    jc = JAXBContext.newInstance(CpfObjectFactory.class);
                     Marshaller m = jc.createMarshaller();
                     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<CanonicalProcessType> cprocRootElem = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(pn.getCPF());
+                    JAXBElement<CanonicalProcessType> cprocRootElem = CpfObjectFactory.getInstance().createCanonicalProcess(pn.getCPF());
                     m.marshal(cprocRootElem, new File(foldersave, filename_without_path + ".cpf"));
 
                     jc = JAXBContext.newInstance("org.apromore.anf");
