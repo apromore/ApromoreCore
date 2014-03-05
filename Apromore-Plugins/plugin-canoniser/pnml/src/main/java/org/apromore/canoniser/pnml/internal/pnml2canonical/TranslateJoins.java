@@ -22,7 +22,7 @@ public class TranslateJoins {
         TaskType task = new TaskType();
         MessageType msg = new MessageType();
         TimerType time = new TimerType();
-        EdgeType join = new EdgeType();
+        EdgeType joinEdge = new EdgeType();
         EdgeType triggeredge = new EdgeType();
         TranslateTrigger tt = new TranslateTrigger();
         tt.setValues(data, ids);
@@ -34,22 +34,27 @@ public class TranslateJoins {
         if (tra.getName() != null) {
             andjoin.setName(tra.getName().getText());
         }
-        if (trigger.equals("none")) {
+        switch (trigger) {
+        case "none":
             task.setId(String.valueOf(ids++));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            join.setId(String.valueOf(ids++));
-            join.setTargetId(task.getId());
-        } else if (trigger.equals("res")) {
+            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setTargetId(task.getId());
+            break;
+
+        case "res":
             task.setId(String.valueOf(ids++));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
             // task.getResourceTypeRef().add(new ResourceTypeRefType());
-            join.setId(String.valueOf(ids++));
-            join.setTargetId(task.getId());
-        } else if (trigger.equals("message")) {
+            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setTargetId(task.getId());
+            break;
+
+        case "message":
             msg.setId(String.valueOf(ids++));
             if (tra.getName() != null) {
                 msg.setName(tra.getName().getText());
@@ -61,9 +66,11 @@ public class TranslateJoins {
             triggeredge.setId(String.valueOf(ids++));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(msg.getId());
-            join.setId(String.valueOf(ids++));
-            join.setTargetId(task.getId());
-        } else if (trigger.equals("time")) {
+            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setTargetId(task.getId());
+            break;
+
+        case "time":
             time.setId(String.valueOf(ids++));
             if (tra.getName() != null) {
                 time.setName(tra.getName().getText());
@@ -75,14 +82,15 @@ public class TranslateJoins {
             triggeredge.setId(String.valueOf(ids++));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(time.getId());
-            join.setId(String.valueOf(ids++));
-            join.setTargetId(task.getId());
+            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setTargetId(task.getId());
+            break;
         }
 
-        join.setSourceId(andjoin.getId());
+        joinEdge.setSourceId(andjoin.getId());
         andjoin.setOriginalID(tra.getId());
         data.getNet().getNode().add(andjoin);
-        data.getNet().getEdge().add(join);
+        data.getNet().getEdge().add(joinEdge);
         if (trigger.equals("none") || trigger.equals("res")) {
             data.getNet().getNode().add(task);
             data.put_andjoinmap(String.valueOf(tra.getId()), String.valueOf(task.getId()));

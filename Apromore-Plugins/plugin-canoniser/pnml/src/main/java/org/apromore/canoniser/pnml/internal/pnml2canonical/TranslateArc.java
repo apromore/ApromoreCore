@@ -28,27 +28,32 @@ public class TranslateArc {
     public void translateEdge(ArcType arc) {
 
         data.put_id_map(arc.getId(), String.valueOf(ids));
-        
-        String sourceId = ((NodeType) arc.getSource()).getId();
-        String targetId = ((NodeType) arc.getTarget()).getId();
 
-        if (data.getOutputnode().equals(targetId)) {
-            sourceId = getEdgeRealId(sourceId);
-            targetId = getEdgeRealId(data.getOutputState());
-        } else if (data.getInputnode().equals(sourceId)) {
+        String sourceId = ((NodeType) arc.getSource()).getId();
+
+        // Convert sourceId from PNML to CPF
+        if (data.getInputnode().equals(sourceId)) {
             sourceId = data.getInputEvent();
-            targetId = getEdgeRealId(targetId);
         } else if (data.get_andjoinmap().containsKey(sourceId)) {
-            sourceId = getEdgeRealId(sourceId);
-            targetId = getEdgeRealId(targetId);
-        } else if (data.get_andsplitmap().containsKey(targetId)) {
-            sourceId = getEdgeRealId(sourceId);
-            targetId = getEdgeRealId(targetId);
+            // the AND-join was inserted, so this outgoing edge ought to source from the transition/task
+            sourceId = data.get_andjoinmap().get(sourceId);
         } else if (data.get_andsplitjoinmap().containsKey(sourceId)) {
-            sourceId = getEdgeRealId(sourceId);
-            targetId = getEdgeRealId(targetId);
+            // the AND-join was inserted as was an AND-split, so this edge ought to source from the split
+            sourceId = data.get_andsplitjoinmap().get(sourceId);
         } else {
             sourceId = getEdgeRealId(sourceId);
+        }
+
+        String targetId = ((NodeType) arc.getTarget()).getId();
+
+        // Convert targetId from PNML to CPF
+        if (data.getOutputnode().equals(targetId)) {
+            targetId = getEdgeRealId(data.getOutputState());
+        } else if (data.get_andsplitmap().containsKey(targetId)) {
+            // the AND-split was inserted, so this incoming edge ought to target to the transition/task
+            targetId = data.get_andsplitmap().get(targetId);
+        } else {
+            // even if an AND-join was inserted, its id would be the same as the original transition/task's
             targetId = getEdgeRealId(targetId);
         }
 
@@ -56,39 +61,33 @@ public class TranslateArc {
         if (type != null && "reset".equals(type.getText())) {
             // This PNML arc corresponds to a CPF cancellation set element
 
-            WorkType cancellingNode = null;
-            org.apromore.cpf.NodeType cancelledNode = null;
-
-            for (org.apromore.cpf.NodeType node: data.getNet().getNode()) {
-                // Look for the cancelledNode
-                if (node.getId().equals(sourceId)) {
-                    cancelledNode = node;
+            org.apromore.cpf.NodeType cancellingNode = findCpfNodeById(targetId);
+            org.apromore.cpf.NodeType cancelledNode  = findCpfNodeById(sourceId);
+            
+            while (cancellingNode instanceof ANDJoinType) {
+                // The resetted PNML transition had multiple incoming arcs, so this routing element was inserted
+                // consequently we need to traverse the forward edge to find the actual cancelling node.
+                Set<EdgeType> outgoingEdges = findCpfNodeOutgoingEdges(cancellingNode.getId());
+                LOGGER.info("Outgoing edge count: " + outgoingEdges.size());
+                for (EdgeType outgoing: outgoingEdges) {
+                    LOGGER.info("Outgoing edge " + outgoing.getId());
                 }
-
-                // Look for the cancellingNode
-                if (node.getId().equals(targetId)) {
-                    org.apromore.cpf.NodeType target = node;
-                    while (target instanceof ANDJoinType) {
-                        // The resetted PNML transition had multiple incoming arcs, so this routing element was inserted
-                        // consequently we need to traverse the forward edge to find the actual cancelling node.
-                        for (EdgeType outgoing: findCpfNodeOutgoingEdges(target.getId())) {
-                            target = findCpfNodeById(outgoing.getTargetId());
-                        }
-                    }
-
-                    if (target instanceof WorkType) {
-                        cancellingNode = (WorkType) target;
-                    } else {
-                        LOGGER.warning("Reset arc cannot be represented as cancellation set of " + target.getName() + " class " + target.getClass());
-                    }
+                for (EdgeType outgoing: outgoingEdges) {
+                    LOGGER.info("Outgoing edge from " + cancellingNode.getName() + " to ");
+                    cancellingNode = findCpfNodeById(outgoing.getTargetId());
+                    LOGGER.info("...to " + cancellingNode.getName());
                 }
+            }
+
+            if (!(cancellingNode instanceof WorkType)) {
+                LOGGER.warning("Reset arc cannot be represented as cancellation set of " + cancellingNode.getName() + " class " + cancellingNode.getClass());
             }
             // Found the cancelledNode and cancellingNode, if they exist
 
             if (cancelledNode != null && cancellingNode != null) {
                 CancellationRefType cancellationRef = CpfObjectFactory.getInstance().createCancellationRefType();
                 cancellationRef.setRefId(cancelledNode.getId());
-                cancellingNode.getCancelNodeId().add(cancellationRef);
+                ((WorkType) cancellingNode).getCancelNodeId().add(cancellationRef);
             }
 
         } else {
