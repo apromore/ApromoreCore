@@ -3,11 +3,15 @@ package org.apromore.canoniser.pnml;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.PNML2Canonical;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.NamespaceFilter;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CpfObjectFactory;
+import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectFactory;
+import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 import org.apromore.pnml.PnmlType;
 import static org.junit.Assert.assertEquals;
@@ -23,6 +27,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -36,6 +42,76 @@ import static org.junit.Assert.assertTrue;
 public class PNML2CanonicalUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PNML2CanonicalUnitTest.class.getName());
+
+    /**
+     * Test that PNML transitions with multiple incoming arcs canonize with a CPF AndJoin routing element.
+     */
+    @Test
+    public void testJoin() throws Exception {
+
+        CanonicalProcessType cpf = canonise("Join");
+
+        // Expect a task with 1 incoming and 1 outgoing edge
+        NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
+        assertNotNull(t1);
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), true, false).size());  // incoming edges
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), false, true).size());  // outgoing edges
+
+        // Expect a join with 2 incoming and 1 outgoing edges
+        NodeType t1join = findNodeByNameAndClass(cpf, "t1", ANDJoinType.class);
+        assertNotNull(t1join);
+        assertEquals(2, findEdgesByNode(cpf, t1join.getId(), true, false).size());  // incoming edges
+        assertEquals(1, findEdgesByNode(cpf, t1join.getId(), false, true).size());  // outgoing edges
+    }
+
+    /**
+     * Test that PNML transitions with multiple outgoing arcs canonize with a CPF AndSplit routing element.
+     */
+    @Test
+    public void testSplit() throws Exception {
+
+        CanonicalProcessType cpf = canonise("Split");
+
+        // Expect a task with 1 incoming and 1 outgoing edge
+        NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
+        assertNotNull(t1);
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), true, false).size());  // incoming edges
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), false, true).size());  // outgoing edges
+
+        // Expect a split with 1 incoming and 2 outgoing edges
+        NodeType t1split = findNodeByNameAndClass(cpf, "t1", ANDSplitType.class);
+        assertNotNull(t1split);
+        assertEquals(1, findEdgesByNode(cpf, t1split.getId(), true, false).size());  // incoming edges
+        assertEquals(2, findEdgesByNode(cpf, t1split.getId(), false, true).size());  // outgoing edges
+    }
+
+    /**
+     * Test that PNML transitions with multiple incoming and outgoing arcs canonize with both
+     * CPF AndJoin and AndSplit routing elements.
+     */
+    @Test
+    public void testJoinSplit() throws Exception {
+
+        CanonicalProcessType cpf = canonise("JoinSplit");
+
+        // Expect a task with 1 incoming and 1 outgoing edge
+        NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
+        assertNotNull(t1);
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), true, false).size());  // incoming edges
+        assertEquals(1, findEdgesByNode(cpf, t1.getId(), false, true).size());  // outgoing edges
+
+        // Expect a join with 2 incoming and 1 outgoing edges
+        NodeType t1join = findNodeByNameAndClass(cpf, "t1", ANDJoinType.class);
+        assertNotNull(t1join);
+        assertEquals(2, findEdgesByNode(cpf, t1join.getId(), true, false).size());  // incoming edges
+        assertEquals(1, findEdgesByNode(cpf, t1join.getId(), false, true).size());  // outgoing edges
+
+        // Expect a split with 1 incoming and 2 outgoing edges
+        NodeType t1split = findNodeByNameAndClass(cpf, "t1", ANDSplitType.class);
+        assertNotNull(t1split);
+        assertEquals(1, findEdgesByNode(cpf, t1split.getId(), true, false).size());  // incoming edges
+        assertEquals(2, findEdgesByNode(cpf, t1split.getId(), false, true).size());  // outgoing edges
+    }
 
     /**
      * Test that PNML reset arcs are canonized into CPF cancellation sets.
@@ -83,6 +159,8 @@ public class PNML2CanonicalUnitTest {
         assertEquals(2, cancellingNode.getCancelEdgeId().size());
     }
 
+    // Internal methods
+
     private CanonicalProcessType canonise(final String fileName) throws Exception {
 
         // Parse <filename>.pnml into a test instance of PNML2Canonical
@@ -100,6 +178,33 @@ public class PNML2CanonicalUnitTest {
 
         return cpf;
     }
+
+    private NodeType findNodeByNameAndClass(final CanonicalProcessType cpf, final String name, final Class klass) {
+        for (NetType net: cpf.getNet()) {
+            for (NodeType node: net.getNode()) {
+                if (klass.isInstance(node) && (name == null ? node.getName() == null : node.getName().equals(name))) {
+                    return node;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Set<EdgeType> findEdgesByNode(final CanonicalProcessType cpf, final String cpfId, final boolean incoming, final boolean outgoing) {
+        Set<EdgeType> set = new HashSet<>();
+        for (NetType net: cpf.getNet()) {
+            for (EdgeType edge: net.getEdge()) {
+                if ((incoming && edge.getTargetId().equals(cpfId)) ||
+                    (outgoing && edge.getSourceId().equals(cpfId))) {
+                    set.add(edge);
+                }
+            }
+        }
+        return set;
+    }
+
+
+    // Older tests -- these have been salvaged to run, but don't actually test anything other than parsing
 
     @Test
     public void testWoped() {
