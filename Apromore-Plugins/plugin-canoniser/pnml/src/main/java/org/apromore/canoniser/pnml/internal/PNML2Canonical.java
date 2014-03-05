@@ -24,6 +24,7 @@ import org.apromore.canoniser.pnml.internal.pnml2canonical.DataHandler;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.RemoveDuplicateXORS;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.TranslatePetriNet;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.CpfObjectFactory;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.pnml.PnmlType;
@@ -75,22 +76,24 @@ public class PNML2Canonical {
     }
 
     void main(PnmlType pnml) throws CanoniserException {
-        data.setCanonicalProcess(new CanonicalProcessType());
+
+        CanonicalProcessType cpf = CpfObjectFactory.getInstance().createCanonicalProcessType();
+        cpf.setUri("");
+        cpf.setVersion("1.0");
+        data.setCanonicalProcess(cpf);
 
         if (pnml.getNet() != null && pnml.getNet().size() > 0) {
-            //for (int i = 0; i < pnml.getNet().size(); i++) {
-                for (org.apromore.pnml.NetType pnet : pnml.getNet()) {
-                    NetType net = new NetType();
-                    data.setNet(net);
-                    tpn.setValues(data, ids);
-                    tpn.translatePetriNet(pnet);
-                    ids = tpn.getIds();
-                    data.put_id_map(pnet.getId(), String.valueOf(ids));
-                    data.setRootId(ids);
-                    data.getNet().setId(String.valueOf(ids++));
-                    data.getCanonicalProcess().getNet().add(data.getNet());
-                }
-            //}
+            for (org.apromore.pnml.NetType pnet : pnml.getNet()) {
+                NetType net = CpfObjectFactory.getInstance().createNetType();
+                data.setNet(net);
+                tpn.setValues(data, ids);
+                tpn.translatePetriNet(pnet);
+                ids = tpn.getIds();
+                data.put_id_map(pnet.getId(), String.valueOf(ids));
+                data.setRootId(ids);
+                data.getNet().setId(String.valueOf(ids++));
+                data.getCanonicalProcess().getNet().add(data.getNet());
+            }
         }
     }
 
