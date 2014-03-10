@@ -68,14 +68,8 @@ public class TranslateArc {
                 // The resetted PNML transition had multiple incoming arcs, so this routing element was inserted
                 // consequently we need to traverse the forward edge to find the actual cancelling node.
                 Set<EdgeType> outgoingEdges = findCpfNodeOutgoingEdges(cancellingNode.getId());
-                LOGGER.info("Outgoing edge count: " + outgoingEdges.size());
                 for (EdgeType outgoing: outgoingEdges) {
-                    LOGGER.info("Outgoing edge " + outgoing.getId());
-                }
-                for (EdgeType outgoing: outgoingEdges) {
-                    LOGGER.info("Outgoing edge from " + cancellingNode.getName() + " to ");
                     cancellingNode = findCpfNodeById(outgoing.getTargetId());
-                    LOGGER.info("...to " + cancellingNode.getName());
                 }
             }
 

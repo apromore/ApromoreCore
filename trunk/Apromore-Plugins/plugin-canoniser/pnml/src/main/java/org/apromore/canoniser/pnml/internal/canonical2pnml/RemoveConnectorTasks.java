@@ -49,13 +49,10 @@ public class RemoveConnectorTasks {
 
         for (NetType net : cproc.getNet()) {
             for (EdgeType edge : net.getEdge()) {
-                if (edge instanceof EdgeType) {
-                    joinmap.put(edge.getSourceId(), edge);
-                    splitmap.put(edge.getTargetId(), edge);
-                    if (edge.getOriginalID() == null) {
-                        removeedges.add(edge);
-                    }
-
+                joinmap.put(edge.getSourceId(), edge);
+                splitmap.put(edge.getTargetId(), edge);
+                if (edge.getOriginalID() == null) {
+                    removeedges.add(edge);
                 }
             }
 

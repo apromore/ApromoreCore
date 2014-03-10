@@ -52,7 +52,7 @@ public class TranslateOperators {
             tran.setId(String.valueOf(ids++));
             tran.setName(test);
 
-            if (node instanceof ANDJoinType && node.getOriginalID().contains("op")) {
+            if (node instanceof ANDJoinType && node.getOriginalID() != null && node.getOriginalID().contains("op")) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");
@@ -60,7 +60,7 @@ public class TranslateOperators {
                 op.setType(102);
                 trantool.setOrientation(3);
                 trantool.setOperator(op);
-            } else if (node instanceof ANDSplitType && node.getOriginalID().contains("op")) {
+            } else if (node instanceof ANDSplitType && node.getOriginalID() != null && node.getOriginalID().contains("op")) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");
@@ -68,7 +68,7 @@ public class TranslateOperators {
                 op.setType(101);
                 trantool.setOrientation(1);
                 trantool.setOperator(op);
-            } else if (node instanceof XORJoinType) {
+            } else if (node instanceof XORJoinType && node.getOriginalID() != null) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");
@@ -78,7 +78,7 @@ public class TranslateOperators {
                 trantool.setOperator(op);
                 data.put_dupjoinMap(node.getOriginalID(), tran);
                 data.addxorconnectors(node);
-            } else if (node instanceof XORSplitType) {
+            } else if (node instanceof XORSplitType && node.getOriginalID() != null) {
                 trantool.setTool("WoPeD");
                 trantool.setVersion("1.0");
                 String splitid[] = node.getOriginalID().split("_");

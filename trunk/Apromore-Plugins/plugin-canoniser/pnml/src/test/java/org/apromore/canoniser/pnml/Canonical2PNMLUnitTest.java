@@ -3,11 +3,17 @@ package org.apromore.canoniser.pnml;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.Canonical2PNML;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.NamespaceFilter;
+import org.apromore.anf.ANFSchema;
+import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.pnml.ObjectFactory;
+import org.apromore.pnml.PNMLSchema;
 import org.apromore.pnml.PnmlType;
+import org.apromore.pnml.NetType;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -15,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,10 +31,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertTrue;
 
-@Ignore
 public class Canonical2PNMLUnitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2PNMLUnitTest.class.getName());
@@ -37,24 +44,149 @@ public class Canonical2PNMLUnitTest {
     File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
     File output = null;
 
+    /**
+     * Decanonize <code>Basic.cpf</code>.
+     */
     @Test
-    public void testNothing() {
-        assertTrue(true);
+    public void testBasic() throws Exception {
+
+        PnmlType pnml = decanonise("Basic");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(2, net.getArc().size());
     }
 
     /**
-     * @param args
+     * Decanonize <code>ANDJoin.cpf</code>.
      */
-    public void main(String[] args) {
+    @Test
+    public void testANDJoin() throws Exception {
+
+        PnmlType pnml = decanonise("ANDJoin");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    /**
+     * Decanonize <code>ANDSplit.cpf</code>.
+     */
+    @Test
+    public void testANDSplit() throws Exception {
+
+        PnmlType pnml = decanonise("ANDSplit");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    /**
+     * Decanonize <code>ORJoin.cpf</code>.
+     */
+    @Test
+    public void testORJoin() throws Exception {
+
+        PnmlType pnml = decanonise("ORJoin");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    /**
+     * Decanonize <code>ORSplit.cpf</code>.
+     */
+    @Test
+    public void testORSplit() throws Exception {
+
+        PnmlType pnml = decanonise("ORSplit");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    /**
+     * Decanonize <code>XORJoin.cpf</code>.
+     */
+    @Test
+    public void testXORJoin() throws Exception {
+
+        PnmlType pnml = decanonise("XORJoin");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    /**
+     * Decanonize <code>XORSplit.cpf</code>.
+     */
+    @Test
+    public void testXORSplit() throws Exception {
+
+        PnmlType pnml = decanonise("XORSplit");
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(3, net.getArc().size());
+    }
+
+    // Internal methods
+
+    private PnmlType decanonise(final String fileName) throws FileNotFoundException, JAXBException, SAXException {
+
+        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(
+            new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".cpf")),
+            true  // validate?
+        ).getValue();
+
+        System.out.println("CPF nets: " + cpf.getNet().size());
+        System.out.println("CPF edges on first net: " + cpf.getNet().get(0).getEdge().size());
+
+        /*
+        AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(
+            new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".anf")),
+            true  // validate?
+        ).getValue();
+        */
+
+        PnmlType pnml = (new Canonical2PNML(cpf /*, anf, "dummy-filename"*/)).getPNML();
+
+        // Serialize the decanonized PNML for inspection
+        PNMLSchema.marshalPNMLFormat(
+            new FileOutputStream(new File("target/" + fileName + ".pnml")),
+            pnml,
+            false  // validate?
+        );
+
+        return pnml;
+    }
+
+
+    // Older tests -- these have been salvaged to run, but don't actually test anything other than parsing
+
+    @Test
+    public void testWoped() {
 
         String cpf_file_without_path = null;
         String anf_file_without_path = null;
 
         File anf_file = null;
         File cpf_file = null;
-        File foldersave = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_pnml");
+        File foldersave = new File("target");
         File output = null;
-        File folder = new File("Apromore-Core/apromore-service/src/test/resources/PNML_models/woped_cases_mapped_cpf_anf");
+        File folder = new File("src/test/resources/PNML_testcases/woped_cases_expected_cpf");
         FileFilter fileFilter = new FileFilter() {
             public boolean accept(File file) {
                 return file.isFile();
