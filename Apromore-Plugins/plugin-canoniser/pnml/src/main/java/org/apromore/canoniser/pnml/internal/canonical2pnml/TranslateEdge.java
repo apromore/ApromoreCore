@@ -43,6 +43,7 @@ public class TranslateEdge {
         inscription.setText(1);
         arc.setInscription(inscription);
         data.getNet().getArc().add(arc);
+        java.util.logging.Logger.getAnonymousLogger().info("Edge " + edge.getId() + " became Arc " + arc.getId());
 
         data.put_pnmlRefMap(arc.getId(), arc);
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(arc.getId())), edge.getOriginalID());

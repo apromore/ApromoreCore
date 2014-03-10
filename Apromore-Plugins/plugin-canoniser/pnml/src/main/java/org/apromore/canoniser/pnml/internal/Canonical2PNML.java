@@ -10,6 +10,8 @@
 
 package org.apromore.canoniser.pnml.internal;
 
+import java.util.logging.Logger;
+
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.AddXorOperators;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.DataHandler;
@@ -30,6 +32,8 @@ import org.apromore.pnml.TransitionType;
 
 public class Canonical2PNML {
 
+    static final private Logger LOGGER = Logger.getLogger(Canonical2PNML.class.getCanonicalName());
+
     DataHandler data = new DataHandler();
     RemoveConnectorTasks removeConnectorTasks = new RemoveConnectorTasks();
     RemoveEvents removeEvents = new RemoveEvents();
@@ -37,17 +41,19 @@ public class Canonical2PNML {
     RemoveSplitJoins removeSplitJoins = new RemoveSplitJoins();
     TranslateAnnotations ta = new TranslateAnnotations();
     TranslateNet tn = new TranslateNet();
-    private long ids = System.currentTimeMillis();
+    private long ids = 0;  //System.currentTimeMillis();
 
     public PnmlType getPNML() {
         return data.getPnml();
     }
 
     public Canonical2PNML(CanonicalProcessType cproc) {
+        LOGGER.info("Net #1 originally has " + cproc.getNet().get(0).getEdge().size() + " edges");
         removeConnectorTasks.setValue(data, cproc);
         removeConnectorTasks.remove();
         cproc = removeConnectorTasks.getCanonicalProcess();
-        main(cproc, null, null);
+        LOGGER.info("Net #1 eventually has " + cproc.getNet().get(0).getEdge().size() + " edges");
+        main(cproc, null);
         ta.setValue(data);
     }
 
@@ -55,7 +61,7 @@ public class Canonical2PNML {
         removeConnectorTasks.setValue(data, cproc);
         removeConnectorTasks.remove();
         cproc = removeConnectorTasks.getCanonicalProcess();
-        main(cproc, annotations, null);
+        main(cproc, annotations);
         ta.setValue(data);
         ta.mapNodeAnnotations(annotations);
     }
@@ -81,7 +87,7 @@ public class Canonical2PNML {
         removeSplitJoins.remove();
         cproc = removeSplitJoins.getCanonicalProcess();
         annotations = removeSplitJoins.getAnnotations();
-        main(cproc, annotations, null);
+        main(cproc, annotations);
         ta.setValue(data);
         ta.mapNodeAnnotations(annotations);
         AddXorOperators ax = new AddXorOperators();
@@ -114,8 +120,10 @@ public class Canonical2PNML {
      *
      * @since 1.0
      */
-    private void main(CanonicalProcessType cproc, AnnotationsType annotations, DataHandler data1) {
+    private void main(CanonicalProcessType cproc, AnnotationsType annotations) {
+        LOGGER.info("Decanonise");
         for (NetType net : cproc.getNet()) {
+            LOGGER.info("Net has " + net.getEdge().size() + " edges");
             tn.setValues(data, ids, annotations);
             tn.translateNet(net);
             ids = tn.getIds();
