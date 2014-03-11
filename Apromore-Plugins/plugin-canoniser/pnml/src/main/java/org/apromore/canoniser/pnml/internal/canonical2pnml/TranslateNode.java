@@ -9,6 +9,7 @@ import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
+import org.apromore.pnml.ArcType;
 import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsSimpleType;
 import org.apromore.pnml.NodeNameType;
@@ -127,11 +128,71 @@ public class TranslateNode {
 
         data.getNet().getTransition().add(tran);
         data.put_pnmlRefMap(tran.getId(), tran);
-        if (task.getName() != null) {
-            data.put_tempmap(tran.getName().getText(), tran);
-        }
 
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())), task.getOriginalID());
+
+        if (data.isCpfTaskPnmlTransition()) {
+
+            // Tell TranslateArc where to attach incoming and outgoing arcs
+            data.getStartNodeMap().put(task, tran);
+            data.getEndNodeMap().put(task, tran);
+            
+        } else {
+            // The transition we've created only starts the task; we also need
+            // to add a place to represent that the task is running and a second
+            // transition to represent the task ending.
+            //
+            // [tran] --> (running) --> [end]
+
+            // Create the place for the state in which the task is running
+            PlaceType running = new PlaceType();
+            running.setId(String.valueOf(ids++));
+            data.getNet().getPlace().add(running);
+
+            // Create the arc from the start transition to the running place
+            ArcType startToRunning = new ArcType();
+            startToRunning.setId(String.valueOf(ids++));
+            startToRunning.setSource(tran);
+            startToRunning.setTarget(running);
+            data.getNet().getArc().add(startToRunning);
+
+            // Create the transition that stops the task running
+            TransitionType end = new TransitionType();
+            end.setId(String.valueOf(ids++));
+            end.setName(running.getName());
+            data.getNet().getTransition().add(end);
+
+            // Create the arc from the running place to the end transition
+            ArcType runningToEnd = new ArcType();
+            runningToEnd.setId(String.valueOf(ids++));
+            runningToEnd.setSource(running);
+            runningToEnd.setTarget(end);
+            data.getNet().getArc().add(runningToEnd);
+
+            // Name the nodes (English naming convention)
+            String taskName = task.getName();
+            if (taskName != null) {
+                // Start transition named "<Task> start"
+                NodeNameType name = new NodeNameType();
+                name.setText(taskName + " start");
+                tran.setName(name);
+
+                // Running place named "<Task>"
+                name = new NodeNameType();
+                name.setText(taskName);
+                running.setName(name);
+
+                // End transition named "<Task> end"
+                name = new NodeNameType();
+                name.setText(taskName + " end");
+                end.setName(name);
+            }
+
+            // Tell TranslateArc where to attach incoming and outgoing arcs
+            data.getStartNodeMap().put(task, tran);
+            data.getRunningPlaceMap().put(task, running);
+            data.getEndNodeMap().put(task, end);
+        }
     }
 
     public void translateEvent(NodeType node) {
@@ -163,9 +224,8 @@ public class TranslateNode {
             tran.getToolspecific().add(ttt);
             data.getNet().getTransition().add(tran);
             data.put_pnmlRefMap(tran.getId(), tran);
-            if (node.getName() != null) {
-                data.put_tempmap(tran.getName().getText(), tran);
-            }
+            data.getStartNodeMap().put(node, tran);
+            data.getEndNodeMap().put(node, tran);
             data.put_originalid_map(
                     BigInteger.valueOf(Long.valueOf(tran.getId())),
                     node.getOriginalID());
@@ -198,9 +258,8 @@ public class TranslateNode {
             tran.getToolspecific().add(ttt);
             data.getNet().getTransition().add(tran);
             data.put_pnmlRefMap(tran.getId(), tran);
-            if (node.getName() != null) {
-                data.put_tempmap(tran.getName().getText(), tran);
-            }
+            data.getStartNodeMap().put(node, tran);
+            data.getEndNodeMap().put(node, tran);
             data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())), node.getOriginalID());
 
         } else {
@@ -217,9 +276,9 @@ public class TranslateNode {
             data.getNet().getPlace().add(place);
             data.put_pnmlRefMap(place.getId(), place);
 
-            if (node.getName() != null) {
-                data.put_tempmap(place.getName().getText(), place);
-            }
+            data.getStartNodeMap().put(node, place);
+            data.getRunningPlaceMap().put(node, place);
+            data.getEndNodeMap().put(node, place);
 
             data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), node.getOriginalID());
         }
@@ -239,9 +298,9 @@ public class TranslateNode {
         data.getNet().getPlace().add(place);
         data.put_pnmlRefMap(place.getId(), place);
 
-        if (node.getName() != null) {
-            data.put_tempmap(place.getName().getText(), place);
-        }
+        data.getStartNodeMap().put(node, place);
+        data.getRunningPlaceMap().put(node, place);
+        data.getEndNodeMap().put(node, place);
 
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), node.getOriginalID());
     }

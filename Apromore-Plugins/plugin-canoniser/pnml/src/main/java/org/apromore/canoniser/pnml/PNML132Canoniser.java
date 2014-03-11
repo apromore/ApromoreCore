@@ -13,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.pnml.internal.Canonical2PNML;
@@ -22,6 +23,8 @@ import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.exception.PluginPropertyNotFoundException;
+import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.pnml.NetType;
 import org.apromore.pnml.PnmlType;
 import org.slf4j.Logger;
@@ -45,6 +48,58 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
     private static final String PNML_CONTEXT = "org.apromore.pnml";
 
+    private final PluginParameterType<Boolean> CPF_TASK_TO_PNML_TRANSITION;
+    private final PluginParameterType<Boolean> PNML_TRANSITION_TO_CPF_TASK;
+    private final PluginParameterType<Boolean> CPF_EDGE_TO_PNML_PLACE;
+    private final PluginParameterType<Boolean> PNML_PLACE_TO_CPF_EDGE;
+
+    /**
+     * Sole constructor.
+     */
+    public PNML132Canoniser() {
+        super();
+
+        CPF_TASK_TO_PNML_TRANSITION = new PluginParameterType<Boolean>(
+            "isCpfTaskPnmlTransition",
+            "Treat CPF Tasks as PNML Transitions?",
+            "Treat CPF Tasks as PNML Transitions (i.e. with negligible duration)",
+            false,
+            Canoniser.CANONISE_PARAMETER,
+            Boolean.FALSE
+        );
+        registerParameter(CPF_TASK_TO_PNML_TRANSITION);
+
+        PNML_TRANSITION_TO_CPF_TASK = new PluginParameterType<Boolean>(
+            "isCpfTaskPnmlTransition",
+            "Treat CPF Tasks as PNML Transitions?",
+            "Treat CPF Tasks as PNML Transitions (i.e. with negligible duration)",
+            false,
+            Canoniser.DECANONISE_PARAMETER,
+            Boolean.FALSE
+        );
+        registerParameter(PNML_TRANSITION_TO_CPF_TASK);
+
+        CPF_EDGE_TO_PNML_PLACE = new PluginParameterType<Boolean>(
+            "isCpfEdgePnmlPlace",
+            "Treat CPF Edges as PNML Places?",
+            "Treat CPF Edges as PNML Places (i.e. with non-negligible duration)",
+            false,
+            Canoniser.CANONISE_PARAMETER,
+            Boolean.FALSE
+        );
+        registerParameter(CPF_EDGE_TO_PNML_PLACE);
+
+        PNML_PLACE_TO_CPF_EDGE = new PluginParameterType<Boolean>(
+            "isCpfEdgePnmlPlace",
+            "Treat CPF Edges as PNML Places?",
+            "Treat CPF Edges as PNML Places (i.e. with non-negligible duration)",
+            false,
+            Canoniser.DECANONISE_PARAMETER,
+            Boolean.FALSE
+        );
+        registerParameter(PNML_PLACE_TO_CPF_EDGE);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -58,15 +113,19 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
         try {
             NamespaceFilter inFilter = new NamespaceFilter("pnml.apromore.org", true);
             inFilter.setParent(XMLReaderFactory.createXMLReader());
-            PNML2Canonical pnml2canonical =
-                new PNML2Canonical(unmarshalNativeFormat(new SAXSource(inFilter, new InputSource(nativeInput))).getValue());
+            PNML2Canonical pnml2canonical = new PNML2Canonical(
+                unmarshalNativeFormat(new SAXSource(inFilter, new InputSource(nativeInput))).getValue(),
+                null,
+                request.getRequestParameter(PNML_TRANSITION_TO_CPF_TASK).getValue(),
+                request.getRequestParameter(PNML_PLACE_TO_CPF_EDGE).getValue()
+            );
 
             annotationFormat.add(pnml2canonical.getANF());
             canonicalFormat.add(pnml2canonical.getCPF());
 
             return newPluginResult();
 
-        } catch (JAXBException | SAXException e) {
+        } catch (JAXBException | PluginPropertyNotFoundException | SAXException e) {
             throw new CanoniserException(e);
         }
     }
@@ -82,18 +141,18 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
                                    final OutputStream         nativeOutput,
                                    final PluginRequest        request) throws CanoniserException {
         try {
-            Canonical2PNML canonical2pnml;
 
-            if (annotationFormat != null) {
-                canonical2pnml = new Canonical2PNML(canonicalFormat, annotationFormat);
-            } else {
-                canonical2pnml = new Canonical2PNML(canonicalFormat);
-            }
+            Canonical2PNML canonical2pnml = new Canonical2PNML(
+                canonicalFormat,
+                annotationFormat,
+                request.getRequestParameter(CPF_TASK_TO_PNML_TRANSITION).getValue(),
+                request.getRequestParameter(CPF_EDGE_TO_PNML_PLACE).getValue()
+            );
 
             marshalNativeFormat(canonical2pnml.getPNML(), nativeOutput);
 
             return newPluginResult();
-        } catch (JAXBException e) {
+        } catch (JAXBException | PluginPropertyNotFoundException e) {
             throw new CanoniserException(e);
         }
     }

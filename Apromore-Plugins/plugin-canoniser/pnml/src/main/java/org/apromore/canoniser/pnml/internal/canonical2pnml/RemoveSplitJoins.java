@@ -120,9 +120,11 @@ public class RemoveSplitJoins {
                             joincount);
                 }
             }
-            for (AnnotationType annotation : annotations.getAnnotation()) {
-                if (annotationid.contains(String.valueOf(annotation.getId()))) {
-                    removeanno.add(annotation);
+            if (annotations != null) {
+                for (AnnotationType annotation : annotations.getAnnotation()) {
+                    if (annotationid.contains(String.valueOf(annotation.getId()))) {
+                        removeanno.add(annotation);
+                    }
                 }
             }
         }

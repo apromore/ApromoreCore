@@ -49,7 +49,7 @@ public class PNML2CanonicalUnitTest {
     @Test
     public void testJoin() throws Exception {
 
-        CanonicalProcessType cpf = canonise("Join");
+        CanonicalProcessType cpf = canonise("Join", false, false);
 
         // Expect a task with 1 incoming and 1 outgoing edge
         NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
@@ -70,7 +70,7 @@ public class PNML2CanonicalUnitTest {
     @Test
     public void testSplit() throws Exception {
 
-        CanonicalProcessType cpf = canonise("Split");
+        CanonicalProcessType cpf = canonise("Split", false, false);
 
         // Expect a task with 1 incoming and 1 outgoing edge
         NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
@@ -92,7 +92,7 @@ public class PNML2CanonicalUnitTest {
     @Test
     public void testJoinSplit() throws Exception {
 
-        CanonicalProcessType cpf = canonise("JoinSplit");
+        CanonicalProcessType cpf = canonise("JoinSplit", false, false);
 
         // Expect a task with 1 incoming and 1 outgoing edge
         NodeType t1 = findNodeByNameAndClass(cpf, "t1", TaskType.class);
@@ -119,7 +119,7 @@ public class PNML2CanonicalUnitTest {
     @Test
     public void testReset1() throws Exception {
 
-        CanonicalProcessType cpf = canonise("Reset1");
+        CanonicalProcessType cpf = canonise("Reset1", false, false);
 
         // Inspect the test result
         WorkType cancellingNode = null;
@@ -143,7 +143,7 @@ public class PNML2CanonicalUnitTest {
     @Test
     public void testReset2() throws Exception {
 
-        CanonicalProcessType cpf = canonise("Reset2");
+        CanonicalProcessType cpf = canonise("Reset2", false, false);
 
         // Inspect the test result
         WorkType cancellingNode = null;
@@ -161,14 +161,16 @@ public class PNML2CanonicalUnitTest {
 
     // Internal methods
 
-    private CanonicalProcessType canonise(final String fileName) throws Exception {
+    private CanonicalProcessType canonise(final String  fileName,
+                                          final boolean isCpfTaskPnmlTransition,
+                                          final boolean isCpfEdgePnmlPlace) throws Exception {
 
         // Parse <filename>.pnml into a test instance of PNML2Canonical
         JAXBElement<PnmlType> rootElement = (JAXBElement<PnmlType>) 
             JAXBContext.newInstance("org.apromore.pnml")
                        .createUnmarshaller()
                        .unmarshal(new FileInputStream("src/test/resources/PNML_testcases/" + fileName + ".pnml"));
-        CanonicalProcessType cpf = new PNML2Canonical(rootElement.getValue()).getCPF();
+        CanonicalProcessType cpf = new PNML2Canonical(rootElement.getValue(), null, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace).getCPF();
         assert cpf != null;
 
         // Serialize <fileName>.cpf out from the test instance
@@ -228,7 +230,7 @@ public class PNML2CanonicalUnitTest {
             String extension = filename.split("\\.")[filename.split("\\.").length - 1];
 
             if (extension.compareTo("pnml") == 0) {
-                LOGGER.debug("Analysing " + filename);
+                //LOGGER.debug("Analysing " + filename);
                 n++;
                 try {
                     JAXBContext jc = JAXBContext.newInstance("org.apromore.pnml");
@@ -247,7 +249,7 @@ public class PNML2CanonicalUnitTest {
                     JAXBElement<PnmlType> rootElement = (JAXBElement<PnmlType>) u.unmarshal(source);
                     PnmlType pnml = rootElement.getValue();
 
-                    PNML2Canonical pn = new PNML2Canonical(pnml, filename_without_path);
+                    PNML2Canonical pn = new PNML2Canonical(pnml, filename_without_path, false, false);
 
                     jc = JAXBContext.newInstance(CpfObjectFactory.class);
                     Marshaller m = jc.createMarshaller();
@@ -267,7 +269,7 @@ public class PNML2CanonicalUnitTest {
                     e.printStackTrace();
                 }
             } else {
-                LOGGER.debug("Skipping " + filename);
+                //LOGGER.debug("Skipping " + filename);
             }
         }
         LOGGER.debug("Analysed " + n + " files.");

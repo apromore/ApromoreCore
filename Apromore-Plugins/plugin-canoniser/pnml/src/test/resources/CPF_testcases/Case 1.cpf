@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="" version="1.0" name="dummy">
+    <Net id="9">
+        <Node xsi:type="cpf:EventType" id="0" originalID="o0">
+            <name>A</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="1" originalID="o1">
+            <name>B1</name>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="2" originalID="o2">
+            <name>B2</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="4" originalID="o4">
+            <name>t1</name>
+        </Node>
+        <Node xsi:type="cpf:ANDSplitType" id="3" originalID="o3">
+            <name>t2</name>
+        </Node>
+        <Edge id="5" sourceId="4" targetId="3" originalID="05"/>
+        <Edge id="6" sourceId="0" targetId="4" originalID="o6"/>
+        <Edge id="7" sourceId="3" targetId="1" originalID="o7"/>
+        <Edge id="8" sourceId="3" targetId="2" originalID="o8"/>
+    </Net>
+</cpf:CanonicalProcess>

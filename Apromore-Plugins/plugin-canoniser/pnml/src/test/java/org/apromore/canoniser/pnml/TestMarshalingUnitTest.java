@@ -60,7 +60,7 @@ public class TestMarshalingUnitTest {
 
         JAXBElement<PnmlType> pnml = (JAXBElement<PnmlType>) u.unmarshal(source);
         PnmlType pkg = pnml.getValue();
-        PNML2Canonical pnml2canonical = new PNML2Canonical(pkg, Long.parseLong(canonical));
+        PNML2Canonical pnml2canonical = new PNML2Canonical(pkg, Long.parseLong(canonical), false, false);
 
         jc = JAXBContext.newInstance("org.apromore.anf");
         Marshaller m_anf = jc.createMarshaller();
