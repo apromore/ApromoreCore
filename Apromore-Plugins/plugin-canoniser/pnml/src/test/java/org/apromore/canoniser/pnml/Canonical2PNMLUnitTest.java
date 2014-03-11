@@ -50,12 +50,25 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testBasic() throws Exception {
 
-        PnmlType pnml = decanonise("Basic");
+        // Convert the CPF Task to a single PNML Transition
+        PnmlType pnml = decanonise("Basic", true, true, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
         assertEquals(2, net.getArc().size());
+        assertEquals(2, net.getPlace().size());
+        assertEquals(1, net.getTransition().size());
+
+        // Convert the CPF Task to a PNML Place bounded by Transitions
+        pnml = decanonise("Basic", true, false, true);
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        net = pnml.getNet().get(0);
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
     }
 
     /**
@@ -64,7 +77,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testANDJoin() throws Exception {
 
-        PnmlType pnml = decanonise("ANDJoin");
+        PnmlType pnml = decanonise("ANDJoin", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -78,7 +91,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testANDSplit() throws Exception {
 
-        PnmlType pnml = decanonise("ANDSplit");
+        PnmlType pnml = decanonise("ANDSplit", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -92,7 +105,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testORJoin() throws Exception {
 
-        PnmlType pnml = decanonise("ORJoin");
+        PnmlType pnml = decanonise("ORJoin", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -106,7 +119,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testORSplit() throws Exception {
 
-        PnmlType pnml = decanonise("ORSplit");
+        PnmlType pnml = decanonise("ORSplit", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -120,7 +133,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testXORJoin() throws Exception {
 
-        PnmlType pnml = decanonise("XORJoin");
+        PnmlType pnml = decanonise("XORJoin", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -134,7 +147,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testXORSplit() throws Exception {
 
-        PnmlType pnml = decanonise("XORSplit");
+        PnmlType pnml = decanonise("XORSplit", false, false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -142,26 +155,44 @@ public class Canonical2PNMLUnitTest {
         assertEquals(3, net.getArc().size());
     }
 
+    /**
+     * Decanonize <code>Case 1.cpf</code>.
+     */
+    @Test
+    public void testCase1() throws Exception {
+
+        PnmlType pnml = decanonise("Case 1", false, true, false);
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
+    }
+
     // Internal methods
 
-    private PnmlType decanonise(final String fileName) throws FileNotFoundException, JAXBException, SAXException {
+    private PnmlType decanonise(final String  fileName,
+                                final boolean hasANF,
+                                final boolean isCpfTaskPnmlTransition,
+                                final boolean isCpfEdgePnmlPlace)
+        throws FileNotFoundException, JAXBException, SAXException {
 
         CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(
             new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".cpf")),
             true  // validate?
         ).getValue();
 
-        System.out.println("CPF nets: " + cpf.getNet().size());
-        System.out.println("CPF edges on first net: " + cpf.getNet().get(0).getEdge().size());
+        AnnotationsType anf = null;
+        if (hasANF) {
+            anf = ANFSchema.unmarshalAnnotationFormat(
+                new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".anf")),
+                true  // validate?
+            ).getValue();
+        }
 
-        /*
-        AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(
-            new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".anf")),
-            true  // validate?
-        ).getValue();
-        */
-
-        PnmlType pnml = (new Canonical2PNML(cpf /*, anf, "dummy-filename"*/)).getPNML();
+        PnmlType pnml = (new Canonical2PNML(cpf, anf, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace)).getPNML();
 
         // Serialize the decanonized PNML for inspection
         PNMLSchema.marshalPNMLFormat(
@@ -206,18 +237,18 @@ public class Canonical2PNMLUnitTest {
 
             if (!filename.contains("subnet")) {
                 if (extension.compareTo("cpf") == 0 && extension.compareTo("anf") == 0) {
-                    LOGGER.debug("Skipping " + filename);
+                    //LOGGER.debug("Skipping " + filename);
                 }
 
                 if (extension.compareTo("anf") == 0) {
-                    LOGGER.debug("Analysing " + filename);
+                    //LOGGER.debug("Analysing " + filename);
                     n++;
                     anf_file = new File(folder + "/" + filename);
                     anf_file_without_path = filename_without_path;
                 }
 
                 if (extension.compareTo("cpf") == 0) {
-                    LOGGER.debug("Analysing " + filename);
+                    //LOGGER.debug("Analysing " + filename);
                     n++;
                     cpf_file = new File(folder + "/" + filename);
                     cpf_file_without_path = filename_without_path;

@@ -2,6 +2,7 @@ package org.apromore.canoniser.pnml.internal.canonical2pnml;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
@@ -13,6 +14,9 @@ import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 
 public class AddXorOperators {
+
+    static final private Logger LOGGER = Logger.getLogger(AddXorOperators.class.getCanonicalName());
+
     DataHandler data;
     long ids;
     TransitionType trandouble;
@@ -26,11 +30,13 @@ public class AddXorOperators {
 
     public void add(CanonicalProcessType cproc) {
         this.cproc = cproc;
+        LOGGER.info("OMEGA");
         for (NetType net : cproc.getNet()) {
             for (NodeType node : data.getxorconnectors()) {
                 NodeType test = node;
                 int splitcount = 0;
                 int joincount = 0;
+                LOGGER.info("ALPHA");
                 if (data.get_dupjoinMap().containsKey(node.getOriginalID())) {
                     for (EdgeType edge : net.getEdge()) {
                         if (edge instanceof EdgeType) {
@@ -85,15 +91,11 @@ public class AddXorOperators {
                         update.setTarget(tran);
 
                     }
-                } else if (data.get_dupsplitMap().containsKey(
-                        node.getOriginalID())) {
+                } else if (data.get_dupsplitMap().containsKey(node.getOriginalID())) {
+                    LOGGER.info("BETA " + node.getOriginalID() + " in dupsplitMap");
                     for (EdgeType edge : net.getEdge()) {
-                        if (edge instanceof EdgeType) {
-                            if (edge.getSourceId().equals(test.getId())
-                                    && edge.getOriginalID() != null) {
-                                splitcount++;
-
-                            }
+                        if (edge.getSourceId().equals(test.getId()) && edge.getOriginalID() != null) {
+                            splitcount++;
                         }
                     }
 

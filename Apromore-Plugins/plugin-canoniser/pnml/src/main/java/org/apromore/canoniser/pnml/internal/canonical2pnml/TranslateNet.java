@@ -76,10 +76,8 @@ public class TranslateNet {
             data.put_nodeRefMap(node.getId(), node);
         }
 
-        LOGGER.info("Processing edges: " + net.getEdge());
         for (EdgeType edge : net.getEdge()) {
             assert edge != null;
-            LOGGER.info("Processing edge " + edge.getId());
 
             te.setValues(data, ids);
             te.translateArc(edge);

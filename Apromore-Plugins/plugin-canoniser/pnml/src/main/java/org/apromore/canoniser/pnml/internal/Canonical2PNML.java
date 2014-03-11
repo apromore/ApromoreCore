@@ -25,8 +25,10 @@ import org.apromore.canoniser.pnml.internal.canonical2pnml.TranslateNet;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.TranslateSubnet;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.UpdateSpecialOperators;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.pnml.PNMLSchema;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionType;
 
@@ -47,23 +49,32 @@ public class Canonical2PNML {
         return data.getPnml();
     }
 
+    /*
     public Canonical2PNML(CanonicalProcessType cproc) {
-        LOGGER.info("Net #1 originally has " + cproc.getNet().get(0).getEdge().size() + " edges");
         removeConnectorTasks.setValue(data, cproc);
         removeConnectorTasks.remove();
         cproc = removeConnectorTasks.getCanonicalProcess();
-        LOGGER.info("Net #1 eventually has " + cproc.getNet().get(0).getEdge().size() + " edges");
-        main(cproc, null);
+        decanonise(cproc, null);
         ta.setValue(data);
     }
+    */
 
-    public Canonical2PNML(CanonicalProcessType cproc, AnnotationsType annotations) {
+    public Canonical2PNML(CanonicalProcessType cproc,
+                          AnnotationsType      annotations,
+                          boolean              isCpfTaskPnmlTransition,
+                          boolean              isCpfEdgePnmlPlace) {
+
+        data.setCpfTaskPnmlTransition(isCpfTaskPnmlTransition);
+        data.setCpfEdgePnmlPlace(isCpfEdgePnmlPlace);
+
         removeConnectorTasks.setValue(data, cproc);
         removeConnectorTasks.remove();
         cproc = removeConnectorTasks.getCanonicalProcess();
-        main(cproc, annotations);
+        decanonise(cproc, annotations);
         ta.setValue(data);
-        ta.mapNodeAnnotations(annotations);
+        if (annotations != null) {
+            ta.mapNodeAnnotations(annotations);
+        }
     }
 
     public Canonical2PNML(CanonicalProcessType cproc, AnnotationsType annotations, String filename) {
@@ -76,7 +87,9 @@ public class Canonical2PNML {
         removeEvents.setValue(annotations, data, cproc);
         removeEvents.remove();
         cproc = removeEvents.getCanonicalProcess();
-        annotations = removeEvents.getAnnotations();
+        if (annotations != null) {
+            annotations = removeEvents.getAnnotations();
+        }
         removeConnectorTasks.setValue(data, cproc);
         removeConnectorTasks.remove();
         cproc = removeConnectorTasks.getCanonicalProcess();
@@ -86,10 +99,14 @@ public class Canonical2PNML {
         removeSplitJoins.setValue(annotations, data, cproc);
         removeSplitJoins.remove();
         cproc = removeSplitJoins.getCanonicalProcess();
-        annotations = removeSplitJoins.getAnnotations();
-        main(cproc, annotations);
+        if (annotations != null) {
+            annotations = removeSplitJoins.getAnnotations();
+        }
+        decanonise(cproc, annotations);
         ta.setValue(data);
-        ta.mapNodeAnnotations(annotations);
+        if (annotations != null) {
+            ta.mapNodeAnnotations(annotations);
+        }
         AddXorOperators ax = new AddXorOperators();
         ax.setValues(data, ids);
         ax.add(cproc);
@@ -120,10 +137,8 @@ public class Canonical2PNML {
      *
      * @since 1.0
      */
-    private void main(CanonicalProcessType cproc, AnnotationsType annotations) {
-        LOGGER.info("Decanonise");
+    private void decanonise(CanonicalProcessType cproc, AnnotationsType annotations) {
         for (NetType net : cproc.getNet()) {
-            LOGGER.info("Net has " + net.getEdge().size() + " edges");
             tn.setValues(data, ids, annotations);
             tn.translateNet(net);
             ids = tn.getIds();
@@ -139,4 +154,9 @@ public class Canonical2PNML {
         data.getPnml().getNet().add(data.getNet());
     }
 
+    public static void main(String[] arg) throws Exception {
+
+        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(System.in, true).getValue();
+        PNMLSchema.marshalPNMLFormat(System.out, (new Canonical2PNML(cpf, null, false, false)).getPNML(), false);
+    }
 }

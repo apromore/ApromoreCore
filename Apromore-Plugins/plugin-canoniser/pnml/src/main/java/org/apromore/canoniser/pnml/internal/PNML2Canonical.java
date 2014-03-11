@@ -25,13 +25,15 @@ import org.apromore.canoniser.pnml.internal.pnml2canonical.RemoveDuplicateXORS;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.TranslatePetriNet;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CpfObjectFactory;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.TypeAttribute;
+import org.apromore.pnml.PNMLSchema;
 import org.apromore.pnml.PnmlType;
 
 public class PNML2Canonical {
 
-    private long ids = System.currentTimeMillis();
+    private long ids = 0; //System.currentTimeMillis();
 
     DataHandler data = new DataHandler();
     TranslatePetriNet tpn = new TranslatePetriNet();
@@ -56,28 +58,44 @@ public class PNML2Canonical {
      *
      * @param pnml the header for an PNML (Petri Net Markup Language) which is
      *             file format for PNML diagrams.
+     * @param filename may be <code>null</code>
+     * @param isCpfTaskPnmlTransition plugin parameter
+     * @param isCpfEdgePnmlPlace plugin parameter
      * @throws CanoniserException
      * @since 1.0
      */
+    /*
     public PNML2Canonical(PnmlType pnml) throws CanoniserException {
         removeDuplicatexors.remove(pnml, data);
         main(pnml);
     }
+    */
+    public PNML2Canonical(final PnmlType pnml,
+                          final String   filename,
+                          final boolean  isCpfTaskPnmlTransition,
+                          final boolean  isCpfEdgePnmlPlace) throws CanoniserException {
 
-    public PNML2Canonical(PnmlType pnml, String filename) throws CanoniserException {
         removeDuplicatexors.remove(pnml, data);
-        main(pnml);
-        new CheckForSubnet(pnml, filename, data.getRootid());
+        main(pnml, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace);
+        if (filename != null) {
+            new CheckForSubnet(pnml, filename, data.getRootid());
+        }
     }
 
-    public PNML2Canonical(PnmlType pnml, long id) throws CanoniserException {
+    public PNML2Canonical(final PnmlType pnml,
+                          final long     id,
+                          final boolean  isCpfTaskPnmlTransition,
+                          final boolean  isCpfEdgePnmlPlace) throws CanoniserException {
         this.ids = id;
-        main(pnml);
+        main(pnml, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace);
     }
 
-    void main(PnmlType pnml) throws CanoniserException {
+    void main(final PnmlType pnml,
+              final boolean  isCpfTaskPnmlTransition,
+              final boolean  isCpfEdgePnmlPlace) throws CanoniserException {
 
         CanonicalProcessType cpf = CpfObjectFactory.getInstance().createCanonicalProcessType();
+        cpf.setName("dummy");
         cpf.setUri("");
         cpf.setVersion("1.0");
         data.setCanonicalProcess(cpf);
@@ -97,4 +115,9 @@ public class PNML2Canonical {
         }
     }
 
+    public static void main(String[] arg) throws Exception {
+        PnmlType pnml = PNMLSchema.unmarshalPNMLFormat(System.in, true).getValue();
+        CanonicalProcessType cpf = new PNML2Canonical(pnml, null, false, false).getCPF();
+        CPFSchema.marshalCanonicalFormat(System.out, cpf, true);
+    }
 }

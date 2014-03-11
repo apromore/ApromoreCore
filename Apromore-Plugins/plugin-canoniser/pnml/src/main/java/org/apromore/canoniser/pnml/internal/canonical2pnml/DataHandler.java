@@ -15,6 +15,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.pnml.ArcType;
+import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionType;
@@ -37,7 +38,6 @@ public class DataHandler {
     Map<String, Object> pnmlRefMap = new HashMap<String, Object>();
     Map<BigInteger, Object> duppnmlRefMap = new HashMap<BigInteger, Object>();
     Map<String, String> anno_string = new HashMap<String, String>();
-    Map<String, Object> temp_map = new HashMap<String, Object>();
     Map<String, Integer> operatortype = new HashMap<String, Integer>();
     Map<String, NodeType> specialoperators = new HashMap<String, NodeType>();
     Map<String, Integer> specialoperatorscount = new HashMap<String, Integer>();
@@ -65,6 +65,30 @@ public class DataHandler {
     List<org.apromore.pnml.NodeType> xors = new LinkedList<org.apromore.pnml.NodeType>();
     List<ArcType> xorarcs = new LinkedList<ArcType>();
     String initialType;
+
+    // Node to Arc endpoint mappings
+    private Map<NodeType, org.apromore.pnml.NodeType> startNodeMap    = new HashMap<>();
+    private Map<NodeType, PlaceType>                  runningPlaceMap = new HashMap<>();
+    private Map<NodeType, org.apromore.pnml.NodeType> endNodeMap      = new HashMap<>();
+
+    /** @return map from a CPF node to the PNML node representing its entry point */
+    public Map<NodeType, org.apromore.pnml.NodeType> getStartNodeMap() {
+        return startNodeMap;
+    }
+
+    /** @return map from a CPF node to the PNML place representing its "running" state */
+    public Map<NodeType, PlaceType> getRunningPlaceMap() {
+        return runningPlaceMap;
+    }
+
+    /** @return map from a CPF node to the PNML node representing its exit point */
+    public Map<NodeType, org.apromore.pnml.NodeType> getEndNodeMap() {
+        return endNodeMap;
+    }
+
+    // Decanoniser plugin properties
+    private boolean isCpfTaskPnmlTransition;
+    private boolean isCpfEdgePnmlPlace;
 
     public void put_id_map(String key, String value) {
         id_map.put(key, value);
@@ -197,20 +221,6 @@ public class DataHandler {
     public Map<String, Integer> get_operatortype() {
 
         return operatortype;
-    }
-
-    public void put_tempmap(String key, Object value) {
-        temp_map.put(key, value);
-    }
-
-    public Object get_tempmap_value(String key) {
-
-        return (temp_map.get(key));
-    }
-
-    public Map<String, Object> get_tempmap() {
-
-        return temp_map;
     }
 
     public void addsourcevalues(String value) {
@@ -557,5 +567,24 @@ public class DataHandler {
 
     public String getInitialType() {
         return initialType;
+    }
+
+
+    // Accessors/mutators for decanoniser plugin properties
+
+    public boolean isCpfTaskPnmlTransition() {
+        return isCpfTaskPnmlTransition;
+    }
+
+    public boolean isCpfEdgePnmlPlace() {
+        return isCpfEdgePnmlPlace;
+    }
+
+    public void setCpfTaskPnmlTransition(final boolean value) {
+       isCpfTaskPnmlTransition = value;
+    }
+
+    public void setCpfEdgePnmlPlace(final boolean value) {
+       isCpfEdgePnmlPlace = value;
     }
 }
