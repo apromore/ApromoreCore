@@ -36,7 +36,8 @@ public class TranslateANDSplitJoin {
         tran.getToolspecific().add(trantool);
         data.getNet().getTransition().add(tran);
         data.put_pnmlRefMap(tran.getId(), tran);
-        data.put_tempmap(tran.getName().getText(), tran);
+        data.getStartNodeMap().put(node, tran);
+        data.getEndNodeMap().put(node, tran);
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())),
                 node.getOriginalID());
     }

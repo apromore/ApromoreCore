@@ -29,12 +29,12 @@ public class TranslateEdge {
         data.put_id_map(edge.getId(), String.valueOf(ids));
         arc.setId(String.valueOf(ids++));
 
-        if (data.get_tempmap().containsKey(source.getName())) {
-            arcsource = (org.apromore.pnml.NodeType) data.get_tempmap_value(source.getName());
+        if (data.getStartNodeMap().containsKey(source)) {
+            arcsource = data.getEndNodeMap().get(source);
         }
 
-        if (data.get_tempmap().containsKey(target.getName())) {
-            arctarget = (org.apromore.pnml.NodeType) data.get_tempmap_value(target.getName());
+        if (data.getEndNodeMap().containsKey(target)) {
+            arctarget = data.getStartNodeMap().get(target);
         }
 
         arc.setSource(arcsource);
@@ -43,11 +43,9 @@ public class TranslateEdge {
         inscription.setText(1);
         arc.setInscription(inscription);
         data.getNet().getArc().add(arc);
-        java.util.logging.Logger.getAnonymousLogger().info("Edge " + edge.getId() + " became Arc " + arc.getId());
 
         data.put_pnmlRefMap(arc.getId(), arc);
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(arc.getId())), edge.getOriginalID());
-
     }
 
     public long getIds() {
