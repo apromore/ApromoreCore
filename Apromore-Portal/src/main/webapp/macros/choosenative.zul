@@ -13,7 +13,7 @@
                 <row spans="2">
                     <label value="Choosing a Native Format different to the Original Format may result in loss of information in the returned model." />
                 </row>
-                <row>
+                <row id="canoniserSelectionRow">
                     <label value="Available native types" />
                     <listbox width="100%" multiple="false" mold="select" rows="1"/>
                 </row>
@@ -25,7 +25,7 @@
                     <label value="Edit annotation only" />
                     <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to edit selected annotation"/>
                 </row>
-                <row spans="3">
+                <row spans="3" id="canoniserPropertiesRow">
                     <groupbox width="100%" >
                         <attribute name="onOpen">
                             <![CDATA[
