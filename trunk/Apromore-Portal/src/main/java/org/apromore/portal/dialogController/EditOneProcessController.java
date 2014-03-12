@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
@@ -44,8 +46,10 @@ public class EditOneProcessController extends BaseController {
     private EditListProcessesController editListProcessesC;
     private ProcessSummaryType process;
     private VersionSummaryType version;
-
+    private Set<PluginInfo> canoniserInfos;
     private final PluginPropertiesHelper pluginPropertiesHelper;
+
+    private SelectDynamicListController canoniserCB;
 
     public EditOneProcessController(MainController mainController, EditListProcessesController editListProcessesController,
             ProcessSummaryType processType, VersionSummaryType versionType)
@@ -240,7 +244,7 @@ public class EditOneProcessController extends BaseController {
             }
 
             mainC.editProcess(process, version, nativeType, annotation, readOnly,
-                    pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
             editListProcessesC.deleteFromToBeEdited(this);
             closePopup();
         }
@@ -253,14 +257,62 @@ public class EditOneProcessController extends BaseController {
     }
 
 
-    /* Used to update the list of parameters that a canoniser may require for use. */
+    /** Used to update the list of parameters that a canoniser may require for use. */
     private void updateCanoniserParameters() throws InterruptedException {
         if (nativeTypesLB.getSelectedItem() != null) {
             readCanoniserInfos(nativeTypesLB.getSelectedItem().getLabel());
         }
     }
 
-    /*  */
+    private void readCanoniserInfos(final String nativeType) throws InterruptedException {
+        try {
+            canoniserInfos = getService().readCanoniserInfo(nativeType);
+
+            if (canoniserInfos.size() >= 1) {
+                List<String> canoniserNames = new ArrayList<>();
+                for (PluginInfo cInfo: canoniserInfos) {
+                    canoniserNames.add(cInfo.getName());
+                }
+
+                Row canoniserSelectionRow = (Row) this.chooseNativeW.getFellow("canoniserSelectionRow");
+                if (canoniserCB != null) {
+                    canoniserCB.detach();
+                }
+                canoniserCB = new SelectDynamicListController(canoniserNames);
+                canoniserCB.setAutodrop(true);
+                canoniserCB.setWidth("85%");
+                canoniserCB.setHeight("100%");
+                canoniserCB.setAttribute("hflex", "1");
+                canoniserCB.setSelectedIndex(0);
+                canoniserSelectionRow.appendChild(canoniserCB);
+
+                canoniserCB.addEventListener("onSelect", new EventListener<Event>() {
+                    @Override
+                    public void onEvent(final Event event) throws Exception {
+                        if (event instanceof SelectEvent) {
+                            String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
+                            for (PluginInfo info: canoniserInfos) {
+                                if (info.getName().equals(selectedCanoniser)) {
+                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.DECANONISE_PARAMETER);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                PluginInfo canoniserInfo = canoniserInfos.iterator().next();
+                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.DECANONISE_PARAMETER);
+
+            } else {
+                Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
+                cancel();
+            }
+        } catch (Exception e) {
+            Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    /*
     private boolean readCanoniserInfos(final String nativeType) throws InterruptedException {
         try {
             Set<PluginInfo> canoniserInfos = getService().readCanoniserInfo(nativeType);
@@ -280,5 +332,6 @@ public class EditOneProcessController extends BaseController {
             return false;
         }
     }
+    */
 
 }
