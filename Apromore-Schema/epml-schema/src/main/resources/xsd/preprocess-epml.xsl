@@ -47,7 +47,7 @@
         </xsl:choose>
         <xsl:if test="not(directory)">
             <directory>
-                <xsl:apply-templates select="epc"/>
+                <xsl:apply-templates select="epc|epml:epc"/>
             </directory>
         </xsl:if>
     </xsl:element>
@@ -102,6 +102,14 @@
         <!-- the count term above corrects for the case in which #rule1 uses
              $max-id + 1 to label a non-arc component which had @id of 0 -->
     </xsl:attribute>
+</xsl:template>
+
+<!-- If someone has namespaced the internal EPML elements (which is what the EPML scheme ought've required
+     but currently forbids) then convert to the equivalent unqualified element -->
+<xsl:template match="epml:*">
+    <xsl:element name="{local-name()}">
+        <xsl:apply-templates select="@*|node()"/>
+    </xsl:element>
 </xsl:template>
 
 <!-- Use an identity template so that everything that doesn't need workarounds gets passed through unchanged. -->
