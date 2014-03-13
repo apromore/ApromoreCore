@@ -16,7 +16,7 @@
         <Node xsi:type="cpf:ANDSplitType" id="3" originalID="o3">
             <name>t2</name>
         </Node>
-        <Edge id="5" sourceId="4" targetId="3" originalID="05"/>
+        <Edge id="5" sourceId="4" targetId="3" originalID="o5"/>
         <Edge id="6" sourceId="0" targetId="4" originalID="o6"/>
         <Edge id="7" sourceId="3" targetId="1" originalID="o7"/>
         <Edge id="8" sourceId="3" targetId="2" originalID="o8"/>

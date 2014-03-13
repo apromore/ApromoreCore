@@ -46,7 +46,9 @@ public class TypePlaceHandler extends NodeHandler {
     @Override
     protected Map<String, String> convertProperties() {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("title", place.getName().getText());
+        if (place.getName() != null) {
+            hashMap.put("title", place.getName().getText());
+        }
         if (place.getInitialMarking() != null) {
             hashMap.put("numberoftokens", place.getInitialMarking().getText());
             hashMap.put("numberoftokens_drawing", place.getInitialMarking().getText());
