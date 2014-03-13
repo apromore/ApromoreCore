@@ -7,10 +7,13 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
+import org.apromore.pnml.ArcType;
 import org.apromore.pnml.ObjectFactory;
 import org.apromore.pnml.PNMLSchema;
+import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.NetType;
+import org.apromore.pnml.TransitionType;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import static org.junit.Assert.assertEquals;
@@ -51,7 +54,7 @@ public class Canonical2PNMLUnitTest {
     public void testBasic() throws Exception {
 
         // Convert the CPF Task to a single PNML Transition
-        PnmlType pnml = decanonise("Basic", true, true, false);
+        PnmlType pnml = decanonise("Basic.cpf", "Basic.anf", "Basic-small.pnml", true, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -61,7 +64,7 @@ public class Canonical2PNMLUnitTest {
         assertEquals(1, net.getTransition().size());
 
         // Convert the CPF Task to a PNML Place bounded by Transitions
-        pnml = decanonise("Basic", true, false, true);
+        pnml = decanonise("Basic.cpf", "Basic.anf", "Basic-big.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -77,7 +80,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testANDJoin() throws Exception {
 
-        PnmlType pnml = decanonise("ANDJoin", false, false, false);
+        PnmlType pnml = decanonise("ANDJoin.cpf", null, "ANDJoin.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -91,7 +94,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testANDSplit() throws Exception {
 
-        PnmlType pnml = decanonise("ANDSplit", false, false, false);
+        PnmlType pnml = decanonise("ANDSplit.cpf", null, "ANDSplit.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -105,7 +108,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testORJoin() throws Exception {
 
-        PnmlType pnml = decanonise("ORJoin", false, false, false);
+        PnmlType pnml = decanonise("ORJoin.cpf", null, "ORJoin.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -119,7 +122,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testORSplit() throws Exception {
 
-        PnmlType pnml = decanonise("ORSplit", false, false, false);
+        PnmlType pnml = decanonise("ORSplit.cpf", null, "ORSplit.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -133,7 +136,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testXORJoin() throws Exception {
 
-        PnmlType pnml = decanonise("XORJoin", false, false, false);
+        PnmlType pnml = decanonise("XORJoin.cpf", null, "XORJoin.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -147,7 +150,7 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testXORSplit() throws Exception {
 
-        PnmlType pnml = decanonise("XORSplit", false, false, false);
+        PnmlType pnml = decanonise("XORSplit.cpf", null, "XORSplit.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
@@ -161,33 +164,69 @@ public class Canonical2PNMLUnitTest {
     @Test
     public void testCase1() throws Exception {
 
-        PnmlType pnml = decanonise("Case 1", false, true, false);
+        PnmlType pnml = decanonise("Case 1.cpf", null, "Case 1-small.pnml", true, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(4, net.getArc().size());
-        assertEquals(3, net.getPlace().size());
-        assertEquals(2, net.getTransition().size());
+        assertEquals(5, net.getArc().size());  // 4 edges, 1 synthetic
+        assertEquals(4, net.getPlace().size());  // 1 start, 2 end, 1 synthetic
+        assertEquals(2, net.getTransition().size());  // 1 task, 1 AND-split
+
+        pnml = decanonise("Case 1.cpf", null, "Case 1-big.pnml", false, false);
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        net = pnml.getNet().get(0);
+        assertEquals(7, net.getArc().size());  // 4 edges, 3 synthetic
+        assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 2 end, 1 synthetic
+        assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
     }
+
+    /*
+     * Decanonize <code>Case 2.cpf</code>.
+     *
+    @Test
+    public void testCase2() throws Exception {
+
+        PnmlType pnml = decanonise("Case 2.cpf", null, "Case 2-small.pnml", true, false);
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(5, net.getArc().size());  // 4 edges, 1 synthetic
+        assertEquals(4, net.getPlace().size());  // 1 start, 2 end, 1 synthetic
+        assertEquals(2, net.getTransition().size());  // 1 task, 1 AND-split
+
+        pnml = decanonise("Case 2.cpf", null, "Case 2-big.pnml", false, false);
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        net = pnml.getNet().get(0);
+        assertEquals(7, net.getArc().size());  // 4 edges, 3 synthetic
+        assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 2 end, 1 synthetic
+        assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
+    }
+    */
 
     // Internal methods
 
-    private PnmlType decanonise(final String  fileName,
-                                final boolean hasANF,
+    private PnmlType decanonise(final String  cpfFileName,
+                                final String  anfFileName,
+                                final String  pnmlFileName,
                                 final boolean isCpfTaskPnmlTransition,
                                 final boolean isCpfEdgePnmlPlace)
         throws FileNotFoundException, JAXBException, SAXException {
 
         CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(
-            new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".cpf")),
+            new FileInputStream(new File("src/test/resources/CPF_testcases/" + cpfFileName)),
             true  // validate?
         ).getValue();
 
         AnnotationsType anf = null;
-        if (hasANF) {
+        if (anfFileName != null) {
             anf = ANFSchema.unmarshalAnnotationFormat(
-                new FileInputStream(new File("src/test/resources/CPF_testcases/" + fileName + ".anf")),
+                new FileInputStream(new File("src/test/resources/CPF_testcases/" + anfFileName)),
                 true  // validate?
             ).getValue();
         }
@@ -196,12 +235,33 @@ public class Canonical2PNMLUnitTest {
 
         // Serialize the decanonized PNML for inspection
         PNMLSchema.marshalPNMLFormat(
-            new FileOutputStream(new File("target/" + fileName + ".pnml")),
+            new FileOutputStream(new File("target/" + pnmlFileName)),
             pnml,
             false  // validate?
         );
 
+        // Check that this is a valid Petri Net
+        validate(pnml);
+
         return pnml;
+    }
+
+    /**
+     * Perform structural validation of an alleged Petri Net beyond what the PNML schema can enforce.
+     *
+     * This verifies that every arc connects a place and a transition.
+     *
+     * @param pnml a PNML model
+     * @throws AssertionError if <var>pnml</var> isn't valid
+     */
+    private static void validate(final PnmlType pnml) {
+        for (NetType net: pnml.getNet()) {
+            for (ArcType arc: net.getArc()) {
+                assert arc.getSource() instanceof PlaceType && arc.getTarget() instanceof TransitionType ||
+                       arc.getSource() instanceof TransitionType && arc.getTarget() instanceof PlaceType:
+                    "Arc " + arc.getId() + " does not connect a place to a transition";
+            }
+        }
     }
 
 

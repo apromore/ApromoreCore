@@ -36,11 +36,11 @@ public class TranslateNode {
         TransitionToolspecificType ttt = new TransitionToolspecificType();
         TransitionType tran = new TransitionType();
         boolean isSub = false;
-        NodeNameType test = new NodeNameType();
         data.put_id_map(task.getId(), String.valueOf(ids));
         tran.setId(String.valueOf(ids++));
 
         if (task.getName() != null) {
+            NodeNameType test = new NodeNameType();
             test.setText(task.getName());
             tran.setName(test);
         }
@@ -198,11 +198,11 @@ public class TranslateNode {
     public void translateEvent(NodeType node) {
         if (node instanceof MessageType) {
             TransitionType tran = new TransitionType();
-            NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
 
             if (node.getName() != null) {
+                NodeNameType test = new NodeNameType();
                 test.setText(node.getName());
                 tran.setName(test);
             }
@@ -232,11 +232,11 @@ public class TranslateNode {
 
         } else if (node instanceof TimerType) {
             TransitionType tran = new TransitionType();
-            NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
 
             if (node.getName() != null) {
+                NodeNameType test = new NodeNameType();
                 test.setText(node.getName());
                 tran.setName(test);
             }
@@ -264,11 +264,11 @@ public class TranslateNode {
 
         } else {
             PlaceType place = new PlaceType();
-            NodeNameType test = new NodeNameType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             place.setId(String.valueOf(ids++));
 
             if (node.getName() != null) {
+                NodeNameType test = new NodeNameType();
                 test.setText(node.getName());
                 place.setName(test);
             }
@@ -286,11 +286,11 @@ public class TranslateNode {
 
     public void translateState(NodeType node) {
         PlaceType place = new PlaceType();
-        NodeNameType test = new NodeNameType();
         data.put_id_map(node.getId(), String.valueOf(ids));
         place.setId(String.valueOf(ids++));
 
         if (node.getName() != null) {
+            NodeNameType test = new NodeNameType();
             test.setText(node.getName());
             place.setName(test);
         }

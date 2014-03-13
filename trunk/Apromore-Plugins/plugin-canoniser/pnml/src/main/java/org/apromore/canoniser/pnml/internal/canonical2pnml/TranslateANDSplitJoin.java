@@ -21,11 +21,13 @@ public class TranslateANDSplitJoin {
         TransitionType tran = new TransitionType();
         TransitionToolspecificType trantool = new TransitionToolspecificType();
         OperatorType op = new OperatorType();
-        NodeNameType test = new NodeNameType();
         data.put_id_map(node.getId(), String.valueOf(ids));
-        test.setText(node.getName());
         tran.setId(String.valueOf(ids++));
-        tran.setName(test);
+        if (node.getName() != null) {
+            NodeNameType test = new NodeNameType();
+            test.setText(node.getName());
+            tran.setName(test);
+        }
         trantool.setTool("WoPeD");
         trantool.setVersion("1.0");
         String splitid[] = node.getOriginalID().split("_");

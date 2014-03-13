@@ -73,6 +73,8 @@ public class TypeArcHandler extends PNMLHandlerImpl {
             }
         }
 
+        assert arc.getSource() instanceof NodeType: "Arc " + arc.getId() + " sourced from a non-Node";
+        assert arc.getTarget() instanceof NodeType: "Arc " + arc.getId() + " targets a non-Node";
         connectEdge(basicEdge, (NodeType) arc.getSource(), (NodeType) arc.getTarget());
         return basicEdge;
     }
