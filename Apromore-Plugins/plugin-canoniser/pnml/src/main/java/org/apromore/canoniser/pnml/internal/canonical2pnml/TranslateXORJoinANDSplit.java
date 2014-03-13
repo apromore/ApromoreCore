@@ -29,9 +29,12 @@ public class TranslateXORJoinANDSplit {
         TransitionType tran = new TransitionType();
         TransitionToolspecificType trantool = new TransitionToolspecificType();
         OperatorType op = new OperatorType();
-        NodeNameType test = new NodeNameType();
+        NodeNameType test = null;
+        if (node.getName() != null) {
+            test = new NodeNameType();
+            test.setText(node.getName());
+        }
         data.put_id_map(node.getId(), String.valueOf(ids));
-        test.setText(node.getName());
         tran.setId(String.valueOf(ids++));
         tran.setName(test);
         trantool.setTool("WoPeD");
