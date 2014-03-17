@@ -183,31 +183,27 @@ public class Canonical2PNMLUnitTest {
         assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
     }
 
-    /*
-     * Decanonize <code>Case 2.cpf</code>.
+    /**
+     * Decanonize <code>Case 12.cpf</code>.
      *
+     * See that CPF cancellation sets get converted into PNML reset arcs.
+     */
     @Test
-    public void testCase2() throws Exception {
-
-        PnmlType pnml = decanonise("Case 2.cpf", null, "Case 2-small.pnml", true, false);
+    public void testCase12() throws Exception {
+        PnmlType pnml = decanonise("Case 12.cpf",   // input file
+                                   null,            // no ANF file
+                                   "Case 12.pnml",  // output file
+                                   false,           // tasks have a (resettable) place while they execute
+                                   false);          // don't generate addition places for the CPF edges
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(5, net.getArc().size());  // 4 edges, 1 synthetic
-        assertEquals(4, net.getPlace().size());  // 1 start, 2 end, 1 synthetic
-        assertEquals(2, net.getTransition().size());  // 1 task, 1 AND-split
-
-        pnml = decanonise("Case 2.cpf", null, "Case 2-big.pnml", false, false);
-
-        // Inspect the result
-        assertEquals(1, pnml.getNet().size());
-        net = pnml.getNet().get(0);
-        assertEquals(7, net.getArc().size());  // 4 edges, 3 synthetic
-        assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 2 end, 1 synthetic
-        assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
+        assertEquals(14, net.getArc().size());  // 6 edges, 6 synthetic, 2 resets
+        assertEquals(7, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 3 synthetic
+        assertEquals(5, net.getTransition().size());  // 2 task, 1, timer event,1 AND-split, 1 OR-join
     }
-    */
+
 
     // Internal methods
 
