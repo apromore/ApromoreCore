@@ -11,10 +11,12 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.pnml.ArcType;
 import org.apromore.pnml.DimensionType;
+import org.apromore.pnml.GraphicsNodeType;
 import org.apromore.pnml.GraphicsSimpleType;
 import org.apromore.pnml.NodeNameType;
 import org.apromore.pnml.OrganizationUnitType;
 import org.apromore.pnml.PlaceType;
+import org.apromore.pnml.PositionType;
 import org.apromore.pnml.RoleType;
 import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionToolspecificType;
@@ -147,6 +149,7 @@ public class TranslateNode {
             // Create the place for the state in which the task is running
             PlaceType running = new PlaceType();
             running.setId(String.valueOf(ids++));
+            running.setGraphics(newGraphicsNodeType(dummyPosition(), placeDefaultDimension()));
             data.getNet().getPlace().add(running);
 
             // Create the arc from the start transition to the running place
@@ -160,6 +163,7 @@ public class TranslateNode {
             TransitionType end = new TransitionType();
             end.setId(String.valueOf(ids++));
             end.setName(running.getName());
+            end.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
             data.getNet().getTransition().add(end);
 
             // Create the arc from the running place to the end transition
@@ -169,12 +173,19 @@ public class TranslateNode {
             runningToEnd.setTarget(end);
             data.getNet().getArc().add(runningToEnd);
 
+            // Reposition the start transition
+            /*
+            if (tran.getGraphics() != null) {
+                tran.setGraphics(newGraphicsNodeType(running.getGraphics().getPosition(), transitionDefaultDimension()));
+            }
+            */
+
             // Name the nodes (English naming convention)
             String taskName = task.getName();
             if (taskName != null) {
                 // Start transition named "<Task> start"
                 NodeNameType name = new NodeNameType();
-                name.setText(taskName + " start");
+                name.setText(taskName + "_start");
                 tran.setName(name);
 
                 // Running place named "<Task>"
@@ -184,7 +195,7 @@ public class TranslateNode {
 
                 // End transition named "<Task> end"
                 name = new NodeNameType();
-                name.setText(taskName + " end");
+                name.setText(taskName + "_end");
                 end.setName(name);
             }
 
@@ -195,11 +206,59 @@ public class TranslateNode {
         }
     }
 
+    /*
+    static private final BigDecimal TWO = new BigDecimal(2);
+
+    static private PositionType midpoint(final PositionType a, final PositionType b) {
+        PositionType p = new PositionType();
+        p.setX(a.getX().add(b.getX()).divide(TWO));
+        p.setY(a.getX().add(b.getX()).divide(TWO));
+        return p;
+    }
+    */
+
+    static PositionType dummyPosition() {
+        PositionType dummyPosition = new PositionType();
+        dummyPosition.setX(BigDecimal.valueOf(100));
+        dummyPosition.setY(BigDecimal.valueOf(400));
+        return dummyPosition;
+    }
+
+    static DimensionType placeDefaultDimension() {
+        DimensionType d = new DimensionType();
+        d.setX(BigDecimal.valueOf(30));
+        d.setY(BigDecimal.valueOf(30));
+        return d;
+    }
+
+    static DimensionType transitionDefaultDimension() {
+        DimensionType d = new DimensionType();
+        d.setX(BigDecimal.valueOf(50));
+        d.setY(BigDecimal.valueOf(50));
+        return d;
+    }
+
+    static DimensionType blindTransitionDefaultDimension() {
+        DimensionType d = new DimensionType();
+        d.setX(BigDecimal.valueOf(10));
+        d.setY(BigDecimal.valueOf(50));
+        return d;
+    }
+
+    static GraphicsNodeType newGraphicsNodeType(final PositionType position, final DimensionType dimension) {
+        GraphicsNodeType graphics = new GraphicsNodeType();
+        graphics.setPosition(position);
+        graphics.setDimension(dimension);
+        return graphics;
+    }
+
+
     public void translateEvent(NodeType node) {
         if (node instanceof MessageType) {
             TransitionType tran = new TransitionType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
+            tran.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
 
             if (node.getName() != null) {
                 NodeNameType test = new NodeNameType();
@@ -234,6 +293,7 @@ public class TranslateNode {
             TransitionType tran = new TransitionType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
+            tran.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
 
             if (node.getName() != null) {
                 NodeNameType test = new NodeNameType();
@@ -244,7 +304,7 @@ public class TranslateNode {
             TransitionToolspecificType ttt = new TransitionToolspecificType();
             ttt.setTool("WoPeD");
             ttt.setVersion("1.0");
-            TriggerType tt = new TriggerType();
+            TransitionToolspecificType.Trigger tt = new TransitionToolspecificType.Trigger();
             GraphicsSimpleType gt = new GraphicsSimpleType();
             DimensionType dt = new DimensionType();
             dt.setX(BigDecimal.valueOf(Long.valueOf(24)));
@@ -254,11 +314,29 @@ public class TranslateNode {
             tt.setType(202);
             tt.setGraphics(gt);
             data.put_triggermap(node.getName(), tt);
-            ttt.setTrigger((TransitionToolspecificType.Trigger) tt);
+            ttt.setTrigger(tt);
             tran.getToolspecific().add(ttt);
+
+            // Create a place to wait for the timer to expire
+            PlaceType waitingPlace = new PlaceType();
+            waitingPlace.setId(String.valueOf(ids++));
+            NodeNameType waitingPlaceName = new NodeNameType();
+            waitingPlaceName.setText(node.getName() == null ? "wait" : node.getName() + "_wait");
+            waitingPlace.setName(waitingPlaceName);
+            waitingPlace.setGraphics(newGraphicsNodeType(dummyPosition(), placeDefaultDimension()));
+            data.getNet().getPlace().add(waitingPlace);
+
+            // Create arc from waitingPlace to tran
+            ArcType arc = new ArcType();
+            arc.setId(String.valueOf(ids++));
+            arc.setSource(waitingPlace);
+            arc.setTarget(tran);
+            data.getNet().getArc().add(arc);
+
             data.getNet().getTransition().add(tran);
             data.put_pnmlRefMap(tran.getId(), tran);
-            data.getStartNodeMap().put(node, tran);
+            data.getStartNodeMap().put(node, waitingPlace);
+            data.getRunningPlaceMap().put(node, waitingPlace);
             data.getEndNodeMap().put(node, tran);
             data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())), node.getOriginalID());
 
@@ -266,6 +344,7 @@ public class TranslateNode {
             PlaceType place = new PlaceType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             place.setId(String.valueOf(ids++));
+            place.setGraphics(newGraphicsNodeType(dummyPosition(), placeDefaultDimension()));
 
             if (node.getName() != null) {
                 NodeNameType test = new NodeNameType();
@@ -288,6 +367,7 @@ public class TranslateNode {
         PlaceType place = new PlaceType();
         data.put_id_map(node.getId(), String.valueOf(ids));
         place.setId(String.valueOf(ids++));
+        place.setGraphics(newGraphicsNodeType(dummyPosition(), placeDefaultDimension()));
 
         if (node.getName() != null) {
             NodeNameType test = new NodeNameType();

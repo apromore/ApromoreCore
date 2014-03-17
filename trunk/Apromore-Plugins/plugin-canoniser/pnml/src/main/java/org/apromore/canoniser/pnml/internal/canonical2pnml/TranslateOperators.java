@@ -54,6 +54,7 @@ public class TranslateOperators {
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
             tran.setName(test);
+            tran.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
 
             if (node instanceof ANDJoinType && node.getOriginalID() != null && node.getOriginalID().contains("op")) {
                 trantool.setTool("WoPeD");
