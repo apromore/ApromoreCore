@@ -421,7 +421,35 @@ public class CanonicalGraphConverterUnitTest {
 //        assertThat(edge.getTargetId(), equalTo("c12"));
     }
 
+    @Test
+    public void testNetWithCancellationSet() throws Exception {
+        CanonicalProcessType cpf = newInstance(CANONICAL_MODELS_DIR + "Case 12.cpf");
 
+        NetType net = cpf.getNet().get(0);
+        MatcherAssert.assertThat(net.getId(), Matchers.equalTo("n"));
+        MatcherAssert.assertThat(net.getNode().size(), Matchers.equalTo(6));
+        MatcherAssert.assertThat(net.getEdge().size(), Matchers.equalTo(6));      
+
+        Canonical outputCanonical = c2g.convert(cpf);
+
+        MatcherAssert.assertThat(outputCanonical.getResources().size(), Matchers.equalTo(0));
+        MatcherAssert.assertThat(outputCanonical.getNodes().size(), Matchers.equalTo(6));
+        MatcherAssert.assertThat(outputCanonical.getEdges().size(), Matchers.equalTo(6));
+
+        CPFNode nodeA = outputCanonical.getNode("a");
+        MatcherAssert.assertThat(nodeA.getId(), Matchers.equalTo("a"));
+        MatcherAssert.assertThat(nodeA.getName(), Matchers.equalTo("A"));
+        MatcherAssert.assertThat(nodeA.getResourceReferences().size(), Matchers.equalTo(0));   
+        MatcherAssert.assertThat(nodeA.getCancelNodes().size(), Matchers.equalTo(1));   
+        MatcherAssert.assertThat(nodeA.getCancelNodes().iterator().next(), Matchers.equalTo("b"));   
+
+        CPFNode nodeB = outputCanonical.getNode("b");
+        MatcherAssert.assertThat(nodeB.getId(), Matchers.equalTo("b"));
+        MatcherAssert.assertThat(nodeB.getName(), Matchers.equalTo("B"));
+        MatcherAssert.assertThat(nodeB.getResourceReferences().size(), Matchers.equalTo(0));   
+        MatcherAssert.assertThat(nodeB.getCancelNodes().size(), Matchers.equalTo(1));   
+        MatcherAssert.assertThat(nodeB.getCancelNodes().iterator().next(), Matchers.equalTo("a"));   
+    }
 
     /* Loads the  */
     @SuppressWarnings("unchecked")
