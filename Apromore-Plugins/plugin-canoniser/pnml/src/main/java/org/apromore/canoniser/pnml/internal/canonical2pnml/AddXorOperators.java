@@ -30,28 +30,23 @@ public class AddXorOperators {
 
     public void add(CanonicalProcessType cproc) {
         this.cproc = cproc;
-        LOGGER.info("OMEGA");
         for (NetType net : cproc.getNet()) {
             for (NodeType node : data.getxorconnectors()) {
                 NodeType test = node;
                 int splitcount = 0;
                 int joincount = 0;
-                LOGGER.info("ALPHA");
-                if (data.get_dupjoinMap().containsKey(node.getOriginalID())) {
+                if (data.get_dupjoinMap().containsKey(node.getId())) {
                     for (EdgeType edge : net.getEdge()) {
-                        if (edge instanceof EdgeType) {
-                            if (edge.getTargetId().equals(test.getId())
-                                    && edge.getOriginalID() != null) {
-                                joincount++;
-                            }
+                        if (edge.getTargetId().equals(test.getId())) {
+                            joincount++;
                         }
                     }
                     for (int i = 1; i < joincount; i++) {
                         TransitionType tran = new TransitionType();
-                        TransitionType oldtran = data.get_dupjoinMap_value(node
-                                .getOriginalID());
-                        String id = node.getOriginalID().replace("op_1",
-                                "op_" + String.valueOf(i + 1));
+                        TransitionType oldtran = data.get_dupjoinMap_value(node.getId());
+                        //String id = node.getOriginalID().replace("op_1",
+                        //        "op_" + String.valueOf(i + 1));
+                        String id = node.getId() + "_join_source_" + String.valueOf(i);
                         tran.setId(id);
                         tran.setName(oldtran.getName());
                         tran.setGraphics(oldtran.getGraphics());
@@ -91,20 +86,19 @@ public class AddXorOperators {
                         update.setTarget(tran);
 
                     }
-                } else if (data.get_dupsplitMap().containsKey(node.getOriginalID())) {
-                    LOGGER.info("BETA " + node.getOriginalID() + " in dupsplitMap");
+                } else if (data.get_dupsplitMap().containsKey(node.getId())) {
                     for (EdgeType edge : net.getEdge()) {
-                        if (edge.getSourceId().equals(test.getId()) && edge.getOriginalID() != null) {
+                        if (edge.getSourceId().equals(test.getId())) {
                             splitcount++;
                         }
                     }
 
                     for (int i = 1; i < splitcount; i++) {
                         TransitionType tran = new TransitionType();
-                        TransitionType oldtran = data
-                                .get_dupsplitMap_value(node.getOriginalID());
-                        String id = node.getOriginalID().replace("op_1",
-                                "op_" + String.valueOf(i + 1));
+                        TransitionType oldtran = data.get_dupsplitMap_value(node.getId());
+                        //String id = node.getOriginalID().replace("op_1",
+                        //        "op_" + String.valueOf(i + 1));
+                        String id = node.getId() + "_split_target_" + String.valueOf(i);
                         tran.setId(id);
                         tran.setName(oldtran.getName());
                         tran.setGraphics(oldtran.getGraphics());
