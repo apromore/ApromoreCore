@@ -321,8 +321,8 @@ public class ContentServiceImpl implements ContentService {
         if (operationContext != null) {
             if ((operationContext.getCpfNodes() != null && operationContext.getCpfEdges() != null)) {
                 for (CPFNode cpfNode : operationContext.getCpfNodes()) {
-                    addCancelNodes(operationContext, cpfNode, findNode(operationContext.getNodes(), cpfNode.getId()));
-                    addCancelEdges(operationContext, cpfNode, findNode(operationContext.getNodes(), cpfNode.getId()));
+                    addCancelNodes(operationContext, cpfNode, operationContext.getPersistedNodes().get(cpfNode.getId()) /*findNode(operationContext.getNodes(), cpfNode.getId())*/);
+                    addCancelEdges(operationContext, cpfNode, operationContext.getPersistedNodes().get(cpfNode.getId()) /*findNode(operationContext.getNodes(), cpfNode.getId())*/);
                 }
             }
         }
@@ -332,7 +332,8 @@ public class ContentServiceImpl implements ContentService {
     private void addCancelNodes(OperationContext operationContext, CPFNode cpfNode, Node node) {
         if (cpfNode.getCancelNodes() != null) {
             for (String nodeId : cpfNode.getCancelNodes()) {
-                node.getCancelNodes().add(findNode(operationContext.getNodes(), nodeId));
+                node.getCancelNodes().add(operationContext.getPersistedNodes().get(nodeId) /*findNode(operationContext.getNodes(), nodeId)*/);
+                nRepository.save(node);
             }
         }
     }
@@ -341,7 +342,8 @@ public class ContentServiceImpl implements ContentService {
     private void addCancelEdges(OperationContext operationContext, CPFNode cpfNode, Node node) {
         if (cpfNode.getCancelEdges() != null) {
             for (String edgeId : cpfNode.getCancelEdges()) {
-                node.getCancelEdges().add(findEdge(operationContext.getEdges(), edgeId));
+                node.getCancelEdges().add(operationContext.getPersistedEdges().get(edgeId) /*findEdge(operationContext.getEdges(), edgeId)*/);
+                nRepository.save(node);
             }
         }
     }

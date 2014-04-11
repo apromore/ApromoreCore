@@ -231,6 +231,12 @@ public class ProcessServiceImpl implements ProcessService {
             throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
         }
 
+        /*
+        LOGGER.info("Dumping CPF");
+        dump(cpf.getCpt());
+        LOGGER.info("Dumped CPF");
+        */
+
         ProcessModelVersion pmv;
         try {
             User user = userSrv.findUserByLogin(username);
@@ -251,8 +257,33 @@ public class ProcessServiceImpl implements ProcessService {
             throw new ImportException(e);
         }
 
+        /*
+        LOGGER.info("Dumping PMV");
+        dump(getCanonicalFormat(pmv));
+        LOGGER.info("Dumped PMV");
+        */
+
         return pmv;
     }
+
+    /*
+    private void dump(final CanonicalProcessType cpt) {
+        for (org.apromore.cpf.NetType net: cpt.getNet()) {
+            for (org.apromore.cpf.NodeType node: net.getNode()) {
+                String s = "  Node " + node.getId();
+                if (node instanceof org.apromore.cpf.WorkType) {
+                    if (((org.apromore.cpf.WorkType) node).getCancelNodeId().isEmpty()) {
+                        s += " cancels";
+                        for (org.apromore.cpf.CancellationRefType cancellationRef: ((org.apromore.cpf.WorkType) node).getCancelNodeId()) {
+                            s =  s + " " + cancellationRef.getRefId();
+                        }
+                    }
+                }
+                LOGGER.info(s);
+            }
+        }
+    }
+    */
 
     /**
      * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Version, Version, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)

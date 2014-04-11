@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="case12-uri" version="1.0" name="Case 12" rootIds="n">
+    <Net id="n">
+        <Node xsi:type="cpf:EventType" id="e1">
+            <name>E1</name>
+        </Node>
+        <Node xsi:type="cpf:TaskType" id="a">
+            <name>A</name>
+            <cancelNodeId refId="b"/>
+        </Node>
+        <Node xsi:type="cpf:EventType" id="e2">
+            <name>E2</name>
+        </Node>
+        <Node xsi:type="cpf:TimerType" timeDate="2012-11-12T20:44:00" id="b">
+            <name>B</name>
+            <cancelNodeId refId="a"/>
+        </Node>
+        <Node xsi:type="cpf:XORJoinType" id="e2_implicit_join"/>
+        <Node xsi:type="cpf:ANDSplitType" id="a_boundary_routing"/>
+        <Edge id="e1-a_boundary_routing" sourceId="e1" targetId="a_boundary_routing" originalID="o0">
+            <attribute name="name" value=""/>
+        </Edge>
+        <Edge id="a-e2_implicit_join" sourceId="a" targetId="e2_implicit_join" originalID="o1">
+            <attribute name="name" value=""/>
+        </Edge>
+        <Edge id="b-e2_implicit_join" sourceId="b" targetId="e2_implicit_join" originalID="o2">
+            <attribute name="name" value=""/>
+        </Edge>
+        <Edge id="e2_implicit_join_edge" sourceId="e2_implicit_join" targetId="e2" originalID="o3">
+            <attribute name="name"/>
+        </Edge>
+        <Edge id="a_boundary_edge" sourceId="a_boundary_routing" targetId="a" originalID="o4"/>
+        <Edge id="b_boundary_edge" sourceId="a_boundary_routing" targetId="b" originalID="o5"/>
+    </Net>
+</cpf:CanonicalProcess>
