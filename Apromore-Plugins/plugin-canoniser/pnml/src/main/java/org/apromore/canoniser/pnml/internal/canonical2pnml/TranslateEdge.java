@@ -45,6 +45,7 @@ public class TranslateEdge {
             // Create the synthetic place
             PlaceType place = new PlaceType();
             place.setId(String.valueOf(ids++));
+            place.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.placeDefaultDimension()));
             data.getNet().getPlace().add(place);
 
             // Create outgoing arc from the synthetic place to the original arc's target
