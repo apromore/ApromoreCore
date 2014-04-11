@@ -75,6 +75,13 @@ public class Canonical2PNML {
         if (annotations != null) {
             ta.mapNodeAnnotations(annotations);
         }
+
+        // Expand XOR (and OR) routing from from PNML transitions to their complete structures
+        AddXorOperators ax = new AddXorOperators();
+        ax.setValues(data, ids);
+        ax.add(cproc);
+        ids = ax.getIds();
+        cproc = ax.getCanonicalProcess();
     }
 
     public Canonical2PNML(CanonicalProcessType cproc, AnnotationsType annotations, String filename) {

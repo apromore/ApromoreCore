@@ -1,10 +1,13 @@
 package org.apromore.canoniser.pnml.internal.canonical2pnml;
 
 import java.math.BigInteger;
+import java.util.logging.Logger;
 
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.pnml.NodeNameType;
@@ -13,6 +16,9 @@ import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 
 public class TranslateOperators {
+
+    static final private Logger LOGGER = Logger.getLogger(TranslateNet.class.getCanonicalName());
+
     DataHandler data;
     long ids;
 
@@ -72,29 +78,41 @@ public class TranslateOperators {
                 op.setType(101);
                 trantool.setOrientation(1);
                 trantool.setOperator(op);
-            } else if (node instanceof XORJoinType && node.getOriginalID() != null) {
-                trantool.setTool("WoPeD");
-                trantool.setVersion("1.0");
-                String splitid[] = node.getOriginalID().split("_");
-                op.setId(splitid[0]);
-                op.setType(105);
-                trantool.setOrientation(3);
-                trantool.setOperator(op);
-                data.put_dupjoinMap(node.getOriginalID(), tran);
+            } else if (node instanceof XORJoinType) {
+                if (node.getOriginalID() != null) {
+                    trantool.setTool("WoPeD");
+                    trantool.setVersion("1.0");
+                    String splitid[] = node.getOriginalID().split("_");
+                    op.setId(splitid[0]);
+                    op.setType(105);
+                    trantool.setOrientation(3);
+                    trantool.setOperator(op);
+                }
+                data.put_dupjoinMap(node.getId(), tran);
                 data.addxorconnectors(node);
-            } else if (node instanceof XORSplitType && node.getOriginalID() != null) {
-                trantool.setTool("WoPeD");
-                trantool.setVersion("1.0");
-                String splitid[] = node.getOriginalID().split("_");
-                op.setId(splitid[0]);
-                trantool.setOrientation(1);
-                op.setType(104);
-                trantool.setOperator(op);
-                data.put_dupsplitMap(node.getOriginalID(), tran);
+            } else if (node instanceof XORSplitType) {
+                if (node.getOriginalID() != null) {
+                    trantool.setTool("WoPeD");
+                    trantool.setVersion("1.0");
+                    String splitid[] = node.getOriginalID().split("_");
+                    op.setId(splitid[0]);
+                    trantool.setOrientation(1);
+                    op.setType(104);
+                    trantool.setOperator(op);
+                }
+                data.put_dupsplitMap(node.getId(), tran);
+                data.addxorconnectors(node);
+            } else if (node instanceof ORJoinType) {  // Petri Nets can't model OR routing, so there's no correct way to do this  :(
+                LOGGER.warning("Changing CPF node " + node.getId() + " from OR join to XOR during PNML decanonization");
+                data.put_dupjoinMap(node.getId(), tran);
+                data.addxorconnectors(node);
+            } else if (node instanceof ORSplitType) {
+                LOGGER.warning("Changing CPF node " + node.getId() + " from OR split to XOR during PNML decanonization");
+                data.put_dupsplitMap(node.getId(), tran);
                 data.addxorconnectors(node);
             }
 
-            if (trantool.getTool() != null) {
+            if (trantool.getTool() != null && tran.getName() != null) {
                 if (data.get_triggermap().containsKey(tran.getName().getText())) {
                     trantool.setTrigger((TransitionToolspecificType.Trigger) data.get_triggermap_value(tran.getName().getText()));
                 }

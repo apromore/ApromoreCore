@@ -113,7 +113,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(3, net.getArc().size());
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
     }
 
     /**
@@ -127,7 +129,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(3, net.getArc().size());
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
     }
 
     /**
@@ -141,7 +145,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(3, net.getArc().size());
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
     }
 
     /**
@@ -155,7 +161,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(3, net.getArc().size());
+        assertEquals(4, net.getArc().size());
+        assertEquals(3, net.getPlace().size());
+        assertEquals(2, net.getTransition().size());
     }
 
     /**
@@ -199,9 +207,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(14, net.getArc().size());  // 6 edges, 6 synthetic, 2 resets
+        assertEquals(15, net.getArc().size());  // 6 edges, 7 synthetic, 2 resets
         assertEquals(7, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 3 synthetic
-        assertEquals(5, net.getTransition().size());  // 2 task, 1, timer event,1 AND-split, 1 OR-join
+        assertEquals(6, net.getTransition().size());  // 2 task, 1, timer event,1 AND-split, 2 XOR-join
     }
 
 
