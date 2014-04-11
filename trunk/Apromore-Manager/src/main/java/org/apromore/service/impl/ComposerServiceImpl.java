@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /**
@@ -19,6 +20,8 @@ import javax.inject.Inject;
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class ComposerServiceImpl implements ComposerService {
+
+    static private Logger LOGGER = Logger.getLogger(ComposerServiceImpl.class.getCanonicalName());
 
     @Inject
     private FragmentVersionRepository fragmentVersionRepository;
@@ -37,6 +40,11 @@ public class ComposerServiceImpl implements ComposerService {
     @Override
     @Transactional(readOnly = false)
     public Canonical compose(final FragmentVersion rootFragment) throws ExceptionDao {
+
+        if (rootFragment == null) {
+            throw new ExceptionDao("Null argument passed as root fragment to composer service");
+        }
+
         return composeFragment(rootFragment);
     }
 

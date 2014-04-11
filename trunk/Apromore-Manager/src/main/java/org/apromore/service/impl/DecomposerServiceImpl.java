@@ -74,6 +74,9 @@ public class DecomposerServiceImpl implements DecomposerService {
                 op = decompose(modelVersion, rf, op);
             }
 
+            op.addAllCpfNodes(graph.getNodes());
+            cService.updateCancelNodes(op);  // decompose() had to populate op before we could call this
+
             return op;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
