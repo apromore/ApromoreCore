@@ -186,7 +186,7 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         net = pnml.getNet().get(0);
-        assertEquals(7, net.getArc().size());  // 4 edges, 3 synthetic
+        assertEquals(7, net.getArc().size());  // 4 edges, 1 synthetic
         assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 2 end, 1 synthetic
         assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
     }
@@ -207,9 +207,9 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(15, net.getArc().size());  // 6 edges, 7 synthetic, 2 resets
-        assertEquals(7, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 3 synthetic
-        assertEquals(6, net.getTransition().size());  // 2 task, 1, timer event,1 AND-split, 2 XOR-join
+        assertEquals(12, net.getArc().size());  // 6 edges, 5 synthetic, 3 resets
+        assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 1 synthetic
+        assertEquals(4, net.getTransition().size());  // 2 task, 1 timer event,1 AND-split
     }
 
 

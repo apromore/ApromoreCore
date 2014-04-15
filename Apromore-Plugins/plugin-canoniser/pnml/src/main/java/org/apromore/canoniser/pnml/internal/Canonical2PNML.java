@@ -10,6 +10,8 @@
 
 package org.apromore.canoniser.pnml.internal;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apromore.anf.AnnotationsType;
@@ -28,7 +30,9 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.pnml.ArcType;
 import org.apromore.pnml.PNMLSchema;
+import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionType;
 
@@ -82,6 +86,9 @@ public class Canonical2PNML {
         ax.add(cproc);
         ids = ax.getIds();
         cproc = ax.getCanonicalProcess();
+
+        // Structural simplifications
+        simplify();
     }
 
     public Canonical2PNML(CanonicalProcessType cproc, AnnotationsType annotations, String filename) {
@@ -159,6 +166,77 @@ public class Canonical2PNML {
         data.getNet().setId("noID");
         data.getNet().setType("http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
         data.getPnml().getNet().add(data.getNet());
+    }
+
+    private void simplify() {
+        //LOGGER.info("Performing structural simplifications");
+        label1: for (PlaceType place: data.getSynthesizedPlaces()) {
+            //LOGGER.info("  Examining place " + place.getId());
+            ArcType incomingArc = null;
+            ArcType outgoingArc = null;
+            for (ArcType arc: data.getNet().getArc()) {
+                if (place.equals(arc.getSource())) {
+                    if (outgoingArc == null) {
+                        outgoingArc = arc;
+                    }
+                    else {
+                        continue label1;
+                    }
+                }
+
+                if (place.equals(arc.getTarget())) {
+                    if (incomingArc == null) {
+                        incomingArc = arc;
+                    }
+                    else {
+                        continue label1;
+                    }
+                }
+            }
+            // assert: incomingArc is the unique incoming arc
+            // assert: outgoingArc is the unique outgoing arc
+            //LOGGER.info("  Place has only " + incomingArc.getId() + " incoming and " + outgoingArc.getId() + " outgoing");
+
+            TransitionType transition = (TransitionType) outgoingArc.getTarget();
+            if (transition.getName() != null && !transition.getName().getText().trim().isEmpty()) {
+                //LOGGER.info("  Following transition \"" + transition.getName().getText() + "\" isn't silent");
+                continue label1;  // only a silent transition can be collapsed
+            }
+            //LOGGER.info("  Silent transition " + transition.getId());
+
+            Set<ArcType> transitionOutgoingArcs = new HashSet<>();
+            for (ArcType arc: data.getNet().getArc()) {
+                if (transition.equals(arc.getSource())) {
+                    transitionOutgoingArcs.add(arc);
+                }
+
+                if (transition.equals(arc.getTarget())) {
+                    if (arc.equals(outgoingArc)) {
+                        //LOGGER.info("  Confirmed outgoing arc " + outgoingArc.getId() + " is incident to following silent transition");
+                    }
+                    else {
+                        //LOGGER.info("  Following transition has additional incident arc " + arc.getId() + ", not just " + outgoingArc.getId());
+                        continue label1;
+                    }
+                }
+            }
+            // assert: outgoingArc is the unique incoming arc
+            // assert: transitionOutgoingArcs contains all the outgoing arcs
+
+            // Delete place, transition, incomingArc, outgoingArc
+            //LOGGER.info("  Removing place " + place.getId() + ", transition " + transition.getId() + " and arcs " + incomingArc.getId() + " & " + outgoingArc.getId());
+            data.getNet().getArc().remove(incomingArc);
+            data.getNet().getArc().remove(outgoingArc);
+            data.getNet().getPlace().remove(place);
+            data.getNet().getTransition().remove(transition);
+
+            // Re-source transition's outgoing arcs to incomingArc.source();
+            for (ArcType arc: transitionOutgoingArcs) {
+                arc.setSource(incomingArc.getSource());
+            }
+        }
+        data.getSynthesizedPlaces().clear();
+        //LOGGER.info("Performed structural simplifications");
     }
 
     public static void main(String[] arg) throws Exception {

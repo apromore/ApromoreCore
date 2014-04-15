@@ -13,8 +13,8 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c4">
             <name>E3</name>
         </Node>
-        <Edge id="c5" sourceId="c1" targetId="c2" originalID="c5"/>
-        <Edge id="c6" sourceId="c2" targetId="c3" originalID="c6"/>
-        <Edge id="c7" sourceId="c2" targetId="c4" originalID="c7"/>
+        <Edge id="c5" sourceId="c1" targetId="c2"/>
+        <Edge id="c6" sourceId="c2" targetId="c3"/>
+        <Edge id="c7" sourceId="c2" targetId="c4"/>
     </Net>
 </ns2:CanonicalProcess>
