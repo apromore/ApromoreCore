@@ -1,6 +1,7 @@
 package org.apromore.canoniser.pnml.internal.canonical2pnml;
 
 import java.math.BigInteger;
+import java.util.logging.Logger;
 
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
@@ -11,6 +12,8 @@ import org.apromore.pnml.TransitionType;
 
 public class TranslateEdge {
 
+    static private Logger LOGGER = Logger.getLogger(TranslateEdge.class.getCanonicalName());
+
     DataHandler data;
     private long ids;
 
@@ -20,6 +23,7 @@ public class TranslateEdge {
     }
 
     public void translateArc(EdgeType edge) {
+        //LOGGER.info("Translating edge " + edge.getId());
         ArcType arc = new ArcType();
 
         org.apromore.pnml.NodeType arcsource = new org.apromore.pnml.NodeType();
@@ -47,6 +51,7 @@ public class TranslateEdge {
             place.setId(String.valueOf(ids++));
             place.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.placeDefaultDimension()));
             data.getNet().getPlace().add(place);
+            data.getSynthesizedPlaces().add(place);
 
             // Create outgoing arc from the synthetic place to the original arc's target
             ArcType arc2 = new ArcType();
@@ -68,6 +73,7 @@ public class TranslateEdge {
 
         data.put_pnmlRefMap(arc.getId(), arc);
         data.put_originalid_map(BigInteger.valueOf(Long.valueOf(arc.getId())), edge.getOriginalID());
+        //LOGGER.info("Translated edge " + edge.getId() + " as arc " + arc.getId());
     }
 
     public long getIds() {
