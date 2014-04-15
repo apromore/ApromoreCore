@@ -32,12 +32,11 @@ public class AddXorOperators {
         this.cproc = cproc;
         for (NetType net : cproc.getNet()) {
             for (NodeType node : data.getxorconnectors()) {
-                NodeType test = node;
                 int splitcount = 0;
                 int joincount = 0;
                 if (data.get_dupjoinMap().containsKey(node.getId())) {
                     for (EdgeType edge : net.getEdge()) {
-                        if (edge.getTargetId().equals(test.getId())) {
+                        if (edge.getTargetId().equals(node.getId())) {
                             joincount++;
                         }
                     }
@@ -88,7 +87,7 @@ public class AddXorOperators {
                     }
                 } else if (data.get_dupsplitMap().containsKey(node.getId())) {
                     for (EdgeType edge : net.getEdge()) {
-                        if (edge.getSourceId().equals(test.getId())) {
+                        if (edge.getSourceId().equals(node.getId())) {
                             splitcount++;
                         }
                     }
