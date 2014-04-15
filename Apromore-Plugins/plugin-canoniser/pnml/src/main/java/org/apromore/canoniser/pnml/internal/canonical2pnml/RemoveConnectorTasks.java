@@ -51,9 +51,12 @@ public class RemoveConnectorTasks {
             for (EdgeType edge : net.getEdge()) {
                 joinmap.put(edge.getSourceId(), edge);
                 splitmap.put(edge.getTargetId(), edge);
+                /* TODO: Disabled because it mangles valid CPF without original IDs, but presumably it's important
+                         for WoPeD models -- need to find test cases
                 if (edge.getOriginalID() == null) {
                     removeedges.add(edge);
                 }
+                */
             }
 
             for (NodeType node : net.getNode()) {

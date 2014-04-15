@@ -1,5 +1,7 @@
 package org.apromore.canoniser.pnml.internal.canonical2pnml;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apromore.anf.AnnotationsType;
@@ -115,16 +117,69 @@ public class TranslateNet {
                             "CPF Work node " + work.getId() + " ended by non-transition PNML element " + data.getEndNodeMap().get(work).getId();
                         TransitionType cancelling = (TransitionType) data.getEndNodeMap().get(work);
 
-                        ArcType resetArc = new ArcType();
-                        resetArc.setId(String.valueOf(ids++));
-                        resetArc.setSource(cancelled);
-                        resetArc.setTarget(cancelling);
+                        // Put a reset arc between the cancelling node and every place from the cancelled node to the preceding fork
+                        //LOGGER.info("Processing places reset by transition " + cancelling.getId());
+                        Set<org.apromore.pnml.NodeType> visitedNodes = new HashSet<>();
+                        org.apromore.pnml.NodeType currentNode = cancelled;
+                        label1: while (true) {
+                            visitedNodes.add(currentNode);
+                            if (currentNode instanceof PlaceType) {
+                                // Add a reset arc from the cancelling node to the currentNode
+                                //LOGGER.info("  Adding reset arc from " + cancelling.getId() + " to " + currentNode.getId());
+                                ArcType resetArc = new ArcType();
+                                resetArc.setId(String.valueOf(ids++));
+                                resetArc.setSource(currentNode);
+                                resetArc.setTarget(cancelling);
 
-                        ArcTypeType resetArcType = new ArcTypeType();
-                        resetArcType.setText("reset");
-                        resetArc.setType(resetArcType);
+                                ArcTypeType resetArcType = new ArcTypeType();
+                                resetArcType.setText("reset");
+                                resetArc.setType(resetArcType);
 
-                        data.getNet().getArc().add(resetArc);
+                                data.getNet().getArc().add(resetArc);
+                            }
+
+                            // Look for a unique incoming arc
+                            ArcType incomingArc = null;
+                            for (ArcType arc: data.getNet().getArc()) {
+                                if (currentNode.equals(arc.getTarget())) {
+                                    if (incomingArc == null) {
+                                        incomingArc = arc;
+                                    }
+                                    else {
+                                        // More than one incoming arc -- we've arrived at a join.  Done!
+                                        //LOGGER.info("  Breaking because " + currentNode.getId() + " is a join");
+                                        break label1;
+                                    }
+                                }
+                            }
+                            // Assert: incomingArc is the unique incoming arc
+
+                            // Traverse back along the branch
+                            //LOGGER.info("  Traversing back along arc " + incomingArc.getId() + " from " + currentNode.getId() + " to " + ((org.apromore.pnml.NodeType) incomingArc.getSource()).getId());
+                            currentNode = (org.apromore.pnml.NodeType) incomingArc.getSource();
+                            if (visitedNodes.contains(currentNode)) {
+                                //LOGGER.info("  Breaking because looped back to " + currentNode.getId());
+                                break label1;
+                            }
+
+                            // Check for any other outgoing arcs from currentNode
+                            ArcType outgoingArc = null;
+                            for (ArcType arc: data.getNet().getArc()) {
+                                if (currentNode.equals(arc.getSource())) {
+                                    if (outgoingArc == null) {
+                                        outgoingArc = arc;
+                                    }
+                                    else {
+                                        // More than one outgoing arc -- we've arrived at a split.  Done!
+                                        //LOGGER.info("  Breaking because " + currentNode.getId() + " is a split");
+                                        break label1;
+                                    }
+                                }
+                            }
+                            // Assert: outgoingArc is the unique outgoing arc
+                            assert outgoingArc.equals(incomingArc);
+                        }
+                        //LOGGER.info("Processed places reset by transition " + cancelling.getId());
                     }
                 }
                 for (CancellationRefType cancellationRef: work.getCancelEdgeId()) {

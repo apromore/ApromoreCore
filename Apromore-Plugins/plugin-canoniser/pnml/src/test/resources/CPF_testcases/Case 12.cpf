@@ -17,27 +17,19 @@
         </Node>
         <Node xsi:type="cpf:XORJoinType" id="e2_implicit_join"/>
         <Node xsi:type="cpf:ANDSplitType" id="a_boundary_routing"/>
-        <Edge id="e1-a_boundary_routing" sourceId="e1" targetId="a_boundary_routing" originalID="o0">
-            <!--
+        <Edge id="e1-a_boundary_routing" sourceId="e1" targetId="a_boundary_routing">
             <attribute name="name" value=""/>
-            -->
         </Edge>
-        <Edge id="a-e2_implicit_join" sourceId="a" targetId="e2_implicit_join" originalID="o1">
-            <!--
+        <Edge id="a-e2_implicit_join" sourceId="a" targetId="e2_implicit_join">
             <attribute name="name" value=""/>
-            -->
         </Edge>
-        <Edge id="b-e2_implicit_join" sourceId="b" targetId="e2_implicit_join" originalID="o2">
-            <!--
+        <Edge id="b-e2_implicit_join" sourceId="b" targetId="e2_implicit_join">
             <attribute name="name" value=""/>
-            -->
         </Edge>
-        <Edge id="e2_implicit_join_edge" sourceId="e2_implicit_join" targetId="e2" originalID="o3">
-            <!--
+        <Edge id="e2_implicit_join_edge" sourceId="e2_implicit_join" targetId="e2">
             <attribute name="name"/>
-            -->
         </Edge>
-        <Edge id="a_boundary_edge" sourceId="a_boundary_routing" targetId="a" originalID="o4"/>
-        <Edge id="b_boundary_edge" sourceId="a_boundary_routing" targetId="b" originalID="o5"/>
+        <Edge id="a_boundary_edge" sourceId="a_boundary_routing" targetId="a"/>
+        <Edge id="b_boundary_edge" sourceId="a_boundary_routing" targetId="b"/>
     </Net>
 </cpf:CanonicalProcess>

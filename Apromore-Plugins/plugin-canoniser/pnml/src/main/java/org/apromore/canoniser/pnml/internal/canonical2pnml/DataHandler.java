@@ -2,9 +2,11 @@ package org.apromore.canoniser.pnml.internal.canonical2pnml;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.ANDJoinType;
@@ -65,6 +67,19 @@ public class DataHandler {
     List<org.apromore.pnml.NodeType> xors = new LinkedList<org.apromore.pnml.NodeType>();
     List<ArcType> xorarcs = new LinkedList<ArcType>();
     String initialType;
+
+    /**
+     * Places that were synthesized purely to separate adjacent transitions.
+     *
+     * When they occur adjacent to a silent transition, they will be collapsed
+     * by {@link org.apromore.canoniser.pnml.internal.Canonical2PNML#simplify}.
+     */
+    Set<PlaceType> synthesizedPlaces = new HashSet<>();
+
+    /** @return the set of places that were synthesized purely to separate adjacent transitions */
+    public Set<PlaceType> getSynthesizedPlaces() {
+        return synthesizedPlaces;
+    }
 
     // Node to Arc endpoint mappings
     private Map<NodeType, org.apromore.pnml.NodeType> startNodeMap    = new HashMap<>();
