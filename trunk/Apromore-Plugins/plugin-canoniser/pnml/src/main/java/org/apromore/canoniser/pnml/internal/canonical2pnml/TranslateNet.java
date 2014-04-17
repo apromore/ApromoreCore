@@ -107,10 +107,10 @@ public class TranslateNet {
                     //LOGGER.info("Work node " + work.getId() + " cancels node " + cancellationRef.getRefId());
                     NodeType cpfNode = data.nodeRefMap.get(cancellationRef.getRefId());
                     assert cpfNode != null: "Unable to find CPF node for id " + cancellationRef.getRefId();
-                    PlaceType cancelled = data.getRunningPlaceMap().get(cpfNode);
+                    org.apromore.pnml.NodeType cancelled = data.getEndNodeMap().get(cpfNode);
                     if (cancelled != null) {
                         //String cancellingId = data.get_id_map_value(work.getId());
-                        //LOGGER.info("Transition " + cancellingId + " cancelled place " + cancelled.getId());
+                        //LOGGER.info("Transition " + cancellingId + " cancelled node " + cancelled.getId());
                         assert data.getEndNodeMap().containsKey(work):
                             "CPF Work node " + work.getId() + " doesn't have an ending PNML element";
                         assert data.getEndNodeMap().get(work) instanceof TransitionType:
@@ -141,6 +141,9 @@ public class TranslateNet {
                             // Look for a unique incoming arc
                             ArcType incomingArc = null;
                             for (ArcType arc: data.getNet().getArc()) {
+                                if (arc.getType() != null) {  // only interested in regular arcs, not reset/inhibit/etc
+                                    continue;
+                                }
                                 if (currentNode.equals(arc.getTarget())) {
                                     if (incomingArc == null) {
                                         incomingArc = arc;
