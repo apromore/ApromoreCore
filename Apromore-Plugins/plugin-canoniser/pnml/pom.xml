@@ -33,6 +33,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <!-- Local APIs -->
+        <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
         </dependency>

@@ -40,6 +40,7 @@ public class TranslateNode {
         boolean isSub = false;
         data.put_id_map(task.getId(), String.valueOf(ids));
         tran.setId(String.valueOf(ids++));
+        tran.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
 
         if (task.getName() != null) {
             NodeNameType test = new NodeNameType();
@@ -173,13 +174,6 @@ public class TranslateNode {
             runningToEnd.setTarget(end);
             data.getNet().getArc().add(runningToEnd);
 
-            // Reposition the start transition
-            /*
-            if (tran.getGraphics() != null) {
-                tran.setGraphics(newGraphicsNodeType(running.getGraphics().getPosition(), transitionDefaultDimension()));
-            }
-            */
-
             // Name the nodes (English naming convention)
             String taskName = task.getName();
             if (taskName != null) {
@@ -269,7 +263,7 @@ public class TranslateNode {
             TransitionToolspecificType ttt = new TransitionToolspecificType();
             ttt.setTool("WoPeD");
             ttt.setVersion("1.0");
-            TriggerType tt = new TriggerType();
+            TransitionToolspecificType.Trigger tt = new TransitionToolspecificType.Trigger();
             GraphicsSimpleType gt = new GraphicsSimpleType();
             DimensionType dt = new DimensionType();
             dt.setX(BigDecimal.valueOf(Long.valueOf(24)));
