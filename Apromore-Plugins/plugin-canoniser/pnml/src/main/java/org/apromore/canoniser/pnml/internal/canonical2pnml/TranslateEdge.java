@@ -46,7 +46,7 @@ public class TranslateEdge {
             place.setId(String.valueOf(ids++));
             place.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.placeDefaultDimension()));
             data.getNet().getPlace().add(place);
-            data.put_pnmlRefMap(place.getId(), place);
+            //data.put_pnmlRefMap(place.getId(), place);  TranslateNodeAnnotation can't cope with ANF Edges generating PNML Place Graphics
 
             // Create incoming arc
             ArcType incomingArc = new ArcType();
