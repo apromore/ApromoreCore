@@ -260,6 +260,7 @@ CREATE TABLE `node` (
   `timerExpressionId` int(11) DEFAULT NULL,
   `timeDate` datetime DEFAULT NULL,
   `timeDuration` varchar(100) NULL,
+  `messageDirection` varchar(10) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_node_subversion` FOREIGN KEY (`subVersionId`)
   REFERENCES `process_model_version` (`id`)

@@ -302,7 +302,7 @@ public class CanonicalToGraph {
     private CPFNode populateMessageDetails(CPFNode output, MessageType node) {
         output.setNodeType(NodeTypeEnum.MESSAGE);
         if (node.getDirection() != null) {
-            output.setDirection(DirectionEnum.fromValue(node.getDirection().value()));
+            output.setDirection(DirectionEnum.valueOf(node.getDirection().toString()));
         }
         return output;
     }

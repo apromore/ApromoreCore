@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apromore.graph.canonical.AllocationStrategyEnum;
+import org.apromore.graph.canonical.DirectionEnum;
 import org.apromore.graph.canonical.NodeTypeEnum;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
@@ -54,6 +55,7 @@ public class Node implements Serializable {
     private Boolean teamWork = false;
     private NodeTypeEnum nodeType;
     private AllocationStrategyEnum allocation;
+    private DirectionEnum messageDirection;
 
     private ProcessModelVersion subProcess;
     private Expression timerExpression;
@@ -212,6 +214,15 @@ public class Node implements Serializable {
         this.timeDuration = timeDuration;
     }
 
+    @Column(name = "messageDirection", length = 10)
+    @Enumerated(EnumType.STRING)
+    public DirectionEnum getMessageDirection() {
+        return this.messageDirection;
+    }
+
+    public void setMessageDirection(DirectionEnum messageDirection) {
+        this.messageDirection = messageDirection;
+    }
 
 
 
