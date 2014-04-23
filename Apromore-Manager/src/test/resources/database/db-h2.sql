@@ -320,7 +320,8 @@ CREATE TABLE node
    resourceRunExpressionId int,
    timerExpressionId int,
    timeDate timestamp,
-   timeDuration varchar(100)
+   timeDuration varchar(100),
+   messageDirection varchar(10)
 )
 ;
 CREATE TABLE node_attribute

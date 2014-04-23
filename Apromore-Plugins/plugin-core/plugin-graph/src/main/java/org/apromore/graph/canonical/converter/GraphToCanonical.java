@@ -364,7 +364,7 @@ public class GraphToCanonical {
         updateWorkNodeData(type, node);
 
         if (node.getDirection() != null) {
-            type.setDirection(DirectionEnum.fromValue(node.getDirection().value()));
+            type.setDirection(DirectionEnum.valueOf(node.getDirection().toString()));
         }
 
         return type;

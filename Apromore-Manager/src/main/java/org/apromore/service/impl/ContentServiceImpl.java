@@ -25,6 +25,7 @@ import org.apromore.dao.model.ResourceRefAttribute;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
+import org.apromore.graph.canonical.DirectionEnum;
 import org.apromore.graph.canonical.IAttribute;
 import org.apromore.graph.canonical.ICPFObjectReference;
 import org.apromore.graph.canonical.ICPFResourceReference;
@@ -82,8 +83,11 @@ public class ContentServiceImpl implements ContentService {
             if (cpfNode.getTimeDate() != null) {
                 node.setTimeDate(cpfNode.getTimeDate().getTime());
             }
-            if (node.getTimeDuration() != null) {
+            if (cpfNode.getTimeDuration() != null) {
                 node.setTimeDuration(cpfNode.getTimeDuration());
+            }
+            if (cpfNode.getDirection() != null) {
+                node.setMessageDirection(DirectionEnum.valueOf(cpfNode.getDirection().toString()));
             }
 
             addNodeExpressions(cpfNode, node);
@@ -93,7 +97,7 @@ public class ContentServiceImpl implements ContentService {
 
             return nRepository.save(node);
         } catch (Exception e) {
-            LOGGER.error("Unable to add Node(" + cpfNode.getId() + "): " + e.getMessage());
+            LOGGER.error("Unable to add Node(" + cpfNode.getId() + "): " + e.getMessage(), e);
         }
         return null;
     }
