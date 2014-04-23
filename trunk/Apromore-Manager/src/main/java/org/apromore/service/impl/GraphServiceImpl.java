@@ -28,6 +28,7 @@ import org.apromore.graph.canonical.CPFObjectReference;
 import org.apromore.graph.canonical.CPFResource;
 import org.apromore.graph.canonical.CPFResourceReference;
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.DirectionEnum;
 import org.apromore.graph.canonical.HumanTypeEnum;
 import org.apromore.graph.canonical.ICPFObject;
 import org.apromore.graph.canonical.ICPFObjectReference;
@@ -164,6 +165,10 @@ public class GraphServiceImpl implements GraphService {
 
         addNodeDetails(node, cpfNode);
         addWorkDetails(node, cpfNode, canonical);
+
+        if (node.getMessageDirection() != null) {
+            cpfNode.setDirection(DirectionEnum.valueOf(node.getMessageDirection().toString()));
+        }
 
         return cpfNode;
     }

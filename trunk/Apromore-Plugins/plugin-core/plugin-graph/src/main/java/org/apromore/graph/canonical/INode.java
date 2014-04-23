@@ -85,7 +85,7 @@ public interface INode extends IVertex {
 
 
 
-    /**  ************************************ Task Methods ***********************************  */
+    /*  ************************************ Task Methods ***********************************  */
 
     /**
      * set the current net Id
@@ -125,7 +125,7 @@ public interface INode extends IVertex {
 
 
 
-    /**  ************************************ Timer Methods ***********************************  */
+    /*  ************************************ Timer Methods ***********************************  */
 
     /**
      * Returns the Time Expression.
@@ -165,7 +165,22 @@ public interface INode extends IVertex {
 
 
 
-    /**  ************************************ Work Methods ***********************************  */
+    /*  ************************************ Message Methods ***********************************  */
+
+    /**
+     * get Direction of the message.
+     * @return the direction enumeration
+     */
+    DirectionEnum getDirection();
+
+    /**
+     * sets the message direction.
+     * @param direction the direction.
+     */
+    void setDirection(DirectionEnum direction);
+
+
+    /*  ************************************ Work Methods ***********************************  */
 
     /**
      * @return a {@link java.util.Collection} of all {@link ICPFObject}s of this {@link INode}.
