@@ -168,7 +168,11 @@ public class TranslateNet {
                             // Check for any other outgoing arcs from currentNode
                             ArcType outgoingArc = null;
                             for (ArcType arc: data.getNet().getArc()) {
+                                if (arc.getType() != null) {  // only interested in regular arcs, not reset/inhibit/etc
+                                    continue;
+                                }
                                 if (currentNode.equals(arc.getSource())) {
+                                    
                                     if (outgoingArc == null) {
                                         outgoingArc = arc;
                                     }
