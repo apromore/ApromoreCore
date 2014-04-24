@@ -25,10 +25,12 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
+import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsNodeType;
 import org.apromore.pnml.TransitionType;
 import org.oryxeditor.server.diagram.basic.BasicNode;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,10 +59,10 @@ public class TypeTransitionHandler extends NodeHandler {
 
     @Override
     protected BasicNode createShape() {
-        if (transition.getName() != null && !transition.getName().getText().equals("")) {
-            return new BasicNode(getShapeId(), "Transition");
-        } else {
+        if (transition.getName() == null) {
             return new BasicNode(getShapeId(), "VerticalEmptyTransition");
+        } else {
+            return new BasicNode(getShapeId(), "Transition");
         }
     }
 
@@ -68,4 +70,14 @@ public class TypeTransitionHandler extends NodeHandler {
     protected String getShapeId() {
         return transition.getId();
     }
+
+    @Override
+    protected DimensionType getDefaultDimension() {
+        DimensionType dimension = new DimensionType();
+        dimension.setX(BigDecimal.valueOf(transition.getName() == null ? 10 : 40));
+        dimension.setY(BigDecimal.valueOf(transition.getName() == null ? 50 : 40));
+        
+        return dimension;
+    }
+
 }

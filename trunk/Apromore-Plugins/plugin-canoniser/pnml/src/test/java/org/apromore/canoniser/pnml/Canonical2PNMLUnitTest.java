@@ -177,18 +177,18 @@ public class Canonical2PNMLUnitTest {
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         NetType net = pnml.getNet().get(0);
-        assertEquals(5, net.getArc().size());  // 4 edges, 1 synthetic
-        assertEquals(4, net.getPlace().size());  // 1 start, 2 end, 1 synthetic
-        assertEquals(2, net.getTransition().size());  // 1 task, 1 AND-split
+        assertEquals(3, net.getArc().size());  // 3 edges
+        assertEquals(3, net.getPlace().size());  // 1 start, 2 end
+        assertEquals(1, net.getTransition().size());  // 1 task
 
         pnml = decanonise("Case 1.cpf", null, "Case 1-big.pnml", false, false);
 
         // Inspect the result
         assertEquals(1, pnml.getNet().size());
         net = pnml.getNet().get(0);
-        assertEquals(7, net.getArc().size());  // 4 edges, 1 synthetic
-        assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 2 end, 1 synthetic
-        assertEquals(3, net.getTransition().size());  // 2 task, 1 AND-split
+        assertEquals(5, net.getArc().size());  // 4 edges, 1 synthetic
+        assertEquals(4, net.getPlace().size());  // 1 start, 1 task, 2 end
+        assertEquals(2, net.getTransition().size());  // 2 task
     }
 
     /**
@@ -210,6 +210,28 @@ public class Canonical2PNMLUnitTest {
         assertEquals(12, net.getArc().size());  // 6 edges, 5 synthetic, 3 resets
         assertEquals(5, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 1 synthetic
         assertEquals(4, net.getTransition().size());  // 2 task, 1 timer event,1 AND-split
+    }
+
+    /**
+     * Decanonize <code>TripleCancellation.cpf</code>.
+     *
+     * CPF generated from a BPMN task with two boundary events.
+     * Three CPF nodes (task, timer & message) cancel each of the others.
+     */
+    @Test
+    public void testTripleCancellation() throws Exception {
+        PnmlType pnml = decanonise("TripleCancellation.cpf",   // input file
+                                   null,                       // no ANF file
+                                   "TripleCancellation.pnml",  // output file
+                                   false,                      // tasks have a (resettable) place while they execute
+                                   false);                     // don't generate addition places for the CPF edges
+
+        // Inspect the result
+        assertEquals(1, pnml.getNet().size());
+        NetType net = pnml.getNet().get(0);
+        assertEquals(20, net.getArc().size());  // 12 edges, 8 resets
+        assertEquals(6, net.getPlace().size());  // 1 start, 1 task, 1 end, 1 timer event, 1 message event, 1 synthetic
+        assertEquals(5, net.getTransition().size());  // 2 task, 1 timer event, 1 message event, 1 AND-split
     }
 
 

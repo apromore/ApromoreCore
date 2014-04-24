@@ -25,10 +25,12 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
+import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsNodeType;
 import org.apromore.pnml.PlaceType;
 import org.oryxeditor.server.diagram.basic.BasicNode;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,4 +80,12 @@ public class TypePlaceHandler extends NodeHandler {
         return place.getId();
     }
 
+    @Override
+    protected DimensionType getDefaultDimension() {
+        DimensionType dimension = new DimensionType();
+        dimension.setX(BigDecimal.valueOf(30));
+        dimension.setY(BigDecimal.valueOf(30));
+
+        return dimension;
+    }
 }
