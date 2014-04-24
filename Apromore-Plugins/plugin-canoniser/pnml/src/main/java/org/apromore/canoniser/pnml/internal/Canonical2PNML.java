@@ -241,7 +241,7 @@ public class Canonical2PNML {
      * @return whether <var>transition</var> is silent
      */
     private boolean isSilent(TransitionType transition) {
-        return transition.getName() == null || transition.getName().getText().trim().isEmpty();
+        return transition.getName() == null;
     }
 
     public static void main(String[] arg) throws Exception {

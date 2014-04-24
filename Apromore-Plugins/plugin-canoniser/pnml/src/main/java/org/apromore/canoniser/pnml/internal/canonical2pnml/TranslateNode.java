@@ -248,7 +248,7 @@ public class TranslateNode {
 
 
     public void translateEvent(NodeType node) {
-        if (node instanceof MessageType) {
+        if (node instanceof MessageType || node instanceof TimerType) {
             TransitionType tran = new TransitionType();
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
@@ -270,52 +270,35 @@ public class TranslateNode {
             dt.setY(BigDecimal.valueOf(Long.valueOf(22)));
             gt.setDimension(dt);
             tt.setId("");
-            tt.setType(201);
-            tt.setGraphics(gt);
-            data.put_triggermap(node.getName(), tt);
-            ttt.setTrigger((TransitionToolspecificType.Trigger) tt);
-            tran.getToolspecific().add(ttt);
-            data.getNet().getTransition().add(tran);
-            data.put_pnmlRefMap(tran.getId(), tran);
-            data.getStartNodeMap().put(node, tran);
-            data.getEndNodeMap().put(node, tran);
-            data.put_originalid_map(
-                    BigInteger.valueOf(Long.valueOf(tran.getId())),
-                    node.getOriginalID());
-
-        } else if (node instanceof TimerType) {
-            TransitionType tran = new TransitionType();
-            data.put_id_map(node.getId(), String.valueOf(ids));
-            tran.setId(String.valueOf(ids++));
-            tran.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
-
-            if (node.getName() != null) {
-                NodeNameType test = new NodeNameType();
-                test.setText(node.getName());
-                tran.setName(test);
+            if (node instanceof MessageType) {
+                tt.setType(201);
+            } else {
+                assert node instanceof TimerType;
+                tt.setType(202);
             }
-
-            TransitionToolspecificType ttt = new TransitionToolspecificType();
-            ttt.setTool("WoPeD");
-            ttt.setVersion("1.0");
-            TransitionToolspecificType.Trigger tt = new TransitionToolspecificType.Trigger();
-            GraphicsSimpleType gt = new GraphicsSimpleType();
-            DimensionType dt = new DimensionType();
-            dt.setX(BigDecimal.valueOf(Long.valueOf(24)));
-            dt.setY(BigDecimal.valueOf(Long.valueOf(22)));
-            gt.setDimension(dt);
-            tt.setId("");
-            tt.setType(202);
             tt.setGraphics(gt);
             data.put_triggermap(node.getName(), tt);
             ttt.setTrigger(tt);
             tran.getToolspecific().add(ttt);
 
             // Create a place to wait for the timer to expire
+            String waitingPlaceNameText = null;
+            if (node instanceof MessageType) {
+                waitingPlaceNameText = "msg_wait";
+            } else {
+                assert node instanceof TimerType;
+                waitingPlaceNameText = "time_wait";
+            }
+            assert waitingPlaceNameText != null;
+            if (node.getName() != null) {
+                waitingPlaceNameText = node.getName() + "_" + waitingPlaceNameText;
+            }
+
+            NodeNameType waitingPlaceName = new NodeNameType();
+            waitingPlaceName.setText(waitingPlaceNameText);
+
             PlaceType waitingPlace = new PlaceType();
             waitingPlace.setId(String.valueOf(ids++));
-            NodeNameType waitingPlaceName = new NodeNameType();
-            waitingPlaceName.setText(node.getName() == null ? "wait" : node.getName() + "_wait");
             waitingPlace.setName(waitingPlaceName);
             waitingPlace.setGraphics(newGraphicsNodeType(dummyPosition(), placeDefaultDimension()));
             data.getNet().getPlace().add(waitingPlace);

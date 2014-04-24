@@ -25,11 +25,14 @@
 package org.apromore.common.converters.pnml.handler.impl;
 
 import org.apromore.common.converters.pnml.context.PNMLConversionContext;
+import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsNodeType;
+import org.apromore.pnml.PositionType;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -52,6 +55,16 @@ public abstract class NodeHandler extends PNMLHandlerImpl {
         shape.setProperties(convertProperties());
         if (getGraphics() != null) {
             shape.setBounds(convertGraphics(getGraphics()));
+        } else {
+            PositionType defaultPosition = new PositionType();
+            defaultPosition.setX(BigDecimal.valueOf(300));
+            defaultPosition.setY(BigDecimal.valueOf(300));
+
+            GraphicsNodeType graphics = new GraphicsNodeType();
+            graphics.setPosition(defaultPosition);
+            graphics.setDimension(getDefaultDimension());
+
+            shape.setBounds(convertGraphics(graphics));
         }
         getContext().addShape(getShapeId(), shape);
         return shape;
@@ -79,4 +92,5 @@ public abstract class NodeHandler extends PNMLHandlerImpl {
 
     abstract protected String getShapeId();
 
+    abstract protected DimensionType getDefaultDimension();
 }

@@ -52,14 +52,16 @@ public class TranslateOperators {
             TransitionType tran = new TransitionType();
             TransitionToolspecificType trantool = new TransitionToolspecificType();
             OperatorType op = new OperatorType();
+            /*  We lose the name of the gate when converting it to a silent transition -- since "silent" means no name
             NodeNameType test = null;
             if (node.getName() != null) {
                 test = new NodeNameType();
                 test.setText(node.getName());
             }
+            */
             data.put_id_map(node.getId(), String.valueOf(ids));
             tran.setId(String.valueOf(ids++));
-            tran.setName(test);
+            //tran.setName(test);
             tran.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
 
             if (node instanceof ANDJoinType && node.getOriginalID() != null && node.getOriginalID().contains("op")) {
