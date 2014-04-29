@@ -24,6 +24,12 @@
     </scm>
 
     <dependencies>
+        <!-- Apromore WS Models -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-ws-model</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -46,6 +52,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.beans</artifactId>
+        </dependency>
+
+        <!-- Spring-WS dependencies -->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>org.springframework.ws</artifactId>
         </dependency>
 
         <!-- HTTP Commons, used in the spring config. -->
@@ -76,9 +88,11 @@
                         <Import-Bundle>
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]"
+                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
                         </Import-Bundle>
                         <Import-Package>
+                            org.springframework.ws.soap,
                             *
                         </Import-Package>
                     </instructions>

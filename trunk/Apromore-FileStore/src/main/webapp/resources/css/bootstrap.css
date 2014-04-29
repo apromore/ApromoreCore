@@ -8,6 +8,18 @@
  * Designed and built with all the love in the world by @mdo and @fat.
  */
 
+.signin .welcome {
+    color: #b4b5ba;
+    margin: 10px 0 20px;
+    font-size: 36px;
+    font-family: FontAwesome;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65), 0 -1px 0 rgba(0, 0, 0, 0.30);
+    opacity: 0.75;
+    filter: alpha(opacity=75);
+}
+
 .clearfix {
   *zoom: 1;
 }

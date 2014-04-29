@@ -66,7 +66,7 @@
             <div style="float:left; margin-top: 5px;" >
                 <toolbarbutton id="releaseNotes"/>
                 <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="moreButton" label="More info.."/>
+                <toolbarbutton id="moreButton" label="Apromore Initiative"/>
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="installedPlugins" label="Active Plugins"/>
             </div>

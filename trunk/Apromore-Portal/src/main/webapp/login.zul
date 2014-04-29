@@ -267,6 +267,12 @@
                     <h:h5><![CDATA[ &copy; ]]> 2009-2014, The Apromore Initiative.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
+                    <h:p>
+                        All models and other information  stored in the repository are third party materials that have been uploaded by other users, unless expressly indicated otherwise by QUT. QUT  makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workabliity of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
+                    </h:p>
+                    <h:p>
+                         To the fullest extent permitted by law, QUT excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
+                    </h:p>
                 </h:div>
             </h:footer>
 
