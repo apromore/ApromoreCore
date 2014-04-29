@@ -13,7 +13,6 @@
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerServiceTemplate" />
     </bean>
 
-
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
         <property name="soapVersion">
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11" />
@@ -32,7 +31,7 @@
         <constructor-arg ref="messageFactory"/>
     </bean>
 
-    <!-- for clients connecting from outside a redirector (e.g. mapoping port 80 to port 9000) -->
+    <!-- for clients connecting from outside a redirector (e.g. mapping port 80 to port 9000) -->
 
     <bean id="managerClientExternal" class="org.apromore.manager.client.ManagerServiceClient" >
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerExternalServiceTemplate" />

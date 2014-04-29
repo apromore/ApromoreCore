@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.github.sardine.DavResource;
 
+import org.apromore.model.UserType;
+
 /**
  * File Service that handles the communication between the web and the dav services.
  *
@@ -104,5 +106,28 @@ public interface FileStoreService {
      * @throws Exception many things could go wrong, so a generic error until i can work out what i should have instead.
      */
     void delete(final String url) throws Exception;
+
+    /**
+     * USed as apart of the reset user's password.
+     * @param email the users email address
+     * @return the UserType from the webservice
+     */
+    UserType readUserByEmail(String email) throws Exception;
+
+    /**
+     * Reset the USers password for them.
+     * @param username the users username
+     * @param password the new password
+     * @return if we succeeded or not
+     */
+    boolean resetUserPassword(String username, String password);
+
+    /**
+     * Send the users details to be persisted.
+     * @param user the user to send to the WebService
+     * @throws Exception ... change to be something more relevant
+     * TODO: Fix Exception
+     */
+    UserType writeUser(UserType user) throws Exception;
 
 }
