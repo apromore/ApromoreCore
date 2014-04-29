@@ -89,6 +89,15 @@
                 <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
             </filterset>
         </copy>
+        <copy file="Apromore-Clients/filestore-client/src/main/resources/apromore-client.properties_template"
+              tofile="Apromore-Clients/filestore-client/src/main/resources/apromore-client.properties"
+              overwrite="true">
+            <filterset>
+                <filter token="SITE_HOST" value="${site.host}"/>
+                <filter token="SITE_PORT" value="${site.port}"/>
+                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
+            </filterset>
+        </copy>
         <copy file="Apromore-Manager/src/main/resources/apromore.properties_template"
             tofile="Apromore-Manager/src/main/resources/apromore.properties"
             overwrite="true">

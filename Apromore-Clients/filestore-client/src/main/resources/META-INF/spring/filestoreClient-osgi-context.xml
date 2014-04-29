@@ -8,6 +8,6 @@
 
     <beans:import resource="filestoreClientContext.xml" />
 
-    <osgi:service ref="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService" />
+    <osgi:service id="osgiFileStoreClient" ref="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService" />
 
 </beans:beans>
