@@ -61,11 +61,19 @@
 
     <target name="apromore-build-tools">
         <!-- Build the tools required for the main Apromore product. -->
-        <exec dir="${dir-extras-build-tools}" executable="mvn">
+        <exec dir="${dir-extras-build-tools}" executable="mvn.bat" osfamily="windows">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-        <exec dir="${dir-extras-test-tools}" executable="mvn">
+        <exec dir="${dir-extras-test-tools}" executable="mvn.bat" osfamily="windows">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+        <exec dir="${dir-extras-build-tools}" executable="mvn" osfamily="unix">
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+        <exec dir="${dir-extras-test-tools}" executable="mvn" osfamily="unix">
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
