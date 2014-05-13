@@ -15,6 +15,9 @@
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.User</class>
+        <class>org.apromore.dao.model.Group</class>
+        <class>org.apromore.dao.model.GroupFolder</class>
+        <class>org.apromore.dao.model.GroupProcess</class>
         <class>org.apromore.dao.model.Role</class>
         <class>org.apromore.dao.model.Permission</class>
         <class>org.apromore.dao.model.Membership</class>

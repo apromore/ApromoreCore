@@ -26,6 +26,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.GroupRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -33,6 +34,8 @@ import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
@@ -42,7 +45,6 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelAttribute;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.ProcessUser;
 import org.apromore.dao.model.Resource;
 import org.apromore.dao.model.ResourceAttribute;
 import org.apromore.dao.model.User;
@@ -106,6 +108,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,6 +124,7 @@ public class ProcessServiceImpl implements ProcessService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
     private AnnotationRepository annotationRepo;
+    private GroupRepository groupRepo;
     private NativeRepository nativeRepo;
     private ProcessBranchRepository processBranchRepo;
     private ProcessRepository processRepo;
@@ -162,13 +166,15 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Inject
     public ProcessServiceImpl(final AnnotationRepository annotationRepo,
-            final NativeRepository nativeRepo, final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
+            final NativeRepository nativeRepo, final GroupRepository groupRepo,
+            final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
             final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
             final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
         this.annotationRepo = annotationRepo;
+        this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
         this.processBranchRepo = processBranchRepo;
         this.processRepo = processRepo;
@@ -231,12 +237,6 @@ public class ProcessServiceImpl implements ProcessService {
             throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
         }
 
-        /*
-        LOGGER.info("Dumping CPF");
-        dump(cpf.getCpt());
-        LOGGER.info("Dumped CPF");
-        */
-
         ProcessModelVersion pmv;
         try {
             User user = userSrv.findUserByLogin(username);
@@ -247,43 +247,14 @@ public class ProcessServiceImpl implements ProcessService {
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
 
-            if (publicModel) {
-                workspaceSrv.createPublicStatusForUsers(process);
-                workspaceSrv.updatePublicFoldersForUsers(workspaceSrv.getFolder(folderId), userSrv.findAllUsers());
-            }
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
         }
 
-        /*
-        LOGGER.info("Dumping PMV");
-        dump(getCanonicalFormat(pmv));
-        LOGGER.info("Dumped PMV");
-        */
-
         return pmv;
     }
-
-    /*
-    private void dump(final CanonicalProcessType cpt) {
-        for (org.apromore.cpf.NetType net: cpt.getNet()) {
-            for (org.apromore.cpf.NodeType node: net.getNode()) {
-                String s = "  Node " + node.getId();
-                if (node instanceof org.apromore.cpf.WorkType) {
-                    if (((org.apromore.cpf.WorkType) node).getCancelNodeId().isEmpty()) {
-                        s += " cancels";
-                        for (org.apromore.cpf.CancellationRefType cancellationRef: ((org.apromore.cpf.WorkType) node).getCancelNodeId()) {
-                            s =  s + " " + cancellationRef.getRefId();
-                        }
-                    }
-                }
-                LOGGER.info(s);
-            }
-        }
-    }
-    */
 
     /**
      * @see org.apromore.service.ProcessService#updateProcess(Integer, String, String, String, Version, Version, org.apromore.dao.model.User, String, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
@@ -411,7 +382,6 @@ public class ProcessServiceImpl implements ProcessService {
             if (updatePublicSecurity) {
                 if (isPublic) {
                     workspaceSrv.createPublicStatusForUsers(process);
-                    workspaceSrv.updatePublicFoldersForUsers(process.getFolder(), userSrv.findAllUsers());
                 } else {
                     workspaceSrv.removePublicStatusForUsers(process);
                 }
@@ -807,17 +777,65 @@ public class ProcessServiceImpl implements ProcessService {
                 process.setFolder(workspaceSrv.getFolder(folderId));
             }
 
-            ProcessUser processUser = new ProcessUser();
-            processUser.setProcess(process);
-            processUser.setUser(user);
-            processUser.setHasRead(true);
-            processUser.setHasWrite(true);
-            processUser.setHasOwnership(true);
+            Set<GroupProcess> groupProcesses = process.getGroupProcesses();
 
-            user.getProcessUsers().add(processUser);
-            process.getProcessUsers().add(processUser);
+            // Add the user's personal group
+            GroupProcess gp1 = new GroupProcess();
+            gp1.setGroup(user.getGroup());
+            gp1.setProcess(process);
+            gp1.setHasRead(true);
+            gp1.setHasWrite(true);
+            gp1.setHasOwnership(true);
+            groupProcesses.add(gp1);
 
-            return processRepo.save(process);
+            // Add the public group
+            /*
+            if (publicModel) {
+                Group publicGroup = groupRepo.findPublicGroup();
+                if (publicGroup == null) {
+                    LOGGER.warn("No public group present in repository");
+                } else {
+                    GroupProcess gp2 = new GroupProcess();
+                    gp2.setGroup(publicGroup);
+                    gp2.setProcess(process);
+                    gp2.setHasRead(true);
+                    gp2.setHasWrite(true);
+                    gp2.setHasOwnership(false);
+                    groupProcesses.add(gp2);
+                }
+            }
+            */
+
+            process.setGroupProcesses(groupProcesses);
+
+            process = processRepo.save(process);
+
+            // TODO: kludging past a cascade issue by adding the public group as a second DB commit
+            //       really should figure out how to do this in one commit, as per the preceding commented-out code
+
+            groupProcesses = process.getGroupProcesses();
+
+            // Add the public group
+            if (publicModel) {
+                Group publicGroup = groupRepo.findPublicGroup();
+                if (publicGroup == null) {
+                    LOGGER.warn("No public group present in repository");
+                } else {
+                    GroupProcess gp2 = new GroupProcess();
+                    gp2.setGroup(publicGroup);
+                    gp2.setProcess(process);
+                    gp2.setHasRead(true);
+                    gp2.setHasWrite(true);
+                    gp2.setHasOwnership(false);
+                    groupProcesses.add(gp2);
+                }
+            }
+
+            process.setGroupProcesses(groupProcesses);
+
+            process = processRepo.save(process);
+
+            return process;
         } catch (Exception ex) {
             LOGGER.error("Importing a Process Failed: " + ex.toString());
             throw new ImportException(ex);

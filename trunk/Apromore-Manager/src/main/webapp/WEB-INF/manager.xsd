@@ -54,6 +54,8 @@
     <xs:element name="UpdateFolderResponse" type="tns:UpdateFolderOutputMsgType"/>
     <xs:element name="DeleteFolderRequest" type="tns:DeleteFolderInputMsgType"/>
     <xs:element name="DeleteFolderResponse" type="tns:DeleteFolderOutputMsgType"/>
+    <xs:element name="SearchGroupsRequest" type="tns:SearchGroupsInputMsgType"/>
+    <xs:element name="SearchGroupsResponse" type="tns:SearchGroupsOutputMsgType"/>
     <xs:element name="SearchUserRequest" type="tns:SearchUserInputMsgType"/>
     <xs:element name="SearchUserResponse" type="tns:SearchUserOutputMsgType"/>
     <xs:element name="SaveFolderPermissionsRequest" type="tns:SaveFolderPermissionsInputMsgType"/>
@@ -539,6 +541,17 @@
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="Message" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SearchGroupsInputMsgType">
+        <xs:attribute name="searchString" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SearchGroupsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Groups" type="tns:UserType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="SearchUserInputMsgType">

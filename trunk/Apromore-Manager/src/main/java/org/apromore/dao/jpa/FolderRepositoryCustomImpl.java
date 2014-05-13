@@ -1,14 +1,14 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.FolderRepositoryCustom;
-import org.apromore.dao.FolderUserRepository;
-import org.apromore.dao.ProcessUserRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.FolderUser;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.ProcessUser;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -28,9 +28,9 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     private EntityManager em;
 
     @Inject
-    private FolderUserRepository folderUserRepository;
+    private GroupFolderRepository groupFolderRepository;
     @Inject
-    private ProcessUserRepository processUserRepository;
+    private GroupProcessRepository groupProcessRepository;
 
 
     /**
@@ -39,10 +39,10 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
      */
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
-        List<FolderUser> folders = folderUserRepository.findByParentFolderAndUser(parentFolderId, userId);
+        List<GroupFolder> folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
 
         List<FolderTreeNode> treeNodes = new ArrayList<>();
-        for (FolderUser folder : folders) {
+        for (GroupFolder folder : folders) {
             FolderTreeNode treeNode = new FolderTreeNode();
             treeNode.setId(folder.getFolder().getId());
             treeNode.setName(folder.getFolder().getName());
@@ -69,9 +69,9 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     @Override
     public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(int parentFolderId, String userId) {
         List<ProcessModelVersion> processes = new ArrayList<>();
-        processes.addAll(getProcessModelVersions(processUserRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+        processes.addAll(getProcessModelVersions(groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
 
-        for (FolderUser folder : folderUserRepository.findByParentFolderAndUser(parentFolderId, userId)) {
+        for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId)) {
             processes.addAll(getProcessModelVersionByFolderUserRecursive(folder.getFolder().getId(), userId));
         }
 
@@ -88,10 +88,9 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
         if (parentFolderId == 0) {
             parentFolderId = null;
         }
-        processes.addAll(getProcesses(processUserRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
+        processes.addAll(getProcesses(groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
 
-
-        for (FolderUser folder : folderUserRepository.findByParentFolderAndUser(parentFolderId, userId)) {
+        for (GroupFolder folder : groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId)) {
             processes.addAll(getProcessByFolderUserRecursive(folder.getFolder().getId(), userId));
         }
 
@@ -100,20 +99,20 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
 
 
 
-    private List<Process> getProcesses(List<ProcessUser> processUsers) {
+    private List<Process> getProcesses(List<GroupProcess> processUsers) {
         List<Process> processes = new ArrayList<>();
 
-        for (ProcessUser ps : processUsers) {
+        for (GroupProcess ps : processUsers) {
             processes.add(ps.getProcess());
         }
 
         return processes;
     }
 
-    private List<ProcessModelVersion> getProcessModelVersions(List<ProcessUser> processUsers) {
+    private List<ProcessModelVersion> getProcessModelVersions(List<GroupProcess> processUsers) {
         List<ProcessModelVersion> pmvs = new ArrayList<>();
 
-        for (ProcessUser ps : processUsers) {
+        for (GroupProcess ps : processUsers) {
             for (ProcessBranch branch : ps.getProcess().getProcessBranches()) {
                 pmvs.addAll(branch.getProcessModelVersions());
             }
