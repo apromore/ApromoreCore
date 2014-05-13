@@ -40,10 +40,10 @@
     <xs:element name="GetSubFoldersResponse" type="tns:GetSubFoldersOutputMsgType"/>
     <xs:element name="GetBreadcrumbsRequest" type="tns:GetBreadcrumbsInputMsgType"/>
     <xs:element name="GetBreadcrumbsResponse" type="tns:GetBreadcrumbsOutputMsgType"/>
-    <xs:element name="GetFolderUsersRequest" type="tns:GetFolderUsersInputMsgType"/>
-    <xs:element name="GetFolderUsersResponse" type="tns:GetFolderUsersOutputMsgType"/>
-    <xs:element name="GetProcessUsersRequest" type="tns:GetProcessUsersInputMsgType"/>
-    <xs:element name="GetProcessUsersResponse" type="tns:GetProcessUsersOutputMsgType"/>
+    <xs:element name="GetFolderGroupsRequest" type="tns:GetFolderGroupsInputMsgType"/>
+    <xs:element name="GetFolderGroupsResponse" type="tns:GetFolderGroupsOutputMsgType"/>
+    <xs:element name="GetProcessGroupsRequest" type="tns:GetProcessGroupsInputMsgType"/>
+    <xs:element name="GetProcessGroupsResponse" type="tns:GetProcessGroupsOutputMsgType"/>
     <xs:element name="CreateUserRequest" type="tns:CreateUserInputMsgType"/>
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
     <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
@@ -398,10 +398,9 @@
         <xs:attribute name="failedAnswers" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="UserFolderType">
-        <xs:attribute name="userId" type="xs:string"/>
-        <xs:attribute name="fullName" type="xs:string"/>
-        <xs:attribute name="email" type="xs:string"/>
+    <xs:complexType name="GroupAccessType">
+        <xs:attribute name="groupId" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
@@ -581,25 +580,25 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetFolderUsersInputMsgType">
+    <xs:complexType name="GetFolderGroupsInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="GetFolderUsersOutputMsgType">
+    <xs:complexType name="GetFolderGroupsOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Users" type="tns:UserFolderType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Groups" type="tns:GroupAccessType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessUsersInputMsgType">
+    <xs:complexType name="GetProcessGroupsInputMsgType">
         <xs:attribute name="processId" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessUsersOutputMsgType">
+    <xs:complexType name="GetProcessGroupsOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Users" type="tns:UserFolderType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Groups" type="tns:GroupAccessType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

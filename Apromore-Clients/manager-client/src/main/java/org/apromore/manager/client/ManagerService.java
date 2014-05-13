@@ -10,6 +10,7 @@ import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GroupAccessType;
 import org.apromore.model.GroupType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
@@ -21,7 +22,6 @@ import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
@@ -83,9 +83,9 @@ public interface ManagerService {
 
     List<FolderType> getBreadcrumbs(String userId, int folderId);
 
-    List<UserFolderType> getFolderUsers(int folderId);
+    List<GroupAccessType> getFolderGroups(int folderId);
 
-    List<UserFolderType> getProcessUsers(int processId);
+    List<GroupAccessType> getProcessGroups(int processId);
 
     ProcessSummariesType getProcesses(String userId, int folderId);
 
