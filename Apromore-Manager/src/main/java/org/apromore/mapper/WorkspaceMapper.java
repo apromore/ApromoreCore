@@ -5,7 +5,7 @@ import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.model.FolderType;
-import org.apromore.model.UserFolderType;
+import org.apromore.model.GroupAccessType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,43 +88,41 @@ public class WorkspaceMapper {
     }
 
     /**
-     * Convert group/folder pairs to UserType Webservice objects.
+     * Convert group/folder pairs to GroupAccessType Webservice objects.
      * @param groupFolders  the DB model
-     * @return the Webservice UserType
+     * @return the Webservice GroupAccessType
      */
-    public static List<UserFolderType> convertGroupFoldersToFolderUserTypes(List<GroupFolder> groupFolders) {
-        List<UserFolderType> userFolderTypes = new ArrayList<>();
+    public static List<GroupAccessType> convertGroupFoldersToGroupAccessTypes(List<GroupFolder> groupFolders) {
+        List<GroupAccessType> groupAccessTypes = new ArrayList<>();
         for(GroupFolder node : groupFolders) {
-            UserFolderType user = new UserFolderType();
-            user.setEmail(node.getGroup().getName() + "@example.com");
-            user.setUserId(node.getGroup().getRowGuid());
-            user.setFullName(node.getGroup().getName());
-            user.setHasRead(node.isHasRead());
-            user.setHasWrite(node.isHasWrite());
-            user.setHasOwnership(node.isHasOwnership());
-            userFolderTypes.add(user);
+            GroupAccessType gat = new GroupAccessType();
+            gat.setGroupId(node.getGroup().getRowGuid());
+            gat.setName(node.getGroup().getName());
+            gat.setHasRead(node.isHasRead());
+            gat.setHasWrite(node.isHasWrite());
+            gat.setHasOwnership(node.isHasOwnership());
+            groupAccessTypes.add(gat);
         }
-        return userFolderTypes;
+        return groupAccessTypes;
     }
 
     /**
-     * Convert group/process pairs to UserType Webservice objects.
+     * Convert group/process pairs to GroupAccessType Webservice objects.
      * @param groupProcesses the DB model
-     * @return the Webservice UserType
+     * @return the Webservice GroupAccessType
      */
-    public static List<UserFolderType> convertGroupProcessesToFolderUserTypes(List<GroupProcess> groupProcesses) {
-        List<UserFolderType> userFolderTypes = new ArrayList<>();
+    public static List<GroupAccessType> convertGroupProcessesToGroupAccessTypes(List<GroupProcess> groupProcesses) {
+        List<GroupAccessType> groupAccessTypes = new ArrayList<>();
         for(GroupProcess node : groupProcesses) {
-            UserFolderType user = new UserFolderType();
-            user.setEmail(node.getGroup().getName() + "@example.com");
-            user.setUserId(node.getGroup().getRowGuid());
-            user.setFullName(node.getGroup().getName());
-            user.setHasRead(node.getHasRead());
-            user.setHasWrite(node.getHasWrite());
-            user.setHasOwnership(node.getHasOwnership());
-            userFolderTypes.add(user);
+            GroupAccessType gat = new GroupAccessType();
+            gat.setGroupId(node.getGroup().getRowGuid());
+            gat.setName(node.getGroup().getName());
+            gat.setHasRead(node.getHasRead());
+            gat.setHasWrite(node.getHasWrite());
+            gat.setHasOwnership(node.getHasOwnership());
+            groupAccessTypes.add(gat);
         }
-        return userFolderTypes;
+        return groupAccessTypes;
     }
 
 }

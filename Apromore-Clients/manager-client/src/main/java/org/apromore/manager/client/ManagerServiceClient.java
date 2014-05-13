@@ -42,22 +42,23 @@ import org.apromore.model.GetClusteringSummaryInputMsgType;
 import org.apromore.model.GetClusteringSummaryOutputMsgType;
 import org.apromore.model.GetClustersRequestType;
 import org.apromore.model.GetClustersResponseType;
-import org.apromore.model.GetFolderUsersInputMsgType;
-import org.apromore.model.GetFolderUsersOutputMsgType;
+import org.apromore.model.GetFolderGroupsInputMsgType;
+import org.apromore.model.GetFolderGroupsOutputMsgType;
 import org.apromore.model.GetFragmentInputMsgType;
 import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GetGedMatrixSummaryInputMsgType;
 import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
-import org.apromore.model.GetProcessUsersInputMsgType;
-import org.apromore.model.GetProcessUsersOutputMsgType;
+import org.apromore.model.GetProcessGroupsInputMsgType;
+import org.apromore.model.GetProcessGroupsOutputMsgType;
 import org.apromore.model.GetProcessesInputMsgType;
 import org.apromore.model.GetProcessesOutputMsgType;
 import org.apromore.model.GetSubFoldersInputMsgType;
 import org.apromore.model.GetSubFoldersOutputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.GroupAccessType;
 import org.apromore.model.GroupType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
@@ -122,7 +123,6 @@ import org.apromore.model.UpdateProcessInputMsgType;
 import org.apromore.model.UpdateProcessOutputMsgType;
 import org.apromore.model.UpdateSearchHistoryInputMsgType;
 import org.apromore.model.UpdateSearchHistoryOutputMsgType;
-import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
@@ -319,16 +319,16 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UserFolderType> getFolderUsers(int folderId) {
-        LOGGER.debug("Preparing GetFolderUsersRequest.....");
+    public List<GroupAccessType> getFolderGroups(int folderId) {
+        LOGGER.debug("Preparing GetFolderGroupsRequest.....");
 
-        GetFolderUsersInputMsgType msg = new GetFolderUsersInputMsgType();
+        GetFolderGroupsInputMsgType msg = new GetFolderGroupsInputMsgType();
         msg.setFolderId(folderId);
 
-        JAXBElement<GetFolderUsersInputMsgType> request = WS_CLIENT_FACTORY.createGetFolderUsersRequest(msg);
+        JAXBElement<GetFolderGroupsInputMsgType> request = WS_CLIENT_FACTORY.createGetFolderGroupsRequest(msg);
 
-        JAXBElement<GetFolderUsersOutputMsgType> response = (JAXBElement<GetFolderUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getUsers();
+        JAXBElement<GetFolderGroupsOutputMsgType> response = (JAXBElement<GetFolderGroupsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getGroups();
     }
 
     @Override
@@ -399,16 +399,16 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<UserFolderType> getProcessUsers(int processId) {
-        LOGGER.debug("Preparing GetProcessUsersRequest.....");
+    public List<GroupAccessType> getProcessGroups(int processId) {
+        LOGGER.debug("Preparing GetProcessGroupsRequest.....");
 
-        GetProcessUsersInputMsgType msg = new GetProcessUsersInputMsgType();
+        GetProcessGroupsInputMsgType msg = new GetProcessGroupsInputMsgType();
         msg.setProcessId(processId);
 
-        JAXBElement<GetProcessUsersInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessUsersRequest(msg);
+        JAXBElement<GetProcessGroupsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessGroupsRequest(msg);
 
-        JAXBElement<GetProcessUsersOutputMsgType> response = (JAXBElement<GetProcessUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getUsers();
+        JAXBElement<GetProcessGroupsOutputMsgType> response = (JAXBElement<GetProcessGroupsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getGroups();
     }
 
     @Override

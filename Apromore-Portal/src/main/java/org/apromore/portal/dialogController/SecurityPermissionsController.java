@@ -2,7 +2,7 @@ package org.apromore.portal.dialogController;
 
 import java.util.List;
 
-import org.apromore.model.UserFolderType;
+import org.apromore.model.GroupAccessType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
@@ -18,7 +18,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
- * Used to setup permissions for processes and users.
+ * Used to setup access groups for processes and folders.
  */
 public class SecurityPermissionsController extends BaseController {
 
@@ -32,38 +32,38 @@ public class SecurityPermissionsController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public void loadUsers(final int id, FolderTreeNodeTypes type){
-        List<UserFolderType> users = type == FolderTreeNodeTypes.Folder
-                                     ? securitySetupController.getMainController().getService().getFolderUsers(id)
-                                     : securitySetupController.getMainController().getService().getProcessUsers(id);
+        List<GroupAccessType> groups = type == FolderTreeNodeTypes.Folder
+                                       ? securitySetupController.getMainController().getService().getFolderGroups(id)
+                                       : securitySetupController.getMainController().getService().getProcessGroups(id);
         lstPermissions.getItems().clear();
         lstPermissions.setPageSize(6);
         UserSessionManager.setCurrentSecurityItem(id);
         UserSessionManager.setCurrentSecurityType(type);
         boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
 
-        for (final UserFolderType user : users) {
+        for (final GroupAccessType group : groups) {
             if (hasOwnership){
-                if (!(user.getUserId().equals(UserSessionManager.getCurrentUser().getId()))){
+                if (true /*!(group.getGroupId().equals(UserSessionManager.getCurrentUser().getGroup().getId()))*/) {
                     Listitem newItem = new Listitem();
-                    newItem.appendChild(new Listcell(user.getFullName()));
+                    newItem.appendChild(new Listcell(group.getName()));
                     newItem.setHeight("20px");
 
                     Checkbox chkRead = new Checkbox();
-                    chkRead.setChecked(user.isHasRead());
+                    chkRead.setChecked(group.isHasRead());
                     chkRead.setDisabled(true);
                     Listcell cellRead = new Listcell();
                     cellRead.appendChild(chkRead);
                     newItem.appendChild(cellRead);
 
                     Checkbox chkWrite = new Checkbox();
-                    chkWrite.setChecked(user.isHasWrite());
+                    chkWrite.setChecked(group.isHasWrite());
                     chkWrite.setDisabled(!hasOwnership);
                     Listcell cellWrite = new Listcell();
                     cellWrite.appendChild(chkWrite);
                     newItem.appendChild(cellWrite);
 
                     Checkbox chkOwner = new Checkbox();
-                    chkOwner.setChecked(user.isHasOwnership());
+                    chkOwner.setChecked(group.isHasOwnership());
                     chkOwner.setDisabled(!hasOwnership);
                     Listcell cellOwner = new Listcell();
                     cellOwner.appendChild(chkOwner);
@@ -85,10 +85,10 @@ public class SecurityPermissionsController extends BaseController {
                                         if (chkWrite != null && chkOwner != null){
                                             String message = "";
                                             if (selectedType == FolderTreeNodeTypes.Folder){
-                                                message = securitySetupController.getMainController().getService().saveFolderPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = securitySetupController.getMainController().getService().saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                             }
                                             else if (selectedType == FolderTreeNodeTypes.Process){
-                                                message = securitySetupController.getMainController().getService().saveProcessPermissions(id, user.getUserId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = securitySetupController.getMainController().getService().saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                             }
                                             if (message.isEmpty()){
                                                 Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK,
@@ -115,10 +115,10 @@ public class SecurityPermissionsController extends BaseController {
                                     String message = "";
                                     if (cells.size() == 5){
                                         if (selectedType == FolderTreeNodeTypes.Folder){
-                                            message = securitySetupController.getMainController().getService().removeFolderPermissions(id, user.getUserId());
+                                            message = securitySetupController.getMainController().getService().removeFolderPermissions(id, group.getGroupId());
                                         }
                                         else if (selectedType == FolderTreeNodeTypes.Process){
-                                            message = securitySetupController.getMainController().getService().removeProcessPermissions(id, user.getUserId());
+                                            message = securitySetupController.getMainController().getService().removeProcessPermissions(id, group.getGroupId());
                                         }
                                         if (message.isEmpty()){
                                             Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK,

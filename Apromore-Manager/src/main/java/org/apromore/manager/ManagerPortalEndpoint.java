@@ -63,22 +63,23 @@ import org.apromore.model.GetClusteringSummaryInputMsgType;
 import org.apromore.model.GetClusteringSummaryOutputMsgType;
 import org.apromore.model.GetClustersRequestType;
 import org.apromore.model.GetClustersResponseType;
-import org.apromore.model.GetFolderUsersInputMsgType;
-import org.apromore.model.GetFolderUsersOutputMsgType;
+import org.apromore.model.GetFolderGroupsInputMsgType;
+import org.apromore.model.GetFolderGroupsOutputMsgType;
 import org.apromore.model.GetFragmentInputMsgType;
 import org.apromore.model.GetFragmentOutputMsgType;
 import org.apromore.model.GetGedMatrixSummaryInputMsgType;
 import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
 import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
-import org.apromore.model.GetProcessUsersInputMsgType;
-import org.apromore.model.GetProcessUsersOutputMsgType;
+import org.apromore.model.GetProcessGroupsInputMsgType;
+import org.apromore.model.GetProcessGroupsOutputMsgType;
 import org.apromore.model.GetProcessesInputMsgType;
 import org.apromore.model.GetProcessesOutputMsgType;
 import org.apromore.model.GetSubFoldersInputMsgType;
 import org.apromore.model.GetSubFoldersOutputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.GroupAccessType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
@@ -147,7 +148,6 @@ import org.apromore.model.UpdateProcessInputMsgType;
 import org.apromore.model.UpdateProcessOutputMsgType;
 import org.apromore.model.UpdateSearchHistoryInputMsgType;
 import org.apromore.model.UpdateSearchHistoryOutputMsgType;
-import org.apromore.model.UserFolderType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.WriteUserInputMsgType;
@@ -1313,20 +1313,20 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetBreadcrumbsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetFolderUsersRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetFolderGroupsRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<GetFolderUsersOutputMsgType> getFolderUsers(@RequestPayload final JAXBElement<GetFolderUsersInputMsgType> req) {
-        LOGGER.trace("Executing operation getFolderUsers");
-        GetFolderUsersInputMsgType payload = req.getValue();
-        GetFolderUsersOutputMsgType res = new GetFolderUsersOutputMsgType();
+    public JAXBElement<GetFolderGroupsOutputMsgType> getFolderUsers(@RequestPayload final JAXBElement<GetFolderGroupsInputMsgType> req) {
+        LOGGER.trace("Executing operation getFolderGroups");
+        GetFolderGroupsInputMsgType payload = req.getValue();
+        GetFolderGroupsOutputMsgType res = new GetFolderGroupsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertGroupFoldersToFolderUserTypes(workspaceSrv.getGroupFolders(payload.getFolderId()));
-        for (UserFolderType ft : userFolderTypes) {
-            res.getUsers().add(ft);
+        List<GroupAccessType> groupAccessTypes = WorkspaceMapper.convertGroupFoldersToGroupAccessTypes(workspaceSrv.getGroupFolders(payload.getFolderId()));
+        for (GroupAccessType ft : groupAccessTypes) {
+            res.getGroups().add(ft);
         }
-        return new ObjectFactory().createGetFolderUsersResponse(res);
+        return new ObjectFactory().createGetFolderGroupsResponse(res);
     }
 
     @PayloadRoot(localPart = "SaveFolderPermissionsRequest", namespace = NAMESPACE)
@@ -1385,20 +1385,20 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createRemoveProcessPermissionsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetProcessUsersRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetProcessGroupsRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<GetProcessUsersOutputMsgType> getProcessUsers(@RequestPayload final JAXBElement<GetProcessUsersInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcessUsers");
-        GetProcessUsersInputMsgType payload = req.getValue();
-        GetProcessUsersOutputMsgType res = new GetProcessUsersOutputMsgType();
+    public JAXBElement<GetProcessGroupsOutputMsgType> getProcessGroups(@RequestPayload final JAXBElement<GetProcessGroupsInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcessGroups");
+        GetProcessGroupsInputMsgType payload = req.getValue();
+        GetProcessGroupsOutputMsgType res = new GetProcessGroupsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertGroupProcessesToFolderUserTypes(workspaceSrv.getGroupProcesses(payload.getProcessId()));
-        for (UserFolderType ft : userFolderTypes) {
-            res.getUsers().add(ft);
+        List<GroupAccessType> groupAccessTypes = WorkspaceMapper.convertGroupProcessesToGroupAccessTypes(workspaceSrv.getGroupProcesses(payload.getProcessId()));
+        for (GroupAccessType ft : groupAccessTypes) {
+            res.getGroups().add(ft);
         }
-        return new ObjectFactory().createGetProcessUsersResponse(res);
+        return new ObjectFactory().createGetProcessGroupsResponse(res);
     }
 
     @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
