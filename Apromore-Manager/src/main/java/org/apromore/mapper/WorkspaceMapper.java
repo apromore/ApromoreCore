@@ -2,8 +2,8 @@ package org.apromore.mapper;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.FolderUser;
-import org.apromore.dao.model.ProcessUser;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupProcess;
 import org.apromore.model.FolderType;
 import org.apromore.model.UserFolderType;
 
@@ -48,10 +48,10 @@ public class WorkspaceMapper {
      * @param folders the DB User Model
      * @return the Webservice UserType
      */
-    public static List<FolderType> convertFoldersToFolderTypes(List<FolderUser> folders) {
+    public static List<FolderType> convertFoldersToFolderTypes(List<GroupFolder> folders) {
         List<FolderType> folderTypes = new ArrayList<>();
 
-        for (FolderUser node : folders) {
+        for (GroupFolder node : folders) {
             FolderType folder = new FolderType();
             folder.setFolderName(node.getFolder().getName());
             folder.setId(node.getFolder().getId());
@@ -87,20 +87,19 @@ public class WorkspaceMapper {
         return folderTypes;
     }
 
-
     /**
-     * Convert a user object to a UserType Webservice object.
-     * @param folders the DB User Model
+     * Convert group/folder pairs to UserType Webservice objects.
+     * @param groupFolders  the DB model
      * @return the Webservice UserType
      */
-    public static List<UserFolderType> convertFolderUsersToFolderUserTypes(List<FolderUser> folders) {
+    public static List<UserFolderType> convertGroupFoldersToFolderUserTypes(List<GroupFolder> groupFolders) {
         List<UserFolderType> userFolderTypes = new ArrayList<>();
-        for(FolderUser node : folders) {
+        for(GroupFolder node : groupFolders) {
             UserFolderType user = new UserFolderType();
-            user.setEmail(node.getUser().getUsername());
-            user.setUserId(node.getUser().getRowGuid());              
+            user.setEmail(node.getGroup().getName() + "@example.com");
+            user.setUserId(node.getGroup().getRowGuid());
+            user.setFullName(node.getGroup().getName());
             user.setHasRead(node.isHasRead());
-            user.setFullName(node.getUser().getFirstName() + " " + node.getUser().getLastName());
             user.setHasWrite(node.isHasWrite());
             user.setHasOwnership(node.isHasOwnership());
             userFolderTypes.add(user);
@@ -109,20 +108,20 @@ public class WorkspaceMapper {
     }
 
     /**
-     * Convert a user object to a UserType Webservice object.
-     * @param processUsers the DB User Model
+     * Convert group/process pairs to UserType Webservice objects.
+     * @param groupProcesses the DB model
      * @return the Webservice UserType
      */
-    public static List<UserFolderType> convertProcessUsersToFolderUserTypes(List<ProcessUser> processUsers) {
+    public static List<UserFolderType> convertGroupProcessesToFolderUserTypes(List<GroupProcess> groupProcesses) {
         List<UserFolderType> userFolderTypes = new ArrayList<>();
-        for(ProcessUser node : processUsers) {
+        for(GroupProcess node : groupProcesses) {
             UserFolderType user = new UserFolderType();
-            user.setEmail(node.getUser().getUsername());
-            user.setUserId(node.getUser().getRowGuid());
-            user.setHasRead(node.isHasRead());
-            user.setFullName(node.getUser().getFirstName() + " " + node.getUser().getLastName());
-            user.setHasWrite(node.isHasWrite());
-            user.setHasOwnership(node.isHasOwnership());
+            user.setEmail(node.getGroup().getName() + "@example.com");
+            user.setUserId(node.getGroup().getRowGuid());
+            user.setFullName(node.getGroup().getName());
+            user.setHasRead(node.getHasRead());
+            user.setHasWrite(node.getHasWrite());
+            user.setHasOwnership(node.getHasOwnership());
             userFolderTypes.add(user);
         }
         return userFolderTypes;

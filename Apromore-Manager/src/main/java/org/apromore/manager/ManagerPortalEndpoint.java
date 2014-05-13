@@ -8,6 +8,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.helper.Version;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.Group;
 import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.NativeType;
@@ -20,6 +21,7 @@ import org.apromore.helper.CanoniserHelper;
 import org.apromore.helper.PluginHelper;
 import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
+import org.apromore.mapper.GroupMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.SearchHistoryMapper;
 import org.apromore.mapper.UserMapper;
@@ -135,6 +137,8 @@ import org.apromore.model.SaveProcessPermissionsInputMsgType;
 import org.apromore.model.SaveProcessPermissionsOutputMsgType;
 import org.apromore.model.SearchForSimilarProcessesInputMsgType;
 import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchGroupsInputMsgType;
+import org.apromore.model.SearchGroupsOutputMsgType;
 import org.apromore.model.SearchUserInputMsgType;
 import org.apromore.model.SearchUserOutputMsgType;
 import org.apromore.model.UpdateFolderInputMsgType;
@@ -770,7 +774,7 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setUser(newUser);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.warn("Failed to write user", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
@@ -912,6 +916,30 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return new ObjectFactory().createResetUserPasswordResponse(res);
+    }
+
+
+    @PayloadRoot(localPart = "SearchGroupsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<SearchGroupsOutputMsgType> searchGroups(@RequestPayload final JAXBElement<SearchGroupsInputMsgType> req) {
+        LOGGER.trace("Executing operation searchGroups");
+        SearchGroupsInputMsgType payload = req.getValue();
+        SearchGroupsOutputMsgType res = new SearchGroupsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            List<Group> groups = secSrv.searchGroups(payload.getSearchString());
+            for (Group group : groups) {
+                res.getGroups().add(GroupMapper.toGroupType(group));
+            }
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+        return new ObjectFactory().createSearchGroupsResponse(res);
     }
 
 
@@ -1294,7 +1322,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertFolderUsersToFolderUserTypes(workspaceSrv.getFolderUsers(payload.getFolderId()));
+        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertGroupFoldersToFolderUserTypes(workspaceSrv.getGroupFolders(payload.getFolderId()));
         for (UserFolderType ft : userFolderTypes) {
             res.getUsers().add(ft);
         }
@@ -1310,7 +1338,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        String message = workspaceSrv.saveFolderPermissions(payload.getFolderId(), payload.getUserId(), payload.isHasRead(), payload.isHasRead(), payload.isHasOwnership());
+        String message = workspaceSrv.saveFolderPermissions(payload.getFolderId(), payload.getUserId(), payload.isHasRead(), payload.isHasWrite(), payload.isHasOwnership());
         res.setMessage(message);
         return new ObjectFactory().createSaveFolderPermissionsResponse(res);
     }
@@ -1324,7 +1352,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        String message = workspaceSrv.saveProcessPermissions(payload.getProcessId(), payload.getUserId(), payload.isHasRead(), payload.isHasRead(), payload.isHasOwnership());
+        String message = workspaceSrv.saveProcessPermissions(payload.getProcessId(), payload.getUserId(), payload.isHasRead(), payload.isHasWrite(), payload.isHasOwnership());
         res.setMessage(message);
         return new ObjectFactory().createSaveProcessPermissionsResponse(res);
     }
@@ -1366,7 +1394,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertProcessUsersToFolderUserTypes(workspaceSrv.getProcessUsers(payload.getProcessId()));
+        List<UserFolderType> userFolderTypes = WorkspaceMapper.convertGroupProcessesToFolderUserTypes(workspaceSrv.getGroupProcesses(payload.getProcessId()));
         for (UserFolderType ft : userFolderTypes) {
             res.getUsers().add(ft);
         }

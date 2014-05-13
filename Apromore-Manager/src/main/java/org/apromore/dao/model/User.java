@@ -10,7 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -49,14 +52,13 @@ public class User implements Serializable {
     private String lastName;
     private Date dateCreated;
     private Date lastActivityDate;
+    private Group group;
 
     private Membership membership = new Membership();
 
+    private Set<Group> groups = new HashSet<>();
     private Set<Role> roles = new HashSet<>();
-    private Set<ProcessUser> processUsers = new HashSet<>();
     private Set<Workspace> workspaces = new HashSet<>();
-    private Set<FragmentUser> fragmentUsers = new HashSet<>();
-    private Set<FolderUser> folderUsers = new HashSet<>();
     private Set<Folder> foldersForCreatorId = new HashSet<>();
     private Set<Folder> foldersForModifiedById = new HashSet<>();
     private Set<Process> processes = new HashSet<>();
@@ -195,6 +197,40 @@ public class User implements Serializable {
     }
 
     /**
+     * @return the user's personal access control group
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "groupId")
+    public Group getGroup() {
+        return group;
+    }
+
+    /**
+     * @param the user's personal access control group
+     */
+    public void setGroup(final Group newGroup) {
+        this.group = newGroup;
+    }
+
+    /**
+     * @return all the access control groups of which this user is a member
+     */
+    @ManyToMany
+    @JoinTable(name = "user_group",
+        joinColumns        = @JoinColumn(name = "userId",  referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "groupId", referencedColumnName = "id"))
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    /**
+     * @param newGroups  all the access control groups of which this user should become a member
+     */
+    public void setGroups(final Set<Group> newGroups) {
+        this.groups = newGroups;
+    }
+
+    /**
      * Get the membership for the Object.
      * @return Returns the membership.
      */
@@ -229,16 +265,6 @@ public class User implements Serializable {
         this.roles = newRoles;
     }
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<ProcessUser> getProcessUsers() {
-        return this.processUsers;
-    }
-
-    public void setProcessUsers(Set<ProcessUser> processUsers) {
-        this.processUsers = processUsers;
-    }
-
     @OneToMany(mappedBy = "createdBy")
     public Set<Workspace> getWorkspaces() {
         return this.workspaces;
@@ -246,24 +272,6 @@ public class User implements Serializable {
 
     public void setWorkspaces(Set<Workspace> workspaces) {
         this.workspaces = workspaces;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public Set<FragmentUser> getFragmentUsers() {
-        return this.fragmentUsers;
-    }
-
-    public void setFragmentUsers(Set<FragmentUser> fragmentUsers) {
-        this.fragmentUsers = fragmentUsers;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public Set<FolderUser> getFolderUsers() {
-        return this.folderUsers;
-    }
-
-    public void setFolderUsers(Set<FolderUser> folderUsers) {
-        this.folderUsers = folderUsers;
     }
 
     @OneToMany(mappedBy = "createdBy")

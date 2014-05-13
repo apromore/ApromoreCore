@@ -2,9 +2,9 @@ package org.apromore.service;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.FolderUser;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessUser;
 import org.apromore.dao.model.User;
 
 import java.util.List;
@@ -24,11 +24,11 @@ public interface WorkspaceService {
      */
     Folder getFolder(Integer folderId);
 
-    List<FolderUser> getFolderUsers(Integer folderId);
+    List<GroupFolder> getGroupFolders(Integer folderId);
 
-    List<ProcessUser> getProcessUsers(Integer processId);
+    List<GroupProcess> getGroupProcesses(Integer processId);
 
-    List<ProcessUser> getUserProcessesOrig(String userId, Integer folderId);
+    List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
 
     void createFolder(String userId, String folderName, Integer parentFolderId);
 
@@ -42,23 +42,15 @@ public interface WorkspaceService {
 
     List<Folder> getBreadcrumbs(Integer folderId);
 
-    List<FolderUser> getSubFolders(String userId, Integer folderId);
+    List<GroupFolder> getSubFolders(String userRowGuid, Integer folderId);
 
-    String saveFolderPermissions(Integer folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+    String saveFolderPermissions(Integer folderId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
-    String saveProcessPermissions(Integer processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+    String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
     String removeFolderPermissions(Integer folderId, String userId);
 
     String removeProcessPermissions(Integer processId, String userId);
-
-    /**
-     * Updates the Folders security so all users now have read access to that folder (from the root folder up).
-     * NOTE: this method is recursive, we update this folder then move up the folder tree until the root.
-     * @param folder the folder we have a public model in.
-     * @param users all the users we giving access.
-     */
-    void updatePublicFoldersForUsers(final Folder folder, final List<User> users);
 
     /**
      * Creates the public status for the users to have read rights to this model.

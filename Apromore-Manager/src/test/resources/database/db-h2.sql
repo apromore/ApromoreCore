@@ -212,16 +212,6 @@ CREATE TABLE folder_subfolder
    PRIMARY KEY (parentId,childId)
 )
 ;
-CREATE TABLE folder_user
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   folderId int NOT NULL,
-   userId int NOT NULL,
-   has_read bit DEFAULT 1 NOT NULL,
-   has_write bit DEFAULT 1 NOT NULL,
-   has_ownership bit DEFAULT 1 NOT NULL
-)
-;
 CREATE TABLE fragment
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -234,16 +224,6 @@ CREATE TABLE fragment_distance
    fragmentVersionId1 int NOT NULL,
    fragmentVersionId2 int NOT NULL,
    ged double
-)
-;
-CREATE TABLE fragment_user
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   fragmentId int NOT NULL,
-   userId int NOT NULL,
-   has_read bit DEFAULT 1 NOT NULL,
-   has_write bit DEFAULT 1 NOT NULL,
-   has_ownership bit DEFAULT 1 NOT NULL
 )
 ;
 CREATE TABLE fragment_version
@@ -269,6 +249,34 @@ CREATE TABLE fragment_version_dag
    fragmentVersionId int,
    childFragmentVersionId int,
    pocketId varchar(40)
+)
+;
+CREATE TABLE "group"
+(
+   id int auto_increment PRIMARY KEY NOT NULL,
+   row_guid varchar(255) NOT NULL,
+   name varchar(45) NOT NULL,
+   type varchar(10) NOT NULL
+)
+;
+CREATE TABLE group_folder
+(
+   id int auto_increment PRIMARY KEY NOT NULL,
+   groupId int NOT NULL,
+   folderId int NOT NULL,
+   has_read bit DEFAULT 0 NOT NULL,
+   has_write bit DEFAULT 0 NOT NULL,
+   has_ownership bit DEFAULT 0 NOT NULL
+)
+;
+CREATE TABLE group_process
+(
+   id int auto_increment PRIMARY KEY NOT NULL,
+   groupId int NOT NULL,
+   processId int NOT NULL,
+   has_read bit DEFAULT 0 NOT NULL,
+   has_write bit DEFAULT 0 NOT NULL,
+   has_ownership bit DEFAULT 0 NOT NULL
 )
 ;
 CREATE TABLE membership
@@ -446,16 +454,6 @@ CREATE TABLE process_model_version
    lastUpdateDate varchar(40)
 )
 ;
-CREATE TABLE process_user
-(
-   id int auto_increment PRIMARY KEY NOT NULL,
-   processId int NOT NULL,
-   userId int NOT NULL,
-   has_read bit DEFAULT 0 NOT NULL,
-   has_write bit DEFAULT 0 NOT NULL,
-   has_ownership bit DEFAULT 0 NOT NULL
-)
-;
 CREATE TABLE resource
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -531,7 +529,15 @@ CREATE TABLE user
    date_created timestamp NOT NULL,
    first_name varchar(45) NOT NULL,
    last_name varchar(45) NOT NULL,
-   last_activity_date timestamp NOT NULL
+   last_activity_date timestamp NOT NULL,
+   groupId int NOT NULL
+)
+;
+CREATE TABLE user_group
+(
+   userId int NOT NULL,
+   groupId int NOT NULL,
+   PRIMARY KEY (userId,groupId)
 )
 ;
 CREATE TABLE user_role
@@ -857,22 +863,6 @@ CREATE INDEX folder_subfolder_child ON folder_subfolder(childId)
 ;
 CREATE INDEX folder_subfolder_parent ON folder_subfolder(parentId)
 ;
-ALTER TABLE folder_user
-ADD CONSTRAINT fk_folder_user_folder
-FOREIGN KEY (folderId)
-REFERENCES folder(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE folder_user
-ADD CONSTRAINT fk_folder_user_user
-FOREIGN KEY (userId)
-REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_folder_user ON folder_user(id)
-;
-CREATE INDEX fk_folder_user_user ON folder_user(userId)
-;
-CREATE INDEX fk_folder_user_folder ON folder_user(folderId)
-;
 CREATE UNIQUE INDEX id_primary_fragment ON fragment(id)
 ;
 ALTER TABLE fragment_distance
@@ -896,22 +886,6 @@ CREATE UNIQUE INDEX un_geds ON fragment_distance
   fragmentVersionId1,
   fragmentVersionId2
 )
-;
-ALTER TABLE fragment_user
-ADD CONSTRAINT fragment_user_fragment
-FOREIGN KEY (fragmentId)
-REFERENCES fragment(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE fragment_user
-ADD CONSTRAINT fragment_user_user
-FOREIGN KEY (userId)
-REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_fragment_user ON fragment_user(id)
-;
-CREATE INDEX fragment_user_user ON fragment_user(userId)
-;
-CREATE INDEX fragment_user_fragment ON fragment_user(fragmentId)
 ;
 ALTER TABLE fragment_version
 ADD CONSTRAINT fk_fragments_version
@@ -1217,22 +1191,6 @@ CREATE INDEX fk_process_native_type ON process_model_version(nativeTypeId)
 CREATE INDEX idx_pmv_version ON process_model_version(version_number)
 ;
 CREATE INDEX fk_process_canonical ON process_model_version(canonicalId)
-;
-ALTER TABLE process_user
-ADD CONSTRAINT fk_process_user_users
-FOREIGN KEY (userId)
-REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-ALTER TABLE process_user
-ADD CONSTRAINT fk_process_user_process
-FOREIGN KEY (processId)
-REFERENCES process(id) ON DELETE CASCADE ON UPDATE CASCADE
-;
-CREATE UNIQUE INDEX id_primary_process_user ON process_user(id)
-;
-CREATE INDEX fk_process_user_users ON process_user(userId)
-;
-CREATE INDEX fk_process_user_process ON process_user(processId)
 ;
 ALTER TABLE resource
 ADD CONSTRAINT fk_res_pmv

@@ -49,7 +49,7 @@ public class Process implements Serializable {
     private Folder folder;
     private NativeType nativeType;
 
-    private Set<ProcessUser> processUsers = new HashSet<>();
+    private Set<GroupProcess> groupProcesses = new HashSet<>();
     private List<ProcessBranch> processBranches = new ArrayList<>();
 
 
@@ -60,6 +60,9 @@ public class Process implements Serializable {
         super();
     }
 
+    public Process(Integer processId) {
+        id = processId;
+    }
 
 
     @Id
@@ -162,13 +165,13 @@ public class Process implements Serializable {
         this.processBranches = newProcessBranches;
     }
 
+
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<ProcessUser> getProcessUsers() {
-        return this.processUsers;
+    public Set<GroupProcess> getGroupProcesses() {
+        return this.groupProcesses;
     }
 
-    public void setProcessUsers(Set<ProcessUser> processUsers) {
-        this.processUsers = processUsers;
+    public void setGroupProcesses(Set<GroupProcess> newGroupProcesses) {
+        this.groupProcesses = newGroupProcesses;
     }
-
 }

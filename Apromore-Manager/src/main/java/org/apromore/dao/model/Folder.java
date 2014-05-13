@@ -52,7 +52,6 @@ public class Folder implements Serializable {
 
     private Set<Process> processes = new HashSet<>();
     private Set<Folder> subFolders = new HashSet<>();
-    private Set<FolderUser> folderUsers = new HashSet<>();
 
 
     /**
@@ -222,24 +221,6 @@ public class Folder implements Serializable {
     public void setParentFolder(final Folder newParentFolder) {
         this.parentFolder = newParentFolder;
     }
-
-    /**
-     * Getter for the role collection.
-     * @return Returns the roles.
-     */
-    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<FolderUser> getFolderUsers() {
-        return this.folderUsers;
-    }
-
-    /**
-     * Setter for the role Collection.
-     * @param newFolderUsers The roles to set.
-     */
-    public void setFolderUsers(Set<FolderUser> newFolderUsers) {
-        this.folderUsers = newFolderUsers;
-    }
-
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Process> getProcesses() {
