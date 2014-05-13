@@ -1,5 +1,6 @@
 package org.apromore.service;
 
+import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
@@ -33,6 +34,14 @@ public interface SecurityService {
      * @return the username of the user we are searching for.
      */
     List<User> searchUsers(String searchString);
+
+    /**
+     * Searches for a group by (approximate) name.
+     *
+     * @param searchString the name of the group we are searching for
+     * @return the candidate groups that were found
+     */
+    List<Group> searchGroups(String searchString);
 
     /**
      * Get a particular User by their email.

@@ -58,6 +58,7 @@ import org.apromore.model.GetSubFoldersInputMsgType;
 import org.apromore.model.GetSubFoldersOutputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
 import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
+import org.apromore.model.GroupType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
 import org.apromore.model.ImportProcessResultType;
@@ -110,6 +111,8 @@ import org.apromore.model.SaveProcessPermissionsInputMsgType;
 import org.apromore.model.SaveProcessPermissionsOutputMsgType;
 import org.apromore.model.SearchForSimilarProcessesInputMsgType;
 import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.SearchGroupsInputMsgType;
+import org.apromore.model.SearchGroupsOutputMsgType;
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.SearchUserInputMsgType;
 import org.apromore.model.SearchUserOutputMsgType;
@@ -214,6 +217,20 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<SearchUserOutputMsgType> response = (JAXBElement<SearchUserOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getUsers();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<GroupType> searchGroups(String searchString) {
+        LOGGER.debug("Preparing SearchGroupsRequest.....");
+
+        SearchGroupsInputMsgType msg = new SearchGroupsInputMsgType();
+        msg.setSearchString(searchString);
+
+        JAXBElement<SearchGroupsInputMsgType> request = WS_CLIENT_FACTORY.createSearchGroupsRequest(msg);
+
+        JAXBElement<SearchGroupsOutputMsgType> response = (JAXBElement<SearchGroupsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getGroups();
     }
 
     /**

@@ -10,6 +10,7 @@ import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FolderType;
 import org.apromore.model.GedMatrixSummaryType;
 import org.apromore.model.GetFragmentOutputMsgType;
+import org.apromore.model.GroupType;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
@@ -53,6 +54,13 @@ public interface ManagerService {
      * @return the UserType from the webservice
      */
     List<UserType> searchUsers(String searchString);
+
+    /**
+     * Access group records.
+     * @param searchString the users username
+     * @return the GroupType from the webservice
+     */
+    List<GroupType> searchGroups(String searchString);
 
     /**
      * USed as apart of the reset user's password.

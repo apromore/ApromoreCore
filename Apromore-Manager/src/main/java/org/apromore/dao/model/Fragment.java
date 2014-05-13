@@ -28,7 +28,6 @@ public class Fragment implements Serializable {
     private Integer propagationPolicy;
 
     private Set<FragmentVersion> fragmentVersions = new HashSet<>();
-    private Set<FragmentUser> fragmentUsers = new HashSet<>();
 
 
     /**
@@ -76,15 +75,6 @@ public class Fragment implements Serializable {
 
     public void setFragmentVersions(final Set<FragmentVersion> newFragmentVersions) {
         this.fragmentVersions = newFragmentVersions;
-    }
-
-    @OneToMany(mappedBy = "fragment")
-    public Set<FragmentUser> getFragmentUsers() {
-        return this.fragmentUsers;
-    }
-
-    public void setFragmentUsers(Set<FragmentUser> fragmentUsers) {
-        this.fragmentUsers = fragmentUsers;
     }
 }
 

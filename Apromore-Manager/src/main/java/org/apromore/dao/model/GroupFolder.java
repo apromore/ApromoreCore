@@ -15,28 +15,29 @@ import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * Stores the process in apromore.
- *
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * The access control details corresponding to a particular group and folder.
+ *  
+ * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 @Entity
-@Table(name = "process_user")
-@Configurable("process_user")
+@Table(name = "group_folder")
+@Configurable("group_folder")
 @Cache(expiry = 180000, size = 1000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
-public class ProcessUser implements Serializable {
+public class GroupFolder implements Serializable {
 
     private Integer id;
     private boolean hasRead;
     private boolean hasWrite;
     private boolean hasOwnership;
 
-    private User user;
-    private Process process;
+    private Group  group;
+    private Folder folder;
+
 
     /**
      * Default Constructor.
      */
-    public ProcessUser() {
+    public GroupFolder() {
     }
 
 
@@ -57,6 +58,27 @@ public class ProcessUser implements Serializable {
      */
     public void setId(final Integer newId) {
         this.id = newId;
+    }
+
+
+    @ManyToOne
+    @JoinColumn(name = "groupId", nullable = false)
+    public Group getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "folderId", nullable = true)
+    public Folder getFolder() {
+        return this.folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 
 
@@ -87,27 +109,5 @@ public class ProcessUser implements Serializable {
 
     public void setHasOwnership(boolean hasOwnership) {
         this.hasOwnership = hasOwnership;
-    }
-
-
-
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    public User getUser() {
-        return this.user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "processId")
-    public Process getProcess() {
-        return this.process;
-    }
-
-    public void setProcess(Process process) {
-        this.process = process;
     }
 }

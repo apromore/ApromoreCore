@@ -22,12 +22,13 @@ DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
 DROP TABLE IF EXISTS `folder`;
-DROP TABLE IF EXISTS `folder_user`;
 DROP TABLE IF EXISTS `fragment`;
-DROP TABLE IF EXISTS `fragment_user`;
 DROP TABLE IF EXISTS `membership`;
 DROP TABLE IF EXISTS `permission`;
-DROP TABLE IF EXISTS `process_user`;
+DROP TABLE IF EXISTS `group`;
+DROP TABLE IF EXISTS `user_group`;
+DROP TABLE IF EXISTS `group_folder`;
+DROP TABLE IF EXISTS `group_process`;
 DROP TABLE IF EXISTS `role`;
 DROP TABLE IF EXISTS `role_permission`;
 DROP TABLE IF EXISTS `user`;
@@ -362,38 +363,10 @@ CREATE TABLE `folder` (
   CONSTRAINT `folder_workspace` FOREIGN KEY (`workspaceId`) REFERENCES `workspace` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `folder_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `folderId` int(11) DEFAULT NULL,
-  `userId` int(11) NOT NULL,
-  `has_read` boolean not null default 1,
-  `has_write` boolean not null default 1,
-  `has_ownership` boolean not null default 1,
-  PRIMARY KEY (`id`),
-  KEY `fk_folder_user_folder` (`folderId`),
-  KEY `fk_folder_user_user` (`userId`),
-  CONSTRAINT `fk_folder_user_folder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_folder_user_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `fragment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `propagation_policy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `fragment_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fragmentId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `has_read` boolean not null default 1,
-  `has_write` boolean not null default 1,
-  `has_ownership` boolean not null default 1,
-  PRIMARY KEY (`id`),
-  KEY `fragment_user_fragment` (`fragmentId`),
-  KEY `fragment_user_user` (`userId`),
-  CONSTRAINT `fragment_user_fragment` FOREIGN KEY (`fragmentId`) REFERENCES `fragment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fragment_user_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `membership` (
@@ -423,19 +396,52 @@ CREATE TABLE `permission` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `process_user` (
+CREATE TABLE `group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `processId` int(11) NOT NULL,
+  `row_guid` varchar(255) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group_row_guid_UNIQUE` (`row_guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_group` (
   `userId` int(11) NOT NULL,
+  `groupId` int(11) NOT NULL,
+  PRIMARY KEY (`userId` , `groupId`),
+  KEY `fk_user_group_user` (`userId`),
+  KEY `fk_user_group_group` (`groupId`),
+  CONSTRAINT `fk_user_group_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_group_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `group_folder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupId` int(11) NOT NULL,
+  `folderId` int(11) NOT NULL,
   `has_read` tinyint(1) NOT NULL DEFAULT '0',
   `has_write` tinyint(1) NOT NULL DEFAULT '0',
   `has_ownership` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `fk_process_user_process` (`processId`),
-  KEY `fk_process_user_users` (`userId`),
-  CONSTRAINT `fk_process_user_process` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_process_user_users` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `fk_group_folder_folder` (`folderId`),
+  KEY `fk_group_folder_group` (`groupId`),
+  CONSTRAINT `fk_group_folder_folder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_group_folder_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `group_process` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupId` int(11) NOT NULL,
+  `processId` int(11) NOT NULL,
+  `has_read` tinyint(1) NOT NULL DEFAULT '0',
+  `has_write` tinyint(1) NOT NULL DEFAULT '0',
+  `has_ownership` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `fk_group_process_process` (`processId`),
+  KEY `fk_group_process_group` (`groupId`),
+  CONSTRAINT `fk_group_process_process` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_group_process_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -463,9 +469,12 @@ CREATE TABLE `user` (
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `last_activity_date` datetime NOT NULL,
+  `groupId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `row_guid_UNIQUE` (`row_guid`),
-  UNIQUE KEY `username_UNIQUE` (`username`)
+  UNIQUE KEY `user_row_guid_UNIQUE` (`row_guid`),
+  UNIQUE KEY `user_username_UNIQUE` (`username`),
+  KEY (`groupId`),
+  CONSTRAINT `fk_user_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_role` (
@@ -848,14 +857,14 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james','2012-05-23 11:52:48','Cameron','James','2012-05-23 11:52:48');
-INSERT INTO `user` VALUES (2,'aaf24d0d-58f2-43b1-8dcc-bf99717b708f','chathura','2012-05-23 11:59:51','Chathura','Ekanayake','2012-05-23 11:59:51');
-INSERT INTO `user` VALUES (3,'a393f9c2-e2ee-49ed-9b6a-a1269811764c','arthur','2012-05-23 12:07:24','Arthur','Ter Hofstede','2012-05-23 12:07:24');
-INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri','2012-05-23 20:08:03','Marie','Fauvet','2012-05-23 20:08:03');
-INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa','2012-05-23 20:24:37','Marcello','La Rosa','2012-05-23 20:24:37');
-INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix','2012-05-23 20:37:44','Felix','Mannhardt','2012-05-23 20:37:44');
-INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi','2012-05-23 20:40:26','Simon','Raboczi','2012-05-23 20:40:26');
-INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin','2012-05-28 16:51:05','Test','User','2012-05-28 16:51:05');
+INSERT INTO `user` VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james','2012-05-23 11:52:48','Cameron','James','2012-05-23 11:52:48',1);
+INSERT INTO `user` VALUES (2,'aaf24d0d-58f2-43b1-8dcc-bf99717b708f','chathura','2012-05-23 11:59:51','Chathura','Ekanayake','2012-05-23 11:59:51',2);
+INSERT INTO `user` VALUES (3,'a393f9c2-e2ee-49ed-9b6a-a1269811764c','arthur','2012-05-23 12:07:24','Arthur','Ter Hofstede','2012-05-23 12:07:24',3);
+INSERT INTO `user` VALUES (4,'b6701ee5-227b-493e-9b01-85aa33acd53b','Macri','2012-05-23 20:08:03','Marie','Fauvet','2012-05-23 20:08:03',4);
+INSERT INTO `user` VALUES (5,'c81da91f-facc-4eff-b648-bdc1a2a5ebbe','larosa','2012-05-23 20:24:37','Marcello','La Rosa','2012-05-23 20:24:37',5);
+INSERT INTO `user` VALUES (6,'c03eff4d-3672-4c91-bfea-36c67e2423f5','felix','2012-05-23 20:37:44','Felix','Mannhardt','2012-05-23 20:37:44',6);
+INSERT INTO `user` VALUES (7,'fbcd5a9a-a224-40cb-8ab9-b12436d92835','raboczi','2012-05-23 20:40:26','Simon','Raboczi','2012-05-23 20:40:26',7);
+INSERT INTO `user` VALUES (8,'ad1f7b60-1143-4399-b331-b887585a0f30','admin','2012-05-28 16:51:05','Test','User','2012-05-28 16:51:05',8);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -871,6 +880,35 @@ INSERT INTO `membership` VALUES (6,6,'5f4dcc3b5aa765d61d8327deb882cf99','usernam
 INSERT INTO `membership` VALUES (7,7,'5f4dcc3b5aa765d61d8327deb882cf99','username','','raboczi@gmail.com','Test question','test',1,0,'2012-06-16 12:35:25',0,0);
 INSERT INTO `membership` VALUES (8,8,'5f4dcc3b5aa765d61d8327deb882cf99','username','','admin','Test question','test',1,0,'2012-06-16 14:10:14',0,0);
 /*!40000 ALTER TABLE `membership` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `group` WRITE;
+/*!40000 ALTER TABLE `group` DISABLE KEYS */;
+INSERT INTO `group` VALUES (1,'uuid1-james',   'james',   'USER');
+INSERT INTO `group` VALUES (2,'uuid2-chathura','chathura','USER');
+INSERT INTO `group` VALUES (3,'uuid3-arthur',  'arthur',  'USER');
+INSERT INTO `group` VALUES (4,'uuid4-Macri',   'Macri',   'USER');
+INSERT INTO `group` VALUES (5,'uuid5-larosa',  'larosa',  'USER');
+INSERT INTO `group` VALUES (6,'uuid6-felix',   'felix',   'USER');
+INSERT INTO `group` VALUES (7,'uuid7-raboczi', 'raboczi', 'USER');
+INSERT INTO `group` VALUES (8,'uuid8-admin',   'admin',   'USER');
+INSERT INTO `group` VALUES (9,'uuid9-public',  'public',  'PUBLIC');
+/*!40000 ALTER TABLE `group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `user_group` WRITE;
+/*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+INSERT INTO `user_group` VALUES (1,1),(1,9);  # every user is explicitly a member of the public group
+INSERT INTO `user_group` VALUES (2,2),(2,9);
+INSERT INTO `user_group` VALUES (3,3),(3,9);
+INSERT INTO `user_group` VALUES (4,4),(4,9);
+INSERT INTO `user_group` VALUES (5,5),(5,9);
+INSERT INTO `user_group` VALUES (6,6),(6,9);
+INSERT INTO `user_group` VALUES (7,7),(7,9);
+INSERT INTO `user_group` VALUES (8,8),(8,9);
+/*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

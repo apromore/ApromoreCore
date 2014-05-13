@@ -1,6 +1,6 @@
 <?component name="FolderTree" macroURI="/macros/folderTree.zul" ?>
 <?component name="Permissions" macroURI="/macros/permissions.zul" ?>
-<?component name="Users" macroURI="/macros/users.zul" ?>
+<?component name="Groups" macroURI="/macros/groups.zul" ?>
 
 <window width="900px" closable="true" title="Manage Security" position="center" id="winSecuritySetup">
 
@@ -15,8 +15,8 @@
             <north title="Permissions" flex="true" splittable="true" height="330px">
                 <Permissions id="existingPermissions"/>
             </north>
-            <center title="Users" flex="true">
-                <Users id="findUsers" vflex="true"/>
+            <center title="Groups" flex="true">
+                <Groups id="findGroups" vflex="true"/>
             </center>
         </borderlayout>
     </hbox>

@@ -1,9 +1,11 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.GroupRepository;
 import org.apromore.dao.MembershipRepository;
 import org.apromore.dao.PermissionRepository;
 import org.apromore.dao.RoleRepository;
 import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
@@ -22,6 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Implementation of the SecurityService Contract.
@@ -32,14 +35,17 @@ import java.util.UUID;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class SecurityServiceImpl implements SecurityService {
 
-    private static final String ROLE_USER = "ROLE_USER";
-    private static final String EMAIL_ADDRESS = "apromore@qut.edu.au";
-    private static final String EMAIL_SUBJECT = "Reset Password";
-    private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
-    private static final String EMAIL_END = ", Please try to login again!";
+    private static final Logger LOGGER = Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());
+
+    private static final String  ROLE_USER     = "ROLE_USER";
+    private static final String  EMAIL_ADDRESS = "apromore@qut.edu.au";
+    private static final String  EMAIL_SUBJECT = "Reset Password";
+    private static final String  EMAIL_START   = "Hi, Here is your newly requested password: ";
+    private static final String  EMAIL_END     = ", Please try to login again!";
 
 
     private UserRepository userRepo;
+    private GroupRepository groupRepo;
     private RoleRepository roleRepo;
     private PermissionRepository permissionRepo;
     private MembershipRepository membershipRepo;
@@ -49,16 +55,22 @@ public class SecurityServiceImpl implements SecurityService {
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param userRepository User Repository.
+     * @param groupRepository Group Repository.
      * @param roleRepository Role Repository.
      */
     @Inject
-    public SecurityServiceImpl(final UserRepository userRepository, final RoleRepository roleRepository,
-            final PermissionRepository permissionRepository, final MembershipRepository membershipRepository,
-            final WorkspaceService wrkSrv) {
-        userRepo = userRepository;
-        roleRepo = roleRepository;
-        permissionRepo = permissionRepository;
-        membershipRepo = membershipRepository;
+    public SecurityServiceImpl(final UserRepository       userRepository,
+                               final GroupRepository      groupRepository,
+                               final RoleRepository       roleRepository,
+                               final PermissionRepository permissionRepository,
+                               final MembershipRepository membershipRepository,
+                               final WorkspaceService     wrkSrv) {
+
+        userRepo         = userRepository;
+        groupRepo        = groupRepository;
+        roleRepo         = roleRepository;
+        permissionRepo   = permissionRepository;
+        membershipRepo   = membershipRepository;
         workspaceService = wrkSrv;
     }
 
@@ -90,6 +102,11 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public List<User> searchUsers(String searchString) {
         return userRepo.findByUsernameLike(searchString);
+    }
+
+    @Override
+    public List<Group> searchGroups(String searchString) {
+        return groupRepo.findByNameLike(searchString);
     }
 
     /**
@@ -139,9 +156,21 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public User createUser(User user) {
+        LOGGER.info("Creating user " + user.getUsername());
+
+        // Every user needs a personal access control group
+        Group group = new Group();
+        group.setName(user.getUsername());
+        group.setType(Group.Type.USER);
+        group = groupRepo.save(group);
+        LOGGER.info("  Created group " + group.getId() + " named " + group.getName());
+
+        // Create the actual user record
         user.setDateCreated(Calendar.getInstance().getTime());
         user.setLastActivityDate(Calendar.getInstance().getTime());
         user.setRowGuid(UUID.randomUUID().toString());
+        user.setGroup(group);
+
 
         Role existingRole = roleRepo.findByName(ROLE_USER);
         if (existingRole != null) {
@@ -154,14 +183,25 @@ public class SecurityServiceImpl implements SecurityService {
             existingRole.setUsers(rolesUsers);
         }
 
-        userRepo.save(user);
-
-        workspaceService.updateUsersPublicModels(user);
+        user = userRepo.save(user);
 
         user.setMembership(user.getMembership());
         user.getMembership().setUser(user);
         membershipRepo.save(user.getMembership());
 
+        // A new user can access their personal group and the public group
+        Set<Group> userGroups = user.getGroups();
+        userGroups.add(group);
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup != null) {
+            userGroups.add(publicGroup);
+        } else {
+            LOGGER.warning("Public group was not present in the repository.");
+        }
+        user.setGroups(userGroups);
+        LOGGER.info("  Added to groups " + userGroups);
+
+        LOGGER.info("Created user " + user.getUsername());
         return user;
     }
 

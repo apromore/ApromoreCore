@@ -1,0 +1,135 @@
+package org.apromore.dao.model;
+
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheCoordinationType;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.logging.Logger;
+
+/**
+ * The access control details corresponding to a particular group and process.
+ *
+ * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
+ */
+@Entity
+@Table(name = "group_process")
+@Configurable("group_process")
+@Cache(expiry = 180000, size = 100, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
+public class GroupProcess implements Serializable {
+
+    private static Logger LOGGER = Logger.getLogger(GroupProcess.class.getCanonicalName());
+
+    private Integer id;
+
+    private boolean hasRead;
+    private boolean hasWrite;
+    private boolean hasOwnership;
+
+    private Group   group;
+    private Process process;
+
+    /**
+     * Default Constructor.
+     */
+    public GroupProcess() {
+    }
+
+    /**
+     * Get the Primary Key for the Object.
+     * @return Returns the Id.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * Set the id for the Object.
+     * @param newId The role name to set.
+     */
+    public void setId(final Integer newId) {
+        this.id = newId;
+    }
+
+
+    /**
+     * @return whether the group has read access to the process model
+     */
+    @Column(name = "has_read")
+    public boolean getHasRead() {
+        return this.hasRead;
+    }
+
+    /**
+     * @param newHasRead  whether the group should have read access to the process model
+     */
+    public void setHasRead(final boolean newHasRead) {
+        this.hasRead = newHasRead;
+    }
+
+
+    /**
+     * @return whether the group has write access to the process model
+     */
+    @Column(name = "has_write")
+    public boolean getHasWrite() {
+        return this.hasWrite;
+    }
+
+    /**
+     * @param newHasWrite  whether the group should have write access to the process model
+     */
+    public void setHasWrite(final boolean newHasWrite) {
+        this.hasWrite = newHasWrite;
+    }
+
+
+    /**
+     * @return whether the group has ownership of the process model
+     */
+    @Column(name = "has_ownership")
+    public boolean getHasOwnership() {
+        return this.hasOwnership;
+    }
+
+    /**
+     * @param newHasRead  whether the group should have ownership of the process model
+     */
+    public void setHasOwnership(final boolean newHasOwnership) {
+        this.hasOwnership = newHasOwnership;
+    }
+
+
+    @ManyToOne
+    @JoinColumn(name = "groupId")
+    public Group getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "processId")
+    public Process getProcess() {
+        return this.process;
+    }
+
+    public void setProcess(Process process) {
+        this.process = process;
+    }
+
+}
