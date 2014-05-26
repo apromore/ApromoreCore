@@ -65,22 +65,22 @@ class Cmapper {
         definitions.accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
             @Override public void visit(final TEventBasedGateway gateway) {
                 if (isConfigurable(gateway)) {
-                    variationPoints.add(new VariationPoint(gateway, definitions, TGatewayType.EVENT_BASED_EXCLUSIVE));
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.EVENT_BASED_EXCLUSIVE));
                 }
             }
             @Override public void visit(final TExclusiveGateway gateway) {
                 if (isConfigurable(gateway)) {
-                    variationPoints.add(new VariationPoint(gateway, definitions, TGatewayType.DATA_BASED_EXCLUSIVE));
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.DATA_BASED_EXCLUSIVE));
                 }
             }
             @Override public void visit(final TInclusiveGateway gateway) {
                 if (isConfigurable(gateway)) {
-                    variationPoints.add(new VariationPoint(gateway, definitions, TGatewayType.INCLUSIVE));
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.INCLUSIVE));
                 }
             }
             @Override public void visit(final TParallelGateway gateway) {
                 if (isConfigurable(gateway)) {
-                    variationPoints.add(new VariationPoint(gateway, definitions, TGatewayType.PARALLEL));
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.PARALLEL));
                 }
             }
         }));
