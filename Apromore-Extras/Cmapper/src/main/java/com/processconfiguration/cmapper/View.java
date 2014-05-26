@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.io.StringBufferInputStream;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -23,6 +24,9 @@ import javax.swing.JTextField;
 import javax.swing.table.*;
 
 import com.processconfiguration.cmap.TGatewayType;
+import net.sf.javabdd.BDD;
+import org.apromore.bpmncmap.parser.ParseException;
+import org.apromore.bpmncmap.parser.Parser;
 
 class View extends JPanel {
 
@@ -106,6 +110,7 @@ class View extends JPanel {
         initColumnSizes(table);
 
         // Gateway types need to be edited with a combo box
+        initConditionColumn(table, table.getColumnModel().getColumn(0));
         initGatewayTypeColumn(table, table.getColumnModel().getColumn(1));
 
         //Add the scroll pane to this panel.
@@ -174,8 +179,32 @@ class View extends JPanel {
         }
     }
 
-    public void initGatewayTypeColumn(JTable table,
-                                       TableColumn column) {
+    public void initConditionColumn(JTable table, TableColumn column) {
+
+        JTextField textField = new JTextField();
+        column.setCellEditor(new DefaultCellEditor(textField));
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                try {
+                    Parser parser = new Parser(new StringBufferInputStream((String) value));
+                    parser.init();
+                    BDD bdd = parser.AdditiveExpression();
+                } catch (ParseException e) {
+                    component.setBackground(Color.RED);
+                }
+
+                return component;
+            }
+        };
+        renderer.setToolTipText("BDDC formatted field");
+        column.setCellRenderer(renderer);
+    }
+
+    public void initGatewayTypeColumn(JTable table, TableColumn column) {
 
         JComboBox<TGatewayType> comboBox = new JComboBox<>(TGatewayType.values());
         column.setCellEditor(new DefaultCellEditor(comboBox));

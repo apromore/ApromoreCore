@@ -159,6 +159,7 @@ class Cmapper {
                 }
                 assert flowRefs != null;
 
+                // Validate the condition against the BDDC grammar
                 Parser parser = new Parser(new StringBufferInputStream(vc.getCondition()));
                 parser.init();
                 BDD bdd = parser.AdditiveExpression();  // throws ParserException if malformed condition
