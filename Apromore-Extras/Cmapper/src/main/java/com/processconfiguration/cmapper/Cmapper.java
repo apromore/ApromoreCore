@@ -2,6 +2,8 @@ package com.processconfiguration.cmapper;
 
 import java.io.File;
 import java.io.StringBufferInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -14,6 +16,7 @@ import org.w3c.dom.Element;
 
 import com.processconfiguration.MyTraverser;
 import com.processconfiguration.cmap.*;
+import com.processconfiguration.quaestio.ProcessModel;
 import com.processconfiguration.qml.FactType;
 import com.processconfiguration.qml.QMLType;
 import net.sf.javabdd.BDD;
@@ -50,8 +53,40 @@ class Cmapper {
         return variationPoints;
     }
 
-    /** @param file  a file in C-BPMN format */
-    void setBpmn(File file) throws JAXBException {
+    /** @param model  a C-BPMN process model */
+    void setBpmn(final ProcessModel model) throws Exception {
+        LOGGER.info("Setting model");
+        final TDefinitions definitions = model.getBpmn();
+        
+        // Find elements with <pc:configurable> children and add them as VariationPoint instances
+        variationPoints.clear();
+        model.getBpmn().accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
+            @Override public void visit(final TEventBasedGateway gateway) {
+                if (isConfigurable(gateway)) {
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.EVENT_BASED_EXCLUSIVE));
+                }
+            }
+            @Override public void visit(final TExclusiveGateway gateway) {
+                if (isConfigurable(gateway)) {
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.DATA_BASED_EXCLUSIVE));
+                }
+            }
+            @Override public void visit(final TInclusiveGateway gateway) {
+                if (isConfigurable(gateway)) {
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.INCLUSIVE));
+                }
+            }
+            @Override public void visit(final TParallelGateway gateway) {
+                if (isConfigurable(gateway)) {
+                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.PARALLEL));
+                }
+            }
+        }));
+        LOGGER.info("Set model");
+    }
+
+    /*
+    void setBpmn(final File file) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
@@ -85,6 +120,7 @@ class Cmapper {
             }
         }));
     }
+    */
 
     /**
      * @param baseElement  an arbitrary BPMN element
@@ -93,12 +129,17 @@ class Cmapper {
     private boolean isConfigurable(final TBaseElement baseElement) {
         if (baseElement.getExtensionElements() != null) {
             for (Object any: baseElement.getExtensionElements().getAny()) {
-                if (any instanceof Element) {
+                if (any instanceof com.processconfiguration.Configurable) {
+                    return true;
+                }
+                /*
+                else if (any instanceof Element) {
                     Element element = (Element) any;
                     if ("configurable".equals(element.getLocalName()) && "http://www.processconfiguration.com".equals(element.getNamespaceURI())) {
                         return true;
                     }
                 }
+                */
             }
         }
 
@@ -133,15 +174,16 @@ class Cmapper {
      * @throws JAXBException if unable to serialize the cmap
      * @throws ParserException if any of the conditions in the cmap are ungrammatical
      */
-    void writeCmap(File file) throws IllegalStateException, JAXBException, ParseException {
+    void writeCmap(File file) throws IllegalStateException, JAXBException, ParseException, UnsupportedEncodingException {
+        LOGGER.info("Writing cmap to " + file);
 
         // Cmap
         ObjectFactory factory = new ObjectFactory();
         CMAP cmap = factory.createCMAP();
-        cmap.setQml("dummy.qml");
+        cmap.setQml(URLEncoder.encode(file.getName().replace(".cmap", ".qml"), "utf-8").replaceAll("\\+", "%20"));
 
         CBpmnType cBpmn = factory.createCBpmnType();
-        cBpmn.setHref("dummy.bpmn");
+        cBpmn.setHref(file.getName().replace(".cmap", ".bpmn"));
         cmap.getCBpmnOrCEpcOrCYawl().add(cBpmn);
 
         for (VariationPoint vp: variationPoints) {
@@ -150,32 +192,7 @@ class Cmapper {
             cBpmn.getConfigurable().add(configurable);
 
             for (VariationPoint.Configuration vc: vp.getConfigurations()) {
-                CBpmnType.Configurable.Configuration configuration = factory.createCBpmnTypeConfigurableConfiguration();
-                List<String> flowRefs;
-                switch (vp.getGatewayDirection()) {
-                case CONVERGING: flowRefs = configuration.getSourceRefs();  break;
-                case DIVERGING:  flowRefs = configuration.getTargetRefs();  break;
-                default:         throw new RuntimeException("Unsupported gateway direction in variation point " + vp.getId() + ": " + vp.getGatewayDirection());
-                }
-                assert flowRefs != null;
-
-                // Validate the condition against the BDDC grammar
-                Parser parser = new Parser(new StringBufferInputStream(vc.getCondition()));
-                parser.init();
-                BDD bdd = parser.AdditiveExpression();  // throws ParserException if malformed condition
-                LOGGER.info("Parsed " + vc.getCondition() + " into " + bdd);
-
-                configuration.setCondition(vc.getCondition());
-
-                for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
-                    if (vc.isFlowActive(flowIndex)) {
-                        flowRefs.add(vp.getFlowId(flowIndex));
-                    }
-                }
-                if (flowRefs.size() > 1) {
-                    configuration.setType(vc.getGatewayType());
-                }
-                configurable.getConfiguration().add(configuration);
+                recursivelyAddConfigurations(configurable, vp, vc, vc.getCondition(), 0, new ArrayList<String>());
             }
         }
 
@@ -183,5 +200,61 @@ class Cmapper {
         JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.cmap");
         Marshaller m = jc.createMarshaller();
         m.marshal(cmap, file);
+    }
+
+    private void recursivelyAddConfigurations(final CBpmnType.Configurable       configurable,
+                                              final VariationPoint               vp,
+                                              final VariationPoint.Configuration vc,
+                                              final String                       condition,
+                                              final int                          flowIndex,
+                                              final List<String>                 flowRefs) throws ParseException {
+
+        if (flowIndex == vp.getFlowCount()) {
+            ObjectFactory factory = new ObjectFactory();
+            CBpmnType.Configurable.Configuration configuration = factory.createCBpmnTypeConfigurableConfiguration();
+            configurable.getConfiguration().add(configuration);
+
+            // Set condition attribute
+            configuration.setCondition(condition);
+            
+            // Set sourceRefs or targetRefs attribute
+            switch (vp.getGatewayDirection()) {
+            case CONVERGING: configuration.getSourceRefs().addAll(flowRefs);  break;
+            case DIVERGING:  configuration.getTargetRefs().addAll(flowRefs);  break;
+            default:         throw new RuntimeException("Unsupported gateway direction in variation point " + vp.getId() + ": " + vp.getGatewayDirection());
+            }
+
+            // Set type attribute
+            if (flowRefs.size() > 1) {
+                configuration.setType(vc.getGatewayType());
+            }
+        }
+        else {
+            String flowCondition = vc.getFlowCondition(flowIndex);
+            BDD bdd = toBDD(flowCondition);
+            if (!bdd.isZero()) {  // Flow may be present
+                List<String> newFlowRefs = new ArrayList<>(flowRefs);
+                newFlowRefs.add(vp.getFlowId(flowIndex));
+                recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").(" + flowCondition + ")", flowIndex + 1, newFlowRefs);
+            }
+            if (!bdd.isOne()) {  // Flow may be absent
+                recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").-(" + flowCondition + ")", flowIndex + 1, flowRefs);
+            }
+        }
+    }
+
+    static private BDD toBDD(final String condition) throws ParseException {
+        Parser parser = new Parser(new StringBufferInputStream((String) condition));
+        parser.init();
+        return parser.AdditiveExpression();
+    }
+
+    static public boolean isValidCondition(final String condition) {
+        try {
+            toBDD(condition);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 }
