@@ -25,9 +25,9 @@ import javax.swing.table.*;
 
 import com.processconfiguration.cmap.TGatewayType;
 
-class View extends JPanel {
+class VariationPointView extends JPanel {
 
-    private static Logger LOGGER = Logger.getLogger(View.class.getName());
+    private static Logger LOGGER = Logger.getLogger(VariationPointView.class.getName());
 
     /**
      * This is the model being viewed.
@@ -39,7 +39,7 @@ class View extends JPanel {
      *
      * @param vp  the variation point to be viewed and edited
      */
-    View(final VariationPoint newVp) {
+    VariationPointView(final VariationPoint newVp) {
         super(new GridLayout(1, 0));
 
         // Initialize instance methods

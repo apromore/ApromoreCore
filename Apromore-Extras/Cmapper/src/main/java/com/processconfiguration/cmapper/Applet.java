@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import com.processconfiguration.quaestio.ApromoreProcessModel;
 
 /**
- * Execute the Cmapper as an applet.
+ * Present the Cmapper as an applet.
  */
 public class Applet extends JApplet {
 
@@ -52,8 +52,7 @@ public class Applet extends JApplet {
                             }
                         }
 
-
-                        setContentPane(Main.createUI(cmapper));
+                        setContentPane(new CmapperView(cmapper));
 
                     } catch (Exception e) {
                         e.printStackTrace();
