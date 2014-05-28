@@ -1,0 +1,8 @@
+<window width="900px" closable="true" position="center" title="Configure process model with Cmapper">
+    <applet id="cmapper"
+         codebase="applets/"
+         archive="cmapper-applet.jar"
+         code="com.processconfiguration.cmapper.Applet"
+         mayscript="true"
+         width="900px" height="600px"/>
+</window>
