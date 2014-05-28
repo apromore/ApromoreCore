@@ -95,6 +95,13 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.processconfiguration</groupId>
+                                    <artifactId>cmapper</artifactId>
+                                    <version>2.0</version>
+                                    <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
+                                    <destFileName>cmapper-applet.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.processconfiguration</groupId>
                                     <artifactId>quaestio</artifactId>
                                     <version>1.0</version>
                                     <!--<classifier>jar-with-dependencies</classifier>-->
@@ -125,6 +132,19 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!-- substitute site.properties into apromore.properties -->
+        <!--
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <targetPath>${basedir}/target/classes</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/apromore.properties</include>
+                </includes>
+            </resource>
+        </resources>
+        -->
     </build>
 
     <dependencies>

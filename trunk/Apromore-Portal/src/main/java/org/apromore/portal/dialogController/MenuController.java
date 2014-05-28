@@ -55,6 +55,7 @@ public class MenuController extends Menubar {
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
+        Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
@@ -109,6 +110,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 mergeSelectedProcessVersions();
+            }
+        });
+        cmapMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                cmapModel();
             }
         });
         configureMI.addEventListener("onClick", new EventListener<Event>() {
@@ -194,6 +201,22 @@ public class MenuController extends Menubar {
             }
         } else {
             this.mainC.displayMessage("Select at least 2 process models for merge.");
+        }
+    }
+
+    protected void cmapModel() throws ParseException {
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        this.mainC.eraseMessage();
+        if (selectedProcessVersions.size() == 1) {
+            try {
+                new CmapController(this.mainC, selectedProcessVersions);
+            } catch (ConfigureException e) {
+                Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            } catch (RuntimeException e) {
+                Messagebox.show("Unable to cmap model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        } else {
+            this.mainC.displayMessage("Select only 1 process model to cmap.");
         }
     }
 

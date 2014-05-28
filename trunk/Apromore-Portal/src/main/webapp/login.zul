@@ -204,29 +204,29 @@
                                                 </h:div>
                                                 <br/>
                                                 <h:div class="input-append">
-                                                    <h:input class="span4" type="text" name="surname" placeholder="surname"/>
+                                                    <h:input class="span4" type="text" name="surname" placeholder="Last Name"/>
                                                     <h:span class="add-on">*</h:span>
                                                 </h:div>
                                                 <br/>
                                                 <h:div class="input-append">
-                                                    <h:input class="span4" type="text" name="username" placeholder="username"/>
+                                                    <h:input class="span4" type="text" name="username" placeholder="Username"/>
                                                     <h:span class="add-on">*</h:span>
                                                 </h:div>
                                                 <br/>
                                                 <h:div class="input-append">
-                                                    <h:input class="span4" type="text" name="email" placeholder="email address"/>
+                                                    <h:input class="span4" type="text" name="email" placeholder="Email Address"/>
                                                     <h:span class="add-on">*</h:span>
                                                 </h:div>
                                             </h:fieldset>
                                             <h:fieldset>
                                                 <h:legend class="two"><h:span>Password</h:span></h:legend>
                                                 <h:div class="input-group input-append">
-                                                    <h:input class="span4" type="password" name="password" placeholder="password"/>
+                                                    <h:input class="span4" type="password" name="password" placeholder="Password"/>
                                                     <h:span class="add-on">*</h:span>
                                                 </h:div>
                                                 <br/>
                                                 <h:div class="input-group input-append">
-                                                    <h:input class="span4" type="password" name="confirmPassword" placeholder="confirm password"/>
+                                                    <h:input class="span4" type="password" name="confirmPassword" placeholder="Confirm Password"/>
                                                     <h:span class="add-on">*</h:span>
                                                 </h:div>
                                             </h:fieldset>
