@@ -52,16 +52,36 @@ interface VariationPoint {
      */
     interface Configuration {
 
+        /**
+         * @return the BDDC formatted logical condition
+         */
         String getCondition();
 
+        /**
+         * @param newCondition  a BDDC formatted logical condition
+         */
         void setCondition(final String newCondition);
 
+        /**
+         * @return what sort of gateway this variation point becomes after configuration
+         */
         TGatewayType getGatewayType();
 
+        /**
+         * @param newGatewayType  what sort of gateway this variation point becomes after configuration
+         */
         void setGatewayType(final TGatewayType newGatewayType);
 
-        Boolean isFlowActive(int flowIndex);
+        /**
+         * @param flowIndex  which flow to query
+         * @return the BDDC formatted logical condition
+         */
+        String getFlowCondition(int flowIndex);
 
-        void setFlowActive(int flowIndex, Boolean newFlowActivity);
+        /**
+         * @param flowIndex  which flow to modify
+         * @param newCondition  a BDDC formatted logical condition
+         */
+        void setFlowCondition(int flowIndex, String newCondition);
     }
 }
