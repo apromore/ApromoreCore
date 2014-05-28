@@ -24,9 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.table.*;
 
 import com.processconfiguration.cmap.TGatewayType;
-import net.sf.javabdd.BDD;
-import org.apromore.bpmncmap.parser.ParseException;
-import org.apromore.bpmncmap.parser.Parser;
 
 class View extends JPanel {
 
@@ -76,7 +73,7 @@ class View extends JPanel {
                 switch (col) {
                 case 0: return c.getCondition();
                 case 1: return c.getGatewayType();
-                default: return c.isFlowActive(col - 2);
+                default: return c.getFlowCondition(col - 2);
                 }
             }
 
@@ -91,9 +88,9 @@ class View extends JPanel {
             public void setValueAt(Object value, int row, int col) {
                 VariationPoint.Configuration c = vp.getConfigurations().get(row);
                 switch (col) {
-                case 0:  c.setCondition((String) value);             break;
-                case 1:  c.setGatewayType((TGatewayType) value);     break;
-                default: c.setFlowActive(col - 2, (Boolean) value);  break;
+                case 0:  c.setCondition((String) value);               break;
+                case 1:  c.setGatewayType((TGatewayType) value);       break;
+                default: c.setFlowCondition(col - 2, (String) value);  break;
                 }
                 fireTableCellUpdated(row, col);
             }
@@ -112,6 +109,9 @@ class View extends JPanel {
         // Gateway types need to be edited with a combo box
         initConditionColumn(table, table.getColumnModel().getColumn(0));
         initGatewayTypeColumn(table, table.getColumnModel().getColumn(1));
+        for (int i = 2; i < 2 + vp.getFlowCount(); i++) {
+            initConditionColumn(table, table.getColumnModel().getColumn(i));
+        }
 
         //Add the scroll pane to this panel.
         add(scrollPane);
@@ -189,11 +189,7 @@ class View extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                try {
-                    Parser parser = new Parser(new StringBufferInputStream((String) value));
-                    parser.init();
-                    BDD bdd = parser.AdditiveExpression();
-                } catch (ParseException e) {
+                if (!Cmapper.isValidCondition((String) value)) {
                     component.setBackground(Color.RED);
                 }
 

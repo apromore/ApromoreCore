@@ -164,14 +164,14 @@ class BpmnGatewayVariationPoint implements VariationPoint {
     class Configuration implements VariationPoint.Configuration {
         private String condition;
         private TGatewayType gatewayType;
-        private Boolean[] isFlowActive;
+        private String[] flowCondition;
 
         Configuration(final String initialCondition) {
             this.condition   = initialCondition;
             this.gatewayType = BpmnGatewayVariationPoint.this.gatewayType;
-            this.isFlowActive = new Boolean[getFlowCount()];
+            this.flowCondition = new String[getFlowCount()];
             for (int i = 0; i < getFlowCount(); i++) {
-                this.isFlowActive[i] = new Boolean("true");
+                this.flowCondition[i] = "1";
             }
         }
 
@@ -191,12 +191,12 @@ class BpmnGatewayVariationPoint implements VariationPoint {
             gatewayType = newGatewayType;
         }
 
-        public Boolean isFlowActive(int flowIndex) {
-            return isFlowActive[flowIndex];
+        public String getFlowCondition(int flowIndex) {
+            return flowCondition[flowIndex];
         }
 
-        public void setFlowActive(int flowIndex, Boolean newFlowActivity) {
-            isFlowActive[flowIndex] = newFlowActivity;
+        public void setFlowCondition(int flowIndex, String newCondition) {
+            flowCondition[flowIndex] = newCondition;
         }
     }
 }
