@@ -3,7 +3,6 @@ package com.processconfiguration.cmapper;
 // Java 2 Standard classes
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,12 +12,10 @@ import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -36,80 +33,40 @@ import com.processconfiguration.quaestio.ApromoreProcessModel;
 import com.processconfiguration.quaestio.FileProcessModel;
 
 /**
- * Execute the Cmapper as a desktop application.
+ * Present the Cmapper as a desktop application.
  */
 class Main extends JFrame {
 
   /**
-   * Entry point for running the configuration mapper from the command line.
+   * Main frame for the desktop application.
    *
-   * @param argv  command line arguments
+   * @param cmapper  a configuration mapper
    */
-  public static void main(String[] argv) throws Exception {
-
-    final Cmapper cmapper = new Cmapper();
-
-    // Parse command line arguments, initializing the model
-    for (int i = 0; i < argv.length; i++) {
-      switch (argv[i]) {
-      case "-apromore_model":
-        if (i+3 >= argv.length) {
-          throw new IllegalArgumentException("-apromore_model without id/branch/version");
-        }
-        cmapper.setBpmn(
-          new ApromoreProcessModel(Integer.valueOf(argv[i+1]),  // process ID
-                                                   argv[i+2],                   // branch
-                                                   argv[i+3],                   // version number
-                                                   null)
-        );
-        i += 3;
-        break;
-
-      case "-cmap":
-        if (++i >= argv.length) {
-          throw new IllegalArgumentException("-cmap without filename");
-        }
-        cmapper.setCmap(new File(argv[i]));
-        break;
-
-      case "-model":
-        if (++i >= argv.length) {
-          throw new IllegalArgumentException("-model without filename");
-        }
-        cmapper.setBpmn(new FileProcessModel(new File(argv[i])));
-        //cmapper.setBpmn(new File(argv[i]));
-        break;
-
-      case "-qml":
-        if (++i >= argv.length) {
-          throw new IllegalArgumentException("-qml without filename");
-        }
-        cmapper.setQml(new File(argv[i]));
-        break;
-
-      default:
-        throw new IllegalArgumentException("Unknown parameter: " + argv[i]);
-      }
-    }
-
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          //createAndShowGUI(cmapper);
-          new Main(cmapper);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
-  }
-
   private Main(final Cmapper cmapper) {
 
-    final File RESOURCES_DIRECTORY = new File("/Users/raboczi/Project/apromore/Apromore-Extras/bpmncmap/src/test/resources");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setJMenuBar(createMenuBar(cmapper));
+    setLocation(new java.awt.Point(100, 100));
+    //setMinimumSize(new java.awt.Dimension(900, 600));
+    setTitle("Synergia - Cmapper v. 2.0");
 
-    // Construct the menu bar
+    generateUI(cmapper);
+  }
+
+  private void generateUI(final Cmapper cmapper) {
+    setContentPane(new CmapperView(cmapper));
+    pack();
+    setVisible(true);
+  }
+
+  /**
+   * @param cmapper  a configuration mapper
+   * @return the application menu bar
+   */
+  private JMenuBar createMenuBar(final Cmapper cmapper) {
+    final File RESOURCES_DIRECTORY = new File("/Users/raboczi/Project/apromore/Apromore-Extras/bpmncmap/src/test/resources");
     JMenuBar menuBar = new JMenuBar();
+
     JMenu fileMenu = new JMenu("File");
     menuBar.add(fileMenu);
 
@@ -168,37 +125,69 @@ class Main extends JFrame {
       }
     });
 
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setJMenuBar(menuBar);
-    setLocation(new java.awt.Point(100, 100));
-    //setMinimumSize(new java.awt.Dimension(900, 600));
-    setTitle("Synergia - Cmapper v. 2.0");
-
-    generateUI(cmapper);
+    return menuBar;
   }
 
-  static JScrollPane createUI(final Cmapper cmapper) {
+  /**
+   * Entry point for running the configuration mapper from the command line.
+   *
+   * @param argv  command line arguments
+   */
+  public static void main(String[] argv) throws Exception {
 
-    // Layout
-    JPanel vpView = new JPanel();
-    vpView.setLayout(new GridLayout(cmapper.getVariationPoints().size(), 1));
+    final Cmapper cmapper = new Cmapper();
 
-    // Construct the list of variation points
-    for (VariationPoint vp: cmapper.getVariationPoints()) {
-      vpView.add(new View(vp));
+    // Parse command line arguments, initializing the model
+    for (int i = 0; i < argv.length; i++) {
+      switch (argv[i]) {
+      case "-apromore_model":
+        if (i+3 >= argv.length) {
+          throw new IllegalArgumentException("-apromore_model without id/branch/version");
+        }
+        cmapper.setBpmn(
+          new ApromoreProcessModel(Integer.valueOf(argv[i+1]),  // process ID
+                                                   argv[i+2],                   // branch
+                                                   argv[i+3],                   // version number
+                                                   null)
+        );
+        i += 3;
+        break;
+
+      case "-cmap":
+        if (++i >= argv.length) {
+          throw new IllegalArgumentException("-cmap without filename");
+        }
+        cmapper.setCmap(new File(argv[i]));
+        break;
+
+      case "-model":
+        if (++i >= argv.length) {
+          throw new IllegalArgumentException("-model without filename");
+        }
+        cmapper.setBpmn(new FileProcessModel(new File(argv[i])));
+        break;
+
+      case "-qml":
+        if (++i >= argv.length) {
+          throw new IllegalArgumentException("-qml without filename");
+        }
+        cmapper.setQml(new File(argv[i]));
+        break;
+
+      default:
+        throw new IllegalArgumentException("Unknown parameter: " + argv[i]);
+      }
     }
 
-    if (vpView.getComponentCount() == 0) {
-      vpView.add(new JLabel("No variation points present"));
-    }
-
-    // Populate the main frame
-    return new JScrollPane(vpView);
-  }
-
-  private void generateUI(final Cmapper cmapper) {
-    setContentPane(createUI(cmapper));
-    pack();
-    setVisible(true);
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          //createAndShowGUI(cmapper);
+          new Main(cmapper);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }
