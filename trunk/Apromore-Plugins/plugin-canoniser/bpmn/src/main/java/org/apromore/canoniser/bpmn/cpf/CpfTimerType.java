@@ -78,7 +78,7 @@ public class CpfTimerType extends TimerType implements CpfEventType {
                             if (fe.getContent().size() == 1 && fe.getContent().get(0) instanceof String) {
                                 setTimeDate(datatypeFactory.newXMLGregorianCalendar((String) fe.getContent().get(0)));
                             } else { logger.info("Timer date content is not a single String"); }
-                        } else { logger.info("Timer date is not a recognized type"); }
+                        } else { logger.info("Timer date is not a recognized type: " + fe.getEvaluatesToTypeRef()); }
                     } else { logger.info("Timer date is not formal"); }
                 }
 

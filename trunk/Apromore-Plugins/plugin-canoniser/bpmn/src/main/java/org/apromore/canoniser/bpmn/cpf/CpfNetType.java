@@ -47,6 +47,7 @@ public class CpfNetType extends NetType implements Attributed {
         final CpfNetType net = this;  // inner classes are easier to understand if there's an alternative to CpfNetType.this
 
         net.setId(initializer.newId(process.getId()));
+        net.setName(requiredName(process.getName()));
         if (parent == null) {
             initializer.addRootId(net.getId());
         }
@@ -543,7 +544,8 @@ public class CpfNetType extends NetType implements Attributed {
                         }
                     });
                 } else {
-                    String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
+                    String s = value == null                 ? "null" :
+                               value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
                     initializer.warn("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
                 }
             }

@@ -32,7 +32,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
      * @throws CanoniserException if construction fails
      */
     public CpfObjectRefType(final TDataInputAssociation association,
-                            final TActivity              parent,
+                            final TActivity             parent,
                             final Initializer           initializer) throws CanoniserException {
 
         initializer.populateBaseElement(this, association);
@@ -51,6 +51,9 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
                 // Handle objectId
                 CpfObjectType object = (CpfObjectType) initializer.findElement((TFlowElement) association.getSourceRef().get(0).getValue());
+                if (object == null) {
+                    throw new CanoniserException("DataInputAssociation " + association.getId() + " didn't have an identifiable source object");
+                }
                 CpfObjectRefType.this.setObjectId(object.getId());
             }
         });

@@ -463,6 +463,7 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.svg"/></div>
      */
+    //@Ignore("Tests the case when CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testCanoniseSubprocess() throws Exception {
         CanonicalProcessType cpf = testCanonise("Subprocess.bpmn");
@@ -536,6 +537,7 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
     /**
      * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_ExpenseReport2.bpmn">chapter 4 expense report example</a>.
      */
+    //@Ignore("Tests the case where CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testCh4ExpenseReport2() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ch4_ExpenseReport2.bpmn");
@@ -693,6 +695,7 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.svg"/></div>
      */
+    //@Ignore("Tests case where CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testTerminate() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Terminate.bpmn");
@@ -711,6 +714,24 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
     @Test
     public void testError() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Error.bpmn");
+    }
+
+    /**
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Mixed gateway.bpmn">mixed gateway</a>.
+     */
+    @Test
+    public void testMixedGateway() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Mixed gateway.bpmn");
+
+        // Check that the single BPMN gateway has been canonized into separate CPF join and split routings
+        CpfXORJoinType join = (CpfXORJoinType) cpf.getElement("sid-A6F282A2-5979-480D-A0AE-144386BE2CBF");
+        assertNotNull("Join not found", join);
+        CpfXORSplitType split = (CpfXORSplitType) cpf.getElement("sid-A6F282A2-5979-480D-A0AE-144386BE2CBF_mixed_split");
+        assertNotNull("Split not found", split);
+        CpfEdgeType edge = (CpfEdgeType) cpf.getElement("sid-A6F282A2-5979-480D-A0AE-144386BE2CBF_mixed_edge");
+        assertNotNull("Edge connecting join and split not found", edge);
+        //assertEquals(join, edge.getSourceRef());
+        //assertEquals(split, edge.getTargetRef());
     }
 
     /**
