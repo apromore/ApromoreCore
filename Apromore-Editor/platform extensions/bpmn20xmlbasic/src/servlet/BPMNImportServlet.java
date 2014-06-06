@@ -30,6 +30,7 @@ import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -70,7 +71,10 @@ public class BPMNImportServlet extends HttpServlet {
                 LOGGER.severe(e.toString());
                 res.setStatus(500);
                 res.setContentType("text/plain");
-                (new OutputStreamWriter(out)).write(e.getCause().getMessage());
+                PrintWriter writer = new PrintWriter(out);
+                writer.println("Failed to import BPMN due to the exception " + e);
+                e.printStackTrace(writer);
+                e.printStackTrace();
             } catch (Exception e1) {
                 System.err.println("Original exception was:");
                 e.printStackTrace();
