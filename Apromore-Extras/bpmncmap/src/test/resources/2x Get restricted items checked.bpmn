@@ -72,14 +72,14 @@
          </extensionElements>
          <outgoing>sid-1DF0F4AB-99FD-4E30-AD15-768B5D48CAD9</outgoing>
       </startEvent>
-      <complexGateway gatewayDirection="Diverging" id="sid-DD7FD5B9-A1D1-465F-A925-99A0A31FD27E" name="">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-DD7FD5B9-A1D1-465F-A925-99A0A31FD27E" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
          <incoming>sid-18FFBE7E-343A-4C88-8D2B-3E59429731DC</incoming>
          <outgoing>sid-85008EC5-94C3-47AD-9BB4-7D43C3BA1F77</outgoing>
          <outgoing>sid-04FAC8D6-B9A9-46B9-BF49-2C4F07BF54B3</outgoing>
-      </complexGateway>
+      </exclusiveGateway>
       <endEvent id="sid-593B49F2-7F27-45CD-81E6-1B11402300C3" name="Goods taken in luggage">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>

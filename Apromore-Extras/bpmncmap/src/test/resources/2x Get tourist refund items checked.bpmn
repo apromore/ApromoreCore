@@ -82,14 +82,14 @@
          </extensionElements>
          <outgoing>sid-1DF0F4AB-99FD-4E30-AD15-768B5D48CAD9</outgoing>
       </startEvent>
-      <complexGateway gatewayDirection="Diverging" id="sid-DD7FD5B9-A1D1-465F-A925-99A0A31FD27E" name="">
+      <exclusiveGateway gatewayDirection="Diverging" id="sid-DD7FD5B9-A1D1-465F-A925-99A0A31FD27E" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
          <incoming>sid-18FFBE7E-343A-4C88-8D2B-3E59429731DC</incoming>
          <outgoing>sid-85008EC5-94C3-47AD-9BB4-7D43C3BA1F77</outgoing>
          <outgoing>sid-04FAC8D6-B9A9-46B9-BF49-2C4F07BF54B3</outgoing>
-      </complexGateway>
+      </exclusiveGateway>
       <sequenceFlow id="sid-18FFBE7E-343A-4C88-8D2B-3E59429731DC" isImmediate="false" name="" sourceRef="sid-811984B1-D59A-483D-89EE-528BA77FF367" targetRef="sid-DD7FD5B9-A1D1-465F-A925-99A0A31FD27E"/>
       <sequenceFlow id="sid-A6F00B8B-4DB0-4599-B6B4-A3DD7E624179" isImmediate="false" name="" sourceRef="sid-656F48CD-6D29-47E0-8E98-80F77732F015" targetRef="sid-532164ED-908C-4794-802A-8E854154B695"/>
       <sequenceFlow id="sid-D2B8F820-5018-46CC-81C0-CAEC1F071014" isImmediate="false" name="" sourceRef="sid-74E09664-2CF7-4F98-95D9-8106049F4EC6" targetRef="sid-532164ED-908C-4794-802A-8E854154B695"/>

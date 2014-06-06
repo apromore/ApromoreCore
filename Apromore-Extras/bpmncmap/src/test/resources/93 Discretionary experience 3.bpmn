@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-03754ac2-942f-44e4-b46d-ee9b42cc2342" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-67b74f54-59cf-4b32-94c7-8375859d1782">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/93%20Discretionary%20experience%203.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1709558505" name="PER"/>
             <pc:variant id="vid-1661408457" name="OOL"/>
@@ -14,6 +15,9 @@
       </participant>
    </collaboration>
    <process id="sid-752d5b02-961c-4fd4-a108-8bb8c562f98e" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/93%20Discretionary%20experience%203.cmap"/>
+      </extensionElements>
       <inclusiveGateway gatewayDirection="Diverging" id="sid-C6DAAA49-968D-4342-84C5-6499B98B50D9" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -206,7 +210,7 @@
          <incoming>sid-4B9B168E-EE1E-40DB-9B49-661E4DF65074</incoming>
          <outgoing>sid-EEC4CB54-FF8E-4BB3-BF9F-3AA70587C8BF</outgoing>
       </task>
-      <task completionQuantity="1" id="sid-A2075FB1-4131-40B5-8879-D3D002260C6B" isForCompensation="false" name="Use restroom/ amenities/ parent's room" startQuantity="1">
+      <task completionQuantity="1" id="sid-A2075FB1-4131-40B5-8879-D3D002260C6B" isForCompensation="false" name="Use restroom/ amenities/ parent%27s room" startQuantity="1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
          </extensionElements>
