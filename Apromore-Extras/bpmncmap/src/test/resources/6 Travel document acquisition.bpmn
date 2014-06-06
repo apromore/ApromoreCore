@@ -201,7 +201,7 @@
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
          <outgoing>sid-DE3E3551-4BD1-41CA-B09F-8B370F93B095</outgoing>
-         <linkEventDefinition id="sid-63f848f4-c55c-47e0-8049-71920556a14f"/>
+         <linkEventDefinition id="sid-63f848f4-c55c-47e0-8049-71920556a14f" name="link name"/>
       </intermediateCatchEvent>
       <intermediateCatchEvent id="sid-686F4910-F065-42F1-8153-EB4389C448F0" name="">
          <extensionElements>
@@ -312,7 +312,7 @@
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
          <outgoing>sid-AB24373B-7392-4F78-8521-624AF805764D</outgoing>
-         <linkEventDefinition id="sid-6fc3c831-8169-48c8-87cd-f9a93d50ee67"/>
+         <linkEventDefinition id="sid-6fc3c831-8169-48c8-87cd-f9a93d50ee67" name="link name"/>
       </intermediateCatchEvent>
       <intermediateCatchEvent id="sid-7E91B2C2-DABA-4D15-8094-4381A9794DB3" name="">
          <extensionElements>

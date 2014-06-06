@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-34a295a1-c017-46b9-9895-911bbfa343f6" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-dfbad1a2-01f5-4658-a026-abc04aafd412">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/4x%20Undergo%20customs%20and%20immigration%20checks.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1423329269" name="PER"/>
             <pc:variant id="vid-1560195077" name="OOL"/>
@@ -25,6 +26,9 @@
       <messageFlow id="sid-92F84979-9275-4442-8322-9EBD6F3B2F72" name="" sourceRef="sid-C8CD7EFD-4F9D-438D-9C93-CD87D3434A4B" targetRef="sid-6B773686-8489-47D8-A19D-0F78FE61C785"/>
    </collaboration>
    <process id="sid-a308ecf1-d4d6-48f5-80f8-5229c07334cd" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/4x%20Undergo%20customs%20and%20immigration%20checks.cmap"/>
+      </extensionElements>
       <startEvent id="sid-795D5729-7B97-49AB-AB86-FF36F8A80298" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -446,7 +450,9 @@
          </extensionElements>
          <incoming>sid-CE8A8EDF-1444-401C-8180-CDC26910F852</incoming>
          <outgoing>sid-8F025E68-9DA8-4BD9-936C-92D2E00AFAE2</outgoing>
+         <!--
          <conditionalEventDefinition id="sid-fee2a4a8-6c6a-4253-a288-dee3395422cf"/>
+         -->
       </intermediateCatchEvent>
       <exclusiveGateway gatewayDirection="Diverging" id="sid-E40A7C6E-2BC3-4BF1-BFB1-13D6A60D8340" name="">
          <extensionElements>

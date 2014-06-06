@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <qml:QML xmlns:qml="http://www.processconfiguration.com/QML" author="Samia Mazhar" name="Airport international departure questionnaire" reference="">
+  <!--
   <Question id="q1" mapQF="#f1 #f2">
     <description>What type of service does the airport offer?</description>
   </Question>
@@ -15,8 +16,15 @@
   <Question id="q5" mapQF="#f13 #f12">
     <description>Is there a bag-weighing facility present?</description>
   </Question>
+  -->
   <Question id="q6" mapQF="#f14 #f15 #f16">
     <description>What check in types are provided by the airlines?</description>
+  </Question>
+  <Question id="q7" mapQF="#f17 #f18">
+    <description>Can minor name change occur at check in?</description>
+  </Question>
+  <Question id="q8" mapQF="#f19 #f20">
+    <description>Can TRS and restricted items be checks be arranged around check in?</description>
   </Question>
   <!--
   <Question id="q9" mapQF="#f23 #f21 #f22">
@@ -47,11 +55,9 @@
   <Question id="q19" mapQF="#f43 #f44 #f45 #f46 #f47 #f48 #f49 #f42">
     <description>What selection of facilities/services are available on entering the terminal?</description>
   </Question>
-  -->
   <Question id="q20" mapQF="#f50 #f51">
     <description>Can TRS validity be assessed in a Customs office before check-in?</description>
   </Question>
-  <!--
   <Question id="q21" mapQF="#f53 #f54 #f52">
     <description>What selection of facilities/services are available in the non-sterile area on receiving the boarding pass?</description>
     <guidelines></guidelines>
@@ -61,12 +67,6 @@
   </Question>
   <Question id="q24" mapQF="#f64 #f65">
     <description>What purchase-related checks are present prior to boarding?</description>
-  </Question>
-  <Question id="q7" mapQF="#f17 #f18">
-    <description>Can minor name change occur at check in?</description>
-  </Question>
-  <Question id="q8" mapQF="#f19 #f20">
-    <description>Can TRS and restricted items be checks be arranged around check in?</description>
   </Question>
   <Question id="q11" mapQF="#f26 #f27">
     <description>Does airline check in policy include inquiry on prohibited/restricted items?</description>
@@ -78,6 +78,7 @@
     <description>Are there enough business travellers to justify an express security queue?</description>
   </Question>
   -->
+  <!--
   <Fact id="f1">
     <description>Regular civilian</description>
   </Fact>
@@ -118,6 +119,7 @@
   <Fact id="f13">
     <description>No</description>
   </Fact>
+  -->
   <Fact id="f14">
     <description>Regular check in  (traditional)</description>
   </Fact>
@@ -208,7 +210,6 @@
   <Fact id="f42">
     <description>Airline service desk</description>
   </Fact>
-  -->
   <Fact id="f50">
     <description>Yes</description>
     <guidelines></guidelines>
@@ -216,7 +217,6 @@
   <Fact id="f51">
     <description>No</description>
   </Fact>
-  <!--
   <Fact id="f52">
     <description>Wireless internet</description>
   </Fact>
@@ -260,6 +260,7 @@
   <Fact id="f65">
     <description>Docket collector</description>
   </Fact>
+  -->
   <Fact id="f17">
     <description>Yes</description>
   </Fact>
@@ -272,6 +273,7 @@
   <Fact id="f20">
     <description>No</description>
   </Fact>
+  <!--
   <Fact id="f26">
     <description>Yes</description>
   </Fact>
@@ -286,5 +288,5 @@
     <description>No</description>
   </Fact>
   -->
-  <Constraints>xor(f1,f2).xor(f3,f4).(f5+f6).(f7+f8+f9+f10+f11).xor(f12,f13).(f14+f15+f16) <!--.xor(f17,f18).xor(f19,f20).(f21+f22+f23).xor(f26,f27).xor(f28,f29).xor(f30,f31).(f32+f33).xor(f34,f35).xor(f36,f37).xor(f38,f39).xor(f40,f41).(f42+f43+f44+f45+f46+f47+f48+f49).xor(f50,f51).(f52+f53+f54).xor(f55,f56).(f57+f58+f59+f60+f61+f62+f63).(f64+f65) --></Constraints>
+  <Constraints><!--xor(f1,f2).xor(f3,f4).(f5+f6).(f7+f8+f9+f10+f11).xor(f12,f13).-->(f14+f15+f16).xor(f17,f18).xor(f19,f20)<!--.(f21+f22+f23).xor(f26,f27).xor(f28,f29).xor(f30,f31).(f32+f33).xor(f34,f35).xor(f36,f37).xor(f38,f39).xor(f40,f41).(f42+f43+f44+f45+f46+f47+f48+f49).xor(f50,f51).(f52+f53+f54).xor(f55,f56).(f57+f58+f59+f60+f61+f62+f63).(f64+f65) --></Constraints>
 </qml:QML>

@@ -110,7 +110,6 @@
          <incoming>sid-4821250A-79CF-4B8B-BCD0-DD021DE13E67</incoming>
          <outgoing>sid-4176CCC9-F21D-4598-B15B-8B11CC047363</outgoing>
       </subProcess>
-      <group id="sid-F0D4C242-65F2-4DE6-836F-DB3A9493DE68"/>
       <sequenceFlow id="sid-4821250A-79CF-4B8B-BCD0-DD021DE13E67" isImmediate="false" name="" sourceRef="sid-790D40BA-F91B-42A2-ADB9-EA1D5A13E5CA" targetRef="sid-5A599CD7-662B-4C1B-BDA1-79E23F99A4AA"/>
       <sequenceFlow id="sid-E7E2B710-3F62-4E3D-A388-FFDC9AEA45C7" isImmediate="false" name="" sourceRef="sid-F17F3D33-3059-49E9-B198-5AE3A4CEF8DC" targetRef="sid-1E9C0FF0-5A6E-4792-81CD-C9AD5F818CBD"/>
       <sequenceFlow id="sid-77D30BB9-3ABD-4572-A681-01391D372FD6" isImmediate="false" name="" sourceRef="sid-AA68F246-2ABB-4424-8B33-A26258D50F94" targetRef="sid-97A8E7FF-AF35-42D8-971D-2E921922A696"/>
@@ -120,6 +119,7 @@
       <sequenceFlow id="sid-5DB7092D-B947-4036-BE29-C5B1FC74B4E9" isImmediate="false" name="" sourceRef="sid-1E9C0FF0-5A6E-4792-81CD-C9AD5F818CBD" targetRef="sid-3C58391C-A398-401A-954B-1DF3D558818A"/>
       <sequenceFlow id="sid-1EABFFB0-1C77-4A78-A739-5F978FB34E3B" isImmediate="false" name="" sourceRef="sid-3C58391C-A398-401A-954B-1DF3D558818A" targetRef="sid-97A8E7FF-AF35-42D8-971D-2E921922A696"/>
       <sequenceFlow id="sid-4F6E782E-D132-4C0D-B79E-C300E87DA48F" isImmediate="false" name="" sourceRef="sid-F17F3D33-3059-49E9-B198-5AE3A4CEF8DC" targetRef="sid-AA68F246-2ABB-4424-8B33-A26258D50F94"/>
+      <group id="sid-F0D4C242-65F2-4DE6-836F-DB3A9493DE68"/>
    </process>
    <process id="sid-793b652e-d308-4cf5-9d31-e341bf463f07" isClosed="false" isExecutable="false" name="Airline" processType="None">
       <laneSet id="sid-1ce5de12-b869-4c4c-9e15-24c85df54409">
@@ -156,9 +156,9 @@
          <outgoing>sid-443F60A0-ED16-407C-9704-DD808A5522AF</outgoing>
          <messageEventDefinition id="sid-f7e5883f-5ced-4784-a3d6-a9968e0dac31"/>
       </startEvent>
-      <group id="sid-803BA6DD-5201-4406-B6CC-752E29E1D7D4"/>
       <sequenceFlow id="sid-2E6B8F79-7282-447E-B39B-5729FC672331" isImmediate="false" name="" sourceRef="sid-56EBDA6E-EDC8-4F80-8FB0-2699764BFE93" targetRef="sid-65C82030-FFF5-40C9-A903-0F9B2E03869C"/>
       <sequenceFlow id="sid-443F60A0-ED16-407C-9704-DD808A5522AF" isImmediate="false" name="" sourceRef="sid-8D8C1805-4FB3-42BC-A817-90B004F80A4D" targetRef="sid-56EBDA6E-EDC8-4F80-8FB0-2699764BFE93"/>
+      <group id="sid-803BA6DD-5201-4406-B6CC-752E29E1D7D4"/>
    </process>
    <process id="sid-c00844d1-2c33-4815-9478-abe88864147e" isClosed="false" isExecutable="false" processType="None">
       <laneSet id="sid-bbd25330-c366-4f4c-928d-75623cd551b2">
@@ -343,8 +343,6 @@
          <incoming>sid-9355024B-C38A-4280-91CB-E37FCA253830</incoming>
          <outgoing>sid-FB05FFA4-D983-49C9-AE7C-EA57C52ECCF5</outgoing>
       </subProcess>
-      <group id="sid-817E449F-4233-4F59-8B4B-E39433F14A51"/>
-      <group id="sid-D2BEE41D-57FD-4C02-BDD6-0FDBD82158A4"/>
       <sequenceFlow id="sid-DC382A21-106C-4E99-8894-5F7C44B4AD2A" isImmediate="false" name="" sourceRef="sid-C0CF320F-8095-4CCD-8539-EBFEB3C3515F" targetRef="sid-3E357921-E397-4122-86BB-9F06EF71D347"/>
       <sequenceFlow id="sid-9420EA22-8672-4AB1-964E-17DA9DF97B7C" isImmediate="false" name="" sourceRef="sid-9C730155-90C7-4B56-BDCF-DCF3280C4C8F" targetRef="sid-EA9A0206-A747-46F8-99D7-E51A8C417806"/>
       <sequenceFlow id="sid-65E1143C-D709-4BB4-8C02-567842793824" isImmediate="false" name="" sourceRef="sid-9C730155-90C7-4B56-BDCF-DCF3280C4C8F" targetRef="sid-49FE5DD6-5C38-47AD-A953-AE769EEE8129"/>
@@ -367,6 +365,8 @@
       </sequenceFlow>
       <sequenceFlow id="sid-D0B9DDE0-158F-4F92-9554-E3A6CB9358CD" isImmediate="false" name="" sourceRef="sid-3E357921-E397-4122-86BB-9F06EF71D347" targetRef="sid-9C730155-90C7-4B56-BDCF-DCF3280C4C8F"/>
       <sequenceFlow id="sid-7C97EDC3-79D1-436C-B2ED-497F2652A9F0" isImmediate="false" name="" sourceRef="sid-679BBC57-7A8E-4F50-BED4-323DABBDA692" targetRef="sid-ADA63D72-F5AD-4D97-A4AC-54E1175F945D"/>
+      <group id="sid-817E449F-4233-4F59-8B4B-E39433F14A51"/>
+      <group id="sid-D2BEE41D-57FD-4C02-BDD6-0FDBD82158A4"/>
    </process>
    <bpmndi:BPMNDiagram id="sid-55d8c05e-a29d-493c-b6c1-379a7412e636">
       <bpmndi:BPMNPlane bpmnElement="sid-1b68c02e-5d13-43a1-b5dd-513e8fae5ceb" id="sid-3530bcb0-7dcd-46c4-9ca1-b5dc7db5502c">

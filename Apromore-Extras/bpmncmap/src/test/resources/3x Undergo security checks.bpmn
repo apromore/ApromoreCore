@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-f45bfed5-d3fd-4607-b77b-e44217117baf" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-9d6bc74b-dd01-421d-975c-94cc3287af66">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
          <pc:variants>
             <pc:variant id="vid-429910932" name="PER"/>
             <pc:variant id="vid-188363230" name="OOL"/>
@@ -22,6 +23,9 @@
       </participant>
    </collaboration>
    <process id="sid-360afe8a-15a7-4e58-bda2-2d9b34567737" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
+      </extensionElements>
       <task completionQuantity="1" id="sid-CA3B27F0-B0E1-42B2-B92A-AE16CC28AF71" isForCompensation="false" name="Observe passenger through metal detector" startQuantity="1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
@@ -105,8 +109,8 @@
       <sequenceFlow id="sid-85CC54C7-4F35-4789-83BD-7DE4548B1E4D" isImmediate="true" name="" sourceRef="sid-10D9BAD5-FC6A-4D27-B12F-BC5AB7321440" targetRef="sid-09A6F209-2DCD-47E7-BEC4-8803593A28AA"/>
       <sequenceFlow id="sid-CAA309D3-85D8-41F6-B54C-7AB63C6153A4" isImmediate="true" name="" sourceRef="sid-A3F617EA-51A2-413D-8F8B-C812122E9CF2" targetRef="sid-032E4F99-890C-4B1F-A2DF-F27830416D71"/>
       <sequenceFlow id="sid-3F877698-F9B2-429B-A527-7B19D91E22A5" isImmediate="true" name="" sourceRef="sid-032E4F99-890C-4B1F-A2DF-F27830416D71" targetRef="sid-5FB716F7-84E6-4391-987E-8D17427434AE"/>
-      <association associationDirection="None" id="sid-85B8A098-07A2-4645-A053-31AE579907A5" name="" sourceRef="sid-032E4F99-890C-4B1F-A2DF-F27830416D71" targetRef="sid-90A20E92-2A7A-4F68-A31D-698ECD1CB302"/>
-      <association associationDirection="None" id="sid-3D93ABF1-3BB5-49B6-86B7-BD44A10363A2" name="" sourceRef="sid-CA3B27F0-B0E1-42B2-B92A-AE16CC28AF71" targetRef="sid-ED6ED202-D2EC-4F56-AD20-62391CAB5E2B"/>
+      <association associationDirection="None" id="sid-85B8A098-07A2-4645-A053-31AE579907A5" sourceRef="sid-032E4F99-890C-4B1F-A2DF-F27830416D71" targetRef="sid-90A20E92-2A7A-4F68-A31D-698ECD1CB302"/>
+      <association associationDirection="None" id="sid-3D93ABF1-3BB5-49B6-86B7-BD44A10363A2" sourceRef="sid-CA3B27F0-B0E1-42B2-B92A-AE16CC28AF71" targetRef="sid-ED6ED202-D2EC-4F56-AD20-62391CAB5E2B"/>
       <textAnnotation id="sid-ED6ED202-D2EC-4F56-AD20-62391CAB5E2B" textFormat="text/plain">
          <text>T: Walk Through Metal Detector</text>
       </textAnnotation>

@@ -70,11 +70,11 @@
          </extensionElements>
          <outgoing>sid-1DF0F4AB-99FD-4E30-AD15-768B5D48CAD9</outgoing>
       </startEvent>
-      <group id="sid-1E728BFF-3032-4B58-B40A-FBD149E277DB"/>
       <sequenceFlow id="sid-1DF0F4AB-99FD-4E30-AD15-768B5D48CAD9" isImmediate="false" name="" sourceRef="sid-D6D4926D-62CF-4324-8AE3-F783780AFBAE" targetRef="sid-811984B1-D59A-483D-89EE-528BA77FF367"/>
       <sequenceFlow id="sid-248E58E6-9314-4A95-B178-8007673D843E" isImmediate="false" name="" sourceRef="sid-74E09664-2CF7-4F98-95D9-8106049F4EC6" targetRef="sid-B6C44A56-3FF2-44A5-8A0E-F95FC4BE72F2"/>
       <sequenceFlow id="sid-C02A4D6A-582E-45FE-A634-C06713863FEC" isImmediate="false" name="" sourceRef="sid-656F48CD-6D29-47E0-8E98-80F77732F015" targetRef="sid-74E09664-2CF7-4F98-95D9-8106049F4EC6"/>
       <sequenceFlow id="sid-72D4AA59-EB55-47B7-AB4F-0F2FCCA5DF39" isImmediate="false" name="" sourceRef="sid-811984B1-D59A-483D-89EE-528BA77FF367" targetRef="sid-656F48CD-6D29-47E0-8E98-80F77732F015"/>
+      <group id="sid-1E728BFF-3032-4B58-B40A-FBD149E277DB"/>
    </process>
    <process id="sid-38e1d96e-af51-4340-85cf-72085403b618" isClosed="false" isExecutable="false" name="Airline" processType="None">
       <laneSet id="sid-72738b24-d8ed-4e2d-a111-2b25261f861d">
@@ -149,7 +149,6 @@
          <incoming>sid-54518D27-AB64-413C-ABA5-02BB14D1C7E0</incoming>
          <outgoing>sid-F3F819DE-DD7B-4AAE-9BB3-0B8CA4059954</outgoing>
       </exclusiveGateway>
-      <group id="sid-4941CEB5-C433-411A-AA8E-96151AA3DA4D"/>
       <sequenceFlow id="sid-623E9DC5-A766-49D6-BECC-6986825BF2C7" isImmediate="false" name="" sourceRef="sid-A7867150-7FFA-4B1D-B9BE-07A91AC6FD1A" targetRef="sid-B985735A-D27E-43F3-8D35-F245BF6BE845"/>
       <sequenceFlow id="sid-2EFF191F-9067-40B9-80EC-7826306CAD71" isImmediate="false" name="" sourceRef="sid-37EF4F65-D3FD-4BAF-B34E-871839E51474" targetRef="sid-A7867150-7FFA-4B1D-B9BE-07A91AC6FD1A"/>
       <sequenceFlow id="sid-3D9BD2C5-4509-441A-A977-A283023B9910" isImmediate="false" name="" sourceRef="sid-4E6D7707-676C-45FB-AA95-BC1C1186B799" targetRef="sid-92C345F2-0025-4C36-98C4-603793448D9D"/>
@@ -162,6 +161,7 @@
       <sequenceFlow id="sid-54518D27-AB64-413C-ABA5-02BB14D1C7E0" isImmediate="false" name="" sourceRef="sid-B985735A-D27E-43F3-8D35-F245BF6BE845" targetRef="sid-92C345F2-0025-4C36-98C4-603793448D9D">
          <conditionExpression id="sid-c0cbc62f-9b72-4a6c-b7fd-bacb0bdf2258" xsi:type="tFormalExpression">Passenger has not checked in yet</conditionExpression>
       </sequenceFlow>
+      <group id="sid-4941CEB5-C433-411A-AA8E-96151AA3DA4D"/>
    </process>
    <bpmndi:BPMNDiagram id="sid-87fe8a83-aa3a-4451-9cda-d6b2c8ada2ef">
       <bpmndi:BPMNPlane bpmnElement="sid-82945cf8-2904-4f4c-bece-b2ef9d7c601e" id="sid-5f61b018-033a-40be-b3eb-06d49acb31b1">

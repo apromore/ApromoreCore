@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-cefac614-ff93-4da9-bd47-b858b1eec07e" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-08189c98-cbfe-4adb-a2f5-8c253a8f3e95">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
          <pc:variants>
             <pc:variant id="vid-2025991461" name="PER"/>
             <pc:variant id="vid-337778195" name="OOL"/>
@@ -27,6 +28,9 @@
       <messageFlow id="sid-888F5B8E-3832-43DB-9934-39419393CCC4" name="" sourceRef="sid-BB72A468-4C3F-4506-BBF0-E4E366669645" targetRef="sid-EF8B4491-30A3-45C8-A710-757F43B3A386"/>
    </collaboration>
    <process id="sid-1cb2b086-f33d-4cd2-b869-2aa9b10d3b0f" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
+      </extensionElements>
       <task completionQuantity="1" id="sid-13719D5A-87D2-443F-BD88-190D17370473" isForCompensation="false" name="Open Bag(s)" startQuantity="1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
@@ -319,6 +323,7 @@
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
+         <incoming>sid-9BD4291C-4F5F-4BCA-9077-7C2E1F4DFC89</incoming>
          <outgoing>sid-1F24649C-F6D7-4CEC-A209-48980056E1AA</outgoing>
          <outgoing>sid-7F4DEB7A-8236-4A74-B300-7AA8E93CCCF3</outgoing>
       </exclusiveGateway>
@@ -379,7 +384,7 @@
       <sequenceFlow id="sid-1581E8E8-A043-41FA-ABAA-D16B8380ABEA" isImmediate="true" name="" sourceRef="sid-649BD9FD-A3D0-4B15-BF19-0ACB1CCF3D15" targetRef="sid-B5AD2756-B6E0-46DA-AE48-02B1A1A12BCF"/>
       <sequenceFlow id="sid-DB3F69AA-91BF-4635-B0F3-9245423C53B6" isImmediate="true" name="" sourceRef="sid-819EBD86-7580-4FBA-804F-F2077EFAC1F1" targetRef="sid-C44046FA-0A16-476F-9CE2-908E33C678CF"/>
       <sequenceFlow id="sid-964B976D-D28C-4A9C-A2E1-1A6F0C3B78F8" isImmediate="true" name="" sourceRef="sid-BB72A468-4C3F-4506-BBF0-E4E366669645" targetRef="sid-3E48C1CE-B8BF-42E2-AA1A-EE1AD07A5E7E"/>
-      <sequenceFlow id="sid-9BD4291C-4F5F-4BCA-9077-7C2E1F4DFC89" isImmediate="true" name="" sourceRef="sid-5A32C05A-D700-49D2-9F83-ADE9293A5C13"/>
+      <sequenceFlow id="sid-9BD4291C-4F5F-4BCA-9077-7C2E1F4DFC89" isImmediate="true" name="" sourceRef="sid-5A32C05A-D700-49D2-9F83-ADE9293A5C13" targetRef="sid-0E3332CE-51DB-4C52-B65F-7E808DF51CF8"/>
       <sequenceFlow id="sid-6A757916-CBF0-4C8F-BF05-E98786A3837E" isImmediate="true" name="" sourceRef="sid-A7F0654E-7A7D-4312-A5A7-33DFBE57EC6F" targetRef="sid-749D513B-1AE3-4826-940D-E97E327B5FDB"/>
       <sequenceFlow id="sid-B579F9AF-AC38-4CE2-9705-40D84EF0DD84" isImmediate="true" name="" sourceRef="sid-3E48C1CE-B8BF-42E2-AA1A-EE1AD07A5E7E" targetRef="sid-819EBD86-7580-4FBA-804F-F2077EFAC1F1"/>
       <sequenceFlow id="sid-188A584C-0B41-46B1-BF48-843975287D45" isImmediate="true" name="" sourceRef="sid-4C774DCA-05DC-4B9B-8268-98563CD41CE7" targetRef="sid-3E48C1CE-B8BF-42E2-AA1A-EE1AD07A5E7E"/>
