@@ -89,7 +89,7 @@ import org.omg.spec.dd._20100524.di.*;
 public abstract class ConfigurationAlgorithm {
 
     /** Logger.  This is named after the class. */
-    private static final Logger logger = Logger.getLogger(ConfigurationAlgorithm.class.getCanonicalName());
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationAlgorithm.class.getCanonicalName());
 
     /**
      * Given a document with configuration extensions, mutate it
@@ -269,7 +269,7 @@ public abstract class ConfigurationAlgorithm {
         final Multimap<TBaseElement,TBaseElement> incomingMap = HashMultimap.create();
         final Multimap<TBaseElement,TBaseElement> outgoingMap = HashMultimap.create();
 
-        // Populate incomingMap by traversing all the edges (not the nodes) of the document graph
+        // Populate incomingMap by traversing all the edges (not the nodes [except boundary events]) of the document graph
         definitions.accept(new TraversingVisitor(new MyTraverser() {
             @Override public void traverse(Configurable.Configuration aBean, Visitor aVisitor) {}
         }, new InheritingVisitor() {
@@ -286,6 +286,18 @@ public abstract class ConfigurationAlgorithm {
                         incomingMap.put(target, that);
                         incomingMap.put(that, target);  // for the purposes of marking, associations count in both directions
                     }
+                } catch (CanoniserException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override public void visit(final TBoundaryEvent that) {
+                try {
+                    TBaseElement activity = (TBaseElement) ((BpmnDefinitions) definitions).findElement(that.getAttachedToRef());
+                    if (!(activity instanceof TActivity)) {
+                        LOGGER.warning("Boundary event " + that.getId() + " attached to " + activity.getId() + " which is not an activity");
+                    }
+                    incomingMap.put(that, activity);
                 } catch (CanoniserException e) {
                     e.printStackTrace();
                 }
@@ -365,6 +377,8 @@ public abstract class ConfigurationAlgorithm {
                 // This artifact doesn't get added to "all", so no super call
             }
 
+            // Link events are treated as if they were start events because we're
+            // working with diagrams rather than handling processes properly
             @Override public void visit(final TIntermediateCatchEvent that) {
                 super.visit(that);
                 for (JAXBElement<? extends TEventDefinition> jed: that.getEventDefinition()) {
@@ -375,6 +389,7 @@ public abstract class ConfigurationAlgorithm {
                 }
             }
 
+            // Link events are treated as if they were end events because [see above]
             @Override public void visit(final TIntermediateThrowEvent that) {
                 super.visit(that);
                 for (JAXBElement<? extends TEventDefinition> jed: that.getEventDefinition()) {
@@ -505,6 +520,12 @@ public abstract class ConfigurationAlgorithm {
                         mark(definitions, incomingElement, markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
                     }
                 }
+                else if (incomingElement instanceof TActivity) {
+                    assert element instanceof TBoundaryEvent;
+                    if (direction == Direction.BACKWARDS) {
+                        mark(definitions, incomingElement, markedSet, Direction.BACKWARDS, incomingMap, outgoingMap);
+                    }
+                }
             }
 
             for (TBaseElement outgoingElement: outgoingMap.get(element)) {
@@ -513,16 +534,22 @@ public abstract class ConfigurationAlgorithm {
                         mark(definitions, outgoingElement, markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
                     }
                 }
+                else if (outgoingElement instanceof TBoundaryEvent) {
+                    assert element instanceof TActivity;
+                    if (direction == Direction.FORWARDS) {
+                        mark(definitions, outgoingElement, markedSet, Direction.FORWARDS, incomingMap, outgoingMap);
+                    }
+                }
             }
-         }
+        }
 
-         if (element instanceof TFlowElement) {
-             for (TBaseElement incomingElement: incomingMap.get(element)) {
-                 if (incomingElement instanceof TAssociation || incomingElement instanceof TDataAssociation) {
-                     mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
-                 }
-             }
-         }
+        if (element instanceof TFlowElement) {
+            for (TBaseElement incomingElement: incomingMap.get(element)) {
+                if (incomingElement instanceof TAssociation || incomingElement instanceof TDataAssociation) {
+                    mark(definitions, incomingElement, markedSet, Direction.ASSOCIATED, incomingMap, outgoingMap);
+                }
+            }
+        }
     }
 
     /**
