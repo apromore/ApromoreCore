@@ -29,6 +29,12 @@ import org.omg.spec.bpmn._20100524.model.TTask;
  */
 public class CpfTaskType extends TaskType implements CpfWorkType {
 
+    /**
+     * We can indicate a BPMN Subprocess by creating a link from a CPF Task to a CPF Net,
+     * but because the net won't contain any nodes it'll be invalid CPF.
+     */
+    public static boolean CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS = true;
+
     // Extension attribute names
 
     /** {@link TypeAttribute#name} indicating a BPMN CallActivity's called element. */
@@ -83,15 +89,18 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
                        final Initializer initializer,
                        final NetType     net) throws CanoniserException {
 
-        // Add the CPF child net
-        NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.newId("subprocess")),
-                                        net,
-                                        initializer);
-        assert subnet != null;
+        if (CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS) {
+            // Add the CPF child net
+            NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.newId("subprocess")),
+                                            net,
+                                            initializer);
+            assert subnet != null;
+
+            setSubnetId(subnet.getId());
+        }
 
         // Add the CPF Task to the parent Net
         initializer.populateActivity(this, subProcess);
-        setSubnetId(subnet.getId());
     }
 
     /**

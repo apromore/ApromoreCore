@@ -13,12 +13,15 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.TaskType;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
+import org.omg.spec.bpmn._20100524.model.TComplexGateway;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
@@ -362,7 +365,8 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
 
     /**
      * Replace every instance of multiple incoming sequence flows to an activity with an exclusive data-based gateway,
-     * and every instance of multiple outgoing sequence flows from an activity with a parallel gateway.
+     * every instance of multiple outgoing sequence flows from an activity with a parallel gateway, and every mixed gateway
+     * as a converging gateway flowing to a diverging gateway.
      *
      * This is required as pre-processing for canonisation, since CPF Work elements must have no more than one incoming edge and
      * no more than one outgoing edge.
@@ -446,6 +450,58 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
                 // Recursively rewrite any subprocesses
                 if (flowNode instanceof TSubProcess) {
                     rewriteFlowElements(((TSubProcess) flowNode).getFlowElement());
+                }
+            }
+
+            // Rewrite mixed gateways
+            if (flowElement.getValue() instanceof TGateway) {
+                TGateway gateway = (TGateway) flowElement.getValue();
+
+                if (gateway.getIncoming().size() > 1 && gateway.getOutgoing().size() > 1) {
+
+                    // Create a diverging XOR gateway
+                    BpmnObjectFactory factory = new BpmnObjectFactory();
+                    TGateway newGateway;
+                    if (gateway instanceof TComplexGateway) {
+                        newGateway = factory.createTComplexGateway();
+                        jfel.add(factory.createComplexGateway((TComplexGateway) newGateway));
+                    } else if (gateway instanceof TEventBasedGateway) {
+                        newGateway = factory.createTEventBasedGateway();
+                        jfel.add(factory.createEventBasedGateway((TEventBasedGateway) newGateway));
+                    } else if (gateway instanceof TExclusiveGateway) {
+                        newGateway = factory.createTExclusiveGateway();
+                        jfel.add(factory.createExclusiveGateway((TExclusiveGateway) newGateway));
+                    } else if (gateway instanceof TInclusiveGateway) {
+                        newGateway = factory.createTInclusiveGateway();
+                        jfel.add(factory.createInclusiveGateway((TInclusiveGateway) newGateway));
+                    } else if (gateway instanceof TParallelGateway) {
+                        newGateway = factory.createTParallelGateway();
+                        jfel.add(factory.createParallelGateway((TParallelGateway) newGateway));
+                    } else {
+                        throw new CanoniserException("Mixed gateway " + gateway.getId() + " of type " + gateway.getClass() + " unsupported");
+                    }
+                    assert newGateway != null;
+                    newGateway.setId(gateway.getId() + "_mixed_split");
+                    newGateway.setGatewayDirection(TGatewayDirection.DIVERGING);
+
+                    // Re-source the outgoing flows from the diverging gateway
+                    for (QName outgoing: gateway.getOutgoing()) {
+                        BpmnSequenceFlow outgoingFlow = (BpmnSequenceFlow) findElement(outgoing);
+                        outgoingFlow.setSourceRef(newGateway);
+                    }
+                    gateway.setGatewayDirection(TGatewayDirection.CONVERGING);
+                    gateway.getOutgoing().clear();
+
+                    // Create a flow from the original (now converging) gateway to the new diverging gateway
+                    BpmnSequenceFlow flow = factory.createTSequenceFlow();
+                    flow.setId(gateway.getId() + "_mixed_edge");
+                    flow.setSourceRef(gateway);
+                    flow.setTargetRef(newGateway);
+                    jfel.add(factory.createSequenceFlow(flow));
+
+                    QName flowQName = new QName(targetNamespace, flow.getId());
+                    newGateway.getIncoming().add(flowQName);
+                    gateway.getOutgoing().add(flowQName);
                 }
             }
         }
