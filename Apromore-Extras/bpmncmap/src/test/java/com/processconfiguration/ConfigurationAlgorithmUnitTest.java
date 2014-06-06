@@ -63,10 +63,10 @@ import org.omg.spec.bpmn._20100524.model.*;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class ConfigurationAlgorithmTest {
+public class ConfigurationAlgorithmUnitTest {
 
     /** Logger.  Named after the class. */
-    private static final Logger logger = Logger.getLogger(ConfigurationAlgorithmTest.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(ConfigurationAlgorithmUnitTest.class.getCanonicalName());
 
     /**
      * Test data directory.
@@ -74,6 +74,11 @@ public class ConfigurationAlgorithmTest {
      * Initialized from the <code>tests.dir</code> system property.
      */
     public static final File testsDirectory = new File("src/test/resources/");
+
+    /**
+     * Where to dump logging output from tests.
+     */
+    public static final File OUTPUT_DIRECTORY = new File("target/");
 
     /**
      * A <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.
@@ -94,13 +99,18 @@ public class ConfigurationAlgorithmTest {
      */
     public static final File terminalEntryFile = new File(testsDirectory, "1 Terminal Entry.bpmn");
 
+    /**
+     * A <a href="{@docRoot}/../tests/data/Case 12.bpmn">test document</a> used in the test suite.
+     */
+    public static final File case12File = new File(testsDirectory, "Case 12.bpmn");
+
     /** Factory for JAXB marshallers and unmarshallers. */
     private final JAXBContext context;
 
     /**
      * @throws JAXBException if {@link #context} cannot be initialized
      */
-    public ConfigurationAlgorithmTest() throws JAXBException {
+    public ConfigurationAlgorithmUnitTest() throws JAXBException {
 
         this.context = JAXBContext.newInstance(TDefinitions.class,
                                                ConfigurationAnnotationAssociation.class,
@@ -108,7 +118,7 @@ public class ConfigurationAlgorithmTest {
     }
 
     private void assertValidBPMN(BpmnDefinitions definitions, String filename) throws FileNotFoundException, JAXBException {
-	definitions.marshal(new FileOutputStream(filename), true);
+	definitions.marshal(new FileOutputStream(new File(OUTPUT_DIRECTORY, filename)), true);
     }
 
     //
@@ -319,6 +329,26 @@ public class ConfigurationAlgorithmTest {
 
         // Obtain the test document
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(terminalEntryFile), true);
+
+        // Exercise the method and examine the output -- the test document oughtn't to have any
+        Set<TBaseElement> orphans = ConfigurationAlgorithm.findOrphans(definitions);
+        for (TBaseElement orphan: orphans) {
+            System.err.println( "  " + orphan.getId() + " " + orphan);
+        }
+        assertTrue("Unexpected orphan elements: " + orphans, orphans.isEmpty());
+    }
+
+    /**
+     * Test the {@link ConfigurationAlgorithm#findOrphans} method.
+     *
+     * This particularly tests that activities are traversable through their boundary events.
+     *
+     * @throws JAXBException if the test document can't be parsed
+     */
+    @Test public final void testFindOrphans5() throws FileNotFoundException, JAXBException {
+
+        // Obtain the test document
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(case12File), true);
 
         // Exercise the method and examine the output -- the test document oughtn't to have any
         Set<TBaseElement> orphans = ConfigurationAlgorithm.findOrphans(definitions);
