@@ -1,10 +1,12 @@
 package com.processconfiguration.cmapper;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -41,6 +43,7 @@ class Cmapper {
 
     // Instance variables
     private File                 cmapFile = null;
+    private QMLType              qml = null;
     private List<VariationPoint> variationPoints = new ArrayList<>();
 
     /** Sole constructor. */
@@ -50,12 +53,11 @@ class Cmapper {
 
     /** @return variation points contained within the C-BPMN file */
     List<VariationPoint> getVariationPoints() {
-        return variationPoints;
+        return Collections.unmodifiableList(variationPoints);
     }
 
     /** @param model  a C-BPMN process model */
     void setBpmn(final ProcessModel model) throws Exception {
-        LOGGER.info("Setting model");
         final TDefinitions definitions = model.getBpmn();
         
         // Find elements with <pc:configurable> children and add them as VariationPoint instances
@@ -82,45 +84,7 @@ class Cmapper {
                 }
             }
         }));
-        LOGGER.info("Set model");
     }
-
-    /*
-    void setBpmn(final File file) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                      org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                      org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                      org.omg.spec.dd._20100524.di.ObjectFactory.class);
-
-        JAXBElement<TDefinitions> element = (JAXBElement<TDefinitions>) context.createUnmarshaller().unmarshal(file);
-        final TDefinitions definitions = element.getValue();
-
-        // Find elements with <pc:configurable> children and add them as VariationPoint instances
-        variationPoints.clear();
-        definitions.accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
-            @Override public void visit(final TEventBasedGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.EVENT_BASED_EXCLUSIVE));
-                }
-            }
-            @Override public void visit(final TExclusiveGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.DATA_BASED_EXCLUSIVE));
-                }
-            }
-            @Override public void visit(final TInclusiveGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.INCLUSIVE));
-                }
-            }
-            @Override public void visit(final TParallelGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.PARALLEL));
-                }
-            }
-        }));
-    }
-    */
 
     /**
      * @param baseElement  an arbitrary BPMN element
@@ -155,16 +119,24 @@ class Cmapper {
         cmapFile = file;
     }
 
-    /** @param file  a file in QML format */
-    void setQml(File file) throws JAXBException {
+    /** @param in  a stream in QML format */
+    void setQml(final InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.qml");
         Unmarshaller u = jc.createUnmarshaller();
-        JAXBElement qmlElement = (JAXBElement) u.unmarshal(file);
-        QMLType qml = (QMLType) qmlElement.getValue();
+        JAXBElement qmlElement = (JAXBElement) u.unmarshal(in);
+        this.qml = (QMLType) qmlElement.getValue();
 
+        /*
         for (FactType fact: qml.getFact()) {
             LOGGER.fine("Fact id=" + fact.getId());
         }
+        LOGGER.info("QML constraints: " + qml.getConstraints());
+        */
+    }
+
+    /** @return whether the questionnaire has been assigned by {@link setQml} yet */
+    boolean isQmlSet() {
+        return qml != null;
     }
 
     /**
@@ -210,6 +182,13 @@ class Cmapper {
                                               final List<String>                 flowRefs) throws ParseException {
 
         if (flowIndex == vp.getFlowCount()) {
+
+            // If the configuration can never occur, skip adding an XML element for it
+            if (qml != null && toBDD("(" + qml.getConstraints() + ").(" + condition + ")" ).isZero()) {
+                return;
+            }
+
+            // Create the configuration XML element
             ObjectFactory factory = new ObjectFactory();
             CBpmnType.Configurable.Configuration configuration = factory.createCBpmnTypeConfigurableConfiguration();
             configurable.getConfiguration().add(configuration);

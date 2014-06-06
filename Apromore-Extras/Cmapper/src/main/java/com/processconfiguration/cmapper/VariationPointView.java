@@ -2,12 +2,16 @@ package com.processconfiguration.cmapper;
 
 // Java 2 Standard packages
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.StringBufferInputStream;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -28,6 +32,7 @@ import com.processconfiguration.cmap.TGatewayType;
 class VariationPointView extends JPanel {
 
     private static Logger LOGGER = Logger.getLogger(VariationPointView.class.getName());
+    private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.VariationPointView");
 
     /**
      * This is the model being viewed.
@@ -40,20 +45,34 @@ class VariationPointView extends JPanel {
      * @param vp  the variation point to be viewed and edited
      */
     VariationPointView(final VariationPoint newVp) {
-        super(new GridLayout(1, 0));
+
+        // Layout
+        GridBagLayout layout = new GridBagLayout();
+        setLayout(layout);
 
         // Initialize instance methods
         vp = newVp;
 
         // Identify the variation point
         JLabel nameLabel = new JLabel(vp.getName());
+        nameLabel.setToolTipText(vp.getName() + "(id: " + vp.getId() + ")");
+        layout.setConstraints(nameLabel, new GridBagConstraints(
+            0, 0,                                 // grid x, y
+            1,                                    // cells wide
+            GridBagConstraints.REMAINDER,         // cells high
+            0.0, 0.0,                             // weight x, y
+            GridBagConstraints.FIRST_LINE_START,  // anchor
+            GridBagConstraints.NONE,              // fill
+            new Insets(10, 10, 10, 10),           // insets (top, left, bottom, right)
+            10, 10                                // padding x, y
+        ));
         add(nameLabel);
-
+        
         // Create table of configurations
         final AbstractTableModel tableModel = new AbstractTableModel() {
 
             public int getColumnCount() {
-                return 2 + vp.getFlowCount();
+                return vp.getFlowCount() + 2;
             }
 
             public int getRowCount() {
@@ -62,8 +81,8 @@ class VariationPointView extends JPanel {
 
             public String getColumnName(int col) {
                 switch (col) {
-                case 0: return "Condition";
-                case 1: return "Gateway type";
+                case 0: return bundle.getString("Condition");
+                case 1: return bundle.getString("Gateway_type");
                 default: return vp.getFlowName(col - 2);
                 }
             }
@@ -107,35 +126,76 @@ class VariationPointView extends JPanel {
         initColumnSizes(table);
 
         // Gateway types need to be edited with a combo box
-        initConditionColumn(table, table.getColumnModel().getColumn(0));
-        initGatewayTypeColumn(table, table.getColumnModel().getColumn(1));
-        for (int i = 2; i < 2 + vp.getFlowCount(); i++) {
-            initConditionColumn(table, table.getColumnModel().getColumn(i));
+        initConditionColumn(table, table.getColumnModel().getColumn(0), null);
+        initGatewayTypeColumn(table, table.getColumnModel().getColumn(1), vp.getGatewayDirection().toString());
+        for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
+            initConditionColumn(
+                table,
+                table.getColumnModel().getColumn(flowIndex + 2),
+                vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
+            );
         }
 
         //Add the scroll pane to this panel.
+        layout.setConstraints(scrollPane, new GridBagConstraints(
+            1, 0,                           // grid x, y
+            GridBagConstraints.RELATIVE,    // cells wide
+            GridBagConstraints.REMAINDER,   // cells high
+            1.0, 1.0,                       // weight x, y
+            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.BOTH,        // fill
+            new Insets(10, 10, 10, 10),     // insets (top, left, bottom, right)
+            10, 10                          // padding x, y
+        ));
         add(scrollPane);
 
         // Add controls for creating/deleting extra configurations
-        add(new JButton(new AbstractAction("Add configuration") {
+        JButton addConfigurationButton = new JButton(new AbstractAction(bundle.getString("Add_configuration")) {
             public void actionPerformed(ActionEvent event) {
                 vp.addConfiguration();
                 int n = vp.getConfigurations().size();
                 tableModel.fireTableRowsInserted(n - 1, n - 1);
             };
-        }));
+        });
+        layout.setConstraints(addConfigurationButton, new GridBagConstraints(
+            2, 0,                           // grid x, y
+            GridBagConstraints.REMAINDER,   // cells wide
+            1,                              // cells high
+            0.0, 0.0,                       // weight x, y
+            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.HORIZONTAL,  // fill
+            new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
+            0, 0                            // padding x, y
+        ));
+        add(addConfigurationButton);
 
-        add(new JButton(new AbstractAction("Remove configuration") {
+        JButton removeConfigurationButton = new JButton(new AbstractAction(bundle.getString("Remove_configuration")) {
             public void actionPerformed(ActionEvent event) {
                 final int selectedRow = table.getSelectedRow();
                 if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(null, "No configuration selected", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                        null,
+                        bundle.getString("No_configuration_selected"),
+                        bundle.getString("Error"),
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 } else {
                     vp.removeConfiguration(selectedRow);
                     tableModel.fireTableRowsDeleted(selectedRow, selectedRow);
                 }
             };
-        }));
+        });
+        layout.setConstraints(removeConfigurationButton, new GridBagConstraints(
+            2, 1,                           // grid x, y
+            GridBagConstraints.REMAINDER,   // cells wide
+            GridBagConstraints.REMAINDER,   // cells high
+            0.0, 0.0,                       // weight x, y
+            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.HORIZONTAL,  // fill
+            new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
+            0, 0                            // padding x, y
+        ));
+        add(removeConfigurationButton);
     }
 
     /*
@@ -158,7 +218,7 @@ class VariationPointView extends JPanel {
             switch (i) {
             case 0: dummy = "f1 & f2";                           break;
             case 1: dummy = TGatewayType.EVENT_BASED_EXCLUSIVE;  break;
-            default: dummy = new Boolean("false");
+            default: dummy = "f1 & f2";
             }
             assert dummy != null;
 
@@ -179,7 +239,7 @@ class VariationPointView extends JPanel {
         }
     }
 
-    public void initConditionColumn(JTable table, TableColumn column) {
+    public void initConditionColumn(JTable table, TableColumn column, String toolTip) {
 
         JTextField textField = new JTextField();
         column.setCellEditor(new DefaultCellEditor(textField));
@@ -196,18 +256,28 @@ class VariationPointView extends JPanel {
                 return component;
             }
         };
-        renderer.setToolTipText("BDDC formatted field");
+        renderer.setToolTipText(toolTip);
         column.setCellRenderer(renderer);
     }
 
-    public void initGatewayTypeColumn(JTable table, TableColumn column) {
+    public void initGatewayTypeColumn(JTable table, TableColumn column, String toolTip) {
 
         JComboBox<TGatewayType> comboBox = new JComboBox<>(TGatewayType.values());
         column.setCellEditor(new DefaultCellEditor(comboBox));
 
         // Set up tooltips
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText("Click for combo box");
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public String getText() {
+                try {
+                    return bundle.getString(super.getText());
+                } catch (MissingResourceException e) {
+                    LOGGER.severe("Unable to find l10n for key " + super.getText());
+                    return super.getText();
+                }
+            }
+        };
+        renderer.setToolTipText(toolTip);
         column.setCellRenderer(renderer);
     }
 }

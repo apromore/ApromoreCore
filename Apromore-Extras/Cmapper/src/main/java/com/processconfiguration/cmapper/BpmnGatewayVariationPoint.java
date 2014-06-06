@@ -49,7 +49,6 @@ class BpmnGatewayVariationPoint implements VariationPoint {
         this.gatewayType = newGatewayType;
 
         // Figure out a human-legible name for this gateway
-        LOGGER.info("Constructing variation point for XOR id=" + gateway.getId() + " name=" + gateway.getName());
         this.name = isEmpty(gateway.getName()) ? abbreviate(gateway.getId()) : gateway.getName();
 
         // Figure out the gateway direction
@@ -73,6 +72,8 @@ class BpmnGatewayVariationPoint implements VariationPoint {
         default:
             throw new RuntimeException("Gateway " + gateway.getId() + " has unsupported direction: " + gateway.getGatewayDirection());
         }
+
+        LOGGER.info("Variation point " + id + " has flow names " + flowNames);
 
         // Initial configuration
         addConfiguration();
