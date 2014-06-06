@@ -2,6 +2,7 @@ package com.processconfiguration.cmapper;
 
 // Java 2 Standard classes
 import java.io.File;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JApplet;
@@ -14,22 +15,18 @@ import com.processconfiguration.quaestio.ApromoreProcessModel;
  */
 public class Applet extends JApplet {
 
+    private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.Applet");
+
     public void init() {
         super.init();
+
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     try {
                         Cmapper cmapper = new Cmapper();
-                        //cmapper.setBpmn(new File("/Users/raboczi/Project/apromore/Apromore-Extras/bpmncmap/src/test/resources/2 Check-in.bpmn"));
 
-                        /*
-                        String model = getParameter("model_url");
-                        if (model != null) {
-                            cmapper.setBpmn(new File(model));
-                        }
-                        */
-
+                        // Check apromore_model parameter
                         String model = getParameter("apromore_model");
                         if (model != null) {
                             try {
@@ -46,7 +43,7 @@ public class Applet extends JApplet {
                                 cmapper.setBpmn(new ApromoreProcessModel(processID, branch, version, Applet.this));
 
                             } catch (Exception e) {
-                                showStatus("Unable to read model " + model);
+                                showStatus(bundle.getString("Unable_to_read_model") + model);
                                 //log("Exception in apromore model");
                                 e.printStackTrace();
                             }
