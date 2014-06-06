@@ -180,6 +180,11 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 		
 		logger.finer("BPMNEdge.bpmnElement=" + that.getBpmnElement());
 
+                if (that.getBpmnElement() == null) {
+                    logger.warning(that.getId() + " lacks a bpmnElement");
+                    return;
+                }
+
 		deriveDockersFromWaypoints(that,
 		                           shape,
 		                           that.getSourceElement() instanceof Shape ? ((Shape) that.getSourceElement()).getBounds() : null,
@@ -296,7 +301,11 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 			}
 		}
 
-		that.getBpmnElement().acceptVisitor(this);
+                if (that.getBpmnElement() == null) {
+                    logger.warning(that.getId() + " has no bpmnElement");
+                } else {
+		    that.getBpmnElement().acceptVisitor(this);
+                }
 	}
 
 	/**
