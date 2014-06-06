@@ -19,6 +19,7 @@ import org.omg.spec.bpmn._20100524.model.*;
 public class ProcessWrapper {
 
     private final String id;
+    private final String name;
     private final List<JAXBElement<? extends TArtifact>> artifact;
     private final List<JAXBElement<? extends TFlowElement>> flowElement;
     private final List<TLaneSet> laneSet;
@@ -32,6 +33,7 @@ public class ProcessWrapper {
      */
     public ProcessWrapper(final TProcess process) {
         id          = process.getId();
+        name        = process.getName();
         artifact    = process.getArtifact();
         flowElement = process.getFlowElement();
         laneSet     = process.getLaneSet();
@@ -45,6 +47,7 @@ public class ProcessWrapper {
      */
     public ProcessWrapper(final TSubProcess subprocess, final String processId) {
         id          = processId;
+        name        = subprocess.getName();
         artifact    = subprocess.getArtifact();
         flowElement = subprocess.getFlowElement();
         laneSet     = subprocess.getLaneSet();
@@ -54,6 +57,9 @@ public class ProcessWrapper {
 
     /** @return <code>id</code> property */
     public String getId() { return id; }
+
+    /** @return <code>name</code> property */
+    public String getName() { return name; }
 
     /** @return <code>artifact</code> property */
     public List<JAXBElement<? extends TArtifact>> getArtifact() { return artifact; }
