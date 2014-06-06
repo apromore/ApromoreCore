@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -37,6 +39,8 @@ import com.processconfiguration.quaestio.FileProcessModel;
  */
 class Main extends JFrame {
 
+  private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.Main");
+
   /**
    * Main frame for the desktop application.
    *
@@ -48,7 +52,7 @@ class Main extends JFrame {
     setJMenuBar(createMenuBar(cmapper));
     setLocation(new java.awt.Point(100, 100));
     //setMinimumSize(new java.awt.Dimension(900, 600));
-    setTitle("Synergia - Cmapper v. 2.0");
+    setTitle(bundle.getString("title"));
 
     generateUI(cmapper);
   }
@@ -67,59 +71,75 @@ class Main extends JFrame {
     final File RESOURCES_DIRECTORY = new File("/Users/raboczi/Project/apromore/Apromore-Extras/bpmncmap/src/test/resources");
     JMenuBar menuBar = new JMenuBar();
 
-    JMenu fileMenu = new JMenu("File");
+    JMenu fileMenu = new JMenu(bundle.getString("File"));
     menuBar.add(fileMenu);
 
-    JMenuItem openModel = fileMenu.add(new AbstractAction("Open model...") {
+    JMenuItem openModel = fileMenu.add(new AbstractAction(bundle.getString("Open_model")) {
       public void actionPerformed(ActionEvent event) {
         try {
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
-          chooser.setFileFilter(new FileNameExtensionFilter("BPMN process models", "bpmn"));
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("BPMN_process_models"), "bpmn"));
           if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
             cmapper.setBpmn(new FileProcessModel(chooser.getSelectedFile()));
             generateUI(cmapper);
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, "Unable to open model: " + e, "Error", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_model") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
         }
       }
     });
 
-    JMenuItem openQml = fileMenu.add(new AbstractAction("Open questionnaire...") {
+    JMenuItem openQml = fileMenu.add(new AbstractAction(bundle.getString("Open_questionnaire")) {
       public void actionPerformed(ActionEvent event) {
         try {
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
-          chooser.setFileFilter(new FileNameExtensionFilter("QML questionnaires", "qml"));
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("QML_questionnaires"), "qml"));
           if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-            cmapper.setQml(chooser.getSelectedFile());
+            cmapper.setQml(new FileInputStream(chooser.getSelectedFile()));
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, "Unable to open questionnaire: " + e, "Error", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_questionnaire") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
         }
       }
     });
 
-    JMenuItem saveCmap = fileMenu.add(new AbstractAction("Save configuration mapping...") {
+    JMenuItem saveCmap = fileMenu.add(new AbstractAction(bundle.getString("Save_configuration_mapping")) {
       public void actionPerformed(ActionEvent event) {
         try {
+          // Has a questionnaire been selected?
+          if (!cmapper.isQmlSet()) {
+            // Confirm whether the genuine intention is to save without a QML file
+            if (JOptionPane.OK_OPTION != JOptionPane.showConfirmDialog(
+              null,
+              "No questionnaire has been selected.  Save cmap anyway?",
+              "Warning",
+              JOptionPane.OK_CANCEL_OPTION)) { return;  /* user cancelled the save */ }
+          }
+
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
-          chooser.setFileFilter(new FileNameExtensionFilter("Configuration mapping", "cmap"));
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("Configuration_mapping"), "cmap"));
           if (chooser.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
             cmapper.writeCmap(chooser.getSelectedFile());
             JOptionPane.showMessageDialog(
               null,
-              "Saved configuration mapping as " + chooser.getSelectedFile(),
-              "Saved",
+              bundle.getString("Saved_configuration_mapping_as") + chooser.getSelectedFile(),
+              bundle.getString("Saved"),
               JOptionPane.INFORMATION_MESSAGE
             );
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, "Unable to save configuration mapping: " + e, "Error", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(
+            null,
+            bundle.getString("Unable_to_save_configuration_mapping") + e,
+            bundle.getString("Error"),
+            JOptionPane.ERROR_MESSAGE
+          );
+          e.printStackTrace();
         }
       }
     });
 
-    JMenuItem quit = fileMenu.add(new AbstractAction("Quit") {
+    JMenuItem quit = fileMenu.add(new AbstractAction(bundle.getString("Quit")) {
       public void actionPerformed(ActionEvent event) {
         Main.this.dispose();
       }
@@ -146,8 +166,8 @@ class Main extends JFrame {
         }
         cmapper.setBpmn(
           new ApromoreProcessModel(Integer.valueOf(argv[i+1]),  // process ID
-                                                   argv[i+2],                   // branch
-                                                   argv[i+3],                   // version number
+                                                   argv[i+2],   // branch
+                                                   argv[i+3],   // version number
                                                    null)
         );
         i += 3;
@@ -171,7 +191,7 @@ class Main extends JFrame {
         if (++i >= argv.length) {
           throw new IllegalArgumentException("-qml without filename");
         }
-        cmapper.setQml(new File(argv[i]));
+        cmapper.setQml(new FileInputStream(argv[i]));
         break;
 
       default:
@@ -182,7 +202,6 @@ class Main extends JFrame {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-          //createAndShowGUI(cmapper);
           new Main(cmapper);
         } catch (Exception e) {
           e.printStackTrace();

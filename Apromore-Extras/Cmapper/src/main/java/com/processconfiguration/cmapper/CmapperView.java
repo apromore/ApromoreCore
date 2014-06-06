@@ -2,19 +2,24 @@ package com.processconfiguration.cmapper;
 
 // Java 2 Standard classes
 import java.awt.GridLayout;
+import java.util.ResourceBundle;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 
 /**
  * View of a {@link Cmapper}.
  */
 class CmapperView extends JPanel {
 
+  private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.CmapperView");
+
   /**
    * @param cmapper  the model
    */
   CmapperView(final Cmapper cmapper) {
+    super(new GridLayout(1, 0));
 
     // Layout
     JPanel vpView = new JPanel();
@@ -22,13 +27,17 @@ class CmapperView extends JPanel {
 
     // Construct the list of variation points
     for (VariationPoint vp: cmapper.getVariationPoints()) {
-      vpView.add(new VariationPointView(vp));
+      VariationPointView view = new VariationPointView(vp);
+      vpView.add(view);
     }
 
     if (vpView.getComponentCount() == 0) {
-      vpView.add(new JLabel("No variation points present"));
+      JLabel label = new JLabel(bundle.getString("No_variation_points_present"));
+      vpView.add(label);
     }
 
-    add(new JScrollPane(vpView));
+    JScrollPane scrollPane = new JScrollPane(vpView);
+    scrollPane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
+    add(scrollPane);
   }
 }
