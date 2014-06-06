@@ -121,14 +121,22 @@ public class BPMN2DiagramConverter {
                         super.visitBpmnEdge(that);
                         bpmndiElement = that;
                         assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
 
                     @Override public void visitBpmnShape(BPMNShape that) {
                         super.visitBpmnShape(that);
                         bpmndiElement = that;
                         assert that.getBpmnElement() != null : that.getId() + " has no bpmnElement attribute";
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
                 });
             }
@@ -143,12 +151,20 @@ public class BPMN2DiagramConverter {
                     BPMNEdge precedingEdge = null;
 
                     @Override public void visitBpmnEdge(BPMNEdge that) {
-                        precedingEdge = that;
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            precedingEdge = that;
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
 
                     @Override public void visitBpmnShape(BPMNShape that) {
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
 
                     @Override public void visitEdge(Edge that) {
@@ -195,11 +211,19 @@ public class BPMN2DiagramConverter {
                 logger.finer("Re-scanning " + element.getId());
                 element.acceptVisitor(new AbstractVisitor() {
                     @Override public void visitBpmnEdge(BPMNEdge that) {
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
 
                     @Override public void visitBpmnShape(BPMNShape that) {
-                        that.getBpmnElement().acceptVisitor(this);
+                        if (that.getBpmnElement() == null) {
+                            logger.warning(that.getId() + " has no bpmnElement attribute");
+                        } else {
+                            that.getBpmnElement().acceptVisitor(this);
+                        }
                     }
 
                     @Override public void visitGateway(Gateway that) {
