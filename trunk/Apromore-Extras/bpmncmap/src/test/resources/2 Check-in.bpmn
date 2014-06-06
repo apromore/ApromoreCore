@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-949dc370-69e6-4230-af1f-317579898647" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-13e39ddd-52e1-473d-812e-ae9e12c07dda">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2%20Check-in.cmap"/>
          <pc:variants>
             <pc:variant id="vid-392197555" name="PER"/>
             <pc:variant id="vid-1036994242" name="OOL"/>
@@ -16,6 +17,9 @@
       </participant>
    </collaboration>
    <process id="sid-fdc61919-5aa0-47ef-80c3-661b52e241fc" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2%20Check-in.cmap"/>
+      </extensionElements>
       <intermediateCatchEvent id="sid-6A2E920E-890D-4E99-BA4C-C5C8DADF934C" name="Passenger &#10;continues&#10;with ID20 &#10;check-in">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -33,7 +37,9 @@
       <exclusiveGateway gatewayDirection="Diverging" id="sid-479BC266-9E13-49C4-AE50-7263B8BF0E69" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-8D1E45BA-8125-42C2-9A42-1A42A3785F3E sid-0AF2F75B-5A4C-4628-AF1B-ED01073A727F sid-A1061E33-3640-4999-9554-A25DBB1E82C6"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -59,7 +65,9 @@
       <exclusiveGateway gatewayDirection="Converging" id="sid-4059C23E-8F3C-4A0A-802B-E592749085C4" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-1C250D52-BBCA-4D31-9AB3-6E91EA8884AF sid-B3BA94FD-4D0A-4304-8277-09DE0975C76E sid-F0752D91-8A10-4FDE-9846-8065AF8014D7"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -136,7 +144,9 @@
       <exclusiveGateway gatewayDirection="Converging" id="sid-3E9935BD-3AED-4B9E-8632-45E8F7488B45" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-9D7D0A68-48BB-4DBA-848D-8E4D9556C659 sid-B92E7742-27EA-472E-9A34-4096F01E6752"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -154,7 +164,9 @@
       <exclusiveGateway gatewayDirection="Diverging" id="sid-A9C5D773-D63A-4644-9B16-57B18FEF874E" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-4B93E394-CCFC-4A2D-9844-5241CED17042 sid-B92E7742-27EA-472E-9A34-4096F01E6752"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -192,7 +204,9 @@
       <exclusiveGateway gatewayDirection="Converging" id="sid-0B14C214-7B5F-497A-9EE3-633E86591D5E" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-8D44C5F7-75C4-4EF2-9E14-D26308016C6D sid-ABAF5AA0-27DE-4D14-BA59-678E2A3FB20B"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -233,7 +247,9 @@
       <exclusiveGateway gatewayDirection="Diverging" id="sid-69B0AFFC-7981-4741-AB69-AFF55F190C5F" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-C67DE0C0-6B55-4A52-8D8D-0AEE15F82C05 sid-ABAF5AA0-27DE-4D14-BA59-678E2A3FB20B"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -508,7 +524,7 @@ MEL, PER, BNE</conditionExpression>
          </extensionElements>
          <conditionExpression id="sid-7d29a98d-7c68-43f2-bcd6-dd14a044ca2a" xsi:type="tFormalExpression">OOL,PER</conditionExpression>
       </sequenceFlow>
-      <association associationDirection="None" id="sid-C02D0901-7DD2-409F-94B8-FDDB1C2DCECD" name="" sourceRef="sid-D2278492-400F-4611-9329-B579C1EA1A38" targetRef="sid-3CE3F50D-5EBE-4A5C-8638-455DAA2757E8"/>
+      <association associationDirection="None" id="sid-C02D0901-7DD2-409F-94B8-FDDB1C2DCECD" sourceRef="sid-D2278492-400F-4611-9329-B579C1EA1A38" targetRef="sid-3CE3F50D-5EBE-4A5C-8638-455DAA2757E8"/>
       <textAnnotation id="sid-3CE3F50D-5EBE-4A5C-8638-455DAA2757E8" textFormat="text/plain">
          <text>PER: Dedicated space and weighting station
 MEL,BNE,OOL: Incidental space in dwell/ seating area</text>

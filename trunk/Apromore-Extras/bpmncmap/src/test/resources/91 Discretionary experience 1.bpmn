@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-1b2ed769-d3e9-4dff-bf46-6cc5d3475e1b" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-555b45b9-cfdf-4788-a2ab-bce30cc5bf37">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/91%20Discretionary%20experience%201.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1520540095" name="PER"/>
             <pc:variant id="vid-1888282095" name="OOL"/>
@@ -31,10 +32,13 @@
          <incoming>sid-E79A888A-C93A-473C-AFB9-9724CC4C0FF1</incoming>
          <outgoing>sid-9C289863-8A60-48EE-85F8-C03DB8EA996F</outgoing>
       </task>
-      <sequenceFlow id="sid-9C289863-8A60-48EE-85F8-C03DB8EA996F" isImmediate="true" name="" sourceRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2"/>
+      <sequenceFlow id="sid-9C289863-8A60-48EE-85F8-C03DB8EA996F" isImmediate="true" name="" sourceRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2" targetRef="sid-31F8DF60-0154-4DC6-9B3F-25E1C805869F"/>
       <sequenceFlow id="sid-E79A888A-C93A-473C-AFB9-9724CC4C0FF1" isImmediate="true" name="" sourceRef="sid-626FECB9-A448-4BA0-B211-2C8891686FDF" targetRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2"/>
    </process>
    <process id="sid-10bcb406-8862-4a06-9869-2cd987751b0a" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/91%20Discretionary%20experience%201.cmap"/>
+      </extensionElements>
       <inclusiveGateway gatewayDirection="Diverging" id="sid-31F8DF60-0154-4DC6-9B3F-25E1C805869F" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -256,7 +260,7 @@
          <incoming>sid-35475F24-360E-4818-9EBD-8DF2AA1C7BCF</incoming>
          <outgoing>sid-41F44EDE-348B-4E96-B1C2-255F77968812</outgoing>
       </subProcess>
-      <task completionQuantity="1" id="sid-10713589-B226-4005-B0B6-41CBBC11C1CE" isForCompensation="false" name="Use restroom/ amenities/ parent's room" startQuantity="1">
+      <task completionQuantity="1" id="sid-10713589-B226-4005-B0B6-41CBBC11C1CE" isForCompensation="false" name="Use restroom/ amenities/ parent%27s room" startQuantity="1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
          </extensionElements>
@@ -690,7 +694,7 @@
          </extensionElements>
       </sequenceFlow>
       <sequenceFlow id="sid-E57FD261-68D4-47E2-A45E-7D1E18494334" name="" sourceRef="sid-63882068-920A-4167-B3CB-DCC05CA377C5" targetRef="sid-4E656F1E-3AA7-4E75-B716-19E3C6FE6381"/>
-      <association associationDirection="None" id="sid-EE0E9D2B-D132-4403-9394-3961BC724DFA" name="" sourceRef="sid-B1553E2A-AAC9-43B6-A715-C31A755A56A9" targetRef="sid-6284DC8E-0AAD-43D2-9385-84AAED517A4A"/>
+      <association associationDirection="None" id="sid-EE0E9D2B-D132-4403-9394-3961BC724DFA" sourceRef="sid-B1553E2A-AAC9-43B6-A715-C31A755A56A9" targetRef="sid-6284DC8E-0AAD-43D2-9385-84AAED517A4A"/>
       <group id="sid-C845C912-0057-486B-9E36-D14E8071A753"/>
       <group id="sid-E79C0FF8-7F7D-451B-BC91-406D8CD9FA8D"/>
       <group id="sid-B65FBF9B-9362-453F-B987-646A6A72D61A"/>

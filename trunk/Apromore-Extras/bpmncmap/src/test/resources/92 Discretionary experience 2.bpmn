@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-cb347ddc-5db5-4374-93a5-eb15022fe682" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-4fae52f1-6d9b-4f5a-802a-e6b3563d46ec">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1464145949" name="PER"/>
             <pc:variant id="vid-202574650" name="OOL"/>
@@ -16,6 +17,9 @@
       </participant>
    </collaboration>
    <process id="sid-e9055838-bead-4f11-bc69-a79940406cca" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
+      </extensionElements>
       <intermediateCatchEvent id="sid-50480F01-9B2F-4E49-8802-154F69BB81D0" name="Continue &#10;with ID92 &#10;Discretionary &#10;experience 2">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -229,7 +233,7 @@
          <incoming>sid-A3DE5E81-C8B6-4DF6-89B0-440234DBF2BC</incoming>
          <outgoing>sid-9055D220-6A25-4CA9-B9FC-48208C21825D</outgoing>
       </task>
-      <task completionQuantity="1" id="sid-45887DAC-B3A9-4590-B8E3-B87DCCB176AF" isForCompensation="false" name="Use restroom/ amenities/ parent's room" startQuantity="1">
+      <task completionQuantity="1" id="sid-45887DAC-B3A9-4590-B8E3-B87DCCB176AF" isForCompensation="false" name="Use restroom/ amenities/ parent%27s room" startQuantity="1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
          </extensionElements>
@@ -416,7 +420,7 @@
             </pc:configurationAnnotation>
          </extensionElements>
       </sequenceFlow>
-      <association associationDirection="None" id="sid-4806E6F4-64B3-4574-A2C0-4D76169B733C" name="" sourceRef="sid-4BAE9DFF-BA6C-4383-89EA-FA27CEE1FBFF" targetRef="sid-2F83CE6E-9B84-4A37-BA4B-2359E86BADCB"/>
+      <association associationDirection="None" id="sid-4806E6F4-64B3-4574-A2C0-4D76169B733C" sourceRef="sid-4BAE9DFF-BA6C-4383-89EA-FA27CEE1FBFF" targetRef="sid-2F83CE6E-9B84-4A37-BA4B-2359E86BADCB"/>
       <group id="sid-893D32E4-4B83-4E23-85E4-2E3B0F476A21"/>
       <group id="sid-D39645B9-777B-4D61-9AF7-78ED0C5BFF6E"/>
       <group id="sid-ED0AA6E7-AE00-4A37-AE12-293FBC8A360A"/>

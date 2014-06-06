@@ -34,6 +34,9 @@
       <messageFlow id="sid-33515F35-0B99-4C8B-B962-06554D47C4F7" name="" sourceRef="sid-51D22839-C58B-4D46-BD51-7EB89DF48F40" targetRef="sid-172DEBCA-8D80-4524-8F68-BA4C050F0FE9"/>
    </collaboration>
    <process id="sid-0107e4ba-2c2e-471d-b49c-7bd41a36aaba" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Perform%20preliminary%20check%20in.cmap"/>
+      </extensionElements>
       <startEvent id="sid-038C1B56-7B01-41F9-B9AC-2BFA4DE7D73B" isInterrupting="true" name="Asked to approach counter">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -72,7 +75,9 @@
       <parallelGateway gatewayDirection="Diverging" id="sid-3680B6F2-4941-4C00-AB63-3322EF586C83" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-7DF1526B-325C-4F00-A5CC-8A89956B2A6A sid-0BC7636D-7355-450F-871C-05C786404B9C sid-B2B8D650-E72F-4FEC-B81A-4A280D939B12"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -91,7 +96,9 @@
       <parallelGateway gatewayDirection="Converging" id="sid-A91F25BC-808B-4DBB-AD7C-DC896D284385" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-250E3005-AF7C-4348-8F9F-8646A214E027 sid-7DF1526B-325C-4F00-A5CC-8A89956B2A6A sid-85693F42-20D0-49AB-A861-FCB27DA76888"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -370,7 +377,9 @@
       <parallelGateway gatewayDirection="Converging" id="sid-C3178F7D-8B50-49F9-ABA8-FA1FD43B7BDA" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-E9D40DAD-C37C-463F-83EE-D49BF4EDDADD sid-73FE193A-252E-47E3-B491-7441A5CB69E2 sid-0BCF65F5-9A91-4696-AF75-09D5144D8281 sid-569EA770-9827-4C9E-BFD7-BE7B8639D5E4"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -390,7 +399,9 @@
       <parallelGateway gatewayDirection="Diverging" id="sid-3D895DE0-6A7A-476D-9B53-484A9F55DF67" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-E356A16C-D1A0-4E43-8AB5-1C95FADB4A0B sid-EAFAFD22-F081-4CD3-A570-41AF1BD92615 sid-2AD1D0C6-02D9-4E03-8FD9-EE17C8F3AA1F sid-B8916734-B6A3-4880-BDE0-BD624A0D5442"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>

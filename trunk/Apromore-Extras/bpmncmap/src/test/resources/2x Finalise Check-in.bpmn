@@ -2,6 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-e3154120-76e2-4039-8c49-f7a02da83c17" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-129fa6b5-ea85-47b9-88a4-3dc71a97a8ac">
       <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
          <pc:variants>
             <pc:variant id="vid-566955654" name="PER"/>
             <pc:variant id="vid-1508440322" name="OOL"/>
@@ -29,6 +30,9 @@
       <messageFlow id="sid-6931D6DE-425A-4005-A0AC-624173D14A72" name="" sourceRef="sid-AF5B7303-3890-4DC3-9A4F-C6B83655F40A" targetRef="sid-140DD3EF-5909-4C18-A127-451E8D1316A7"/>
    </collaboration>
    <process id="sid-47e91b23-bdf1-47d8-a7bd-16dd41e89c0d" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
+      </extensionElements>
       <startEvent id="sid-E8A176D6-BD4A-4729-88A7-092C56774785" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -135,7 +139,9 @@
       <exclusiveGateway gatewayDirection="Diverging" id="sid-9F1ABFF3-6A04-4D1F-99FA-B053E26269C6" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration targetRefs="sid-D36CEA8F-D70F-492F-96C8-994D7684E508 sid-65F732A9-5427-473A-98EC-4274CC60FDA2 sid-56C86BDF-6D3D-48F8-852E-207BDD02217C"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -180,7 +186,9 @@
       <exclusiveGateway gatewayDirection="Converging" id="sid-47DEA7D9-F70F-4880-BE40-A98343ECFFD7" name="">
          <extensionElements>
             <pc:configurable>
+               <!--
                <pc:configuration sourceRefs="sid-D36CEA8F-D70F-492F-96C8-994D7684E508 sid-E2067E72-9AF9-4940-ABD9-FFCA7F676780 sid-D63DFF38-A895-4C0A-9105-D226AFFBCDF5"/>
+               -->
             </pc:configurable>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#00FFFF"/>
          </extensionElements>
@@ -326,7 +334,7 @@ PER</conditionExpression>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
       </dataObject>
-      <association associationDirection="None" id="sid-6FC8C74C-A919-4D29-B707-E0F3BD0713CE" name="" sourceRef="sid-0E24F849-C018-4D2E-BBBF-DF34A938C35C" targetRef="sid-CCFE6587-6729-45D1-A7D2-A046E0F3625F"/>
+      <association associationDirection="None" id="sid-6FC8C74C-A919-4D29-B707-E0F3BD0713CE" sourceRef="sid-0E24F849-C018-4D2E-BBBF-DF34A938C35C" targetRef="sid-CCFE6587-6729-45D1-A7D2-A046E0F3625F"/>
       <textAnnotation id="sid-CCFE6587-6729-45D1-A7D2-A046E0F3625F" textFormat="text/plain">
          <text>Technology printer</text>
       </textAnnotation>
@@ -419,7 +427,7 @@ PER</conditionExpression>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
       </dataObject>
-      <association associationDirection="None" id="sid-45EA4F99-7EBB-4107-A02C-4BAE7C2580D6" name="" sourceRef="sid-E49E3431-B00E-447E-8D93-D7AF95BDF572" targetRef="sid-362287AA-7660-4605-BC6C-4A0332B47821"/>
+      <association associationDirection="None" id="sid-45EA4F99-7EBB-4107-A02C-4BAE7C2580D6" sourceRef="sid-E49E3431-B00E-447E-8D93-D7AF95BDF572" targetRef="sid-362287AA-7660-4605-BC6C-4A0332B47821"/>
       <textAnnotation id="sid-362287AA-7660-4605-BC6C-4A0332B47821" textFormat="text/plain">
          <text>Technology printer</text>
       </textAnnotation>
