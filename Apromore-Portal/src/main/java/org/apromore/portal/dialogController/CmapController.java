@@ -8,12 +8,15 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import com.github.sardine.SardineFactory;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -25,9 +28,9 @@ import org.zkoss.zul.Window;
 import com.processconfiguration.ConfigurationMapping;
 import com.processconfiguration.cmap.CMAP;
 
+import org.apromore.filestore.client.FileStoreService;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
-
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 
@@ -43,6 +46,7 @@ public class CmapController extends BaseController {
 
     private static final String NATIVE_TYPE = "BPMN 2.0";
     private static final long serialVersionUID = 1L;
+    private FileStoreService fileStore;
     private MainController mainC;
     private Window cmapW;
 
@@ -65,6 +69,10 @@ public class CmapController extends BaseController {
 
         URL cmapURL = null;
         URL qmlURL  = null;
+
+        // Obtain the proxy for the WebDAV repository
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+        fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal");
 
         // Look up JAXB context
         JAXBContext context;
@@ -116,69 +124,72 @@ public class CmapController extends BaseController {
                 }
                 assert bpmn != null;
 
-                String cmapURLString = null;
-                for (JAXBElement<? extends TRootElement> root: bpmn.getRootElement()) {
-                    TExtensionElements extensionElements = root.getValue().getExtensionElements();
-                    if (extensionElements != null) {
-                        for (Object object: extensionElements.getAny()) {
-                            if (object instanceof ConfigurationMapping) {
-                                cmapURLString = ((ConfigurationMapping) object).getHref();
-                            }
-                        }
-                    }
-                }
+                String cmapURLString = findCmapURLString(bpmn);
 
                 // Is there a cmap link at all?
                 if (cmapURLString == null || cmapURLString.trim().isEmpty()) {
-                    throw new ConfigureException("The model " + modelName +
-                        " lacks a link to a configuration mapping.");
-                }
+                    System.err.println("The model " + modelName + " lacks a link to a configuration mapping.");
+                } else {
+                    // Parse the cmap link into cmapURL
+                    try {
+                        cmapURL = new URL(cmapURLString);
+                    } catch (MalformedURLException e) {
+                        throw new ConfigureException("The model " + modelName +
+                            " has a malformed link to its configuration mapping: \"" + cmapURLString + "\"", e);
+                    }
+                    assert cmapURL != null;
 
-                // Parse the cmap link into cmapURL
-                try {
-                    cmapURL = new URL(cmapURLString);
-                } catch (MalformedURLException e) {
-                    throw new ConfigureException("The model " + modelName +
-                        " has a malformed link to its configuration mapping: \"" + cmapURLString + "\"", e);
-                }
-                assert cmapURL != null;
+                    // Download and parse the cmap document
+                    CMAP cmap;
+                    try {
+                        /*
+                        cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
+                                                 .createUnmarshaller()
+                                                 .unmarshal(new StreamSource(fileStore.getFile(cmapURL.toString())));
+                        */
+ 
+                        // Bypass the OSGi issues with FileStoreService, reading WebDAV directly
+                        HttpURLConnection c = (HttpURLConnection) cmapURL.openConnection();
+                        c.setRequestProperty("Authorization",
+                            "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary("admin:password".getBytes("utf-8")));
+                        c.setRequestMethod("GET");
+                        c.connect();
+                        System.err.println("Reponse code: " + c.getResponseCode());
+                        System.err.println("Reponse message: " + c.getResponseMessage());
+                        System.err.println("Content type: " + c.getContentType());
+                        cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
+                                                 .createUnmarshaller()
+                                                 .unmarshal(new StreamSource(c.getInputStream()));
 
-                // Download and parse the cmap document
-                CMAP cmap;
-                try {
-                    HttpURLConnection c = (HttpURLConnection) cmapURL.openConnection();
-                    c.setRequestMethod("GET");
-                    c.addRequestProperty("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");  // Base64 encoded "admin:password"
-                    c.connect();
-                    System.err.println("Reponse code: " + c.getResponseCode());
-                    System.err.println("Reponse message: " + c.getResponseMessage());
-                    System.err.println("Content type: " + c.getContentType());
-                    cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
-                                                  .createUnmarshaller()
-                                                  .unmarshal(new StreamSource(c.getInputStream()));
-                } catch (IOException e) {
-                    throw new ConfigureException("Unable to read the configuration mapping from " + cmapURL, e);
-                } catch (JAXBException e) {
-                    throw new ConfigureException("Unable to parse the configuration mapping from " + cmapURL, e);
-                }
-                assert cmap != null;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ConfigureException("Unable to read the configuration mapping from " + cmapURL, e);
+                    }
+                    assert cmap != null;
 
-                // Parse the qml link into qmlURL
-                System.err.println("QML field from Cmap: " + cmap.getQml());
-                try {
-                    qmlURL = new URL(cmapURL, cmap.getQml());
-                } catch (MalformedURLException e) {
-                    throw new ConfigureException("The cmap file " + cmapURLString +
-                        " which " + modelName + " is linked to has an invalid questionnaire link: \"" +
-                        cmap.getQml() + "\"", e);
+                    // Parse the qml link into qmlURL
+                    if (cmap != null) {
+                        System.err.println("QML field from Cmap: " + cmap.getQml());
+                        try {
+                            qmlURL = new URL(cmapURL, cmap.getQml());
+                        } catch (MalformedURLException e) {
+                            throw new ConfigureException("The cmap file " + cmapURLString +
+                                " which " + modelName + " is linked to has an invalid questionnaire link: \"" +
+                                cmap.getQml() + "\"", e);
+                        }
+                        System.err.println("QML URL from Cmap: " + qmlURL);
+                    }
                 }
-                System.err.println("QML URL from Cmap: " + qmlURL);
 
                 // Set the applet parameters
                 Applet configureA = (Applet) this.cmapW.getFellow("cmapper");
                 configureA.setParam("apromore_model", process.getId() + " " + version.getName() + " " + version.getVersionNumber());
-                configureA.setParam("qml_url", qmlURL.toString());
-                configureA.setParam("cmap_url", cmapURL.toString());
+                if (qmlURL != null) {
+                    configureA.setParam("qml_url", qmlURL.toString());
+                }
+                if (cmapURL != null) {
+                    configureA.setParam("cmap_url", cmapURL.toString());
+                }
 
                 System.err.println("New params=" + configureA.getParams());
 
@@ -187,5 +198,26 @@ public class CmapController extends BaseController {
                 System.err.println("Entered Cmapper applet mode");
             }
         }
+    }
+
+    /**
+     * Extract the C-MAP href from a C-BPMN document, if it exists.
+     *
+     * @param bpmn  a C-BPMN document
+     * @return the CMAP URL hypertext reference, or <code>null</code> if absent
+     */
+    private String findCmapURLString(final TDefinitions bpmn) {
+        for (JAXBElement<? extends TRootElement> root: bpmn.getRootElement()) {
+            TExtensionElements extensionElements = root.getValue().getExtensionElements();
+            if (extensionElements != null) {
+                for (Object object: extensionElements.getAny()) {
+                    if (object instanceof ConfigurationMapping) {
+                        return ((ConfigurationMapping) object).getHref();
+                    }
+                }
+            }
+        }
+ 
+        return null;  // No CMAP href is set
     }
 }

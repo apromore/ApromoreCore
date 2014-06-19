@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ResourceBundle;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -78,32 +79,49 @@ class Main extends JFrame {
       public void actionPerformed(ActionEvent event) {
         try {
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
-          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("BPMN_process_models"), "bpmn"));
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("BPMN_process_model"), "bpmn"));
           if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
             cmapper.setBpmn(new FileProcessModel(chooser.getSelectedFile()));
             generateUI(cmapper);
           }
         } catch (Exception e) {
+          e.printStackTrace();
           JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_model") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
         }
       }
     });
 
-    JMenuItem openQml = fileMenu.add(new AbstractAction(bundle.getString("Open_questionnaire")) {
+    JMenuItem openQml = fileMenu.add(new AbstractAction(bundle.getString("Open_qml")) {
       public void actionPerformed(ActionEvent event) {
         try {
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
-          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("QML_questionnaires"), "qml"));
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("QML_questionnaire"), "qml"));
           if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-            cmapper.setQml(new FileInputStream(chooser.getSelectedFile()));
+            cmapper.setQml(new FileQml(chooser.getSelectedFile()));
           }
         } catch (Exception e) {
-          JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_questionnaire") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
+          e.printStackTrace();
+          JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_qml") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
         }
       }
     });
 
-    JMenuItem saveCmap = fileMenu.add(new AbstractAction(bundle.getString("Save_configuration_mapping")) {
+    JMenuItem openCmap = fileMenu.add(new AbstractAction(bundle.getString("Open_cmap")) {
+      public void actionPerformed(ActionEvent event) {
+        try {
+          JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
+          chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("Configuration_mapping"), "cmap"));
+          if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+            cmapper.setCmap(new FileCmap(chooser.getSelectedFile()));
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+          JOptionPane.showMessageDialog(null, bundle.getString("Unable_to_open_cmap") + e, bundle.getString("Error"), JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    });
+
+    JMenuItem saveCmap = fileMenu.add(new AbstractAction(bundle.getString("Save_cmap")) {
       public void actionPerformed(ActionEvent event) {
         try {
           // Has a questionnaire been selected?
@@ -111,30 +129,31 @@ class Main extends JFrame {
             // Confirm whether the genuine intention is to save without a QML file
             if (JOptionPane.OK_OPTION != JOptionPane.showConfirmDialog(
               null,
-              "No questionnaire has been selected.  Save cmap anyway?",
-              "Warning",
+              bundle.getString("Save_cmap_without_qml?"),
+              bundle.getString("Warning"),
               JOptionPane.OK_CANCEL_OPTION)) { return;  /* user cancelled the save */ }
           }
 
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
           chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("Configuration_mapping"), "cmap"));
           if (chooser.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-            cmapper.writeCmap(chooser.getSelectedFile());
+            File file = chooser.getSelectedFile();
+            cmapper.save(new FileCmap(file));
             JOptionPane.showMessageDialog(
               null,
-              bundle.getString("Saved_configuration_mapping_as") + chooser.getSelectedFile(),
+              bundle.getString("Saved_cmap_as") + chooser.getSelectedFile(),
               bundle.getString("Saved"),
               JOptionPane.INFORMATION_MESSAGE
             );
           }
         } catch (Exception e) {
+          e.printStackTrace();
           JOptionPane.showMessageDialog(
             null,
-            bundle.getString("Unable_to_save_configuration_mapping") + e,
+            bundle.getString("Unable_to_save_cmap") + e,
             bundle.getString("Error"),
             JOptionPane.ERROR_MESSAGE
           );
-          e.printStackTrace();
         }
       }
     });
@@ -177,7 +196,7 @@ class Main extends JFrame {
         if (++i >= argv.length) {
           throw new IllegalArgumentException("-cmap without filename");
         }
-        cmapper.setCmap(new File(argv[i]));
+        cmapper.setCmap(new FileCmap(new File(argv[i])));
         break;
 
       case "-model":
@@ -191,7 +210,7 @@ class Main extends JFrame {
         if (++i >= argv.length) {
           throw new IllegalArgumentException("-qml without filename");
         }
-        cmapper.setQml(new FileInputStream(argv[i]));
+        cmapper.setQml(new FileQml(new File(argv[i])));
         break;
 
       default:

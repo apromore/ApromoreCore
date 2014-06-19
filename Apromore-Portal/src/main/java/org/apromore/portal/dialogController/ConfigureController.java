@@ -25,9 +25,9 @@ import org.zkoss.zul.Window;
 import com.processconfiguration.ConfigurationMapping;
 import com.processconfiguration.cmap.CMAP;
 
+import org.apromore.filestore.client.FileStoreService;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
-
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 
@@ -146,9 +146,22 @@ public class ConfigureController extends BaseController {
                 // Download and parse the cmap document
                 CMAP cmap;
                 try {
+                    /*
+                    // Obtain the proxy for the WebDAV repository
+                    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+                    FileStoreService fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal"); 
+
+                    // Deserialize a JAXB representation of the cmap document from the WebDAV repository
+                    cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
+                                             .createUnmarshaller()
+                                             .unmarshal(new StreamSource(fileStore.getFile(cmapURL.toString())));
+                    */
+
+                    // Bypass fileStore and its OSGi issues by going directly to WebDAV
                     HttpURLConnection c = (HttpURLConnection) cmapURL.openConnection();
                     c.setRequestMethod("GET");
-                    c.addRequestProperty("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");  // Base64 encoded "admin:password"
+                    c.setRequestProperty("Authorization",
+                        "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary("admin:password".getBytes("utf-8")));
                     c.connect();
                     System.err.println("Reponse code: " + c.getResponseCode());
                     System.err.println("Reponse message: " + c.getResponseMessage());
@@ -156,10 +169,8 @@ public class ConfigureController extends BaseController {
                     cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
                                                   .createUnmarshaller()
                                                   .unmarshal(new StreamSource(c.getInputStream()));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     throw new ConfigureException("Unable to read the configuration mapping from " + cmapURL, e);
-                } catch (JAXBException e) {
-                    throw new ConfigureException("Unable to parse the configuration mapping from " + cmapURL, e);
                 }
                 assert cmap != null;
 
