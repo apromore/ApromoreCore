@@ -39,7 +39,7 @@ class BpmnGatewayVariationPoint implements VariationPoint {
     private TGatewayType                       gatewayType;
 
     /**
-     * Sole constructor.
+     * Create a variation point from a C-BPMN Gateway element.
      *
      * @param name  human-legible name
      */
@@ -157,6 +157,10 @@ class BpmnGatewayVariationPoint implements VariationPoint {
 
     public TGatewayDirection getGatewayDirection() {
         return gatewayDirection;
+    }
+
+    public TGatewayType getGatewayType() {
+        return gatewayType;
     }
 
     /**

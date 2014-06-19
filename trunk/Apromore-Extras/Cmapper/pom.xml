@@ -93,6 +93,10 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>filestore-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
         </dependency>
         <dependency>

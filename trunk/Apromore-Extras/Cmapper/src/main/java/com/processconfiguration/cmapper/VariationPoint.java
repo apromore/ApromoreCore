@@ -47,6 +47,8 @@ interface VariationPoint {
 
     TGatewayDirection getGatewayDirection();
 
+    TGatewayType getGatewayType();
+
     /**
      * A configuration of this variation point.
      */

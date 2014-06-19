@@ -2,12 +2,17 @@ package com.processconfiguration.cmapper;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringBufferInputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -30,6 +35,7 @@ import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TraversingVisitor;
@@ -37,13 +43,16 @@ import org.omg.spec.bpmn._20100524.model.TraversingVisitor;
 /**
  * Model of an editable configuration mapping.
  */
-class Cmapper {
+class Cmapper extends Observable {
 
     private static final Logger LOGGER = Logger.getLogger(Cmapper.class.getName());
 
     // Instance variables
-    private File                 cmapFile = null;
-    private QMLType              qml = null;
+    private CMAP                 cmap      = null;
+    private URI                  cmapURI   = null;
+    private String               modelText = null;
+    private QMLType              qml       = null;
+    private URI                  qmlURI    = null;
     private List<VariationPoint> variationPoints = new ArrayList<>();
 
     /** Sole constructor. */
@@ -56,34 +65,93 @@ class Cmapper {
         return Collections.unmodifiableList(variationPoints);
     }
 
-    /** @param model  a C-BPMN process model */
+    /**
+     * Set the C-BPMN model.
+     *
+     * If a <var>cmap</var> has been assigned, it will be used to provide initial configurations.
+     * Otherwise, configurable gateways are assigned a single configuration which allows all flows under all conditions.
+     *
+     * Notifies any observers via the {@link Observable interface}.
+     *
+     * @param model  a C-BPMN process model, never <code>null</code>
+     */
     void setBpmn(final ProcessModel model) throws Exception {
         final TDefinitions definitions = model.getBpmn();
-        
+        final Map<String, BpmnGatewayVariationPoint> vpMap = new HashMap<>();
+
+        this.modelText = modelText;
+
         // Find elements with <pc:configurable> children and add them as VariationPoint instances
         variationPoints.clear();
         model.getBpmn().accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
             @Override public void visit(final TEventBasedGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.EVENT_BASED_EXCLUSIVE));
-                }
+                addGateway(gateway, TGatewayType.EVENT_BASED_EXCLUSIVE);
             }
             @Override public void visit(final TExclusiveGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.DATA_BASED_EXCLUSIVE));
-                }
+                addGateway(gateway, TGatewayType.DATA_BASED_EXCLUSIVE);
             }
             @Override public void visit(final TInclusiveGateway gateway) {
-                if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.INCLUSIVE));
-                }
+                addGateway(gateway, TGatewayType.INCLUSIVE);
             }
             @Override public void visit(final TParallelGateway gateway) {
+                addGateway(gateway, TGatewayType.PARALLEL);
+            }
+
+            private void addGateway(TGateway gateway, TGatewayType gatewayType) {
                 if (isConfigurable(gateway)) {
-                    variationPoints.add(new BpmnGatewayVariationPoint(gateway, definitions, TGatewayType.PARALLEL));
+                    BpmnGatewayVariationPoint vp = new BpmnGatewayVariationPoint(gateway, definitions, gatewayType);
+                    vpMap.put(vp.getId(), vp);
+                    variationPoints.add(vp);
                 }
             }
         }));
+
+        // If we have a configuration mapping for any of the variation points, use that instead
+        if (cmap != null) {
+            for (Object object: cmap.getCBpmnOrCEpcOrCYawl()) {
+                if (object instanceof CBpmnType) {
+                    for (CBpmnType.Configurable configurable: ((CBpmnType) object).getConfigurable()) {
+                        BpmnGatewayVariationPoint vp = vpMap.get(configurable.getBpmnid());
+                        if (vp != null) {
+                            vp.getConfigurations().clear();  // blow away any default configuration
+
+                            // Add the configurations from the configuration mapping
+                            for (CBpmnType.Configurable.Configuration configuration: configurable.getConfiguration()) {
+                                VariationPoint.Configuration vc = vp.new Configuration(configuration.getCondition());
+                                if (configuration.getType() != null) {  // if there's only a single flow, it won't have a type
+                                    vc.setGatewayType(configuration.getType());
+                                }
+                                for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
+                                    List<String> activeFlows;
+                                    switch (vp.getGatewayDirection()) {
+                                    case CONVERGING:
+                                        activeFlows = configuration.getSourceRefs();
+                                        break;
+                                    case DIVERGING:
+                                        activeFlows = configuration.getTargetRefs();
+                                        break;
+                                    default:
+                                        throw new Exception("Variation point " + vp.getId() +
+                                            " has unsupported direction " + vp.getGatewayDirection());
+                                    }
+                                    vc.setFlowCondition(
+                                        flowIndex,
+                                        activeFlows.contains(vp.getFlowId(flowIndex)) ? "1" : "0"
+                                    );
+                                }
+                                vp.getConfigurations().add(vc);
+                            }
+                        }
+                    }
+                    break;  // if there's more than one c-bpmn section in the cmap, skip the subsequent ones
+                }
+            }
+        }
+
+        setChanged();
+        LOGGER.info("NOTIFYING");
+        notifyObservers();
+        LOGGER.info("NOTIFIED");
     }
 
     /**
@@ -96,7 +164,8 @@ class Cmapper {
                 if (any instanceof com.processconfiguration.Configurable) {
                     return true;
                 }
-                /*
+                /* If the C-BPMN extension classes aren't available, JAXB will unmarshal DOM Element instances instead.
+
                 else if (any instanceof Element) {
                     Element element = (Element) any;
                     if ("configurable".equals(element.getLocalName()) && "http://www.processconfiguration.com".equals(element.getNamespaceURI())) {
@@ -110,28 +179,22 @@ class Cmapper {
         return false;
     }
 
+    /*
     File getCmap() {
         return cmapFile;
     }
+    */
 
-    /** @param file  a file in Cmap format */
-    void setCmap(File file) throws JAXBException {
-        cmapFile = file;
+    /** @param cmap */
+    void setCmap(Cmap cmap) throws Exception {
+        this.cmap    = (cmap == null) ? null : cmap.getCmap();
+        this.cmapURI = (cmap == null) ? null : cmap.getURI();
     }
 
-    /** @param in  a stream in QML format */
-    void setQml(final InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.qml");
-        Unmarshaller u = jc.createUnmarshaller();
-        JAXBElement qmlElement = (JAXBElement) u.unmarshal(in);
-        this.qml = (QMLType) qmlElement.getValue();
-
-        /*
-        for (FactType fact: qml.getFact()) {
-            LOGGER.fine("Fact id=" + fact.getId());
-        }
-        LOGGER.info("QML constraints: " + qml.getConstraints());
-        */
+    /** @param qml */
+    void setQml(Qml qml) throws Exception {
+        this.qml    = (qml == null) ? null : qml.getQml();
+        this.qmlURI = (qml == null) ? null : qml.getURI();
     }
 
     /** @return whether the questionnaire has been assigned by {@link setQml} yet */
@@ -139,24 +202,30 @@ class Cmapper {
         return qml != null;
     }
 
+    /** @return the JAXB model of the QML questionnaire, or <code>null</code> if no questionnaire is currently set */
+    QMLType getQml() {
+        return qml;
+    }
+
     /**
      * Serialize the cmap
      *
-     * @param file  the output file, not <code>null</code>
      * @throws JAXBException if unable to serialize the cmap
      * @throws ParserException if any of the conditions in the cmap are ungrammatical
      */
-    void writeCmap(File file) throws IllegalStateException, JAXBException, ParseException, UnsupportedEncodingException {
-        LOGGER.info("Writing cmap to " + file);
+    void save(Cmap cmap) throws Exception {
+        LOGGER.info("Writing cmap to " + cmap.getURI());
 
         // Cmap
         ObjectFactory factory = new ObjectFactory();
-        CMAP cmap = factory.createCMAP();
-        cmap.setQml(URLEncoder.encode(file.getName().replace(".cmap", ".qml"), "utf-8").replaceAll("\\+", "%20"));
+        CMAP root = factory.createCMAP();
+        if (qmlURI != null) {
+            root.setQml(qmlURI.toString());
+        }
 
         CBpmnType cBpmn = factory.createCBpmnType();
-        cBpmn.setHref(file.getName().replace(".cmap", ".bpmn"));
-        cmap.getCBpmnOrCEpcOrCYawl().add(cBpmn);
+        cBpmn.setHref(modelText);
+        root.getCBpmnOrCEpcOrCYawl().add(cBpmn);
 
         for (VariationPoint vp: variationPoints) {
             CBpmnType.Configurable configurable = factory.createCBpmnTypeConfigurable();
@@ -167,11 +236,14 @@ class Cmapper {
                 recursivelyAddConfigurations(configurable, vp, vc, vc.getCondition(), 0, new ArrayList<String>());
             }
         }
-
+ 
         // Perform the serialization
         JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.cmap");
         Marshaller m = jc.createMarshaller();
-        m.marshal(cmap, file);
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        OutputStream out = cmap.getOutputStream();
+        m.marshal(root, out);
+        out.close();
     }
 
     private void recursivelyAddConfigurations(final CBpmnType.Configurable       configurable,
@@ -214,10 +286,19 @@ class Cmapper {
             if (!bdd.isZero()) {  // Flow may be present
                 List<String> newFlowRefs = new ArrayList<>(flowRefs);
                 newFlowRefs.add(vp.getFlowId(flowIndex));
-                recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").(" + flowCondition + ")", flowIndex + 1, newFlowRefs);
+                if (bdd.isOne()) {  // Flow is certainly present
+                    recursivelyAddConfigurations(configurable, vp, vc, condition, flowIndex + 1, newFlowRefs);
+                } else {
+                    recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").(" + flowCondition + ")", flowIndex + 1, newFlowRefs);
+                }
             }
             if (!bdd.isOne()) {  // Flow may be absent
-                recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").-(" + flowCondition + ")", flowIndex + 1, flowRefs);
+                if (bdd.isZero()) {  // Flow is certainly absent
+                    // don't add the absent flow
+                    recursivelyAddConfigurations(configurable, vp, vc, condition, flowIndex + 1, flowRefs);
+                } else {
+                    recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").-(" + flowCondition + ")", flowIndex + 1, flowRefs);
+                }
             }
         }
     }
