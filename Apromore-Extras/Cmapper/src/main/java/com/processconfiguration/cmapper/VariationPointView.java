@@ -4,12 +4,18 @@ package com.processconfiguration.cmapper;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.StringBufferInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -30,6 +36,13 @@ import javax.swing.table.*;
 import com.processconfiguration.cmap.TGatewayType;
 
 class VariationPointView extends JPanel {
+
+    /**
+     * Whether to permit arbitrary logical conditions for sequence flows in configurations.
+     *
+     * When this is disabled (false), flow conditions are edited with a checkbox rather than a text file.
+     */
+    private static boolean COMPLEX_FLOW_CONDITIONS = false;
 
     private static Logger LOGGER = Logger.getLogger(VariationPointView.class.getName());
     private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.VariationPointView");
@@ -59,14 +72,28 @@ class VariationPointView extends JPanel {
         layout.setConstraints(nameLabel, new GridBagConstraints(
             0, 0,                                 // grid x, y
             1,                                    // cells wide
+            1,                                    // cells high
+            0.0, 0.0,                             // weight x, y
+            GridBagConstraints.FIRST_LINE_START,  // anchor
+            GridBagConstraints.NONE,              // fill
+            new Insets(10, 10, 0, 10),            // insets (top, left, bottom, right)
+            10, 0                                 // padding x, y
+        ));
+        add(nameLabel);
+
+        // Annotate the variation point with its type
+        JLabel typeLabel = new JLabel(bundle.getString(vp.getGatewayType().toString()) + bundle.getString(vp.getGatewayDirection().toString()));
+        layout.setConstraints(typeLabel, new GridBagConstraints(
+            0, 1,                                 // grid x, y
+            1,                                    // cells wide
             GridBagConstraints.REMAINDER,         // cells high
             0.0, 0.0,                             // weight x, y
             GridBagConstraints.FIRST_LINE_START,  // anchor
             GridBagConstraints.NONE,              // fill
-            new Insets(10, 10, 10, 10),           // insets (top, left, bottom, right)
-            10, 10                                // padding x, y
+            new Insets(0, 10, 10, 10),            // insets (top, left, bottom, right)
+            10, 0                                 // padding x, y
         ));
-        add(nameLabel);
+        add(typeLabel);
         
         // Create table of configurations
         final AbstractTableModel tableModel = new AbstractTableModel() {
@@ -92,7 +119,16 @@ class VariationPointView extends JPanel {
                 switch (col) {
                 case 0: return c.getCondition();
                 case 1: return c.getGatewayType();
-                default: return c.getFlowCondition(col - 2);
+                default:
+                    if (COMPLEX_FLOW_CONDITIONS) {
+                        return c.getFlowCondition(col - 2);
+                    } else {
+                        switch (c.getFlowCondition(col - 2)) {
+                        case "0": return Boolean.FALSE;
+                        case "1": return Boolean.TRUE;
+                        default: throw new RuntimeException("Unable to edit flow conditions \"" + c.getFlowCondition(col - 2) + "\"");
+                        }
+                    }
                 }
             }
 
@@ -109,7 +145,13 @@ class VariationPointView extends JPanel {
                 switch (col) {
                 case 0:  c.setCondition((String) value);               break;
                 case 1:  c.setGatewayType((TGatewayType) value);       break;
-                default: c.setFlowCondition(col - 2, (String) value);  break;
+                default:
+                    if (COMPLEX_FLOW_CONDITIONS) {
+                        c.setFlowCondition(col - 2, (String) value);
+                    } else {
+                        c.setFlowCondition(col - 2, ((Boolean) value).booleanValue() ? "1" : "0");
+                    }
+                    break;
                 }
                 fireTableCellUpdated(row, col);
             }
@@ -125,24 +167,31 @@ class VariationPointView extends JPanel {
         // Set up column sizes.
         initColumnSizes(table);
 
-        // Gateway types need to be edited with a combo box
+        // Each condition line has a logical condition for when it's active
         initConditionColumn(table, table.getColumnModel().getColumn(0), null);
-        initGatewayTypeColumn(table, table.getColumnModel().getColumn(1), vp.getGatewayDirection().toString());
+
+        // Gateway types might need to be editable with a combo box
+        initGatewayTypeColumn(table, table.getColumnModel().getColumn(1), vp.getGatewayDirection().toString(), vp.getGatewayType());
+
+        // Columns for each configurable sequence flow
         for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
-            initConditionColumn(
-                table,
-                table.getColumnModel().getColumn(flowIndex + 2),
-                vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
-            );
+            if (COMPLEX_FLOW_CONDITIONS) {
+                initConditionColumn(
+                    table,
+                    table.getColumnModel().getColumn(flowIndex + 2),
+                    vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
+                );
+            }
+            // the default behavior is a checkbox for Boolean columns, which is fine if COMPLEX_FLOW_CONDITIONS is false
         }
 
         //Add the scroll pane to this panel.
         layout.setConstraints(scrollPane, new GridBagConstraints(
             1, 0,                           // grid x, y
-            GridBagConstraints.RELATIVE,    // cells wide
+            1,   // cells wide
             GridBagConstraints.REMAINDER,   // cells high
             1.0, 1.0,                       // weight x, y
-            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.CENTER, // anchor
             GridBagConstraints.BOTH,        // fill
             new Insets(10, 10, 10, 10),     // insets (top, left, bottom, right)
             10, 10                          // padding x, y
@@ -162,9 +211,9 @@ class VariationPointView extends JPanel {
             GridBagConstraints.REMAINDER,   // cells wide
             1,                              // cells high
             0.0, 0.0,                       // weight x, y
-            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.NORTHWEST,      // anchor
             GridBagConstraints.HORIZONTAL,  // fill
-            new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
+            new Insets(10, 0, 0, 0),         // insets (top, left, bottom, right)
             0, 0                            // padding x, y
         ));
         add(addConfigurationButton);
@@ -190,13 +239,34 @@ class VariationPointView extends JPanel {
             GridBagConstraints.REMAINDER,   // cells wide
             GridBagConstraints.REMAINDER,   // cells high
             0.0, 0.0,                       // weight x, y
-            GridBagConstraints.CENTER,      // anchor
+            GridBagConstraints.NORTHWEST,      // anchor
             GridBagConstraints.HORIZONTAL,  // fill
             new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
             0, 0                            // padding x, y
         ));
         add(removeConfigurationButton);
+
+        // When we lose focus, we need to deselect any selected table row
+        table.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent event) {
+                JTable previousTable = previousTableMap.get(getParent());
+                previousTableMap.put(getParent(), table);
+                if (previousTable != null && previousTable.getRowCount() > 0) {
+                    previousTable.removeRowSelectionInterval(0, previousTable.getRowCount()-1);
+                }
+            }
+            public void focusLost(FocusEvent event) {}
+        });
+
     }
+
+    /**
+     * The containing CmapperView (presumably) is mapped to the last variation point table that had focus.
+     *
+     * This is used to cancel the focus within sibling variation points when focus is gained.
+     * (Yeah, it's sort of ugly....)
+     */
+    private final static Map<Container,JTable> previousTableMap = new HashMap<>();
 
     /*
      * This method picks good column sizes.
@@ -218,7 +288,7 @@ class VariationPointView extends JPanel {
             switch (i) {
             case 0: dummy = "f1 & f2";                           break;
             case 1: dummy = TGatewayType.EVENT_BASED_EXCLUSIVE;  break;
-            default: dummy = "f1 & f2";
+            default: dummy = COMPLEX_FLOW_CONDITIONS ? "f1 & f2" : Boolean.FALSE;
             }
             assert dummy != null;
 
@@ -249,10 +319,9 @@ class VariationPointView extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                if (!Cmapper.isValidCondition((String) value)) {
-                    component.setBackground(Color.RED);
-                }
-
+                component.setBackground(!Cmapper.isValidCondition((String) value)  ? Color.RED   :
+                                                                       !isSelected ? SystemColor.control :
+                                                                                     SystemColor.controlHighlight);
                 return component;
             }
         };
@@ -260,10 +329,20 @@ class VariationPointView extends JPanel {
         column.setCellRenderer(renderer);
     }
 
-    public void initGatewayTypeColumn(JTable table, TableColumn column, String toolTip) {
+    public void initGatewayTypeColumn(JTable table, TableColumn column, String toolTip, TGatewayType gatewayType) {
 
-        JComboBox<TGatewayType> comboBox = new JComboBox<>(TGatewayType.values());
-        column.setCellEditor(new DefaultCellEditor(comboBox));
+        switch (gatewayType) {
+        case INCLUSIVE:
+            JComboBox<TGatewayType> comboBox = new JComboBox<>(new TGatewayType[] { TGatewayType.DATA_BASED_EXCLUSIVE,
+                                                                                    TGatewayType.INCLUSIVE,
+                                                                                    TGatewayType.PARALLEL });
+            column.setCellEditor(new DefaultCellEditor(comboBox));
+            break;
+
+        default:
+            // set no editor -- not editable
+            break;
+        }
 
         // Set up tooltips
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
