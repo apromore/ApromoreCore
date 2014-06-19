@@ -11,29 +11,29 @@
       <configuration condition=" f23. f21. f22" type="data-based_exclusive" sourceRefs="sid-2F287462-ABE6-4E13-BA9E-44F77830A51C sid-D11B7695-52C6-4E95-AF75-249C6093180F sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
       <configuration condition=" f23. f21.-f22" type="data-based_exclusive" sourceRefs="sid-2F287462-ABE6-4E13-BA9E-44F77830A51C sid-D11B7695-52C6-4E95-AF75-249C6093180F"/>
       <configuration condition=" f23.-f21. f22" type="data-based_exclusive" sourceRefs="sid-2F287462-ABE6-4E13-BA9E-44F77830A51C sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
-      <configuration condition="(((f23)).-(f21)).-(f22)" sourceRefs="sid-2F287462-ABE6-4E13-BA9E-44F77830A51C"/>
-      <configuration condition="((-(f23)).(f21)).(f22)" type="data-based_exclusive" sourceRefs="sid-D11B7695-52C6-4E95-AF75-249C6093180F sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
-      <configuration condition="((-(f23)).(f21)).-(f22)" sourceRefs="sid-D11B7695-52C6-4E95-AF75-249C6093180F"/>
-      <configuration condition="((-(f23)).-(f21)).(f22)" sourceRefs="sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
+      <configuration condition="f23.-f21.-f22" sourceRefs="sid-2F287462-ABE6-4E13-BA9E-44F77830A51C"/>
+      <configuration condition="-f23.f21.f22" type="data-based_exclusive" sourceRefs="sid-D11B7695-52C6-4E95-AF75-249C6093180F sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
+      <configuration condition="-f23.f21.-f22" sourceRefs="sid-D11B7695-52C6-4E95-AF75-249C6093180F"/>
+      <configuration condition="-f23.-f21.f22" sourceRefs="sid-62603170-80DD-4120-927B-7C233D1E2E26"/>
     </configurable>
     <configurable bpmnid="sid-2CCEF564-8731-436E-87BC-5B119787DBB9">
-      <configuration condition="((1).(f24)).(f25)" type="inclusive" sourceRefs="sid-3B9A0481-9773-40FE-8692-8318D4F6C468 sid-BA59018E-4FDA-41D0-BECD-DE729C77BA5C"/>
-      <configuration condition="((1).(f24)).-(f25)" sourceRefs="sid-3B9A0481-9773-40FE-8692-8318D4F6C468"/>
-      <configuration condition="((1).-(f24)).(f25)" sourceRefs="sid-BA59018E-4FDA-41D0-BECD-DE729C77BA5C"/>
+      <configuration condition="f24.f25" type="inclusive" sourceRefs="sid-3B9A0481-9773-40FE-8692-8318D4F6C468 sid-BA59018E-4FDA-41D0-BECD-DE729C77BA5C"/>
+      <configuration condition="f24.-f25" sourceRefs="sid-3B9A0481-9773-40FE-8692-8318D4F6C468"/>
+      <configuration condition="-f24.f25" sourceRefs="sid-BA59018E-4FDA-41D0-BECD-DE729C77BA5C"/>
     </configurable>
     <configurable bpmnid="sid-06F2E647-D6B4-4CE8-97B0-7D94B380F064">
-      <configuration condition="((1).(f24)).(f25)" type="inclusive" targetRefs="sid-5F8DCFFA-57B0-49FD-AE5B-7AF97B1C3BD1 sid-101C6570-81EF-4E51-9612-57BC91C5FA5F"/>
-      <configuration condition="((1).(f24)).-(f25)" targetRefs="sid-5F8DCFFA-57B0-49FD-AE5B-7AF97B1C3BD1"/>
-      <configuration condition="((1).-(f24)).(f25)" targetRefs="sid-101C6570-81EF-4E51-9612-57BC91C5FA5F"/>
+      <configuration condition="f24.f25" type="inclusive" targetRefs="sid-5F8DCFFA-57B0-49FD-AE5B-7AF97B1C3BD1 sid-101C6570-81EF-4E51-9612-57BC91C5FA5F"/>
+      <configuration condition="f24.-f25" targetRefs="sid-5F8DCFFA-57B0-49FD-AE5B-7AF97B1C3BD1"/>
+      <configuration condition="-f24.f25" targetRefs="sid-101C6570-81EF-4E51-9612-57BC91C5FA5F"/>
     </configurable>
     <configurable bpmnid="sid-F072A913-F508-4FE6-A7F5-DA5F143D98D6">
-      <configuration condition="(((1).(f22)).(f23)).(f21)" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
-      <configuration condition="(((1).(f22)).(f23)).-(f21)" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1"/>
-      <configuration condition="(((1).(f22)).-(f23)).(f21)" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
-      <configuration condition="(((1).(f22)).-(f23)).-(f21)" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730"/>
-      <configuration condition="(((1).-(f22)).(f23)).(f21)" type="data-based_exclusive" targetRefs="sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
-      <configuration condition="(((1).-(f22)).(f23)).-(f21)" targetRefs="sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1"/>
-      <configuration condition="(((1).-(f22)).-(f23)).(f21)" targetRefs="sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
+      <configuration condition="f22.f23.f21" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
+      <configuration condition="f22.f23.-f21" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1"/>
+      <configuration condition="f22.-f23.f21" type="data-based_exclusive" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
+      <configuration condition="f22.-f23.-f21" targetRefs="sid-38126A54-B1A1-41E3-913B-E1B197939730"/>
+      <configuration condition="-f22.f23.f21" type="data-based_exclusive" targetRefs="sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1 sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
+      <configuration condition="-f22.f23.-f21" targetRefs="sid-FDF7D80C-0A94-42AF-8B53-0A21ED08F8E1"/>
+      <configuration condition="-f22.-f23.f21" targetRefs="sid-7BA24FC2-AE54-41AF-9C30-7C785D8DB118"/>
     </configurable>
   </c-bpmn>
 </ns2:CMAP>
