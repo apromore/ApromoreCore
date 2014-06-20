@@ -53,18 +53,24 @@ class VariationPointView extends JPanel {
     private VariationPoint vp;
 
     /**
+     * This is the cmapper containing the questionnaire which governs the facts available for conditions.
+     */
+    private Cmapper cmapper;
+
+    /**
      * Sole constructor.
      *
      * @param vp  the variation point to be viewed and edited
      */
-    VariationPointView(final VariationPoint newVp) {
+    VariationPointView(final VariationPoint newVp, final Cmapper newCmapper) {
 
         // Layout
         GridBagLayout layout = new GridBagLayout();
         setLayout(layout);
 
         // Initialize instance methods
-        vp = newVp;
+        vp      = newVp;
+        cmapper = newCmapper;
 
         // Identify the variation point
         JLabel nameLabel = new JLabel(vp.getName());
@@ -319,9 +325,9 @@ class VariationPointView extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                component.setBackground(!Cmapper.isValidCondition((String) value)  ? Color.RED   :
-                                                                       !isSelected ? SystemColor.control :
-                                                                                     SystemColor.controlHighlight);
+                component.setBackground(!cmapper.isValidCondition((String) value) ? Color.PINK :
+                                                                      !isSelected ? SystemColor.control :
+                                                                                    SystemColor.controlHighlight);
                 return component;
             }
         };

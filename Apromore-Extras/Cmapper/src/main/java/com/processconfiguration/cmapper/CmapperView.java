@@ -27,7 +27,7 @@ class CmapperView extends JPanel {
 
     // Construct the list of variation points
     for (VariationPoint vp: cmapper.getVariationPoints()) {
-      VariationPointView view = new VariationPointView(vp);
+      VariationPointView view = new VariationPointView(vp, cmapper);
       vpView.add(view);
     }
 
