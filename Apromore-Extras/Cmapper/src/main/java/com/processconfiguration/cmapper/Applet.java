@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -151,7 +153,7 @@ public class Applet extends JApplet {
                     buttonPanel.add(loadButton);
 
                     // "Show QML" button pops out a cheat sheet for the questionnaire facts
-                    JButton showButton = new JButton(new AbstractAction(bundle.getString("Show_qml")) {
+                    final JButton showButton = new JButton(new AbstractAction(bundle.getString("Show_qml")) {
                         QmlFrame qmlFrame = null;
                         public void actionPerformed(ActionEvent event) {
                             showStatus(bundle.getString("Show_qml"));
@@ -162,8 +164,16 @@ public class Applet extends JApplet {
                             qmlFrame.setVisible(true);
                         }
                     });
-                    loadButton.setToolTipText(bundle.getString("showButton_tooltip"));
+                    showButton.setEnabled(cmapper.isQmlSet());
+                    showButton.setToolTipText(bundle.getString("showButton_tooltip"));
                     buttonPanel.add(showButton);
+
+                    // "Show QML" button enabled/disabled whenever the cmapper model changes
+                    cmapper.addObserver(new Observer() {
+                        public void update(Observable observable, Object arg) {
+                            showButton.setEnabled(((Cmapper) observable).isQmlSet());
+                        }
+                    });
 
                     // "Save C-map" button uploads the cmap file via WebDAV
                     JButton saveButton = new JButton(new AbstractAction(bundle.getString("Save_cmap")) {

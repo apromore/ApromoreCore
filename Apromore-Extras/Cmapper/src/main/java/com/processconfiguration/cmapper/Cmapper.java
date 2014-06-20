@@ -152,9 +152,7 @@ class Cmapper extends Observable {
         }
 
         setChanged();
-        LOGGER.info("NOTIFYING");
         notifyObservers();
-        LOGGER.info("NOTIFIED");
     }
 
     /**
@@ -182,16 +180,13 @@ class Cmapper extends Observable {
         return false;
     }
 
-    /*
-    File getCmap() {
-        return cmapFile;
-    }
-    */
-
     /** @param cmap */
     void setCmap(Cmap cmap) throws Exception {
         this.cmap    = (cmap == null) ? null : cmap.getCmap();
         this.cmapURI = (cmap == null) ? null : cmap.getURI();
+
+        setChanged();
+        notifyObservers();
     }
 
     /** @param qml */
@@ -205,6 +200,9 @@ class Cmapper extends Observable {
                 qmlFactIdSet.add(fact.getId());
             }
         }
+
+        setChanged();
+        notifyObservers();
     }
 
     /** @return whether the questionnaire has been assigned by {@link setQml} yet */
