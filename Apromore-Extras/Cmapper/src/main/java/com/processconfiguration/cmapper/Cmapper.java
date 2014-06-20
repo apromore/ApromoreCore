@@ -10,8 +10,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Observable;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -53,6 +55,7 @@ class Cmapper extends Observable {
     private String               modelText = null;
     private QMLType              qml       = null;
     private URI                  qmlURI    = null;
+    private Set<String>          qmlFactIdSet = new HashSet<>();
     private List<VariationPoint> variationPoints = new ArrayList<>();
 
     /** Sole constructor. */
@@ -195,6 +198,13 @@ class Cmapper extends Observable {
     void setQml(Qml qml) throws Exception {
         this.qml    = (qml == null) ? null : qml.getQml();
         this.qmlURI = (qml == null) ? null : qml.getURI();
+
+        qmlFactIdSet.clear();
+        if (this.qml != null) {
+            for (FactType fact: this.qml.getFact()) {
+                qmlFactIdSet.add(fact.getId());
+            }
+        }
     }
 
     /** @return whether the questionnaire has been assigned by {@link setQml} yet */
@@ -309,10 +319,13 @@ class Cmapper extends Observable {
         return parser.AdditiveExpression();
     }
 
-    static public boolean isValidCondition(final String condition) {
+    public boolean isValidCondition(final String condition) {
         try {
-            toBDD(condition);
-            return true;
+            Parser parser = new Parser(new StringBufferInputStream((String) condition));
+            parser.init();
+            parser.AdditiveExpression();
+            return qmlFactIdSet.containsAll(parser.getVariableMap().keySet());
+
         } catch (ParseException e) {
             return false;
         }
