@@ -14,7 +14,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * implementation of the org.apromore.dao.ProcessDao interface.
@@ -40,22 +42,33 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
         List<GroupFolder> folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
+        Map<Integer, FolderTreeNode> map = new HashMap<>();
 
         List<FolderTreeNode> treeNodes = new ArrayList<>();
         for (GroupFolder folder : folders) {
-            FolderTreeNode treeNode = new FolderTreeNode();
-            treeNode.setId(folder.getFolder().getId());
-            treeNode.setName(folder.getFolder().getName());
-            treeNode.setHasRead(folder.isHasRead());
-            treeNode.setHasWrite(folder.isHasWrite());
-            treeNode.setHasOwnership(folder.isHasOwnership());
-            treeNode.setSubFolders(this.getFolderTreeByUser(folder.getFolder().getId(), userId));
+            if (map.containsKey(folder.getFolder().getId())) {
+                // This is not the first group granting folder access to the user, so just merge in additional permissions
+                FolderTreeNode treeNode = map.get(folder.getFolder().getId());
+                treeNode.setHasRead(treeNode.getHasRead() || folder.isHasRead());
+                treeNode.setHasWrite(treeNode.getHasWrite() || folder.isHasWrite());
+                treeNode.setHasOwnership(treeNode.getHasOwnership() || folder.isHasOwnership());
+            } else {
+                // This is the first group granting folder access to the user, so add the folder to the tree
+                FolderTreeNode treeNode = new FolderTreeNode();
+                map.put(folder.getFolder().getId(), treeNode);
+                treeNode.setId(folder.getFolder().getId());
+                treeNode.setName(folder.getFolder().getName());
+                treeNode.setHasRead(folder.isHasRead());
+                treeNode.setHasWrite(folder.isHasWrite());
+                treeNode.setHasOwnership(folder.isHasOwnership());
+                treeNode.setSubFolders(this.getFolderTreeByUser(folder.getFolder().getId(), userId));
 
-            for (FolderTreeNode subFolders : treeNode.getSubFolders()) {
-                subFolders.setParent(treeNode);
+                for (FolderTreeNode subFolders : treeNode.getSubFolders()) {
+                    subFolders.setParent(treeNode);
+                }
+
+                treeNodes.add(treeNode);
             }
-
-            treeNodes.add(treeNode);
         }
 
         return treeNodes;
