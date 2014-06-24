@@ -92,7 +92,7 @@ public class AssociationFactory extends AbstractEdgesFactory {
 		if (associationType.equals(AssociationType.ASSOCIATION)) {
 			Association association = new Association();
 			association.setId(shape.getResourceId());
-			association.setName(shape.getProperty("text"));
+			//association.setName(shape.getProperty("text"));  In BPMN 2.0, Association doesn't have a @name attribute
 			association.setAssociationDirection(this
 					.getAssociationDirectionFromShape(shape));
 			return association;
