@@ -396,7 +396,7 @@ public class ConfigurationAlgorithmUnitTest {
         pruningSet.add(airbus);
         ConfigurationAlgorithm.prune(definitions, pruningSet);
         definitions = definitions.correctFlowNodeRefs(definitions, new BpmnObjectFactory());
-        definitions.marshal(new FileOutputStream("/tmp/prune2.bpmn"), false);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIRECTORY, "prune2.bpmn")), false);
 
         // Inspect the mutated definitions
         //assertValidBPMN(definitions, "test-prune2.bpmn.xml");  // pruning introduces unsourced/untargeted flows
@@ -533,7 +533,7 @@ public class ConfigurationAlgorithmUnitTest {
 
         // Exercise the method
         ConfigurationAlgorithm.replaceConfiguredGateway(definitions, gateway);
-        definitions.marshal(new FileOutputStream("/tmp/test-replaceConfiguredGateway1.bpmn"), false);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIRECTORY, "test-replaceConfiguredGateway1.bpmn")), false);
 
         // Expecting a new, non-configurable inclusive gateway
         TGateway newGateway = (TGateway) ((TProcess) definitions.getRootElement().get(0).getValue()).getFlowElement().get(1).getValue();
