@@ -1,6 +1,8 @@
 package org.apromore.filestore.client;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import com.github.sardine.DavResource;
@@ -27,6 +29,7 @@ public class FileStoreServiceClient implements FileStoreService {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "password";
 
+    private URI                baseURI;
     private WebServiceTemplate webServiceTemplate;
 
     /**
@@ -35,6 +38,12 @@ public class FileStoreServiceClient implements FileStoreService {
      * @param webServiceTemplate the webservice template
      */
     public FileStoreServiceClient(WebServiceTemplate webServiceTemplate) {
+        try {
+            this.baseURI = new URI(webServiceTemplate.getDefaultUri());
+        } catch (URISyntaxException e) {
+            throw new Error("Bad hardcoded URI", e);
+        }
+
         this.webServiceTemplate = webServiceTemplate;
     }
 
@@ -45,7 +54,7 @@ public class FileStoreServiceClient implements FileStoreService {
     @Override
     public List<DavResource> list(String folderLocation) throws Exception {
         Sardine sardine = SardineFactory.begin(USERNAME, PASSWORD);
-        return sardine.list(folderLocation);
+        return sardine.list(rewrite(folderLocation));
     }
 
     /**
@@ -55,7 +64,7 @@ public class FileStoreServiceClient implements FileStoreService {
     @Override
     public boolean exists(String url) throws Exception {
         Sardine sardine = SardineFactory.begin(USERNAME, PASSWORD);
-        return sardine.exists(url);
+        return sardine.exists(rewrite(url));
     }
 
     /**
@@ -65,7 +74,7 @@ public class FileStoreServiceClient implements FileStoreService {
     @Override
     public InputStream getFile(String url) throws Exception {
         Sardine sardine = SardineFactory.begin(USERNAME, PASSWORD);
-        return sardine.get(url);
+        return sardine.get(rewrite(url));
     }
 
     /**
@@ -74,7 +83,7 @@ public class FileStoreServiceClient implements FileStoreService {
      */
     @Override
     public void put(String url, byte[] data) throws Exception {
-        SardineFactory.begin(USERNAME, PASSWORD).put(url, data);
+        SardineFactory.begin(USERNAME, PASSWORD).put(rewrite(url), data);
     }
 
     /**
@@ -83,7 +92,7 @@ public class FileStoreServiceClient implements FileStoreService {
      */
     @Override
     public void put(String url, byte[] data, String contentType) throws Exception {
-        SardineFactory.begin(USERNAME, PASSWORD).put(url, data, contentType);
+        SardineFactory.begin(USERNAME, PASSWORD).put(rewrite(url), data, contentType);
     }
 
     /**
@@ -92,7 +101,7 @@ public class FileStoreServiceClient implements FileStoreService {
      */
     @Override
     public void createFolder(String url) throws Exception {
-        SardineFactory.begin(USERNAME, PASSWORD).createDirectory(url);
+        SardineFactory.begin(USERNAME, PASSWORD).createDirectory(rewrite(url));
     }
 
     /**
@@ -101,7 +110,7 @@ public class FileStoreServiceClient implements FileStoreService {
      */
     @Override
     public void delete(String url) throws Exception {
-        SardineFactory.begin(USERNAME, PASSWORD).delete(url);
+        SardineFactory.begin(USERNAME, PASSWORD).delete(rewrite(url));
     }
 
     /**
@@ -165,5 +174,28 @@ public class FileStoreServiceClient implements FileStoreService {
         }
 
         return response.getValue().getUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public URI getBaseURI() {
+        return baseURI;
+    }
+
+    /**
+     * @param urlString  client-supplied URL-formatted WebDAV address
+     * @return the <var>UrlString</var> re-written to include the user information that Sardine demands
+     */
+    private String rewrite(String urlString) throws URISyntaxException {
+        URI uri = new URI(urlString);
+        return new URI(uri.getScheme(),
+                       USERNAME + ":"  + PASSWORD,
+                       uri.getHost(),
+                       uri.getPort(),
+                       uri.getPath(),
+                       uri.getQuery(),
+                       uri.getFragment()).toString();
     }
 }
