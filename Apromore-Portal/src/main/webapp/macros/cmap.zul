@@ -1,4 +1,4 @@
-<window width="900px" closable="true" position="center" title="Configure process model with Cmapper">
+<window width="900px" closable="true" position="center" title="Define model:questionnaire mapping with C-Mapper">
     <applet id="cmapper"
          codebase="applets/"
          archive="cmapper-applet.jar"
