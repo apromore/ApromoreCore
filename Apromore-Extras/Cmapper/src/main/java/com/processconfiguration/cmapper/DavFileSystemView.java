@@ -4,6 +4,7 @@ package com.processconfiguration.cmapper;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import javax.swing.filechooser.FileSystemView;
@@ -22,7 +23,6 @@ class DavFileSystemView extends FileSystemView {
     private static Logger LOGGER = Logger.getLogger(DavFileSystemView.class.getCanonicalName());
 
     private final FileStoreService service;
-    private final String baseURLString;
     private final File   ROOT;
     private final File[] ROOTS;
 
@@ -33,8 +33,7 @@ class DavFileSystemView extends FileSystemView {
      */
     DavFileSystemView(final FileStoreService service) {
         this.service       = service;
-        this.baseURLString = "http://admin:password@localhost:9000/filestore/dav";
-        this.ROOT          = new File("/filestore/dav/");
+        this.ROOT          = new File(service.getBaseURI().getPath());
         this.ROOTS         = new File[] { ROOT };
     }
  
@@ -72,7 +71,7 @@ class DavFileSystemView extends FileSystemView {
     @Override
     public File createNewFolder(File containingDir) {
         try {
-            URI uri = new URI("http", "admin:password", "localhost", 9000, containingDir + "/newFolder", null, null);
+            URI uri = service.getBaseURI().resolve(containingDir + "/newFolder");
             LOGGER.info("Creating folder with uri " + uri);
             service.createFolder(uri.toString());
             return new File(containingDir, "newFolder");
@@ -100,9 +99,22 @@ class DavFileSystemView extends FileSystemView {
         LOGGER.info("Get files in " + dir);
         ArrayList<File> fileList = new ArrayList<>();
         try {
-            for (DavResource resource: service.list("http://admin:password@localhost:9000/filestore/dav" + dir)) {
-                LOGGER.info("  Got file " + resource);
-                fileList.add(new File(resource.toString()));
+            String s = dir.toString();
+            URI uri;
+            if ("/".equals(s)) {
+                uri = service.getBaseURI();
+            } else {
+                uri = service.getBaseURI().resolve(dir.toString());
+            }
+            LOGGER.info("Get files at " + uri);
+            for (DavResource resource: service.list(uri.toString())) {
+                LOGGER.info("  Got file \"" + resource + "\" name=\"" + resource.getName());
+                DavFile davFile = new DavFile(resource);
+                if (davFile.isHidden()) {
+                    LOGGER.info("  Skipping \"" + resource + "\"");
+                    continue;
+                }
+                fileList.add(davFile);
             }
         } catch (Exception e) {
             LOGGER.log(SEVERE, "Unable to iterate through DAV files", e);
@@ -140,6 +152,16 @@ class DavFileSystemView extends FileSystemView {
     /**
      * {@inheritDoc}
      *
+     * @return true always
+     */
+    @Override
+    public boolean isFileSystem(File f) {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @return false always
      */
     @Override
@@ -150,11 +172,11 @@ class DavFileSystemView extends FileSystemView {
     /**
      * {@inheritDoc}
      *
-     * @return false always
+     * @return true if the name begins with "."
      */
     @Override
     public boolean isHiddenFile(File f) {
-        return false;
+        return f.isHidden();
     }
 
     /**
@@ -168,10 +190,58 @@ class DavFileSystemView extends FileSystemView {
     /**
      * {@inheritDoc}
      *
-     * @return true always
+     * @return false always
      */
     @Override
     public Boolean isTraversable(File f) {
-        return true;
+        return f.isDirectory();
+    }
+
+
+    /**
+     * A file on the WebDAV repository.
+     */
+    class DavFile extends File {
+
+        private DavResource resource;
+
+        DavFile(DavResource resource) {
+            super(resource.toString());
+
+            this.resource = resource;
+        }
+
+        @Override public boolean canExecute() {
+            return true;
+        }
+
+        @Override public boolean canRead() {
+            return true;
+        }
+
+        @Override public boolean canWrite() {
+            return true;
+        }
+
+        @Override public boolean exists() {
+            return true;
+        }
+
+        @Override public boolean isDirectory() {
+            return resource.isDirectory();
+        }
+
+        @Override public boolean isFile() {
+            return !resource.isDirectory();
+        }
+
+        @Override public boolean isHidden() {
+            return resource.getName().startsWith(".");
+        }
+
+        @Override public long lastModified() {
+            Date modified = resource.getModified();
+            return (modified == null) ? 0L : modified.getTime();
+        }
     }
 }

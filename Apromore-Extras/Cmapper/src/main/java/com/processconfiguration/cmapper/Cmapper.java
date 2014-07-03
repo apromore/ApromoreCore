@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.w3c.dom.Element;
 
+import com.processconfiguration.ConfigurationMapping;
 import com.processconfiguration.MyTraverser;
 import com.processconfiguration.cmap.*;
 import com.processconfiguration.quaestio.ProcessModel;
@@ -31,15 +33,18 @@ import com.processconfiguration.qml.QMLType;
 import net.sf.javabdd.BDD;
 import org.apromore.bpmncmap.parser.ParseException;
 import org.apromore.bpmncmap.parser.Parser;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.bpmn._20100524.model.DepthFirstTraverserImpl;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TExtensionElements;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TraversingVisitor;
 
 /**
@@ -52,7 +57,7 @@ class Cmapper extends Observable {
     // Instance variables
     private CMAP                 cmap      = null;
     private URI                  cmapURI   = null;
-    private String               modelText = null;
+    private ProcessModel         model     = null;
     private QMLType              qml       = null;
     private URI                  qmlURI    = null;
     private Set<String>          qmlFactIdSet = new HashSet<>();
@@ -78,11 +83,11 @@ class Cmapper extends Observable {
      *
      * @param model  a C-BPMN process model, never <code>null</code>
      */
-    void setBpmn(final ProcessModel model) throws Exception {
+    void setModel(final ProcessModel model) throws Exception {
         final TDefinitions definitions = model.getBpmn();
         final Map<String, BpmnGatewayVariationPoint> vpMap = new HashMap<>();
 
-        this.modelText = modelText;
+        this.model = model;
 
         // Find elements with <pc:configurable> children and add them as VariationPoint instances
         variationPoints.clear();
@@ -215,6 +220,52 @@ class Cmapper extends Observable {
         return qml;
     }
 
+    //
+    // The methods beyond this point aren't really pure "model" in the MVC sense....
+    //
+
+    /**
+     * Insert a link from the C-BPMN model to the configuration mapping document.
+     *
+     * @throws IllegalStateException if no cmap has been set yet
+     */
+    void link() throws Exception {
+        if (cmapURI == null) {
+            throw new IllegalStateException("Cannot link because no cmap is set yet");
+        }
+
+        LOGGER.info("Linking model to " + cmapURI);
+        BpmnDefinitions definitions = model.getBpmn();
+
+        definitions.accept(new TraversingVisitor(new MyTraverser(), new BaseVisitor() {
+            @Override public void visit(final TProcess process) {
+                LOGGER.info("  Traverse process " + process.getId());
+
+                // Remove any existing configuration mappings
+                TExtensionElements extensionElements = process.getExtensionElements();
+                if (extensionElements != null) {
+                    Iterator i = extensionElements.getAny().iterator();
+                    while (i.hasNext()) {
+                        Object object = i.next();
+                        if (object instanceof ConfigurationMapping) {
+                            ConfigurationMapping cmapping = (ConfigurationMapping) object;
+                            i.remove();
+                        }
+                    }
+                }
+
+                // Add the new configuration mapping
+                com.processconfiguration.ObjectFactory factory = new com.processconfiguration.ObjectFactory();
+                ConfigurationMapping cmapping = factory.createConfigurationMapping();
+                cmapping.setHref(cmapURI.toString());
+                extensionElements.getAny().add(cmapping);
+            }
+        }));
+            
+        model.update(definitions);
+        LOGGER.info("Linked model to " + cmapURI);
+    }
+
     /**
      * Serialize the cmap
      *
@@ -232,16 +283,48 @@ class Cmapper extends Observable {
         }
 
         CBpmnType cBpmn = factory.createCBpmnType();
-        cBpmn.setHref(modelText);
+        cBpmn.setHref(model.getText());
         root.getCBpmnOrCEpcOrCYawl().add(cBpmn);
 
+        String qmlConstraints = "1";
+        if (isQmlSet() && getQml().getConstraints() != null) {
+            qmlConstraints = getQml().getConstraints();
+        }
+
         for (VariationPoint vp: variationPoints) {
+            vp.simplify(qmlConstraints);  // The cmap format only supports simplified configurations
+
             CBpmnType.Configurable configurable = factory.createCBpmnTypeConfigurable();
             configurable.setBpmnid(vp.getId());
             cBpmn.getConfigurable().add(configurable);
 
             for (VariationPoint.Configuration vc: vp.getConfigurations()) {
-                recursivelyAddConfigurations(configurable, vp, vc, vc.getCondition(), 0, new ArrayList<String>());
+                CBpmnType.Configurable.Configuration configuration = factory.createCBpmnTypeConfigurableConfiguration();
+                configurable.getConfiguration().add(configuration);
+                
+                // Set condition attribute
+                configuration.setCondition(vc.getCondition());
+
+                // Set sourceRefs or targetRefs attribute
+                List<String> flowRefs = new ArrayList<>();
+                for (int flowIndex = 0; flowIndex < vp.getFlowCount(); ++flowIndex) {
+                    BDD bdd = BpmnGatewayVariationPoint.toBDD(vc.getFlowCondition(flowIndex));
+                    if (bdd.isOne()) {
+                        flowRefs.add(vp.getFlowId(flowIndex));
+                    } else {
+                        assert bdd.isZero() : "Condition for " + vp.getFlowId(flowIndex) + " was non-boolean value " + vc.getFlowCondition(flowIndex);
+                    }
+                }
+                switch (vp.getGatewayDirection()) {
+                case CONVERGING: configuration.getSourceRefs().addAll(flowRefs);  break;
+                case DIVERGING:  configuration.getTargetRefs().addAll(flowRefs);  break;
+                default:         throw new RuntimeException("Unsupported gateway direction in variation point " + vp.getId() + ": " + vp.getGatewayDirection());
+                }
+
+                // Set type attribute
+                if (flowRefs.size() > 1) {
+                    configuration.setType(vc.getGatewayType());
+                }
             }
         }
  
@@ -254,78 +337,27 @@ class Cmapper extends Observable {
         out.close();
     }
 
-    private void recursivelyAddConfigurations(final CBpmnType.Configurable       configurable,
-                                              final VariationPoint               vp,
-                                              final VariationPoint.Configuration vc,
-                                              final String                       condition,
-                                              final int                          flowIndex,
-                                              final List<String>                 flowRefs) throws ParseException {
-
-        if (flowIndex == vp.getFlowCount()) {
-
-            // If the configuration can never occur, skip adding an XML element for it
-            if (qml != null && toBDD("(" + qml.getConstraints() + ").(" + condition + ")" ).isZero()) {
-                return;
-            }
-
-            // Create the configuration XML element
-            ObjectFactory factory = new ObjectFactory();
-            CBpmnType.Configurable.Configuration configuration = factory.createCBpmnTypeConfigurableConfiguration();
-            configurable.getConfiguration().add(configuration);
-
-            // Set condition attribute
-            configuration.setCondition(condition);
-            
-            // Set sourceRefs or targetRefs attribute
-            switch (vp.getGatewayDirection()) {
-            case CONVERGING: configuration.getSourceRefs().addAll(flowRefs);  break;
-            case DIVERGING:  configuration.getTargetRefs().addAll(flowRefs);  break;
-            default:         throw new RuntimeException("Unsupported gateway direction in variation point " + vp.getId() + ": " + vp.getGatewayDirection());
-            }
-
-            // Set type attribute
-            if (flowRefs.size() > 1) {
-                configuration.setType(vc.getGatewayType());
-            }
-        }
-        else {
-            String flowCondition = vc.getFlowCondition(flowIndex);
-            BDD bdd = toBDD(flowCondition);
-            if (!bdd.isZero()) {  // Flow may be present
-                List<String> newFlowRefs = new ArrayList<>(flowRefs);
-                newFlowRefs.add(vp.getFlowId(flowIndex));
-                if (bdd.isOne()) {  // Flow is certainly present
-                    recursivelyAddConfigurations(configurable, vp, vc, condition, flowIndex + 1, newFlowRefs);
-                } else {
-                    recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").(" + flowCondition + ")", flowIndex + 1, newFlowRefs);
-                }
-            }
-            if (!bdd.isOne()) {  // Flow may be absent
-                if (bdd.isZero()) {  // Flow is certainly absent
-                    // don't add the absent flow
-                    recursivelyAddConfigurations(configurable, vp, vc, condition, flowIndex + 1, flowRefs);
-                } else {
-                    recursivelyAddConfigurations(configurable, vp, vc, "(" + condition + ").-(" + flowCondition + ")", flowIndex + 1, flowRefs);
-                }
-            }
-        }
-    }
-
-    static private BDD toBDD(final String condition) throws ParseException {
-        Parser parser = new Parser(new StringBufferInputStream((String) condition));
-        parser.init();
-        return parser.AdditiveExpression();
-    }
-
-    public boolean isValidCondition(final String condition) {
+    /**
+     * @param condition  a condition expression
+     * @return <code>null</code> if the <var>condition</var> is valid, a user-legible error message otherwise
+     */
+    public String findConditionError(final String condition) {
         try {
             Parser parser = new Parser(new StringBufferInputStream((String) condition));
             parser.init();
             parser.AdditiveExpression();
-            return qmlFactIdSet.containsAll(parser.getVariableMap().keySet());
+            Set undefinedFactIdSet = new HashSet<>(parser.getVariableMap().keySet());
+            undefinedFactIdSet.removeAll(qmlFactIdSet);
+            if (undefinedFactIdSet.isEmpty()) {
+                return null;
+            } else if (!isQmlSet()) {
+                return "No questionnaire chosen to provide facts: " + undefinedFactIdSet;
+            } else {
+                return "Questionnaire does not provide facts: " + undefinedFactIdSet;
+            }
 
         } catch (ParseException e) {
-            return false;
+            return "Syntax error: " + e.getMessage();
         }
     }
 }

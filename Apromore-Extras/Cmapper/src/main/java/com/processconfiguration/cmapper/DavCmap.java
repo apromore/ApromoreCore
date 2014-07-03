@@ -23,7 +23,6 @@ public class DavCmap implements Cmap {
     private static final Logger LOGGER = Logger.getLogger(DavCmap.class.getCanonicalName());
 
     private CMAP             cmap;
-    private URI              davURI;
     private FileStoreService service;
     private URI              uri;
 
@@ -34,7 +33,6 @@ public class DavCmap implements Cmap {
      * @param service  the proxy to the Apromore-FileStore
      */
     public DavCmap(URI uri, FileStoreService service) throws Exception {
-        this.davURI = new URI("http://admin:password@localhost:9000");
         this.service = service;
         this.uri     = uri;
     }
@@ -45,18 +43,10 @@ public class DavCmap implements Cmap {
     public CMAP getCmap() throws Exception {
         JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.cmap");
         Unmarshaller u = jc.createUnmarshaller();
-        URI uri2 = davURI.resolve(uri);
-        URI uri3 = new URI(uri2.getScheme(),
-                           "admin:password",
-                           uri2.getHost(),
-                           uri2.getPort(),
-                           uri2.getPath(),
-                           uri2.getQuery(),
-                           uri2.getFragment());
-        String cooked = uri3.toString();
-        LOGGER.info("Accessing URI " + uri + " cooked " + cooked);
+        URI uri2 = service.getBaseURI().resolve(uri);
+        LOGGER.info("Accessing URI " + uri + " resolved as " + uri2);
 
-        this.cmap = (CMAP) u.unmarshal(service.getFile(cooked));
+        this.cmap = (CMAP) u.unmarshal(service.getFile(uri2.toString()));
 
         return cmap;
     }
@@ -73,9 +63,10 @@ public class DavCmap implements Cmap {
         return new ByteArrayOutputStream() {
             public void close() throws IOException {
                 try {
-                    LOGGER.info("Closing output stream to " + uri);
-                    service.put(uri.toString(), toByteArray(), "application/xml");
-                    LOGGER.info("Closed output stream to " + uri);
+                    URI uri2 = service.getBaseURI().resolve(uri);
+                    LOGGER.info("Closing output stream to " + uri + " resolved as " + uri2);
+                    service.put(uri2.toString(), toByteArray(), "application/xml");
+                    LOGGER.info("Closed output stream to " + uri + " resolved as " + uri2);
                 } catch (Exception e) {
                     throw new IOException("Unable to flush buffer to WebDAV service " + uri, e);
                 }

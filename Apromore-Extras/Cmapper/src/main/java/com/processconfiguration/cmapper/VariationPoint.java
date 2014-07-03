@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.processconfiguration.MyTraverser;
 import com.processconfiguration.cmap.TGatewayType;
+import org.apromore.bpmncmap.parser.ParseException;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.bpmn._20100524.model.DepthFirstTraverserImpl;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
@@ -48,6 +49,15 @@ interface VariationPoint {
     TGatewayDirection getGatewayDirection();
 
     TGatewayType getGatewayType();
+
+    /**
+     * Expand any condition with a complex flow condition to equivalent several conditions with only boolean flow conditions.
+     *
+     * @param constraints  a BDDC-formatted logical expression, never <code>null</code>; configurations which are not consistent
+     *   with the <var>constraints</var> will be elided from the simplified configuration list
+     * @throws ParseException  if any of the flow conditions aren't in correct syntax
+     */
+    void simplify(String constraints) throws ParseException;
 
     /**
      * A configuration of this variation point.
