@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-cefac614-ff93-4da9-bd47-b858b1eec07e" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-08189c98-cbfe-4adb-a2f5-8c253a8f3e95">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
          <pc:variants>
             <pc:variant id="vid-2025991461" name="PER"/>
             <pc:variant id="vid-337778195" name="OOL"/>
@@ -29,7 +29,7 @@
    </collaboration>
    <process id="sid-1cb2b086-f33d-4cd2-b869-2aa9b10d3b0f" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/3x%20Undergo%20Secondary%20screening.cmap"/>
       </extensionElements>
       <task completionQuantity="1" id="sid-13719D5A-87D2-443F-BD88-190D17370473" isForCompensation="false" name="Open Bag(s)" startQuantity="1">
          <extensionElements>

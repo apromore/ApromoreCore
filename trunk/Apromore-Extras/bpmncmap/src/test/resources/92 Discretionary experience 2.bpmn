@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-cb347ddc-5db5-4374-93a5-eb15022fe682" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-4fae52f1-6d9b-4f5a-802a-e6b3563d46ec">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1464145949" name="PER"/>
             <pc:variant id="vid-202574650" name="OOL"/>
@@ -18,7 +18,7 @@
    </collaboration>
    <process id="sid-e9055838-bead-4f11-bc69-a79940406cca" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/92%20Discretionary%20experience%202.cmap"/>
       </extensionElements>
       <intermediateCatchEvent id="sid-50480F01-9B2F-4E49-8802-154F69BB81D0" name="Continue &#10;with ID92 &#10;Discretionary &#10;experience 2">
          <extensionElements>

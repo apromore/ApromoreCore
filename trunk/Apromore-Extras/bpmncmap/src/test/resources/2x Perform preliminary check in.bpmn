@@ -35,7 +35,7 @@
    </collaboration>
    <process id="sid-0107e4ba-2c2e-471d-b49c-7bd41a36aaba" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Perform%20preliminary%20check%20in.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/2x%20Perform%20preliminary%20check%20in.cmap"/>
       </extensionElements>
       <startEvent id="sid-038C1B56-7B01-41F9-B9AC-2BFA4DE7D73B" isInterrupting="true" name="Asked to approach counter">
          <extensionElements>

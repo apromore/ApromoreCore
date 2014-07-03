@@ -2,7 +2,7 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-031beec8-b532-42d6-8617-714db5c71f71" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
     <process isExecutable="false" id="sid-da001e67-89d6-4ebe-af2e-09999f88eee1">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/Post_Production_BPMN.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/Post_Production_BPMN.cmap"/>
         </extensionElements>
         <startEvent name="Tape shoot finished" id="id-c4806867-0463-408c-9091-09589bcd2d41">
             <extensionElements>

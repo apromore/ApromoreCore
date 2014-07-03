@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-949dc370-69e6-4230-af1f-317579898647" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-13e39ddd-52e1-473d-812e-ae9e12c07dda">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2%20Check-in.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/2%20Check-in.cmap"/>
          <pc:variants>
             <pc:variant id="vid-392197555" name="PER"/>
             <pc:variant id="vid-1036994242" name="OOL"/>
@@ -18,7 +18,7 @@
    </collaboration>
    <process id="sid-fdc61919-5aa0-47ef-80c3-661b52e241fc" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2%20Check-in.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/2%20Check-in.cmap"/>
       </extensionElements>
       <intermediateCatchEvent id="sid-6A2E920E-890D-4E99-BA4C-C5C8DADF934C" name="Passenger &#10;continues&#10;with ID20 &#10;check-in">
          <extensionElements>
