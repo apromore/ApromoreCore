@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-e3154120-76e2-4039-8c49-f7a02da83c17" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-129fa6b5-ea85-47b9-88a4-3dc71a97a8ac">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
          <pc:variants>
             <pc:variant id="vid-566955654" name="PER"/>
             <pc:variant id="vid-1508440322" name="OOL"/>
@@ -31,7 +31,7 @@
    </collaboration>
    <process id="sid-47e91b23-bdf1-47d8-a7bd-16dd41e89c0d" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/2x%20Finalise%20Check-in.cmap"/>
       </extensionElements>
       <startEvent id="sid-E8A176D6-BD4A-4729-88A7-092C56774785" name="">
          <extensionElements>

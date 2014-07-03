@@ -2,7 +2,7 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-b68f9992-4c2b-4083-b20d-5a2685d60f1e" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
     <collaboration id="sid-2c59f7aa-e660-4ea8-942c-f1ea1d2f3c4f">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3%20Security.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3%20Security.cmap"/>
             <ns5:variants>
                 <ns5:variant id="vid-1329144282" name="PER"/>
                 <ns5:variant id="vid-2098986612" name="OOL"/>
@@ -34,7 +34,7 @@
     </collaboration>
     <process isExecutable="false" id="sid-988bfac2-e56e-4628-8082-f5e80c0a747f">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3%20Security.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3%20Security.cmap"/>
         </extensionElements>
         <task isForCompensation="false" startQuantity="1" completionQuantity="1" name="Go to security preparation area" id="sid-3C96BEFD-FB6A-4779-8B33-8D3283C892D9">
             <extensionElements>
@@ -428,7 +428,7 @@
     </process>
     <process isExecutable="false" id="sid-47b2538e-3327-42bb-b388-4acd6a1a966b">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3%20Security.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3%20Security.cmap"/>
         </extensionElements>
         <startEvent isInterrupting="true" name="" id="sid-E65E4E13-D689-4845-A148-0E33C8A177B3">
             <extensionElements>

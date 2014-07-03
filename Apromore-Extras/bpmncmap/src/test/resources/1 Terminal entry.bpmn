@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-520d9471-3a23-435e-8ab1-e2f9f96d5eea" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-37db3ecc-0045-4c65-90c8-12935fb3a5f4">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/1%20Terminal%20entry.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/1%20Terminal%20entry.cmap"/>
          <pc:variants>
             <pc:variant id="vid-1047544039" name="PER"/>
             <pc:variant id="vid-714039234" name="OOL"/>

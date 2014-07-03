@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:pc="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-f45bfed5-d3fd-4607-b77b-e44217117baf" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
    <collaboration id="sid-9d6bc74b-dd01-421d-975c-94cc3287af66">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
          <pc:variants>
             <pc:variant id="vid-429910932" name="PER"/>
             <pc:variant id="vid-188363230" name="OOL"/>
@@ -24,7 +24,7 @@
    </collaboration>
    <process id="sid-360afe8a-15a7-4e58-bda2-2d9b34567737" isExecutable="false">
       <extensionElements>
-         <pc:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
+         <pc:configurationMapping href="/filestore/dav/3x%20Undergo%20security%20checks.cmap"/>
       </extensionElements>
       <task completionQuantity="1" id="sid-CA3B27F0-B0E1-42B2-B92A-AE16CC28AF71" isForCompensation="false" name="Observe passenger through metal detector" startQuantity="1">
          <extensionElements>

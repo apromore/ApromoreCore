@@ -2,7 +2,7 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-9c11e6ae-58e4-4c04-b6ff-76b4d23101c2" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
     <collaboration id="sid-9e575544-4f42-4c5a-9967-73c1c01b998a">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20preparation.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3x%20Undergo%20preparation.cmap"/>
             <ns5:variants>
                 <ns5:variant id="vid-442666347" name="PER"/>
                 <ns5:variant id="vid-364632659" name="OOL"/>
@@ -35,7 +35,7 @@
     </collaboration>
     <process isExecutable="false" id="sid-e926071d-68cd-4fc0-865e-d8bbf3abc35e">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20preparation.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3x%20Undergo%20preparation.cmap"/>
         </extensionElements>
         <task isForCompensation="false" startQuantity="1" completionQuantity="1" name="Provide tray(s) to passenger" id="sid-A2F05729-370D-4280-BCEA-AE4E4D9EF502">
             <extensionElements>
@@ -180,7 +180,7 @@
     </process>
     <process isExecutable="false" id="sid-66d06f51-a3e8-4b1c-b148-ef36867b8a7d">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/3x%20Undergo%20preparation.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/3x%20Undergo%20preparation.cmap"/>
         </extensionElements>
         <startEvent name="" id="sid-2BC3AFC0-A788-47DC-B4BB-F4756D0F7E65">
             <extensionElements>

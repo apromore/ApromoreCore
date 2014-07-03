@@ -2,7 +2,7 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-8a66b1f1-a96b-466a-b4c8-1793a4654318" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
     <collaboration id="sid-1b2baa16-6c25-4b18-86bf-3be0e7c59fda">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/94%20Discretionary%20experience%204.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/94%20Discretionary%20experience%204.cmap"/>
             <ns5:variants>
                 <ns5:variant id="vid-313650575" name="PER"/>
                 <ns5:variant id="vid-1901236581" name="OOL"/>
@@ -19,7 +19,7 @@
     </collaboration>
     <process isExecutable="false" id="sid-e170d2bc-a2dd-45ae-badd-da2074f4601f">
         <extensionElements>
-            <ns5:configurationMapping href="http://localhost:9000/filestore/dav/94%20Discretionary%20experience%204.cmap"/>
+            <ns5:configurationMapping href="/filestore/dav/94%20Discretionary%20experience%204.cmap"/>
         </extensionElements>
         <task isForCompensation="false" startQuantity="1" completionQuantity="1" name="Go to TRS counter" id="sid-D36DBF49-67C1-4916-ABE0-C6E3133CDABB">
             <extensionElements>

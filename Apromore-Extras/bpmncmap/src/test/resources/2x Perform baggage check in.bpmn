@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-df244d14-aaaf-4543-98b5-8f361c0b7ef4" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
     <collaboration id="sid-083ccd35-9755-4f89-a486-33f2986425e8">
-        <extensionElements>
-            <ns5:configurationMapping href=""/>
-        </extensionElements>
         <participant name="Airline - Departure control system" id="sid-4A7EB8EE-5FC9-4AF1-9DF3-56A5982761FD">
             <extensionElements>
                 <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -26,9 +23,6 @@
         <messageFlow sourceRef="sid-DE8A997E-0677-4988-AB6F-1E4B18B675CF" targetRef="sid-56803E0D-1234-4070-AFDF-C23BBB6FD717" name="" id="sid-005D7D51-0717-4393-A085-5E536B226995"/>
     </collaboration>
     <process isExecutable="false" id="sid-ef3fb81f-c529-48de-9d1a-88727ef9f477">
-        <extensionElements>
-            <ns5:configurationMapping href=""/>
-        </extensionElements>
         <startEvent isInterrupting="true" name="" id="sid-BE872E4C-F22D-41BD-B27E-3DB96D7C5D87">
             <extensionElements>
                 <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -226,9 +220,6 @@
         <sequenceFlow isImmediate="false" sourceRef="sid-D37E3CB0-6B16-4B3F-A1FA-EB2D60F28B26" targetRef="sid-C9B988C6-2857-4C74-8EC4-430FA8B780C9" name="" id="sid-326B7746-5F23-4CCC-9096-385EA2918C68"/>
     </process>
     <process isExecutable="false" id="sid-081459b6-735d-4364-897b-5b5c12486674">
-        <extensionElements>
-            <ns5:configurationMapping href=""/>
-        </extensionElements>
         <startEvent name="Baggage check in &#xA;commences" id="sid-A37955CD-5488-4EBF-9D1C-7166228B8E43">
             <extensionElements>
                 <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -441,9 +432,6 @@
         </textAnnotation>
     </process>
     <process isExecutable="false" id="sid-ca741402-9888-404a-aaa8-257b5c92da17">
-        <extensionElements>
-            <ns5:configurationMapping href=""/>
-        </extensionElements>
         <startEvent isInterrupting="true" name="" id="sid-56803E0D-1234-4070-AFDF-C23BBB6FD717">
             <extensionElements>
                 <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
