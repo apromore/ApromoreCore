@@ -1,6 +1,7 @@
 package org.apromore.filestore.client;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import com.github.sardine.DavResource;
@@ -108,14 +109,16 @@ public interface FileStoreService {
     void delete(final String url) throws Exception;
 
     /**
-     * USed as apart of the reset user's password.
+     * Used as a part of the reset user's password.
+     *
      * @param email the users email address
      * @return the UserType from the webservice
      */
     UserType readUserByEmail(String email) throws Exception;
 
     /**
-     * Reset the USers password for them.
+     * Reset the User's password for them.
+     *
      * @param username the users username
      * @param password the new password
      * @return if we succeeded or not
@@ -124,10 +127,24 @@ public interface FileStoreService {
 
     /**
      * Send the users details to be persisted.
+     *
      * @param user the user to send to the WebService
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
     UserType writeUser(UserType user) throws Exception;
 
+    /**
+     * The root directory of the filestore, e.g. <code>http://example.com:9000/filestore/dav/</code>.
+     *
+     * This is useful for resolving relative URLs as arguments to methods that require absolute URLs.
+     *
+     * Example usage:
+     *   FileStoreService fs = ... ;
+     *   URI absoluteURI = fs.getBaseURI().resolve("example.txt");
+     *   InputStream in = fs.getFile(absoluteURI.toString());
+     *
+     * @return the URI of the root directory of the filestore
+     */
+    URI getBaseURI();
 }
