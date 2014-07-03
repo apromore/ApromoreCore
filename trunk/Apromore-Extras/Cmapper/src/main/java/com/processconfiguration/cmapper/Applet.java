@@ -33,6 +33,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 // Local classes
 import com.processconfiguration.quaestio.ApromoreProcessModel;
+import org.apromore.filestore.client.DavFileSystemView;
 import org.apromore.filestore.client.FileStoreService;
 
 /**
