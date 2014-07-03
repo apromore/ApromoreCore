@@ -1,4 +1,4 @@
-package com.processconfiguration.cmapper;
+package org.apromore.filestore.client;
 
 // Java 2 Standard Edition classes
 import java.io.File;
@@ -12,13 +12,10 @@ import javax.swing.filechooser.FileSystemView;
 // Third party classes
 import com.github.sardine.DavResource;
 
-// Local classes
-import org.apromore.filestore.client.FileStoreService;
-
 /**
  * Allow a {@link FileStoreService} to work as the model of a {@link JFileChooser}.
  */
-class DavFileSystemView extends FileSystemView {
+public class DavFileSystemView extends FileSystemView {
 
     private static Logger LOGGER = Logger.getLogger(DavFileSystemView.class.getCanonicalName());
 
@@ -31,7 +28,7 @@ class DavFileSystemView extends FileSystemView {
      *
      * @param service
      */
-    DavFileSystemView(final FileStoreService service) {
+    public DavFileSystemView(final FileStoreService service) {
         this.service       = service;
         this.ROOT          = new File(service.getBaseURI().getPath());
         this.ROOTS         = new File[] { ROOT };
