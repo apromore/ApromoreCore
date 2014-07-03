@@ -2,7 +2,7 @@
 <definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns5="http://www.processconfiguration.com" xmlns:signavio="http://www.signavio.com" targetNamespace="http://www.signavio.com/bpmn20" expressionLanguage="http://www.w3.org/1999/XPath" typeLanguage="http://www.w3.org/2001/XMLSchema" id="sid-81bfb38b-dbc1-4694-af66-776b8d81bb95" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="">
   <collaboration id="sid-f3e0bd1f-a336-4d50-a49f-f5126bf8322f">
     <extensionElements>
-      <ns5:configurationMapping href="http://localhost:9000/filestore/dav/5%20Boarding.cmap"/>
+      <ns5:configurationMapping href="/filestore/dav/5%20Boarding.cmap"/>
       <ns5:variants>
         <ns5:variant id="vid-1476759464" name="PER"/>
         <ns5:variant id="vid-449392038" name="OOL"/>
@@ -30,7 +30,7 @@
   </collaboration>
   <process isExecutable="false" id="sid-13d4732d-8eeb-4756-907c-d771cecb5c97">
     <extensionElements>
-      <ns5:configurationMapping href="http://localhost:9000/filestore/dav/5%20Boarding.cmap"/>
+      <ns5:configurationMapping href="/filestore/dav/5%20Boarding.cmap"/>
     </extensionElements>
     <exclusiveGateway gatewayDirection="Converging" name="" id="sid-70C4F517-80D3-4278-81F5-EF96F6B2DD6E">
       <extensionElements>
@@ -391,7 +391,7 @@
   </process>
   <process isExecutable="false" id="sid-c06750d2-cc3a-4ae1-a3e4-92e7242f60dd">
     <extensionElements>
-      <ns5:configurationMapping href="http://localhost:9000/filestore/dav/5%20Boarding.cmap"/>
+      <ns5:configurationMapping href="/filestore/dav/5%20Boarding.cmap"/>
     </extensionElements>
     <task isForCompensation="false" startQuantity="1" completionQuantity="1" name="Proceed to gate from Customs counter" id="sid-3502B0F8-F057-4DC0-8BDD-0B2949279396">
       <extensionElements>

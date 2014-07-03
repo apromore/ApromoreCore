@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CMAP xmlns:ns2="http://www.processconfiguration.com/CMAP" qml="http://localhost:9000/filestore/dav/International%20departure.qml">
+<ns2:CMAP xmlns:ns2="http://www.processconfiguration.com/CMAP" qml="/filestore/dav/International%20departure.qml">
     <c-bpmn>
         <configurable bpmnid="sid-766DEE2F-1D62-4F5F-B314-9E8D77A2ECE1">
             <configuration condition="f1" targetRefs="sid-F477F46C-A07D-486B-A579-642C28CBDCED"/>
