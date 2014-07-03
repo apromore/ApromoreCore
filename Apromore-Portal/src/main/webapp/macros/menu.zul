@@ -36,8 +36,8 @@
         <menupopup>
             <menuitem id="designMerging" label="Merging" disabled="true" image="/img/merge.png"/>
             <menuseparator/>
-            <menuitem id="designConfiguration" label="Configuration" disabled="true" image="/img/configuration.png"/>
-            <menuitem id="designCmap" label="Configuration map" disabled="true" image="/img/cmap.png"/>
+            <menuitem id="designConfiguration" label="Questionnaire-driven configuration" disabled="true" image="/img/configuration.png"/>
+            <menuitem id="designCmap" label="Define model:questionnaire mapping" disabled="true" image="/img/cmap.png"/>
         </menupopup>
     </menu>
    <!--
