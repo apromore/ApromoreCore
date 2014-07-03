@@ -4,6 +4,7 @@ package org.apromore.portal.dialogController;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Applet;
 import org.zkoss.zul.Window;
@@ -136,7 +138,10 @@ public class ConfigureController extends BaseController {
 
                 // Parse the cmap link into cmapURL
                 try {
-                    cmapURL = new URL(cmapURLString);
+                    FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
+                    URI baseURI = fileStore.getBaseURI();
+                    System.err.println("FileStoreClient.getBaseURI=" + baseURI);
+                    cmapURL = baseURI.resolve(cmapURLString).toURL();
                 } catch (MalformedURLException e) {
                     throw new ConfigureException("The model " + modelName +
                         " has a malformed link to its configuration mapping: \"" + cmapURLString + "\"", e);
@@ -170,6 +175,7 @@ public class ConfigureController extends BaseController {
                                                   .createUnmarshaller()
                                                   .unmarshal(new StreamSource(c.getInputStream()));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     throw new ConfigureException("Unable to read the configuration mapping from " + cmapURL, e);
                 }
                 assert cmap != null;
