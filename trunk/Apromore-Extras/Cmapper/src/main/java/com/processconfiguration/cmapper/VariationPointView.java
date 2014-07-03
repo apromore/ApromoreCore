@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -31,6 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 
 import com.processconfiguration.cmap.TGatewayType;
@@ -42,7 +46,7 @@ class VariationPointView extends JPanel {
      *
      * When this is disabled (false), flow conditions are edited with a checkbox rather than a text file.
      */
-    private static boolean COMPLEX_FLOW_CONDITIONS = false;
+    private boolean complexFlowConditions = false;
 
     private static Logger LOGGER = Logger.getLogger(VariationPointView.class.getName());
     private static ResourceBundle bundle = ResourceBundle.getBundle("com.processconfiguration.cmapper.VariationPointView");
@@ -126,7 +130,7 @@ class VariationPointView extends JPanel {
                 case 0: return c.getCondition();
                 case 1: return c.getGatewayType();
                 default:
-                    if (COMPLEX_FLOW_CONDITIONS) {
+                    if (complexFlowConditions) {
                         return c.getFlowCondition(col - 2);
                     } else {
                         switch (c.getFlowCondition(col - 2)) {
@@ -152,7 +156,7 @@ class VariationPointView extends JPanel {
                 case 0:  c.setCondition((String) value);               break;
                 case 1:  c.setGatewayType((TGatewayType) value);       break;
                 default:
-                    if (COMPLEX_FLOW_CONDITIONS) {
+                    if (complexFlowConditions) {
                         c.setFlowCondition(col - 2, (String) value);
                     } else {
                         c.setFlowCondition(col - 2, ((Boolean) value).booleanValue() ? "1" : "0");
@@ -181,14 +185,14 @@ class VariationPointView extends JPanel {
 
         // Columns for each configurable sequence flow
         for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
-            if (COMPLEX_FLOW_CONDITIONS) {
+            if (complexFlowConditions) {
                 initConditionColumn(
                     table,
                     table.getColumnModel().getColumn(flowIndex + 2),
                     vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
                 );
             }
-            // the default behavior is a checkbox for Boolean columns, which is fine if COMPLEX_FLOW_CONDITIONS is false
+            // the default behavior is a checkbox for Boolean columns, which is fine if complexFlowConditions is false
         }
 
         //Add the scroll pane to this panel.
@@ -217,14 +221,14 @@ class VariationPointView extends JPanel {
             GridBagConstraints.REMAINDER,   // cells wide
             1,                              // cells high
             0.0, 0.0,                       // weight x, y
-            GridBagConstraints.NORTHWEST,      // anchor
+            GridBagConstraints.NORTHWEST,   // anchor
             GridBagConstraints.HORIZONTAL,  // fill
-            new Insets(10, 0, 0, 0),         // insets (top, left, bottom, right)
+            new Insets(10, 0, 0, 0),        // insets (top, left, bottom, right)
             0, 0                            // padding x, y
         ));
         add(addConfigurationButton);
 
-        JButton removeConfigurationButton = new JButton(new AbstractAction(bundle.getString("Remove_configuration")) {
+        final JButton removeConfigurationButton = new JButton(new AbstractAction(bundle.getString("Remove_configuration")) {
             public void actionPerformed(ActionEvent event) {
                 final int selectedRow = table.getSelectedRow();
                 if (selectedRow == -1) {
@@ -243,14 +247,33 @@ class VariationPointView extends JPanel {
         layout.setConstraints(removeConfigurationButton, new GridBagConstraints(
             2, 1,                           // grid x, y
             GridBagConstraints.REMAINDER,   // cells wide
-            GridBagConstraints.REMAINDER,   // cells high
+            1,                              // cells high
             0.0, 0.0,                       // weight x, y
-            GridBagConstraints.NORTHWEST,      // anchor
+            GridBagConstraints.NORTHWEST,   // anchor
             GridBagConstraints.HORIZONTAL,  // fill
             new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
             0, 0                            // padding x, y
         ));
         add(removeConfigurationButton);
+
+        removeConfigurationButton.setEnabled(table.getSelectedRow() != -1);
+
+        JButton toggleButton = new JButton(new AbstractAction(bundle.getString("Toggle")) {
+            public void actionPerformed(ActionEvent event) {
+                toggle(table);
+            }
+        });
+        layout.setConstraints(toggleButton, new GridBagConstraints(
+            2, 2,                           // grid x, y
+            GridBagConstraints.REMAINDER,   // cells wide
+            GridBagConstraints.REMAINDER,   // cells high
+            0.0, 0.0,                       // weight x, y
+            GridBagConstraints.NORTHWEST,   // anchor
+            GridBagConstraints.HORIZONTAL,  // fill
+            new Insets(0, 0, 0, 0),         // insets (top, left, bottom, right)
+            0, 0                            // padding x, y
+        ));
+        add(toggleButton);
 
         // When we lose focus, we need to deselect any selected table row
         table.addFocusListener(new FocusListener() {
@@ -264,6 +287,12 @@ class VariationPointView extends JPanel {
             public void focusLost(FocusEvent event) {}
         });
 
+        // The "Remove configuration" button is only enabled when a configuration is selected
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                removeConfigurationButton.setEnabled(!((ListSelectionModel) event.getSource()).isSelectionEmpty());
+            }
+        });
     }
 
     /**
@@ -294,7 +323,7 @@ class VariationPointView extends JPanel {
             switch (i) {
             case 0: dummy = "f1 & f2";                           break;
             case 1: dummy = TGatewayType.EVENT_BASED_EXCLUSIVE;  break;
-            default: dummy = COMPLEX_FLOW_CONDITIONS ? "f1 & f2" : Boolean.FALSE;
+            default: dummy = complexFlowConditions ? "f1 & f2" : Boolean.FALSE;
             }
             assert dummy != null;
 
@@ -325,9 +354,12 @@ class VariationPointView extends JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                component.setBackground(!cmapper.isValidCondition((String) value) ? Color.PINK :
-                                                                      !isSelected ? SystemColor.control :
-                                                                                    SystemColor.controlHighlight);
+                String conditionError = cmapper.findConditionError((String) value);
+                component.setBackground(conditionError != null ? Color.PINK :
+                                                               !isSelected ? SystemColor.control :
+                                                                             SystemColor.controlHighlight);
+                setToolTipText(conditionError);
+
                 return component;
             }
         };
@@ -364,5 +396,30 @@ class VariationPointView extends JPanel {
         };
         renderer.setToolTipText(toolTip);
         column.setCellRenderer(renderer);
+    }
+
+    /**
+     * Toggles editing with complex flow conditions.
+     *
+     * @param table  the UI for the list of configurations
+     */
+    private void toggle(JTable table) {
+        try {
+            if (complexFlowConditions) {
+                String constraints = "1";  // Default to no constraints;
+                if (cmapper.isQmlSet() && cmapper.getQml().getConstraints() != null) {
+                    constraints = cmapper.getQml().getConstraints();
+                }
+                vp.simplify(constraints);  // Convert complex (per flow) conditions to simple (per configuration) conditions
+                complexFlowConditions = false;
+            } else {
+                complexFlowConditions = true;
+            }
+
+            table.updateUI();
+
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "Unable to toggle complex flow conditions", e);
+        }
     }
 }

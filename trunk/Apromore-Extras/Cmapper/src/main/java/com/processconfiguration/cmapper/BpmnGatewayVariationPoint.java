@@ -1,13 +1,21 @@
 package com.processconfiguration.cmapper;
 
 // Java 2 Standard packages
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+// Third party classes
+import net.sf.javabdd.BDD;
+
+// Local classes
 import com.processconfiguration.MyTraverser;
 import com.processconfiguration.cmap.TGatewayType;
+import com.processconfiguration.qml.QMLType;
+import org.apromore.bpmncmap.parser.ParseException;
+import org.apromore.bpmncmap.parser.Parser;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.bpmn._20100524.model.DepthFirstTraverserImpl;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
@@ -72,8 +80,6 @@ class BpmnGatewayVariationPoint implements VariationPoint {
         default:
             throw new RuntimeException("Gateway " + gateway.getId() + " has unsupported direction: " + gateway.getGatewayDirection());
         }
-
-        LOGGER.info("Variation point " + id + " has flow names " + flowNames);
 
         // Initial configuration
         addConfiguration();
@@ -163,21 +169,112 @@ class BpmnGatewayVariationPoint implements VariationPoint {
         return gatewayType;
     }
 
+    public void simplify(String qmlConstraints) throws ParseException {
+        List<VariationPoint.Configuration> originalConfigurations = new ArrayList<>(configurations);
+        configurations.clear();
+        for (VariationPoint.Configuration vc: originalConfigurations) {
+            recursivelyAddConfigurations(vc, 0, qmlConstraints);
+        }
+    }
+
+    static BDD toBDD(final String condition) throws ParseException {
+        Parser parser = new Parser(new StringBufferInputStream((String) condition));
+        parser.init();
+        return parser.AdditiveExpression();
+    }
+
+    private void recursivelyAddConfigurations(final VariationPoint.Configuration vc, final int flowIndex, final String qmlConstraints) throws ParseException {
+
+        if (flowIndex == getFlowCount()) {
+
+            String s = "(" + vc.getCondition() + ").(" + qmlConstraints + ")";
+            LOGGER.info("Elision check is " + toBDD(s).isZero() + " for " + s);
+
+            // If the configuration can never occur, elide it
+            if (!toBDD(s).isZero()) {
+                this.configurations.add(vc);
+            }
+        }
+        else {
+            String flowCondition = vc.getFlowCondition(flowIndex);
+            BDD bdd = toBDD(flowCondition);
+            if (!bdd.isZero()) {  // Flow may be present
+
+                VariationPoint.Configuration newVc = new Configuration((BpmnGatewayVariationPoint.Configuration) vc);
+                newVc.setFlowCondition(flowIndex, "1");
+
+                if (bdd.isOne()) {  // Flow is certainly present
+                    recursivelyAddConfigurations(vc, flowIndex + 1, qmlConstraints);
+                } else {
+                    newVc.setCondition(conjoin(vc.getCondition(), flowCondition));
+                    recursivelyAddConfigurations(newVc, flowIndex + 1, qmlConstraints);
+                }
+            }
+            if (!bdd.isOne()) {  // Flow may be absent
+
+                VariationPoint.Configuration newVc = new Configuration((BpmnGatewayVariationPoint.Configuration) vc);
+                newVc.setFlowCondition(flowIndex, "0");
+
+                if (bdd.isZero()) {  // Flow is certainly absent
+                    // don't add the absent flow
+                    recursivelyAddConfigurations(newVc, flowIndex + 1, qmlConstraints);
+                } else {
+                    newVc.setCondition(conjoin(vc.getCondition(), negate(flowCondition)));
+                    recursivelyAddConfigurations(newVc, flowIndex + 1, qmlConstraints);
+                }
+            }
+        }
+    }
+
+    private String conjoin(String lhs, String rhs) throws ParseException {
+        BDD lhsBDD = toBDD(lhs);
+        BDD rhsBDD = toBDD(rhs);
+
+        if (lhsBDD.isZero() || rhsBDD.isZero()) { return "0"; }
+
+        String s = "(" + lhs + ").(" + rhs + ")";
+        BDD sBDD = toBDD(s);
+
+        // If either the LHS or RHS are redundant, elide them
+        if (lhsBDD.equals(sBDD)) { return lhs; }
+        if (rhsBDD.equals(sBDD)) { return rhs; }
+
+        // See if we can skip parentheses anywhere
+        if (toBDD(lhs + "." + rhs).equals(sBDD)) { return lhs + "." + rhs; }
+        if (toBDD("(" + lhs + ")." + rhs).equals(sBDD)) { return "(" + lhs + ")." + rhs; }
+        if (toBDD(lhs + ".(" + rhs + ")").equals(sBDD)) { return lhs + ".(" + rhs + ")"; }
+
+        // Final resort, just parentheses around everything
+        return s;
+    }
+
+    private String negate(String s) throws ParseException {
+        String withoutParens = "-" + s;
+        String withParens    = "-(" + s + ")";
+        return toBDD(withoutParens).equals(toBDD(withoutParens)) ? withoutParens : withParens;
+    }
+
     /**
      * A configuration of this variation point.
      */
     class Configuration implements VariationPoint.Configuration {
-        private String condition;
+        private String       condition;
         private TGatewayType gatewayType;
-        private String[] flowCondition;
+        private String[]     flowCondition;
 
         Configuration(final String initialCondition) {
-            this.condition   = initialCondition;
-            this.gatewayType = BpmnGatewayVariationPoint.this.gatewayType;
+            this.condition     = initialCondition;
+            this.gatewayType   = BpmnGatewayVariationPoint.this.gatewayType;
             this.flowCondition = new String[getFlowCount()];
             for (int i = 0; i < getFlowCount(); i++) {
                 this.flowCondition[i] = "1";
             }
+        }
+
+        Configuration(final BpmnGatewayVariationPoint.Configuration configuration) {
+            this.condition     = configuration.condition;
+            this.gatewayType   = configuration.gatewayType;
+            this.flowCondition = Arrays.copyOf(configuration.flowCondition, configuration.flowCondition.length);
         }
 
         public String getCondition() {

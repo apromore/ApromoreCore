@@ -81,7 +81,7 @@ class Main extends JFrame {
           JFileChooser chooser = new JFileChooser(RESOURCES_DIRECTORY);
           chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("BPMN_process_model"), "bpmn"));
           if (chooser.showOpenDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-            cmapper.setBpmn(new FileProcessModel(chooser.getSelectedFile()));
+            cmapper.setModel(new FileProcessModel(chooser.getSelectedFile()));
             generateUI(cmapper);
           }
         } catch (Exception e) {
@@ -183,7 +183,7 @@ class Main extends JFrame {
         if (i+3 >= argv.length) {
           throw new IllegalArgumentException("-apromore_model without id/branch/version");
         }
-        cmapper.setBpmn(
+        cmapper.setModel(
           new ApromoreProcessModel(Integer.valueOf(argv[i+1]),  // process ID
                                                    argv[i+2],   // branch
                                                    argv[i+3],   // version number
@@ -203,7 +203,7 @@ class Main extends JFrame {
         if (++i >= argv.length) {
           throw new IllegalArgumentException("-model without filename");
         }
-        cmapper.setBpmn(new FileProcessModel(new File(argv[i])));
+        cmapper.setModel(new FileProcessModel(new File(argv[i])));
         break;
 
       case "-qml":
