@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -92,7 +94,7 @@ public class Applet extends JApplet {
                                 String branch    = matcher.group(2);
                                 String version   = matcher.group(3);
 
-                                cmapper.setBpmn(new ApromoreProcessModel(processID, branch, version, Applet.this));
+                                cmapper.setModel(new ApromoreProcessModel(processID, branch, version, Applet.this));
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -127,15 +129,18 @@ public class Applet extends JApplet {
                         public void actionPerformed(ActionEvent event) {
                             showStatus(bundle.getString("Load_qml"));
                             try {
-                                JFileChooser chooser = new JFileChooser(new DavFileSystemView(fileStore));
+                                DavFileSystemView dfsv = new DavFileSystemView(fileStore);
+                                System.err.println("File system view roots=" + dfsv.getRoots() + " default=" + dfsv.getDefaultDirectory());
+
+                                JFileChooser chooser = new JFileChooser(dfsv);
                                 chooser.setDialogTitle(bundle.getString("Load_qml"));
                                 chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("QML_questionnaire"), "qml"));
                                 if (chooser.showOpenDialog(Applet.this) == JFileChooser.APPROVE_OPTION) {
                                     // Load the selected QML file
+                                    System.err.println("File chooser selected " + chooser.getSelectedFile());
                                     URI uri = new URI(chooser.getSelectedFile().toURI().getRawPath());
                                     cmapper.setQml(new DavQml(uri, fileStore));
-
-                                    JOptionPane.showMessageDialog(Applet.this, "Loaded questionnaire " + uri);
+                                    JOptionPane.showMessageDialog(Applet.this, "Loaded questionnaire " + chooser.getSelectedFile());
                                 }
                                 
                             } catch (Exception e) {
@@ -188,11 +193,10 @@ public class Applet extends JApplet {
                                 }
                                 if (chooser.showSaveDialog(Applet.this) == JFileChooser.APPROVE_OPTION) {
                                     // Save the C-Map as the chosen filename
-                                    URI uri = new URI("http", "admin:password", "localhost", 9000,
-                                                      "/filestore/dav" + chooser.getSelectedFile().toString(),
-                                                      null, null);
+                                    URI uri = new URI("/filestore/dav" + chooser.getSelectedFile().toString());
                                     cmap = new DavCmap(uri, fileStore);
                                     cmapper.save(cmap);
+                                    cmapper.setCmap(cmap);
                                     JOptionPane.showMessageDialog(Applet.this, "Saved configuration mapping " + uri);
                                 }
 
@@ -209,6 +213,26 @@ public class Applet extends JApplet {
                     });
                     saveButton.setToolTipText(bundle.getString("saveButton_tooltip"));
                     buttonPanel.add(saveButton);
+
+                    // "Link model" button writes the URL of this cmap into the C-BPMN
+                    JButton linkButton = new JButton(new AbstractAction("Link") {
+                        public void actionPerformed(ActionEvent event) {
+                            showStatus("Link");
+                            try {
+                                cmapper.link();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                    null,
+                                    "Unable to link from model to cmap: " + e,
+                                    bundle.getString("Error"),
+                                    JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                        }
+                    });
+                    linkButton.setToolTipText("Insert link from the BPMN to this configuration map");
+                    buttonPanel.add(linkButton);
 
                     return buttonPanel;
                 }

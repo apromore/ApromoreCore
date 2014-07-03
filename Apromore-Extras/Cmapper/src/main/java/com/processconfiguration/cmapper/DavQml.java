@@ -25,28 +25,18 @@ public class DavQml implements Qml {
     /**
      * Sole constructor.
      *
-     * @param uri  the URI of the QML file on the DAV repository
+     * @param uri  the URI of the QML file on the DAV repository; relative URIs are resolved against the base URI of the </var>service</var>
      * @param service  the proxy to the Apromore-FileStore
      */
     public DavQml(URI uri, FileStoreService service) throws Exception {
         this.service = service;
         this.uri     = uri;
 
-        URI davURI = new URI("http://admin:password@localhost:9000");
-
-        JAXBContext jc = JAXBContext.newInstance("com.processconfiguration.qml");
-        Unmarshaller u = jc.createUnmarshaller();
-        URI uri2 = davURI.resolve(uri);
-        URI uri3 = new URI(uri2.getScheme(),
-                           "admin:password",
-                           uri2.getHost(),
-                           uri2.getPort(),
-                           uri2.getPath(),
-                           uri2.getQuery(),
-                           uri2.getFragment());
-        String cooked = uri3.toString();
-        LOGGER.info("Accessing URI " + uri + " cooked " + cooked);
-        JAXBElement qmlElement = (JAXBElement) u.unmarshal(service.getFile(cooked));
+        URI uri2 = service.getBaseURI().resolve(uri);
+        LOGGER.info("Accessing URI " + uri + " resolved to " + uri2 + " against " + service.getBaseURI());
+        JAXBElement qmlElement = (JAXBElement) JAXBContext.newInstance("com.processconfiguration.qml")
+                                                          .createUnmarshaller()
+                                                          .unmarshal(service.getFile(uri2.toString()));
         this.qml = (QMLType) qmlElement.getValue();
     }
 
