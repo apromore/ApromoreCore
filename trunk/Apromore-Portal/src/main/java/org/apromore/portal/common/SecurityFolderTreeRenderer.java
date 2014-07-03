@@ -16,6 +16,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,35 +49,36 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
         treeItem.setValue(ctn);
         treeItem.setOpen(true);
 
-        if (ctn.getType() == FolderTreeNodeTypes.Folder) {
+        Hlayout hl = new Hlayout();
+
+        switch (ctn.getType()) {
+        case Folder:
             FolderType folder = (FolderType) ctn.getData();
-            if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
+            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+
+            if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, currentFolder)) {
                 treeItem.setOpen(true);
-                if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+                if (currentFolder != null && folder.getId().equals(currentFolder.getId())) {
                     treeItem.setSelected(true);
                 }
             } else {
                 treeItem.setOpen(false);
             }
-        }
 
-        Hlayout hl = new Hlayout();
+            hl.appendChild(new Image(folder.getId() == 0 ? "/img/home-folder24.png" : "/img/folder24.png"));
+            String folderName = folder.getFolderName();
+            hl.appendChild(new Label(folderName.length() > 15 ? folderName.substring(0, 13) + "..." : folderName));
+            break;
 
-        if (ctn.getType() == FolderTreeNodeTypes.Folder) {
-            FolderType folder = (FolderType) ctn.getData();
-            if (folder.getId() == 0) {
-                hl.appendChild(new Image("/img/home-folder24.png"));
-            } else {
-                hl.appendChild(new Image("/img/folder24.png"));
-            }
-            String name = folder.getFolderName();
-            hl.appendChild(new Label(name.length() > 15 ? name.substring(0, 13) + "..." : name));
-
-        } else if (ctn.getType() == FolderTreeNodeTypes.Process) {
+        case Process:
             ProcessSummaryType process = (ProcessSummaryType) ctn.getData();
             hl.appendChild(new Image("/img/process24.png"));
-            String name = process.getName();
-            hl.appendChild(new Label(name.length() > 15 ? name.substring(0, 13) + "..." : name));
+            String processName = process.getName();
+            hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+            break;
+
+        default:
+            assert false: "Folder tree node with type " + ctn.getType() + " is not implemented";
         }
 
         hl.setSclass("h-inline-block");
@@ -92,14 +94,21 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 try {
                     int selectedId = 0;
                     boolean hasOwnership = false;
-                    if (clickedNodeValue.getType() == FolderTreeNodeTypes.Folder) {
+                    switch (clickedNodeValue.getType()) {
+                    case Folder:
                         FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
                         hasOwnership = selectedFolder.isHasOwnership();
                         selectedId = selectedFolder.getId();
-                    } else if (clickedNodeValue.getType() == FolderTreeNodeTypes.Process) {
+                        break;
+  
+                    case Process:
                         ProcessSummaryType selectedProcess = (ProcessSummaryType) clickedNodeValue.getData();
                         hasOwnership = selectedProcess.isHasOwnership();
                         selectedId = selectedProcess.getId();
+                        break;
+
+                    default:
+                        assert false: "Clicked tree node with type " + clickedNodeValue.getType() + " is not implemented";
                     }
 
                     UserSessionManager.setCurrentSecurityOwnership(hasOwnership);
@@ -116,38 +125,26 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
     }
 
 
-    /* Check the folder tree and make sure we return true if we are looking at a folder that is opened by a user.
- * Could be multiples levels down the tree. */
+    /**
+     * Check the folder tree and make sure we return true if we are looking at a folder that is opened by a user.
+     * Could be multiple levels down the tree.
+     *
+     * @param folder  a folder to search for
+     * @param currentFolder  the root of a folder tree to search within
+     * @return whether the <var>folder</var> is present within the folder tree rooted at <var>currentFolder</var>
+     */
     private boolean checkOpenFolderTree(FolderType folder, FolderType currentFolder) {
-        boolean found = false;
-        if (currentFolder != null) {
-            if (currentFolder.getId().equals(folder.getId())) {
-                found = true;
-            }
-            if (!found) {
-                found = checkDownTheFolderTree(folder.getFolders(), currentFolder);
-            }
-        }
-        return found;
+        return checkDownTheFolderTree(Collections.singletonList(folder), currentFolder);
     }
 
 
     private boolean checkDownTheFolderTree(List<FolderType> subFolders, FolderType currentFolder) {
-        boolean result = false;
         for (FolderType folderType : subFolders) {
-            if (folderType.getId().equals(currentFolder.getId())) {
-                result = true;
-                break;
-            }
+            if (folderType.getId().equals(currentFolder.getId())) { return true; }
         }
-        if (!result) {
-            for (FolderType folderType : subFolders) {
-                result = checkDownTheFolderTree(folderType.getFolders(), currentFolder);
-                if (result) {
-                    break;
-                }
-            }
+        for (FolderType folderType : subFolders) {
+            if (checkDownTheFolderTree(folderType.getFolders(), currentFolder)) { return true; }
         }
-        return result;
+        return false;
     }
 }
