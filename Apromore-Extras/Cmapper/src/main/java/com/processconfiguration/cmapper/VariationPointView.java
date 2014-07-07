@@ -346,8 +346,8 @@ class VariationPointView extends JPanel {
 
     public void initConditionColumn(JTable table, TableColumn column, String toolTip) {
 
-        JTextField textField = new JTextField();
-        column.setCellEditor(new DefaultCellEditor(textField));
+        column.setCellEditor(new ConditionTableCellEditor());
+        //column.setCellEditor(new DefaultCellEditor(new JTextField()));
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
@@ -355,6 +355,7 @@ class VariationPointView extends JPanel {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 String conditionError = cmapper.findConditionError((String) value);
+                LOGGER.info("Condition error for " + value + " is " + conditionError);
                 component.setBackground(conditionError != null ? Color.PINK :
                                                                !isSelected ? SystemColor.control :
                                                                              SystemColor.controlHighlight);
