@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
@@ -67,6 +69,14 @@ public class ConditionTableCellEditor extends AbstractCellEditor implements Acti
         textField = new JTextField();
         textField.setText(currentString);
         textField.addActionListener(this);
+        textField.addKeyListener(new KeyAdapter() {
+            @Override public void keyTyped(KeyEvent e) {
+                if ("Escape".equals(KeyEvent.getKeyText(e.getKeyChar()))) {
+                    dialog.setVisible(false);
+                    fireEditingStopped();
+                }
+            }
+        });
         layout.setConstraints(textField, new GridBagConstraints(
             0, 0,                                 // grid x, y
             4,                                    // cells wide
@@ -104,7 +114,6 @@ public class ConditionTableCellEditor extends AbstractCellEditor implements Acti
             dialog.add(factPanel);
 
             for (final FactType fact: cmapper.getQml().getFact()) {
-                System.out.println("Fact " + fact.getId() + " desc=" + fact.getDescription());
                 JButton factButton = new JButton(new AbstractAction(fact.getId()) {
                     public void actionPerformed(ActionEvent event) {
                         textField.setText(textField.getText() + fact.getId());
@@ -116,7 +125,6 @@ public class ConditionTableCellEditor extends AbstractCellEditor implements Acti
                 // Try to compose tooltip text with the form "Question? -- Answer"
                 String toolTipText = fact.getDescription();
                 outer: for (QuestionType question: cmapper.getQml().getQuestion()) {
-                    System.out.println("Question " + question.getId() + " desc=" + question.getDescription());
                     StringTokenizer st = new StringTokenizer(question.getMapQF(), " ");
                     while(st.hasMoreTokens()){
                         String token = st.nextToken();
