@@ -45,6 +45,7 @@ class VariationPointView extends JPanel {
      * Whether to permit arbitrary logical conditions for sequence flows in configurations.
      *
      * When this is disabled (false), flow conditions are edited with a checkbox rather than a text file.
+     * The {@link #toggle} method can be used to change this property.
      */
     private boolean complexFlowConditions = false;
 
@@ -178,22 +179,13 @@ class VariationPointView extends JPanel {
         initColumnSizes(table);
 
         // Each condition line has a logical condition for when it's active
-        initConditionColumn(table, table.getColumnModel().getColumn(0), null);
+        initComplexConditionColumn(table, table.getColumnModel().getColumn(0), null);
 
         // Gateway types might need to be editable with a combo box
         initGatewayTypeColumn(table, table.getColumnModel().getColumn(1), vp.getGatewayDirection().toString(), vp.getGatewayType());
 
         // Columns for each configurable sequence flow
-        for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
-            if (complexFlowConditions) {
-                initConditionColumn(
-                    table,
-                    table.getColumnModel().getColumn(flowIndex + 2),
-                    vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
-                );
-            }
-            // the default behavior is a checkbox for Boolean columns, which is fine if complexFlowConditions is false
-        }
+        initFlowColumns(table);
 
         //Add the scroll pane to this panel.
         layout.setConstraints(scrollPane, new GridBagConstraints(
@@ -344,9 +336,16 @@ class VariationPointView extends JPanel {
         }
     }
 
-    public void initConditionColumn(JTable table, TableColumn column, String toolTip) {
+    /** Initialize a column to display simple logical conditions that are either true or false. */
+    public void initSimpleConditionColumn(JTable table, TableColumn column, String toolTip) {
+        column.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        column.setCellRenderer(null /*new DefaultTableCellRenderer()*/);
+    }
 
-        column.setCellEditor(new ConditionTableCellEditor());
+    /** Initialize a column to display complex logical conditions expressed as BDDC-formatted strings. */
+    public void initComplexConditionColumn(JTable table, TableColumn column, String toolTip) {
+
+        column.setCellEditor(new ConditionTableCellEditor(cmapper));
         //column.setCellEditor(new DefaultCellEditor(new JTextField()));
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
@@ -412,15 +411,36 @@ class VariationPointView extends JPanel {
                     constraints = cmapper.getQml().getConstraints();
                 }
                 vp.simplify(constraints);  // Convert complex (per flow) conditions to simple (per configuration) conditions
+
                 complexFlowConditions = false;
+
             } else {
                 complexFlowConditions = true;
             }
 
+            initFlowColumns(table);
             table.updateUI();
 
         } catch(Exception e) {
             LOGGER.log(Level.WARNING, "Unable to toggle complex flow conditions", e);
+        }
+    }
+
+    private void initFlowColumns(JTable table) {
+        for (int flowIndex = 0; flowIndex < vp.getFlowCount(); flowIndex++) {
+            if (complexFlowConditions) {
+                initComplexConditionColumn(
+                    table,
+                    table.getColumnModel().getColumn(flowIndex + 2),
+                    vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
+                );
+            } else {
+                initSimpleConditionColumn(
+                    table,
+                    table.getColumnModel().getColumn(flowIndex + 2),
+                    vp.getFlowName(flowIndex) + " (id: " + vp.getFlowId(flowIndex) + ")"
+                );
+            }
         }
     }
 }
