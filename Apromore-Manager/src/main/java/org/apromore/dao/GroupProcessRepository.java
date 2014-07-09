@@ -55,4 +55,12 @@ public interface GroupProcessRepository extends JpaRepository<GroupProcess, Inte
            "               User u JOIN u.groups g2 " +
            "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
     List<GroupProcess> findAllProcessesInFolderForUser(final Integer folderId, final String userRowGuid);
+
+    /**
+     * Find the permissions a user has for a process.
+     */
+    @Query("SELECT gp FROM GroupProcess gp JOIN gp.group g1, " +
+           "               User u JOIN u.groups g2 " +
+           "WHERE (gp.process.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
+    List<GroupProcess> findByProcessAndUser(final Integer processId, final String userRowGuid);
 }
