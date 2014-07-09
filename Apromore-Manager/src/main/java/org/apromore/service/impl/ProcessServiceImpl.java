@@ -27,6 +27,7 @@ import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.GroupRepository;
+import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.NativeRepository;
 import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
@@ -131,8 +132,8 @@ public class ProcessServiceImpl implements ProcessService {
     private FragmentVersionRepository fragmentVersionRepo;
     private FragmentVersionDagRepository fragmentVersionDagRepo;
     private ProcessModelVersionRepository processModelVersionRepo;
+    private GroupProcessRepository groupProcessRepo;
     private CanonicalConverter converter;
-
     private AnnotationService annotationSrv;
     private CanoniserService canoniserSrv;
     private LockService lService;
@@ -153,6 +154,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param fragmentVersionRepo Fragment Version Repository.
      * @param fragmentVersionDagRepo Fragment Version Dag Repository.
      * @param processModelVersionRepo Process Model Version Repository.
+     * @param groupProcessRepo Group-Process Repository
      * @param converter Canonical Format Converter.
      * @param annotationSrv Annotation Processing Service
      * @param canoniserSrv Canoniser Service.
@@ -169,7 +171,8 @@ public class ProcessServiceImpl implements ProcessService {
             final NativeRepository nativeRepo, final GroupRepository groupRepo,
             final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
             final FragmentVersionRepository fragmentVersionRepo, final FragmentVersionDagRepository fragmentVersionDagRepo,
-            final ProcessModelVersionRepository processModelVersionRepo, final CanonicalConverter converter, final AnnotationService annotationSrv,
+            final ProcessModelVersionRepository processModelVersionRepo, final GroupProcessRepository groupProcessRepo,
+            final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
             final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
@@ -181,6 +184,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.fragmentVersionRepo = fragmentVersionRepo;
         this.fragmentVersionDagRepo = fragmentVersionDagRepo;
         this.processModelVersionRepo = processModelVersionRepo;
+        this.groupProcessRepo = groupProcessRepo;
         this.converter = converter;
         this.annotationSrv = annotationSrv;
         this.canoniserSrv = canoniserSrv;
@@ -274,7 +278,12 @@ public class ProcessServiceImpl implements ProcessService {
                 Process process = processRepo.findOne(processId);
                 pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
             } else {
-                pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+                // Perform the update
+                if (canUserWriteProcess(user, processId)) {
+                    pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+                } else {
+                    throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
+                }
             }
 
             formatSrv.storeNative(processName, pmv, now, now, user, nativeType, versionNumber.toString(), cpf);
@@ -287,6 +296,19 @@ public class ProcessServiceImpl implements ProcessService {
         return pmv;
     }
 
+    /**
+     * @param user  a user
+     * @param processId  identifier for a process
+     * @return whether the <var>user</var> should be allowed to update the process identified by <var>processId</var>
+     */
+    private boolean canUserWriteProcess(User user, Integer processId) {
+        for (GroupProcess gp: groupProcessRepo.findByProcessAndUser(processId, user.getRowGuid())) {
+            if (gp.getHasWrite()) {
+                 return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version, String, String, boolean, java.util.Set)
