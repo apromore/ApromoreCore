@@ -88,11 +88,6 @@
 
     <properties>
 
-        <dsig.keystore>${project.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
-        <dsig.alias>applet</dsig.alias>
-        <dsig.storepass>applet</dsig.storepass>
-        <dsig.keypass>applet</dsig.keypass>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.7</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
@@ -264,15 +259,10 @@
         <javadocs.skip>false</javadocs.skip>
         <pmd.skip>false</pmd.skip>
 
-        <!--<dsig.keystore>${project.parent.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>-->
-        <!--<dsig.alias>applet</dsig.alias>-->
-        <!--<dsig.storepass>applet</dsig.storepass>-->
-        <!--<dsig.keypass>applet</dsig.keypass>-->
-
-        <dsig.keystore>/home/stormfire/bin/apromore.keystore</dsig.keystore>
-        <dsig.alias>apromore</dsig.alias>
-        <dsig.storepass>password</dsig.storepass>
-        <dsig.keypass>password</dsig.keypass>
+        <dsig.keystore>${project.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
+        <dsig.alias>applet</dsig.alias>
+        <dsig.storepass>applet</dsig.storepass>
+        <dsig.keypass>applet</dsig.keypass>
     </properties>
 
     <dependencyManagement>
