@@ -58,6 +58,7 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>Apromore-Extras/bpmncmap</module>
+        <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
 
         <!-- Clients that we can distribute -->
