@@ -626,7 +626,7 @@ public class IndividualizerYAWL {
 	}
 
 	/**
-	 * Gets the output port configuration for the port port of the task task.
+	 * Gets the output port configuration for the port of the task.
 	 * 
 	 * @param task
 	 *            the task
@@ -659,7 +659,8 @@ public class IndividualizerYAWL {
 					}
 					configPort.clear();
 				}
-				return splitConfig.getValue().value();
+				// YAWL 2.2 (spuriously?) allows a configuration/split/@value attribute, but null is the expected value
+                		return splitConfig.getValue() == null ? "activated" : splitConfig.getValue().value();
 			}
 		} else {
 			SplitConfigType splitConfig = configuration.getSplit();
@@ -677,13 +678,13 @@ public class IndividualizerYAWL {
 				}
 				configPort.clear();
 			}
-			return splitConfig.getValue().value();
-
+			// YAWL 2.2 (spuriously?) allows a configuration/split/@value attribute, but null is the expected value
+                	return splitConfig.getValue() == null ? "activated" : splitConfig.getValue().value();
 		}
 	}
 
 	/**
-	 * Gets the input port configuration for the port port of the task task.
+	 * Gets the input port configuration for the port of the task.
 	 * 
 	 * @param task
 	 *            the task
@@ -717,7 +718,8 @@ public class IndividualizerYAWL {
 					}
 					configPort.clear();
 				}
-				return joinConfig.getValue().value();
+				// YAWL 2.2 (spuriously?) allows a configuration/join/@value attribute, but null is the expected value
+                		return joinConfig.getValue() == null ? "activated" : joinConfig.getValue().value();
 			}
 		} else {
 			JoinConfigType joinConfig = configuration.getJoin();
@@ -732,8 +734,8 @@ public class IndividualizerYAWL {
 				}
 				configPort.clear();
 			}
-			return joinConfig.getValue().value();
-
+			// YAWL 2.2 (spuriously?) allows a configuration/join/@value attribute, but null is the expected value
+                	return joinConfig.getValue() == null ? "activated" : joinConfig.getValue().value();
 		}
 	}
 
