@@ -4,6 +4,7 @@ import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -29,23 +30,31 @@ public class FolderTree {
         FolderTreeNode homeNode = new FolderTreeNode(folder, null, true, FolderTreeNodeTypes.Folder);
 
         root.add(homeNode);
-        buildTree(homeNode, UserSessionManager.getTree(), 0);
+        buildTree(homeNode, UserSessionManager.getTree(), 0, new HashSet<Integer>());
     }
 
-    private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId) {
-        for (FolderType folder : folders) {
-            FolderTreeNode childNode = new FolderTreeNode(folder, null, !loadAll, FolderTreeNodeTypes.Folder);
+    private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId, HashSet<Integer> set) {
 
-            if (folder.getFolders().size() > 0) {
-                node.add(buildTree(childNode, folder.getFolders(), folder.getId()));
-            } else {
-                node.add(childNode);
-                if (loadAll) {
-                    ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folder.getId());
-                    for (ProcessSummaryType process : processes.getProcessSummary()) {
-                        childNode.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+        for (FolderType folder : folders) {
+
+            if(!set.contains(folder.getId())) {
+
+                FolderTreeNode childNode = new FolderTreeNode(folder, null, !loadAll, FolderTreeNodeTypes.Folder);
+                set.add(folder.getId());
+
+                if (folder.getFolders().size() > 0) {
+                    node.add(buildTree(childNode, folder.getFolders(), folder.getId(), set));
+                } else {
+                    node.add(childNode);
+                    if (loadAll) {
+                        ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folder.getId());
+                        for (ProcessSummaryType process : processes.getProcessSummary()) {
+                            childNode.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+                        }
                     }
                 }
+            }else {
+                node.add(new FolderTreeNode((ProcessSummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 

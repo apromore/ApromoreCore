@@ -16,6 +16,7 @@ public class SecurityFolderTreeController extends BaseController {
     public SecurityFolderTreeController(SecuritySetupController securitySetupController, Window win) throws DialogException {
         Tree tree = (Tree) win.getFellow("mainTree").getFellow("folderTree");
 
+//        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
         FolderTreeModel model = new FolderTreeModel(new FolderTree(true).getRoot());
         if (securitySetupController != null) {
             tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController.getPermissionsController()));
