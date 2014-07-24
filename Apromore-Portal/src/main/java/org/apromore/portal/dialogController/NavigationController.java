@@ -14,7 +14,7 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
-public class NavigationController extends BaseController {
+public class                                         NavigationController extends BaseController {
 
     private MainController mainC;
     private Tree tree;

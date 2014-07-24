@@ -34,7 +34,7 @@
     filter: alpha(opacity=75);
 }
 
-.signin .welcome span,
+.signin .input-append span,
 .signin .welcome small {
     font-size: 28px;
 }

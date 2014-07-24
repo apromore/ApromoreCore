@@ -25,6 +25,7 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.wfmc._2002.xpdl1.Tool;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -64,7 +65,7 @@ import java.util.UUID;
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class MainController extends BaseController {
+public class                                        MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
@@ -73,7 +74,7 @@ public class MainController extends BaseController {
     private static final String HOST_NAME = "Host";
     private static final String VERSION_NUMBER = "version.number";
     private static final String BUILD_DATE = "version.builddate";
-    private static final String WELCOME_TEXT = "Welcome to Apromore (%s %s)";
+    private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
     private MenuController menu;
     private SimpleSearchController simplesearch;
@@ -113,6 +114,9 @@ public class MainController extends BaseController {
             Toolbarbutton releaseNotes = (Toolbarbutton) this.getFellow("releaseNotes");
             Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
             Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
+            Toolbarbutton webDavButton = (Toolbarbutton) this.getFellow("webDav");
+            Toolbarbutton developerResourcesButton = (Toolbarbutton) this.getFellow("developerResources");
+
 
             setHeaderText(releaseNotes);
             switchToProcessSummaryView();
@@ -143,6 +147,18 @@ public class MainController extends BaseController {
                             displayInstalledPlugins();
                         }
                     });
+            webDavButton.addEventListener("onClick",
+                    new EventListener<Event>() {
+                        public void onEvent(final Event event) throws Exception {
+                            displayWebDav();
+                        }
+                    });
+            developerResourcesButton.addEventListener("onClick",
+                    new EventListener<Event>() {
+                        public void onEvent(final Event event) throws Exception {
+                            displayDeveloperResources();
+                        }
+                    });
             qe.subscribe(
                     new EventListener<Event>() {
                         @Override
@@ -168,6 +184,8 @@ public class MainController extends BaseController {
 
     public void loadWorkspace() {
         updateActions();
+
+        setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
         String userId = UserSessionManager.getCurrentUser().getId();
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
@@ -497,6 +515,26 @@ public class MainController extends BaseController {
 
 
     @Command
+    protected void displayWebDav() {
+        String instruction;
+        int offsetH = 100, offsetV = 200;
+        instruction = "window.open('" + Constants.WEB_DAV + "','','top=" + offsetH + ",left=" + offsetV
+                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+        Clients.evalJavaScript(instruction);
+    }
+
+    @Command
+    protected void displayDeveloperResources() {
+        String instruction;
+        int offsetH = 100, offsetV = 200;
+        instruction = "window.open('" + Constants.DEVELOPER_RESOURCES + "','','top=" + offsetH + ",left=" + offsetV
+                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+        Clients.evalJavaScript(instruction);
+    }
+
+
+
+    @Command
     protected void signout() throws Exception {
         Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {
@@ -631,7 +669,7 @@ public class MainController extends BaseController {
 
     /* From the data in the properties automagically update the label in the header. */
     private void setHeaderText(Toolbarbutton releaseNotes) {
-        releaseNotes.setLabel(String.format(WELCOME_TEXT, versionNumber, buildDate));
+        releaseNotes.setLabel(String.format(WELCOME_TEXT, UserSessionManager.getCurrentUser().getFirstName(), versionNumber));
     }
 
     /* From a list of version summary types find the max version number. */

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class MenuController extends Menubar {
+public class                                       MenuController extends Menubar {
 
     private final MainController mainC;
     private Menubar menuB;
