@@ -27,6 +27,8 @@ public final class Constants {
 
     public static final String RELEASE_NOTES = "http://apromore-build.qut.edu.au/confluence/display/AP/Release+Notes";
     public static final String MORE_INFO = "http://apromore.org/";
+    public static final String WEB_DAV = "http://apromore.qut.edu.au/filestore/dav";
+    public static final String DEVELOPER_RESOURCES = "http://apromore-build.qut.edu.au/";
 
     public static final String FOLDER_ICON = "/img/icon/folder-22x22.png";
     public static final String PROCESS_ICON = "/img/icon/bpmn-22x22.png";

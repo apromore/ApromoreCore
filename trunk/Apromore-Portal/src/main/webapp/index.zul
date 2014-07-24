@@ -8,7 +8,11 @@
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 
-<zk xmlns:x="xhtml" xmlns:zk="zk">
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+    xmlns:x="xhtml" xmlns:zk="zk">
 
     <style src="css/apromoreOld.css"/>
     <style src="css/site.css"/>
@@ -64,11 +68,22 @@
 
         <div height="40px">
             <div style="float:left; margin-top: 5px;" >
-                <toolbarbutton id="releaseNotes"/>
+                <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
+                    <!--<attribute name="onCheck">-->
+                        <!--<![CDATA[-->
+                            <!--event.getTarget().setLabel("Welcome bla. "+event.getTarget().getLabel());-->
+                        <!--]]>-->
+                    <!--</attribute>-->
+                <!--</toolbarbutton>-->
+                <toolbarbutton id="releaseNotes" />
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="moreButton" label="Apromore Initiative"/>
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="installedPlugins" label="Active Plugins"/>
+                <separator orient="vertical" bar="true"/>
+                <toolbarbutton id="webDav" label="webDav"/>
+                <separator orient="vertical" bar="true"/>
+                <toolbarbutton id="developerResources" label="Developer Resources"/>
             </div>
             <div style="float:right; margin-top: 5px;">
                 <toolbarbutton id="signoutButton" label="Sign out" visible="true"/>
