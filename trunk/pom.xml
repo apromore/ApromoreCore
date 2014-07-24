@@ -259,7 +259,7 @@
         <javadocs.skip>false</javadocs.skip>
         <pmd.skip>false</pmd.skip>
 
-        <dsig.keystore>${project.parent.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
+        <dsig.keystore>${basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
         <dsig.alias>applet</dsig.alias>
         <dsig.storepass>applet</dsig.storepass>
         <dsig.keypass>applet</dsig.keypass>
