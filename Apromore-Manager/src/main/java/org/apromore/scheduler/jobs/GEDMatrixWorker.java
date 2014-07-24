@@ -40,11 +40,12 @@ public class GEDMatrixWorker implements Worker {
      */
     @Async
     public void executeJob() throws SchedulerException {
-        try {
-            clusterSrv.computeGEDMatrix();
-        } catch (RepositoryException repoException) {
-            throw new SchedulerException("Failed to run GED Matrix Computation!", repoException);
-        }
+        //Temporarily disabled because of allegedly high memory consumption
+//        try {
+//            clusterSrv.computeGEDMatrix();
+//        } catch (RepositoryException repoException) {
+//            throw new SchedulerException("Failed to run GED Matrix Computation!", repoException);
+//        }
     }
 
 }
