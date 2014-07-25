@@ -126,6 +126,13 @@
             <artifactId>javabdd</artifactId>
             <version>1.0b2</version>
         </dependency>
+        <!-- held over from experiments to replace DavFileSystemView with the one in Jakarta Slide
+        <dependency>
+            <groupId>slide</groupId>
+            <artifactId>slide-webdavlib</artifactId>
+            <version>2.1</version>
+        </dependency>
+        -->
 
         <!-- not required for compilation, but for runtime -->
         <!--

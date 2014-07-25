@@ -5,10 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +25,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 // Third party classes
+//import org.apache.webdav.ui.WebdavSystemView;  // Jakarta Slide variation
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -63,6 +61,7 @@ public class Applet extends JApplet {
 
                         // Check cmap_url parameter
                         try {
+                            System.err.println("Cmap_url=" + getParameter("cmap_url") + " uri=" + new URI(getParameter("cmap_url")));
                             cmap = new DavCmap(new URI(getParameter("cmap_url")), fileStore);
                             cmapper.setCmap(cmap);
 
@@ -74,6 +73,7 @@ public class Applet extends JApplet {
 
                         // Check qml_url parameter
                         try {
+                            System.err.println("Qml_url=" + getParameter("qml_url") + " uri=" + new URI(getParameter("qml_url")));
                             cmapper.setQml(new DavQml(new URI(getParameter("qml_url")), fileStore));
 
                         } catch (Exception e) {
@@ -94,8 +94,9 @@ public class Applet extends JApplet {
                                 int    processID = Integer.valueOf(matcher.group(1));
                                 String branch    = matcher.group(2);
                                 String version   = matcher.group(3);
+                                String user      = getParameter("user");
 
-                                cmapper.setModel(new ApromoreProcessModel(processID, branch, version, Applet.this));
+                                cmapper.setModel(new ApromoreProcessModel(processID, branch, version, Applet.this, user));
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -131,6 +132,15 @@ public class Applet extends JApplet {
                             showStatus(bundle.getString("Load_qml"));
                             try {
                                 DavFileSystemView dfsv = new DavFileSystemView(fileStore);
+
+                                /* Jakarta Slide variation
+                                URI uri = fileStore.getBaseURI();
+                                String server = uri.getScheme() + "://" + uri.getRawAuthority();
+                                String path   = uri.getPath() + "/";
+                                System.err.println("WebdavSystemView server=" + server + " path=" + path);
+                                FileSystemView dfsv = new WebdavSystemView(server, path, "admin", "password");
+                                */
+
                                 System.err.println("File system view roots=" + dfsv.getRoots() + " default=" + dfsv.getDefaultDirectory());
 
                                 JFileChooser chooser = new JFileChooser(dfsv);
@@ -139,8 +149,12 @@ public class Applet extends JApplet {
                                 if (chooser.showOpenDialog(Applet.this) == JFileChooser.APPROVE_OPTION) {
                                     // Load the selected QML file
                                     System.err.println("File chooser selected " + chooser.getSelectedFile());
-                                    URI uri = new URI(chooser.getSelectedFile().toURI().getRawPath());
-                                    cmapper.setQml(new DavQml(uri, fileStore));
+                                    URI fileURI = chooser.getSelectedFile().toURI();
+                                    //URI fileURI = new URI(chooser.getSelectedFile().toString());
+                                    System.err.println("File chooser selection as URI " + fileURI);
+                                    URI selectedURI = new URI(fileURI.getRawPath());
+                                    System.err.println("File chooser selection as relative URI " + selectedURI);
+                                    cmapper.setQml(new DavQml(selectedURI, fileStore));
                                     JOptionPane.showMessageDialog(Applet.this, "Loaded questionnaire " + chooser.getSelectedFile());
                                 }
                                 
@@ -187,6 +201,7 @@ public class Applet extends JApplet {
                             showStatus(bundle.getString("Save_cmap"));
                             try {
                                 JFileChooser chooser = new JFileChooser(new DavFileSystemView(fileStore));
+                                //JFileChooser chooser = new JFileChooser(new WebdavSystemView("http://localhost:9000", "/filestore/dav/", "admin", "password"));  // Jakarta Slide variation
                                 chooser.setDialogTitle(bundle.getString("Save_cmap"));
                                 chooser.setFileFilter(new FileNameExtensionFilter(bundle.getString("Configuration_mapping"), "cmap"));
                                 if (cmap != null) {
@@ -194,7 +209,8 @@ public class Applet extends JApplet {
                                 }
                                 if (chooser.showSaveDialog(Applet.this) == JFileChooser.APPROVE_OPTION) {
                                     // Save the C-Map as the chosen filename
-                                    URI uri = new URI("/filestore/dav" + chooser.getSelectedFile().toString());
+                                    URI uri = new URI("/filestore/dav" + chooser.getSelectedFile().toURI().getRawPath());
+                                    //URI uri = new URI(chooser.getSelectedFile().toString().replaceAll(" ", "%20"));  // Jakarta Slide variation
                                     cmap = new DavCmap(uri, fileStore);
                                     cmapper.save(cmap);
                                     cmapper.setCmap(cmap);
