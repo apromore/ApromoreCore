@@ -177,18 +177,15 @@ class Main extends JFrame {
     final Cmapper cmapper = new Cmapper();
 
     // Parse command line arguments, initializing the model
+    int j = -1;  // the index within args in which "-apromore_model" occurs
+    String user = null;
     for (int i = 0; i < argv.length; i++) {
       switch (argv[i]) {
       case "-apromore_model":
         if (i+3 >= argv.length) {
           throw new IllegalArgumentException("-apromore_model without id/branch/version");
         }
-        cmapper.setModel(
-          new ApromoreProcessModel(Integer.valueOf(argv[i+1]),  // process ID
-                                                   argv[i+2],   // branch
-                                                   argv[i+3],   // version number
-                                                   null)
-        );
+        j = i;
         i += 3;
         break;
 
@@ -213,9 +210,27 @@ class Main extends JFrame {
         cmapper.setQml(new FileQml(new File(argv[i])));
         break;
 
+      case "-user":
+        if (++i >= argv.length) {
+          throw new IllegalArgumentException("-user without user name");
+        }
+        user = argv[i];
+        break;
+
       default:
         throw new IllegalArgumentException("Unknown parameter: " + argv[i]);
       }
+    }
+
+    // -apromore_model and -user can occur in either order, so we've deferred processing them until here
+    if (j != -1) {
+      cmapper.setModel(new ApromoreProcessModel(
+        Integer.valueOf(argv[j+1]),  // process ID
+        argv[j+2],                   // branch
+        argv[j+3],                   // version number
+        null,                        // Swing parent component
+        user                         // user name
+      ));
     }
 
     SwingUtilities.invokeLater(new Runnable() {

@@ -1974,18 +1974,15 @@ public class Main extends JPanel implements ListSelectionListener,
 		frame.setVisible(true);
 
 		// Parse command line arguments
+                int j = -1;  // the index within args in which "-apromore_model" occurs
+                String user = null;
                	for (int i=0; i< args.length; i++) {
 			switch (args[i]) {
 			case "-apromore_model":
 				if (i+3 >= args.length) {
 					throw new IllegalArgumentException("-apromore_model without id/branch/version");
 				}
-				application.setLinkedProcessModel(
-					new ApromoreProcessModel(Integer.valueOf(args[i+1]),  // process ID
-					                         args[i+2],                   // branch
-					                         args[i+3],                   // version number
-					                         application)
-				);
+                                j = i;
 				i += 3;
                                 break;
 			case "-cmap_url":
@@ -2038,8 +2035,24 @@ public class Main extends JPanel implements ListSelectionListener,
 				}
 				application.openQuestionnaireModel(new File(args[i]));
 				break;
+			case "-user":
+                                if (++i >= args.length) {
+					throw new IllegalArgumentException("-user without user name");
+                                }
+                                user = args[i];
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown parameter: " + args[i]);
+			}
+
+                        // -apromore_model and -user can occur in either order, so we've deferred processing them until here
+			if (j != -1) {
+				application.setLinkedProcessModel(new ApromoreProcessModel(
+					Integer.valueOf(args[j+1]),   // process ID
+					args[j+2],                    // branch
+					args[j+3],                    // version number
+					application,                  // Swing parent component
+					user));                       // user name
 			}
 		}
 	}
@@ -3997,9 +4010,7 @@ public class Main extends JPanel implements ListSelectionListener,
 		if (fInMap != null && fInModel != null) {
 			try {
 				showModel(getPartiallyConfiguredModel());
-				System.err.println("Checkpoint 5");
 			} catch (Exception ee) {
-				System.err.println("Checkpoint 6");
 				ee.printStackTrace();
 			}
 		}
@@ -4665,6 +4676,7 @@ public class Main extends JPanel implements ListSelectionListener,
 									setLinkedProcessModel(fInModel);
 
 								} catch (Exception ev) {
+									ev.printStackTrace();
 									getJTextField_model().setText(
 											"Format not valid! Please check.");
 									fInModel = null;
@@ -4698,7 +4710,14 @@ public class Main extends JPanel implements ListSelectionListener,
 		getJTextField_model().setText(/*file.getAbsolutePath()*/ processModel.getText());
 
 		this.fInModel = processModel;
-		showModel(processModel.getBpmn());
+
+                // We only support incremental configuration with C-BPMN, since that's the only format
+                // which the com.processconfiguration.ConfigurationAlgorithm class deals with
+		try {
+			showModel(processModel.getBpmn());
+		} catch (Exception e) {
+			System.err.println("Failed to show model: " + e);
+		}
 	}
 
 	/**
@@ -4753,8 +4772,7 @@ public class Main extends JPanel implements ListSelectionListener,
 
 	private void individualize() {
 		File fOutput = null;
-		// TODO: port EPML and YAWL support
-		Configurator cg = null; //new Configurator(fInModel, fInMap, fInConf);
+		Configurator cg = new Configurator(new File(fInModel.getText()), new File(fInMap.getText()), fInConf);
 		if ((fOutput = cg.commit()) != null) {
 			getJDialog_CG().setVisible(false);
 			try{

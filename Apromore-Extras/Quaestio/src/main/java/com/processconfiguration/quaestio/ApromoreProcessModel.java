@@ -36,6 +36,7 @@ class ApromoreProcessModel implements ProcessModel {
 	private String     branch;
 	private Version    version;
 	private Component  parent;
+        private String     user;
 	private SaveDialog saveDialog;
 
 	/**
@@ -43,12 +44,13 @@ class ApromoreProcessModel implements ProcessModel {
          *
          * This reads a process model from an Apromore manager service.
          *
-         * @param processId  the ID of the process model
-         * @param branch     the branch name of the process model
-	 * @param versionString    the version number of the process model
-         * @param parent  the UI component, used only for aligning dialog windows
+         * @param processId      the ID of the process model
+         * @param branch         the branch name of the process model
+	 * @param versionString  the version number of the process model
+         * @param parent         the UI component, used only for aligning dialog windows
+         * @param user           the user principal in whose name updates are made
          */
-	ApromoreProcessModel(final int processId, String branch, String versionString, final Component parent) throws Exception {
+	ApromoreProcessModel(final int processId, String branch, String versionString, final Component parent, final String user) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
 		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClientExternal");
@@ -57,6 +59,7 @@ class ApromoreProcessModel implements ProcessModel {
 		this.branch        = branch;
 		this.version       = new Version(versionString);
 		this.parent        = parent;
+                this.user          = user;
 
 		exportFormatResult = manager.exportFormat(
 			processId,		// process ID
@@ -128,7 +131,7 @@ class ApromoreProcessModel implements ProcessModel {
 			// Send to the server
 			manager.updateProcess(
 				0,			// session code
-				null,			// user name
+				user,			// user name
 				NATIVE_TYPE,		// native type
 				processId,		// process ID
 				null,			// domain
