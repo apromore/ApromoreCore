@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileSystemView;
 
 // Third party classes
 import com.github.sardine.DavResource;
+import com.github.sardine.model.Response;
 
 /**
  * Allow a {@link FileStoreService} to work as the model of a {@link JFileChooser}.
@@ -27,8 +28,13 @@ public class DavFileSystemView extends FileSystemView {
      * Sole constructor.
      *
      * @param service
+     * @throws IllegalArgumentException if <var>service</var> is <code>null</code>
      */
     public DavFileSystemView(final FileStoreService service) {
+        if (service == null) {
+            throw new IllegalArgumentException("Null service parameter in constructor of " + getClass());
+        }
+
         this.service       = service;
         this.ROOT          = new File(service.getBaseURI().getPath());
         this.ROOTS         = new File[] { ROOT };
@@ -192,53 +198,5 @@ public class DavFileSystemView extends FileSystemView {
     @Override
     public Boolean isTraversable(File f) {
         return f.isDirectory();
-    }
-
-
-    /**
-     * A file on the WebDAV repository.
-     */
-    class DavFile extends File {
-
-        private DavResource resource;
-
-        DavFile(DavResource resource) {
-            super(resource.toString());
-
-            this.resource = resource;
-        }
-
-        @Override public boolean canExecute() {
-            return true;
-        }
-
-        @Override public boolean canRead() {
-            return true;
-        }
-
-        @Override public boolean canWrite() {
-            return true;
-        }
-
-        @Override public boolean exists() {
-            return true;
-        }
-
-        @Override public boolean isDirectory() {
-            return resource.isDirectory();
-        }
-
-        @Override public boolean isFile() {
-            return !resource.isDirectory();
-        }
-
-        @Override public boolean isHidden() {
-            return resource.getName().startsWith(".");
-        }
-
-        @Override public long lastModified() {
-            Date modified = resource.getModified();
-            return (modified == null) ? 0L : modified.getTime();
-        }
     }
 }
