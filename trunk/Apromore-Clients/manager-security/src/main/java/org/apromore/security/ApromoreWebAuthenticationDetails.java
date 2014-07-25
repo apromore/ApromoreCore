@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 /**
  * Used to store the extra info needed to allow Apromore to work correctly.
  *
- * @author <a href="mailto:cam.james@gmail.com">Camron James</a>
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ApromoreWebAuthenticationDetails extends WebAuthenticationDetails {
 
@@ -34,4 +34,13 @@ public class ApromoreWebAuthenticationDetails extends WebAuthenticationDetails {
         return userDetails;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return as the superclass, plus the Apromore-specific user details
+     */
+    @Override
+    public String toString() {
+        return super.toString() + "; UserDetails=" + userDetails;
+    }
 }

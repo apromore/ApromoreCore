@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Apromore needs to have some extra information sent from the server to operate.
  * This class allows the extra info to be include while no effecting the existing security code.
  *
- * @author <a href="mailto:cam.james@gmail.com">Camron James</a>
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ApromoreUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
