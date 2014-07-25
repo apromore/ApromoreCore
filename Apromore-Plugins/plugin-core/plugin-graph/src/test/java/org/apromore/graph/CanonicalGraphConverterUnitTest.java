@@ -26,6 +26,7 @@ import org.apromore.graph.canonical.converter.GraphToCanonical;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -117,6 +118,7 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(convertedCpf.getNet().get(0).getEdge().size(), Matchers.equalTo(2));
     }
 
+    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testFullCanoniserTest() throws Exception {
         CanonicalProcessType cpf = newInstance(CANONICAL_MODELS_DIR + "test5.cpf");
@@ -144,6 +146,7 @@ public class CanonicalGraphConverterUnitTest {
     }
 
 
+    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testTwoNetsWithResourcesObjectTreeCorrectToCanonical() throws Exception {
         CanonicalProcessType cpf = newInstance(CANONICAL_MODELS_DIR + "test3.cpf");
@@ -321,6 +324,7 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(cpfEdge.getTarget().getId(), Matchers.equalTo("c13"));
     }
 
+    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testTwoNetsWithResourcesObjectTreeCorrectBackToGraph() throws Exception {
         CanonicalProcessType can = newInstance(CANONICAL_MODELS_DIR + "test3.cpf");
