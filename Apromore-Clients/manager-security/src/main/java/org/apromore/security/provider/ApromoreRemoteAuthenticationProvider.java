@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  * <p>If authentication fails, a <code>ApromoreRemoteAuthenticationException</code> will be thrown. This exception should
  * be caught and displayed to the user, enabling them to retry with alternative credentials etc.</p>
  *
- * @author <a href="mailto:cam.james@gmail.com">Camron James</a>
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ApromoreRemoteAuthenticationProvider implements AuthenticationProvider, InitializingBean {
 
