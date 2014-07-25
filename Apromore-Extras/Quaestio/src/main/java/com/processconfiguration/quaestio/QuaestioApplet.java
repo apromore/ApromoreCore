@@ -153,8 +153,9 @@ public class QuaestioApplet extends JApplet {
                             int    processID = Integer.valueOf(matcher.group(1));
                             String branch    = matcher.group(2);
                             String version   = matcher.group(3);
+                            String user      = getParameter("user");
 
-                            main.setLinkedProcessModel(new ApromoreProcessModel(processID, branch, version, main));
+                            main.setLinkedProcessModel(new ApromoreProcessModel(processID, branch, version, main, user));
 
                         } catch (Exception e) {
                             showStatus("Unable to read model " + model);

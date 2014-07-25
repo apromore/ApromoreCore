@@ -354,7 +354,7 @@ class VariationPointView extends JPanel {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 String conditionError = cmapper.findConditionError((String) value);
-                LOGGER.info("Condition error for " + value + " is " + conditionError);
+                //LOGGER.info("Condition error for " + value + " is " + conditionError);
                 component.setBackground(conditionError != null ? Color.PINK :
                                                                !isSelected ? SystemColor.control :
                                                                              SystemColor.controlHighlight);

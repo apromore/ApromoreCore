@@ -34,7 +34,9 @@ import org.apromore.filestore.client.FileStoreService;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.UserSessionManager;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TDocumentation;
@@ -193,6 +195,14 @@ public class CmapController extends BaseController {
                 }
                 if (cmapURL != null) {
                     configureA.setParam("cmap_url", cmapURL.toString());
+                }
+
+                UserType user = UserSessionManager.getCurrentUser();
+                if (user != null) {
+                    System.err.println("User was " + user.getUsername());
+                    configureA.setParam("user", user.getUsername());
+                } else {
+                    System.err.println("User was null");
                 }
 
                 System.err.println("New params=" + configureA.getParams());
