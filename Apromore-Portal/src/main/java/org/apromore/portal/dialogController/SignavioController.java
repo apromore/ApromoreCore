@@ -15,9 +15,13 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 
 /**
@@ -64,7 +68,14 @@ public class SignavioController extends BaseController {
                             editSession.isWithAnnotation(),
                             editSession.getUsername(),
                             params);
-            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+            // Run the document through a pass-through XML transformation because we have ZK/Signavio issues if the native document used apostrophes to quote attributes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(exportResult.getNative().getInputStream()), new StreamResult(baos));
+            String data = baos.toString();
+
+            // If there's ever a non-XML process model format, we'll have to detect that and skip the XML parsing:
+            //String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
