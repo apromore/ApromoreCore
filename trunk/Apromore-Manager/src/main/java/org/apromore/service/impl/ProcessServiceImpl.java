@@ -279,7 +279,9 @@ public class ProcessServiceImpl implements ProcessService {
                 pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
             } else {
                 // Perform the update
-                if (canUserWriteProcess(user, processId)) {
+                if (user == null) {
+                    throw new ImportException("Permission to change this model denied.  No user specified.");
+                } else if (canUserWriteProcess(user, processId)) {
                     pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
                 } else {
                     throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
@@ -319,6 +321,15 @@ public class ProcessServiceImpl implements ProcessService {
             final String format, final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties)
             throws ExportFormatException {
         try {
+            // Debug tracing of the authenticated principal
+            org.springframework.security.core.Authentication auth =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                LOGGER.info("Authentication principal=" + auth.getPrincipal() + " details=" + auth.getDetails() + " thread=" + Thread.currentThread());
+            } else {
+                LOGGER.info("Authentication is null");
+            }
+
             ExportFormatResultType exportResult = new ExportFormatResultType();
 
             // Work out if we are looking at the original format or native format for this model.
