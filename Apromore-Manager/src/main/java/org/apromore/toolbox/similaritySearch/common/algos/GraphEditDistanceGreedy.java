@@ -54,7 +54,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
         BestMapping mapping = new BestMapping();
         Set<TwoVertices> openCouples = times(sg1.getVertices(), sg2.getVertices(), ledcutoff);
         double shortestEditDistance = Double.MAX_VALUE;
-        Random randomized = new Random();
+        Random randomized = new Random(123456789);
         int stepn = 0;
         //STEP
         boolean doStep = true;
@@ -75,7 +75,6 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
             }
 
             if (bestCandidates.size() > 0) {
-                //Choose a random candidate
                 TwoVertices couple;
 
                 // Case 1: Only one candidate pair
@@ -160,7 +159,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                         }
                     } else {
                         // CASE 5: Non deterministic choice (Choose a random candidate)
-                        System.out.println("oops ...");
+//                        System.out.println("oops ...");
                         deterministic = false;
                         couple = bestCandidates.get(randomized.nextInt(bestCandidates.size()));
                     }
@@ -305,8 +304,8 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                     }
 
                     Set<TwoVertices> newOpenCouples = new HashSet<TwoVertices>();
-                    for (TwoVertices p: openCouples){
-                        if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)){
+                    for (TwoVertices p : openCouples) {
+                        if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)) {
                             newOpenCouples.add(p);
                         }
                     }
