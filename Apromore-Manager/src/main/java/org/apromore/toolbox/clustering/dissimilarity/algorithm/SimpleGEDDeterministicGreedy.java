@@ -40,7 +40,7 @@ public class SimpleGEDDeterministicGreedy extends AbstractSimpleDistanceAlgorith
         double newEditDistance;
         double newShortestEditDistance;
         double shortestEditDistance = Double.MAX_VALUE;
-        Random randomized = new Random();
+        Random randomized = new Random(123456789);
 
         TreeMultiset<String> mset;
         TreeMultimap<String, TwoVertices> tmap;
