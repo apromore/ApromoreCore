@@ -15,7 +15,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
-import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -69,13 +70,13 @@ public class SignavioController extends BaseController {
                             editSession.getUsername(),
                             params);
 
-            // Run the document through a pass-through XML transformation because we have ZK/Signavio issues if the native document used apostrophes to quote attributes
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(exportResult.getNative().getInputStream()), new StreamResult(baos));
-            String data = baos.toString();
+            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
 
-            // If there's ever a non-XML process model format, we'll have to detect that and skip the XML parsing:
-            //String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+            // Run the document through a pass-through XML transformation because we have ZK/Signavio issues if the native document used apostrophes to quote attributes
+            // If there's ever a non-XML process model format, we'll have to detect that and skip the XML parsing
+            StringWriter stringWriter = new StringWriter();
+            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(new StringReader(data)), new StreamResult(stringWriter));
+            data = stringWriter.toString();
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
