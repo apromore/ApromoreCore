@@ -187,7 +187,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
     public double computeGED(Graph sg1, Graph sg2) {
         BestMapping mapping = new BestMapping();
         double shortestEditDistance = Double.MAX_VALUE;
-        Random randomized = new Random();
+        Random randomized = new Random(123456789);
 
         try {
             // INIT
