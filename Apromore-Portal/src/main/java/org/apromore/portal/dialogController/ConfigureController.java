@@ -140,7 +140,10 @@ public class ConfigureController extends BaseController {
 
                 // Parse the cmap link into cmapURL
                 try {
-                    FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
+                    //FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClientExternal");
+                    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+                    FileStoreService fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal"); 
+
                     URI baseURI = fileStore.getBaseURI();
                     System.err.println("FileStoreClient.getBaseURI=" + baseURI);
                     cmapURL = baseURI.resolve(cmapURLString).toURL();
