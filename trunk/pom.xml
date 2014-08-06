@@ -263,6 +263,7 @@
         <dsig.alias>applet</dsig.alias>
         <dsig.storepass>applet</dsig.storepass>
         <dsig.keypass>applet</dsig.keypass>
+
     </properties>
 
     <dependencyManagement>
