@@ -3,4 +3,4 @@ OryxEndPoint_epml=Apromore-editor/openFromApromore?
 version.builddate=16-07-2014
 OryxEndPoint_xpdl=Apromore-editor/openFromApromore?
 Host=http\://@SITE_HOST@\:@SITE_PORT@/
-version.number=3.1.0
+version.number=3.1.2377
