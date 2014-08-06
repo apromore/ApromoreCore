@@ -23,8 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class                                       MenuController extends Menubar {
+public class MenuController extends Menubar {
+
+    private static final Logger LOGGER = Logger.getLogger(MenuController.class.getCanonicalName());
 
     private final MainController mainC;
     private Menubar menuB;
@@ -212,8 +216,10 @@ public class                                       MenuController extends Menuba
                 new CmapController(this.mainC, selectedProcessVersions);
             } catch (ConfigureException e) {
                 Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                LOGGER.log(Level.WARNING, "Unable to cmap model", e);
             } catch (RuntimeException e) {
                 Messagebox.show("Unable to cmap model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                LOGGER.log(Level.WARNING, "Unable to cmap model", e);
             }
         } else {
             this.mainC.displayMessage("Select only 1 process model to cmap.");
@@ -228,8 +234,10 @@ public class                                       MenuController extends Menuba
                 new ConfigureController(this.mainC, selectedProcessVersions);
             } catch (ConfigureException e) {
                 Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                LOGGER.log(Level.WARNING, "Unable to configure model", e);
             } catch (RuntimeException e) {
                 Messagebox.show("Unable to configure model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                LOGGER.log(Level.WARNING, "Unable to configure model", e);
             }
         } else {
             this.mainC.displayMessage("Select only 1 process model to configure.");
