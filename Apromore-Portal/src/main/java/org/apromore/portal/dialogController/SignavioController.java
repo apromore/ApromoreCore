@@ -74,9 +74,10 @@ public class SignavioController extends BaseController {
 
             // Run the document through a pass-through XML transformation because we have ZK/Signavio issues if the native document used apostrophes to quote attributes
             // If there's ever a non-XML process model format, we'll have to detect that and skip the XML parsing
-            StringWriter stringWriter = new StringWriter();
-            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(new StringReader(data)), new StreamResult(stringWriter));
-            data = stringWriter.toString();
+//            StringWriter stringWriter = new StringWriter();
+//            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(new StringReader(data)), new StreamResult(stringWriter));
+//            data = stringWriter.toString();
+
 
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
