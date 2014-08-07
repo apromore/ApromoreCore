@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -87,12 +89,21 @@ public final class Import {
                 int parentId = getFolderId(parentFile);
                 assert parentId != -1;
 
-                manager.importProcess(userName, parentId, getNativeFormat(ext), FilenameUtils.getBaseName(file.getName()),
-                        1.0D, new FileInputStream(file),
-                        "domain",
-                        "documentation",
-                        "created",
-                        "lastUpdate", true, noCanoniserParameters);
+                String now = DateFormat.getInstance().format(new Date());
+
+                manager.importProcess(
+                    userName,                                   // user name
+                    parentId,                                   // folder ID
+                    getNativeFormat(ext),                       // native type
+                    FilenameUtils.getBaseName(file.getName()),  // process name
+                    "1.0",                                      // version number
+                    new FileInputStream(file),                  // XML serialization of the process
+                    "domain",
+                    "documentation",
+                    now,                                        // creation timestamp
+                    now,                                        // last modification timestamp
+                    true,                                       // make public?
+                    noCanoniserParameters);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to load file {} due to {}", file.getName(), e.getMessage());
