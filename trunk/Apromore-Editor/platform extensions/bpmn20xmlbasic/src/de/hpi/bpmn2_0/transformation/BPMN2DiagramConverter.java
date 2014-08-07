@@ -384,18 +384,24 @@ public class BPMN2DiagramConverter {
         for (BaseElement element : definitions.getRootElement()) {
             diagram.getBPMNPlane().setBpmnElement(element);
 
-            // Process the Nodes
-            for (final FlowElement flow : ((Process) element).getFlowElement()) {
-                if (!(flow instanceof SequenceFlow)) {
-                    diagram.getBPMNPlane().getDiagramElement().add(constructFlowNodes(flow));
-                }
-            }
+            if (element instanceof Process) {
 
-            // Now for the Edges
-            for (final FlowElement flow : ((Process) element).getFlowElement()) {
-                if (flow instanceof SequenceFlow) {
-                    diagram.getBPMNPlane().getDiagramElement().add(constructEdgeNodes(diagram.getBPMNPlane().getDiagramElement(), (SequenceFlow)flow));
+                // Process the Nodes
+                for (final FlowElement flow : ((Process) element).getFlowElement()) {
+                    if (!(flow instanceof SequenceFlow)) {
+                        diagram.getBPMNPlane().getDiagramElement().add(constructFlowNodes(flow));
+                    }
                 }
+
+                // Now for the Edges
+                for (final FlowElement flow : ((Process) element).getFlowElement()) {
+                    if (flow instanceof SequenceFlow) {
+                        diagram.getBPMNPlane().getDiagramElement().add(constructEdgeNodes(diagram.getBPMNPlane().getDiagramElement(), (SequenceFlow)flow));
+                    }
+                }
+
+            } else {
+                logger.warning("Ignoring non-Process root element " + element.getId() + " in BPMN document: " + element.getClass());
             }
         }
         definitions.getDiagram().add(diagram);
