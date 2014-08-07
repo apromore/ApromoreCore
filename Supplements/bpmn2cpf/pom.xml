@@ -4,7 +4,7 @@
   <groupId>org.apromore.plugin</groupId>
   <artifactId>bpmn2cpf</artifactId>
   <version>1.0</version>
-  <name>BPMN command line utility</name>
+  <name>BPMN-to-CPF converter command line utility</name>
   <build>
     <plugins>
       <plugin>
