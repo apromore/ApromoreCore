@@ -67,7 +67,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/generated-sources/src/org/wfmc/_2008/xpdl2/</outputDirectory>
+                            <outputDirectory>${basedir}/target/generated-sources/src/org/wfmc/_2009/xpdl2/</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>

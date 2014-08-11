@@ -2,7 +2,7 @@ package org.apromore.util;
 
 import org.apromore.TestData;
 import org.junit.Test;
-import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.PackageType;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -175,7 +175,7 @@ public class StreamUtilUnitTest {
         InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
 
         // Get the package so I can change some data for the tests
-        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
         Unmarshaller u = jc.createUnmarshaller();
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(stream);
         PackageType pkg = rootElement.getValue();
@@ -195,7 +195,7 @@ public class StreamUtilUnitTest {
         InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
 
         // Get the package so I can change some data for the tests
-        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+        JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
         Unmarshaller u = jc.createUnmarshaller();
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(stream);
         PackageType pkg = rootElement.getValue();

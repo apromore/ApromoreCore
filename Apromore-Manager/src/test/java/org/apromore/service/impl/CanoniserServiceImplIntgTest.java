@@ -135,7 +135,7 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithoutAnnotationsSuccessXPDL() throws Exception {
-        String name = "XPDL 2.1";
+        String name = "XPDL 2.2";
         InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
 
         DecanonisedProcess dp = cSrv.deCanonise(name, getTypeFromXML(cpf), null, emptyCanoniserRequest);
@@ -146,7 +146,7 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void deCanoniseWithAnnotationsSuccessXPDL() throws Exception {
-        String name = "XPDL 2.1";
+        String name = "XPDL 2.2";
         InputStream cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
         DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
 
@@ -209,7 +209,7 @@ public class CanoniserServiceImplIntgTest {
 
     @Test
     public void canoniseXPDL() throws Exception {
-        String nativeType = "XPDL 2.1";
+        String nativeType = "XPDL 2.2";
 
         InputStream data = new ByteArrayInputStream(TestData.XPDL.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
@@ -322,7 +322,7 @@ public class CanoniserServiceImplIntgTest {
     @Test
     public void convertOrderfulfilmentFromYAWLToXPDL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/orderfulfillment.yawl", "YAWL_models/orderfulfillment.ybkp");
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.1", oFCanonised.getCpt(), null,
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.2", oFCanonised.getCpt(), null,
                 new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedXPDL);
 
@@ -384,7 +384,7 @@ public class CanoniserServiceImplIntgTest {
     public void convertPaymentSubnetFromYAWLToXPDL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/PaymentSubnet.yawl", "YAWL_models/orderfulfillment.ybkp");
 
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.1", oFCanonised.getCpt(), null,
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.2", oFCanonised.getCpt(), null,
                 new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedXPDL);
 
@@ -459,7 +459,7 @@ public class CanoniserServiceImplIntgTest {
     public void convertSimpleMakeTripFromYAWLToXPDL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/SimpleMakeTripProcess.yawl", null);
 
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.1", oFCanonised.getCpt(), null,
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.2", oFCanonised.getCpt(), null,
                 new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedXPDL);
 
@@ -531,7 +531,7 @@ public class CanoniserServiceImplIntgTest {
     public void convertCreditCardApplicationFromYAWLToXPDL() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/CreditApplicationProcess.yawl", null);
 
-        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.1", oFCanonised.getCpt(), null,
+        DecanonisedProcess decanonisedXPDL = cSrv.deCanonise("XPDL 2.2", oFCanonised.getCpt(), null,
                 new HashSet<RequestParameterType<?>>());
         assertNotNull(decanonisedXPDL);
 
@@ -644,7 +644,7 @@ public class CanoniserServiceImplIntgTest {
         CanonisedProcess oFCanonised;
         try (InputStream oFProcess = ClassLoader.getSystemResourceAsStream(fileName)) {
             HashSet<RequestParameterType<?>> xpdlParameters = new HashSet<>();
-            oFCanonised = cSrv.canonise("XPDL 2.1", oFProcess, xpdlParameters);
+            oFCanonised = cSrv.canonise("XPDL 2.2", oFProcess, xpdlParameters);
         }
         return oFCanonised;
     }

@@ -13,7 +13,7 @@ import org.apromore.canoniser.xpdl.internal.Canonical2XPDL;
 import org.apromore.cpf.CanonicalProcessType;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.PackageType;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,12 +51,12 @@ public class TestCanonical2XPDLUnitTest {
 //			Canonical2XPDL canonical2xpdl_with_anf = new Canonical2XPDL (cpf, anf);
 			Canonical2XPDL canonical2xpdl_no_anf = new Canonical2XPDL(cpf);
 			
-			jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+			jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
 			Marshaller m1 = jc.createMarshaller();
 			m1.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			
 			JAXBElement<PackageType> cprocRootElem1 = 
-				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
+				new org.wfmc._2009.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
 			m1.marshal(cprocRootElem1, new File("/coldplay/home/fauvet/models/eeeee.xpdl"));
 			
 //			jc = JAXBContext.newInstance("org.apromore.anf");
@@ -65,12 +65,12 @@ public class TestCanonical2XPDLUnitTest {
 //			anf = anfRootElement.getValue();
 			
 //			canonical2xpdl_with_anf = new Canonical2XPDL (cpf, anf);
-//			jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+//			jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
 //			Marshaller m2 = jc.createMarshaller();
 //			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 //			
 //			JAXBElement<PackageType> cprocRootElem2 = 
-//				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
+//				new org.wfmc._2009.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
 //			m1.marshal(cprocRootElem2, new File("/coldplay/home/fauvet/models/test/test-blue-green.xpdl"));
 			
 		} catch (JAXBException e) {

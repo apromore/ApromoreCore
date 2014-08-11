@@ -165,7 +165,7 @@ public final class Import {
         } else if (ext.equalsIgnoreCase("bpmn")) {
             return "BPMN 2.0";
         } else if (ext.equalsIgnoreCase("xpdl")) {
-            return "XPDL 2.1";
+            return "XPDL 2.2";
         } else if (ext.equalsIgnoreCase("yawl")) {
             return "YAWL 2.2";
         } else if (ext.equalsIgnoreCase("pnml")) {

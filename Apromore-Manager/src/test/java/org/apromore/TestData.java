@@ -482,9 +482,9 @@ public interface TestData {
 
 
     public static final String XPDL = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<Package xmlns=\"http://www.wfmc.org/2008/XPDL2.1\" xmlns:ns2=\"http://www.wfmc.org/2002/XPDL1.0\" Id=\"c21e82ba-3822-4cc5-b119-a540005e0725\" Name=\"SubProcess - Conduct monetary transactions\" OnlyOneProcess=\"false\">\n" +
+            "<Package xmlns=\"http://www.wfmc.org/2009/XPDL2.2\" xmlns:ns2=\"http://www.wfmc.org/2002/XPDL1.0\" Id=\"c21e82ba-3822-4cc5-b119-a540005e0725\" Name=\"SubProcess - Conduct monetary transactions\" OnlyOneProcess=\"false\">\n" +
             "    <PackageHeader>\n" +
-            "        <XPDLVersion>2.1</XPDLVersion>\n" +
+            "        <XPDLVersion>2.2</XPDLVersion>\n" +
             "        <Vendor>BizAgi Process Modeler.</Vendor>\n" +
             "        <Created>2010-02-16T20:42:24.258232+10:00</Created>\n" +
             "        <ModificationDate></ModificationDate>\n" +
@@ -1039,7 +1039,7 @@ public interface TestData {
             "</Package>";
 
     public static final String XPDL2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<Package xmlns=\"http://www.wfmc.org/2008/XPDL2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Language=\"English\" Id=\"oryx-canvas123\">\n" +
+            "<Package xmlns=\"http://www.wfmc.org/2009/XPDL2.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Language=\"English\" Id=\"oryx-canvas123\">\n" +
             "  <ConformanceClass GraphConformance=\"NON-BLOCKED\" BPMNModelPortabilityConformance=\"STANDARD\" />\n" +
             "  <Pools>\n" +
             "    <Pool BoundaryVisible=\"true\" MainPool=\"false\" Process=\"oryx_215EDE56-EB7C-4CC4-92E0-8F17E42C8579-process\" Orientation=\"HORIZONTAL\" Id=\"oryx_215EDE56-EB7C-4CC4-92E0-8F17E42C8579\" Name=\"P\">\n" +

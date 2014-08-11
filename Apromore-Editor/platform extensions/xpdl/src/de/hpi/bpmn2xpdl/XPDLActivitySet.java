@@ -23,6 +23,10 @@ public class XPDLActivitySet extends XPDLThing {
     protected XPDLActivities activities;
     @Element("Transitions")
     protected XPDLTransitions transitions;
+    @Element("Associations")
+    protected XPDLAssociations associations;
+    @Element("Artifacts")
+    protected XPDLArtifacts artifacts;
 
     public static boolean handlesStencil(String stencil) {
         String[] types = {
@@ -60,6 +64,14 @@ public class XPDLActivitySet extends XPDLThing {
         return transitions;
     }
 
+    public XPDLAssociations getAssociations() {
+        return associations;
+    }
+
+    public XPDLArtifacts getArtifacts() {
+        return artifacts;
+    }
+
     public void readJSONadhoccompletioncondition(JSONObject modelElement) {
         setAdHocCompletionCondition(modelElement.optString("adhoccompletioncondition"));
     }
@@ -80,6 +92,10 @@ public class XPDLActivitySet extends XPDLThing {
                     createTransition(childShape);
                 } else if (XPDLActivity.handlesStencil(stencil)) {
                     createActivity(childShape);
+                }else if (XPDLAssociation.handlesStencil(stencil)){
+                    createAssociation(childShape);
+                }else if (XPDLArtifact.handlesStencil(stencil)){
+                    createArtifact(childShape);
                 }
             }
         }
@@ -119,6 +135,14 @@ public class XPDLActivitySet extends XPDLThing {
         this.transitions = transitions;
     }
 
+    public void setAssociations(XPDLAssociations associations) {
+        this.associations = associations;
+    }
+
+    public void setArtifacts(XPDLArtifacts artifacts) {
+        this.artifacts = artifacts;
+    }
+
     public void writeJSONactivities(JSONObject modelElement) {
         XPDLActivities activitiesList = getActivities();
         if (activitiesList != null) {
@@ -145,9 +169,26 @@ public class XPDLActivitySet extends XPDLThing {
         }
     }
 
+    public void writeJSONassociations(JSONObject modelElement) {
+        XPDLAssociations associations1=getAssociations();
+        if (associations1 != null) {
+            associations1.write(modelElement);
+        }
+    }
+
+    public void writeJSONartifacts(JSONObject modelElement) {
+      XPDLArtifacts artifactsList=getArtifacts();
+        if (artifactsList != null) {
+           artifactsList.write(modelElement);
+        }
+    }
+
     public void writeUnmapped(JSONObject modelElement) throws JSONException {
         writeActivities(modelElement);
         writeTransitions(modelElement);
+        writeAssociations(modelElement);
+        writeArtifacts(modelElement);
+
     }
 
     protected void createActivity(JSONObject modelElement) {
@@ -167,6 +208,37 @@ public class XPDLActivitySet extends XPDLThing {
         nextTranistion.parse(modelElement);
         getTransitions().add(nextTranistion);
     }
+
+    protected void createAssociation(JSONObject modelElement) {
+        initializeAssociations();
+
+        XPDLAssociation nextAssociation = new XPDLAssociation();
+        nextAssociation.setResourceIdToShape(getResourceIdToShape());
+        nextAssociation.parse(modelElement);
+        getAssociations().add(nextAssociation);
+    }
+
+    protected void initializeAssociations() {
+        if (getAssociations() == null) {
+            setAssociations(new XPDLAssociations());
+        }
+    }
+
+    protected void createArtifact(JSONObject modelElement) {
+        initializeArtifacts();
+
+        XPDLArtifact nextArtifact = new XPDLArtifact();
+        nextArtifact.setResourceIdToShape(getResourceIdToShape());
+        nextArtifact.parse(modelElement);
+        getArtifacts().add(nextArtifact);
+    }
+
+    protected void initializeArtifacts() {
+        if (getArtifacts() == null) {
+            setArtifacts(new XPDLArtifacts());
+        }
+    }
+
 
     protected void initializeActivities() {
         if (getActivities() == null) {
@@ -215,6 +287,40 @@ public class XPDLActivitySet extends XPDLThing {
                     XPDLTransition transition = transitionsList.get(i);
                     transition.write(newTransition);
                     childShapes.put(newTransition);
+                }
+            }
+        }
+    }
+
+    protected void writeAssociations(JSONObject modelElement) throws JSONException {
+        if (getAssociations() != null) {
+            ArrayList<XPDLAssociation> associationsList = getAssociations().getAssociations();
+            if (associationsList != null) {
+                initializeChildShapes(modelElement);
+                JSONArray childShapes = modelElement.getJSONArray("childShapes");
+
+                for (int i = 0; i < associationsList.size(); i++) {
+                    JSONObject newAssociation = new JSONObject();
+                    XPDLAssociation association = associationsList.get(i);
+                    association.write(newAssociation);
+                    childShapes.put(newAssociation);
+                }
+            }
+        }
+    }
+
+    protected void writeArtifacts(JSONObject modelElement) throws JSONException {
+        if (getArtifacts() != null) {
+            ArrayList<XPDLArtifact> artifactsList = getArtifacts().getArtifacts();
+            if (artifactsList != null) {
+                initializeChildShapes(modelElement);
+                JSONArray childShapes = modelElement.getJSONArray("childShapes");
+
+                for (int i = 0; i < artifactsList.size(); i++) {
+                    JSONObject newArtifact = new JSONObject();
+                    XPDLArtifact artifact = artifactsList.get(i);
+                    artifact.write(newArtifact);
+                    childShapes.put(newArtifact);
                 }
             }
         }

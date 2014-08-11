@@ -110,7 +110,7 @@ public class ExportProcessServiceImplIntgTest {
         String name = "Test XPDL 3";
 
         DataHandler startStream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("XPDL_models/F3 International Departure Passport Control.xpdl"), "text/xml"));
-        String xpdlNativeType = "XPDL 2.1";
+        String xpdlNativeType = "XPDL 2.2";
         CanonisedProcess startCP = cSrv.canonise(xpdlNativeType, startStream.getInputStream(), new HashSet<RequestParameterType<?>>());
         ProcessModelVersion pst = pSrv.importProcess(username, 0, name, version, xpdlNativeType, startCP, domain, "", created, lastUpdate, true);
 

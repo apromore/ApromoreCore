@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0" Id="ec5783be-d860-48dc-918d-74d5f2412162" Name="F3 International Departure Passport Control" OnlyOneProcess="false">
+<Package xmlns="http://www.wfmc.org/2009/XPDL2.2" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0" Id="ec5783be-d860-48dc-918d-74d5f2412162" Name="F3 International Departure Passport Control" OnlyOneProcess="false">
  <PackageHeader>
-  <XPDLVersion>2.1</XPDLVersion>
+  <XPDLVersion>2.2</XPDLVersion>
   <Vendor>BizAgi Process Modeler.</Vendor>
   <Created>2010-02-16T20:32:14.9813338+10:00</Created>
   <ModificationDate/>

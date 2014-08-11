@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:g360="http://www.global360.com/XPDL2.0alpha" Id="Two-simple-tasks.xpdl" Name="Two simple tasks">
+<Package xmlns="http://www.wfmc.org/2009/XPDL2.2" xmlns:g360="http://www.global360.com/XPDL2.0alpha" Id="Two-simple-tasks.xpdl" Name="Two simple tasks">
   <PackageHeader>
-    <XPDLVersion>2.1</XPDLVersion>
+    <XPDLVersion>2.2</XPDLVersion>
     <Vendor>Global 360</Vendor>
     <Created>2010-04-17T15:44:28+03:00</Created>
     <LayoutInfo PixelsPerMillimeter="18.2" />

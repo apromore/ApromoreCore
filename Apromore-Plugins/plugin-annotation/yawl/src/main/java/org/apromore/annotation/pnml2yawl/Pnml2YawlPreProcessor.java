@@ -130,7 +130,7 @@ public class Pnml2YawlPreProcessor extends DefaultAbstractAnnotationProcessor {
     }
 
 
-    private void changeShapeSize(GraphicsType annType, NodeType node, BigDecimal newHeight, BigDecimal newWidth,
+    protected void changeShapeSize(GraphicsType annType, NodeType node, BigDecimal newHeight, BigDecimal newWidth,
             Map<String, AnnotationData> annotations) {
         BigDecimal oldH = annType.getSize().getHeight();
         BigDecimal oldW = annType.getSize().getWidth();

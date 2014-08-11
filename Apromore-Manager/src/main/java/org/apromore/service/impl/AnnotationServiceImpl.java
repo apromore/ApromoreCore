@@ -20,6 +20,7 @@
 package org.apromore.service.impl;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apromore.anf.AnnotationsType;
@@ -105,6 +106,8 @@ public class AnnotationServiceImpl implements AnnotationService {
             }
         } catch (PluginNotFoundException | AnnotationProcessorException e) {
             LOGGER.warn("Plugin not found for '" + sourceType + "' and '" + targetType + "'.");
+            LOGGER.warn("WARNING",e);
+
         }
 
         if (result == null || result.getAnnotationsType() == null) {

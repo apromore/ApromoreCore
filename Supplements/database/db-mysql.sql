@@ -376,8 +376,8 @@ CREATE TABLE `membership` (
   `password_salt` varchar(100) NOT NULL,
   `mobile_pin` varchar(100) DEFAULT NULL,
   `email` varchar(200) NOT NULL,
-  `password_question` varchar(100) DEFAULT NULL,
-  `password_answer` varchar(100) DEFAULT NULL,
+  `password_question` varchar(50) NULL DEFAULT NULL,
+  `password_answer` varchar(50) NULL DEFAULT NULL,
   `is_approved` boolean not null default 1,
   `is_locked` boolean not null default 1,
   `date_created` datetime NOT NULL,
@@ -836,7 +836,7 @@ CREATE INDEX `idx_fragment_distance` ON `fragment_distance` (`ged`) USING BTREE;
 LOCK TABLES `native_type` WRITE;
 /*!40000 ALTER TABLE `native_type` DISABLE KEYS */;
 INSERT INTO `native_type` VALUES (1,'EPML 2.0','epml');
-INSERT INTO `native_type` VALUES (2,'XPDL 2.1','xpdl');
+INSERT INTO `native_type` VALUES (2,'XPDL 2.2','xpdl');
 INSERT INTO `native_type` VALUES (3,'PNML 1.3.2', 'pnml');
 INSERT INTO `native_type` VALUES (4,'YAWL 2.2', 'yawl');
 INSERT INTO `native_type` VALUES (5,'BPMN 2.0', 'bpmn');

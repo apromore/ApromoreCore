@@ -54,7 +54,7 @@ public class MutableTreeIntgTest {
     @Rollback(true)
     public void CanonicalRPSTGraphTest() throws Exception {
         InputStream input = ClassLoader.getSystemResourceAsStream("models/Disconnected.xpdl");
-        CanonisedProcess cp = cSrv.canonise("XPDL 2.1", input, new HashSet<RequestParameterType<?>>());
+        CanonisedProcess cp = cSrv.canonise("XPDL 2.2", input, new HashSet<RequestParameterType<?>>());
         Canonical g = converter.convert(cp.getCpt());
 
         RPST<CPFEdge, CPFNode> rpst = new RPST<>(g);

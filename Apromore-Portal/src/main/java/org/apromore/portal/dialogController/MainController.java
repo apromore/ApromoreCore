@@ -360,7 +360,7 @@ public class                                        MainController extends BaseC
 
         EditSessionType editSession = new EditSessionType();
         editSession.setDomain(process.getDomain());
-        editSession.setNativeType(nativeType);
+        editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
