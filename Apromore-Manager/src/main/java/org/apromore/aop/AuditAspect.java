@@ -77,12 +77,12 @@ import java.util.concurrent.TimeUnit;
  * {@link org.apromore.aop.Audited} annotation :
  * <code>@Audited(message = "save(#{args[0]}, #{args[1]}): #{returned}")</code>
  * will produce a log entry similar to :
- * <code>...save(John Smith, john.smith@xebia.fr): 324325 by admin coming from 192.168.1.10</code>
+ * <code>...save(John Smith, john.smith@xebia.fr): 324325 by admin coming from 192.268.1.10</code>
  * </p>
  * <p>
  * In case of exception thrown, the log entry will be :
  * <code>...save(John Smith, john.smith):
- * threw 'java.lang.IllegalArgumentException: incorrect email by admin coming from 192.168.1.10</code>
+ * threw 'java.lang.IllegalArgumentException: incorrect email by admin coming from 192.268.1.10</code>
  * </p>
  */
 @Aspect

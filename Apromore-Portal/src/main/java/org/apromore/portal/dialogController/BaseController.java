@@ -46,8 +46,8 @@ public class BaseController extends Window {
     protected String getURL(final String nativeType) {
         String url = "";
         switch (nativeType) {
-            case "XPDL 2.1":
-                url = "http://b3mn.org/stencilset/bpmn1.1#";
+            case "XPDL 2.2":
+                url = "http://b3mn.org/stencilset/bpmn2.0#";
                 break;
             case "BPMN 2.0":
                 url = "http://b3mn.org/stencilset/bpmn2.0#";
@@ -69,7 +69,7 @@ public class BaseController extends Window {
     protected String getImportPath(final String nativeType) {
         String importPath = "";
         switch (nativeType) {
-            case "XPDL 2.1":
+            case "XPDL 2.2":
                 importPath = "/editor/editor/xpdlimport";
                 break;
             case "BPMN 2.0":
@@ -91,7 +91,7 @@ public class BaseController extends Window {
     protected String getExportPath(final String nativeType) {
         String exportPath = "";
         switch (nativeType) {
-            case "XPDL 2.1":
+            case "XPDL 2.2":
                 exportPath = "/editor/editor/xpdlexport";
                 break;
             case "BPMN 2.0":

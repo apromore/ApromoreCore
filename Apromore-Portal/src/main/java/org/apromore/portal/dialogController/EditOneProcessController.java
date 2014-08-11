@@ -106,7 +106,7 @@ public class EditOneProcessController extends BaseController {
         Listitem cbi;
         while (it.hasNext()) {
             String label = formats.get(it.next());
-            if (!label.equals("AML fragment")) {
+            if (!label.equals("AML fragment")&&!label.equals("XPDL 2.2")) {
                 cbi = new Listitem();
                 nativeTypesLB.appendChild(cbi);
                 cbi.setLabel(label);

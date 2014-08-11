@@ -66,6 +66,7 @@
     <bean id="graphToCanonical" class="org.apromore.graph.canonical.converter.GraphToCanonical" />
 
     <bean id="epml2bpmnPreAnnotationProcessor" class="org.apromore.annotation.epml2bpmn.Epml2BpmnPreProcessor" />
+    <bean id="xpdl2bpmnPreAnnotationProcessor" class="org.apromore.annotation.xpdl2bpmn.Xpdl2BpmnPreProcessor" />
     <bean id="cpf2bpmnPreAnnotationProcessor" class="org.apromore.annotation.cpf2bpmn.Cpf2BpmnPreProcessor" />
     <bean id="epml2xpdlPreAnnotationProcessor" class="org.apromore.annotation.epml2xpdl.Epml2XpdlPreProcessor" />
     <bean id="bpmn2epmlPreAnnotationProcessor" class="org.apromore.annotation.bpmn2epml.Bpmn2EpmlPreProcessor" />
@@ -74,12 +75,13 @@
     <bean id="bpmn2yawlPreAnnotationProcessor" class="org.apromore.annotation.bpmn2yawl.Bpmn2YawlPreProcessor" />
     <bean id="epml2yawlPreAnnotationProcessor" class="org.apromore.annotation.epml2yawl.Epml2YawlPreProcessor" />
 
+
     <!-- Beans used for OSGi setup. -->
     <bean id="arisCanoniser" class="org.apromore.canoniser.aris.ArisCanoniser" />
     <bean id="bpmnCanoniser" class="org.apromore.canoniser.bpmn.BPMN20Canoniser" />
     <bean id="epmlCanoniser" class="org.apromore.canoniser.epml.EPML20Canoniser" />
     <bean id="pnmlCanoniser" class="org.apromore.canoniser.pnml.PNML132Canoniser" />
-    <bean id="xpdlCanoniser" class="org.apromore.canoniser.xpdl.XPDL21Canoniser" />
+    <bean id="xpdlCanoniser" class="org.apromore.canoniser.xpdl.XPDL22Canoniser" />
     <bean id="yawlCanoniser" class="org.apromore.canoniser.yawl.YAWL22Canoniser" />
 
     <util:set id="canonisers">

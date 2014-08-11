@@ -22,6 +22,8 @@ public class XPDLEndEvent extends XMLConvertible {
     protected XPDLResultError resultError;
     @Element("TriggerResultSignal")
     protected XPDLTriggerResultSignal triggerResultSignal;
+    @Element("TriggerResultCancel")
+    protected XPDLTriggerResultCancel triggerResultCancel;
 
     public String getImplementation() {
         return implementation;
@@ -45,6 +47,10 @@ public class XPDLEndEvent extends XMLConvertible {
 
     public XPDLTriggerResultSignal getTriggerResultSignal() {
         return triggerResultSignal;
+    }
+
+    public XPDLTriggerResultCancel getTriggerResultCancel() {
+        return triggerResultCancel;
     }
 
     public void readJSONactivityref(JSONObject modelElement) throws JSONException {
@@ -113,6 +119,8 @@ public class XPDLEndEvent extends XMLConvertible {
         resultError = error;
     }
 
+
+
     public void setTriggerResultCompensation(XPDLTriggerResultCompensation trigger) {
         this.triggerResultCompensation = trigger;
     }
@@ -123,6 +131,10 @@ public class XPDLEndEvent extends XMLConvertible {
 
     public void setTriggerResultSignal(XPDLTriggerResultSignal triggerResultSignal) {
         this.triggerResultSignal = triggerResultSignal;
+    }
+
+    public void setTriggerResultCancel(XPDLTriggerResultCancel triggerResultCancel) {
+        this.triggerResultCancel = triggerResultCancel;
     }
 
     public void writeJSONendeventunknowns(JSONObject modelElement) throws JSONException {
@@ -181,6 +193,8 @@ public class XPDLEndEvent extends XMLConvertible {
             getTriggerResultSignal().write(modelElement);
         } else if (getResultError() != null) {
             getResultError().write(modelElement);
+        } else if (getTriggerResultCancel() != null) {
+            getTriggerResultCancel().write(modelElement);
         }
     }
 

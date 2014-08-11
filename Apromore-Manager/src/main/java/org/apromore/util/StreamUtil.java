@@ -36,15 +36,15 @@ import org.apache.commons.io.IOUtils;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.wfmc._2008.xpdl2.Author;
-import org.wfmc._2008.xpdl2.Created;
-import org.wfmc._2008.xpdl2.Documentation;
-import org.wfmc._2008.xpdl2.ModificationDate;
-import org.wfmc._2008.xpdl2.ObjectFactory;
-import org.wfmc._2008.xpdl2.PackageHeader;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.RedefinableHeader;
-import org.wfmc._2008.xpdl2.Version;
+import org.wfmc._2009.xpdl2.Author;
+import org.wfmc._2009.xpdl2.Created;
+import org.wfmc._2009.xpdl2.Documentation;
+import org.wfmc._2009.xpdl2.ModificationDate;
+import org.wfmc._2009.xpdl2.ObjectFactory;
+import org.wfmc._2009.xpdl2.PackageHeader;
+import org.wfmc._2009.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.RedefinableHeader;
+import org.wfmc._2009.xpdl2.Version;
 
 /**
  * Helps with debugging and seeing the data travel between services.
@@ -53,7 +53,7 @@ public class StreamUtil {
 
     private static final String ANF_URI = "org.apromore.anf";
     private static final String CPF_URI = "org.apromore.cpf";
-    private static final String XPDL_URI = "org.wfmc._2008.xpdl2";
+    private static final String XPDL_URI = "org.wfmc._2009.xpdl2";
 
     /**
      * Convert a InputStream to a String
@@ -249,7 +249,7 @@ public class StreamUtil {
         JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT, ObjectFactory.class.getClassLoader());
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(xpdl);
+        JAXBElement<PackageType> rootxpdl = new org.wfmc._2009.xpdl2.ObjectFactory().createPackage(xpdl);
         m.marshal(rootxpdl, native_xml);
         return native_xml.toString();
     }

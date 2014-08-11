@@ -5,7 +5,7 @@
       <title>Simple Make Trip Process</title>
       <creator>Chun Ouyang</creator>
       <description>A simple one-level process that provides a trip booking service.</description>
-      <validFrom>2008-09-15</validFrom>
+      <validFrom>2009-09-15</validFrom>
       <version>1.3</version>
       <persistent>false</persistent>
       <identifier>UID_47e1bbf0-7677-4469-ba47-2f77a24bab97</identifier>

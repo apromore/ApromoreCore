@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:g360="http://www.global360.com/XPDL2.0alpha" Id="complex.xpdl" Name="complex">
+<Package xmlns="http://www.wfmc.org/2009/XPDL2.2" xmlns:g360="http://www.global360.com/XPDL2.0alpha" Id="complex.xpdl" Name="complex">
   <PackageHeader>
-    <XPDLVersion>2.1</XPDLVersion>
+    <XPDLVersion>2.2</XPDLVersion>
     <Vendor>Global 360</Vendor>
     <Created>2010-04-08T21:23:11+03:00</Created>
     <ModificationDate>2010-04-10T15:10:18+03:00</ModificationDate>

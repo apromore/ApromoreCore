@@ -46,7 +46,7 @@ public interface Constants {
     public static final String UNLOCKED = "Unlocked";
 
     public static final String CPF_CONTEXT = "org.apromore.cpf";
-    public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
+    public static final String XPDL2_CONTEXT = "org.wfmc._2009.xpdl2";
 
     public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 

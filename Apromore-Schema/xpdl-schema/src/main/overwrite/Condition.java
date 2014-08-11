@@ -6,7 +6,7 @@
 //
 
 
-package org.wfmc._2008.xpdl2;
+package org.wfmc._2009.xpdl2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ import org.wfmc._2002.xpdl1.Xpression;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;choice minOccurs="0">
  *         &lt;element ref="{http://www.wfmc.org/2002/XPDL1.0}Xpression" minOccurs="0"/>
- *         &lt;element name="Expression" type="{http://www.wfmc.org/2008/XPDL2.1}ExpressionType" minOccurs="0"/>
+ *         &lt;element name="Expression" type="{http://www.wfmc.org/2009/XPDL2.2}ExpressionType" minOccurs="0"/>
  *       &lt;/choice>
  *       &lt;attribute name="Type">
  *         &lt;simpleType>
@@ -71,7 +71,7 @@ import org.wfmc._2002.xpdl1.Xpression;
 public class Condition {
 
     @XmlElementRefs({
-        //@XmlElementRef(name = "Expression", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = JAXBElement.class),
+        //@XmlElementRef(name = "Expression", namespace = "http://www.wfmc.org/2009/XPDL2.2", type = JAXBElement.class),
         @XmlElementRef(name = "Xpression", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = Xpression.class)
     })
     @XmlMixed
@@ -131,7 +131,7 @@ public class Condition {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link javax.xml.bind.JAXBElement }{@code <}{@link org.wfmc._2008.xpdl2.ExpressionType }{@code >}
+     * {@link javax.xml.bind.JAXBElement }{@code <}{@link org.wfmc._2009.xpdl2.ExpressionType }{@code >}
      * {@link org.wfmc._2002.xpdl1.Xpression }
      * {@link String }
      * 

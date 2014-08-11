@@ -1,5 +1,7 @@
 package de.hpi.bpmn2xpdl;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,7 @@ import org.xmappr.RootElement;
 @RootElement("Package")
 public class XPDLPackage extends XPDLThing {
 
+    protected String id;
     @Attribute("Language")
     protected String language;
     @Attribute("QueryLanguage")
@@ -425,8 +428,8 @@ public class XPDLPackage extends XPDLThing {
 
     public void writeJSONstencilset(JSONObject modelElement) throws JSONException {
         JSONObject stencilset = new JSONObject();
-        stencilset.put("url", "/editor/stencilsets/bpmn1.1/bpmn1.1.json");
-        stencilset.put("namespace", "http://b3mn.org/stencilset/bpmn1.1#");
+        stencilset.put("url", "/editor/stencilsets/bpmn2.0/bpmn2.0.json");
+        stencilset.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
 
         modelElement.put("stencilset", stencilset);
     }
