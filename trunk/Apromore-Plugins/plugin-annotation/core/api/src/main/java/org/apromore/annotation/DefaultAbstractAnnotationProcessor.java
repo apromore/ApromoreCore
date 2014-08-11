@@ -29,6 +29,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.annotation.model.AnnotationData;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
@@ -152,6 +153,23 @@ public abstract class DefaultAbstractAnnotationProcessor extends DefaultParamete
         graphicsType.getPosition().add(position);
 
         return graphicsType;
+    }
+
+    protected void changeShapeSize(GraphicsType annType, NodeType node, BigDecimal newHeight, BigDecimal newWidth,
+                         Map<String, AnnotationData> annotations){
+        if(annType.getSize()==null){
+            SizeType sizeType=new SizeType();
+            sizeType.setWidth(new BigDecimal(100));
+            sizeType.setHeight(new BigDecimal(100));
+            annType.setSize(sizeType);
+        }
+        if(annType.getPosition().isEmpty()){
+            PositionType positionType=new PositionType();
+            positionType.setX(new BigDecimal(0));
+            positionType.setY(new BigDecimal(0));
+            annType.getPosition().add(positionType);
+        }
+        //you should call this method every time you override that:    super.changeShapeSize(...)
     }
 
 }

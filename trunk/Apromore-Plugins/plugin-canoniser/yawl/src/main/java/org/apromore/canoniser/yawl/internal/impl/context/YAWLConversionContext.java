@@ -173,6 +173,7 @@ public final class YAWLConversionContext extends ConversionContext {
             final OrgDataType orgDataType, final MessageManager messageManager) {
         super(messageManager);
         this.setOrgDataType(orgDataType);
+        this.setLayout(null);
         this.setLayout(layoutFactsType);
         this.setSpecification(specification);
         this.canonicalResult = new ObjectFactory().createCanonicalProcessType();

@@ -97,7 +97,7 @@ public class ConfigurationAlgorithmUnitTest {
     /**
      * A <a href="{@docRoot}/../tests/data/1 Terminal Entry.bpmn">test document</a> used in the test suite.
      */
-    public static final File terminalEntryFile = new File(testsDirectory, "1 Terminal Entry.bpmn");
+    public static final File terminalEntryFile = new File(testsDirectory, "1 Terminal entry.bpmn");
 
     /**
      * A <a href="{@docRoot}/../tests/data/Case 12.bpmn">test document</a> used in the test suite.

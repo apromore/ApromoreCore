@@ -130,14 +130,14 @@ public class TranslateNodeAnnotations {
                 ((TransitionType) obj).setName(nnt);
             }
             ((TransitionType) obj).setGraphics(graphics);
-            if (data.get_triggermap().containsKey(((TransitionType) obj).getName().getText())) {
+            if (data.get_triggermap()!=null&&data.get_triggermap().containsKey(((TransitionType) obj).getName().getText())) {
                 TriggerType tt = (data.get_triggermap_value(((TransitionType) obj).getName().getText()));
                 PositionType pt = new PositionType();
                 pt.setX((((TransitionType) obj).getGraphics().getPosition().getX().add(BigDecimal.valueOf(Long.valueOf(10)))));
                 pt.setY((((TransitionType) obj).getGraphics().getPosition().getY().subtract(BigDecimal.valueOf(Long.valueOf(20)))));
                 tt.getGraphics().setPosition(pt);
             }
-            if (data.get_resourcepositionmap().containsKey(((TransitionType) obj).getName().getText())) {
+            if (data.get_resourcepositionmap()!=null&&data.get_resourcepositionmap().containsKey(((TransitionType) obj).getName().getText())) {
                 TransitionResourceType tres = (data.get_resourcepositionmap_value(((TransitionType) obj).getName().getText()));
                 PositionType pt = new PositionType();
                 pt.setX((((TransitionType) obj).getGraphics().getPosition().getX().subtract(BigDecimal.valueOf(Long.valueOf(10)))));

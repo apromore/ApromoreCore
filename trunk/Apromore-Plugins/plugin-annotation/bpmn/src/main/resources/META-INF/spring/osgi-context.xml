@@ -12,9 +12,11 @@
     <context:component-scan base-package="org.apromore.annotation.aml2bpmn"/>
     <context:component-scan base-package="org.apromore.annotation.cpf2bpmn"/>
     <context:component-scan base-package="org.apromore.annotation.epml2bpmn"/>
+    <context:component-scan base-package="org.apromore.annotation.xpdl2bpmn"/>
 
     <osgi:service ref="aml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
     <osgi:service ref="cpf2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
     <osgi:service ref="epml2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
+    <osgi:service ref="xpdl2bpmnPreAnnotationProcessor" interface="org.apromore.annotation.AnnotationProcessor" auto-export="interfaces"/>
 
 </beans:beans>

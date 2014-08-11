@@ -17,7 +17,7 @@ public class XPDLActivity extends XPDLThingNodeGraphics {
     @Attribute("IsATransaction")
     protected String isATransaction;
     @Attribute("IsForCompensation")
-    protected String isForCompensation;
+    protected String isForCompensation="false";
     @Attribute("StartQuantity")
     protected String startQuantity;
     @Attribute("Status")

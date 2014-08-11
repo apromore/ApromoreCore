@@ -12,7 +12,7 @@ import org.apromore.canoniser.xpdl.internal.XPDL2Canonical;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.junit.Test;
-import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.PackageType;
 import org.xml.sax.SAXException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +28,7 @@ public class XPDL2CanonicalObjectsUnitTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testObjectConversionWorks() throws JAXBException, SAXException, CanoniserException {
-        JAXBContext jc = JAXBContext.newInstance(XPDL21Canoniser.XPDL2_CONTEXT);
+        JAXBContext jc = JAXBContext.newInstance(XPDL22Canoniser.XPDL2_CONTEXT);
         Unmarshaller u = jc.createUnmarshaller();
         InputStream data = new ByteArrayInputStream(XPDL_DATA.getBytes());
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(data);
@@ -44,9 +44,9 @@ public class XPDL2CanonicalObjectsUnitTest {
 
     /* The model that has objects we want to convert. */
     public static final String XPDL_DATA = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-            "<Package xmlns=\"http://www.wfmc.org/2008/XPDL2.1\" xmlns:ns2=\"http://www.wfmc.org/2002/XPDL1.0\" Id=\"ec5783be-d860-48dc-918d-74d5f2412162\" Name=\"F3 International Departure Passport Control\" OnlyOneProcess=\"false\">" +
+            "<Package xmlns=\"http://www.wfmc.org/2009/XPDL2.2\" xmlns:ns2=\"http://www.wfmc.org/2002/XPDL1.0\" Id=\"ec5783be-d860-48dc-918d-74d5f2412162\" Name=\"F3 International Departure Passport Control\" OnlyOneProcess=\"false\">" +
             " <PackageHeader>" +
-            "  <XPDLVersion>2.1</XPDLVersion>" +
+            "  <XPDLVersion>2.2</XPDLVersion>" +
             "  <Vendor>BizAgi Process Modeler.</Vendor>" +
             "  <Created>2010-02-16T20:32:14.9813338+10:00</Created>" +
             "  <ModificationDate/>" +

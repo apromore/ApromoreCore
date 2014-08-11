@@ -9,7 +9,7 @@ import org.xmappr.Text;
 public class XPDLXPDLVersion extends XMLConvertible {
 
     @Text
-    protected String content = "2.1";
+    protected String content = "2.2";
 
     public String getContent() {
         return content;

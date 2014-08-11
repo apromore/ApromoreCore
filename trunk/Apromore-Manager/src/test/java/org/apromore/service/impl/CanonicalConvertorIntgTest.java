@@ -56,7 +56,7 @@ public class CanonicalConvertorIntgTest {
     @Rollback(true)
     public void testConvertXPDLToGraph() throws Exception {
         InputStream input = ClassLoader.getSystemResourceAsStream("models/Disconnected.xpdl");
-        CanonisedProcess cp = canoniserService.canonise("XPDL 2.1", input, new HashSet<RequestParameterType<?>>());
+        CanonisedProcess cp = canoniserService.canonise("XPDL 2.2", input, new HashSet<RequestParameterType<?>>());
 
         assertThat(cp.getCpt().getNet().size(), equalTo(3));
         assertThat(cp.getCpt().getNet().get(0).getNode().size(), equalTo(0));

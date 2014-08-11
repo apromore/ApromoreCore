@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.PackageType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -53,7 +53,7 @@ public class XPDL2CanonicalUnitTest {
                 LOGGER.debug("Analysing " + filename);
                 n++;
                 try {
-                    JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+                    JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
                     Unmarshaller u = jc.createUnmarshaller();
                     JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(file);
                     PackageType pkg = rootElement.getValue();

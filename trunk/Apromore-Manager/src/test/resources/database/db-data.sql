@@ -1,6 +1,6 @@
 
 INSERT INTO native_type VALUES (1,'EPML 2.0','epml');
-INSERT INTO native_type VALUES (2,'XPDL 2.1','xpdl');
+INSERT INTO native_type VALUES (2,'XPDL 2.2','xpdl');
 INSERT INTO native_type VALUES (3,'PNML 1.3.2', 'pnml');
 INSERT INTO native_type VALUES (4,'YAWL 2.2', 'yawl');
 INSERT INTO native_type VALUES (5,'BPMN 2.0', 'bpmn');

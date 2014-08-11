@@ -23,4 +23,4 @@
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-package org.apromore.annotation.bpmn2yawl;
+package org.apromore.annotation.epml2bpmn;

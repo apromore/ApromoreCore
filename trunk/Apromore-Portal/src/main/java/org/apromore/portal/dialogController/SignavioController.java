@@ -120,6 +120,7 @@ public class SignavioController extends BaseController {
             }
             Executions.getCurrent().pushArg(param);
         } catch (Exception e) {
+            LOGGER.error("",e);
             e.printStackTrace();
         }
 

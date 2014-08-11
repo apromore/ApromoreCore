@@ -82,6 +82,11 @@ public class YAWLLayoutConverter {
     private final YAWLConversionContext context;
 
     /**
+     * Provide a default layout when missing
+     */
+    private final YAWLLayoutArranger yawlLayoutArranger;
+
+    /**
      * Creates the layout converter for the given specification.
      * 
      * @param specificationString
@@ -95,6 +100,7 @@ public class YAWLLayoutConverter {
         super();
         this.specificationString = specificationString;
         this.context = context;
+        yawlLayoutArranger=new YAWLLayoutArranger();
         initXMLReader();
     }
 
@@ -103,6 +109,8 @@ public class YAWLLayoutConverter {
         Document document = builder.build(new StringReader(specificationString));
         Element root = document.getRootElement();
         layout = root.getChild("layout", root.getNamespace());
+        if (layout == null)
+            layout = yawlLayoutArranger.arrangeLayout(root);
         yawlNamespace = layout.getNamespace();
         setYAWLLocale(layout);
     }

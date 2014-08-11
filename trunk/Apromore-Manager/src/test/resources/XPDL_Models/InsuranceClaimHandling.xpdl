@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xpdl2:Package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:database="http://www.tibco.com/XPD/database1.0.0" xmlns:eaijava="http://www.tibco.com/XPD/EAIJava1.0.0" xmlns:email="http://www.tibco.com/XPD/email1.0.0" xmlns:iProcessExt="http://www.tibco.com/XPD/iProcessExt1.0.0" xmlns:orchestrator="http://www.tibco.com/XPD/orchestrator1.0.0" xmlns:order="http://www.tibco.com/XPD/order1.0.0" xmlns:simulation="http://www.tibco.com/xpd/Simulation1.0.1" xmlns:xpdExt="http://www.tibco.com/XPD/xpdExtension1.0.0" xmlns:xpdl2="http://www.wfmc.org/2008/XPDL2.1" xsi:schemaLocation="http://www.wfmc.org/2008/XPDL2.1 http://www.wfmc.org/standards/bpmnxpdl_31.xsd" Id="_k8ZOYI2EEd68wMuzuk5SMQ" xpdExt:DisplayName="InsuranceClaimHandling" Name="InsuranceClaimHandling">
+<xpdl2:Package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:database="http://www.tibco.com/XPD/database1.0.0" xmlns:eaijava="http://www.tibco.com/XPD/EAIJava1.0.0" xmlns:email="http://www.tibco.com/XPD/email1.0.0" xmlns:iProcessExt="http://www.tibco.com/XPD/iProcessExt1.0.0" xmlns:orchestrator="http://www.tibco.com/XPD/orchestrator1.0.0" xmlns:order="http://www.tibco.com/XPD/order1.0.0" xmlns:simulation="http://www.tibco.com/xpd/Simulation1.0.1" xmlns:xpdExt="http://www.tibco.com/XPD/xpdExtension1.0.0" xmlns:xpdl2="http://www.wfmc.org/2009/XPDL2.2" xsi:schemaLocation="http://www.wfmc.org/2009/XPDL2.2 http://www.wfmc.org/standards/bpmnxpdl_31.xsd" Id="_k8ZOYI2EEd68wMuzuk5SMQ" xpdExt:DisplayName="InsuranceClaimHandling" Name="InsuranceClaimHandling">
   <xpdl2:PackageHeader xpdExt:Language="en_US">
-    <xpdl2:XPDLVersion>2.1</xpdl2:XPDLVersion>
+    <xpdl2:XPDLVersion>2.2</xpdl2:XPDLVersion>
     <xpdl2:Vendor>TIBCO</xpdl2:Vendor>
     <xpdl2:Created>2009-08-20</xpdl2:Created>
     <xpdl2:Description></xpdl2:Description>

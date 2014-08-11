@@ -20,7 +20,9 @@
 
 package de.unihannover.se.infocup2008.bpmn.model;
 
+import de.hpi.layouting.model.LayoutingDockers;
 import de.hpi.layouting.model.LayoutingDockers.Point;
+import de.hpi.layouting.model.LayoutingElement;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -15,7 +15,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2009.xpdl2.PackageType;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,7 +51,7 @@ public class TestXPDL2CanonicalUnitTest {
 //				System.out.println ("Analysing " + filename);
 //				n++;
 //				try{
-//					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+//					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2009.xpdl2");
 //					Unmarshaller u = jc.createUnmarshaller();
 //					JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(file);
 //					PackageType pkg = rootElement.getValue();

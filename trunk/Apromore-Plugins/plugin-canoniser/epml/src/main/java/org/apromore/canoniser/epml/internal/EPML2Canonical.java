@@ -42,6 +42,7 @@
  */
 package org.apromore.canoniser.epml.internal;
 
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -308,6 +309,8 @@ public class EPML2Canonical {
                     id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
+
+
                     xor_list.add((TypeXOR) element.getValue());
                 } else if (element.getValue() instanceof TypeRole) {
                     if (!role_names.containsKey(((TypeRole) element.getValue()).getName())) {
@@ -432,15 +435,25 @@ public class EPML2Canonical {
                     counter++;
                 }
             }
+
             if (counter <= 1) {
                 XORJoinType xorJ = new XORJoinType();
                 xorJ.setId(String.valueOf(xor.getId()));
                 xorJ.setName(xor.getName());
+
+                if(xor.getConfigurableConnector()!=null) {
+                    xorJ.setConfigurable(true);
+
+                }
                 net.getNode().add(xorJ);
             } else {
                 XORSplitType xorS = new XORSplitType();
                 xorS.setId(String.valueOf(xor.getId()));
                 xorS.setName(xor.getName());
+                if(xor.getConfigurableConnector()!=null) {
+                    xorS.setConfigurable(true);
+
+                }
                 net.getNode().add(xorS);
                 //processUnrequiredEvents(net, xor.getId());
             }
