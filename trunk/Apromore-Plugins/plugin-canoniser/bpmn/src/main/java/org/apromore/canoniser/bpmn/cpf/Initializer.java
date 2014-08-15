@@ -54,9 +54,13 @@ import org.w3c.dom.Element;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // Local packages
 
@@ -75,6 +79,8 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
      * The persistence layer of Apromore uses originalID for its own internal IDs, so generally no point in setting it.
      */
     static final boolean RECORD_ORIGINAL_ID = false;
+
+    static final Logger LOGGER = Logger.getLogger(Initializer.class.getCanonicalName());
 
     /** The instance executing the {@link CpfCanonicalProcessType#(BpmnDefinitions)} constructor with this {@link Initializer}. */
     private final CpfCanonicalProcessType  cpf;
@@ -212,9 +218,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         }
 
         // Handle BPMN extension elements
-        if (baseElement.getExtensionElements() != null) {
-            ExtensionUtils.addToExtensions(extensionElements(baseElement), edge);
-        }
+        populateExtensionElements(
+            baseElement,
+            (Attributed) edge,
+            null,
+            new UnaryFunction<Element>() { public void run(Element element) { ExtensionUtils.addToExtensions(element, edge, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
     }
 
     void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) throws CanoniserException {
@@ -235,8 +244,67 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         }
 
         // Handle BPMN extension elements
-        if (baseElement.getExtensionElements() != null) {
-            ExtensionUtils.addToExtensions(extensionElements(baseElement), node);
+        populateExtensionElements(
+            baseElement,
+            (Attributed) node,
+            new Runnable() { public void run() { node.setConfigurable(true); }},
+            new UnaryFunction<Element>() { public void run(Element element) { ExtensionUtils.addToExtensions(element, node, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
+    } 
+
+    /**
+     * Read the extension elements from a BPMN element, and use them to populate the corresponding CPF element.
+     *
+     * Some extension elements have explicit representations in CPF (currently, pc:configuration in BPMN becomes
+     * the configurable property of CPF nodes/objects/resourceTypes).  The remainder are serialized as raw XML
+     * so that they can be round-tripped without being interpreted.
+     *
+     * @param baseElement      the BPMN element which holds the extension elements
+     * @param cpfElement       the CPF element to populate
+     * @param setConfigurable  if the CPF element has a <var>configurable</var> property, pass a closure which
+     *                         sets the <var>configurable</var> property true, otherwise pass <code>null</code>
+     */
+    void populateExtensionElements(final TBaseElement     baseElement,
+                                   final Attributed       cpfElement,
+                                   Runnable               setConfigurable,
+                                   UnaryFunction<Element> addToExtensions) {
+        
+        // Skip out early if there aren't any BPMN extension elements
+        if (baseElement.getExtensionElements() == null) { return; }
+
+        // Iterate through the BPMN extension elements and remove any that have specific CPF representations
+        List l = new ArrayList<>(baseElement.getExtensionElements().getAny());
+        Iterator i = l.iterator(); 
+        while (i.hasNext()) {
+            Object o = i.next();
+
+            // BPMN pc:configurable corresponds to the CPF configurable property
+            if (setConfigurable != null && o instanceof com.processconfiguration.Configurable) {
+                setConfigurable.run();
+                i.remove();
+            }
+            else if (o instanceof Element) {
+                addToExtensions.run((Element) o);
+                i.remove();
+            }
+        }
+
+        // Shovel the remaining uninterpreted XML into a CPF attribute element
+        try {
+            Element element = ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
+                                                             baseElement.getExtensionElements(),
+                                                             TExtensionElements.class,
+                                                             BPMN_CPF_NS,
+                                                             BpmnDefinitions.newContext());
+            for (int j = 0; j < element.getChildNodes().getLength(); j++) {
+                org.w3c.dom.Node n = element.getChildNodes().item(j);
+                if (n instanceof Element) {
+                    addToExtensions.run((Element) n);
+                }
+            }
+        }
+        catch (CanoniserException e) {
+            LOGGER.log(Level.WARNING, "Unable to marshal BPMN extension elements to CPF", e);
         }
     }
 
@@ -330,9 +398,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         elementMap.put(object.getId(), object);
 
         // Handle BPMN extension elements
-        if (baseElement.getExtensionElements() != null) {
-            ExtensionUtils.addToExtensions(extensionElements(baseElement), object);
-        }
+        populateExtensionElements(
+            baseElement,
+            (Attributed) object,
+            new Runnable() { public void run() { object.setConfigurable(true); }},
+            new UnaryFunction<Element>() { public void run(Element element) { ExtensionUtils.addToExtensions(element, object, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
     }
 
     void populateFlowElement(final ObjectType object, final TFlowElement flowElement) throws CanoniserException {
@@ -362,9 +433,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         elementMap.put(objectRef.getId(), objectRef);
 
         // Handle BPMN extension elements
-        if (baseElement.getExtensionElements() != null) {
-            ExtensionUtils.addToExtensions(extensionElements(baseElement), objectRef);
-        }
+        populateExtensionElements(
+            baseElement,
+            (Attributed) objectRef,
+            null,
+            new UnaryFunction<Element>() { public void run(Element element) { ExtensionUtils.addToExtensions(element, objectRef, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
     }
 
     // ResourceType supertype handlers
@@ -380,9 +454,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         }
 
         // Handle BPMN extension elements
-        if (baseElement.getExtensionElements() != null) {
-            ExtensionUtils.addToExtensions(extensionElements(baseElement), resourceType);
-        }
+        populateExtensionElements(
+            baseElement,
+            (Attributed) resourceType,
+            new Runnable() { public void run() { resourceType.setConfigurable(true); }},
+            new UnaryFunction<Element>() { public void run(Element element) { ExtensionUtils.addToExtensions(element, resourceType, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
     }
 
     // Internal methods
@@ -397,18 +474,5 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                 }
             });
         }
-    }
-
-    /**
-     * @param baseElement  a BPMN element with a <code>extensionElements</code> subelement
-     * @return the <code>extensionElements</code> of the BPMN element
-     * @throws CanoniserException  if the conversion cannot be performed
-     */
-    private Element extensionElements(final TBaseElement baseElement) throws CanoniserException {
-        return ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
-                                              baseElement.getExtensionElements(),
-                                              TExtensionElements.class,
-                                              BPMN_CPF_NS,
-                                              BpmnDefinitions.newContext()/*BPMN_CONTEXT*/);
     }
 }

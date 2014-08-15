@@ -155,7 +155,15 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final NodeType node) {
         LOGGER.debug("Added YAWL extension {} to Node {}", extensionElement.getNodeName(), node.getId());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, node);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, node, name(extensionElement));
+    }
+
+    private static String name(final Element extensionElement) {
+        String name = extensionElement.getLocalName();
+        if (extensionElement.getNamespaceURI() != null) {
+            name = extensionElement.getNamespaceURI() + "/" + name;
+        }
+        return name;
     }
 
     /**
@@ -166,7 +174,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
         LOGGER.debug("Added YAWL extension {} to CPF", extensionElement.getNodeName());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, cpt);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, cpt, name(extensionElement));
     }
 
     /**
@@ -177,7 +185,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final EdgeType edge) {
         LOGGER.debug("Added YAWL extension {} to Edge {}", extensionElement.getNodeName(), edge.getId());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, edge);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, edge, name(extensionElement));
     }
 
     /**
@@ -188,7 +196,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final NetType net) {
         LOGGER.debug("Added YAWL extension {} to Net {}", extensionElement.getNodeName(), net.getId());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, net);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, net, name(extensionElement));
     }
 
     /**
@@ -199,7 +207,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final ObjectType object) {
         LOGGER.debug("Added YAWL extension {} to Object {}", extensionElement.getNodeName(), object.getId());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, object);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, object, name(extensionElement));
     }
 
     /**
@@ -210,7 +218,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
         LOGGER.debug("Added YAWL extension {} to Resource {}", extensionElement.getNodeName(), resourceType.getId());
-        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, resourceType);
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, resourceType, name(extensionElement));
     }
 
     /**
