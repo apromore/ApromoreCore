@@ -61,6 +61,7 @@ import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
@@ -719,7 +720,11 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             }
         }
 
-        if (attributes.size() > 0) {
+        boolean isConfigurable = (cpfElement instanceof NodeType         && Boolean.TRUE.equals(((NodeType) cpfElement).isConfigurable()))   ||
+                                 (cpfElement instanceof ObjectType       && Boolean.TRUE.equals(((ObjectType) cpfElement).isConfigurable())) ||
+                                 (cpfElement instanceof ResourceTypeType && Boolean.TRUE.equals(((ResourceTypeType) cpfElement).isConfigurable()));
+
+        if (attributes.size() > 0 || isConfigurable) {
             TExtensionElements extensionElements = baseElement.getExtensionElements();
             if (extensionElements == null) {
                 extensionElements = factory.createTExtensionElements();
@@ -728,10 +733,19 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
             for (TypeAttribute attribute : attributes) {
                 Element element = (Element) attribute.getAny();
-                NodeList nodes = element.getChildNodes();
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    extensionElements.getAny().add(nodes.item(i));
+                if (element != null) {
+                    NodeList nodes = element.getChildNodes();
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        if (nodes.item(i) instanceof Element) {
+                            extensionElements.getAny().add(nodes.item(i));
+                        }
+                    }
                 }
+            }
+
+            if (isConfigurable) {
+                com.processconfiguration.Configurable pcConfigurable = new com.processconfiguration.ObjectFactory().createConfigurable(); 
+                extensionElements.getAny().add(pcConfigurable);
             }
 
             baseElement.setExtensionElements(extensionElements);

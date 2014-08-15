@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+import org.w3c.dom.Element;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.*;
 import org.omg.spec.bpmn._20100524.model.*;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
@@ -42,7 +44,7 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfNetType extends NetType implements Attributed {
+public class CpfNetType extends NetType implements Attributed, ExtensionConstants {
 
     private enum EventTypeEnum {MESSAGE, NONE, TIMER};
 
@@ -491,6 +493,14 @@ public class CpfNetType extends NetType implements Attributed {
                 }
             });
         }
+
+        // Convert BPMN extension elements to CPF attributes
+        initializer.populateExtensionElements(
+            process.getBaseElement(),
+            this,
+            null,  // CPF Net instances don't have a "configurable" property
+            new UnaryFunction<Element>() { public void run(Element element){ ExtensionUtils.addToExtensions(element, CpfNetType.this, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+        );
     }
 
     /** @return the names of all {@link ObjectType} nodes belonging to this instance */

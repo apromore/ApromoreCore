@@ -154,11 +154,12 @@ public final class ExtensionUtils {
     /**
      * Add the extension Element (XML) to the CPF Nodes attributes.
      *
-     * @param extensionElement any XML Element
-     * @param node CPF Node
+     * @param extensionElement  any XML Element
+     * @param node  CPF Node
+     * @param ownerName  identifier for the processor that can interpret this attribute
      */
-    public static void addToExtensions(final Element extensionElement, final NodeType node) {
-        node.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final NodeType node, final String ownerName) {
+        node.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -167,8 +168,8 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param cpt CPF Process
      */
-    public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
-        cpt.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt, final String ownerName) {
+        cpt.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -177,8 +178,8 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param edge CPF Edge
      */
-    public static void addToExtensions(final Element extensionElement, final EdgeType edge) {
-        edge.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final EdgeType edge, final String ownerName) {
+        edge.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -187,8 +188,8 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param net CPF Net
      */
-    public static void addToExtensions(final Element extensionElement, final NetType net) {
-        net.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final NetType net, final String ownerName) {
+        net.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -197,8 +198,8 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param object CPF Object
      */
-    public static void addToExtensions(final Element extensionElement, final ObjectType object) {
-        object.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final ObjectType object, final String ownerName) {
+        object.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -207,8 +208,8 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param objectRef CPF ObjectRef
      */
-    public static void addToExtensions(final Element extensionElement, final ObjectRefType objectRef) {
-        objectRef.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final ObjectRefType objectRef, final String ownerName) {
+        objectRef.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
     /**
@@ -217,17 +218,13 @@ public final class ExtensionUtils {
      * @param extensionElement any XML Element
      * @param resourceType CPF resource
      */
-    public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
-        resourceType.getAttribute().add(createExtension(extensionElement));
+    public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType, final String ownerName) {
+        resourceType.getAttribute().add(createExtension(extensionElement, ownerName));
     }
 
-    private static TypeAttribute createExtension(final Element extensionElement) {
+    private static TypeAttribute createExtension(final Element extensionElement, final String ownerName) {
         final TypeAttribute attr = new ObjectFactory().createTypeAttribute();
-        if (extensionElement.getNamespaceURI() != null) {
-            attr.setName(extensionElement.getNamespaceURI() + "/" + extensionElement.getLocalName());
-        } else {
-            attr.setName(extensionElement.getLocalName());
-        }
+        attr.setName(ownerName);
         attr.setAny(extensionElement);
         return attr;
     }

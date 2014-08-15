@@ -314,12 +314,10 @@ public class BpmnDefinitionsUnitTest implements TestConstants {
         // Task c2
         TTask c2 = (TTask) c6.getFlowElement().get(3).getValue();
         assertEquals("c2", c2.getId());
-        /*
         assertNotNull(c2.getExtensionElements());
         List anys = (List) c2.getExtensionElements().getAny();
         assertEquals(1, anys.size());
         Element element = (Element) anys.get(0);
-        */
 
         // End event c1
         TEndEvent c3 = (TEndEvent) c6.getFlowElement().get(4).getValue();

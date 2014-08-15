@@ -6,13 +6,11 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="c2">
             <name>F</name>
-            <!--
             <attribute name="bpmn_cpf/extensions">
                 <ns:extensions xmlns:ns="bpmn_cpf">
                     <foo:test xmlns:foo="http://example.com">Text</foo:test>
                 </ns:extensions>
             </attribute>
-            -->
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c3">
             <name>E2</name>
