@@ -28,16 +28,19 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.*;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.*;
 import org.omg.spec.bpmn._20100524.model.*;
+import org.w3c.dom.Element;
 
 /**
  * This class fakes the common superclass that {@link TProcess} and {@link TSubProcess} should've had.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class ProcessWrapper {
+public class ProcessWrapper implements ExtensionConstants {
 
+    private final TBaseElement baseElement;
     private final String id;
     private final String name;
     private final List<JAXBElement<? extends TArtifact>> artifact;
@@ -52,6 +55,7 @@ public class ProcessWrapper {
      * @param process  wrapped instance
      */
     public ProcessWrapper(final TProcess process) {
+        baseElement = process;
         id          = process.getId();
         name        = process.getName();
         artifact    = process.getArtifact();
@@ -66,6 +70,7 @@ public class ProcessWrapper {
      * @param processId  identifier to be used for the implicit process within the subprocess
      */
     public ProcessWrapper(final TSubProcess subprocess, final String processId) {
+        baseElement = subprocess;
         id          = processId;
         name        = subprocess.getName();
         artifact    = subprocess.getArtifact();
@@ -74,6 +79,9 @@ public class ProcessWrapper {
     }
 
     // Accessor methods
+
+    /** @return <code>baseElement</code> property */
+    public TBaseElement getBaseElement() { return baseElement; }
 
     /** @return <code>id</code> property */
     public String getId() { return id; }
