@@ -84,6 +84,13 @@
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
         <module>Apromore-Assembly/Filestore-Assembly</module>
+
+        <!-- Command line tools -->
+        <module>Supplements/cpfImporter</module>
+        <module>Supplements/bpmn2cpf</module>
+        <module>Supplements/cpf2bpmn</module>
+        <module>Supplements/cpf2epml</module>
+        <module>Supplements/epml2cpf</module>
     </modules>
 
     <properties>
