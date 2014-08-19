@@ -76,6 +76,10 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
