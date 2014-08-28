@@ -1,14 +1,14 @@
 /*
  * Copyright © 2009-2014 The Apromore Initiative.
  *
- * This file is part of “Apromore”.
+ * This file is part of "Apromore".
  *
- * “Apromore” is free software; you can redistribute it and/or modify
+ * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * “Apromore” is distributed in the hope that it will be useful,
+ * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
@@ -21,6 +21,7 @@
 package org.apromore.toolbox.similaritySearch.algorithms;
 
 
+import org.apromore.toolbox.similaritySearch.common.CPFModelParser;
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
@@ -36,6 +37,8 @@ import org.apromore.toolbox.similaritySearch.graph.VertexObjectRef;
 import org.apromore.toolbox.similaritySearch.graph.VertexResource;
 import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
 import org.apromore.toolbox.similaritySearch.planarGraphMathing.PlanarGraphMathing.MappingRegions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,8 +48,15 @@ import java.util.LinkedList;
 
 public class MergeModels {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MergeModels.class.getName());
+
     public static Graph mergeModels(Graph g1, Graph g2, IdGeneratorHelper idGenerator, boolean removeEnt, String algortithm, double... param) {
+
         HashMap<String, String> objectresourceIDMap = new HashMap<String, String>();
+
+        HashSet<String> labelsg1g2 = new HashSet<String>();
+        labelsg1g2.add(g1.getGraphLabel());
+        labelsg1g2.add(g2.getGraphLabel());
 
         Graph merged = new Graph();
         merged.setIdGenerator(idGenerator);
@@ -179,109 +189,231 @@ public class MergeModels {
         }
 
         for (LinkedList<VertexPair> region : mappingRegions.getRegions()) {
-            for (VertexPair vp : region) {
-                boolean addgw = true;
-                boolean addgwr = true;
 
-                for (Vertex p : vp.getLeft().getParents()) {
-                    if (containsVertex(region, p)) {
-                        addgw = false;
-                        break;
+//			if (mapping.size() == 1) {
+//				continue;
+//			}
+
+            LinkedList<VertexPair> sources = findSources(region);
+            LinkedList<VertexPair> sinks = findSinks(region);
+
+            // process sources
+            for (VertexPair source : sources) {
+//				System.out.println("Source "+ source.getLeft().getLabel());
+                Vertex g1Source = source.getLeft();
+                Vertex g2Source = source.getRight();
+                LinkedList<Vertex> g1SourcePrev = new LinkedList<Vertex>(g1Source.getParents());//removeFromList(g1Source.getParents(), mapping);
+                LinkedList<Vertex> g2SourcePrev = new LinkedList<Vertex>(g2Source.getParents());//removeFromList(g2Source.getParents(), mapping);
+
+                if (!g1Source.getType().equals(Vertex.Type.gateway)) {
+
+//					if ()
+                    Vertex newSource = new Vertex(Vertex.GWType.xor, idGenerator.getNextId());
+
+                    newSource.setConfigurable(true);
+                    LOGGER.error("SET CONFIGURABLE 1 "+newSource.isConfigurable());
+                    merged.addVertex(newSource);
+
+                    for (Vertex v : merged.getVertices()) {
+
+                        if (v.getType().equals(Vertex.Type.gateway) && v.isConfigurable()) {
+                            LOGGER.error("CONFIGURABLE");
+                        }
                     }
-                }
-                // check parents from second modelass
-                // maybe the nodes are concurrent in one modelass but not in the other
-                for (Vertex p : vp.getRight().getParents()) {
-                    if (containsVertex(region, p)) {
-                        addgwr = false;
-                        break;
+
+                    merged.connectVertices(newSource, g1Source, labelsg1g2);
+                    for (Vertex v : g1SourcePrev) {
+                        g1Source.removeParent(v.getID());
+                        v.removeChild(g1Source.getID());
+                        HashSet<String> labels = merged.removeEdge(v.getID(), g1Source.getID());
+                        merged.connectVertices(v, newSource, labels);
+//						newEdge.addLabelToModel();
+                        //					System.out.println(" newSource connect  "+ newSource.getID()+" "+ v.getID()+" ");
                     }
+
+                    for (Vertex v : g2SourcePrev) {
+                        //					merged.removeEdge(""+v.getID(), ""+g2Source.getID());
+                        v.removeChild(g2Source.getID());
+                        HashSet<String> labels = merged.getEdgeLabels(v.getID(), g2Source.getID());
+                        merged.connectVertices(v, newSource, labels);
+//						newEdge.addLabelToModel();
+                        //					System.out.println(" newSource connect  "+ newSource.getID()+" "+ v.getID());
+                    }
+
+                    // add fake nodes?
+                    if (g1Source.sourceBefore || g2Source.sourceBefore) {
+                        //					System.out.println("g1SourcePrev.size() == 0 || g2SourcePrev.size() == 0");
+                        Vertex fakeEvent = new Vertex(Vertex.Type.event, "e", idGenerator.getNextId());
+                        Vertex fakeFn = new Vertex(Vertex.Type.function, "e", idGenerator.getNextId());
+                        merged.addVertex(fakeEvent);
+                        merged.addVertex(fakeFn);
+                        merged.connectVertices(fakeEvent, fakeFn);
+                        Edge newEdge = merged.connectVertices(fakeFn, newSource);
+                        if (g1Source.sourceBefore) {
+                            newEdge.addLabel(g1.getGraphLabel());
+                        }
+                        else {
+                            newEdge.addLabel(g2.getGraphLabel());
+                        }
+//						newEdge.addLabelToModel();
+                    }
+
+                    LOGGER.error("Partial 1 count "+merged.getNrOfConfigGWs()[0]);
+
                 }
-                if ((addgw || addgwr) && vp.getLeft().getParents().size() == 1 &&
-                        vp.getRight().getParents().size() == 1) {
+                // this is gateway
+                else {
+                    for (Vertex v : g2SourcePrev) {
+                        v.removeChild(g2Source.getID());
+                        if(!containsVertex(mapping, v)) {
+                            HashSet<String> labels = merged.getEdgeLabels(v.getID(), g2Source.getID());
+                            merged.connectVertices(v, g1Source, labels);
+//							newEdge.addLabelToModel();
 
-                    Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
-                    newGw.setConfigurable(true);
-                    merged.addVertex(newGw);
-
-                    Vertex v1 = vp.getLeft().getParents().get(0);
-                    HashSet<String> s1 = merged.removeEdge(v1.getID(), vp.getLeft().getID());
-                    v1.removeChild(vp.getLeft().getID());
-                    vp.getLeft().removeParent(v1.getID());
-                    merged.connectVertices(v1, newGw, s1);
-
-                    Vertex v2 = vp.getRight().getParents().get(0);
-                    HashSet<String> s2 = merged.removeEdge(v2.getID(), vp.getRight().getID());
-                    v2.removeChild(vp.getRight().getID());
-                    vp.getRight().removeParent(v2.getID());
-                    merged.connectVertices(v2, newGw, s2);
-
-                    HashSet<String> s3 = new HashSet<String>(s1);
-                    s3.addAll(s2);
-                    merged.connectVertices(newGw, vp.getLeft(), s3);
-                    newGw.addAnnotationsForGw(s3);
-
+                        }
+                    }
                 }
             }
-        }
-        for (LinkedList<VertexPair> region : mappingRegions.getRegions()) {
-            for (VertexPair vp : region) {
-                boolean addgw = true;
-                boolean addgwr = true;
-                for (Vertex ch : vp.getLeft().getChildren()) {
-                    if (containsVertex(region, ch)) {
-                        addgw = false;
-                        break;
+
+            // process sinks
+            for (VertexPair sink : sinks) {
+
+//				System.out.println(">>newSink "+ sink.getLeft().getLabel()+ "("+sink.getLeft().getID()+")");
+                Vertex g1Sink = sink.getLeft();
+                Vertex g2Sink = sink.getRight();
+
+                LinkedList<Vertex> g1SourceFoll = new LinkedList<Vertex>(g1Sink.getChildren());//removeFromList(g1Sink.getChildren(), mapping);
+                LinkedList<Vertex> g2SourceFoll = new LinkedList<Vertex>(g2Sink.getChildren());//removeFromList(g2Sink.getChildren(), mapping);
+
+                if (!g1Sink.getType().equals(Vertex.Type.gateway)) {
+                    Vertex newSink = new Vertex(Vertex.GWType.xor, idGenerator.getNextId());
+                    newSink.setConfigurable(true);
+                    LOGGER.error("SET CONFIGURABLE 2 "+newSink.isConfigurable());
+//					System.out.println("newSink "+ newSink.getID());
+                    try {
+                        merged.getVertexLabel(newSink.getID());
+//						System.out.println("ALREADY EXISTS");
+                    }
+                    catch (Exception e) {
+                        LOGGER.error("Error "+e.getMessage());
+                    }
+
+                    merged.addVertex(newSink);
+
+                    for (Vertex v : merged.getVertices()) {
+
+                        if (v.getType().equals(Vertex.Type.gateway) && v.isConfigurable()) {
+                            LOGGER.error("CONFIGURABLE");
+                        }
+                    }
+
+
+                    merged.connectVertices(g1Sink, newSink, labelsg1g2);
+
+                    for (Vertex v : g1SourceFoll) {
+                        g1Sink.removeChild(v.getID());
+                        v.removeParent(g1Sink.getID());
+                        HashSet<String> labels = merged.removeEdge(g1Sink.getID(), v.getID());
+                        merged.connectVertices(newSink, v, labels);
+                    }
+
+                    for (Vertex v : g2SourceFoll) {
+                        v.removeParent(g2Sink.getID());
+                        HashSet<String> labels = merged.getEdgeLabels(g2Sink.getID(), v.getID());
+                        merged.connectVertices(newSink, v, labels);
+                    }
+
+                    // add fake nodes?
+                    if (g1Sink.sinkBefore || g2Sink.sinkBefore) {
+                        Vertex fakeEvent = new Vertex(Vertex.Type.event, "e", idGenerator.getNextId());
+                        Vertex fakeFn = new Vertex(Vertex.Type.function, "e", idGenerator.getNextId());
+                        merged.addVertex(fakeEvent);
+                        merged.addVertex(fakeFn);
+                        merged.connectVertices(fakeFn, fakeEvent);
+                        Edge newEdge = merged.connectVertices(newSink, fakeFn);
+
+                        if (g1Sink.sourceBefore) {
+                            newEdge.addLabel(g1.getGraphLabel());
+                        }
+                        else {
+                            newEdge.addLabel(g2.getGraphLabel());
+                        }
+                    }
+
+                    LOGGER.error("Partial 2 count "+merged.getNrOfConfigGWs()[0]);
+
+                }else {
+                    for (Vertex v : g2SourceFoll) {
+                        v.removeParent(g2Sink.getID());
+                        if(!containsVertex(mapping, v)) {
+                            HashSet<String> labels = merged.getEdgeLabels(g2Sink.getID(), v.getID());
+                            merged.connectVertices(g1Sink, v, labels);
+                        }
                     }
                 }
+            }
 
-                // check parents from second modelass
-                // maybe the nodes are concurrent in one modelass but not in the other
-                for (Vertex ch : vp.getRight().getChildren()) {
-                    if (containsVertex(region, ch)) {
-                        addgwr = false;
-                        break;
+            for (VertexPair vp : mapping) {
+                for(Vertex v : vp.getLeft().getParents()) {
+                    // this edge is in mapping
+                    // save labels from the both graph
+                    if (containsVertex(mapping, v)) {
+                        Edge e = merged.containsEdge(v.getID(), vp.getLeft().getID());
+                        if (e != null) {
+                            // this is a part of a mapping
+                            Vertex v2 = getMappingPair(mapping, v);
+                            if (v2 != null) {
+                                Edge e2 = g2.containsEdge(v2.getID(), vp.getRight().getID());
+                                if (e2 != null) {
+                                    e.addLabels(e2.getLabels());
+                                    // the common part should also have the labels of both graph
+                                }
+                            }
+                            e.addLabel(g1.getGraphLabel());
+                            e.addLabel(g2.getGraphLabel());
+                        }
                     }
                 }
-                if ((addgw || addgwr) && vp.getLeft().getChildren().size() == 1 &&
-                        vp.getRight().getChildren().size() == 1) {
+            }
 
-                    Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
-                    newGw.setConfigurable(true);
-                    merged.addVertex(newGw);
-
-                    Vertex v1 = vp.getLeft().getChildren().get(0);
-                    HashSet<String> s1 = merged.removeEdge(vp.getLeft().getID(), v1.getID());
-                    vp.getLeft().removeChild(v1.getID());
-                    v1.removeParent(vp.getLeft().getID());
-                    merged.connectVertices(newGw, v1, s1);
-
-                    Vertex v2 = vp.getRight().getChildren().get(0);
-                    HashSet<String> s2 = merged.removeEdge(vp.getRight().getID(), v2.getID());
-                    vp.getRight().removeChild(v2.getID());
-                    v2.removeParent(vp.getRight().getID());
-                    merged.connectVertices(newGw, v2, s2);
-
-                    HashSet<String> s3 = new HashSet<String>(s1);
-                    s3.addAll(s2);
-                    merged.connectVertices(vp.getLeft(), newGw, s3);
-                    newGw.addAnnotationsForGw(s3);
+//			System.out.println("REMOVE MAPPiNG start");
+            // remove mapping
+            for (VertexPair vp : mapping) {
+                // remove edges
+                for (Vertex v : vp.getRight().getParents()) {
+//					System.out.println("parents : "+ v.getID());
+                    merged.removeEdge(v.getID(), vp.getRight().getID());
                 }
+                for (Vertex v : vp.getRight().getChildren()) {
+//					System.out.println("children : "+ v.getID());
+                    merged.removeEdge(vp.getRight().getID(), v.getID());
+                }
+//				System.out.println("REMOVE vertex "+ vp.getRight().getLabel());
+
+                if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
+                        vp.getLeft().getGWType().equals(vp.getRight().getGWType())
+                        && (vp.getLeft().isAddedGW() || vp.getRight().isAddedGW())) {
+                    LOGGER.error("SET CONFIGURABLE 3");
+                    vp.getLeft().setConfigurable(true);
+                }
+
+                if (vp.getLeft().getType().equals(Vertex.Type.gateway)
+                        && (vp.getLeft().isInitialGW() || vp.getRight().isInitialGW())) {
+
+                    vp.getLeft().setInitialGW();
+                }
+
+                // change gateways
+                if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
+                        !vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
+                    vp.getLeft().setGWType(Vertex.GWType.or);
+                    LOGGER.error("SET CONFIGURABLE 4");
+                    vp.getLeft().setConfigurable(true);
+
+                }
+                merged.removeVertex(vp.getRight().getID());
             }
-        }
-
-        mergeConnectors(mappingRegions, merged, mapping);
-
-        toRemove = new LinkedList<Vertex>();
-        // check if some vertices must be removed
-        for (Vertex v : merged.getVertices()) {
-            if (v.getParents().size() == 0 && v.getChildren().size() == 0) {
-                toRemove.add(v);
-            }
-        }
-
-        for (Vertex v : toRemove) {
-            merged.removeVertex(v.getID());
+//			System.out.println("REMOVE MAPPiNG end");
         }
 
         int[] gwInf = merged.getNrOfConfigGWs();
@@ -308,7 +440,58 @@ public class MergeModels {
         merged.name = merged.name.substring(0, merged.name.length() - 1);
         merged.ID = String.valueOf(idGenerator.getNextId());
 
+        LOGGER.error("Number of Config GW "+gwInf[0]);
         return merged;
+    }
+
+    private static LinkedList<VertexPair> findSources(LinkedList<VertexPair> mapping){
+        LinkedList<VertexPair> sources = new LinkedList<VertexPair>();
+        for (VertexPair vp : mapping) {
+            boolean added = false;
+            for (Vertex v : vp.getLeft().getParents()) {
+                // the mapping does not contain
+                if (!containsVertex(mapping, v)) {
+                    sources.add(vp);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                for (Vertex v : vp.getRight().getParents()) {
+                    // the mapping does not contain
+                    if (!containsVertex(mapping, v)) {
+                        sources.add(vp);
+                        break;
+                    }
+                }
+            }
+        }
+        return sources;
+    }
+
+    private static LinkedList<VertexPair> findSinks(LinkedList<VertexPair> mapping){
+        LinkedList<VertexPair> sinks = new LinkedList<VertexPair>();
+        for (VertexPair vp : mapping) {
+            boolean added = false;
+            for (Vertex v : vp.getLeft().getChildren()) {
+                // the mapping does not contain
+                if (!containsVertex(mapping, v)) {
+                    sinks.add(vp);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                for (Vertex v : vp.getRight().getChildren()) {
+                    // the mapping does not contain
+                    if (!containsVertex(mapping, v)) {
+                        sinks.add(vp);
+                        break;
+                    }
+                }
+            }
+        }
+        return sinks;
     }
 
     private static void mergeResources(Collection<VertexResource> existing,
@@ -374,8 +557,8 @@ public class MergeModels {
 
             for (int j = i; j < mapping.size(); j++) {
                 VertexPair vp1 = mapping.get(j);
-                if (vp.getLeft().getID() == vp1.getLeft().getID() ||
-                        vp.getRight().getID() == vp1.getRight().getID()) {
+                if (vp.getLeft().getID().equals(vp1.getLeft().getID()) ||
+                        vp.getRight().getID().equals(vp1.getRight().getID())) {
                     continue;
                 }
                 boolean dominanceInG1 = containsInDownwardsPath(vp.getLeft(), vp1.getLeft());
@@ -414,8 +597,8 @@ public class MergeModels {
             // even when this is a cycle
             for (int j = i; j < mapping.size(); j++) {
                 VertexPair vp1 = mapping.get(j);
-                if (vp.getLeft().getID() == vp1.getLeft().getID() ||
-                        vp.getRight().getID() == vp1.getRight().getID()) {
+                if (vp.getLeft().getID().equals(vp1.getLeft().getID()) ||
+                        vp.getRight().getID().equals(vp1.getRight().getID())) {
                     continue;
                 }
 
@@ -461,8 +644,8 @@ public class MergeModels {
                 }
 
                 // same starting or ending point of models
-                if (vp.getLeft().getID() == vp1.getLeft().getID() ||
-                        vp.getRight().getID() == vp1.getRight().getID()) {
+                if (vp.getLeft().getID().equals(vp1.getLeft().getID()) ||
+                        vp.getRight().getID().equals(vp1.getRight().getID())) {
                     continue;
                 }
 
@@ -496,7 +679,7 @@ public class MergeModels {
 
         while (toProcess.size() > 0) {
             Vertex process = toProcess.removeFirst();
-            if (process.getID() == v2.getID()) {
+            if (process.getID().equals(v2.getID())) {
                 return true;
             }
             toProcess.addAll(process.getChildren());
@@ -506,17 +689,30 @@ public class MergeModels {
 
     private static void mergeConnectors(MappingRegions mappingRegions, Graph merged, LinkedList<VertexPair> mapping) {
         for (LinkedList<VertexPair> region : mappingRegions.getRegions()) {
+            LOGGER.error("region "+region.toString());
             for (VertexPair vp : region) {
+                LOGGER.error("vp "+vp.toString());
+                LOGGER.error("vp left "+vp.getLeft());
+                LOGGER.error("vp right "+vp.getRight());
                 if (vp.getLeft().getType().equals(Type.gateway)) {
                     boolean makeConf = false;
                     LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+                    LOGGER.error("vp right parents "+vp.getRight().getParents().size());
                     for (Vertex p : vp.getRight().getParents()) {
+                        LOGGER.error("For Each");
+                        for (VertexPair zz : region) {
+                            if (zz.getLeft().getID().equals(p.getID()) || zz.getRight().getID().equals(p.getID())) {
+                                LOGGER.error("Aggiungi");
+                                break;
+                            }
+                        }
                         if (!containsVertex(region, p)) {
                             toProcess.add(p);
                         }
                     }
 
                     for (Vertex p : toProcess) {
+                        LOGGER.error("SET MAKECONF True");
                         makeConf = true;
                         HashSet<String> l = merged.removeEdge(p.getID(), vp.getRight().getID());
                         p.removeChild(vp.getRight().getID());
@@ -525,13 +721,22 @@ public class MergeModels {
                     }
                     toProcess = new LinkedList<Vertex>();
 
+                    LOGGER.error("vp right children "+vp.getRight().getChildren().size());
                     for (Vertex p : vp.getRight().getChildren()) {
+                        LOGGER.error("For Each");
+                        for (VertexPair zz : region) {
+                            if (zz.getLeft().getID().equals(p.getID()) || zz.getRight().getID().equals(p.getID())) {
+                                LOGGER.error("Aggiungi");
+                                break;
+                            }
+                        }
                         if (!containsVertex(region, p)) {
                             toProcess.add(p);
                         }
                     }
 
                     for (Vertex p : toProcess) {
+                        LOGGER.error("SET MAKECONF True");
                         makeConf = true;
                         HashSet<String> l = merged.removeEdge(vp.getRight().getID(), p.getID());
                         p.removeParent(vp.getRight().getID());
@@ -539,6 +744,7 @@ public class MergeModels {
                         merged.connectVertices(vp.getLeft(), p, l);
                     }
                     if (makeConf) {
+                        LOGGER.error("SET setConfigurable True");
                         vp.getLeft().setConfigurable(true);
                     }
                     if (!vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
@@ -562,8 +768,8 @@ public class MergeModels {
 
     private static VertexPair containsMapping(LinkedList<VertexPair> mapping, Vertex left, Vertex right) {
         for (VertexPair vp : mapping) {
-            if (vp.getLeft().getID() == left.getID() &&
-                    vp.getRight().getID() == right.getID()) {
+            if (vp.getLeft().getID().equals(left.getID()) &&
+                    vp.getRight().getID().equals(right.getID())) {
                 return vp;
             }
         }
@@ -573,8 +779,8 @@ public class MergeModels {
     @SuppressWarnings("unused")
     private static boolean containsMapping(LinkedList<VertexPair> mapping, VertexPair v) {
         for (VertexPair vp : mapping) {
-            if (vp.getLeft().getID() == v.getLeft().getID() &&
-                    vp.getRight().getID() == v.getRight().getID()) {
+            if (vp.getLeft().getID().equals(v.getLeft().getID()) &&
+                    vp.getRight().getID().equals(v.getRight().getID())) {
                 return true;
             }
         }
@@ -632,8 +838,7 @@ public class MergeModels {
 
     public static boolean containsVertex(LinkedList<VertexPair> mapping, Vertex v) {
         for (VertexPair vp : mapping) {
-            if (vp.getLeft().getID() == v.getID() || vp.getRight().getID() == v.getID()) {
-
+            if (vp.getLeft().getID().equals(v.getID()) || vp.getRight().getID().equals(v.getID())) {
                 return true;
             }
         }
@@ -642,9 +847,9 @@ public class MergeModels {
 
     public static Vertex getMappingPair(LinkedList<VertexPair> mapping, Vertex v) {
         for (VertexPair vp : mapping) {
-            if (vp.getLeft().getID() == v.getID()) {
+            if (vp.getLeft().getID().equals(v.getID())) {
                 return vp.getRight();
-            } else if (vp.getRight().getID() == v.getID()) {
+            } else if (vp.getRight().getID().equals(v.getID())) {
                 return vp.getLeft();
             }
         }

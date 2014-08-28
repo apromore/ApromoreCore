@@ -1,14 +1,14 @@
 /*
  * Copyright © 2009-2014 The Apromore Initiative.
  *
- * This file is part of “Apromore”.
+ * This file is part of "Apromore".
  *
- * “Apromore” is free software; you can redistribute it and/or modify
+ * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * “Apromore” is distributed in the hope that it will be useful,
+ * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
@@ -22,6 +22,9 @@ package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectFactory;
+import org.apromore.cpf.cache.CachedJaxbContext;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
@@ -46,7 +49,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,6 +109,7 @@ public class MergeServiceImpl implements MergeService {
             data = getParametersForMerge(data, algo, parameters);
 
             CanonisedProcess cp = new CanonisedProcess();
+
             cp.setCpt(performMerge(data));
             cp.setCpf(new ByteArrayInputStream(canoniserSrv.CPFtoString(cp.getCpt()).getBytes()));
 
@@ -111,6 +118,7 @@ public class MergeServiceImpl implements MergeService {
 
             // This fails as we need to specify a native type and pass in the model.
             Version importVersion = new Version(1, 0);
+
             pmv = processSrv.importProcess(username, folderId, processName, importVersion, null, cp, domain, "", created, created, makePublic);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);

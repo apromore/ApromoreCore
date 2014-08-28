@@ -33,10 +33,14 @@
     <orderEntry type="module" module-name="canoniser-api" />
     <orderEntry type="module" module-name="anf-schema" />
     <orderEntry type="module" module-name="cpf-schema" />
-    <orderEntry type="library" name="Maven: javax.xml.bind:com.springsource.javax.xml.bind:2.2.0" level="project" />
+    <orderEntry type="module" module-name="bpmn-schema" />
+    <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.tools.xjc:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.xml.bind:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.xml.fastinfoset:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: org.jvnet.staxex:com.springsource.org.jvnet.staxex:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:com.springsource.javax.xml.bind:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.dom4j:com.springsource.org.dom4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.iso-relax:com.springsource.org.iso_relax.verifier:0.0.0.20041111" level="project" />
     <orderEntry type="library" name="Maven: org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:org.springframework.web:3.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:org.springframework.security.core:3.1.4.RELEASE" level="project" />
