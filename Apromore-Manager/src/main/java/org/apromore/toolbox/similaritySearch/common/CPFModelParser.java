@@ -1,14 +1,14 @@
 /*
  * Copyright © 2009-2014 The Apromore Initiative.
  *
- * This file is part of “Apromore”.
+ * This file is part of "Apromore".
  *
- * “Apromore” is free software; you can redistribute it and/or modify
+ * "Apromore" is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * “Apromore” is distributed in the hope that it will be useful,
+ * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
@@ -52,6 +52,7 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.toolbox.similaritySearch.graph.Edge;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
@@ -61,8 +62,12 @@ import org.apromore.toolbox.similaritySearch.graph.VertexObject;
 import org.apromore.toolbox.similaritySearch.graph.VertexObjectRef;
 import org.apromore.toolbox.similaritySearch.graph.VertexResource;
 import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CPFModelParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CPFModelParser.class.getName());
 
     public static Graph readModel(CanonicalProcessType cpf) {
         Graph epcGraph = new Graph();
@@ -127,7 +132,7 @@ public class CPFModelParser {
 
     private static void addNodes(NetType mainNet, Graph epcGraph) {
         for (NodeType n : mainNet.getNode()) {
-            HashMap<String, String> annotationMap = parseAnnotationForEventsAndFunctions(getFromAnnotations("annotation", n.getAttribute()));
+            HashMap<String, String> annotationMap = parseAnnotationForEventsAndFunctions(getFromAnnotations("configurationAnnotation", n.getAttribute()));
             // gateways
             if (n instanceof RoutingType && !(n instanceof StateType)) {
                 boolean initialGW = true;
@@ -193,7 +198,7 @@ public class CPFModelParser {
             v.resourceRefs.add(new VertexResourceRef(
                     r.getResourceTypeId(),
                     r.getQualifier(),
-                    parseModelsFromAnnotations(getFromAnnotations("annotation", r.getAttribute()))));
+                    parseModelsFromAnnotations(getFromAnnotations("configurationAnnotation", r.getAttribute()))));
         }
 
         // add objects
@@ -205,7 +210,7 @@ public class CPFModelParser {
                     (o.getType().equals(InputOutputType.INPUT) ?
                             VertexObjectRef.InputOutput.Input :
                             VertexObjectRef.InputOutput.Output),
-                    parseModelsFromAnnotations(getFromAnnotations("annotation", o.getAttribute()))));
+                    parseModelsFromAnnotations(getFromAnnotations("configurationAnnotation", o.getAttribute()))));
         }
     }
 
@@ -243,20 +248,23 @@ public class CPFModelParser {
 
         List<EdgeType> edges = mainNet.getEdge();
         HashSet<String> graphLabels = new HashSet<String>();
+        HashSet<String> allGraphLabels = new HashSet<String>();
 
         // add elements
         for (EdgeType e : edges) {
             Edge toAdd = new Edge(e.getSourceId(), e.getTargetId(), e.getId());
-            String annotations = getFromAnnotations("annotation", e.getAttribute());
+
+            String annotations = getFromAnnotations("configurationAnnotation", e.getAttribute());
 
             graphLabels = parseModelsFromAnnotations(annotations);
             toAdd.addLabels(graphLabels);
+            allGraphLabels.addAll(graphLabels);
             epcGraph.addEdge(toAdd);
         }
 
-        if (graphLabels.size() > 0) {
+        if (allGraphLabels.size() > 0) {
             epcGraph.setGraphConfigurable();
-            epcGraph.addGraphLabels(graphLabels);
+            epcGraph.addGraphLabels(allGraphLabels);
         }
     }
 
@@ -288,7 +296,7 @@ public class CPFModelParser {
             ot.setId(o.getId());
             ot.setName(o.getName());
             TypeAttribute a = new TypeAttribute();
-            a.setName("annotation");
+            a.setName("configurationAnnotation");
             a.setValue(parseAnnotationFromSet(o.getModels()));
             ot.getAttribute().add(a);
             toReturn.getNet().get(0).getObject().add(ot);
@@ -307,7 +315,7 @@ public class CPFModelParser {
             rt.setId(r.getId());
             rt.setName(r.getName());
             TypeAttribute a = new TypeAttribute();
-            a.setName("annotation");
+            a.setName("configurationAnnotation");
             a.setValue(parseAnnotationFromSet(r.getModels()));
             rt.getAttribute().add(a);
             toReturn.getResourceType().add(rt);
@@ -355,7 +363,7 @@ public class CPFModelParser {
             n.setId(v.getID());
             n.setName(v.getLabel());
             TypeAttribute a = new TypeAttribute();
-            a.setName("annotation");
+            a.setName("configurationAnnotation");
             a.setValue(parseAnnotationFromMap(v.getAnnotationMap()));
             n.getAttribute().add(a);
 
@@ -373,7 +381,7 @@ public class CPFModelParser {
                     oRef.setOptional(o.isOptional());
                     // attributes
                     TypeAttribute a1 = new TypeAttribute();
-                    a1.setName("annotation");
+                    a1.setName("configurationAnnotation");
                     a1.setValue(parseAnnotationFromSet(o.getModels()));
                     oRef.getAttribute().add(a1);
 
@@ -386,7 +394,7 @@ public class CPFModelParser {
                     rRef.setQualifier(r.getQualifier());
                     // attrubutes
                     TypeAttribute a1 = new TypeAttribute();
-                    a1.setName("annotation");
+                    a1.setName("configurationAnnotation");
                     a1.setValue(parseAnnotationFromSet(r.getModels()));
                     rRef.getAttribute().add(a1);
 
@@ -404,7 +412,7 @@ public class CPFModelParser {
             et.setTargetId(e.getToVertex());
             // attributes
             TypeAttribute a = new TypeAttribute();
-            a.setName("annotation");
+            a.setName("configurationAnnotation");
             a.setValue(parseAnnotationFromSet(e.getLabels()));
             et.getAttribute().add(a);
             net.getEdge().add(et);
