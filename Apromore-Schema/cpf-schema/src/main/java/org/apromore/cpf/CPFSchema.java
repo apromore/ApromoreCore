@@ -52,7 +52,7 @@ public class CPFSchema {
     /**
      * {@link JAXBContext} for these CPF classes.
      */
-    public static final String CPF_CONTEXT = "org.apromore.cpf:com.processconfiguration";
+    public static final String CPF_CONTEXT = "org.apromore.cpf";
 
     /**
      * Classpath location of the CPF XML Schema document.
