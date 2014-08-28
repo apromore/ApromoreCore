@@ -22,18 +22,14 @@ package de.hpi.bpmn2_0.transformation;
 
 import com.processconfiguration.DefinitionsIDResolver;
 import com.sun.xml.bind.IDResolver;
-import de.hpi.bpmn2_0.model.BaseElement;
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowElement;
+import de.hpi.bpmn2_0.model.*;
 import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNDiagram;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNEdge;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNShape;
 import de.hpi.bpmn2_0.model.bpmndi.di.DiagramElement;
-import de.hpi.bpmn2_0.model.connector.Edge;
-import de.hpi.bpmn2_0.model.connector.MessageFlow;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import de.hpi.bpmn2_0.model.connector.*;
 import de.hpi.bpmn2_0.model.event.BoundaryEvent;
 import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
@@ -43,6 +39,9 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationMapping;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import de.hpi.bpmn2_0.model.gateway.Gateway;
+import de.hpi.bpmn2_0.model.participant.Lane;
+import de.hpi.bpmn2_0.model.participant.LaneSet;
+import de.hpi.bpmn2_0.model.participant.Participant;
 import de.hpi.diagram.SignavioUUID;
 import org.json.JSONException;
 import org.oryxeditor.server.diagram.Bounds;
@@ -174,6 +173,7 @@ public class BPMN2DiagramConverter {
                             logger.warning(that.getId() + " has no sourceRef attribute");
                         } else {
                             that.getSourceRef().getOutgoing().add(that);
+                            if(precedingEdge!=null)
                             precedingEdge.setSourceElement(bpmndiMap.get(that.getSourceRef()));
                         }
 
@@ -181,6 +181,7 @@ public class BPMN2DiagramConverter {
                             logger.warning(that.getId() + " has no targetRef attribute");
                         } else {
                             that.getTargetRef().getIncoming().add(that);
+                            if(precedingEdge!=null)
                             precedingEdge.setTargetElement(bpmndiMap.get(that.getTargetRef()));
                         }
                     }
@@ -386,6 +387,10 @@ public class BPMN2DiagramConverter {
 
             if (element instanceof Process) {
 
+                // Now for the Lanes
+                for (LaneSet laneSet:  ((Process) element).getLaneSet())
+                    addLaneSet(laneSet, diagram);
+
                 // Process the Nodes
                 for (final FlowElement flow : ((Process) element).getFlowElement()) {
                     if (!(flow instanceof SequenceFlow)) {
@@ -400,12 +405,68 @@ public class BPMN2DiagramConverter {
                     }
                 }
 
-            } else {
-                logger.warning("Ignoring non-Process root element " + element.getId() + " in BPMN document: " + element.getClass());
+            } else if(element instanceof Collaboration){
+                for(Participant participant: ((Collaboration)element).getParticipant()){
+                    diagram.getBPMNPlane().getDiagramElement().add(constructParticipantNodes(participant));
+                }
+            }else{
+                logger.warning("Ignoring root element " + element.getId() + " in BPMN document: " + element.getClass());
             }
         }
         definitions.getDiagram().add(diagram);
         return definitions;
+    }
+
+    private void addLaneSet(LaneSet laneSet, BPMNDiagram diagram) {
+        if(laneSet==null)
+            return;
+        for(final Lane lane : laneSet.getLanes()){
+            diagram.getBPMNPlane().getDiagramElement().add(constructLaneNodes(lane));
+            addLaneSet(lane.getChildLaneSet(false), diagram);
+         }
+
+    }
+
+
+    private BPMNShape constructLaneNodes(Lane lane) {
+        BPMNShape diagramElem = null;
+        if (lane != null) {
+            diagramElem = new BPMNShape();
+            diagramElem.setId(SignavioUUID.generate());
+            diagramElem.setBpmnElement(lane);
+            diagramElem.setIsHorizontal(true);
+            diagramElem.setIsExpanded(true);
+
+            de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+            bound.setX(0.0);
+            bound.setY(0.0);
+            bound.setWidth(500.0);
+            bound.setHeight(100.0);
+
+            diagramElem.setBounds(bound);
+        }
+        return diagramElem;
+    }
+
+
+    private BPMNShape constructParticipantNodes(Participant flow) {
+        BPMNShape diagramElem = null;
+        if (flow != null) {
+            diagramElem = new BPMNShape();
+            diagramElem.setId(SignavioUUID.generate());
+            diagramElem.setBpmnElement(flow);
+            diagramElem.setIsHorizontal(true);
+            diagramElem.setIsExpanded(true);
+
+            de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+            bound.setX(0.0);
+            bound.setY(0.0);
+            bound.setWidth(500);
+            bound.setHeight(200);
+
+            diagramElem.setBounds(bound);
+        }
+        return diagramElem;
     }
 
     private BPMNEdge constructEdgeNodes(List<DiagramElement> diagramElement, SequenceFlow flow) {
@@ -439,6 +500,15 @@ public class BPMN2DiagramConverter {
             }
         }
         return diagramElem;
+    }
+
+    private de.hpi.bpmn2_0.model.bpmndi.dc.Bounds createLaneBounds() {
+        de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bound = new de.hpi.bpmn2_0.model.bpmndi.dc.Bounds();
+        bound.setX(0.0);
+        bound.setY(0.0);
+        bound.setWidth(500.0);
+        bound.setHeight(100.0);
+        return bound;
     }
 
     private de.hpi.bpmn2_0.model.bpmndi.dc.Bounds createEventBounds() {

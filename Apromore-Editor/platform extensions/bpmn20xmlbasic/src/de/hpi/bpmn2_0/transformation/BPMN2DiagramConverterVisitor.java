@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -361,10 +362,14 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 		super.visitShape(that);
 
 		Bounds bounds = new Bounds();
-		bounds.setCoordinates(that.getBounds().getX(),
-		                      that.getBounds().getY(),
-		                      that.getBounds().getX() + that.getBounds().getWidth(),
-		                      that.getBounds().getY() + that.getBounds().getHeight());
+        try {
+            bounds.setCoordinates(that.getBounds().getX(),
+                    that.getBounds().getY(),
+                    that.getBounds().getX() + that.getBounds().getWidth(),
+                    that.getBounds().getY() + that.getBounds().getHeight());
+        }catch (NullPointerException e){
+            bounds.setCoordinates(0,0,100,100);
+        }
 		shape.setBounds(bounds);
 	}
 
@@ -1213,14 +1218,13 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 
 	@Override public void visitSubProcess(SubProcess that) {
 		super.visitSubProcess(that);
-
-		if (((BPMNShape) bpmndiMap.get(that)).isIsExpanded()) {
-			shape.setStencilId(that.isTriggeredByEvent() ? "EventSubprocess" : "Subprocess");
-		}
-		else {
-			shape.setStencilId(that.isTriggeredByEvent() ? "CollapsedEventSubprocess" : "CollapsedSubprocess");
-		}
-
+        BPMNShape bpmnShape= (BPMNShape) bpmndiMap.get(that);
+        Boolean isExpanded=bpmnShape.isIsExpanded();
+            if (isExpanded!=null&&isExpanded) {
+                shape.setStencilId(that.isTriggeredByEvent() ? "EventSubprocess" : "Subprocess");
+            } else {
+                shape.setStencilId(that.isTriggeredByEvent() ? "CollapsedEventSubprocess" : "CollapsedSubprocess");
+            }
 		// that.isTriggeredByEvent()
 	}
 
