@@ -107,6 +107,7 @@ The extension can be in form of a simple name/value pair both of type String or 
         <!-- Use this attribute if you only want to store simple Name/Value 
             pairs without using XML -->
         <attribute name="value" type="string" use="optional" />
+
     </complexType>
 
     <complexType name="CanonicalProcessType">
