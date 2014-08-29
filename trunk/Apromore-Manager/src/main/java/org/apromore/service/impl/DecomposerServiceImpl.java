@@ -42,7 +42,7 @@ import org.apromore.service.helper.OperationContext;
 import org.apromore.service.model.FragmentNode;
 import org.apromore.util.MutableTreeConstructor;
 import org.jbpt.algo.tree.rpst.RPST;
-import org.jbpt.algo.tree.tctree.TCType;
+import static org.jbpt.algo.tree.tctree.TCType.TRIVIAL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -135,7 +135,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
             Collection<FragmentNode> children = f.getChildren();
             for (FragmentNode child : children) {
-                if (!child.getType().equals(TCType.TRIVIAL)) {
+                if (!child.getType().equals(TRIVIAL)) {
                     q.add(child);
                 }
             }
