@@ -58,9 +58,13 @@ public class EPMLImportServlet extends HttpServlet {
             res.setContentType("application/json");
             res.setStatus(200);
 
-            CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(new StringReader(req.getParameter("data"))));
             EPMLToJSONConverter epmlConverter = new EPMLToJSONConverter();
-            epmlConverter.convert(correctedEPML.toString(), "UTF-8", res.getOutputStream());
+            if (true) {  // Should the XSL transform to correct common EPML errors be applied?
+                CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(new StringReader(req.getParameter("data"))));
+                epmlConverter.convert(correctedEPML.toString(), "UTF-8", res.getOutputStream());
+            } else {
+                epmlConverter.convert(req.getParameter("data"), "UTF-8", res.getOutputStream());
+            }
 
         } catch (Exception e) {
             try {
