@@ -87,8 +87,11 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
     public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
             final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
         try {
-            CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(nativeInput));
-            ByteArrayInputStream epmlInput = new ByteArrayInputStream(correctedEPML.toByteArray());
+            InputStream epmlInput = nativeInput;
+            if (true) {  // Should we apply the XSL transform to correct common EPML errors?
+                CorrectedEPML correctedEPML = new CorrectedEPML(new StreamSource(nativeInput));
+                epmlInput = new ByteArrayInputStream(correctedEPML.toByteArray());
+            }
 
             // Parse the EPML into its Java (JAXB) object model
             JAXBElement<TypeEPML> nativeElement = EPMLSchema.unmarshalEPMLFormat(epmlInput, false);
