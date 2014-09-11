@@ -22,6 +22,7 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 
+import com.processconfiguration.Configurable;
 import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
@@ -279,7 +280,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             Object o = i.next();
 
             // BPMN pc:configurable corresponds to the CPF configurable property
-            if (setConfigurable != null && o instanceof com.processconfiguration.Configurable) {
+            if (setConfigurable != null && o instanceof Configurable) {
                 setConfigurable.run();
                 i.remove();
             }

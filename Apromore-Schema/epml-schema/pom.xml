@@ -23,6 +23,10 @@
     </scm>
 
     <dependencies>
+        <dependency> <!-- for the com.processconfiguration extension classes -->
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

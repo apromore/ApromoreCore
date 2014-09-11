@@ -74,6 +74,22 @@ public class XMLUtils {
         }
     }
 
+    public static String extensionElementToString(final Object extensionElement) {
+        if (extensionElement == null) {
+            LOGGER.warn("extensionElementToString returning NULL");
+            return null;
+        }
+        try {
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            javax.xml.bind.Marshaller marshaller = javax.xml.bind.JAXBContext.newInstance(com.processconfiguration.ObjectFactory.class).createMarshaller();
+            marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FRAGMENT, true);
+            marshaller.marshal(extensionElement, baos);
+            return baos.toString();
+        } catch (javax.xml.bind.JAXBException e) {
+            throw new IllegalArgumentException("Invalid extension element", e);
+        }
+    }
+
     /**
      * Converts a XML String to an Object suitable to put into xs:any
      *
@@ -88,8 +104,12 @@ public class XMLUtils {
         }
         try {
             // Otherwise return XML representation
-            final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            return docBuilder.parse(new ByteArrayInputStream(value.getBytes("UTF-8"))).getDocumentElement();
+            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            assert documentBuilder.isNamespaceAware();
+            Element result = documentBuilder.parse(new ByteArrayInputStream(value.getBytes("UTF-8"))).getDocumentElement();
+            return result;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             LOGGER.warn("stringToAnyElement returning JAXBElement with plain String {} instead of XML", value);
             throw new IllegalArgumentException("Invalid Node in ANY!", e);

@@ -342,7 +342,21 @@ public class GraphToCanonical {
         } else {
             LOGGER.warn("Edge(" + edge.getId() + ") found with NULL target.");
         }
+
+        updateAttributes(edgeType, edge);
+
         net.getEdge().add(edgeType);
+    }
+
+    private void updateAttributes(EdgeType output, CPFEdge edge) {
+        TypeAttribute typeAttribute;
+        for (Entry<String, IAttribute> attribute : edge.getAttributes().entrySet()) {
+            typeAttribute = new TypeAttribute();
+            typeAttribute.setName(attribute.getKey());
+            typeAttribute.setValue(attribute.getValue().getValue());
+            typeAttribute.setAny(attribute.getValue().getAny());
+            output.getAttribute().add(typeAttribute);
+        }
     }
 
     /* Builds a Node for this Net. */
@@ -494,7 +508,9 @@ public class GraphToCanonical {
         output.setId(node.getId());
         output.setOriginalID(node.getOriginalId());
         output.setName(node.getName());
-        output.setConfigurable(node.isConfigurable());
+        if (node.isConfigurable()) {
+            output.setConfigurable(node.isConfigurable());
+        }
 
         updateAttributes(output, node);
     }
@@ -611,7 +627,6 @@ public class GraphToCanonical {
             output.getAttribute().add(typeAttribute);
         }
     }
-
 
     /**
      * Class to store the Nodes and Edges for a particular Net.

@@ -137,6 +137,30 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!-- substitute site.properties into apromore.properties -->
+        <!--
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <targetPath>${basedir}/target/classes</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>apromore.properties,datasource.properties,logback.xml,META-INF/**</include>
+                </includes>
+                <excludes>
+                    <exclude>apromore.properties</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <targetPath>${basedir}/target/classes</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>apromore.properties</include>
+                </includes>
+            </resource>
+        </resources>
+        -->
     </build>
 
     <dependencies>
@@ -200,6 +224,10 @@
             Depreciated dependencies, REMOVE AS SOON AS POSSIBLE
             Manager should not know about process formats 
         -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>xpdl-schema</artifactId>
@@ -524,11 +552,13 @@
             <artifactId>aris-schema</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmn-schema</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
