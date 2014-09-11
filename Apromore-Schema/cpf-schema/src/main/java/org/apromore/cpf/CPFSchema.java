@@ -119,8 +119,9 @@ public class CPFSchema {
      * @throws SAXException
      */
     public static void marshalCanonicalFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf, final boolean isValidating) throws JAXBException, PropertyException, SAXException {
-        final JAXBContext context = CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
-                //JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext context = //CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+                JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
+                                        com.processconfiguration.ObjectFactory.class);
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         if (isValidating) {
@@ -141,8 +142,9 @@ public class CPFSchema {
      */
     @SuppressWarnings("unchecked")
     public static JAXBElement<CanonicalProcessType> unmarshalCanonicalFormat(final InputStream canonicalFormat, final boolean isValidating) throws JAXBException, SAXException {
-        final JAXBContext jc = CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
-                //JAXBContext.newInstance(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+        final JAXBContext jc = //CachedJaxbContext.getJaxbContext(CPF_CONTEXT, ObjectFactory.class.getClassLoader());
+                JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
+                                        com.processconfiguration.ObjectFactory.class);
         final Unmarshaller u = jc.createUnmarshaller();
         if (isValidating) {
             u.setSchema(getCPFSchema());

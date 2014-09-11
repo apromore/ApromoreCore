@@ -55,6 +55,7 @@ import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.graph.canonical.AllocationStrategyEnum;
+import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFExpression;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.CPFObject;
@@ -200,10 +201,9 @@ public class CanonicalToGraph {
 
     /* Build the Node list for a single Net */
     private Map<String, CPFNode> buildNodeListFromNet(final String netId, final List<NodeType> nodes, final Canonical g) {
-        CPFNode output;
         Map<String, CPFNode> flow = new HashMap<>();
         for (NodeType node : nodes) {
-            output = new CPFNode();
+            CPFNode output = new CPFNode();
             output.setGraph(g);
             populateNodeDetails(output, node, netId);
 
@@ -451,7 +451,11 @@ public class CanonicalToGraph {
             target = nodes.get(edge.getTargetId());
 
             if (source != null && target != null) {
-                graph.addEdge(edge.getId(), source, target);
+                CPFEdge cpfEdge = graph.addEdge(edge.getId(), source, target);
+
+                for (TypeAttribute attribute : edge.getAttribute()) {
+                    cpfEdge.addAttribute(attribute.getName(), attribute.getValue(), attribute.getAny());
+                }
 
                 if (edge.getConditionExpr() != null) {
                     expr = new CPFExpression();
@@ -459,6 +463,11 @@ public class CanonicalToGraph {
                     expr.setExpression(edge.getConditionExpr().getExpression());
                     expr.setLanguage(edge.getConditionExpr().getLanguage());
                     expr.setReturnType(edge.getConditionExpr().getReturnType());
+                    cpfEdge.setConditionExpr(expr);
+                }
+
+                if (edge.isDefault()) {
+                    cpfEdge.setDefault(true);
                 }
 
                 graph.setNodeProperty(source.getId(), GraphConstants.TYPE, GraphUtil.getType(source));

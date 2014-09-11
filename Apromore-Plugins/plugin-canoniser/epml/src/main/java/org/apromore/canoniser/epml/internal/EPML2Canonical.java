@@ -30,15 +30,9 @@
  * </ul>
  * <p>
  *
- *
-
- @author Abdul
- *
-
- @version     %I%, %G%
- *
-
- @since 1.0
+ * @author Abdul
+ * @version %I%, %G%
+ * @since 1.0
  */
 package org.apromore.canoniser.epml.internal;
 
@@ -48,6 +42,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBElement;
@@ -82,6 +77,9 @@ import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.TGatewayType;
+import com.processconfiguration.Variants;
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
@@ -113,6 +111,11 @@ public class EPML2Canonical {
     List<String> event_ids = new LinkedList<>();
     List<TypeArc> range_flow = new LinkedList<>();
     List<TypeArc> range_relation = new LinkedList<>();
+
+    /**
+     * This map is intended to be accessed primarily via the {@link findVariant} method rather than directly.
+     */
+    private Map<String, Variants.Variant> variantMap = new HashMap<>();
 
     private final CanonicalProcessType cproc = new CanonicalProcessType();
     private final AnnotationsType annotations = new AnnotationsType();
@@ -148,7 +151,7 @@ public class EPML2Canonical {
         epml = removeFakes(epml);
 
         TypeAttribute att = new TypeAttribute();
-        att.setName("IntialFormat");
+        att.setName("InitialFormat");
         att.setValue("EPML 2.0");
         cproc.getAttribute().add(att);
 
@@ -189,6 +192,16 @@ public class EPML2Canonical {
                 task.setSubnetId(id_map.get(new BigInteger(task.getSubnetId())));
             }
             subnet_list.clear();
+        }
+
+        // If there were any configuration variants, catalogue them
+        if (!variantMap.isEmpty()) {
+            Variants pcVariants = new Variants();
+            pcVariants.getVariant().addAll(variantMap.values());
+            TypeAttribute cpfAttribute = new TypeAttribute();
+            cpfAttribute.setName("bpmn_cpf/extensions");
+            cpfAttribute.setAny(pcVariants);
+            cproc.getAttribute().add(cpfAttribute);
         }
     }
 
@@ -309,8 +322,6 @@ public class EPML2Canonical {
                     id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
-
-
                     xor_list.add((TypeXOR) element.getValue());
                 } else if (element.getValue() instanceof TypeRole) {
                     if (!role_names.containsKey(((TypeRole) element.getValue()).getName())) {
@@ -394,11 +405,29 @@ public class EPML2Canonical {
                 ANDJoinType andJ = new ANDJoinType();
                 andJ.setId(String.valueOf(and.getId()));
                 andJ.setName(and.getName());
+
+                for (de.epml.TypeAttribute epmlAttribute: and.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, andJ.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, andJ.getAttribute());
+                    }
+                }
+
                 net.getNode().add(andJ);
             } else {
                 ANDSplitType andS = new ANDSplitType();
                 andS.setId(String.valueOf(and.getId()));
                 andS.setName(and.getName());
+
+                for (de.epml.TypeAttribute epmlAttribute: and.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, andS.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, andS.getAttribute());
+                    }
+                }
+
                 net.getNode().add(andS);
             }
         }
@@ -416,11 +445,29 @@ public class EPML2Canonical {
                 ORJoinType orJ = new ORJoinType();
                 orJ.setId(String.valueOf(or.getId()));
                 orJ.setName(or.getName());
+
+                for (de.epml.TypeAttribute epmlAttribute: or.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, orJ.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, orJ.getAttribute());
+                    }
+                }
+
                 net.getNode().add(orJ);
             } else {
                 ORSplitType orS = new ORSplitType();
                 orS.setId(String.valueOf(or.getId()));
                 orS.setName(or.getName());
+
+                for (de.epml.TypeAttribute epmlAttribute: or.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, orS.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, orS.getAttribute());
+                    }
+                }
+
                 net.getNode().add(orS);
                 //processUnrequiredEvents(net, or.getId()); // after creating the split node ,, delete the event
             }
@@ -443,8 +490,16 @@ public class EPML2Canonical {
 
                 if(xor.getConfigurableConnector()!=null) {
                     xorJ.setConfigurable(true);
-
                 }
+
+                for (de.epml.TypeAttribute epmlAttribute: xor.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, xorJ.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, xorJ.getAttribute());
+                    }
+                }
+
                 net.getNode().add(xorJ);
             } else {
                 XORSplitType xorS = new XORSplitType();
@@ -454,6 +509,15 @@ public class EPML2Canonical {
                     xorS.setConfigurable(true);
 
                 }
+
+                for (de.epml.TypeAttribute epmlAttribute: xor.getAttribute()) {
+                    if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                        addConfigurationAnnotationAttribute2(epmlAttribute, xorS.getAttribute());
+                    } else {
+                        addUnrecognizedAttribute(epmlAttribute, xorS.getAttribute());
+                    }
+                }
+
                 net.getNode().add(xorS);
                 //processUnrequiredEvents(net, xor.getId());
             }
@@ -664,6 +728,15 @@ public class EPML2Canonical {
         event_ids.add(String.valueOf(ids));
         node.setId(String.valueOf(ids++));
         node.setName(event.getName());
+
+        for (de.epml.TypeAttribute epmlAttribute: event.getAttribute()) {
+            if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                addConfigurationAnnotationAttribute(epmlAttribute, node.getAttribute());
+            } else {
+                addUnrecognizedAttribute(epmlAttribute, node.getAttribute());
+            }
+        }
+
         net.getNode().add(node);
     }
 
@@ -678,7 +751,78 @@ public class EPML2Canonical {
                 subnet_list.add(task);
             }
         }
+
+        for (de.epml.TypeAttribute epmlAttribute: func.getAttribute()) {
+            if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                addConfigurationAnnotationAttribute(epmlAttribute, task.getAttribute());
+            } else {
+                addUnrecognizedAttribute(epmlAttribute, task.getAttribute());
+            }
+        }
+
         net.getNode().add(task);
+    }
+
+    /* For an EPML split or join, each semicolon-terminated variant in the "configurationAnnotation" is a colon-separated variant:gatewayType pair. */
+    private void addConfigurationAnnotationAttribute2(de.epml.TypeAttribute epmlAttribute, List<org.apromore.cpf.TypeAttribute> cpfAttributeList) {
+        ConfigurationAnnotation pcConfigurationAnnotation = new ConfigurationAnnotation();
+        String[] value = epmlAttribute.getValue().split(";");
+        for (int i = 0; i < value.length; i++) {
+            if (!value[i].isEmpty()) {
+                String[] field = value[i].split(":", 2);
+                ConfigurationAnnotation.Configuration pcConfiguration = new ConfigurationAnnotation.Configuration();
+                pcConfiguration.setVariantRef(findVariant(field[0]));
+                switch (field[1]) {
+                case "and": pcConfiguration.setType(TGatewayType.PARALLEL);             break;
+                case "or":  pcConfiguration.setType(TGatewayType.INCLUSIVE);            break;
+                case "xor": pcConfiguration.setType(TGatewayType.DATA_BASED_EXCLUSIVE); break;
+                }
+                pcConfigurationAnnotation.getConfiguration().add(pcConfiguration);
+            }
+        }
+        org.apromore.cpf.TypeAttribute cpfAttribute = new org.apromore.cpf.TypeAttribute();
+        cpfAttribute.setName("bpmn_cpf/extensions");
+        cpfAttribute.setAny(pcConfigurationAnnotation);
+        cpfAttributeList.add(cpfAttribute);
+    }
+
+    /* For an EPML function or event, each semicolon-terminated variant in the "configurationAnnotation" is a colon-separated variant:name pair. */
+    private void addConfigurationAnnotationAttribute(de.epml.TypeAttribute epmlAttribute, List<org.apromore.cpf.TypeAttribute> cpfAttributeList) {
+        ConfigurationAnnotation pcConfigurationAnnotation = new ConfigurationAnnotation();
+        String[] value = epmlAttribute.getValue().split(";");
+        for (int i = 0; i < value.length; i++) {
+            if (!value[i].isEmpty()) {
+                String[] field = value[i].split(":", 2);
+                ConfigurationAnnotation.Configuration pcConfiguration = new ConfigurationAnnotation.Configuration();
+                pcConfiguration.setVariantRef(findVariant(field[0]));
+                pcConfiguration.setName((field.length < 2) ? null : field[1]);
+                pcConfigurationAnnotation.getConfiguration().add(pcConfiguration);
+            }
+        }
+
+        org.apromore.cpf.TypeAttribute cpfAttribute = new org.apromore.cpf.TypeAttribute();
+        cpfAttribute.setName("bpmn_cpf/extensions");
+        cpfAttribute.setAny(pcConfigurationAnnotation);
+        cpfAttributeList.add(cpfAttribute);
+    }
+
+    private Variants.Variant findVariant(String name) {
+        if (variantMap.containsKey(name)) {
+            return variantMap.get(name);
+        } else {
+            Variants.Variant variant = new Variants.Variant();
+            variant.setId("vid-" + UUID.randomUUID());
+            variant.setName(name);
+            variantMap.put(name, variant);
+            return variant;
+        }
+    }
+
+    private void addUnrecognizedAttribute(de.epml.TypeAttribute epmlAttribute, List<TypeAttribute> cpfAttributeList) {
+        org.apromore.cpf.TypeAttribute cpfAttribute = new org.apromore.cpf.TypeAttribute();
+        cpfAttribute.setName("epml_cpf/extensions");
+        cpfAttribute.setValue(epmlAttribute.getTypeRef() + ";" + epmlAttribute.getValue());
+        cpfAttributeList.add(cpfAttribute);
     }
 
     private void translatePI(final NetType net, final TypeProcessInterface pi) {
@@ -697,6 +841,15 @@ public class EPML2Canonical {
             edge.setId(String.valueOf(ids++));
             edge.setSourceId(id_map.get(arc.getFlow().getSource()));
             edge.setTargetId(id_map.get(arc.getFlow().getTarget()));
+
+            for (de.epml.TypeAttribute epmlAttribute: arc.getAttribute()) {
+                if ("configurationAnnotation".equals(epmlAttribute.getTypeRef())) {
+                    addConfigurationAnnotationAttribute(epmlAttribute, edge.getAttribute());
+                } else {
+                    addUnrecognizedAttribute(epmlAttribute, edge.getAttribute());
+                }
+            }
+
             net.getEdge().add(edge);
             flow_source_id_list.add(edge.getSourceId());
         } else if (arc.getRelation() != null) {

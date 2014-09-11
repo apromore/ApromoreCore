@@ -60,11 +60,13 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
      * @param process  the BPMN process to translate into a net
      * @param parent  if this is a subnet, the parent net; if this is a root net, <code>null</code>
      * @param initializer  BPMN document construction state
+     * @param cpf  the CPF root element, used to store attributes
      * @throws CanoniserException  if the net (and its subnets) can't be created and added
      */
-    public CpfNetType(final ProcessWrapper process,
-                      final NetType        parent,
-                      final Initializer    initializer) throws CanoniserException {
+    public CpfNetType(final ProcessWrapper       process,
+                      final NetType              parent,
+                      final Initializer          initializer,
+                      final CanonicalProcessType cpf) throws CanoniserException {
 
         final CpfNetType net = this;  // inner classes are easier to understand if there's an alternative to CpfNetType.this
 
@@ -495,12 +497,14 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
         }
 
         // Convert BPMN extension elements to CPF attributes
-        initializer.populateExtensionElements(
-            process.getBaseElement(),
-            this,
-            null,  // CPF Net instances don't have a "configurable" property
-            new UnaryFunction<Element>() { public void run(Element element){ ExtensionUtils.addToExtensions(element, CpfNetType.this, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
-        );
+        if (cpf != null) {
+            initializer.populateExtensionElements(
+                process.getBaseElement(),
+                this,
+                null,  // CPF Net instances don't have a "configurable" property
+                new UnaryFunction<Element>() { public void run(Element element){ ExtensionUtils.addToExtensions(element, cpf, BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS); }}
+            );
+        }
     }
 
     /** @return the names of all {@link ObjectType} nodes belonging to this instance */

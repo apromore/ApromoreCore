@@ -20,6 +20,9 @@
 
 package org.apromore.canoniser.epml.internal;
 
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.TGatewayType;
+import com.processconfiguration.Variants;
 import de.epml.ObjectFactory;
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
@@ -133,6 +136,8 @@ public class Canonical2EPML {
     private final TypeDirectory dir = new TypeDirectory();
     private long ids = 1;
     private long defIds = 1;
+
+    private boolean hasConfigurationAnnotations = false;
 
     public TypeEPML getEPML() {
         return epml;
@@ -507,6 +512,12 @@ public class Canonical2EPML {
             pi.getToProcess().setLinkToEpcId(id_map.get(pi.getToProcess().getLinkToEpcId().toString()));
         }
         */
+
+        if (hasConfigurationAnnotations) {
+            attrType = new TypeAttrType();
+            attrType.setTypeId("configurationAnnotation");
+            attrTypes.getAttributeType().add(attrType);
+        }
     }
 
     private void translateNet(final TypeEPC epc, final NetType net) throws CanoniserException {
@@ -555,6 +566,7 @@ public class Canonical2EPML {
                     flow.setTarget(id_map.get(edge.getTargetId()));
                     flow_list.add(flow);
                     arc.setFlow(flow);
+                    addArcAttributes(arc.getAttribute(), edge);
                     epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCArc(arc));
                     epcRefMap.put(arc.getId(), arc);
                 } else {
@@ -568,6 +580,28 @@ public class Canonical2EPML {
                 translateObject(obj, epc);
                 objectSet.add(obj.getId());
             //}
+        }
+    }
+
+    private void addArcAttributes(List<de.epml.TypeAttribute> epcAttributes, EdgeType edge) {
+        for (TypeAttribute cpfAttribute : edge.getAttribute()) {
+            if ("bpmn_cpf/extensions".equals(cpfAttribute.getName()) && (cpfAttribute.getAny() instanceof ConfigurationAnnotation)) {
+                ConfigurationAnnotation configurationAnnotation = (ConfigurationAnnotation) cpfAttribute.getAny();
+                String s = "";
+                for (ConfigurationAnnotation.Configuration configuration: configurationAnnotation.getConfiguration()) {
+                    if (!s.isEmpty()) {
+                        s += ";";
+                    }
+                    Variants.Variant variant = (Variants.Variant) configuration.getVariantRef();
+                    s += variant.getName();
+                }
+
+                de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
+                attribute.setTypeRef("configurationAnnotation");
+                attribute.setValue(s);
+                epcAttributes.add(attribute);
+                hasConfigurationAnnotations = true;
+            }
         }
     }
 
@@ -654,6 +688,21 @@ public class Canonical2EPML {
                     attribute.setTypeRef("nodetype");
                     attribute.setValue("System Function");
                     func.getAttribute().add(attribute);
+                }
+
+                if ("bpmn_cpf/extensions".equals(cpfAttribute.getName()) && (cpfAttribute.getAny() instanceof ConfigurationAnnotation)) {
+                    ConfigurationAnnotation configurationAnnotation = (ConfigurationAnnotation) cpfAttribute.getAny();
+                    String s = "";
+                    for (ConfigurationAnnotation.Configuration configuration: configurationAnnotation.getConfiguration()) {
+                        Variants.Variant variant = (Variants.Variant) configuration.getVariantRef();
+                        s += variant.getName() + ":" + configuration.getName() + ";";
+                    }
+
+                    de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
+                    attribute.setTypeRef("configurationAnnotation");
+                    attribute.setValue(s);
+                    func.getAttribute().add(attribute);
+                    hasConfigurationAnnotations = true;
                 }
             }
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCFunction(func));
@@ -754,11 +803,13 @@ public class Canonical2EPML {
     }
 
     private void translateGateway(final TypeEPC epc, final NodeType node) throws CanoniserException {
+
         if (node instanceof ANDSplitType) {
             TypeAND and = new TypeAND();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             and.setId(BigInteger.valueOf(ids++));
             and.setName(node.getName());
+            addGatewayAttributes(and.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCAnd(and));
             epcRefMap.put(and.getId(), and);
         } else if (node instanceof ANDJoinType) {
@@ -766,6 +817,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             and.setId(BigInteger.valueOf(ids++));
             and.setName(node.getName());
+            addGatewayAttributes(and.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCAnd(and));
             epcRefMap.put(and.getId(), and);
         } else if (node instanceof XORSplitType) {
@@ -773,6 +825,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             xor.setId(BigInteger.valueOf(ids++));
             xor.setName(node.getName());
+            addGatewayAttributes(xor.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCXor(xor));
             epcRefMap.put(xor.getId(), xor);
         } else if (node instanceof XORJoinType) {
@@ -780,6 +833,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             xor.setId(BigInteger.valueOf(ids++));
             xor.setName(node.getName());
+            addGatewayAttributes(xor.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCXor(xor));
             epcRefMap.put(xor.getId(), xor);
         } else if (node instanceof ORSplitType) {
@@ -787,6 +841,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             or.setId(BigInteger.valueOf(ids++));
             or.setName(node.getName());
+            addGatewayAttributes(or.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCOr(or));
             epcRefMap.put(or.getId(), or);
         } else if (node instanceof ORJoinType) {
@@ -794,6 +849,7 @@ public class Canonical2EPML {
             id_map.put(node.getId(), BigInteger.valueOf(ids));
             or.setId(BigInteger.valueOf(ids++));
             or.setName(node.getName());
+            addGatewayAttributes(or.getAttribute(), node);
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCOr(or));
             epcRefMap.put(or.getId(), or);
         } else if (node instanceof StateType) {
@@ -809,6 +865,36 @@ public class Canonical2EPML {
             epc.getEventAndFunctionAndRole().add(EPML_FACTORY.createTypeEPCEvent(event));
             epcRefMap.put(event.getId(), event);
         }
+    }
+
+    private void addGatewayAttributes(List<de.epml.TypeAttribute> epcAttributes, NodeType node) {
+        for (TypeAttribute cpfAttribute : node.getAttribute()) {
+            if ("bpmn_cpf/extensions".equals(cpfAttribute.getName()) && (cpfAttribute.getAny() instanceof ConfigurationAnnotation)) {
+                ConfigurationAnnotation configurationAnnotation = (ConfigurationAnnotation) cpfAttribute.getAny();
+                String s = "";
+                for (ConfigurationAnnotation.Configuration configuration: configurationAnnotation.getConfiguration()) {
+                    Variants.Variant variant = (Variants.Variant) configuration.getVariantRef();
+                    s += variant.getName() + ":" + toEpmlGateTypeString(configuration.getType()) + ";";
+                }
+
+                de.epml.TypeAttribute attribute = new de.epml.TypeAttribute();
+                attribute.setTypeRef("configurationAnnotation");
+                attribute.setValue(s);
+                epcAttributes.add(attribute);
+                hasConfigurationAnnotations = true;
+            }
+        }
+    }
+
+    private String toEpmlGateTypeString(TGatewayType gatewayType) {
+        switch (gatewayType) {
+        case DATA_BASED_EXCLUSIVE:  return "xor";
+        case EVENT_BASED_EXCLUSIVE: return "evxor";
+        case INCLUSIVE:             return "or";
+        case PARALLEL:              return "and";
+        }
+
+        throw new Error("Unsupported TGatewayType: " + gatewayType);
     }
 
     private void createEvent(final TypeEPC epc, final NetType net) {
@@ -882,6 +968,9 @@ public class Canonical2EPML {
 
     // translate the annotations
     private void mapNodeAnnotations(final AnnotationsType annotations) {
+        if (annotations == null) {
+            return;
+        }
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (nodeRefMap.containsKey(annotation.getCpfId()) || objectSet.contains(annotation.getCpfId())) {
                 String cid = annotation.getCpfId();
@@ -940,6 +1029,9 @@ public class Canonical2EPML {
     }
 
     private void mapEdgeAnnotations(final AnnotationsType annotations) {
+        if (annotations == null) {
+            return;
+        }
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (edgeRefMap.containsKey(annotation.getCpfId()) || objectRefMap.containsKey(annotation.getCpfId()) || arcSet.contains(annotation.getCpfId())) {
                 String cid = annotation.getCpfId();
