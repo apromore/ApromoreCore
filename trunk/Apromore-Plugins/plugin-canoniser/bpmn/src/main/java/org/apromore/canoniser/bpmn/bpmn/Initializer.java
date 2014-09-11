@@ -732,14 +732,20 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
             assert extensionElements != null;
 
             for (TypeAttribute attribute : attributes) {
-                Element element = (Element) attribute.getAny();
-                if (element != null) {
+                if (attribute.getAny() == null) {
+                    // TODO: the CPF attribute probably has a value, which ought to be propagated
+                }
+                else if (attribute.getAny() instanceof Element) {
+                    Element element = (Element) attribute.getAny();
                     NodeList nodes = element.getChildNodes();
                     for (int i = 0; i < nodes.getLength(); i++) {
                         if (nodes.item(i) instanceof Element) {
                             extensionElements.getAny().add(nodes.item(i));
                         }
                     }
+                }
+                else {  // the presumption here is that anything that didn't get turned into a DOM Element must be from the cpf: or pc: namespaces
+                    extensionElements.getAny().add(attribute.getAny());
                 }
             }
 

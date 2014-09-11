@@ -141,7 +141,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
                 }
 
             } else if (rootElement instanceof TProcess) {  // Each top-level BPMN Process becomes a CPF Net in the rootIDs list
-                new CpfNetType(new ProcessWrapper((TProcess) rootElement), null, initializer);
+                new CpfNetType(new ProcessWrapper((TProcess) rootElement), null, initializer, this);
             } else {
                 initializer.warn("Canonisation ignores " + rootElement.getId() + " of type " + rootElement.getClass().getCanonicalName());
             }
@@ -177,7 +177,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @throws SAXException if the CPF schema can't be parsed
      */
     public static CpfCanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException, SAXException {
-        Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
+        Unmarshaller unmarshaller = JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class, com.processconfiguration.ObjectFactory.class)
                                                .createUnmarshaller();
         CpfUnmarshallerListener listener = new CpfUnmarshallerListener();
         unmarshaller.setListener(listener);
@@ -205,9 +205,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             return (CpfCanonicalProcessType) cpf;
         } else {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Marshaller marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
-            marshaller.marshal(new ObjectFactory().createCanonicalProcess(cpf), out);
-
+            CPFSchema.marshalCanonicalFormat(out, cpf, false);
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
             return newInstance(in, false);
         }

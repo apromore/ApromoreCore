@@ -50,6 +50,8 @@ public class Canonical extends AbstractCanonical<CPFEdge, CPFNode> {
     private final Map<String, Map<String, String>> nodeProperties = new HashMap<>();
     private final Map<String, String> originalNodeMapping = new HashMap<>();
 
+    public final Map<Object, String> variantMap = new HashMap<>();
+
 
     @Override
     public String getUri() {

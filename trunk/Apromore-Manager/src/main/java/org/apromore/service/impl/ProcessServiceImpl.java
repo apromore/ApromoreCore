@@ -19,6 +19,8 @@
  */
 package org.apromore.service.impl;
 
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.Variants;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -104,7 +106,9 @@ import org.wfmc._2009.xpdl2.PackageType;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -494,9 +498,33 @@ public class ProcessServiceImpl implements ProcessService {
             if (lock) {
                 canonical.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
             }
+            Map<String, Variants.Variant> variantMap = new HashMap<>();
+            for (ProcessModelAttribute attribute: pmv.getProcessModelAttributes()) {
+                Element variants = XMLUtils.stringToAnyElement(attribute.getAny());
+                if (variants != null) {  // TODO: currently this presumes that pc:variants is the only extension element we'll ever see
+                    java.lang.Object o = JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
+                                                                 com.processconfiguration.ObjectFactory.class)
+                                                    .createUnmarshaller()
+                                                    .unmarshal(variants);
+                    canonical.setProperty(attribute.getName(), attribute.getValue(), o);
+
+                    // Populate a map from variant IDs to the actual JAXB Variant objects
+                    for (Variants.Variant variant: ((Variants) o).getVariant()) {
+                        variantMap.put(variant.getId(), variant);
+                    }
+                    
+                } else {
+                    canonical.setProperty(attribute.getName(), attribute.getValue(), variants);
+                }
+            }
+
+            // Kludge to work around limitations in JAXB, populating configurationAnnotation/configuration@variantRef ID references
+            for (Map.Entry entry: canonical.variantMap.entrySet()) {
+                ((ConfigurationAnnotation.Configuration) entry.getKey()).setVariantRef(variantMap.get(entry.getValue()));
+            }
 
             tmp = converter.convert(canonical);
-        } catch (ExceptionDao e) {
+        } catch (ExceptionDao | JAXBException e) {
             String msg = "Failed to retrieve the current version of the process model " + processName + " - " + branchName;
             LOGGER.error(msg, e);
         }
@@ -926,18 +954,24 @@ public class ProcessServiceImpl implements ProcessService {
 
     /* Insert the Attributes to the ProcessModel */
     private void addAttributesToProcessModel(final Canonical proModGrap, final ProcessModelVersion process) {
-        ProcessModelAttribute pmvAtt;
-        for (CPFNode node : proModGrap.getNodes()) {
-            for (Map.Entry<String, IAttribute> obj : node.getAttributes().entrySet()) {
-                pmvAtt = new ProcessModelAttribute();
-                pmvAtt.setName(obj.getKey());
-                pmvAtt.setValue(obj.getValue().getValue());
-                if (obj.getValue().getAny() instanceof Element) {
-                    pmvAtt.setAny(XMLUtils.anyElementToString((Element) obj.getValue().getAny()));
-                }
-                pmvAtt.setProcessModelVersion(process);
-                process.getProcessModelAttributes().add(pmvAtt);
+        for (Map.Entry<String, IAttribute> obj : proModGrap.getProperties().entrySet()) {
+            ProcessModelAttribute pmvAtt = new ProcessModelAttribute();
+            pmvAtt.setName(obj.getKey());
+            pmvAtt.setValue(obj.getValue().getValue());
+            java.lang.Object any = obj.getValue().getAny();
+            if (any instanceof Element) {
+                pmvAtt.setAny(XMLUtils.anyElementToString((Element) any));
             }
+            else if (any instanceof Variants) {
+                String s = XMLUtils.extensionElementToString(any);
+                LOGGER.info("Variants any=" + any + " string=" + s);
+                pmvAtt.setAny(s);
+            }
+            else if (any != null) {
+                throw new IllegalArgumentException("Parsed an unsupported extension: " + any);
+            }
+            pmvAtt.setProcessModelVersion(process);
+            process.getProcessModelAttributes().add(pmvAtt);
         }
     }
 

@@ -22,6 +22,7 @@ package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packges
 
+import com.processconfiguration.Variants;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.Constants;
 import org.apromore.canoniser.bpmn.JAXBConstants;
@@ -37,6 +38,7 @@ import org.omg.spec.bpmn._20100524.model.TComplexGateway;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEventBasedGateway;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TExtensionElements;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TGateway;
@@ -73,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.w3c.dom.Element;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -210,6 +213,42 @@ public class BpmnDefinitions extends TDefinitions implements Constants, JAXBCons
                 getRootElement().add(wrapperCollaboration);
             }
             */
+        }
+
+        // pc:variants occurring on the document element of the CPF need to be moved to one of the root elements of the BPMN
+        for (org.apromore.cpf.TypeAttribute attribute: cpf.getAttribute()) {
+            outer: switch (attribute.getName()) {
+            case "bpmn_cpf/extensions":
+                for (JAXBElement<? extends TRootElement> jaxbRoot: getRootElement()) {
+                    TRootElement root = jaxbRoot.getValue();
+                    TExtensionElements extensionElements = root.getExtensionElements();
+                    if (extensionElements == null) {
+                        extensionElements = new BpmnObjectFactory().createTExtensionElements();
+                        root.setExtensionElements(extensionElements);
+                    }
+                    assert extensionElements != null;
+                    assert extensionElements == root.getExtensionElements();
+
+                    extensionElements.getAny().add(attribute.getAny());
+
+                    break outer;
+                }
+                throw new CanoniserException("Couldn't find a root element to place the BPMN variants attribute");
+
+            case "BranchID":
+            case "BranchName":
+            case "RootFragmentId":
+            case "InitialFormat":
+            case "IntialFormat":
+            case "PMVID":
+            case "ProcessName":
+            case "VersionNumber":
+                // recognized, but ignored
+                break;
+
+            default:
+                throw new CanoniserException("Unsupported extension attribute in CPF: " + attribute.getName() + " value=" + attribute.getValue() + " any=" + attribute.getAny());
+            }
         }
 
         // Make sure all the deferred fields did eventually get filled in

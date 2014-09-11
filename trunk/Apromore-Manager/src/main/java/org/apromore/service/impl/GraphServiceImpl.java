@@ -20,16 +20,25 @@
 
 package org.apromore.service.impl;
 
-import javax.inject.Inject;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.dom.DOMSource;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.TGatewayType;;
+import com.processconfiguration.Variants;
 import org.apromore.common.Constants;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.NodeRepository;
 import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.EdgeAttribute;
 import org.apromore.dao.model.Expression;
 import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeAttribute;
@@ -118,7 +127,35 @@ public class GraphServiceImpl implements GraphService {
             CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
             CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
             if (v1 != null && v2 != null) {
-                new CPFEdge(procModelGraph, edge.getOriginalId(), v1, v2);
+                CPFEdge cpfEdge = new CPFEdge(procModelGraph, edge.getOriginalId(), v1, v2);
+
+                if (edge.getConditionExpression() != null) {
+                    CPFExpression cpfExpression = new CPFExpression();
+                    cpfExpression.setDescription( edge.getConditionExpression().getDescription() );
+                    cpfExpression.setExpression(  edge.getConditionExpression().getExpression()  );
+                    cpfExpression.setLanguage(    edge.getConditionExpression().getLanguage()    );
+                    cpfExpression.setReturnType(  edge.getConditionExpression().getReturnType()  );
+                    cpfEdge.setConditionExpr(cpfExpression);
+                }
+
+                if (edge.getDef() != null) {
+                    cpfEdge.setDefault(edge.getDef());
+                }
+
+                cpfEdge.setOriginalId(edge.getOriginalId());
+
+                for (EdgeAttribute attribute: edge.getAttributes()) {
+                    if ("bpmn_cpf/extensions".equals(attribute.getName())) {
+                        Element element = XMLUtils.stringToAnyElement(attribute.getAny());
+                        if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurationAnnotation".equals(element.getLocalName())) {
+                            cpfEdge.addAttribute("bpmn_cpf/extensions", null, createConfigurationAnnotation(element, procModelGraph));
+                        } else {
+                            cpfEdge.addAttribute("bpmn_cpf/extensions", null, XMLUtils.stringToAnyElement(attribute.getAny()));
+                        }
+                    } else {
+                        cpfEdge.addAttribute(attribute.getName(), attribute.getValue(), XMLUtils.stringToAnyElement(attribute.getAny()));
+                    }
+                }
             } else {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentURI);
@@ -133,7 +170,6 @@ public class GraphServiceImpl implements GraphService {
         }
         return procModelGraph;
     }
-
 
 
     /* Build the correct type of Node so we don't loss Information */
@@ -165,14 +201,14 @@ public class GraphServiceImpl implements GraphService {
             } else if (node.getNodeType().equals(NodeTypeEnum.POCKET)) {
                 result = new CPFNode();
                 result.setGraph(canonical);
-                addNodeDetails(node, result);
+                addNodeDetails(node, result, canonical);
             } else {
                 LOGGER.warn("Unknown Node Type in parsing Node from DB: " + node.getNodeType().value());
             }
         } else {
             result = new CPFNode();
             result.setGraph(canonical);
-            addNodeDetails(node, result);
+            addNodeDetails(node, result, canonical);
         }
         return result;
     }
@@ -183,7 +219,7 @@ public class GraphServiceImpl implements GraphService {
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.MESSAGE);
 
-        addNodeDetails(node, cpfNode);
+        addNodeDetails(node, cpfNode, canonical);
         addWorkDetails(node, cpfNode, canonical);
 
         if (node.getMessageDirection() != null) {
@@ -199,7 +235,7 @@ public class GraphServiceImpl implements GraphService {
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.EVENT);
 
-        addNodeDetails(node, cpfNode);
+        addNodeDetails(node, cpfNode, canonical);
         addWorkDetails(node, cpfNode, canonical);
 
         return cpfNode;
@@ -211,7 +247,7 @@ public class GraphServiceImpl implements GraphService {
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.TIMER);
 
-        addNodeDetails(node, cpfNode);
+        addNodeDetails(node, cpfNode, canonical);
         addWorkDetails(node, cpfNode, canonical);
 
         if (node.getTimeDuration() != null) {
@@ -240,7 +276,7 @@ public class GraphServiceImpl implements GraphService {
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(NodeTypeEnum.TASK);
 
-        addNodeDetails(node, cpfNode);
+        addNodeDetails(node, cpfNode, canonical);
         addWorkDetails(node, cpfNode, canonical);
 
         if (node.getConfiguration() != null) {
@@ -257,7 +293,7 @@ public class GraphServiceImpl implements GraphService {
     /* Populate the Node with the State Node details. */
     private INode constructSpecialNode(final Node node, final NodeTypeEnum type, Canonical canonical) {
         INode cpfNode = new CPFNode();
-        addNodeDetails(node, cpfNode);
+        addNodeDetails(node, cpfNode, canonical);
 
         cpfNode.setGraph(canonical);
         cpfNode.setNodeType(type);
@@ -268,13 +304,13 @@ public class GraphServiceImpl implements GraphService {
 
 
     /* Add the Node Specific Details to the Node. */
-    private void addNodeDetails(final Node node, INode cpfNode) {
+    private void addNodeDetails(final Node node, INode cpfNode, Canonical canonical) {
         cpfNode.setName(node.getName());
         cpfNode.setId(node.getUri());
         cpfNode.setNetId(node.getNetId());
         cpfNode.setOriginalId(node.getOriginalId());
 
-        addNodeAttributes(node, cpfNode);
+        addNodeAttributes(node, cpfNode, canonical);
     }
 
     /* Add the Work Node Specific Details to the Node. */
@@ -358,12 +394,49 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /* Add the Attributes to the Node. */
-    private void addNodeAttributes(final Node node, INode cpfNode) {
+    private void addNodeAttributes(final Node node, INode cpfNode, final Canonical procModelGraph) {
         if (node.getAttributes() != null) {
-            for (NodeAttribute n : node.getAttributes()) {
-                cpfNode.addAttribute(n.getName(), n.getValue(), XMLUtils.stringToAnyElement(n.getAny()));
+            for (NodeAttribute attribute : node.getAttributes()) {
+                if ("bpmn_cpf/extensions".equals(attribute.getName())) {
+                    Element element = XMLUtils.stringToAnyElement(attribute.getAny());
+                    if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurationAnnotation".equals(element.getLocalName())) {
+                        cpfNode.addAttribute("bpmn_cpf/extensions", null, createConfigurationAnnotation(element, procModelGraph));
+                    } else if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurable".equals(element.getLocalName())) {
+                        ((CPFNode) cpfNode).setConfigurable(true);
+                    } else {
+                        cpfNode.addAttribute("bpmn_cpf/extensions", null, XMLUtils.stringToAnyElement(attribute.getAny()));
+                    }
+                } else {
+                    cpfNode.addAttribute(attribute.getName(), attribute.getValue(), XMLUtils.stringToAnyElement(attribute.getAny()));
+                }
             }
         }
+    }
+
+    /**
+     * Convert a configuration annotation from a DOM Element representation to a JAXB object
+     *
+     * @param element  the DOM representation
+     * @param canonical  required for the sake of the {@link Canonical.variantMap} to fix IDREFs that JAXB can't relink correctly
+     * @return the JAXB representation
+     */
+    private ConfigurationAnnotation createConfigurationAnnotation(Element element, Canonical canonical) {
+        ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
+
+        NodeList configurationList = element.getElementsByTagNameNS("http://www.processconfiguration.com", "configuration");
+        for (int i=0; i < configurationList.getLength(); i++) {
+            Element child = (Element) configurationList.item(i);
+            ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
+            if (child.hasAttribute("name")) {
+                configuration.setName(child.getAttribute("name"));
+            }
+            if (child.hasAttribute("type")) {
+                configuration.setType(TGatewayType.fromValue(child.getAttribute("type")));
+            }
+            canonical.variantMap.put(configuration, child.getAttribute("variantRef"));
+            configurationAnnotation.getConfiguration().add(configuration);
+        }
+        return configurationAnnotation;
     }
 
 

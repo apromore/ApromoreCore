@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.processconfiguration.ConfigurationAnnotation;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.ExpressionRepository;
 import org.apromore.dao.NodeRepository;
@@ -128,7 +129,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     public Edge addEdge(final CPFEdge cpfEdge, FragmentVersion fv, OperationContext op) {
-        LOGGER.trace("Adding new Edge: " + cpfEdge.getId());
+        LOGGER.trace("Adding new Edge " + cpfEdge.getOriginalId() + " id=" + cpfEdge.getId() + " attributes=" + cpfEdge.getAttributes());
 
         try {
             Edge edge = new Edge();
@@ -162,7 +163,7 @@ public class ContentServiceImpl implements ContentService {
 
             return eRepository.save(edge);
         } catch (Exception e) {
-            LOGGER.error("Unable to add Edge(" + cpfEdge.getId() + "): " + e.getMessage());
+            LOGGER.error("Unable to add Edge(" + cpfEdge.getOriginalId() + "): " + e.getMessage());
         }
         return null;
     }
@@ -174,8 +175,15 @@ public class ContentServiceImpl implements ContentService {
             nAtt = new NodeAttribute();
             nAtt.setName(e.getKey());
             nAtt.setValue(e.getValue().getValue());
-            if (e.getValue().getAny() instanceof Element) {
-                nAtt.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            java.lang.Object any = e.getValue().getAny();
+            if (any instanceof Element) {
+                nAtt.setAny(XMLUtils.anyElementToString((Element) any));
+            }
+            else if (any instanceof ConfigurationAnnotation) {
+                nAtt.setAny(XMLUtils.extensionElementToString(any));
+            }
+            else if (any != null) {
+                throw new IllegalArgumentException("Parsed an unsupported extension: " + any);
             }
             nAtt.setNode(node);
             node.getAttributes().add(nAtt);
@@ -326,8 +334,12 @@ public class ContentServiceImpl implements ContentService {
             edgeAttribute = new EdgeAttribute();
             edgeAttribute.setName(e.getKey());
             edgeAttribute.setValue(e.getValue().getValue());
-            if (e.getValue().getAny() instanceof Element) {
-                edgeAttribute.setAny(XMLUtils.anyElementToString((Element) e.getValue().getAny()));
+            java.lang.Object any = e.getValue().getAny();
+            if (any instanceof Element) {
+                edgeAttribute.setAny(XMLUtils.anyElementToString((Element) any));
+            }
+            else if (any instanceof ConfigurationAnnotation) {
+                edgeAttribute.setAny(XMLUtils.extensionElementToString(any));
             }
             edgeAttribute.setEdge(edge);
             edge.getAttributes().add(edgeAttribute);

@@ -113,7 +113,8 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
             // Add the CPF child net
             NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.newId("subprocess")),
                                             net,
-                                            initializer);
+                                            initializer,
+                                            null);
             assert subnet != null;
 
             setSubnetId(subnet.getId());
