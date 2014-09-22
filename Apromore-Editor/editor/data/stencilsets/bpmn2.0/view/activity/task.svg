@@ -37,8 +37,9 @@
 	</defs>
 	
 	<rect id="text_frame" oryx:anchors="bottom top right left" x="1" y="1" width="94" height="79" rx="10" ry="10" stroke="none" stroke-width="0" fill="none" />
-    <rect id="callActivity" oryx:resize="vertical horizontal" oryx:anchors="bottom top right left" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="4" fill="none" />
+        <rect id="callActivity" oryx:resize="vertical horizontal" oryx:anchors="bottom top right left" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="4" fill="none" />
 	<rect id="bg_frame" oryx:resize="vertical horizontal" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="1" fill="url(#background) #ffffcc" />
+        <rect id="selected" oryx:resize="vertical horizontal" x="2" y="2" width="96" height="76" rx="7" ry="7" stroke="#77F" stroke-width="5" fill="none" />
 		<text 
 			font-size="12" 
 			id="text_name" 
@@ -48,8 +49,8 @@
 			oryx:fittoelem="text_frame"
 			stroke="black">
 		</text>
-    <g id="manualTask" transform="scale(0.7,0.7) translate(8,8)" display="none">
-    	<path oryx:anchors="top left" id="hand" 
+        <g id="manualTask" transform="scale(0.7,0.7) translate(8,8)" display="none">
+    	        <path oryx:anchors="top left" id="hand" 
     		stroke="black"
     		stroke-width="1"
     		style="opacity:1;fill:none;fill-opacity:1;" 
