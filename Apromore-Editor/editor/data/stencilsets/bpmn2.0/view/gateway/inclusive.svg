@@ -23,6 +23,12 @@
 	
     <path
        d="M -4.5,16 L 16,-4.5 L 35.5,16 L 16,35.5z"
+       id="selected"
+       fill="url(#background) white"
+       stroke="#88F"
+       style="stroke-width:8" />
+    <path
+       d="M -4.5,16 L 16,-4.5 L 35.5,16 L 16,35.5z"
        id="bg_frame"
        fill="url(#background) white"
        stroke="black"
