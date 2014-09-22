@@ -61,6 +61,7 @@
 			<requires namespace="http://b3mn.org/stencilset/bpmn2.0choreography#"/>
 		</plugin>	
                 <plugin source="configurationExtension.js" name="ORYX.Plugins.ConfigurationExtension"/>
+                <plugin source="selectionExtension.js" name="ORYX.Plugins.SelectionExtension"/>
 		
 		<!-- BPMN1.1 specific plugins -->
 		<plugin source="bpmn11.js" name="ORYX.Plugins.BPMN11">

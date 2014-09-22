@@ -709,6 +709,20 @@ ORYX.Core.Edge = {
             this.node.firstChild.childNodes[1].setAttributeNS(null, "transform", "translate(" + x + ", " + y + ")");
         }
 
+        // BEGIN brute ignorance implementation of sequence flow selection refToView visibility
+
+	this.propertiesChanged.each((function(e) {
+		var h = this.properties[e.key];
+		var g = this.getStencil().property(e.key);
+		g.refToView().each((function (p) {
+			if (p == "selected") {
+				var svgElem = this.node.ownerDocument.getElementById(this.id +"_3");
+				svgElem.setAttributeNS(null, "visibility", h ? null : "hidden");
+			}
+		}).bind(this));
+	}).bind(this));
+
+        // END brute ignorance implementation of sequence flow selection refToView visibility
     },
 
     /**
