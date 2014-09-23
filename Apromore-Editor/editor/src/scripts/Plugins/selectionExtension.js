@@ -26,44 +26,43 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     
     showDialog: function(){
 
+	// Find all the variants occurring in this model
+	var variants = [];
+	this.facade.getCanvas().getChildShapes().each(function (shape) {
+		if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
+			var shapeVariants = shape.properties["oryx-variants"].evalJSON();
+			for (i = 0; i < shapeVariants.totalCount; i++) {
+				var item = shapeVariants.items[i].id;
+				if (variants.indexOf(item) == -1) {
+					variants.push(item);
+				}
+			}
+		}
+	}.bind(this));
+        variants.sort();
+
+	// Create the form to present
 	var form = new Ext.form.FormPanel({
             baseCls: 'x-plain',
             labelWidth: 50,
             defaultType: 'textfield',
-            items: [{
+            items: [new Ext.form.Label({
                 text: "Selected variants:",
                 style: 'font-size:12px;margin-bottom:10px;display:block;',
-                anchor: '100%',
-                xtype: 'label'
-            }, {
-                fieldLabel: "Variants",
-                boxLabel: "BNE",
-		hideLabel: true,
-                name: 'variants',
-                xtype: 'checkbox'
-            }, {
-                boxLabel: "MEL",
-		hideLabel: true,
-                name: 'variants',
-                xtype: 'checkbox'
-            }, {
-                boxLabel: "OOL",
-		hideLabel: true,
-                name: 'variants',
-                xtype: 'checkbox'
-            }, {
-                boxLabel: "PER",
-		hideLabel: true,
-                name: 'variants',
-                xtype: 'checkbox'
-            }, {
-                boxLabel: "ROK",
-		hideLabel: true,
-                name: 'variants',
-                xtype: 'checkbox'
-            }]
+                anchor: '100%'
+            })]
         });
 
+	// Populate the form with a checkbox for each variant
+	variants.each(function(variant) {
+		form.add(new Ext.form.Checkbox({
+			boxLabel: variant,
+			hideLabel: true,
+			name: 'variants'
+		}));
+	}.bind(this));
+
+	// Present the form to the user
         var dialog = new Ext.Window({
             autoCreate: true,
             layout: 'fit',
@@ -88,11 +87,11 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                     window.setTimeout(function(){
                         var selectedVariants = [];
-			if (form.items.items[1].getValue()) { selectedVariants.push("BNE"); }
-			if (form.items.items[2].getValue()) { selectedVariants.push("MEL"); }
-			if (form.items.items[3].getValue()) { selectedVariants.push("OOL"); }
-			if (form.items.items[4].getValue()) { selectedVariants.push("PER"); }
-			if (form.items.items[5].getValue()) { selectedVariants.push("ROK"); }
+			for (k = 0; k < variants.length; k++) {
+				if (form.items.items[k+1].getValue()) {
+					selectedVariants.push(variants[k]);
+				}
+			}
                         try {
                             this.selectVariants(selectedVariants);
                             dialog.close();
@@ -162,7 +161,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 				break;
 			}
 		}.bind(this));
-		console.log("Start events: " + startEvents + "  end events: " + endEvents);
 
 		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
 		var isInSelectedVariants = function(shape) {
@@ -207,12 +205,10 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		startEvents.each(function (shape) {
 			traverseStartables(shape);
 		}.bind(this));
-		console.log("Startable elements: " + startable);
 
 		endEvents.each(function (shape) {
 			traverseEndables(shape);
 		}.bind(this));
-		console.log("Endable elements: " + endable);
 
 		// Select every shape that is both startable and endable
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
