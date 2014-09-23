@@ -146,23 +146,41 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
     selectVariants: function(selectedVariants){
         try {
+		
+		// Find all the BPMN start and end events in the model
 		var startEvents = [];
 		var endEvents = [];
-		
-		// Populate startEvents and endEvents
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
 			switch (shape.getStencil().id()) {
+			case "http://b3mn.org/stencilset/bpmn2.0#StartCompensationEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartConditionalEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartErrorEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartEscalationEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartMessageEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartMultipleEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartParallelMultipleEvent":
 			case "http://b3mn.org/stencilset/bpmn2.0#StartNoneEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartSignalEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#StartTimerEvent":
 				startEvents.push(shape);
 				break;
 			
+			case "http://b3mn.org/stencilset/bpmn2.0#EndCancelEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndCompensationEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndErrorEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndEscalationEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndMessageEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndMultipleEvent":
 			case "http://b3mn.org/stencilset/bpmn2.0#EndNoneEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndSignalEvent":
+			case "http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent":
 				endEvents.push(shape);
 				break;
 			}
 		}.bind(this));
 
 		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
+		// We use this to block reachability via sequence flows that don't occur in the selected variants
 		var isInSelectedVariants = function(shape) {
 			if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
 				var variants = shape.properties["oryx-variants"].evalJSON();
@@ -182,8 +200,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
 		// Every element reachable from a start element is startable
 		var startable = [];
-		var endable = [];
-
 		var traverseStartables = function(shape) {
 			if (isInSelectedVariants(shape) && startable.indexOf(shape) == -1) {
 				startable.push(shape);
@@ -192,7 +208,12 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 				}.bind(this));
 			}
 		}
+		startEvents.each(function (shape) {
+			traverseStartables(shape);
+		}.bind(this));
 
+		// Every element reachable from an end element is endable
+		var endable = [];
 		var traverseEndables = function(shape) {
 			if (isInSelectedVariants(shape) && endable.indexOf(shape) == -1) {
 				endable.push(shape);
@@ -201,11 +222,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 				}.bind(this));
 			}
 		}
-
-		startEvents.each(function (shape) {
-			traverseStartables(shape);
-		}.bind(this));
-
 		endEvents.each(function (shape) {
 			traverseEndables(shape);
 		}.bind(this));
