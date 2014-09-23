@@ -79,7 +79,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             resizable: true,
             items: [form],
             buttons: [{
-                text: "Select All",
+                text: "Select Variants",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
                         msg: "Selecting all"
@@ -117,7 +117,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                     window.setTimeout(function(){
                         //var json = form.items.items[2].getValue();
                         try {
-                            this.selectVariants([]);
+                            this.selectNone();
                             dialog.close();
                         }
                         catch (error) {
@@ -146,35 +146,80 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     },
 
     selectVariants: function(selectedVariants){
-	//alert("Select variants " + selectedVariants);
         try {
-        	var stylesheet = this.facade.getCanvas().getHTMLContainer().ownerDocument.head.lastElementChild.sheet;
+		var startEvents = [];
+		var endEvents = [];
+		
+		// Populate startEvents and endEvents
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
-			    try {
-				var variants = shape.properties["oryx-variants"].evalJSON();
-				var match = false;
-				var formatted = "";
-				for (i = 0; i < variants.totalCount; i++) {
-					formatted += variants.items[i].id;
-                                        for (j = 0; j < selectedVariants.length; j++) {
-                                            if (selectedVariants[j] == variants.items[i].id) {
-						match = true;
-					    }
-					}
-					if (i < variants.totalCount - 1) {
-						formatted += ",";
-					}
-				}
-				//alert(shape + " variants: " + formatted + " match: " + match);
-				shape.setProperty("selected", match);
-
-			    } catch (err) {
-				alert(shape + " failed: " + err);
-			    }
-
+			switch (shape.getStencil().id()) {
+			case "http://b3mn.org/stencilset/bpmn2.0#StartNoneEvent":
+				startEvents.push(shape);
+				break;
+			
+			case "http://b3mn.org/stencilset/bpmn2.0#EndNoneEvent":
+				endEvents.push(shape);
+				break;
 			}
 		}.bind(this));
+		console.log("Start events: " + startEvents + "  end events: " + endEvents);
+
+		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
+		var isInSelectedVariants = function(shape) {
+			if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
+				var variants = shape.properties["oryx-variants"].evalJSON();
+                                var match = false;
+                                for (i = 0; i < variants.totalCount; i++) {
+                                        for (j = 0; j < selectedVariants.length; j++) {
+                                            if (selectedVariants[j] == variants.items[i].id) {
+                                                match = true;
+                                            }
+                                        }
+                                }
+				return match;
+			} else {
+				return true;
+			}
+		}
+
+		// Every element reachable from a start element is startable
+		var startable = [];
+		var endable = [];
+
+		var traverseStartables = function(shape) {
+			if (isInSelectedVariants(shape) && startable.indexOf(shape) == -1) {
+				startable.push(shape);
+				shape.getOutgoingShapes().each(function (outgoing) {
+					traverseStartables(outgoing);
+				}.bind(this));
+			}
+		}
+
+		var traverseEndables = function(shape) {
+			if (isInSelectedVariants(shape) && endable.indexOf(shape) == -1) {
+				endable.push(shape);
+				shape.getIncomingShapes().each(function (incoming) {
+					traverseEndables(incoming);
+				}.bind(this));
+			}
+		}
+
+		startEvents.each(function (shape) {
+			traverseStartables(shape);
+		}.bind(this));
+		console.log("Startable elements: " + startable);
+
+		endEvents.each(function (shape) {
+			traverseEndables(shape);
+		}.bind(this));
+		console.log("Endable elements: " + endable);
+
+		// Select every shape that is both startable and endable
+		this.facade.getCanvas().getChildShapes().each(function (shape) {
+			shape.setProperty("selected", (startable.indexOf(shape) > -1) && (endable.indexOf(shape) > -1));
+		}.bind(this));
+
+		// selection properties are now all correct, so update the display
 		this.facade.getCanvas().update();
         }
         catch (err) {
@@ -182,4 +227,16 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                 //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
         }
     },
+
+    selectNone: function(){
+	try {
+		this.facade.getCanvas().getChildShapes().each(function (shape) {
+			shape.setProperty("selected", false);
+		}.bind(this));
+		this.facade.getCanvas().update();
+	}
+	catch (err) {
+		alert("Unable to clear selection: " + err.message);
+	}
+    }
 });
