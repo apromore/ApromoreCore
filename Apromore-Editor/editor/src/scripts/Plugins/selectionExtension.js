@@ -27,19 +27,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     showDialog: function(){
 
 	// Find all the variants occurring in this model
-	var variants = [];
-	this.facade.getCanvas().getChildShapes().each(function (shape) {
-		if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
-			var shapeVariants = shape.properties["oryx-variants"].evalJSON();
-			for (i = 0; i < shapeVariants.totalCount; i++) {
-				var item = shapeVariants.items[i].id;
-				if (variants.indexOf(item) == -1) {
-					variants.push(item);
-				}
-			}
-		}
-	}.bind(this));
-        variants.sort();
+	var variants = this.findAllVariants();
 
 	// Create the form to present
 	var form = new Ext.form.FormPanel({
@@ -62,6 +50,22 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		}));
 	}.bind(this));
 
+	form.add(new Ext.form.NumberField({
+		allowDecimals: false,
+		allowNegative: false,
+		fieldLabel: "Minimum",
+		name: "min",
+		value: 0
+	}));
+
+	form.add(new Ext.form.NumberField({
+		allowDecimals: false,
+		allowNegative: false,
+		fieldLabel: "Maximum",
+		name: "max",
+		value: variants.length
+	}));
+
 	// Present the form to the user
         var dialog = new Ext.Window({
             autoCreate: true,
@@ -81,7 +85,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                 text: "Select Variants",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
-                        msg: "Selecting all"
+                        msg: "Selecting checked variants"
                     });
                     loadMask.show();
 
@@ -106,6 +110,27 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                 }.bind(this)
             }, {
+		text: "Select Frequency",
+		handler: function() {
+			var loadMask = new Ext.LoadMask(Ext.getBody(), {
+				msg: "Selecting by frequency"
+			});
+			loadMask.show();
+
+			window.setTimeout(function(){
+				try {
+					this.selectByFrequency(form.items.items[variants.length + 1].getValue(), form.items.items[variants.length +2].getValue());
+					dialog.close();
+				}
+				catch (error) {
+					Ext.Msg.alert(ORYX.I18N.JSONSupport.imp.syntaxError, error.message);
+				}
+				finally {
+					loadMask.hide();
+				}
+			}.bind(this), 100);
+		}.bind(this)
+	    }, {
                 text: "Select None",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
@@ -114,7 +139,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                     loadMask.show();
 
                     window.setTimeout(function(){
-                        //var json = form.items.items[2].getValue();
                         try {
                             this.selectNone();
                             dialog.close();
@@ -144,40 +168,132 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
         }, true)
     },
 
+    // Return an array containing the shapes which participate in the specified variants
     selectVariants: function(selectedVariants){
-        try {
-		
-		// Find all the BPMN start and end events in the model
-		var startEvents = [];
-		var endEvents = [];
+	try {
+		var elements = this.findElementsInVariant(selectedVariants);
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			switch (shape.getStencil().id()) {
-			case "http://b3mn.org/stencilset/bpmn2.0#StartCompensationEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartConditionalEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartErrorEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartEscalationEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartMessageEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartMultipleEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartParallelMultipleEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartNoneEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartSignalEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#StartTimerEvent":
-				startEvents.push(shape);
-				break;
-			
-			case "http://b3mn.org/stencilset/bpmn2.0#EndCancelEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndCompensationEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndErrorEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndEscalationEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndMessageEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndMultipleEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndNoneEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndSignalEvent":
-			case "http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent":
-				endEvents.push(shape);
-				break;
-			}
+			shape.setProperty("selected", elements.indexOf(shape) > -1);
 		}.bind(this));
+
+		// selection properties are now all correct, so update the display
+		this.facade.getCanvas().update();
+        }
+        catch (err) {
+                alert("Unable to select variants " + variants + ": " + err.message);
+                //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
+        }
+    },
+
+    // Select process model elements that participate in the specified number of variants
+    selectByFrequency: function(minFrequency, maxFrequency) {
+	try {
+		// A map from shapes, indexed by resourceId, to an array of the variants in which the shape participates
+		var variantMap = Object.create(null);
+
+		this.facade.getCanvas().getChildShapes().each(function (shape) {
+			variantMap[shape.resourceId] = [];
+		}.bind(this));
+
+		var variants = this.findAllVariants();
+		variants.each(function(variant) {
+			var shapes = this.findElementsInVariant([variant]);
+			shapes.each(function (shape) {
+				variantMap[shape.resourceId].push(variant);
+			}.bind(this));
+		}.bind(this));
+		// variantMap is now populated
+
+		// Set selection properties for shapes which occur in variantMap with the right frequency
+		this.facade.getCanvas().getChildShapes().each(function (shape) {
+			var count = variantMap[shape.resourceId].length;
+			shape.setProperty("selected", minFrequency <= count && count <= maxFrequency);
+		}.bind(this));
+		
+		// selection properties are now all correct, so update the display
+		this.facade.getCanvas().update();
+        }
+        catch (err) {
+                alert("Unable to select by frequency " + minFrequency + "..." + maxFrequency + ": " + err.message);
+                //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
+        }
+    },
+
+    // Deselect all process model elements.
+    selectNone: function(){
+	try {
+		this.facade.getCanvas().getChildShapes().each(function (shape) {
+			shape.setProperty("selected", false);
+		}.bind(this));
+		this.facade.getCanvas().update();
+	}
+	catch (err) {
+		alert("Unable to clear selection: " + err.message);
+	}
+    },
+
+    //
+    // Beyond this point, members are intended to be private
+    //
+
+    startStencilIds: [
+	"http://b3mn.org/stencilset/bpmn2.0#StartCompensationEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartConditionalEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartErrorEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartEscalationEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartMessageEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartMultipleEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartParallelMultipleEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartNoneEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartSignalEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#StartTimerEvent"],
+
+    endStencilIds: [
+	"http://b3mn.org/stencilset/bpmn2.0#EndCancelEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndCompensationEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndErrorEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndEscalationEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndMessageEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndMultipleEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndNoneEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndSignalEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent"],
+
+    // Return a sorted array of all the variant ids that occur within the process model
+    findAllVariants: function() {
+	var variants = [];
+	this.facade.getCanvas().getChildShapes().each(function (shape) {
+		if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
+			var shapeVariants = shape.properties["oryx-variants"].evalJSON();
+			for (i = 0; i < shapeVariants.totalCount; i++) {
+				var item = shapeVariants.items[i].id;
+				if (variants.indexOf(item) == -1) {
+					variants.push(item);
+				}
+			}
+		}
+	}.bind(this));
+        variants.sort();
+	return variants;
+    },
+
+    // Returns an array containing the shapes with any of the given array of stencilId strings
+    findElementsWithStencilIds: function(stencilIds) {
+	var matchingElements = [];
+	this.facade.getCanvas().getChildShapes().each(function (shape) {
+		if (stencilIds.indexOf(shape.getStencil().id()) > -1) {
+			matchingElements.push(shape);
+		}
+	}.bind(this));
+	return matchingElements;
+    },
+
+    // Select all process model elements which participate in the specified variants
+    findElementsInVariant: function(selectedVariants) {
+
+		// Find all the BPMN start and end events in the model
+		var startEvents = this.findElementsWithStencilIds(this.startStencilIds);
+		var endEvents   = this.findElementsWithStencilIds(this.endStencilIds);
 
 		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
 		// We use this to block reachability via sequence flows that don't occur in the selected variants
@@ -227,28 +343,13 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		}.bind(this));
 
 		// Select every shape that is both startable and endable
+		var elements = [];
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			shape.setProperty("selected", (startable.indexOf(shape) > -1) && (endable.indexOf(shape) > -1));
+			if (startable.indexOf(shape) > -1 && endable.indexOf(shape) > -1) {
+				elements.push(shape);
+			}
 		}.bind(this));
 
-		// selection properties are now all correct, so update the display
-		this.facade.getCanvas().update();
-        }
-        catch (err) {
-                alert("Unable to select variants " + variants + ": " + err.message);
-                //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
-        }
+		return elements;
     },
-
-    selectNone: function(){
-	try {
-		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			shape.setProperty("selected", false);
-		}.bind(this));
-		this.facade.getCanvas().update();
-	}
-	catch (err) {
-		alert("Unable to clear selection: " + err.message);
-	}
-    }
 });
