@@ -13,12 +13,12 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
         arguments.callee.$.construct.apply(this, arguments);
                 
         this.facade.offer({
-            name: "ORYX.I18N.SelectExtension.name",
+            name: ORYX.I18N.SelectionExtension.name,
             functionality: this.showDialog.bind(this),
-            group: "ORYX.I18N.SelectionExtension.group",
+            group: ORYX.I18N.SelectionExtension.group,
             icon: ORYX.PATH + "images/selection_extension.png",
-            description: "ORYX.I18N.SelectionExtension.desc",
-            index: 0,
+            description: ORYX.I18N.SelectionExtension.desc,
+            index: 1,
             minShape: 0,
             maxShape: 0
         });
