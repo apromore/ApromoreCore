@@ -2457,7 +2457,20 @@
 					"description_de":"Ein optionaler Transformationsausdruck. Der tatsächliche Umfang der für diesen Ausdruck zugängigen Daten wird durch Quelle und Ziel der spezifischen Datenassoziationstypen definiert.",
 					"optional":true,
 					"popular":true
-				}
+			    },
+			    {
+                                        "id":"selected",
+                                        "type":"Boolean",
+                                        "title":"Selected",
+                                        "title_de":"Ausgewählt",
+                                        "value":false,
+                                        "description":"Selected",
+                                        "description_de":"Ausgewählt",
+                                        "readonly":false,
+                                        "optional":true,
+                                        "refToView":"selected",
+                                        "category":"others"
+			    }
 			]
 		}
 	],
