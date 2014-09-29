@@ -32,6 +32,14 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	// Find all the variants occurring in this model
 	var variants = this.findAllVariants();
 
+	if (this.minFrequency === undefined) {
+		this.minFrequency = 1;
+	}
+
+	if (this.maxFrequency === undefined) {
+		this.maxFrequency = variants.length;
+	}
+
 	// Create the form to present
 	var form = new Ext.form.FormPanel({
             baseCls: 'x-plain',
@@ -60,7 +68,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		allowNegative: false,
 		fieldLabel: "Minimum",
 		name: "min",
-		value: 1
+		value: this.minFrequency
 	}));
 
 	form.add(new Ext.form.NumberField({
@@ -68,7 +76,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		allowNegative: false,
 		fieldLabel: "Maximum",
 		name: "max",
-		value: variants.length
+		value: this.maxFrequency
 	}));
 
 	// Present the form to the user
@@ -103,7 +111,9 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 			}
 			this.selectedVariants = selectedVariants;
 			var minimumFrequency = form.items.items[variants.length + 1].getValue();
+			this.minFrequency = minimumFrequency;
 			var maximumFrequency = form.items.items[variants.length + 2].getValue();
+			this.maxFrequency = maximumFrequency;
                         try {
                             this.selectVariants(selectedVariants, minimumFrequency, maximumFrequency);
                             dialog.close();
@@ -118,6 +128,30 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                 }.bind(this)
             }, {
+		text: "Select All",
+		handler: function() {
+		    var loadMask = new Ext.LoadMask(Ext.getBody(), {
+                        msg: "Filling selection"
+                    });
+                    loadMask.show();
+
+                    window.setTimeout(function(){
+                        try {
+			    this.selectedVariants = this.findAllVariants();
+			    this.minFrequency = 1;
+			    this.maxFrequency = this.selectedVariants.length;
+                            this.selectVariants(this.selectedVariants, this.minFrequency, this.maxFrequency);
+			    dialog.close();
+			}
+                        catch (error) {
+                            Ext.Msg.alert(ORYX.I18N.JSONSupport.imp.syntaxError, error.message);
+                        }
+                        finally {
+                            loadMask.hide();
+                        }
+                    }.bind(this), 100);
+		}.bind(this)
+	    }, {
                 text: "Select None",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
@@ -127,6 +161,8 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                     window.setTimeout(function(){
                         try {
+			    this.minFrequency = undefined;
+			    this.maxFrequency = undefined;
 			    this.selectedVariants = [];
                             this.selectNone();
                             dialog.close();
