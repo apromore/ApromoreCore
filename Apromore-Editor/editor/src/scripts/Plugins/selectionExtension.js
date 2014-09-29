@@ -22,6 +22,9 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             minShape: 0,
             maxShape: 0
         });
+
+	// This array remembers which variants were selected during any previous selection; initially, empty
+	this.selectedVariants = [];
     },
     
     showDialog: function(){
@@ -43,11 +46,13 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
 	// Populate the form with a checkbox for each variant
 	variants.each(function(variant) {
-		form.add(new Ext.form.Checkbox({
-			boxLabel: variant,
-			hideLabel: true,
-			name: 'variants'
-		}));
+		var cb = new Ext.form.Checkbox({
+                        boxLabel: variant,
+                        hideLabel: true,
+                        name: 'variants'
+                });
+		cb.setValue(this.selectedVariants.indexOf(variant) > -1);
+		form.add(cb);
 	}.bind(this));
 
 	form.add(new Ext.form.NumberField({
@@ -55,7 +60,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		allowNegative: false,
 		fieldLabel: "Minimum",
 		name: "min",
-		value: 0
+		value: 1
 	}));
 
 	form.add(new Ext.form.NumberField({
@@ -96,8 +101,11 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 					selectedVariants.push(variants[k]);
 				}
 			}
+			this.selectedVariants = selectedVariants;
+			var minimumFrequency = form.items.items[variants.length + 1].getValue();
+			var maximumFrequency = form.items.items[variants.length + 2].getValue();
                         try {
-                            this.selectVariants(selectedVariants);
+                            this.selectVariants(selectedVariants, minimumFrequency, maximumFrequency);
                             dialog.close();
                         }
                         catch (error) {
@@ -110,27 +118,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                 }.bind(this)
             }, {
-		text: "Select Frequency",
-		handler: function() {
-			var loadMask = new Ext.LoadMask(Ext.getBody(), {
-				msg: "Selecting by frequency"
-			});
-			loadMask.show();
-
-			window.setTimeout(function(){
-				try {
-					this.selectByFrequency(form.items.items[variants.length + 1].getValue(), form.items.items[variants.length +2].getValue());
-					dialog.close();
-				}
-				catch (error) {
-					Ext.Msg.alert(ORYX.I18N.JSONSupport.imp.syntaxError, error.message);
-				}
-				finally {
-					loadMask.hide();
-				}
-			}.bind(this), 100);
-		}.bind(this)
-	    }, {
                 text: "Select None",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
@@ -140,6 +127,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                     window.setTimeout(function(){
                         try {
+			    this.selectedVariants = [];
                             this.selectNone();
                             dialog.close();
                         }
@@ -169,34 +157,16 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     },
 
     // Return an array containing the shapes which participate in the specified variants
-    selectVariants: function(selectedVariants){
+    selectVariants: function(selectedVariants, minFrequency, maxFrequency){
 	try {
-		var elements = this.findElementsInVariant(selectedVariants);
-		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			shape.setProperty("selected", elements.indexOf(shape) > -1);
-		}.bind(this));
-
-		// selection properties are now all correct, so update the display
-		this.facade.getCanvas().update();
-        }
-        catch (err) {
-                alert("Unable to select variants " + variants + ": " + err.message);
-                //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
-        }
-    },
-
-    // Select process model elements that participate in the specified number of variants
-    selectByFrequency: function(minFrequency, maxFrequency) {
-	try {
-		// A map from shapes, indexed by resourceId, to an array of the variants in which the shape participates
+		// A map from shapes, indexed by resourceId, to an array of the selected variants in which the shape participates
 		var variantMap = Object.create(null);
 
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
 			variantMap[shape.resourceId] = [];
 		}.bind(this));
 
-		var variants = this.findAllVariants();
-		variants.each(function(variant) {
+		selectedVariants.each(function(variant) {
 			var shapes = this.findElementsInVariant([variant]);
 			shapes.each(function (shape) {
 				variantMap[shape.resourceId].push(variant);
@@ -214,7 +184,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		this.facade.getCanvas().update();
         }
         catch (err) {
-                alert("Unable to select by frequency " + minFrequency + "..." + maxFrequency + ": " + err.message);
+                alert("Unable to select variants " + variants + ": " + err.message);
                 //Ext.Msg.alert("Unable to select variants " + variants + ": " + err.message);
         }
     },
