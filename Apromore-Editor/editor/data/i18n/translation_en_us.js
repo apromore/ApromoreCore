@@ -219,7 +219,7 @@ ORYX.I18N.ConfigurationExtension.desc = "Show/Hide Variants";
 if(!ORYX.I18N.SelectionExtension) ORYX.I18N.SelectionExtension = {};
 
 ORYX.I18N.SelectionExtension.name = "Selection";
-ORYX.I18N.SelectionExtension.group = "Selection";
+ORYX.I18N.SelectionExtension.group = "Configuration";
 ORYX.I18N.SelectionExtension.desc = "Make selection...";
 
 if(!ORYX.I18N.Undo) ORYX.I18N.Undo = {};

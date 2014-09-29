@@ -11,6 +11,7 @@
 	</defs>
 	<g id="edge">
 	    <path id="bg_frame" d="M10 50 L210 50" stroke="black" fill="none" stroke-width="2" stroke-dasharray="3, 4" marker-end="url(#end)" />
+	    <path id="selected" d="M10 50 L210 50" stroke="#77F" fill="none" stroke-width="5" />
 		<text id="name" x="0" y="0" oryx:edgePosition="midTop" oryx:offsetTop="6" style="font-size:9px;"/>
 	</g>
 </svg>
