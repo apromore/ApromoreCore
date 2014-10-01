@@ -71,7 +71,22 @@
                                         "readonly":false,
                                         "optional":true,
                                         "refToView":"selected",
-					"category":"others"
+					"configurationExtension":true
+				},
+				{
+					"id":"selectioncolor",
+					"type":"Color",
+					"title":"Selection color",
+					"title_de":"Ausgewähltfarbe",
+					"value":"#7777ff",
+					"description":"Change the selection color.",
+					"description_de":"Verändern Sie die Ausgewähltfarbe.",
+					"readonly":false,
+					"optional":true,
+					"refToView":"selected",
+					"fill":false,
+					"stroke":true,
+					"configurationExtension":true
 				}
  			]
  		},
@@ -2469,7 +2484,22 @@
                                         "readonly":false,
                                         "optional":true,
                                         "refToView":"selected",
-                                        "category":"others"
+                                        "configurationExtension":true
+			    },
+			    {
+					"id":"selectioncolor",
+					"type":"Color",
+					"title":"Selection color",
+					"title_de":"Ausgewähltfarbe",
+					"value":"#7777ff",
+					"description":"Change the selection color.",
+					"description_de":"Verändern Sie die Ausgewähltfarbe.",
+					"readonly":false,
+					"optional":true,
+					"refToView":"selected",
+					"fill":false,
+					"stroke":true,
+					"configurationExtension":true
 			    }
 			]
 		}

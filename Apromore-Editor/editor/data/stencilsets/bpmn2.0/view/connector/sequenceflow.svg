@@ -6,7 +6,7 @@
 	oryx:edge="edge" >
 	<g id="edge">
 		<path id="bg_frame" d="M10 50 L210 50" stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#start)" marker-end="url(#end)" />
-        	<path id="selected" d="M10 50 L210 50" stroke="#88F" fill="none" stroke-width="5" stroke-linecap="butt" stroke-linejoin="round" marker-start="url(#start)" marker-end="url(#end)" />
+        	<path id="selected" d="M10 50 L210 50" stroke="#77F" fill="none" stroke-width="5" stroke-linecap="butt" stroke-linejoin="round" marker-start="url(#start)" marker-end="url(#end)" />
 		<text id="text_name" x="0" y="0" oryx:edgePosition="startTop"/>
 		<text id="text_variants" class="configuration-extension" x="0" y="0" fill="grey" oryx:edgePosition="startBottom"/>
 	</g>
