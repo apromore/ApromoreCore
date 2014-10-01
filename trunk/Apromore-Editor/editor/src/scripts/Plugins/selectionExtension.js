@@ -23,6 +23,9 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             maxShape: 0
         });
 
+	// The color of the highlighting
+	this.color = "#7777FF";
+
 	// This array remembers which variants were selected during any previous selection; initially, empty
 	this.selectedVariants = [];
     },
@@ -79,6 +82,12 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		value: this.maxFrequency
 	}));
 
+	form.add(new Ext.ux.ColorField({ 
+		fieldLabel: "Color",
+		name: "color",
+		value: this.color
+	}));
+
 	// Present the form to the user
         var dialog = new Ext.Window({
             autoCreate: true,
@@ -114,6 +123,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 			this.minFrequency = minimumFrequency;
 			var maximumFrequency = form.items.items[variants.length + 2].getValue();
 			this.maxFrequency = maximumFrequency;
+			this.color = form.items.items[variants.length + 3].getValue();
                         try {
                             this.selectVariants(selectedVariants, minimumFrequency, maximumFrequency);
                             dialog.close();
@@ -176,7 +186,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                     }.bind(this), 100);
 
                 }.bind(this)
-            }, {
+	    }, {
                 text: ORYX.I18N.JSONSupport.imp.btnClose,
                 handler: function(){
                     dialog.close();
@@ -214,6 +224,12 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
 			var count = variantMap[shape.resourceId].length;
 			shape.setProperty("selected", minFrequency <= count && count <= maxFrequency);
+			shape.setProperty("selectioncolor", this.color);
+			if (shape.getProperty("selected")) {
+				shape.node.removeAttributeNS(null, "style");
+			} else {
+				shape.node.setAttributeNS(null, "style", "opacity: 0.25");
+			}
 		}.bind(this));
 		
 		// selection properties are now all correct, so update the display
@@ -230,6 +246,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	try {
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
 			shape.setProperty("selected", false);
+			shape.node.removeAttributeNS(null, "style");
 		}.bind(this));
 		this.facade.getCanvas().update();
 	}

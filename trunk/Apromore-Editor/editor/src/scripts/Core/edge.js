@@ -717,7 +717,8 @@ ORYX.Core.Edge = {
 		g.refToView().each((function (p) {
 			if (p == "selected") {
 				var svgElem = this.node.ownerDocument.getElementById(this.id +"_3");
-				svgElem.setAttributeNS(null, "visibility", h ? null : "hidden");
+				svgElem.setAttributeNS(null, "visibility", this.getProperty("selected") ? "inherit" : "hidden");
+				svgElem.setAttributeNS(null, "stroke", this.getProperty("selectioncolor"));
 			}
 		}).bind(this));
 	}).bind(this));
