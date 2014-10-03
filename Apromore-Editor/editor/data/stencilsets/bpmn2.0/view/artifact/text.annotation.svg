@@ -28,6 +28,13 @@
 	stroke="black" 
 	fill="none" 
 	stroke-width="1" />
+  <path 
+  	id = "selected"
+	d="M20,1 L1,1 L1,50 L20,50" 
+	oryx:anchors="top bottom left" 
+	stroke="#77F" 
+	fill="none" 
+	stroke-width="5" />
     
     <text 
 		font-size="12" 

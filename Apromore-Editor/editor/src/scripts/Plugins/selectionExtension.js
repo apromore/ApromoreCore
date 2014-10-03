@@ -46,16 +46,23 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	// Create the form to present
 	var form = new Ext.form.FormPanel({
             baseCls: 'x-plain',
+	    layout: 'table',
+	    layoutConfig: {
+		columns: 2
+	    },
             labelWidth: 50,
             defaultType: 'textfield',
             items: [new Ext.form.Label({
                 text: "Selected variants:",
+		colspan: 2,
                 style: 'font-size:12px;margin-bottom:10px;display:block;',
                 anchor: '100%'
             })]
         });
 
 	// Populate the form with a checkbox for each variant
+	form.variantCheckboxFields = [];
+	var variantColorFields = [];
 	variants.each(function(variant) {
 		var cb = new Ext.form.Checkbox({
                         boxLabel: variant,
@@ -63,10 +70,37 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                         name: 'variants'
                 });
 		cb.setValue(this.selectedVariants.indexOf(variant) > -1);
+		form.variantCheckboxFields.push(cb);
 		form.add(cb);
-	}.bind(this));
 
-	form.add(new Ext.form.NumberField({
+		var variantColor = this.color;
+		if (this.variantColorFields) {
+			variantColor = this.variantColorFields[variants.indexOf(variant)].getValue();
+		}
+		var c = new Ext.ux.ColorField({
+			value: variantColor
+		});
+		variantColorFields.push(c);
+		form.add(c);
+	}.bind(this));
+	this.variantColorFields = variantColorFields;
+
+	form.add(new Ext.form.Label({
+		text: "More than one"
+	}));
+
+	form.add(form.colorField = new Ext.ux.ColorField({ 
+		fieldLabel: "Selection color",
+		name: "color",
+		value: this.color
+	}));
+
+	form.add(new Ext.form.Label({
+		text: "Frequency range:",
+		colspan: 2
+	}));
+
+	form.add(form.minFrequencyField = new Ext.form.NumberField({
 		allowDecimals: false,
 		allowNegative: false,
 		fieldLabel: "Minimum",
@@ -74,18 +108,12 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		value: this.minFrequency
 	}));
 
-	form.add(new Ext.form.NumberField({
+	form.add(form.maxFrequencyField = new Ext.form.NumberField({
 		allowDecimals: false,
 		allowNegative: false,
 		fieldLabel: "Maximum",
 		name: "max",
 		value: this.maxFrequency
-	}));
-
-	form.add(new Ext.ux.ColorField({ 
-		fieldLabel: "Color",
-		name: "color",
-		value: this.color
 	}));
 
 	// Present the form to the user
@@ -114,18 +142,16 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                     window.setTimeout(function(){
                         var selectedVariants = [];
 			for (k = 0; k < variants.length; k++) {
-				if (form.items.items[k+1].getValue()) {
+				if (form.variantCheckboxFields[k].getValue()) {
 					selectedVariants.push(variants[k]);
 				}
 			}
 			this.selectedVariants = selectedVariants;
-			var minimumFrequency = form.items.items[variants.length + 1].getValue();
-			this.minFrequency = minimumFrequency;
-			var maximumFrequency = form.items.items[variants.length + 2].getValue();
-			this.maxFrequency = maximumFrequency;
-			this.color = form.items.items[variants.length + 3].getValue();
+			this.minFrequency = form.minFrequencyField.getValue();
+			this.maxFrequency = form.maxFrequencyField.getValue();
+			this.color = form.colorField.getValue();
                         try {
-                            this.selectVariants(selectedVariants, minimumFrequency, maximumFrequency);
+                            this.selectVariants(selectedVariants, this.minFrequency, this.maxFrequency);
                             dialog.close();
                         }
                         catch (error) {
@@ -195,11 +221,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
         });
 
         dialog.show();
-
-        form.items.items[1].getEl().dom.addEventListener('change', function(evt){
-            var text = evt.target.files[0].getAsText('UTF-8');
-            form.items.items[2].setValue(text);
-        }, true)
     },
 
     // Return an array containing the shapes which participate in the specified variants
@@ -222,9 +243,14 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
 		// Set selection properties for shapes which occur in variantMap with the right frequency
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
-			var count = variantMap[shape.resourceId].length;
+			var shapeVariants = variantMap[shape.resourceId];
+			var count = shapeVariants.length;
 			shape.setProperty("selected", minFrequency <= count && count <= maxFrequency);
-			shape.setProperty("selectioncolor", this.color);
+			shape.setProperty("selectioncolor",
+				(count == 1)
+				? (this.variantColorFields[this.findAllVariants().indexOf(shapeVariants[0])].getValue())
+				: this.color
+			);
 			if (shape.getProperty("selected")) {
 				shape.node.removeAttributeNS(null, "style");
 			} else {

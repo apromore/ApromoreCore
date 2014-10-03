@@ -31,6 +31,7 @@
 			d="M39.467,46.993h20.118"
 			id="floppy"
 		/>
+		<path id="selected" fill="none" stroke="#7777FF" stroke-width="5" d="M 63.375,57.446 H 0.5 v -14.51 h 4 v -43 h 54.875 v 43 h 4 V 57.446 z"/>
 		
 		<text font-size="12" id="text_name" x="32" y="62" oryx:align="center top" stroke="black" />
 	</g>
