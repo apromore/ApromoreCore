@@ -29,11 +29,14 @@
 		
 		<polyline oryx:anchors="right top" id="celem3" stroke="black" fill="url(#background) white" stroke-width="1" points="88,10 78,0 78,10 88,10"/>
 
-		<g id="selected">
+		<polyline oryx:resize="vertical horizontal" oryx:anchors="left right" id="selected" stroke="#77F" fill="none" stroke-width="5" stroke-linejoin="round" points="0,97 0,0, 78,0 88,10 88,97 0,97"/>
+		<!--
+		<g id="_selected">
 			<polyline oryx:resize="vertical horizontal" oryx:anchors="left right" id="frame" stroke="#77F" fill="none" stroke-width="5" stroke-linejoin="round" points="78,97 0,97 0,0 78,0"/>
 			<polyline oryx:anchors="right top bottom" stroke="#77F" fill="none" stroke-width="5" stroke-linejoin="round" points="78,97 88,97 88,10 78,10"/>
 			<polyline oryx:anchors="right top" stroke="#77F" fill="none" stroke-width="5" stroke-linejoin="round" points="88,10 78,0 78,10 88,10"/>
 		</g>
+		-->
 
 		<rect id="unvisibleBorder" x="0" y="0" height="97" width="88" stroke="none" fill="none" oryx:resize="horizontal vertical"/>
 		
