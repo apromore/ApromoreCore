@@ -30,6 +30,7 @@
 			15.219,12.562 28.938,1.094 "/>
 		<polygon id="nonInitiating2" fill="url(#background) #969696" stroke="#000000" stroke-width="2" stroke-linejoin="round" points="1.5,1.188 
 			15.219,12.562 28.938,1.094 "/>
+		<rect id="selected" x="1" y="1" fill="none" stroke="#7777FF" stroke-width="5" width="28.375" height="20.5"/>
 			
 		<text font-size="12" id="text_name" x="14" y="32" oryx:align="top center" stroke="black" />	
 	</g>
