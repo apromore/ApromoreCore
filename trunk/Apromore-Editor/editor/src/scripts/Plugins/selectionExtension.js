@@ -86,13 +86,34 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	this.variantColorFields = variantColorFields;
 
 	form.add(new Ext.form.Label({
-		text: "More than one"
+		text: "More than one",
+		style: "padding-right: 0.5em"
 	}));
 
 	form.add(form.colorField = new Ext.ux.ColorField({ 
 		fieldLabel: "Selection color",
 		name: "color",
 		value: this.color
+	}));
+
+	form.add(new Ext.Button({
+		text: "All",
+		style: "padding: 0.5em 1em",
+		handler: function() {
+			form.variantCheckboxFields.each(function(field) {
+				field.setValue(true);
+			}.bind(this));
+		}
+	}));
+
+	form.add(new Ext.Button({
+		text: "Clear",
+		style: "padding: 0.5em 1em",
+		handler: function() {
+			form.variantCheckboxFields.each(function(field) {
+				field.setValue(false);
+			}.bind(this));
+		}
 	}));
 
 	var maxFrequencyField, minFrequencyField;
@@ -111,15 +132,33 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 			allowDecimals: false,
 			allowNegative: false,
 			fieldLabel: "Minimum",
+			minValue: 1,
+			msgTarget: "side",
 			name: "min",
-			value: this.minFrequency
+			validator: function(candidate) {
+				if (candidate > maxFrequencyField.getValue()) {
+					return "Minimum frequency cannot be greater than maximum frequency";
+				}
+				return true;
+			},
+			value: this.minFrequency,
+			width: 50
 		}),
 		maxFrequencyField = new Ext.form.NumberField({
 			allowDecimals: false,
 			allowNegative: false,
 			fieldLabel: "Maximum",
+			maxValue: variants.length,
+			msgTarget: "side",
 			name: "max",
-			value: this.maxFrequency
+			validator: function(candidate) {
+				if (candidate < minFrequencyField.getValue()) {
+					return "Maximum frequency cannot be less than minimum frequency";
+				}
+				return true;
+			},
+			value: this.maxFrequency,
+			width: 50
 		})
             ]
         });
@@ -142,7 +181,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             resizable: true,
             items: [form, form2],
             buttons: [{
-                text: "Select Variants",
+                text: "Select",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
                         msg: "Selecting checked variants"
@@ -174,31 +213,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                 }.bind(this)
             }, {
-		text: "Select All",
-		handler: function() {
-		    var loadMask = new Ext.LoadMask(Ext.getBody(), {
-                        msg: "Filling selection"
-                    });
-                    loadMask.show();
-
-                    window.setTimeout(function(){
-                        try {
-			    this.selectedVariants = this.findAllVariants();
-			    this.minFrequency = 1;
-			    this.maxFrequency = this.selectedVariants.length;
-                            this.selectVariants(this.selectedVariants, this.minFrequency, this.maxFrequency);
-			    dialog.close();
-			}
-                        catch (error) {
-                            Ext.Msg.alert(ORYX.I18N.JSONSupport.imp.syntaxError, error.message);
-                        }
-                        finally {
-                            loadMask.hide();
-                        }
-                    }.bind(this), 100);
-		}.bind(this)
-	    }, {
-                text: "Select None",
+                text: "Reset",
                 handler: function() {
                     var loadMask = new Ext.LoadMask(Ext.getBody(), {
                         msg: "Removing selection"
@@ -207,10 +222,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 
                     window.setTimeout(function(){
                         try {
-			    this.minFrequency = undefined;
-			    this.maxFrequency = undefined;
-			    this.selectedVariants = [];
-                            this.selectNone();
+                            this.resetSelection();
                             dialog.close();
                         }
                         catch (error) {
@@ -278,7 +290,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     },
 
     // Deselect all process model elements.
-    selectNone: function(){
+    resetSelection: function(){
 	try {
 		this.facade.getCanvas().getChildShapes().each(function (shape) {
 			shape.setProperty("selected", false);
@@ -433,8 +445,8 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                                         if (elements.indexOf(source) > -1) {
                                                 targets.each(function(target) {
                                                         if (artifacts.indexOf(target) > -1) {
-                                                                elements.push(association);
-                                                                elements.push(target);
+                                                                if (elements.indexOf(association) == -1) { elements.push(association); }
+                                                                if (elements.indexOf(target) == -1) { elements.push(target); }
                                                         }
                                                 }.bind(this));
                                         }
