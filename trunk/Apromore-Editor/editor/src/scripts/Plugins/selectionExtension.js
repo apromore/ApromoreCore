@@ -53,7 +53,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             labelWidth: 50,
             defaultType: 'textfield',
             items: [new Ext.form.Label({
-                text: "Selected variants:",
+                html: "<h4>Selected variants</h4>",
 		colspan: 2,
                 style: 'font-size:12px;margin-bottom:10px;display:block;',
                 anchor: '100%'
@@ -95,31 +95,41 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		value: this.color
 	}));
 
-	form.add(new Ext.form.Label({
-		text: "Frequency range:",
-		colspan: 2
-	}));
+	var maxFrequencyField, minFrequencyField;
+	var form2 = new Ext.form.FormPanel({
+            baseCls: 'x-plain',
+            labelWidth: 50,
+            defaultType: 'textfield',
+            items: [
+		new Ext.form.Label({
+			html: "<h4>Frequency range</h4>",
+			colspan: 2,
+			style: 'font-size:12px;margin-bottom:10px;margin-top:10px;display:block;',
+			anchor: '100%'
+		}),
+		minFrequencyField = new Ext.form.NumberField({
+			allowDecimals: false,
+			allowNegative: false,
+			fieldLabel: "Minimum",
+			name: "min",
+			value: this.minFrequency
+		}),
+		maxFrequencyField = new Ext.form.NumberField({
+			allowDecimals: false,
+			allowNegative: false,
+			fieldLabel: "Maximum",
+			name: "max",
+			value: this.maxFrequency
+		})
+            ]
+        });
 
-	form.add(form.minFrequencyField = new Ext.form.NumberField({
-		allowDecimals: false,
-		allowNegative: false,
-		fieldLabel: "Minimum",
-		name: "min",
-		value: this.minFrequency
-	}));
-
-	form.add(form.maxFrequencyField = new Ext.form.NumberField({
-		allowDecimals: false,
-		allowNegative: false,
-		fieldLabel: "Maximum",
-		name: "max",
-		value: this.maxFrequency
-	}));
 
 	// Present the form to the user
         var dialog = new Ext.Window({
             autoCreate: true,
-            layout: 'fit',
+            layout: 'table',
+	    layoutConfig: { columns: 1 },
             plain: true,
             bodyStyle: 'padding:5px;',
             title: "Make selection",
@@ -130,7 +140,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
             shadow: true,
             proxyDrag: true,
             resizable: true,
-            items: [form],
+            items: [form, form2],
             buttons: [{
                 text: "Select Variants",
                 handler: function() {
@@ -147,8 +157,8 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 				}
 			}
 			this.selectedVariants = selectedVariants;
-			this.minFrequency = form.minFrequencyField.getValue();
-			this.maxFrequency = form.maxFrequencyField.getValue();
+			this.minFrequency = minFrequencyField.getValue();
+			this.maxFrequency = maxFrequencyField.getValue();
 			this.color = form.colorField.getValue();
                         try {
                             this.selectVariants(selectedVariants, this.minFrequency, this.maxFrequency);
@@ -308,6 +318,20 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	"http://b3mn.org/stencilset/bpmn2.0#EndSignalEvent",
 	"http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent"],
 
+    artifactStencilIds: [
+	"http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation",
+	"http://b3mn.org/stencilset/bpmn2.0#DataObject",
+	"http://b3mn.org/stencilset/bpmn2.0#DataStore",
+	"http://b3mn.org/stencilset/bpmn2.0#ITSystem",
+	"http://b3mn.org/stencilset/bpmn2.0#Message",
+	"http://b3mn.org/stencilset/bpmn2.0#TextAnnotation"],
+
+    associationStencilIds: [
+	"http://b3mn.org/stencilset/bpmn2.0#Association_Undirected",
+	"http://b3mn.org/stencilset/bpmn2.0#Association_Unidirectional",
+	"http://b3mn.org/stencilset/bpmn2.0#Association_Bidirectional",
+	"http://b3mn.org/stencilset/bpmn2.0#MessageFlow"],
+
     // Return a sorted array of all the variant ids that occur within the process model
     findAllVariants: function() {
 	var variants = [];
@@ -398,6 +422,27 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 				elements.push(shape);
 			}
 		}.bind(this));
+
+		// Select associated artifacts
+		var artifacts = this.findElementsWithStencilIds(this.artifactStencilIds);
+		var associations = this.findElementsWithStencilIds(this.associationStencilIds);
+
+                associations.each(function (association) {
+                        var f = function(sources, targets) {
+                                sources.each(function(source) {
+                                        if (elements.indexOf(source) > -1) {
+                                                targets.each(function(target) {
+                                                        if (artifacts.indexOf(target) > -1) {
+                                                                elements.push(association);
+                                                                elements.push(target);
+                                                        }
+                                                }.bind(this));
+                                        }
+                                }.bind(this));
+                        }
+                        f(association.getIncomingShapes(), association.getOutgoingShapes());
+                        f(association.getOutgoingShapes(), association.getIncomingShapes());
+                }.bind(this));
 
 		return elements;
     },
