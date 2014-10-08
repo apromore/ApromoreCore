@@ -308,6 +308,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     //
 
     startStencilIds: [
+	"http://b3mn.org/stencilset/bpmn2.0#IntermediateLinkEventCatching",
 	"http://b3mn.org/stencilset/bpmn2.0#StartCompensationEvent",
 	"http://b3mn.org/stencilset/bpmn2.0#StartConditionalEvent",
 	"http://b3mn.org/stencilset/bpmn2.0#StartErrorEvent",
@@ -328,7 +329,8 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	"http://b3mn.org/stencilset/bpmn2.0#EndMultipleEvent",
 	"http://b3mn.org/stencilset/bpmn2.0#EndNoneEvent",
 	"http://b3mn.org/stencilset/bpmn2.0#EndSignalEvent",
-	"http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent"],
+	"http://b3mn.org/stencilset/bpmn2.0#EndTerminateEvent",
+	"http://b3mn.org/stencilset/bpmn2.0#IntermediateLinkEventThrowing"],
 
     artifactStencilIds: [
 	"http://b3mn.org/stencilset/bpmn2.0#ConfigurationAnnotation",
@@ -377,8 +379,11 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
     findElementsInVariant: function(selectedVariants) {
 
 		// Find all the BPMN start and end events in the model
-		var startEvents = this.findElementsWithStencilIds(this.startStencilIds);
-		var endEvents   = this.findElementsWithStencilIds(this.endStencilIds);
+		var startEvents  = this.findElementsWithStencilIds(this.startStencilIds);
+		var endEvents    = this.findElementsWithStencilIds(this.endStencilIds);
+		var artifacts    = this.findElementsWithStencilIds(this.artifactStencilIds);
+		var associations = this.findElementsWithStencilIds(this.associationStencilIds);
+
 
 		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
 		// We use this to block reachability via sequence flows that don't occur in the selected variants
@@ -402,7 +407,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		// Every element reachable from a start element is startable
 		var startable = [];
 		var traverseStartables = function(shape) {
-			if (isInSelectedVariants(shape) && startable.indexOf(shape) == -1) {
+			if (isInSelectedVariants(shape) && startable.indexOf(shape) == -1 && associations.indexOf(shape) == -1) {
 				startable.push(shape);
 				shape.getOutgoingShapes().each(function (outgoing) {
 					traverseStartables(outgoing);
@@ -416,7 +421,7 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		// Every element reachable from an end element is endable
 		var endable = [];
 		var traverseEndables = function(shape) {
-			if (isInSelectedVariants(shape) && endable.indexOf(shape) == -1) {
+			if (isInSelectedVariants(shape) && endable.indexOf(shape) == -1 && associations.indexOf(shape) == -1) {
 				endable.push(shape);
 				shape.getIncomingShapes().each(function (incoming) {
 					traverseEndables(incoming);
@@ -436,9 +441,6 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		}.bind(this));
 
 		// Select associated artifacts
-		var artifacts = this.findElementsWithStencilIds(this.artifactStencilIds);
-		var associations = this.findElementsWithStencilIds(this.associationStencilIds);
-
                 associations.each(function (association) {
                         var f = function(sources, targets) {
                                 sources.each(function(source) {
@@ -448,6 +450,9 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
                                                                 if (elements.indexOf(association) == -1) { elements.push(association); }
                                                                 if (elements.indexOf(target) == -1) { elements.push(target); }
                                                         }
+							else if (elements.indexOf(target) > -1) {
+                                                                if (elements.indexOf(association) == -1) { elements.push(association); }
+							}
                                                 }.bind(this));
                                         }
                                 }.bind(this));
