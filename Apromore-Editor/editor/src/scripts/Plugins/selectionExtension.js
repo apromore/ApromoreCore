@@ -74,8 +74,9 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		form.add(cb);
 
 		var variantColor = this.color;
-		if (this.variantColorFields) {
-			variantColor = this.variantColorFields[variants.indexOf(variant)].getValue();
+		var i = variants.indexOf(variant);
+		if (this.variantColorFields && i > -1 && i < this.variantColorFields.length) {
+			variantColor = this.variantColorFields[i].getValue();
 		}
 		var c = new Ext.ux.ColorField({
 			value: variantColor
