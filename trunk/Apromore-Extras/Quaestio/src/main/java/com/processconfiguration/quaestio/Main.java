@@ -98,6 +98,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -105,6 +106,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.filestore.client.DavFileSystemView;
+import org.apromore.filestore.client.FileStoreService;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ExportFormatResultType;
 import org.springframework.context.ApplicationContext;
@@ -173,6 +176,7 @@ public class Main extends JPanel implements ListSelectionListener,
 	private JButton jButton_answerPerform = null;
 	private JButton jButton_answerUndo = null;
 	private JButton jButton_answerSave = null;
+	private JButton jButton_answerSaveDCL = null;
 	private JScrollPane jScrollPane_enabledQ = null;
 	private JList jList_enabledQ = null;
 	private JPanel jPanel_Q = null;
@@ -1557,7 +1561,7 @@ public class Main extends JPanel implements ListSelectionListener,
 					// used for showing answered questions correctly
 					jDialog_AskToContinue.setVisible(false);
 					log("Configuration process completed with default values.");
-					exportConfiguration(true);
+					exportConfigurationTemporarily();
 					getJDialog_AskToSave().setVisible(true);// prompt to export
 															// the results
 				}
@@ -1589,43 +1593,6 @@ public class Main extends JPanel implements ListSelectionListener,
 		return jButton_Export;
 	}
 
-	protected void exportConfiguration(boolean chk) {
-		FactType factQML;
-		try {
-
-			DCL dcl = getDCL();  /* new DCL();
-			dcl.setAuthor(qml.getAuthor());
-			dcl.setName(qml.getName());
-			dcl.setReference(qml.getReference());
-			for (Entry<String, String> fact : currentS.vs.entrySet()) {
-				factQML = FactsMap.get(fact.getKey());
-				com.processconfiguration.dcl.FactType factDCL = new com.processconfiguration.dcl.FactType();
-				factDCL.setDescription(factQML.getDescription());
-				factDCL.setId(factQML.getId());
-				factDCL.setValue(Boolean.parseBoolean(fact.getValue()));
-				if (factQML.isDefault() == Boolean
-						.parseBoolean(fact.getValue()))
-					factDCL.setDeviates(false);
-				else
-					factDCL.setDeviates(true);
-				dcl.getFact().add(factDCL);
-			}
-			*/
-
-			// create temporary file
-			if (fInConf == null) {
-				fInConf = File.createTempFile("temp", ".dcl");
-			}
-			JAXBContext jaxbcontext = JAXBContext
-					.newInstance("com.processconfiguration.dcl");
-			Marshaller marshaller = jaxbcontext.createMarshaller();
-			marshaller.marshal(dcl, fInConf);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * @return a configuration
 	 */
@@ -1640,11 +1607,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			factDCL.setDescription(factQML.getDescription());
 			factDCL.setId(factQML.getId());
 			factDCL.setValue(Boolean.parseBoolean(fact.getValue()));
-			if (factQML.isDefault() == Boolean
-					.parseBoolean(fact.getValue()))
-				factDCL.setDeviates(false);
-			else
-				factDCL.setDeviates(true);
+			factDCL.setDeviates(factQML.isDefault() != Boolean.parseBoolean(fact.getValue()));
 			dcl.getFact().add(factDCL);
 		}
 
@@ -1652,15 +1615,32 @@ public class Main extends JPanel implements ListSelectionListener,
 	}
 
 	/**
-	 * This method exports the result of a configuration, once completed.
+         * Export the current configuration to {@link #fInConf}, creating it as a temporary file if necessary.
+         */
+	protected void exportConfigurationTemporarily() {
+		try {
+			if (fInConf == null) {  // create temporary file
+				fInConf = File.createTempFile("temp", ".dcl");
+			}
+			JAXBContext.newInstance("com.processconfiguration.dcl")
+			           .createMarshaller()
+			           .marshal(getDCL(), fInConf);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * Export the current configuration to the filesystem using a file chooser dialog.
 	 */
 	protected void exportConfiguration() {
 		File fExport = null;
 		FactType factQML;
 		String filePath;
 		fileChooser = new JFileChooser(".");
-		fileChooser
-				.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 11));
+		fileChooser.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 11));
 		fileChooser.setLocation(100, 100);
 		fileChooser.setFileFilter(new DCLFilter());
 		fileChooser.setAcceptAllFileFilterUsed(false);
@@ -1674,35 +1654,16 @@ public class Main extends JPanel implements ListSelectionListener,
 				fExport = new File(filePath);
 				log("Configuration exported to: " + fExport.getName() + ".");
 
-				DCL dcl = new DCL();
-				dcl.setAuthor(qml.getAuthor());
-				dcl.setName(qml.getName());
-				dcl.setReference(qml.getReference());
-				for (Entry<String, String> fact : currentS.vs.entrySet()) {
-					factQML = FactsMap.get(fact.getKey());
-					com.processconfiguration.dcl.FactType factDCL = new com.processconfiguration.dcl.FactType();
-					factDCL.setDescription(factQML.getDescription());
-					factDCL.setId(factQML.getId());
-					factDCL.setValue(Boolean.parseBoolean(fact.getValue()));
-					if (factQML.isDefault() == Boolean.parseBoolean(fact
-							.getValue()))
-						factDCL.setDeviates(false);
-					else
-						factDCL.setDeviates(true);
-					dcl.getFact().add(factDCL);
-				}
 				// marshal
-				JAXBContext jaxbcontext = JAXBContext
-						.newInstance("com.processconfiguration.dcl");
-				Marshaller marshaller = jaxbcontext.createMarshaller();
-				marshaller.marshal(dcl, fExport);
+				JAXBContext.newInstance("com.processconfiguration.dcl")
+				           .createMarshaller()
+				           .marshal(getDCL(), fExport);
 
 				fInConf = fExport;
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -1728,7 +1689,7 @@ public class Main extends JPanel implements ListSelectionListener,
 					flag = false;
 					getJDialog_AskToSave().setVisible(false);
 					getExportMenuItem().setEnabled(true);
-					exportConfiguration(true);
+					exportConfigurationTemporarily();
 					if (fInMap != null && fInModel != null) {
 						individualize();
 					} else {
@@ -1948,7 +1909,7 @@ public class Main extends JPanel implements ListSelectionListener,
 
 		/// Hack for AotF demo
 		if (fInConf != null) {
-			exportConfiguration(true);
+			exportConfigurationTemporarily();
 		}
 		/// End hack for AotF demo
 	}
@@ -2713,6 +2674,7 @@ public class Main extends JPanel implements ListSelectionListener,
 			jPanel_A2.add(getJButton_answerDefault(), null);
 			jPanel_A2.add(getJButton_answerUndo(), null);
 			jPanel_A2.add(getJButton_answerSave(), null);
+			jPanel_A2.add(getJButton_answerSaveDCL(), null);
 		}
 		return jPanel_A2;
 	}
@@ -2763,6 +2725,22 @@ public class Main extends JPanel implements ListSelectionListener,
 			jButton_answerSave.setEnabled(false);
 		}
 		return jButton_answerSave;
+	}
+
+	/**
+	 * This method initializes jButton_answerSaveDCL
+	 * 
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton_answerSaveDCL() {
+		if (jButton_answerSaveDCL == null) {
+			jButton_answerSaveDCL = new JButton();
+			jButton_answerSaveDCL.setText("Save DCL");
+			jButton_answerSaveDCL.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jButton_answerSaveDCL.addActionListener(this);
+			jButton_answerSaveDCL.setEnabled(false);
+		}
+		return jButton_answerSaveDCL;
 	}
 
 	/**
@@ -3952,6 +3930,43 @@ public class Main extends JPanel implements ListSelectionListener,
 		} else if (command.equals("Save model")) {
 			//testLiveConnect();
 			saveAction.actionPerformed(e);
+
+		} else if (command.equals("Save DCL")) {
+			try {
+				ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+				FileStoreService service = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal");
+				JFileChooser chooser = new JFileChooser(new DavFileSystemView(service));
+
+				chooser.setDialogTitle("Save DCL");
+                                chooser.setFileFilter(new FileNameExtensionFilter("DCL questionnaire responses", "dcl"));
+                                if (chooser.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
+                                    // Save the selected DCL file
+                                    System.err.println("File chooser selected " + chooser.getSelectedFile());
+                                    URI fileURI = chooser.getSelectedFile().toURI();
+                                    System.err.println("File chooser selection as URI " + fileURI);
+                                    URI selectedURI = new URI(fileURI.getRawPath());
+                                    System.err.println("File chooser selection as relative URI " + selectedURI);
+				    URI uri2 = new URI(service.getBaseURI().toString() + selectedURI.toString());
+                                    System.err.println("Resolved URI in DAV store " + uri2 + " from service base URI " + service.getBaseURI());
+
+				    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				    JAXBContext.newInstance("com.processconfiguration.dcl")
+                                               .createMarshaller()
+                                               .marshal(getDCL(), baos);
+				    service.put(uri2.toString(), baos.toByteArray(), "application/xml");
+
+                                    JOptionPane.showMessageDialog(Main.this, "Saved questionnaire responses " + chooser.getSelectedFile());
+                                }
+				
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(
+                                    null,
+                                    "Unable to save DCL: " + ex,
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                                );
+			}
 		}
 
 		if (command.equals("Answer") || command.equals("Default Answer")) {// common
@@ -3994,7 +4009,7 @@ public class Main extends JPanel implements ListSelectionListener,
 				// the results
 				cFlag = false;
 				// log("Configuration process completed");
-				exportConfiguration(true);// create temporary DCL file
+				exportConfigurationTemporarily();// create temporary DCL file
 				getExportMenuItem().setEnabled(true);
 				getJDialog_AskToSave().setVisible(true);// prompt to export
 														// result
@@ -4005,13 +4020,16 @@ public class Main extends JPanel implements ListSelectionListener,
 		if (jButton_answerSave != null) {
 			jButton_answerSave.setEnabled(answeredQ != null && answeredQ.getSize() > 0);
 		}
+		if (jButton_answerSaveDCL != null) {
+			jButton_answerSaveDCL.setEnabled(answeredQ != null && answeredQ.getSize() > 0);
+		}
                 if (saveModelMenuItem != null) {
 			saveModelMenuItem.setEnabled(answeredQ != null && answeredQ.getSize() > 0);
 		}
 
 		/// Hack for AotF demo
 		if (fInConf != null) {
-			exportConfiguration(true);
+			exportConfigurationTemporarily();
 		}
 		if (fInMap != null && fInModel != null) {
 			try {
