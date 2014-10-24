@@ -500,21 +500,25 @@ public class ProcessServiceImpl implements ProcessService {
             }
             Map<String, Variants.Variant> variantMap = new HashMap<>();
             for (ProcessModelAttribute attribute: pmv.getProcessModelAttributes()) {
-                Element variants = XMLUtils.stringToAnyElement(attribute.getAny());
-                if (variants != null) {  // TODO: currently this presumes that pc:variants is the only extension element we'll ever see
+                Element extensionElements = XMLUtils.stringToAnyElement(attribute.getAny());
+                if (extensionElements != null) {
                     java.lang.Object o = JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
                                                                  com.processconfiguration.ObjectFactory.class)
                                                     .createUnmarshaller()
-                                                    .unmarshal(variants);
+                                                    .unmarshal(extensionElements);
                     canonical.setProperty(attribute.getName(), attribute.getValue(), o);
 
                     // Populate a map from variant IDs to the actual JAXB Variant objects
-                    for (Variants.Variant variant: ((Variants) o).getVariant()) {
-                        variantMap.put(variant.getId(), variant);
+                    if (o instanceof Variants) {
+                        Variants variants = (Variants) o;
+                        for (Variants.Variant variant: variants.getVariant()) {
+                            variantMap.put(variant.getId(), variant);
+                        }
+                    } else {
+                        LOGGER.warn("Ignoring extension element " + o);
                     }
-                    
                 } else {
-                    canonical.setProperty(attribute.getName(), attribute.getValue(), variants);
+                    canonical.setProperty(attribute.getName(), attribute.getValue(), extensionElements);
                 }
             }
 
