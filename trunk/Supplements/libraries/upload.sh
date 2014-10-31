@@ -9,6 +9,7 @@ mvn install:install-file -Dfile=edu.sussex.nlp.jws.beta.11.jar -DgroupId=edu.sus
 mvn install:install-file -Dfile=lpsolve55j.jar -DgroupId=lpsolve -DartifactId=lpsolve -Dversion=55j -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=jwnl.jar -DgroupId=jwnl -DartifactId=jwnl -Dversion=0.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=OpenXES-1.5.jar -DgroupId=org.deckfour.xes -DartifactId=OpenXES -Dversion=1.5 -Dpackaging=jar -DgeneratePom=true
 
 # In order to compile Quaestio with LiveConnect support, the system plugin.jar
 # needs to be added to the Maven repository.  This will also need to be ported
