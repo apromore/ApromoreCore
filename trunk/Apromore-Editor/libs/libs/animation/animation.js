@@ -262,7 +262,7 @@ Controller.prototype = {
 	    logInterval.setAttributeNS(null,"x2",startTopX + 10 * log.endDatePos);
 	    logInterval.setAttributeNS(null,"y2",startTopY + 5 + 7 * j);
 	    logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
-	    timelineElement.appendChild(logInterval);
+	    timelineElement.insertBefore(logInterval, timelineElement.lastChild);
 	}
 
         //Recreate progress indicators
