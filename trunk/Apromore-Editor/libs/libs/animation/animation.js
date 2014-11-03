@@ -224,7 +224,7 @@ Controller.prototype = {
         if (this.clockTimer) {
                 clearTimeout(this.clockTimer);
         }
-        this.updateClock();
+        //this.updateClock();
     },
 
     unpauseAnimations: function() {
@@ -249,6 +249,21 @@ Controller.prototype = {
 
         var json = JSON.parse(jsonRaw);
         var logs = json.logs;
+
+	// Add log intervals to timeline
+	var timelineElement = $j("#timeline")[0];
+        var startTopX = 10;
+        var startTopY = 60;
+	for (var j=0; j<json.timeline.logs.length; j++) {
+	    var log = json.timeline.logs[j];
+	    var logInterval = document.createElementNS(svgNS,"line");
+	    logInterval.setAttributeNS(null,"x1",startTopX + 10 * log.startDatePos);  // magic number 10 is gapWidth / gapValue
+	    logInterval.setAttributeNS(null,"y1",startTopY + 5 + 7 * j);
+	    logInterval.setAttributeNS(null,"x2",startTopX + 10 * log.endDatePos);
+	    logInterval.setAttributeNS(null,"y2",startTopY + 5 + 7 * j);
+	    logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
+	    timelineElement.appendChild(logInterval);
+	}
 
         //Recreate progress indicators
         var progressIndicatorE = controller.createProgressIndicators(logs);
@@ -279,9 +294,12 @@ Controller.prototype = {
     },
 
     updateClock: function() {
-        var date = new Date();
-        date.setTime(this.getCurrentTime() * this.timeCoefficient + this.timeOffset);
-        if (window.Intl) {
+	if (this.getCurrentTime() > this.endPos) {
+		this.end();
+	} else {
+            var date = new Date();
+            date.setTime(this.getCurrentTime() * this.timeCoefficient + this.timeOffset);
+            if (window.Intl) {
                 document.getElementById("date").innerHTML = new Intl.DateTimeFormat([], {
                         year: "numeric", month: "short", day: "numeric"
                 }).format(date);
@@ -291,9 +309,10 @@ Controller.prototype = {
                 //document.getElementById("subtitle").innerHTML = new Intl.NumberFormat([], {
                 //        minimumIntegerDigits: 3
                 //}).format(date.getMilliseconds();
-        } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
+            } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
                 document.getElementById("date").innerHTML = date.toDateString();
                 document.getElementById("time").innerHTML = date.toTimeString();
+	    }
         }
     },
     
@@ -1001,31 +1020,30 @@ Controller.prototype = {
             parent.appendChild(textElement);
         }
         
-       var timelineElement = document.createElementNS(svgNS,"g");
-       timelineElement.setAttributeNS(null,"id","timeline");
+        var timelineElement = document.createElementNS(svgNS,"g");
+        timelineElement.setAttributeNS(null,"id","timeline");
         
-       startTopX = 10;
-       startTopY = 60;
-       gapWidth = 20;       
-       gapValue = 2; //2s
-       lineLen = 30;
-       textToLineGap = 5; 
-       startValue = 0;
-       textValue = -gapValue;
-       lineTopX = -gapWidth + startTopX;
-       gapNum = 61;
+        startTopX = 10;
+        startTopY = 60;
+        gapWidth = 20;       
+        gapValue = 2; //2s
+        lineLen = 30;
+        textToLineGap = 5; 
+        startValue = 0;
+        textValue = -gapValue;
+        lineTopX = -gapWidth + startTopX;
+        gapNum = 60;
        
         /*---------------------------
         Add text and line for the bar
         ---------------------------*/       
        
-       for (var i=1;i<=gapNum;i++) {
-           lineTopX += gapWidth;
-           textValue += gapValue;
-           addTimelineBar(lineTopX, startTopY, lineLen, lineTopX, startTopY-textToLineGap, textValue, timelineElement);
-       }
-       
-       
+        for (var i=0;i<=gapNum;i++) {
+            lineTopX += gapWidth;
+            textValue += gapValue;
+            addTimelineBar(lineTopX, startTopY, lineLen, lineTopX, startTopY-textToLineGap, textValue, timelineElement);
+        }
+
         /*---------------------------
         Add timeline tick
         ---------------------------*/
@@ -1034,18 +1052,18 @@ Controller.prototype = {
         indicatorE.setAttributeNS(null,"height",lineLen-10);
         indicatorE.setAttributeNS(null,"width","8");
         
-       var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
-       indicatorAnimation.setAttributeNS(null,"begin","0s");
-       indicatorAnimation.setAttributeNS(null,"dur",gapNum*gapValue);
-       indicatorAnimation.setAttributeNS(null,"by",gapValue);
-       indicatorAnimation.setAttributeNS(null,"from", startTopX + "," + (startTopY+5));
-       indicatorAnimation.setAttributeNS(null,"to",lineTopX + "," + (startTopY+5));
-       indicatorAnimation.setAttributeNS(null,"fill","freeze");
-       indicatorE.appendChild(indicatorAnimation);       
+        var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
+        indicatorAnimation.setAttributeNS(null,"begin","0s");
+        indicatorAnimation.setAttributeNS(null,"dur",gapNum*gapValue);
+        indicatorAnimation.setAttributeNS(null,"by",gapValue);
+        indicatorAnimation.setAttributeNS(null,"from", startTopX + "," + (startTopY+5));
+        indicatorAnimation.setAttributeNS(null,"to",lineTopX + "," + (startTopY+5));
+        indicatorAnimation.setAttributeNS(null,"fill","freeze");
+        indicatorE.appendChild(indicatorAnimation);       
        
-       timelineElement.appendChild(indicatorE); 
+        timelineElement.appendChild(indicatorE); 
        
-       return timelineElement;
+        return timelineElement;
        
     }
     
