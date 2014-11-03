@@ -32,6 +32,48 @@
             <artifactId>pnml-schema</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.7</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>1.5</version>
+            <type>jar</type>
+        </dependency>
+       <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.4</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -123,6 +165,51 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.deckfour.xes</groupId>
+                                    <artifactId>OpenXES</artifactId>
+                                    <version>1.5</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>OpenXES-1.5.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>commons-fileupload</groupId>
+                                    <artifactId>commons-fileupload</artifactId>
+                                    <version>1.2.2</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>commons-fileupload-1.2.2.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.commons</groupId>
+                                    <artifactId>commons-collections4</artifactId>
+                                    <version>4.0</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>commons-collections4-4.0.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>joda-time</groupId>
+                                    <artifactId>joda-time</artifactId>
+                                    <version>2.4</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>joda-time-2.4.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -52,6 +52,17 @@ ORYX.Plugins.File = ORYX.Plugins.AbstractPlugin.extend({
             'maxShape': 0
         });
 
+        this.facade.offer({
+            'name': ORYX.I18N.File.animate,
+            'functionality': this.animateProcess.bind(this),
+            'group': ORYX.I18N.File.group,
+            'icon': ORYX.PATH + "images/shape_ungroup.png",
+            'description': ORYX.I18N.File.animateDesc,
+            'index': 3,
+            'minShape': 0,
+            'maxShape': 0
+        });
+
     },
 
     exportPDF: function() {
@@ -83,6 +94,19 @@ ORYX.Plugins.File = ORYX.Plugins.AbstractPlugin.extend({
                 Ext.Msg.alert(ORYX.I18N.Oryx.title, ORYX.I18N.File.genPDFFailed);
             }).bind(this)
         });
+    },
+
+    animateProcess: function() {
+        var json =  this.facade.getJSON();
+        json = Ext.encode(json);
+        
+        var element = document.createElement("input");
+        element.setAttribute("type", "hidden");
+        element.setAttribute("value", json);
+        element.setAttribute("id", "jsonForAnimation");
+        document.body.appendChild(element);
+        
+        window.open("/editor/editor/animation/animation.html", "_blank");
     },
 
     print: function(){

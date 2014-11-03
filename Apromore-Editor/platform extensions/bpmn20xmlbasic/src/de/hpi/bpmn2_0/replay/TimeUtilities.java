@@ -1,0 +1,220 @@
+package de.hpi.bpmn2_0.replay;
+
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
+public class TimeUtilities {
+    public static ArrayList<Interval> divide(Interval v1, Interval v2) {
+        ArrayList<Interval> divide = new ArrayList();
+        Interval overlap = v1.overlap(v2);
+        
+        if (overlap != null) {
+            long overlapStart = overlap.getStartMillis();
+            long overlapEnd = overlap.getEndMillis();
+            
+            long v1Start = v1.getStartMillis();
+            long v1End = v1.getEndMillis();
+            
+            long v2Start = v2.getStartMillis();
+            long v2End = v2.getEndMillis();
+            
+            long minStart = Math.min(v1Start, v2Start);
+            long maxEnd = Math.max(v1End, v2End);
+            
+            divide.add(new Interval(minStart, overlapStart));
+            divide.add(overlap);
+            divide.add(new Interval(overlapEnd, maxEnd));
+        }
+        return divide;
+    }
+    
+    //Convert from a sequence flow to an interval
+    public static Interval getInterval(SequenceFlow flow) {
+        DateTime start = new DateTime(((TraceNode)flow.getSourceRef()).getStart()); //can be getEnd if start and end is different timestamp
+        DateTime end = new DateTime(((TraceNode)flow.getTargetRef()).getStart());
+        return new Interval(start,end);
+    }
+    
+    //Input interval set must have been sorted in increasing order of start date
+    //The start and end date of each interval in a set are projected onto a timeline
+    //As a result, the timeline contains all start/end dates of all intervals
+    //Return: a map with key is interval, value is the number of transfer containing the key transfer
+    //|---------|---|   |------|      |---------|
+    //|--|--------|     |---------|        |-------|
+    //|------|        |------|    
+    //Result
+    //|--3---|-2|2|2|0|1|-3--|2|-1|-0-|-1--|--2-|-1|
+    private static Map<Interval,Integer> aggregateIntervals(SortedSet<Interval> intervals) {
+        //First, create an ordered timeline based on transferSet
+        //The date milestone on the timeline is the start and end date of each interval
+        SortedSet<DateTime> timeline = new TreeSet<>(
+                                new Comparator<DateTime>() {
+                                    @Override
+                                    public int compare(DateTime o1, DateTime o2) {
+                                        return o1.compareTo(o2);
+                                    }
+                                }); 
+        
+        Set<DateTime> starts = new HashSet();
+        Set<DateTime> ends = new HashSet<>();
+        for (Interval interval : intervals) {
+            timeline.add(interval.getStart()); //added datetime will be arranged in timing order
+            starts.add(interval.getStart());
+            timeline.add(interval.getEnd());
+            ends.add(interval.getEnd());
+        }
+        
+        //Then, traverse the timeline to count tokens
+        //current-next traverses every interval on the timeline formed by two consecutive datetime points
+        DateTime current = null;
+        DateTime next = null;
+        Iterator<DateTime> iterator = timeline.iterator();
+        int intervalCount = 0;
+        Map<Interval, Integer> intervalCountMap = new HashMap();
+        
+        while (iterator.hasNext()) {
+            if (current == null) {
+                current = iterator.next();
+            } else {
+                current = next;
+            }
+            
+            if (iterator.hasNext()) {
+                next = iterator.next();
+                
+                if (starts.contains(current)) {
+                    intervalCount++;
+                } 
+                else if (ends.contains(current)) {
+                    intervalCount--;
+                }
+                
+                intervalCountMap.put(new Interval(current,next), intervalCount);
+            }
+        }
+        
+        return intervalCountMap;
+    }
+    
+    /*
+    * intervals: set of intervals, each set is for one sequenceId (the key). These intervals can overlap
+    * Return: set of non-overlapping intervals, each set is for one sequenceId (the key). From the
+    * input set of intervals, if two intervals overlap, they are splited into three non-overlapping intervals, 
+    * one is the overlapping interval and the other twos are the non-overlapping inverval of each original interval
+    * The interger value is the number of overlaps (2 or more if the input intervals set contains more intervals).
+    */
+    public static Map<String,Map<Interval,Integer>> aggregateIntervalMap(Map<String,SortedSet<Interval>> intervalMap) {
+        Map<String,Map<Interval,Integer>> sequenceFlowTransferMap = new HashMap<>();
+        
+        for (String sequenceId : intervalMap.keySet()) {
+            sequenceFlowTransferMap.put(sequenceId, TimeUtilities.aggregateIntervals(intervalMap.get(sequenceId)));
+        }
+        return sequenceFlowTransferMap;
+    }
+    
+    //interval:                         |----|
+    //intervalMap: |-------9------|-6--|---5---|--3----|--7---|-1-|
+    //return: 5
+    private static Integer getIntervalCount(Interval interval, Map<Interval,Integer> intervalMap) {
+        for (Interval mapInterval : intervalMap.keySet()) {
+            if (mapInterval.contains(interval)) {
+                return intervalMap.get(mapInterval);
+            }
+        }
+        return 0;
+    }
+    
+    //Compare two interval maps
+    //The intervals in each map are consecutive but non-overlapping (like a timeline)
+    //Return: resulting interval map containing intervals, the value is the 
+    //difference in values of two input interval maps, can be plus or minus value
+    //It is equal to value1 - value2
+    //map1:   |-------8-------|---5----|----2-----|-------10--------|
+    //map2:       |--5---|---3----|----9-----|----8-----|-------4--------|
+    //result: |-8-|---3--|--5-|-2-|-/4-|-/7--|-/6-|--2--|-----6-----|-/4-|
+    public static Map<Interval,Integer> compareIntervalMaps(
+                                                Map<Interval,Integer> map1, 
+                                                Map<Interval,Integer> map2) {
+        
+        Map<Interval,Integer> resultMap = new HashMap();
+        SortedSet<DateTime> timeline = new TreeSet<>(
+                                new Comparator<DateTime>() {
+                                    @Override
+                                    public int compare(DateTime o1, DateTime o2) {
+                                        return o1.compareTo(o2);
+                                    }
+                                }); 
+        
+        for (Interval interval : map1.keySet()) {
+            timeline.add(interval.getStart()); //added datetime will be arranged in timing order
+            timeline.add(interval.getEnd());
+        }
+        
+        for (Interval interval : map2.keySet()) {
+            timeline.add(interval.getStart()); 
+            timeline.add(interval.getEnd());
+        }      
+        
+        //Traverse the timeline and compare intervals of map1,map2
+        //current-next traverses every interval on the timeline formed by two consecutive datetime points
+        DateTime current = null;
+        DateTime next = null;
+        Interval timelineInterval;
+        Iterator<DateTime> iterator = timeline.iterator();
+        while (iterator.hasNext()) {
+            if (current == null) {
+                current = iterator.next();
+            } else {
+                current = next;
+            }
+            
+            if (iterator.hasNext()) {
+                next = iterator.next();
+                timelineInterval = new Interval(current,next);
+                resultMap.put(timelineInterval, getIntervalCount(timelineInterval,map1) - 
+                                            getIntervalCount(timelineInterval,map2));
+            }            
+        }
+        return resultMap;
+    }
+    
+    private static Map<Interval,Float> calcPercentageMap(Map<Interval,Integer> intervals, Integer total) {
+        Map<Interval,Float> percentageMap = new HashMap();
+        
+        Integer count;
+        for (Interval interval : intervals.keySet()) {
+            count = intervals.get(interval);
+            percentageMap.put(interval,new Float(1.0*count/total));
+        }
+        return percentageMap;
+    } 
+    
+    public static SortedSet<DateTime> sortDates(Set<DateTime> dateSet) {
+        
+        SortedSet<DateTime> timeline = new TreeSet<>(
+                                new Comparator<DateTime>() {
+                                    @Override
+                                    public int compare(DateTime o1, DateTime o2) {
+                                        return o1.compareTo(o2);
+                                    }
+                                }); 
+        
+        for (DateTime dateE : dateSet) {
+            timeline.add(dateE);
+        }
+        
+        return timeline;
+    }
+    
+}

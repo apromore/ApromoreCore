@@ -162,6 +162,8 @@ ORYX.I18N.File.print = "Print";
 ORYX.I18N.File.printDesc = "Print current model";
 ORYX.I18N.File.pdf = "Export as PDF";
 ORYX.I18N.File.pdfDesc = "Export as PDF";
+ORYX.I18N.File.animate = "Animate Process";
+ORYX.I18N.File.animateDesc = "Animate Event Log over Process Diagram";
 ORYX.I18N.File.info = "Info";
 ORYX.I18N.File.infoDesc = "Info";
 ORYX.I18N.File.genPDF = "Generating PDF";
@@ -221,6 +223,12 @@ if(!ORYX.I18N.SelectionExtension) ORYX.I18N.SelectionExtension = {};
 ORYX.I18N.SelectionExtension.name = "Selection";
 ORYX.I18N.SelectionExtension.group = "Configuration";
 ORYX.I18N.SelectionExtension.desc = "Make selection...";
+
+if(!ORYX.I18N.AnimationExtension) ORYX.I18N.AnimationExtension = {};
+
+ORYX.I18N.AnimationExtension.name = "Animation";
+ORYX.I18N.AnimationExtension.group = "Configuration";
+ORYX.I18N.AnimationExtension.desc = "Animate logs...";
 
 if(!ORYX.I18N.Undo) ORYX.I18N.Undo = {};
 
