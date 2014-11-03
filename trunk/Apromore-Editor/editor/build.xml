@@ -57,11 +57,16 @@
 
 		<copy todir='${build}/images'>
 			<fileset dir="${src}/images" />
-		</copy>
+		</copy>		
+		
+		<copy todir='${build}/animation'>
+			<fileset dir="${src}/animation" />
+		</copy>			
 
 		<copy todir='${build}/i18n'>
 			<fileset dir="${data}/i18n" />
-		</copy>
+		</copy>	
+		
 	</target>
 
 	<target name="com.signavio.editor.js.concat">
