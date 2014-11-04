@@ -41,9 +41,7 @@ public class TimeUtilities {
     
     //Convert from a sequence flow to an interval
     public static Interval getInterval(SequenceFlow flow) {
-        DateTime start = new DateTime(((TraceNode)flow.getSourceRef()).getStart()); //can be getEnd if start and end is different timestamp
-        DateTime end = new DateTime(((TraceNode)flow.getTargetRef()).getStart());
-        return new Interval(start,end);
+        return new Interval(((TraceNode)flow.getSourceRef()).getStart(),((TraceNode)flow.getTargetRef()).getComplete());
     }
     
     //Input interval set must have been sorted in increasing order of start date
@@ -54,20 +52,28 @@ public class TimeUtilities {
     //|--|--------|     |---------|        |-------|
     //|------|        |------|    
     //Result
-    //|--3---|-2|2|2|0|1|-3--|2|-1|-0-|-1--|--2-|-1|
+    //|3-|-3-|-2|2|2|0|1|-3--|2|-1|-0-|-1--|--2-|-1|
     private static Map<Interval,Integer> aggregateIntervals(SortedSet<Interval> intervals) {
-        //First, create an ordered timeline based on transferSet
-        //The date milestone on the timeline is the start and end date of each interval
         SortedSet<DateTime> timeline = new TreeSet<>(
                                 new Comparator<DateTime>() {
                                     @Override
                                     public int compare(DateTime o1, DateTime o2) {
-                                        return o1.compareTo(o2);
+                                        if (o1.isBefore(o2)) {
+                                            return -1;
+                                        }
+                                        else {
+                                            return +1;
+                                        }
                                     }
                                 }); 
         
+        //-----------------------------------------------------
+        //First, create an ordered timeline based on intervals
+        //The date milestone on the timeline is the start and end date of each interval
+        //Note: if two datetime are equal, two duplicate elements are on the timeline
+        //-----------------------------------------------------        
         Set<DateTime> starts = new HashSet();
-        Set<DateTime> ends = new HashSet<>();
+        Set<DateTime> ends = new HashSet();
         for (Interval interval : intervals) {
             timeline.add(interval.getStart()); //added datetime will be arranged in timing order
             starts.add(interval.getStart());
@@ -75,8 +81,11 @@ public class TimeUtilities {
             ends.add(interval.getEnd());
         }
         
+        //------------------------------------------------
         //Then, traverse the timeline to count tokens
-        //current-next traverses every interval on the timeline formed by two consecutive datetime points
+        //current-next traverses every interval on the timeline formed by two 
+        //consecutive datetime points
+        //------------------------------------------------
         DateTime current = null;
         DateTime next = null;
         Iterator<DateTime> iterator = timeline.iterator();
@@ -95,12 +104,14 @@ public class TimeUtilities {
                 
                 if (starts.contains(current)) {
                     intervalCount++;
-                } 
-                else if (ends.contains(current)) {
+                }
+                if (ends.contains(current)) {
                     intervalCount--;
                 }
                 
-                intervalCountMap.put(new Interval(current,next), intervalCount);
+                if (current.isBefore(next)) {
+                    intervalCountMap.put(new Interval(current,next), intervalCount);
+                }
             }
         }
         
@@ -152,22 +163,36 @@ public class TimeUtilities {
                                 new Comparator<DateTime>() {
                                     @Override
                                     public int compare(DateTime o1, DateTime o2) {
-                                        return o1.compareTo(o2);
+                                        if (o1.isBefore(o2)) {
+                                            return -1;
+                                        }
+                                        else if (o1.isEqual(o2)) { //if two points are the same, only one is added
+                                            return 0;
+                                        }
+                                        else {
+                                            return +1;
+                                        }
                                     }
                                 }); 
         
+        //-------------------------------------------
+        // Put all start and end points of all intervals on a timeline
+        // Note: if two points of time are the same, only one is kept on timeline
+        //-------------------------------------------
         for (Interval interval : map1.keySet()) {
             timeline.add(interval.getStart()); //added datetime will be arranged in timing order
             timeline.add(interval.getEnd());
         }
-        
         for (Interval interval : map2.keySet()) {
             timeline.add(interval.getStart()); 
             timeline.add(interval.getEnd());
         }      
         
+        //----------------------------------------------
         //Traverse the timeline and compare intervals of map1,map2
-        //current-next traverses every interval on the timeline formed by two consecutive datetime points
+        //current-next traverses every interval on the timeline formed 
+        //by two consecutive datetime points
+        //----------------------------------------------
         DateTime current = null;
         DateTime next = null;
         Interval timelineInterval;
@@ -181,24 +206,15 @@ public class TimeUtilities {
             
             if (iterator.hasNext()) {
                 next = iterator.next();
-                timelineInterval = new Interval(current,next);
-                resultMap.put(timelineInterval, getIntervalCount(timelineInterval,map1) - 
-                                            getIntervalCount(timelineInterval,map2));
+                if (current.isBefore(next)) {
+                    timelineInterval = new Interval(current,next);
+                    resultMap.put(timelineInterval, getIntervalCount(timelineInterval,map1) - 
+                                                getIntervalCount(timelineInterval,map2));
+                }
             }            
         }
         return resultMap;
     }
-    
-    private static Map<Interval,Float> calcPercentageMap(Map<Interval,Integer> intervals, Integer total) {
-        Map<Interval,Float> percentageMap = new HashMap();
-        
-        Integer count;
-        for (Interval interval : intervals.keySet()) {
-            count = intervals.get(interval);
-            percentageMap.put(interval,new Float(1.0*count/total));
-        }
-        return percentageMap;
-    } 
     
     public static SortedSet<DateTime> sortDates(Set<DateTime> dateSet) {
         

@@ -113,12 +113,12 @@ public class ReplayTrace {
     }
     
     public DateTime getEndDate() {
-        return timeOrderedReplayedNodes.get(timeOrderedReplayedNodes.size()-1).getStart();
+        return timeOrderedReplayedNodes.get(timeOrderedReplayedNodes.size()-1).getComplete();
     }
     
     public Interval getInterval() {
-        if (this.startDate != null && this.endDate != null) {
-            return new Interval(new DateTime(this.startDate), new DateTime(this.endDate));
+        if (this.getStartDate() != null && this.getEndDate() != null) {
+            return new Interval(this.getStartDate(), this.getEndDate());
         }
         else {
             return null;
@@ -429,7 +429,8 @@ public class ReplayTrace {
                 //It can happen that timeBefore = timeAfter due to two activities
                 //on parallel branches and have the same timestamp
                 //----------------------------------------
-                if (timeBefore != null && timeAfter != null && timeBefore.isEqual(timeAfter)) {
+                if (timeBefore != null && timeAfter != null && timeBefore.isEqual(timeAfter) && 
+                   !node.getSources().contains(timeOrderedReplayedNodes.get(timeBeforePos))) {
                     if (node.getSources().size() <= 1) { //for activity or split gateway: continue search backward
                         for (int j=timeBeforePos-1;j>=0;j--) {
                             if (timeOrderedReplayedNodes.get(j).isTimed() &&
@@ -485,8 +486,8 @@ public class ReplayTrace {
     /*
     * Set complete timestamp for every node since event log only contains one timestamp
     * By default event timestamp is set to start date of a trace node
-    * This is to take a small portion of the start date to be a complete date
-    * Need to check start timestamp of all target nodes to ensure complete timestamp is before all of them
+    * The complete date is calculated by adding to the start date 10% the duration 
+    * from start date to the earliest date of all target nodes
     * Assume that all nodes have start timestamp calculated and assigned (not null).
     */
     private void calculateCompleteTimestamp() {

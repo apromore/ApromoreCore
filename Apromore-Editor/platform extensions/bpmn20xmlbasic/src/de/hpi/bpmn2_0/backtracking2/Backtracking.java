@@ -56,9 +56,10 @@ public class Backtracking {
     }
     
     /*
-    * Explore by stage. bestNodes contain nodes to be explored.
-    * At beginning, it is one starting node.
-    * Always select the best nodes in the list to explore, ignore all others
+    * Explore long trace by chunk. 
+    * At beginning, it is one starting node.    
+    * selectedNodes contain nodes selected after every chunk.
+    * Select the best nodes for next exploration after finishing every chunk
     */
     public Node explore() {
         //The first state includes the start event of the model and beginning of the trace
@@ -84,6 +85,7 @@ public class Backtracking {
             maxAllowedDepth = params.getMaxDepth();
             totalNodesCount = 1; //the first node
             
+            LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
             LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
                         "MAX_DEPTH:" + params.getMaxDepth() + " " +
                         "MIN_MATCH:" + params.getMinMatch() + " " +
@@ -101,6 +103,19 @@ public class Backtracking {
             
             if (selectedNode != null) {
                 matchRatio = 1.0*selectedNode.getMatchCount()/progressSize;
+                //-----------------------------------------
+                // Adjust cost of movement after every chunk 
+                // to update the knowledge of the trend. 
+                // At the beginning, activity skip cost is set to be lower than 
+                // event skip cost based on assumption of high fitness log and model
+                // However, after every chunk replay, if there are less activity matches, 
+                // then activity skip cost must be increased because it is not good to 
+                // skip activity and maybe skip event is a better option.
+                // In case of there is no match, activity skip is not a good option at all
+                // Similarly, event skip cost should be the same as at the beginning (higher than 
+                // activity skip cost) if there is high match, but should be lower if 
+                // there is not good match between activity and the model
+                //-----------------------------------------
                 if (matchRatio != 0) {
                     params.setActivitySkipCost(params.getActivitySkipCost()/matchRatio);
                 } else {

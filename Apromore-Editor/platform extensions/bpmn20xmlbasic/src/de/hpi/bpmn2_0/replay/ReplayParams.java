@@ -15,6 +15,26 @@ public class ReplayParams {
     private double MaxNodeDistance;
     private int TimelineSlots;
     private int TotalEngineSeconds;
+    private int ProgressCircleBarRadius;
+    private int SequenceTokenDiffThreshold;
+
+    public int getSequenceTokenDiffThreshold() {
+        return SequenceTokenDiffThreshold;
+    }
+
+    public void setSequenceTokenDiffThreshold(int SequenceTokenDiffThreshold) {
+        this.SequenceTokenDiffThreshold = SequenceTokenDiffThreshold;
+    }
+
+
+    public int getProgressCircleBarRadius() {
+        return ProgressCircleBarRadius;
+    }
+
+    public void setProgressCircleBarRadius(int ProgressCircleBarRadius) {
+        this.ProgressCircleBarRadius = ProgressCircleBarRadius;
+    }
+
 
     public int getTotalEngineSeconds() {
         return TotalEngineSeconds;
