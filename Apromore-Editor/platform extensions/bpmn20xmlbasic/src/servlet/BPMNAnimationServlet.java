@@ -204,7 +204,7 @@ public class BPMNAnimationServlet extends HttpServlet {
                     if (!animationLog.isEmpty()) {
                         replayedLogs.add(animationLog);
                     }
-                }
+                } 
                 
             } else {
                 LOGGER.info(replayer.getProcessCheckingMsg());
