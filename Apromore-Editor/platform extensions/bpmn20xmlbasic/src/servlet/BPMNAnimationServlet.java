@@ -195,7 +195,7 @@ public class BPMNAnimationServlet extends HttpServlet {
             
             Replayer replayer = new Replayer(bpmnDefinition, params);
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
-            AnimationLog animationLog;
+            AnimationLog animationLog; 
             if (replayer.isValidProcess()) {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
                 EncodeTraces.getEncodeTraces().read(logMap.values());
