@@ -53,6 +53,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
 
 /**
  * Create animation for a process diagram from event log
@@ -128,7 +129,6 @@ public class BPMNAnimationServlet extends HttpServlet {
                             File storeFile = new File(filePath);
 
                             // saves the file on disk
-                            LOGGER.info("Start writing uploaded file to temp dir: " + filePath);
                             item.write(storeFile);
                             LOGGER.info("Finish writing uploaded file to temp dir: " + filePath);
 
@@ -190,30 +190,21 @@ public class BPMNAnimationServlet extends HttpServlet {
             params.setMaxNodeDistance(Double.valueOf(props.getProperty("MaxNodeDistance")).doubleValue());
             params.setTimelineSlots(Integer.valueOf(props.getProperty("TimelineSlots")).intValue());
             params.setTotalEngineSeconds(Integer.valueOf(props.getProperty("TotalEngineSeconds")).intValue());
+            params.setProgressCircleBarRadius(Integer.valueOf(props.getProperty("ProgressCircleBarRadius")).intValue());
+            params.setSequenceTokenDiffThreshold(Integer.valueOf(props.getProperty("SequenceTokenDiffThreshold")).intValue());
             
             Replayer replayer = new Replayer(bpmnDefinition, params);
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
+            AnimationLog animationLog;
             if (replayer.isValidProcess()) {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
-                
+                EncodeTraces.getEncodeTraces().read(logMap.values());
                 for (XLog log : logMap.values()) {
-                    replayedLogs.add(replayer.replay(log));
-                    
-                    //Test backtracking
-                    /*
-                    XTrace trace = log.get(0);
-                    Backtracking backtrack = Backtracking.getInstance(params);
-                    backtrack.explore(new Node(null, 
-                                            new State(new HashSet<SequenceFlow>(BPMNDiagramHelper.getInstance().getStartEvent().getOutgoingSequenceFlows()), 
-                                                      BPMNDiagramHelper.getInstance().getStartEvent(), 
-                                                      StateElementStatus.STARTEVENT, 
-                                                      trace, 0)), Boolean.valueOf(false));
-                    backtrack.select();
-                    */
+                    animationLog = replayer.replay(log);
+                    if (!animationLog.isEmpty()) {
+                        replayedLogs.add(animationLog);
+                    }
                 }
-                
-                
-                
                 
             } else {
                 LOGGER.info(replayer.getProcessCheckingMsg());
@@ -225,6 +216,7 @@ public class BPMNAnimationServlet extends HttpServlet {
             * ------------------------------------------
             */
             LOGGER.info("Start sending back JSON animation script to browser");
+            /*
             boolean hasAnimation = false;
             for (AnimationLog log : replayedLogs) {
                 if (!log.isEmpty()) {
@@ -232,7 +224,8 @@ public class BPMNAnimationServlet extends HttpServlet {
                     break;
                 }
             }
-            if (hasAnimation) {
+            */
+            if (replayedLogs.size() > 0) {
                 out = res.getWriter();
                 res.setContentType("application/json");
                 res.setStatus(200);

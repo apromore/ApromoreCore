@@ -49,7 +49,7 @@
                 <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
                 </button>
-                <div id="slider2" disabled="disabled"></div>
+                
             </div>
 
             <div id="progress_display" style="margin: 10px; padding: 10px; position: relative; left: 220px; top: -150px; height: 160px">
@@ -63,8 +63,12 @@
             </div>
         </div>
 
-        <div id="zoom_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -325px; width: 25px; height: 150px; overflow: hidden">
+        <div id="zoom_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -350px; width: 25px; height: 150px; overflow: hidden">
             <div id="zoom_slider" disabled="disabled" style="left: 10px; top: 10px"></div>
+        </div>
+        
+        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 60px; top: -350px; width: 100px; height: 220px; overflow: hidden">
+            <div id="slider2" disabled="disabled" style="left: 10px; top: 10px; height:200px;"></div>
         </div>
 
         <form id="uploadForm" method="post" enctype="multipart/form-data" style="background: #EEE; border: 1px solid black; padding: 5px; position: relative; left: 500px; top: -400px; width: 200px">
@@ -85,6 +89,9 @@
 	<script src="/editor/libs/animation/animation.js"></script>
 	<script type="text/javascript" charset="utf-8">
 	
+	var lastSliderValue = 11;
+	var speedRatio;
+	   	
 	var $j = jQuery.noConflict();
 	
 	var controller = new Controller();
@@ -103,8 +110,8 @@
     }
     
     function start(e) {
-    	lastSliderValue = 1;
-    	$j("#slider2").slider({ value: 1 });
+    	lastSliderValue = 11;
+    	$j("#slider2").slider({ value: 11 });
     	controller.start($j("#animationJSON").get(0).getAttribute("value"));
     }	
 
@@ -131,16 +138,18 @@
 		    complete: function(e, xhr, settings){
 		    	if (e.status === 200) {
 		    		data = e.responseText;
+		    		console.log(data);
 
 			        $j("#animationJSON").get(0).setAttribute("value", data);
-				controller.reset(data);
+					controller.reset(data);
 			        
 			        $j("#start").get(0).disabled = false;
 			        $j("#pause").get(0).disabled = false;
 			        $j("#forward").get(0).disabled = false;
 			        $j("#backward").get(0).disabled = false;
-				$j("#end").get(0).disabled = false;
+					$j("#end").get(0).disabled = false;
 			        $j("#slider2").get(0).disabled = false;
+
 			        
 				$j("#uploadForm")[0].style="visibility: hidden";
 			    }
@@ -161,28 +170,33 @@
     
 	//////////////////////////////Load animation workspace after document has been fully loaded
 	$j(window).load(function(){	
-		
+		var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
 		var $jslider2 = $j( "#slider2" ).slider({
-    			orientation: "horizontal",
+    			orientation: "vertical",
     			step: 1,
     			min: 1,
-    			max: 8,
-    			value: 1
+    			max: 20,
+    			value: 11
     		});
 		$jslider2.slider("pips", {
+			labels:resStepValues,
 			rest:"label"
 		});
+		
+		//$jslider2.slider("pips").slider("float");
 	   
-	   	var lastSliderValue = 1;
+	   	var lastSliderValue = 11;
 	   	//alert(lastSliderValue);
 	   	
 	   	$j("#slider2").on( "slidechange", 
 	   					function(event,ui) {
-	   						speedRatio = ui.value/lastSliderValue;
-	   						//alert("speedRatio: " + speedRatio + " uiValue: " + ui.value);
-	   						controller.changeSpeed(event,ui,speedRatio);
+	   						//speedRatio = (ui.value/lastSliderValue)*$j("#speedfactor").val();
+	   						//alert("speedRatio: " + speedRatio + " uiValue: " + ui.value + " speedfactor:" + $j("#speedfactor").val());
+	   						speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
+	   						//alert("ui.value=" + ui.value + " last value=" + lastSliderValue + " speed ratio=" + speedRatio);
+	   						controller.changeSpeed(speedRatio);
 	   						lastSliderValue = ui.value; 
-	   					});		
+					   					});		
         
 		// Zoom slider
 

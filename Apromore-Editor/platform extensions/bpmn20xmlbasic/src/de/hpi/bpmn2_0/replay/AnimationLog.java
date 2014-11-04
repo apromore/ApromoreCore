@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -24,8 +25,7 @@ public class AnimationLog {
     DateTime endDate = null;
     Interval interval = null;
     String color = "";
-    
-    public static int TIMELINE_DURATION = 120; //120 seconds
+    private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
     
     public AnimationLog() {
 //        traceMap = traces;
@@ -85,11 +85,20 @@ public class AnimationLog {
         return this.color;
     }
     
-    //Return a hashmap
-    //key: sequence Id
-    //value: list of intervals, each reprenseting a token transfer via the sequence flow (Id is the key)
-    //Note that a trace might contain many transfers via a sequence flow, at different time interval
-    public Map<String, SortedSet<Interval>> getTokenTransfers() {
+    /*
+    * Return a map of intervals by sequenceIds for this log
+    * Note that a trace might contain many overlapping intervals created from sequence flows    
+    * key: sequence Id
+    * value: list of intervals, each reprenseting a token transfer via the sequence flow (Id is the key)
+    * The intervals of one sequenceId are sorted by start date, something look like below.
+    * |--------------|
+    *      |---------| 
+    *      |---------|
+    *        |------------------|
+    *            |----------|
+    *                  |-----------------------|
+    */    
+    public Map<String, SortedSet<Interval>> getIntervalMap() {
         Map<String, SortedSet<Interval>> sequenceByIds = new HashMap();
         
         SortedSet<Interval> transfers;
@@ -101,11 +110,17 @@ public class AnimationLog {
                         new Comparator<Interval>() {
                             @Override
                             public int compare(Interval o1, Interval o2) {
-                                return o1.getStart().compareTo((o2.getStart()));
+                                if (o1.getStart().isBefore(o2.getStart())) {
+                                    return -1;
+                                } else {
+                                    return +1;
+                                }
                             }
                         });
                     sequenceByIds.put(seqFlow.getId(), transfers);
                 }
+                //LOGGER.info("Node1:" + seqFlow.getSourceRef().getName() + " id:" + seqFlow.getSourceRef().getId() + 
+                //            "Node2:" + seqFlow.getTargetRef().getName() + " id:" + seqFlow.getTargetRef().getId());
                 sequenceByIds.get(seqFlow.getId()).add(TimeUtilities.getInterval(seqFlow));
             }
         }

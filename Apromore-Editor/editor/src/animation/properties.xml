@@ -6,12 +6,14 @@
 	<entry key="MinMatch">0.7</entry>
 	<entry key="MaxMatch">1</entry>
 	<entry key="MinFitness">0.7</entry>
-	<entry key="MaxDiffSeries">3</entry>	
-	<entry key="MaxActivitySkip">0.4</entry>
-	<entry key="MaxNodeDistance">0.4</entry>
+	<entry key="MaxDiffSeries">5</entry>	
+	<entry key="MaxActivitySkip">0.3</entry>
+	<entry key="MaxNodeDistance">0.1</entry>
 	<entry key="ActivitySkipCost">1</entry>
-	<entry key="EventSkipCost">3</entry>	
+	<entry key="EventSkipCost">5</entry>	
 	<entry key="TraceChunkSize">10</entry>
 	<entry key="TimelineSlots">120</entry>
 	<entry key="TotalEngineSeconds">120</entry>
+	<entry key="ProgressCircleBarRadius">20</entry>
+	<entry key="SequenceTokenDiffThreshold">2</entry>
 </properties>
