@@ -8,12 +8,14 @@ import de.hpi.bpmn2_0.replay.ReplayTrace;
 import de.hpi.bpmn2_0.replay.TimeUtilities;
 import de.hpi.bpmn2_0.replay.TraceNode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.logging.Logger;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Seconds;
 import org.json.JSONArray;
@@ -25,7 +27,7 @@ import org.json.JSONObject;
 * the real time in event log file and the internal clock of the animation engine (SVG).
 * Thus, there is a conversion ratio between the event log time and the animation engine time
 * called TimeConversionRatio, meaning how many seconds of the engine is equivalent to 
-* one second of the data time. This ration is used to convert the real data time to
+* one second of data time. This ratio is used to convert the real data time to
 * the animation engine time.
 * The timeline has a number of even slots. Each slot represents a duration of time
 * in the event log (SlotDataUnit) and a duration of time of animation engine (SlotEngineUnit)
@@ -38,11 +40,12 @@ import org.json.JSONObject;
 public class AnimationJSONBuilder {
     //public final int TOTAL_TIMELINE_SLOTS = 120; 
     //public final int TOTAL_TIMELINE_SECONDS = 120;
-    private Collection<AnimationLog> animations = null;
-    private Interval totalRealInterval = null;
+    private ArrayList<AnimationLog> animations = null;
+    private Interval totalRealInterval = null; //total time interval of all logs
     private ReplayParams params;
+    private static final Logger LOGGER = Logger.getLogger(AnimationJSONBuilder.class.getCanonicalName());
     
-    public AnimationJSONBuilder(Collection<AnimationLog> animations, ReplayParams params) {
+    public AnimationJSONBuilder(ArrayList<AnimationLog> animations, ReplayParams params) {
         this.animations = animations;
         this.params = params;
         
@@ -50,6 +53,10 @@ public class AnimationJSONBuilder {
         for (AnimationLog animationLog : animations) {
             dateSet.add(animationLog.getStartDate());
             dateSet.add(animationLog.getEndDate());
+            LOGGER.info("LOG " + animationLog.getName() + ". TraceCount:" + animationLog.getTraces().size() + 
+                        ". StartDate:" + animationLog.getStartDate().toString() +
+                        ". EndDate:" + animationLog.getEndDate() +
+                        ". Color:" + animationLog.getColor());
         }
         SortedSet<DateTime> sortedDates = TimeUtilities.sortDates(dateSet);
         totalRealInterval = new Interval(sortedDates.first(), sortedDates.last());
@@ -80,6 +87,7 @@ public class AnimationJSONBuilder {
         
         collectionObj.put("logs", logs);
         collectionObj.put("timeline", this.parseTimeline(animations));
+        //collectionObj.put("sequenceAnalysis", this.parseSequenceAnalysis());
         return collectionObj;
     }
     
@@ -88,6 +96,8 @@ public class AnimationJSONBuilder {
         
         json.put("name", animationLog.getName());
         json.put("color", animationLog.getColor());
+        json.put("traceCount", animationLog.getTraces().size());
+        json.put("progress", this.parseLogProgress(animationLog));
         json.put("tokenAnimations", this.parseTraces(animationLog));
 
         return json;
@@ -122,9 +132,11 @@ public class AnimationJSONBuilder {
         
         json.put("logs", logTimelines);
         json.put("startDateLabel", totalRealInterval.getStart().toString());
-        json.put("startDatePos", 0); //datepos is the ordinal number of the time bar on the timeline
+        json.put("startDateSlot", 0); //datepos is the ordinal number of the time bar on the timeline
         json.put("endDateLabel", totalRealInterval.getEnd().toString());
-        json.put("endDatePos", params.getTimelineSlots());
+        json.put("endDateSlot", params.getTimelineSlots());
+        json.put("timelineSlots", params.getTimelineSlots());
+        json.put("totalEngineSeconds", params.getTotalEngineSeconds());
         json.put("slotEngineUnit", this.getSlotEngineUnit());
         json.put("slotDataUnit", this.getSlotDataUnit());        
         json.put("timeConversionRatio", this.getTimeConversionRatio());
@@ -148,7 +160,7 @@ public class AnimationJSONBuilder {
         if (log.getEndDate().isEqual(totalRealInterval.getEnd())) {
             json.put("endDatePos", params.getTimelineSlots());
         } else {
-            json.put("endDatePos", Seconds.secondsBetween(log.getEndDate(), totalRealInterval.getEnd()).getSeconds()/
+            json.put("endDatePos", Seconds.secondsBetween(totalRealInterval.getStart(), totalRealInterval.getEnd()).getSeconds()/
                                      this.getSlotDataUnit());
         }        
         
@@ -260,5 +272,95 @@ public class AnimationJSONBuilder {
         return jsonTraces;
     }
 
+    protected JSONObject parseLogProgress(AnimationLog animationLog) throws JSONException {
+        String keyTimes = "";
+        String values = "";
+        
+        
+        double begin = Seconds.secondsBetween(totalRealInterval.getStart(), animationLog.getStartDate()).getSeconds()*this.getTimeConversionRatio();
+        double duration = params.getTotalEngineSeconds() - begin;        
+        
+        //-------------------------------------------
+        // Calcuate keyTimes and values
+        // Go every timeline slot, calculate the slot point of time, then count
+        // the number of traces containing that timestamp
+        //-------------------------------------------
+        DateTime slotTimestamp;
+        int traceCount;
+        double keyTimeVal;
+        double totalVal = 2*Math.PI*params.getProgressCircleBarRadius(); //the perimeter of the progress circle bar
+        DecimalFormat df = new DecimalFormat("#.##");
+        for (int i=1; i<=params.getTimelineSlots(); i++) {
+            keyTimeVal = 1.0*i/params.getTimelineSlots();
+            slotTimestamp = totalRealInterval.getStart().plusSeconds(Double.valueOf(i*this.getSlotDataUnit()).intValue());
+            traceCount = 0;
+            for (ReplayTrace trace : animationLog.getTraces()) {
+                if (trace.getInterval().getEnd().isBefore(slotTimestamp) || 
+                    trace.getInterval().getEnd().isEqual(slotTimestamp)) {
+                    traceCount++;
+                }
+            }
+            if (i==1) {
+                keyTimes += "0;"; //required by SVG keytimes specification
+                values += "0;"; //required by SVG values specification
+            }
+            else if (i==params.getTimelineSlots()) {
+                keyTimes += "1;"; //required by SVG keyTimes specification
+                values += (Math.round((1.0*traceCount/animationLog.getTraces().size())*totalVal) + ";");
+            }
+            else {
+                keyTimes += (df.format(keyTimeVal) + ";");
+                values += (Math.round((1.0*traceCount/animationLog.getTraces().size())*totalVal) + ";");
+            }
+        }
+        if (keyTimes.length() > 0) {
+            keyTimes = keyTimes.substring(0, keyTimes.length()-1);
+        }
+        if (values.length() > 0) {
+            values = values.substring(0, values.length()-1);
+        }
+        
+        JSONObject json = new JSONObject();
+        json.put("keyTimes", keyTimes);
+        json.put("values", values);
+        
+        return json;
+    }
+    
+    protected JSONArray parseSequenceAnalysis() throws JSONException {
+        JSONArray jsonSequences = new JSONArray();
+        JSONObject jsonObject;
+        
+        if (this.animations.size() >= 2) {
+            Map<String,Map<Interval,Integer>> log1Map = TimeUtilities.aggregateIntervalMap(this.animations.get(0).getIntervalMap());
+            Map<String,Map<Interval,Integer>> log2Map = TimeUtilities.aggregateIntervalMap(this.animations.get(1).getIntervalMap());
+            Map<Interval,Integer> compare;
+            for (String sequenceId : log1Map.keySet()) {
+                if (log2Map.containsKey(sequenceId)) {
+                    compare = TimeUtilities.compareIntervalMaps(log1Map.get(sequenceId), log2Map.get(sequenceId));
+                    for (Interval interval : compare.keySet()) {
+                        if (Math.abs(compare.get(interval)) > params.getSequenceTokenDiffThreshold()) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("sequenceId", sequenceId);
+                            jsonObject.put("from", this.getEngineTime(interval.getStart()));
+                            jsonObject.put("to", this.getEngineTime(interval.getEnd()));
+                            jsonSequences.put(jsonObject);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return jsonSequences;
+    }
+    
+    /*
+    * Convert from data time to engine time
+    * Use to convert a real datetime value to a "begin" value for animation
+    */
+    private int getEngineTime(DateTime dataTime) {
+        double engineTime = Seconds.secondsBetween(totalRealInterval.getStart(), dataTime).getSeconds()*this.getTimeConversionRatio();
+        return Double.valueOf(engineTime).intValue();
+    }
     
 }

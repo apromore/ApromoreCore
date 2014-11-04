@@ -37,6 +37,8 @@ import org.deckfour.xes.model.impl.XAttributeImpl;
 import org.deckfour.xes.model.impl.XEventImpl;
 import org.deckfour.xes.model.impl.XTraceImpl;
 import org.joda.time.DateTime;
+import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
+import org.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import servlet.BPMNAnimationServlet;
 
 /**
@@ -58,6 +60,9 @@ public class Replayer {
     //Contains number of token increased/decreased carried on every edge
     //Used for OR-join enabledness check
     private Map<SequenceFlow,Integer> edgeToTokenChangeMap = new HashMap();     
+    
+    //EncodeTraces encodedTraces; // mapping from traceId to trace encoded char string
+    Map<String, Node> traceBacktrackingNodeMap = new HashMap(); // mapping from trace string to leaf node of backtracking
     
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     
@@ -89,12 +94,31 @@ public class Replayer {
         animationLog.setColor(this.getLogColor());
         ReplayTrace replayTrace;
         
+        //--------------------------------------------
+        // traceEncode contains mapping from traceId to char string representation
+        //--------------------------------------------
+        /*
+        try {
+            encodedTraces = new EncodeTraces(log);
+        } catch (EncodingNotFoundException ex) {
+            Logger.getLogger(Replayer.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe(ex.getMessage());
+            return animationLog;
+        }
+        */
+        
+        //-------------------------------------------
+        // Set the initial and very far log start/end date as marker only
+        //-------------------------------------------
         Calendar cal = Calendar.getInstance();
         cal.set(2020, 1, 1);
         DateTime logStartDate = new DateTime(cal.getTime());
         cal.set(1920, 1, 1);
         DateTime logEndDate = new DateTime(cal.getTime());
         
+        //-------------------------------------------
+        // Replay every trace in the log
+        //-------------------------------------------
         for (XTrace trace : log) {
             replayTrace = this.replayWithBacktracking(trace);
             if (!replayTrace.isEmpty()) {
@@ -383,59 +407,47 @@ public class Replayer {
     /*
     * Replay using backtracking algorithm
     * Return replay trace or empty if backtracking returns no result
-    * Noteed side effect: the input trace can be preprocessed (activities not in the model are removed)
+    * Noted side effect: the input trace can be preprocessed (activities not in the model are removed)
+    * Assume: encodedTraces has been created for the log.
     */
     public ReplayTrace replayWithBacktracking(XTrace trace) {
-        //--------------------------------------------
-        //Remove unfound event name in process model
-        //--------------------------------------------
-        for (XEvent event : trace) {
-            if (!helper.getActivityNames().contains(LogUtility.getConceptName(event))) {
-                trace.remove(event);
+        Node leafNode; //contains the found backtracking leaf node
+        
+        //---------------------------------------------------
+        // Use clustering. If the same trace has been replayed
+        // before, then no need another replay but just reuse the 
+        // replay result done for previous trace.
+        //---------------------------------------------------
+        String traceString = EncodeTraces.getEncodeTraces().getCharStream(LogUtility.getConceptName(trace));
+        if (traceBacktrackingNodeMap.containsKey(traceString)) {
+            leafNode = traceBacktrackingNodeMap.get(traceString);
+        }
+        else { // has to replay a new trace
+            //--------------------------------------------
+            //Remove unfound event name in process model
+            //--------------------------------------------
+            for (XEvent event : trace) {
+                if (!helper.getActivityNames().contains(LogUtility.getConceptName(event))) {
+                    trace.remove(event);
+                }
+            }
+
+            //--------------------------------------------
+            // Replay trace with backtracking algorithm
+            //--------------------------------------------
+            Backtracking backtrack = new Backtracking(this.params, trace, helper);
+            leafNode = backtrack.explore();    
+            if (leafNode != null && !traceBacktrackingNodeMap.containsKey(traceString)) {
+                traceBacktrackingNodeMap.put(traceString, leafNode); //traceString: the original trace string.
             }
         }
-        
-        //--------------------------------------------
-        // Replay the trace with backtracking algorithm
-        //--------------------------------------------
-        /*
-        Backtracking backtrack;
-        Node node = new Node(null, 
-                            new State(new HashSet<SequenceFlow>(helper.getStartEvent().getOutgoingSequenceFlows()), 
-                                helper.getStartEvent(), 
-                                StateElementStatus.STARTEVENT, 
-                                trace, 0, helper));
-        for (XTrace subtrace : LogUtility.divide(trace, params.getSearchTraceSize())) {
-            node.setAsRoot(subtrace);
-            backtrack = new Backtracking(params, subtrace, helper);
-            backtrack.explore(node); 
-            node = backtrack.select(); 
-            if (node == null) {
-                break;
-            }
-        }
-        */
-        
-        
-        Backtracking backtrack = new Backtracking(this.params, trace, helper);
-        Node node = backtrack.explore();
-        
-        /*
-        backtrack.explore(new Node(null, 
-                                   new State(new HashSet<SequenceFlow>(helper.getStartEvent().getOutgoingSequenceFlows()), 
-                                              helper.getStartEvent(), 
-                                              StateElementStatus.STARTEVENT, 
-                                              trace, 0, helper)));
-        Node node = backtrack.select();
-        */
-        
         
         Stack<Node> stack = new Stack<>();
+        Node node = leafNode;
         while (node != null) {
             stack.push(node);
             node = node.getParent();
         }
-        
         
         //---------------------------------------------
         // Create replay trace from the backtracking result
@@ -513,14 +525,6 @@ public class Replayer {
             if (endNode != null) {
                 endNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(20));
             }
-            /*
-            if (helper.getTargets(node.getState().getElement()).contains(helper.getEndEvent())) {
-                traceNode = new TraceNode(helper.getEndEvent());
-                traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(20));
-                replayTrace.add(node.getState().getElement(), traceNode);
-                replayTrace.setReplayed(helper.getEndEvent());
-            }
-            */
             
             //-----------------------------------------
             // Prune those nodes not on the backtracking result
