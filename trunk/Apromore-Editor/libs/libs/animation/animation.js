@@ -6,7 +6,7 @@
  */
 
 jQuery.browser = {};
-jQuery.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit    /.test(navigator.userAgent.toLowerCase());
+jQuery.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
@@ -96,7 +96,7 @@ function drawCoordinateOrigin() {
         //var rect = groupE.getBBox();
         pt.x = svg.x.animVal.value;
         pt.y = svg.y.animVal.value;
-        console.log("SVG Document Origin: x="+ pt.x + " y=" + pt.y); 
+        //console.log("SVG Document Origin: x="+ pt.x + " y=" + pt.y); 
         //pt = pt.matrixTransform(matrix);         
 
         var lineX = document.createElementNS(svgNS,"line");
@@ -235,8 +235,10 @@ Controller = function(){
 Controller.prototype = {
 
     svgDocuments: [],
-    timeCoefficient: 1000,
-    timeOffset: 0,
+    slotDataUnit: 1000,
+    timelineSlots: 120,
+    timelineEngineSeconds: 120,
+    startDateMillis: 0,
 
     pauseAnimations: function() {
         this.svgDocuments.forEach(function(s) {
@@ -244,7 +246,7 @@ Controller.prototype = {
         });
 
         if (this.clockTimer) {
-                clearTimeout(this.clockTimer);
+                clearInterval(this.clockTimer);
         }
         //this.updateClock();
     },
@@ -255,7 +257,7 @@ Controller.prototype = {
         });
 
         if (this.clockTimer) {
-                clearTimeout(controller.clockTimer);
+                clearInterval(this.clockTimer);
         }
         this.clockTimer = setInterval(updateClock_global, 100);
     },
@@ -271,21 +273,16 @@ Controller.prototype = {
 
         var json = JSON.parse(jsonRaw);
         var logs = json.logs;
-
-	// Add log intervals to timeline
-	var timelineElement = $j("#timeline")[0];
-        var startTopX = 10;
-        var startTopY = 60;
-	for (var j=0; j<json.timeline.logs.length; j++) {
-	    var log = json.timeline.logs[j];
-	    var logInterval = document.createElementNS(svgNS,"line");
-	    logInterval.setAttributeNS(null,"x1",startTopX + 10 * log.startDatePos);  // magic number 10 is gapWidth / gapValue
-	    logInterval.setAttributeNS(null,"y1",startTopY + 5 + 7 * j);
-	    logInterval.setAttributeNS(null,"x2",startTopX + 10 * log.endDatePos);
-	    logInterval.setAttributeNS(null,"y2",startTopY + 5 + 7 * j);
-	    logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
-	    timelineElement.insertBefore(logInterval, timelineElement.lastChild);
-	}
+        
+        this.startPos = json.timeline.startDateSlot; //start slot 
+        this.endPos = json.timeline.endDateSlot; // end slot
+        this.timelineSlots = json.timeline.timelineSlots;
+        this.timelineEngineSeconds = json.timeline.totalEngineSeconds; //total engine seconds
+        this.slotEngineUnit = json.timeline.slotEngineUnit*1000; // number of engine milliseconds per slot
+        this.startDateMillis = (new Date(json.timeline.startDateLabel)).getTime(); // start date in milliseconds
+        // slotDataUnit: number of data milliseconds per slot
+        this.slotDataUnit = ((new Date(json.timeline.endDateLabel)).getTime() - (new Date(json.timeline.startDateLabel)).getTime()) / (json.timeline.endDateSlot - json.timeline.startDateSlot);
+        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit; //number of data seconds per one engine second        
 
         //Recreate progress indicators
         var progressIndicatorE = controller.createProgressIndicators(logs, json.timeline);
@@ -295,11 +292,26 @@ Controller.prototype = {
             var animationE = this.animateTokens(logs[i]);
             this.svgDocuments[0].appendChild(animationE);
         }
-
-        this.startPos = json.timeline.startDateSlot;
-        this.endPos = json.timeline.endDateSlot;
-        this.timeOffset = (new Date(json.timeline.startDateLabel)).getTime();
-        this.timeCoefficient = ((new Date(json.timeline.endDateLabel)).getTime() - (new Date(json.timeline.startDateLabel)).getTime()) / (json.timeline.endDateSlot - json.timeline.startDateSlot);
+        
+        //Recreate timeline to update date labels
+        $j("#timeline").remove();
+        var timelineE = controller.createTimeline();
+        $j("div#progress_display > svg")[0].appendChild(timelineE);
+        
+       // Add log intervals to timeline: must be after the timeline creation
+        var timelineElement = $j("#timeline")[0];
+        var startTopX = 20;
+        var startTopY = 60;
+        for (var j=0; j<json.timeline.logs.length; j++) {
+            var log = json.timeline.logs[j];
+            var logInterval = document.createElementNS(svgNS,"line");
+            logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is gapWidth / gapValue
+            logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j);
+            logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
+            logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
+            logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
+            timelineElement.insertBefore(logInterval, timelineElement.lastChild);
+       }        
 
         this.start();
     },
@@ -316,25 +328,25 @@ Controller.prototype = {
     },
 
     updateClock: function() {
-	if (this.getCurrentTime() > this.endPos) {
-		this.end();
-	} else {
-            var date = new Date();
-            date.setTime(this.getCurrentTime() * this.timeCoefficient + this.timeOffset);
-            if (window.Intl) {
-                document.getElementById("date").innerHTML = new Intl.DateTimeFormat([], {
-                        year: "numeric", month: "short", day: "numeric"
-                }).format(date);
-                document.getElementById("time").innerHTML = new Intl.DateTimeFormat([], {
-                        hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
-                }).format(date);
-                //document.getElementById("subtitle").innerHTML = new Intl.NumberFormat([], {
-                //        minimumIntegerDigits: 3
-                //}).format(date.getMilliseconds();
-            } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
-                document.getElementById("date").innerHTML = date.toDateString();
-                document.getElementById("time").innerHTML = date.toTimeString();
-	    }
+    	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
+    		this.end();
+    	} else {
+                var date = new Date();
+                date.setTime(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
+                if (window.Intl) {
+                    document.getElementById("date").innerHTML = new Intl.DateTimeFormat([], {
+                            year: "numeric", month: "short", day: "numeric"
+                    }).format(date);
+                    document.getElementById("time").innerHTML = new Intl.DateTimeFormat([], {
+                            hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
+                    }).format(date);
+                    //document.getElementById("subtitle").innerHTML = new Intl.NumberFormat([], {
+                    //        minimumIntegerDigits: 3
+                    //}).format(date.getMilliseconds();
+                } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
+                    document.getElementById("date").innerHTML = date.toDateString();
+                    document.getElementById("time").innerHTML = date.toTimeString();
+    	        }
         }
     },
     
@@ -345,7 +357,10 @@ Controller.prototype = {
    
     end: function() {
         this.pause();
-        this.setCurrentTime(this.endPos);
+        this.setCurrentTime(this.endPos*this.slotEngineUnit/1000);
+        if (this.clockTimer) {
+            clearInterval(this.clockTimer);
+        }
     },
     
     clear: function() {
@@ -463,7 +478,7 @@ Controller.prototype = {
         // Create animation for edge
         //---------------------------------------------
         var pathId = $j("#svg-"+edgeId).find("g").find("g").find("g").find("path").get(0).getAttribute("id");
-        console.log("edgeId=" + pathId + ", begin=" + begin + ", duration=" + duration);
+        //console.log("edgeId=" + pathId + ", begin=" + begin + ", duration=" + duration);
         var tokenPathE = document.createElementNS(svgNS,"circle");
     
         if (color=="orange") {
@@ -689,27 +704,18 @@ Controller.prototype = {
     
         return tokenPathE;
     },
-
-    // show / hide the path of the animated object
-    togglePath: function (){
-        $j('#svgPath').toggleClass('show');
-    },
               
     changeSpeed: function (speedRatio){
-        //alert("new " + ui.value);
-        
+      
         var currentTime = this.getCurrentTime();
-        var newTime = currentTime/speedRatio;
-        
-        //svgDoc.removeChild(animationE);
-        //animationE.parentNode.removeChild(animationE);      
+        var newTime = currentTime/speedRatio;  
         
        /*
         * ---------------------------------------------
         * Update for every token
         * ---------------------------------------------
         */
-        var curSpeed;
+        var curDur;
         var curBegin;
         var animateE;
         var pathAnimationE;
@@ -725,13 +731,13 @@ Controller.prototype = {
                for (k=0; k<tokenPaths.length; k++) {
                    pathAnimationE = tokenPaths[k].firstChild; 
                    
-                   curSpeed = pathAnimationE.getAttribute("dur");
-                   curSpeed = curSpeed.substr(0,curSpeed.length - 1);
+                   curDur = pathAnimationE.getAttribute("dur");
+                   curDur = curDur.substr(0,curDur.length - 1);
                    
                    curBegin = pathAnimationE.getAttribute("begin");
                    curBegin = curBegin.substr(0,curBegin.length - 1);
                     
-                   pathAnimationE.setAttributeNS(null,"dur", curSpeed/speedRatio + "s");
+                   pathAnimationE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
                    pathAnimationE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");
                    
                    //console.log("preDur:" + curSpeed + " " + "preBegin:" + curBegin + " " + "newDur:" + curSpeed/speedRatio + " " + "newBegin:" + newBegin);
@@ -739,40 +745,65 @@ Controller.prototype = {
             }
         } 
         
+        //------------------------------------------
+        // Update the speed of circle progress bar
+        //------------------------------------------
         var animations = $j(".progressAnimation");
         for (var i=0; i<animations.length; i++) {
             animateE = animations[i];
             
-            curSpeed = animateE.getAttribute("dur");
-            curSpeed = curSpeed.substr(0,curSpeed.length - 1);
+            curDur = animateE.getAttribute("dur");
+            curDur = curDur.substr(0,curDur.length - 1);
             
             curBegin = animateE.getAttribute("begin");
             curBegin = curBegin.substr(0,curBegin.length - 1);
    
-            animateE.setAttributeNS(null,"dur", curSpeed/speedRatio + "s");
+            animateE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
             animateE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");              
-        }               
+        }            
+        
+        //-----------------------------------------
+        // Update timeline tick with the new speed
+        //-----------------------------------------
+        var timelineTickE = $j("#timelineTick").get(0);
+        curDur = timelineTickE.getAttribute("dur");
+        curDur = curDur.substr(0,curDur.length - 1);  
+        curBegin = timelineTickE.getAttribute("begin");
+        curBegin = curBegin.substr(0,curBegin.length - 1);
+        
+        timelineTickE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
+        timelineTickE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");         
        
-        //svgDoc.appendChild(animationE);
-        //svgDoc.appendChild(progressAnimE);
-        
-        
-        // reload svg document
+        //-------------------------------------------------
+        // Update SVG document
+        // In case of Chrome since setCurrentTime on SVG document does not 
+        // apply updated attributes (begin, duration) dynamically for SVG elements,
+        // must call reload document to make it effective 
+        //-------------------------------------------------
         if ( jQuery.browser.webkit ) {
             var content = $j("#svgLoc > svg").html();
             svgDocument().innerHTML = content;
         }
-        
         this.setCurrentTime(newTime);
-        //svgDoc.unsuspendRedraw(suspendId);
+        
+        //----------------------------------------
+        // Update Coefficients and units to ensure consistency
+        // between the clock, timeline and SVG documents
+        //----------------------------------------
+        if (this.slotEngineUnit) {
+            this.slotEngineUnit = this.slotEngineUnit/speedRatio;
+            if (this.timeCoefficient) {
+                this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
+            }             
+        }
     },
     
     fastforward: function () {
-	this.setCurrentTime(this.getCurrentTime() + 4);
+	   this.setCurrentTime(this.getCurrentTime() + 4);
     },
     
     fastBackward: function () {
-	this.setCurrentTime(this.getCurrentTime() - 4);
+	   this.setCurrentTime(this.getCurrentTime() - 4);
     },    
 
     pause: function() {
@@ -802,15 +833,18 @@ Controller.prototype = {
      * Animation elements are attached as childs of every edge SVG element.
      */
     animateEdges: function() {
+        /*
         this.animateEdgeWidth("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");  
         this.animateEdgeBlink("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");
         this.animateEdgeColor("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");
         
         this.animateEdgeWidth("sid-795CC5A0-EA40-42CB-A86E-38BDAD7067C0_1"); 
         this.animateEdgeColor("sid-3347E1CA-C190-492F-A838-67F16D38FBF6_1");
+        */
     },
     
     animateEdgeWidth: function(edgeElementId) {
+        /*
         var animateE = document.createElementNS(svgNS, "animate");
         animateE.setAttributeNS(null,"class","edgeAnimation");
         animateE.setAttributeNS(null,"attributeName", "stroke-width");
@@ -824,9 +858,11 @@ Controller.prototype = {
         edgeE.appendChild(animateE);
         
         this.edgeAnimationElements.push(animateE);
+        */
     },
     
     animateEdgeColor: function(edgeElementId) {
+        /*
         var animateE = document.createElementNS(svgNS, "animate");
         animateE.setAttributeNS(null,"class","edgeAnimation");
         animateE.setAttributeNS(null,"attributeName", "stroke");
@@ -840,9 +876,11 @@ Controller.prototype = {
         edgeE.appendChild(animateE);
         
         this.edgeAnimationElements.push(animateE);
+        */
     },    
     
     animateEdgeBlink: function(edgeElementId) {
+        /*
         var animateE = document.createElementNS(svgNS, "animate");
         animateE.setAttributeNS(null,"class","edgeAnimation");
         animateE.setAttributeNS(null,"attributeName", "visibility");
@@ -857,9 +895,11 @@ Controller.prototype = {
         edgeE.appendChild(animateE);
         
         this.edgeAnimationElements.push(animateE);
+        */
     },     
     
     animateTasks: function() {
+        /*
         svgDoc = svgDocument();
         
         svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-9C2F52CE-0A69-49CA-9592-76D7A2496BA5bg_frame"), getRandomInt(10,50)));
@@ -868,6 +908,7 @@ Controller.prototype = {
         svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-6C32A869-174A-4EB0-918C-4BF689C870DCbg_frame"), getRandomInt(10,50)));
         //console.log(tokenIndicatorE.innerHTML);
         //alert(tokenIndicatorE.innerHTML);
+        */
     },
     
      /*
@@ -880,10 +921,7 @@ Controller.prototype = {
     createTaskAnimation: function(taskRectE, duration) {
         var indicatorE = document.createElementNS(svgNS,"g");
         indicatorE.setAttributeNS(null,"id","taskAnimation");
-        
-        //var clientRect = taskRectE.getBoundingClientRect();
-        //x = clientRect.left;
-        //y = clientRect.top;
+
         var taskRectCoord = getViewportPoints(taskRectE).nw;
         x = taskRectCoord.x;
         y = taskRectCoord.y;
@@ -892,8 +930,6 @@ Controller.prototype = {
         var indicator2 = this.createTaskAnimationRect(x, y+15, "blue", duration+getRandomInt(5,70)+"s", "0;10;20;50;90;70;90;50;30;0", "0;0.1;0.2;0.25;0.5;0.6;0.7;0.8;0.9;1");        
         indicatorE.appendChild(indicator1);
         indicatorE.appendChild(indicator2);
-        
-        
         
         return indicatorE;
     },
@@ -1016,8 +1052,8 @@ Controller.prototype = {
         animateE.setAttributeNS(null,"attributeName","stroke-dashoffset");
         animateE.setAttributeNS(null,"values", log.progress.values);
         animateE.setAttributeNS(null,"keyTimes", log.progress.keyTimes);
-        console.log("values:" + log.progress.values);
-        console.log("keyTimes:" + log.progress.keyTimes);
+        //console.log("values:" + log.progress.values);
+        //console.log("keyTimes:" + log.progress.keyTimes);
         animateE.setAttributeNS(null,"begin","0s");
         animateE.setAttributeNS(null,"dur",timeline.timelineSlots + "s");
         animateE.setAttributeNS(null,"fill","freeze");
@@ -1041,7 +1077,7 @@ Controller.prototype = {
         return pieE;     
     },
     
-    /*
+    /* 
      * <g id="timeline">
      *      ---- timeline bar
      *      <line>
@@ -1052,42 +1088,56 @@ Controller.prototype = {
      *      ----- timeline tick
      *      <rect>
      *          <animationMotion>
+     * Use: this.timelineSlots, this.slotEngineUnit.
      */ 
     createTimeline: function() {
         
-        function addTimelineBar(lineX, lineY, lineLen, textX, textY, text, parent) {
+        function addTimelineBar(lineX, lineY, lineLen, lineColor, textX, textY, text1, text2, parent) {
             var lineElement = document.createElementNS(svgNS,"line");
             lineElement.setAttributeNS(null,"x1", lineX);
             lineElement.setAttributeNS(null,"y1", lineY);
             lineElement.setAttributeNS(null,"x2", lineX);
             lineElement.setAttributeNS(null,"y2", lineY+lineLen);
-            lineElement.setAttributeNS(null,"stroke","grey");
-            lineElement.setAttributeNS(null,"stroke-width",".5");
+            lineElement.setAttributeNS(null,"stroke", lineColor);
+            if (lineColor == "red") {
+                lineElement.setAttributeNS(null,"stroke-width","1");    
+            } else {
+                lineElement.setAttributeNS(null,"stroke-width",".5");
+            }
             
-            var textElement = document.createElementNS(svgNS,"text");
-            textElement.setAttributeNS(null,"x", textX);
-            textElement.setAttributeNS(null,"y", textY);
-            textElement.setAttributeNS(null,"text-anchor", "middle");
-            textElement.setAttributeNS(null,"font-size", "11");
-            textElement.innerHTML = text;
+            
+            var textElement1 = document.createElementNS(svgNS,"text");
+            textElement1.setAttributeNS(null,"x", textX);
+            textElement1.setAttributeNS(null,"y", textY);
+            textElement1.setAttributeNS(null,"text-anchor", "middle");
+            textElement1.setAttributeNS(null,"font-size", "11");
+            textElement1.innerHTML = text1;
+            
+            var textElement2 = document.createElementNS(svgNS,"text");
+            textElement2.setAttributeNS(null,"x", textX);
+            textElement2.setAttributeNS(null,"y", textY + 10);
+            textElement2.setAttributeNS(null,"text-anchor", "middle");
+            textElement2.setAttributeNS(null,"font-size", "11");
+            textElement2.innerHTML = text2;            
             
             parent.appendChild(lineElement);  
-            parent.appendChild(textElement);
+            parent.appendChild(textElement1);
+            parent.appendChild(textElement2);
         }
         
         var timelineElement = document.createElementNS(svgNS,"g");
         timelineElement.setAttributeNS(null,"id","timeline");
         
-        startTopX = 10;
-        startTopY = 60;
-        gapWidth = 20;       
-        gapValue = 2; //2s
-        lineLen = 30;
-        textToLineGap = 5; 
-        startValue = 0;
-        textValue = -gapValue;
-        lineTopX = -gapWidth + startTopX;
-        gapNum = 60;
+        var startTopX = 20;
+        var startTopY = 60;
+        var gapWidth = 9;       
+        var gapValue = this.slotEngineUnit/1000;
+        var lineLen = 30;
+        var textToLineGap = 5; 
+        var startValue = 0;
+        var textValue = -gapValue;
+        var lineTopX = -gapWidth + startTopX;
+        var gapNum = this.timelineSlots;
        
         /*---------------------------
         Add text and line for the bar
@@ -1095,8 +1145,19 @@ Controller.prototype = {
        
         for (var i=0;i<=gapNum;i++) {
             lineTopX += gapWidth;
-            textValue += gapValue;
-            addTimelineBar(lineTopX, startTopY, lineLen, lineTopX, startTopY-textToLineGap, textValue, timelineElement);
+            //textValue += gapValue;
+            if (i%10 == 0) {
+                var date = new Date();
+                date.setTime(this.startDateMillis + i*this.slotDataUnit);
+                textValue1 = date.getDate() + "/" + (date.getMonth()+1) + "/" + (date.getFullYear()+"").substr(2,2);
+                textValue2 = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(); 
+                var lineColor = "red";
+            } else {
+                textValue1 = "";
+                textValue2 = "";
+                var lineColor = "black";
+            }
+            addTimelineBar(lineTopX, startTopY, lineLen, lineColor, lineTopX, startTopY-textToLineGap, textValue1, textValue2, timelineElement);
         }
 
         /*---------------------------
@@ -1105,11 +1166,12 @@ Controller.prototype = {
         var indicatorE = document.createElementNS(svgNS,"rect");
         indicatorE.setAttributeNS(null,"fill","red");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
-        indicatorE.setAttributeNS(null,"width","8");
+        indicatorE.setAttributeNS(null,"width","4");
         
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
+        indicatorAnimation.setAttributeNS(null,"id","timelineTick");
         indicatorAnimation.setAttributeNS(null,"begin","0s");
-        indicatorAnimation.setAttributeNS(null,"dur",gapNum*gapValue);
+        indicatorAnimation.setAttributeNS(null,"dur",gapNum*gapValue + "s");
         indicatorAnimation.setAttributeNS(null,"by",gapValue);
         indicatorAnimation.setAttributeNS(null,"from", startTopX + "," + (startTopY+5));
         indicatorAnimation.setAttributeNS(null,"to",lineTopX + "," + (startTopY+5));
