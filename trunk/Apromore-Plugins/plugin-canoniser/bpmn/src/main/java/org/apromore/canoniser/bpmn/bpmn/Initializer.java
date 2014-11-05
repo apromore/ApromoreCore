@@ -34,6 +34,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 // Local classes
+import com.processconfiguration.Configurable;
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.TGatewayType;
+import com.processconfiguration.Variants;
 import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
@@ -59,12 +63,14 @@ import org.apromore.cpf.CancellationRefType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.DepthFirstTraverserImpl;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.JoinType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.SplitType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TraversingVisitor;
 import org.apromore.cpf.TypeAttribute;
@@ -88,6 +94,7 @@ import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TSignalEventDefinition;
 import org.omg.spec.bpmn._20100524.model.TThrowEvent;
@@ -121,6 +128,12 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
     // The CPF identifiers which are cancelled by any CPF Task
     private final Map<String, String> cancelNodeIdMap = new HashMap<String, String>();
+
+    // The pc:variants element which catalogues configurable process model versions (non-configurable models won't have one)
+    Variants variants = null;
+
+    // Map from variant name (not id!) to pc:variant instance
+    HashMap<String, Variants.Variant> variantMap = new HashMap<>();
 
     /**
      * Sole constructor.
@@ -704,6 +717,54 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
     // Internal methods
 
     /**
+     * Look up or create a variant by name.
+     *
+     * This method generates the IDs for the variants and installs the <code>pc:variants</code> catalogue element.
+     *
+     * @param name  the variant name
+     * @return the variant instance, never <code>null</code>
+     */
+    private Variants.Variant findVariant(String name) {
+        if (variantMap.containsKey(name)) {
+            return variantMap.get(name);
+        } else {
+            if (variants == null) {
+                variants = new Variants();
+
+                // Add the pc:variants extension element to the first Process in the BPMN document
+                defer(new Initialization() {
+                    public void initialize() throws CanoniserException {
+                        for (JAXBElement<? extends TRootElement> jaxbRoot: bpmn.getRootElement()) {
+                            if (jaxbRoot.getValue() instanceof TProcess) {
+                                TProcess process = (TProcess) jaxbRoot.getValue();
+                                TExtensionElements extensionElements = process.getExtensionElements();
+                                if (extensionElements == null) {
+                                    extensionElements = new TExtensionElements();
+                                    process.setExtensionElements(extensionElements);
+                                }
+                                assert extensionElements != null;
+                                extensionElements.getAny().add(variants);
+                                return;  // only add the catalog once
+                            }
+                        }
+                        throw new CanoniserException("Unable to install pc:variants");
+                    }
+                });
+            }
+            assert variants != null;
+
+            Variants.Variant variant = new Variants.Variant();
+            variant.setId("vid-" + variants.getVariant().size());
+            variant.setName(name);
+
+            variants.getVariant().add(variant);
+            variantMap.put(name, variant);
+
+            return variant;
+	}
+    }
+
+    /**
      * Translate a CPF attribute list to the BPMN BaseElement's extensionElements.
      *
      * @param attributes  the attribute list of the source CPF element
@@ -715,7 +776,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         List<TypeAttribute> attributes = new ArrayList<TypeAttribute>();
         for (TypeAttribute attr : cpfElement.getAttribute()) {
-            if (name.equals(attr.getName())) {
+            if (name.equals(attr.getName()) || "epml_cpf/extensions".equals(attr.getName())) {
                 attributes.add(attr);
             }
         }
@@ -733,7 +794,81 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
             for (TypeAttribute attribute : attributes) {
                 if (attribute.getAny() == null) {
-                    // TODO: the CPF attribute probably has a value, which ought to be propagated
+                    String value = attribute.getValue();
+                    if (value != null && value.startsWith("annotation;")) {
+                        String[] values = value.split(";");
+			assert "annotation".equals(values[0]);
+
+                        if (cpfElement instanceof EdgeType) {
+                            ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
+                            for (int i = 1; i<values.length; i++) {
+                                ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
+                                String[] fields = values[i].split(":", 2);
+                                configuration.setVariantRef(findVariant(fields[0]));
+                                configurationAnnotation.getConfiguration().add(configuration);
+			    }
+                            extensionElements.getAny().add(configurationAnnotation);
+                        }
+                        else if (cpfElement instanceof RoutingType) {
+                            /*
+                            final RoutingType routing = (RoutingType) cpfElement;
+                            Configurable configurable = new Configurable();
+                            for (int i = 1; i<values.length; i++) {
+                                final Configurable.Configuration configuration = new Configurable.Configuration();
+                                String[] fields = values[i].split(":", 2);
+                                Variants.Variant variant = findVariant(fields[0]);
+
+                                // type attribute
+                                switch (fields[1]) {
+                                case "and": configuration.setType(TGatewayType.PARALLEL);  break;
+                                case "or":  configuration.setType(TGatewayType.INCLUSIVE);  break;
+                                case "xor": configuration.setType(TGatewayType.DATA_BASED_EXCLUSIVE);  break;
+                                default: throw new RuntimeException("Unsupported gateway type: " + fields[1]);
+                                }
+
+                                // source attribute
+                                if (cpfElement instanceof JoinType) {
+                                    cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+                                        @Override public void visit(final EdgeType edge) {
+                                            if (routing.getId().equals(edge.getTargetId())) {
+                                                configuration.getSourceRefs().add(findElement(edge.getId()));
+                                            }
+                                        }
+                                    }));
+                                }
+
+                                // target attribute
+                                if (cpfElement instanceof SplitType) {
+                                    cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
+                                        @Override public void visit(final EdgeType edge) {
+                                            if (routing.getId().equals(edge.getSourceId())) {
+                                                configuration.getTargetRefs().add(findElement(edge.getId()));
+                                            }
+                                        }
+                                    }));
+                                }
+
+                                configurable.setConfiguration(configuration);
+			    }
+                            extensionElements.getAny().add(configurable);
+                            */
+                        }
+                        else if (cpfElement instanceof WorkType) {
+                            ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
+                            for (int i = 1; i<values.length; i++) {
+                                ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
+                                String[] fields = values[i].split(":", 2);
+                                configuration.setVariantRef(findVariant(fields[0]));
+                                configuration.setName(fields[1]);
+                                configurationAnnotation.getConfiguration().add(configuration);
+			    }
+                            extensionElements.getAny().add(configurationAnnotation);
+                        }
+                        else {
+                            throw new RuntimeException("Unsupported annotation attribute on CPF node " + cpfElement);
+                            //java.util.logging.Logger.getAnonymousLogger().warning("Unable to interpret annotation attribute of CPF node " + cpfElement);
+                        }
+		    }
                 }
                 else if (attribute.getAny() instanceof Element) {
                     Element element = (Element) attribute.getAny();
