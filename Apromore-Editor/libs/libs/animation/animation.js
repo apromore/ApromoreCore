@@ -248,9 +248,15 @@ Controller.prototype = {
         if (this.clockTimer) {
                 clearInterval(this.clockTimer);
         }
-        //this.updateClock();
     },
 
+    /*
+     * Only this method creates a timer.
+     * This timer is used to update the digital clock.
+     * The mechanism is the digital clock reads SVG document current time every 100ms via updateClock() method. 
+     * This is pulling way.
+     * In case of updating the clock once, it is safer to call updateClockOnce() method than updateClock(), to avoid endless loop.
+     */
     unpauseAnimations: function() {
         this.svgDocuments.forEach(function(s) {
                 s.unpauseAnimations();
@@ -282,7 +288,7 @@ Controller.prototype = {
         this.startDateMillis = (new Date(json.timeline.startDateLabel)).getTime(); // start date in milliseconds
         // slotDataUnit: number of data milliseconds per slot
         this.slotDataUnit = ((new Date(json.timeline.endDateLabel)).getTime() - (new Date(json.timeline.startDateLabel)).getTime()) / (json.timeline.endDateSlot - json.timeline.startDateSlot);
-        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit; //number of data seconds per one engine second        
+        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit; //number of data seconds (millis) per one engine second (millis)        
 
         //Recreate progress indicators
         var progressIndicatorE = controller.createProgressIndicators(logs, json.timeline);
@@ -311,6 +317,17 @@ Controller.prototype = {
             logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
             logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
             timelineElement.insertBefore(logInterval, timelineElement.lastChild);
+            
+            //display date label at the two ends
+            if (log.startDatePos % 10 != 0) {
+                var logDateTextE = document.createElementNS(svgNS,"text");
+                logDateTextE.setAttributeNS(null,"x", startTopX + 9 * log.startDatePos - 50);
+                logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5);
+                logDateTextE.setAttributeNS(null,"text-anchor", "middle");
+                logDateTextE.setAttributeNS(null,"font-size", "11");
+                logDateTextE.innerHTML = log.startDateLabel.substr(0,19);  
+                timelineElement.insertBefore(logDateTextE, timelineElement.lastChild);              
+            }
        }        
 
         this.start();
@@ -320,34 +337,49 @@ Controller.prototype = {
         this.svgDocuments.forEach(function(s) {
                 s.setCurrentTime(time);
         });
-        this.updateClock();
+        this.updateClockOnce(time*this.timeCoefficient*1000 + this.startDateMillis);
     },
 
     getCurrentTime: function() {
         return this.svgDocuments[0].getCurrentTime();
     },
 
+    /*
+     * This method is used to read SVG document current time at every interval based on timer mechanism
+     * It stops reading when SVG document time reaches the end of the timeline
+     * The end() method is used for ending tasks for the replay completion scenario
+     * Thus, the end() method should NOT create a loopback to this method.
+     */
     updateClock: function() {
     	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
     		this.end();
     	} else {
-                var date = new Date();
-                date.setTime(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
-                if (window.Intl) {
-                    document.getElementById("date").innerHTML = new Intl.DateTimeFormat([], {
-                            year: "numeric", month: "short", day: "numeric"
-                    }).format(date);
-                    document.getElementById("time").innerHTML = new Intl.DateTimeFormat([], {
-                            hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
-                    }).format(date);
-                    //document.getElementById("subtitle").innerHTML = new Intl.NumberFormat([], {
-                    //        minimumIntegerDigits: 3
-                    //}).format(date.getMilliseconds();
-                } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
-                    document.getElementById("date").innerHTML = date.toDateString();
-                    document.getElementById("time").innerHTML = date.toTimeString();
-    	        }
+            this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
         }
+    },
+    
+    /*
+     * This method is used to call to update the digital clock display.
+     * This update is one-off only. 
+     * It is safer to call this method than calling updateClock() method which is for timer.
+     */
+    updateClockOnce: function(time) {
+        var date = new Date();
+        date.setTime(time);
+        if (window.Intl) {
+            document.getElementById("date").innerHTML = new Intl.DateTimeFormat([], {
+                    year: "numeric", month: "short", day: "numeric"
+            }).format(date);
+            document.getElementById("time").innerHTML = new Intl.DateTimeFormat([], {
+                    hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
+            }).format(date);
+            //document.getElementById("subtitle").innerHTML = new Intl.NumberFormat([], {
+            //        minimumIntegerDigits: 3
+            //}).format(date.getMilliseconds();
+        } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
+            document.getElementById("date").innerHTML = date.toDateString();
+            document.getElementById("time").innerHTML = date.toTimeString();
+        }    
     },
     
     start: function() {
@@ -355,9 +387,13 @@ Controller.prototype = {
         this.setCurrentTime(this.startPos);
     },
    
+    /*
+     * This method is used to process tasks when replay reaches the end of the timeline
+     */
     end: function() {
         this.pause();
         this.setCurrentTime(this.endPos*this.slotEngineUnit/1000);
+        this.updateClockOnce(this.endPos*this.slotEngineUnit*this.timeCoefficient + this.startDateMillis);        
         if (this.clockTimer) {
             clearInterval(this.clockTimer);
         }
@@ -799,11 +835,19 @@ Controller.prototype = {
     },
     
     fastforward: function () {
-	   this.setCurrentTime(this.getCurrentTime() + 4);
+       if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
+           return;
+       } else {
+	       this.setCurrentTime(this.getCurrentTime() + 5*this.slotEngineUnit/1000); //move forward 5 slots
+	   }
     },
     
     fastBackward: function () {
-	   this.setCurrentTime(this.getCurrentTime() - 4);
+       if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
+           return;
+       } else {
+           this.setCurrentTime(this.getCurrentTime() - 5*this.slotEngineUnit/1000); //move backward 5 slots
+       }
     },    
 
     pause: function() {
