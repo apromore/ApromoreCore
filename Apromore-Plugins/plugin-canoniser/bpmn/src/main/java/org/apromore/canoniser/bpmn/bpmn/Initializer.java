@@ -800,23 +800,27 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 			assert "annotation".equals(values[0]);
 
                         if (cpfElement instanceof EdgeType) {
-                            ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
-                            for (int i = 1; i<values.length; i++) {
-                                ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
-                                String[] fields = values[i].split(":", 2);
-                                configuration.setVariantRef(findVariant(fields[0]));
-                                configurationAnnotation.getConfiguration().add(configuration);
-			    }
-                            extensionElements.getAny().add(configurationAnnotation);
+                            EdgeType edge = (EdgeType) cpfElement;
+                            Object sourceObject = cpf.getElement(edge.getSourceId());
+                            Object targetObject = cpf.getElement(edge.getTargetId());
+                            if (sourceObject instanceof SplitType || targetObject instanceof JoinType) {
+                                ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
+                                for (int i = 1; i<values.length; i++) {
+                                    ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
+                                    String[] fields = values[i].split(":", 2);
+                                    configuration.setVariantRef(findVariant(fields[0]));
+                                    configurationAnnotation.getConfiguration().add(configuration);
+			        }
+                                extensionElements.getAny().add(configurationAnnotation);
+                            }
                         }
                         else if (cpfElement instanceof RoutingType) {
-                            /*
                             final RoutingType routing = (RoutingType) cpfElement;
-                            Configurable configurable = new Configurable();
+                            ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
                             for (int i = 1; i<values.length; i++) {
-                                final Configurable.Configuration configuration = new Configurable.Configuration();
+                                final ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
                                 String[] fields = values[i].split(":", 2);
-                                Variants.Variant variant = findVariant(fields[0]);
+                                configuration.setVariantRef(findVariant(fields[0]));
 
                                 // type attribute
                                 switch (fields[1]) {
@@ -826,32 +830,10 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                                 default: throw new RuntimeException("Unsupported gateway type: " + fields[1]);
                                 }
 
-                                // source attribute
-                                if (cpfElement instanceof JoinType) {
-                                    cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
-                                        @Override public void visit(final EdgeType edge) {
-                                            if (routing.getId().equals(edge.getTargetId())) {
-                                                configuration.getSourceRefs().add(findElement(edge.getId()));
-                                            }
-                                        }
-                                    }));
-                                }
-
-                                // target attribute
-                                if (cpfElement instanceof SplitType) {
-                                    cpf.accept(new TraversingVisitor(new DepthFirstTraverserImpl(), new BaseVisitor() {
-                                        @Override public void visit(final EdgeType edge) {
-                                            if (routing.getId().equals(edge.getSourceId())) {
-                                                configuration.getTargetRefs().add(findElement(edge.getId()));
-                                            }
-                                        }
-                                    }));
-                                }
-
-                                configurable.setConfiguration(configuration);
+                                configurationAnnotation.getConfiguration().add(configuration);
 			    }
-                            extensionElements.getAny().add(configurable);
-                            */
+                            extensionElements.getAny().add(configurationAnnotation);
+                            extensionElements.getAny().add(new Configurable());  // mark that gateway as configurable model
                         }
                         else if (cpfElement instanceof WorkType) {
                             ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
@@ -865,8 +847,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                             extensionElements.getAny().add(configurationAnnotation);
                         }
                         else {
-                            throw new RuntimeException("Unsupported annotation attribute on CPF node " + cpfElement);
-                            //java.util.logging.Logger.getAnonymousLogger().warning("Unable to interpret annotation attribute of CPF node " + cpfElement);
+                            java.util.logging.Logger.getAnonymousLogger().warning("Unable to interpret annotation attribute of CPF node " + cpfElement);
                         }
 		    }
                 }
