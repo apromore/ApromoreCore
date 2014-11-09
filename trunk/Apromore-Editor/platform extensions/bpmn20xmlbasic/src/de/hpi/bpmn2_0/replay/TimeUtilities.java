@@ -13,6 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.Seconds;
 
 public class TimeUtilities {
     public static ArrayList<Interval> divide(Interval v1, Interval v2) {
@@ -231,6 +232,29 @@ public class TimeUtilities {
         }
         
         return timeline;
+    }
+    
+    /*
+     * dateSet contains sorted dates which may have many date clusters (dates
+     * close to each other in a proximity). 
+     * This method selects only the start date for each cluster and arrange
+     * them in a sorted set. 
+     */
+    public static ArrayList<DateTime> selectClusterStarts(SortedSet<DateTime> dateSet, int gapSeconds) {
+        ArrayList<DateTime> dateList = new ArrayList();
+        
+        for (DateTime date : dateSet) {
+            if (dateList.isEmpty()) {
+                dateList.add(date);
+            }
+            else {
+                if (Seconds.secondsBetween(dateList.get(dateList.size()-1), date).getSeconds() > gapSeconds) {
+                    dateList.add(date);
+                }
+            }
+        }
+        
+        return dateList;
     }
     
 }

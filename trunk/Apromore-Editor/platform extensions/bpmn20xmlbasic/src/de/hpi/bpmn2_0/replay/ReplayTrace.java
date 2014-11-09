@@ -1,5 +1,6 @@
 package de.hpi.bpmn2_0.replay;
 
+import de.hpi.bpmn2_0.backtracking2.Node;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +44,12 @@ public class ReplayTrace {
     
     //All nodes in the trace. Different from model nodes because there can be different trace nodes
     //corresponding to one model node (as a result of loop effect in the model)
-    private ArrayList<TraceNode> traceNodes = new ArrayList();
+    //private ArrayList<TraceNode> traceNodes = new ArrayList();
     
     //Contains replayed node in the order of timing. Only contain node of model that is actually played
     //Every element points to a trace node in the replayed trace
     //This is to support for the replayed trace, like its flatten form in timing order
     private ArrayList<TraceNode> timeOrderedReplayedNodes = new ArrayList();
-    
-    private ArrayList<TraceNode> forkNodes = new ArrayList();
     
     //All sequence flows in the trace.
     private ArrayList<SequenceFlow> sequenceFlows = new ArrayList();
@@ -62,25 +62,34 @@ public class ReplayTrace {
     //During replay, markings of BPMN model and this trace must be kept synchronized.
     private Map<FlowNode,TraceNode> markingsMap = new HashMap();
     
-    private BidiMap<TraceNode,TraceNode> forkJoinMap = new DualHashBidiMap<>();
-    private BidiMap<TraceNode,TraceNode> ORforkJoinMap = new DualHashBidiMap<>();
+    //private BidiMap<TraceNode,TraceNode> forkJoinMap = new DualHashBidiMap<>();
+    //private BidiMap<TraceNode,TraceNode> ORforkJoinMap = new DualHashBidiMap<>();
     
     private Metrics metrics = new Metrics();
     
+    private Replayer replayer;
+    
+    private Node backtrackingNode;
+    
     private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
     
-    public ReplayTrace(XTrace2 trace) {
+    public ReplayTrace(XTrace2 trace, Replayer replayer, Node backtrackingNode) {
         this.logTrace = trace;
+        this.replayer = replayer;
+        this.backtrackingNode = backtrackingNode;
     }
     
     //startNode has been replayed
-    public ReplayTrace(TraceNode startNode, XTrace2 trace) {
+    public ReplayTrace(TraceNode startNode, XTrace2 trace, Replayer replayer) {
         this.startNode = startNode;
         this.markingsMap.put(startNode.getModelNode(), startNode);
+        /*
         if (!this.traceNodes.contains(startNode)) {
             this.traceNodes.add(startNode);
         }
+        */
         this.logTrace = trace;
+        this.replayer = replayer;
     }
     
     public String getId() {
@@ -103,9 +112,11 @@ public class ReplayTrace {
     public void setStart(TraceNode startNode) {
         this.startNode = startNode;
         this.markingsMap.put(startNode.getModelNode(), startNode);
+        /*
         if (!this.traceNodes.contains(startNode)) {
             this.traceNodes.add(startNode);
         }
+        */
     }
     
     public DateTime getStartDate() {
@@ -152,10 +163,7 @@ public class ReplayTrace {
         curNode.getOutgoing().add(traceFlow);
         newNode.getIncoming().add(traceFlow);
         
-        traceNodes.add(newNode);
-        if (newNode.isFork()) {
-            forkNodes.add(newNode);
-        }
+        //traceNodes.add(newNode);
         this.markingsMap.put(newNode.getModelNode(), newNode);
     }   
     
@@ -188,14 +196,14 @@ public class ReplayTrace {
             branchNode.getOutgoing().add(traceFlow);
             joinNode.getIncoming().add(traceFlow);
         }
-        this.traceNodes.add(joinNode);
+        //this.traceNodes.add(joinNode);
         this.markingsMap.put(joinNode.getModelNode(), joinNode);
     }    
     
     //Add the input node to the list of nodes which have been replayed
     //This method assumes that the replayed node has been added to the list of 
     //all nodes in the replayed trace.
-    public void setReplayed(FlowNode curModelNode) {
+    public void addToReplayedList(FlowNode curModelNode) {
         this.timeOrderedReplayedNodes.add(this.markingsMap.get(curModelNode));
     }
     
@@ -206,81 +214,71 @@ public class ReplayTrace {
     
     public void setMatchedActivity(FlowNode curNode) {
         TraceNode traceNode = this.markingsMap.get(curNode);
-        traceNode.setIsMatched(true);
+        traceNode.setActivityMatched(true);
     }
     
     public void setVirtual(FlowNode curNode) {
         TraceNode traceNode = this.markingsMap.get(curNode);
-        traceNode.setVirtual(true);
+        traceNode.setActivitySkipped(true);
     }
     
-    //Orphan nodes are those activity node without true match with trace event
-    //or non-activity nodes with no outgoing sequence flows
-    public void pruneOrphanNodes() {
+    /*
+     * Remove all nodes that are not in the timeOrderedReplayedNodes.
+     * timeOrderedReplayedNodes keeps all nodes must be actually replayed in actual replay order
+     * All other trace nodes are grown during creating replay trace but not actually replayed
+     */
+    
+    /*
+    public void pruneOrphanNodes() throws TraceNodePruningException {
         boolean stop = false;
         SequenceFlow seqFlow;
         TraceNode source;
         TraceNode target;
         ArrayList<TraceNode> toRemove = new ArrayList();
         
-        //Perform until there is no node to be removed
-        while (!stop) {
-            stop = true;
-            for (TraceNode node : this.traceNodes) {
-                if (node.isActivity() && !toRemove.contains(node)) {
-                    if (!node.isMatched() && !node.isVirtual()) {
-                        stop = false;
-                        toRemove.add(node);
-                        for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                            source = (TraceNode)flow.getSourceRef();
-                            source.getOutgoing().remove(flow);
-                            node.getIncoming().remove(flow);
-                            flow.setSourceRef(null);
-                            flow.setTargetRef(null);
-                        }
-                        
-                        for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
-                            target = (TraceNode)flow.getTargetRef();
-                            target.getIncoming().remove(flow);
-                            node.getOutgoing().remove(flow);
-                            flow.setSourceRef(null);
-                            flow.setTargetRef(null);                            
-                        }
-                    }
-                } else {
-                    if (node.getOutgoing().isEmpty() && !toRemove.contains(node) && !node.isEndEvent()) {
-                        stop = false;
-                        toRemove.add(node);
-                        for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                            source = (TraceNode)flow.getSourceRef();
-                            source.getOutgoing().remove(flow);
-                            node.getIncoming().remove(flow);
-                        }
-                    }
+        for (Iterator<TraceNode> it = this.traceNodes.iterator(); it.hasNext();) {
+            TraceNode node = it.next();
+            if (!this.timeOrderedReplayedNodes.contains(node)) {
+                toRemove.add(node);
+                
+                for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
+                    source = (TraceNode)flow.getSourceRef();
+                    source.getOutgoing().remove(flow);
+                    node.getIncoming().remove(flow);
+                    flow.setSourceRef(null);
+                    flow.setTargetRef(null);
                 }
+
+                for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
+                    target = (TraceNode)flow.getTargetRef();
+                    target.getIncoming().remove(flow);
+                    node.getOutgoing().remove(flow);
+                    flow.setSourceRef(null);
+                    flow.setTargetRef(null);
+                }                
             }
         }
-            
-        for (TraceNode toRemoveNode : toRemove) {
-            this.traceNodes.remove(toRemoveNode);
-        }
         
-        for (TraceNode toRemoveNode : toRemove) {
-            this.forkNodes.remove(toRemoveNode);
-        }        
+        this.traceNodes.removeAll(toRemove);
+        this.markingsMap.values().removeAll(toRemove);
+        
     }
+    */
    
     public void setNodeTime(FlowNode node, Date date) {
         this.markingsMap.get(node).setStart(new DateTime(date));
     }
     
+    
     public ArrayList<TraceNode> getNodes() {
-        return traceNodes;
+        //return traceNodes;
+        return this.timeOrderedReplayedNodes;
     }
+    
     
     public ArrayList<SequenceFlow> getSequenceFlows() {
         if (this.sequenceFlows.isEmpty()) {
-            for (TraceNode node : this.getNodes()) {
+            for (TraceNode node : this.timeOrderedReplayedNodes) {
                 for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
                     this.sequenceFlows.add(flow);
                 }
@@ -294,55 +292,21 @@ public class ReplayTrace {
         return markingsMap;
     }
     
-    
-    public Collection<TraceNode> getLeafNodes() {
-        Collection<TraceNode> leafNodes = new HashSet();
-        for (TraceNode node : this.traceNodes) {
-            if (node.getTargets().isEmpty()) {
-                leafNodes.add(node);
-            }
-        }
-        return leafNodes;
+    public Node getBacktrackingNode() {
+        return this.backtrackingNode;
     }
-    
-    public Collection<FlowNode> getLeafModelNodes() {
-        Collection<FlowNode> leafNodes = new HashSet();
-        for (TraceNode node : this.traceNodes) {
-            if (node.getTargets().isEmpty()) {
-                leafNodes.add(node.getModelNode());
-            }
-        }
-        return leafNodes;        
-    }
-    
-    //Auto grow this trace by extending every leaf node to its next targets
-    //The growth is basd on the underlying model node targets
-    //Used for searching for a path to a node while not knowing the exact start node
-    public void growAuto() {
-        FlowNode flowNode;
-        FlowNode target;
-        for (TraceNode traceNode : this.getLeafNodes()) {
-            flowNode = traceNode.getModelNode();
-            for (SequenceFlow seqFlow : flowNode.getOutgoingSequenceFlows()) {
-                target = (FlowNode)seqFlow.getTargetRef();
-                if (target != null) {
-                    this.add(flowNode, new TraceNode(target));
-                }
-            }
-        }
-    }
-            
+               
     public void clear() {
-        startNode = null;
-        this.traceNodes.clear();
+        this.startNode = null;
+        //this.traceNodes.clear();
         this.markingsMap.clear();
-        this.forkJoinMap.clear();
-        this.forkNodes.clear();
+        //this.forkJoinMap.clear();
         this.sequenceFlows.clear();
+        this.timeOrderedReplayedNodes.clear();
     }
     
     public boolean isEmpty() {
-        return (startNode == null);
+        return (startNode == null || this.timeOrderedReplayedNodes.size()==0);
     }
     
     public float getFitness() {
@@ -353,24 +317,18 @@ public class ReplayTrace {
         this.fitness = fitness;
     }
     
-    public boolean isFlat() {
-        boolean isFlat = true;
-        for (TraceNode node: traceNodes) {
-            if (node.isFork() || node.isJoin()) {
-                isFlat = false;
-                break;
-            }
-        }
-        return isFlat;
-    }
-    
     public void calcTiming() {
-        LOGGER.info("REPLAYED TRACE BEFORE TIMING CALC");
-        this.print(startNode, 0);
+        if (this.replayer.getReplayParams().isBacktrackingDebug()) {
+            LOGGER.info("REPLAYED TRACE BEFORE TIMING CALC");
+            this.print();
+        }
         
         calcTimingAll();
-        LOGGER.info("REPLAYED TRACE AFTER TIMING CALC");
-        this.print(startNode, 0);
+        
+        if (this.replayer.getReplayParams().isBacktrackingDebug()) {
+            LOGGER.info("REPLAYED TRACE AFTER TIMING CALC");
+            this.print();
+        }
         
         calculateCompleteTimestamp();
     }
@@ -389,16 +347,15 @@ public class ReplayTrace {
     private void calcTimingAll() {
         TraceNode node;
         DateTime timeBefore=null;
-        int backwardDistance = 0;
         DateTime timeAfter=null;
-        int forwardDistance = 0;
-        double duration;
-        TraceNode traverse = null;
         int timeBeforePos = 0;
         int timeAfterPos = 0;
+        long duration;   
         
         for (int i=0; i<timeOrderedReplayedNodes.size();i++) {
             node = timeOrderedReplayedNodes.get(i);
+            timeBefore = null;
+            timeAfter = null;
             if (!node.isTimed()) {
                 
                 //----------------------------------------
@@ -467,21 +424,22 @@ public class ReplayTrace {
                 //----------------------------------------------
                 // Take average timestamp between TimeBefore and TimeAfter
                 //----------------------------------------------
-                duration = 1.0*(new Duration(timeBefore, timeAfter)).getMillis();
-                duration = 1.0*duration*(i-timeBeforePos)/(timeAfterPos - timeBeforePos);
+                duration = (new Duration(timeBefore, timeAfter)).getMillis();
+                duration = Math.round(1.0*duration*(i-timeBeforePos)/(timeAfterPos - timeBeforePos));
                 node.setStart(timeBefore.plus(Double.valueOf(duration).longValue()));
             }
         }
     }
     
     
-    
+    /*
     private BidiMap<TraceNode,TraceNode> getForkJoinMap() {
         if (forkJoinMap.isEmpty()) {
             forkJoinMap = (new ForkJoinMap(this.startNode)).getFork2JoinMap();
         }
         return forkJoinMap;
     }
+    */
 
     /*
     * Set complete timestamp for every node since event log only contains one timestamp
@@ -493,7 +451,7 @@ public class ReplayTrace {
     private void calculateCompleteTimestamp() {
         DateTime earliestTarget=null;
         long transferDuration;
-        for (TraceNode node : this.traceNodes) {
+        for (TraceNode node : this.timeOrderedReplayedNodes) {
             if (node.isActivity()) {
                 if (node.getTargets().size() > 0) {
                     earliestTarget = node.getTargets().get(0).getStart();
@@ -556,6 +514,7 @@ public class ReplayTrace {
         }
     }  
     
+    /*
     public void print(TraceNode node, Integer indentNum) {
         FlowNode flowNode;
                 
@@ -670,19 +629,141 @@ public class ReplayTrace {
             indentNum -= 2;
             this.print(node, indentNum);
         }
-        /*
-        else if (node.isORSplit()) {
-            indentNum += 2;
-            for (TraceNode branchNode : node.getTargets()) {
-                this.print(branchNode, indentNum);
-            }
-            node = this.getForkJoinMap().get(node);
-            indentNum -= 2;
-            this.print(node, indentNum);
-        }
-        */
         
     }
+    */
+    
+    /*
+     * Print this trace to log in a hierarchical view
+     */
+    public void print() {
+        int totalIndent = 0;
+        int addedIndent = 0;
+        FlowNode flowNode;
+        Map<String, Integer> nodeTypeIndentMap = new HashMap();
+        int counterDecision = 0;
+        int counterMerge = 0;
+        int counterFork = 0;
+        int counterJoin = 0;
+        int counterORSplit = 0;
+        int counterORJoin = 0;
+                
+                
+        for (TraceNode node : this.timeOrderedReplayedNodes) {
+            String nodeString = "";
+            String nodeType = "";
+            String branchNodes = "";
+            String dateString = "";
+            addedIndent = 0;
+
+            //------------------------------------
+            // Print current node
+            //------------------------------------
+            if (node.isActivity()) {
+                nodeType = "Activity";
+                branchNodes = "";
+            }
+            else if (node.isStartEvent()) {
+                nodeType = "StartEvent";
+            }
+            else if (node.isEndEvent()) {
+                nodeType = "EndEvent";
+            }
+            else if (node.isFork()) {
+                nodeType = "Fork";
+                counterFork++;
+                branchNodes += " => ";
+                for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getTargetRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }
+                addedIndent += 2;
+                nodeTypeIndentMap.put(nodeType+counterFork, totalIndent);
+            }
+            else if (node.isJoin()) {
+                nodeType = "Join";
+                counterJoin++;
+                branchNodes += " <= ";
+                for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getSourceRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }            
+                if (nodeTypeIndentMap.containsKey("Fork" + counterJoin)) {
+                    totalIndent = nodeTypeIndentMap.get("Fork" + counterJoin).intValue();
+                } else {
+                    addedIndent -= 2;
+                }
+            }
+            else if (node.isDecision()) {
+                nodeType = "Decision";
+                counterDecision++;
+                branchNodes += " -> ";
+                for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getTargetRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }     
+                addedIndent += 2;
+                nodeTypeIndentMap.put(nodeType+counterDecision, totalIndent);
+            }
+            else if (node.isMerge()) {
+                nodeType = "Merge";
+                counterMerge++;
+                branchNodes += " <- ";
+                for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getSourceRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }   
+                if (nodeTypeIndentMap.containsKey("Decision" + counterMerge)) {
+                    totalIndent = nodeTypeIndentMap.get("Decision" + counterMerge).intValue();
+                } else {
+                    addedIndent -= 2;
+                }
+            }
+            else if (node.isORSplit()) {
+                nodeType = "OR-Split";
+                counterORSplit++;
+                branchNodes += " => ";
+                for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getTargetRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }
+                addedIndent += 2;
+                nodeTypeIndentMap.put(nodeType+counterORSplit, totalIndent);
+            }
+            else if (node.isORJoin()) {
+                nodeType = "OR-Join";
+                counterORJoin++;
+                branchNodes += " <= ";
+                for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
+                    flowNode = (FlowNode)flow.getSourceRef();
+                    branchNodes += flowNode.getName();
+                    branchNodes += "+";
+                }   
+                if (nodeTypeIndentMap.containsKey("OR-Split" + counterORJoin)) {
+                    totalIndent = nodeTypeIndentMap.get("OR-Split" + counterORJoin).intValue();
+                } else {
+                    addedIndent -= 2;
+                }                
+            }
+
+            if (node.getStart() != null) {
+                dateString = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(node.getStart().toDate());
+            }
+
+            nodeString += (nodeType + ":" + node.getName() + ":" + dateString + ":" + branchNodes);
+            nodeString = this.padLeft(nodeString, totalIndent);
+            
+            LOGGER.info(nodeString);
+            totalIndent += addedIndent;
+        }
+
+        
+    }    
     
     private String padLeft(String s, int n) {
         if (n <= 0)

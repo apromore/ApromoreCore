@@ -17,6 +17,30 @@ public class ReplayParams {
     private int TotalEngineSeconds;
     private int ProgressCircleBarRadius;
     private int SequenceTokenDiffThreshold;
+    private String BacktrackingDebug;
+    private int EventClusterSecondsGap;
+
+    public int getEventClusterSecondsGap() {
+        return EventClusterSecondsGap;
+    }
+
+    public void setEventClusterSecondsGap(int EventClusterSecondsGap) {
+        this.EventClusterSecondsGap = EventClusterSecondsGap;
+    }
+
+
+    public String getBacktrackingDebug() {
+        return BacktrackingDebug;
+    }
+
+    public void setBacktrackingDebug(String BacktrackingDebug) {
+        this.BacktrackingDebug = BacktrackingDebug;
+    }
+    
+    public boolean isBacktrackingDebug() {
+        return this.BacktrackingDebug.equals("true");
+    }
+
 
     public int getSequenceTokenDiffThreshold() {
         return SequenceTokenDiffThreshold;
