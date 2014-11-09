@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.SortedSet;
+import java.util.Stack;
 import java.util.TreeSet;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
@@ -186,6 +187,27 @@ public class Node {
     @Override
     public String toString() {
         return state.getName();
+    }
+    
+    /*
+     * Print the whole path from root node to this node.
+     */
+    public String getPathString() {
+        String printString = "";
+        Stack<Node> stack = new Stack<>();
+        Node element = this;
+        while (element != null) {
+            stack.push(element);
+            element = element.getParent();
+        }
+        
+        Node sNode=null;
+        while (!stack.empty()) {
+            sNode = (Node)stack.pop();
+            printString += sNode.toString() + " > ";
+        }
+        
+        return printString;
     }
     
     
