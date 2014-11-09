@@ -10,10 +10,12 @@ import de.hpi.bpmn2_0.replay.TraceNode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -53,10 +55,6 @@ public class AnimationJSONBuilder {
         for (AnimationLog animationLog : animations) {
             dateSet.add(animationLog.getStartDate());
             dateSet.add(animationLog.getEndDate());
-            LOGGER.info("LOG " + animationLog.getName() + ". TraceCount:" + animationLog.getTraces().size() + 
-                        ". StartDate:" + animationLog.getStartDate().toString() +
-                        ". EndDate:" + animationLog.getEndDate() +
-                        ". Color:" + animationLog.getColor());
         }
         SortedSet<DateTime> sortedDates = TimeUtilities.sortDates(dateSet);
         totalRealInterval = new Interval(sortedDates.first(), sortedDates.last());
@@ -87,6 +85,7 @@ public class AnimationJSONBuilder {
         
         collectionObj.put("logs", logs);
         collectionObj.put("timeline", this.parseTimeline(animations));
+        collectionObj.put("tracedates", this.parseTraceStartDates());
         //collectionObj.put("sequenceAnalysis", this.parseSequenceAnalysis());
         return collectionObj;
     }
@@ -222,7 +221,7 @@ public class AnimationJSONBuilder {
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
         double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
         
-        DecimalFormat df = new DecimalFormat("#.##");        
+        DecimalFormat df = new DecimalFormat("#.#####");        
         json.put("begin", df.format(begin));
         json.put("dur", df.format(duration));
 
@@ -248,11 +247,11 @@ public class AnimationJSONBuilder {
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
         double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
         
-        DecimalFormat df = new DecimalFormat("#.##");        
+        DecimalFormat df = new DecimalFormat("#.#####");        
         json.put("begin", df.format(begin));
         json.put("dur", df.format(duration));
         
-        if (node.isVirtual()) {
+        if (node.isActivitySkipped()) {
             json.put("isVirtual", "true");
         } else {
             json.put("isVirtual", "false");
@@ -325,6 +324,28 @@ public class AnimationJSONBuilder {
         json.put("values", values);
         
         return json;
+    }
+    
+    protected JSONArray parseTraceStartDates() {
+        SortedSet<DateTime> sortedDates = new TreeSet<>(
+                                        new Comparator<DateTime>() {
+                                            @Override
+                                            public int compare(DateTime o1, DateTime o2) {
+                                                return o1.compareTo(o2);
+                                            }
+                                        });         
+        for (AnimationLog log : animations) {
+            for (ReplayTrace trace : log.getTraces()) {
+                sortedDates.add(trace.getStartDate());
+            }
+        }
+        
+        JSONArray jsonArray = new JSONArray(); 
+        for (DateTime dateTime : sortedDates) {
+            jsonArray.put(dateTime.getMillis());
+        }
+        
+        return jsonArray;
     }
     
     protected JSONArray parseSequenceAnalysis() throws JSONException {
