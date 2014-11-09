@@ -16,8 +16,8 @@ public class TraceNode extends FlowNode {
     private DateTime start = null;
     private DateTime end = null;
     private FlowNode modelNode;
-    private boolean isMatched = false; //whether this node has been matched with a log trace (for activity node)
-    private boolean isVirtual = false;
+    private boolean isActivityMatched = false; //whether this node has been matched with a log trace (for activity node)
+    private boolean isActivitySkipped = false;
     
    
     public TraceNode(FlowNode modelNode) {
@@ -98,12 +98,12 @@ public class TraceNode extends FlowNode {
         return (modelNode instanceof StartEvent);
     }
     
-    public boolean isMatched() {
-        return this.isMatched;
+    public boolean isActivityMatched() {
+        return this.isActivityMatched;
     }
     
-    public void setIsMatched(boolean isMatched) {
-        this.isMatched = isMatched;
+    public void setActivityMatched(boolean isActivityMatched) {
+        this.isActivityMatched = isActivityMatched;
     }
     
     //Indicate that if this node has a defined or calculated timestamp or not
@@ -112,11 +112,11 @@ public class TraceNode extends FlowNode {
         return (this.start != null);
     }
     
-    public boolean isVirtual() {
-        return isVirtual;
+    public boolean isActivitySkipped() {
+        return isActivitySkipped;
     }
     
-    public void setVirtual(boolean isVirtual) {
-        this.isVirtual = isVirtual;
+    public void setActivitySkipped(boolean isActivitySkipped) {
+        this.isActivitySkipped = isActivitySkipped;
     }
 }

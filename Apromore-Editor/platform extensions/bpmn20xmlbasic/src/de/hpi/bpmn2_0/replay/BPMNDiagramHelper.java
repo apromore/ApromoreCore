@@ -62,8 +62,8 @@ public class BPMNDiagramHelper {
     private Map<String,FlowNode> activities = new HashMap();
     
     // key and value are reference to gateway
-    private Map<Gateway, Gateway> j2fMap = new HashMap();
-    private Map<Gateway, Gateway> j2fMapORGate = new HashMap();
+    //private Map<Gateway, Gateway> j2fMap = new HashMap();
+    //private Map<Gateway, Gateway> j2fMapORGate = new HashMap();
     
     // key and value are reference to node
     private Map<FlowNode, Set<FlowNode>> nextActivitiesMap = new HashMap();
@@ -389,7 +389,8 @@ public class BPMNDiagramHelper {
             return false;
         }
     }    
-      
+    
+    /*
     public Set<FlowNode> getNextActivities(FlowNode node) {
         Set<FlowNode> nextActivities;
         if (nextActivitiesMap.isEmpty()) {
@@ -399,10 +400,12 @@ public class BPMNDiagramHelper {
         
         return nextActivities;
     } 
+    */
     
     /*
     * Check if an event name is part of all activities of a node
     */
+    /*
     public boolean isNextActivityName(FlowNode node, String eventName) {
         for (FlowNode next : this.getNextActivities(node)) {
             if (next.getName().equals(eventName)) {
@@ -411,28 +414,33 @@ public class BPMNDiagramHelper {
         }
         return false;
     } 
+    */
     
     /*
     * Require a strict block-structure of gateways: a split must be accompanied with a join gate
     * AND-AND, XOR-XOR, OR-OR.
     */
+    /*
     public Map<Gateway, Gateway> getJoin2ForkMap() {
         if (j2fMap.isEmpty()) {
             j2fMap = (new Join2ForkMap(startEvent, false)).getJoin2ForkMap();
         }
         return j2fMap;
     }
+    */
     
     /*
     * Require a strict block-structure of gateways: a split must be accompanied with a join gate
     * AND-AND, XOR-XOR, OR-OR.
     */
+    /*
     public Map<Gateway, Gateway> getForkJoinMapORGate() {
         if (j2fMapORGate.isEmpty()) {
             j2fMapORGate = (new Join2ForkMap(startEvent, true)).getJoin2ForkMap();
         }
         return j2fMapORGate;
-    }    
+    } 
+    */
     
     public DijkstraAlgorithm getDijkstraAlgo() {
         if (dijkstraAlgo != null) {
@@ -595,162 +603,8 @@ public class BPMNDiagramHelper {
             return path.size();
         }
     }    
+
     
-    /*
-    * Implement the Algorithm 2: Find Join-Fork Pairs
-    */
-    class Join2ForkMap {
-        HashMap<Gateway, Gateway> j2f = new HashMap();
-        Set visited = new HashSet();
-        Stack<Gateway> s = new Stack();
-        FlowNode firstElement = null;
-        boolean isORGate = false;
-
-        public Join2ForkMap(FlowNode firstElement, boolean isORGate) {
-            this.firstElement = firstElement;
-            this.isORGate = isORGate;
-            depthfirst(firstElement);
-        }
-        
-        private void depthfirst(FlowNode element) {
-            if (!visited.contains(element)) {
-                visited.add(element);
-                
-                if (!isORGate) {
-                    if (BPMNDiagramHelper.isFork(element)) {
-                        s.push((Gateway)element);
-                    } else if (BPMNDiagramHelper.isJoin(element)) {
-                        j2f.put((Gateway)element, s.pop());
-                    }
-                }
-                else {
-                    if (BPMNDiagramHelper.isORSplit(element)) {
-                        s.push((Gateway)element);
-                    } else if (BPMNDiagramHelper.isORJoin(element)) {
-                        j2f.put((Gateway)element, s.pop());
-                    }
-                }
-                
-                for (SequenceFlow sflow : element.getOutgoingSequenceFlows()) {
-                    depthfirst((FlowNode)sflow.getTargetRef());
-                }
-                
-            }
-        }
-        
-        public HashMap<Gateway, Gateway> getJoin2ForkMap() {
-            return j2f;
-        }
-    }
-    
-    /*
-    * Implement the Algorithm 3: Find Next Activities
-    */
-    class NextActivitiesMap {
-        private Map<Gateway, Gateway> j2f = BPMNDiagramHelper.this.j2fMap;
-        
-        //key: element reference, value: set of elements
-        //final result of this class: set of reachable activities (value) for each 
-        //flow node (key)
-        private Map<FlowNode, Set<FlowNode>> nextAct = new HashMap();
-        
-        //key: a fork node
-        //value: map of element to set. The key is a node reference of a target of a fork node (key)
-        //          The value is set of reachable activities of that target
-        //forksArrivals store "value" for each forknode in the model. "Value" here means 
-        //maps from each target node of fork node and its next activities
-        private Map<FlowNode, Map<FlowNode, Set<FlowNode>>> forksArrivals = new HashMap();
-
-        
-        private FlowElement endNode = BPMNDiagramHelper.this.endEvent;
-        private Set<FlowNode> endNodeNextActivities = new HashSet(); //the starting point
-        
-        public NextActivitiesMap() {
-            endNodeNextActivities.add(new DummyActivity());
-            findNext((FlowNode)endNode, null, endNodeNextActivities);
-        }
-        
-        public Map<FlowNode, Set<FlowNode>> getNextActivitiesMap() {
-            return nextAct;
-        }
-        
-        /*
-        * cur: current element being processed
-        * last: a target node of current element (having sequence flow connecting with cur)
-        * lastFollowers: set of reachable activities of lastElement
-        * this method traverse the model from the EndEvent backwards
-        * No need to do special things for OR split since it gets all targets' next activities,
-        * including the next activities of OR join.
-        */
-        private void findNext(FlowNode cur, FlowNode last, Set<FlowNode> lastFollowers) {
-            //key: reference of a fork target node, value: set of elements
-            //keep track of set of activities (value) of each target (key) of the current fork node
-            //This is in context of the current fork node being processed
-            Map<FlowNode, Set<FlowNode>> arrived;
-
-            if (!nextAct.containsKey(cur)) {
-                nextAct.put(cur, new HashSet());
-            }
-            
-            boolean changed = !nextAct.get(cur).containsAll(lastFollowers);
-            nextAct.get(cur).addAll(lastFollowers);
-            
-            /*
-            * ------------------------------------------
-            * Special processing for fork
-            * ------------------------------------------
-            */
-            if (cur instanceof ParallelGateway && 
-                ((Gateway)cur).getGatewayDirection().equals(GatewayDirection.DIVERGING)) {
-                arrived = forksArrivals.get(cur);
-                
-                if (last != null) { //called by one of its targets
-                    if (arrived == null) {
-                        arrived = new HashMap();
-                    }
-                    if (!arrived.containsKey(last)) {
-                        arrived.put(last, lastFollowers);
-                    } else {
-                        arrived.get(last).addAll(lastFollowers); //note that there might be multiple calls from one target , add of of them
-                    }
-                    forksArrivals.put(cur, arrived);
-                }
-                else { //called by its corresponding join
-                    
-                    //intersect all sets contained in arrived into commonArrived
-                    Set<FlowNode> commonArrived = new HashSet();
-                    for (Set<FlowNode> targetSet : arrived.values()) {
-                        commonArrived.addAll(targetSet);
-                    }
-                    
-                    Set<FlowNode> tmp = (Set)((HashSet)lastFollowers).clone(); //tmp is set of next activities passed from the corresponding join node
-                    tmp.removeAll(commonArrived);
-                    nextAct.get(cur).removeAll(tmp);
-                    
-                    for (FlowNode source : getSources(cur)) {
-                        findNext(source, cur, nextAct.get(cur));
-                    }
-                }
-            } 
-            else if (changed) {
-                Set<FlowNode> passOn = new HashSet();
-                if (cur instanceof Activity) {
-                    passOn.add(cur);
-                } 
-                else {
-                    passOn = nextAct.get(cur);
-                }
-                
-                for (FlowNode source : getSources(cur)) {
-                    findNext(source, cur, passOn);
-                }
-                
-                if (isJoin(cur)) {
-                    findNext((FlowNode)getJoin2ForkMap().get((Gateway)cur),null,passOn);
-                }
-            }
-        }
-    }
     
     
 }
