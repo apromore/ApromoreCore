@@ -126,15 +126,7 @@ public class AnimationLog {
         }
         return sequenceByIds;
     }
-    
-    /*
-    public void analyzeSequenceFlows() {
-        Map<String,List<Interval>> sequenceByIds = this.getSequenceIntervalsById();
-        for (String id : sequenceByIds.keySet()) {
-            Collections.sort(sequenceByIds.get(id), new IntervalStartComparator());
-        }
-    }
-    */
+
     
 
 }
