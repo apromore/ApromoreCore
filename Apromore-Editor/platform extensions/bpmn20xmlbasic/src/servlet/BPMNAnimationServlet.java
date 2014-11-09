@@ -192,6 +192,8 @@ public class BPMNAnimationServlet extends HttpServlet {
             params.setTotalEngineSeconds(Integer.valueOf(props.getProperty("TotalEngineSeconds")).intValue());
             params.setProgressCircleBarRadius(Integer.valueOf(props.getProperty("ProgressCircleBarRadius")).intValue());
             params.setSequenceTokenDiffThreshold(Integer.valueOf(props.getProperty("SequenceTokenDiffThreshold")).intValue());
+            params.setEventClusterSecondsGap(Integer.valueOf(props.getProperty("EventClusterSecondsGap")).intValue());
+            params.setBacktrackingDebug(props.getProperty("BacktrackingDebug"));
             
             Replayer replayer = new Replayer(bpmnDefinition, params);
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
