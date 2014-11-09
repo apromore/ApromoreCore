@@ -62,7 +62,11 @@ public class Backtracking {
     * Select the best nodes for next exploration after finishing every chunk
     */
     public Node explore() {
-        //The first state includes the start event of the model and beginning of the trace
+        //-------------------------------------------------------
+        // The initial state is taking the start event, one token is 
+        // on the outgoing sequence flow of the start event, trace index is 
+        // pointing at the first trace event.
+        //-------------------------------------------------------
         Node selectedNode = new Node(null, new State(new HashSet<SequenceFlow>(helper.getStartEvent().getOutgoingSequenceFlows()), 
                                               helper.getStartEvent(), 
                                               StateElementStatus.STARTEVENT, 
@@ -85,18 +89,20 @@ public class Backtracking {
             maxAllowedDepth = params.getMaxDepth();
             totalNodesCount = 1; //the first node
             
-            LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
-            LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
-                        "MAX_DEPTH:" + params.getMaxDepth() + " " +
-                        "MIN_MATCH:" + params.getMinMatch() + " " +
-                        "MAX_MATCH:" + params.getMaxMatch() + " " +
-                        "MIN_FITNESS:" + params.getMinFitness() + " " +
-                        "MAX_DIFFSERIES:" + params.getMaxDiffSeries() + " " +
-                        "ACTIVITY_SKIPPED:" + params.getActivitySkipCost() + " " +
-                        "EVENT_SKIPPED:" + params.getEventSkipCost() + " " +
-                        "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize() + " " + 
-                        "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkip() + " " + 
-                        "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance());
+            if (params.isBacktrackingDebug()) {
+                LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
+                LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
+                            "MAX_DEPTH:" + params.getMaxDepth() + " " +
+                            "MIN_MATCH:" + params.getMinMatch() + " " +
+                            "MAX_MATCH:" + params.getMaxMatch() + " " +
+                            "MIN_FITNESS:" + params.getMinFitness() + " " +
+                            "MAX_DIFFSERIES:" + params.getMaxDiffSeries() + " " +
+                            "ACTIVITY_SKIPPED:" + params.getActivitySkipCost() + " " +
+                            "EVENT_SKIPPED:" + params.getEventSkipCost() + " " +
+                            "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize() + " " + 
+                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkip() + " " + 
+                            "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance());
+            }
             
             this.explore(selectedNode);
             selectedNode = this.select();
@@ -129,38 +135,45 @@ public class Backtracking {
         
     public void explore(Node node) {
         Node nextNode;
-        LOGGER.info(indent + "Entering explore(" + 
-                    node.getState().getName()+ 
-                    " markings:" + node.getState().getMarkingsText()+ 
-                    " trace:" +  node.getState().getTraceWithIndex()+ 
-                    " cost:" + node.getCost() + 
-                    " depth:" + node.getDepth() + 
-                    " matches:" + node.getMatchCount() + 
-                    " activityskips:" + node.getActivitySkipCount() + 
-                    " diffseries:" + node.getDiffSeries() + 
-                    " totalMiss:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
-                    " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
-                    " nodesCount:" + totalNodesCount + 
-                    " selectedNodesCount:" + selectedNodes.size() +                 
-                    " maxAllowedMiss:" + maxAllowedMiss +
-                    " maxAllowedCost:" + maxAllowedCost +
-                    " maxAllowedDepth:" + maxAllowedDepth + 
-                    " fullTraceMatched:" + fullTraceMatched + 
-                    " optimumFound:" + optimumFound + 
-                    ")");
+        if (params.isBacktrackingDebug()) {
+            LOGGER.info(indent + "Entering explore(" + 
+                        node.getState().getName()+ 
+                        " markings:" + node.getState().getMarkingsText()+ 
+                        " trace:" +  node.getState().getTraceWithIndex()+ 
+                        " cost:" + node.getCost() + 
+                        " depth:" + node.getDepth() + 
+                        " matches:" + node.getMatchCount() + 
+                        " activityskips:" + node.getActivitySkipCount() + 
+                        " diffseries:" + node.getDiffSeries() + 
+                        " totalMiss:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
+                        " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
+                        " nodesCount:" + totalNodesCount + 
+                        " selectedNodesCount:" + selectedNodes.size() +                 
+                        " maxAllowedMiss:" + maxAllowedMiss +
+                        " maxAllowedCost:" + maxAllowedCost +
+                        " maxAllowedDepth:" + maxAllowedDepth + 
+                        " fullTraceMatched:" + fullTraceMatched + 
+                        " optimumFound:" + optimumFound + 
+                        ")");
+        }
         indent = indent + "|  ";
         
         if (reject(node)) {
-            indent = indent.substring(3);
-            LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected");
+            if (params.isBacktrackingDebug()) {
+                indent = indent.substring(3);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected");
+            }
             totalNodesCount--;
             return;
         }
         else if (accept(node)) {
             collect(node);
-            indent = indent.substring(3);
-            LOGGER.info(indent + "node(" + node.getState().getName()+ ") is accepted" + " maxAllowedCost:" + maxAllowedCost +
-                        " maxAllowedDepth:" + maxAllowedDepth + " fullTracePlayed:" + fullTraceMatched + " optimumFound:" + optimumFound);
+            
+            if (params.isBacktrackingDebug()) {
+                indent = indent.substring(3);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is accepted" + " maxAllowedCost:" + maxAllowedCost +
+                            " maxAllowedDepth:" + maxAllowedDepth + " fullTracePlayed:" + fullTraceMatched + " optimumFound:" + optimumFound);
+            }
             totalNodesCount--;
             return;
         }
@@ -174,21 +187,27 @@ public class Backtracking {
                 }
                 else if (selectedNodes.size() > 100) {
                     totalNodesCount--;
-                    indent = indent.substring(3);
-                    LOGGER.info(indent + "Stop due to excessive selected nodes found. SelectedNodes: " + selectedNodes.size());
+                    if (params.isBacktrackingDebug()) {
+                        indent = indent.substring(3);
+                        LOGGER.info(indent + "Stop due to excessive selected nodes found. SelectedNodes: " + selectedNodes.size());
+                    }
                     return;
                 }
                 else {
                     totalNodesCount--;
-                    indent = indent.substring(3);
-                    LOGGER.info(indent + "Stop since optimum node found! NodesCount:" + totalNodesCount);
+                    if (params.isBacktrackingDebug()) {
+                        indent = indent.substring(3);
+                        LOGGER.info(indent + "Stop since optimum node found! NodesCount:" + totalNodesCount);
+                    }
                     return;
                 }
             }
         }
         
-        indent = indent.substring(3);
-        LOGGER.info(indent + "explore(" + node.getState().getName()+ ")");
+        if (params.isBacktrackingDebug()) {
+            indent = indent.substring(3);
+            LOGGER.info(indent + "explore(" + node.getState().getName()+ ")");
+        }
     }
     
     //Simply get all child nodes but can apply further improvement here
@@ -305,27 +324,11 @@ public class Backtracking {
             }
         }
         
-        LOGGER.info("Selected node: " + print(selectedNode));
+        if (selectedNode != null && params.isBacktrackingDebug()) {
+            LOGGER.info("Replayed Path: " + selectedNode.getPathString());
+        }
         
         return selectedNode;
-    }
-    
-    public static String print(Node node) {
-        String printString = "";
-        Stack<Node> stack = new Stack<>();
-        Node element = node;
-        while (element != null) {
-            stack.push(element);
-            element = element.getParent();
-        }
-        
-        Node sNode=null;
-        while (!stack.empty()) {
-            sNode = (Node)stack.pop();
-            printString += sNode.toString() + " > ";
-        }
-        
-        return printString;
     }
 
 }
