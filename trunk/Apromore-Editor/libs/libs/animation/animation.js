@@ -15,6 +15,7 @@ jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
+var jsonServer; //contains parsed objects returned from the server
 
 function svgDocument() {
     //return svgDocument();
@@ -277,21 +278,22 @@ Controller.prototype = {
 
         this.clear();
 
-        var json = JSON.parse(jsonRaw);
-        var logs = json.logs;
+        jsonServer = JSON.parse(jsonRaw);
+        var logs = jsonServer.logs;
         
-        this.startPos = json.timeline.startDateSlot; //start slot 
-        this.endPos = json.timeline.endDateSlot; // end slot
-        this.timelineSlots = json.timeline.timelineSlots;
-        this.timelineEngineSeconds = json.timeline.totalEngineSeconds; //total engine seconds
-        this.slotEngineUnit = json.timeline.slotEngineUnit*1000; // number of engine milliseconds per slot
-        this.startDateMillis = (new Date(json.timeline.startDateLabel)).getTime(); // start date in milliseconds
+        this.startPos = jsonServer.timeline.startDateSlot; //start slot 
+        this.endPos = jsonServer.timeline.endDateSlot; // end slot
+        this.timelineSlots = jsonServer.timeline.timelineSlots;
+        this.timelineEngineSeconds = jsonServer.timeline.totalEngineSeconds; //total engine seconds
+        this.slotEngineUnit = jsonServer.timeline.slotEngineUnit*1000; // number of engine milliseconds per slot
+        this.startDateMillis = (new Date(jsonServer.timeline.startDateLabel)).getTime(); // start date in milliseconds
         // slotDataUnit: number of data milliseconds per slot
-        this.slotDataUnit = ((new Date(json.timeline.endDateLabel)).getTime() - (new Date(json.timeline.startDateLabel)).getTime()) / (json.timeline.endDateSlot - json.timeline.startDateSlot);
-        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit; //number of data seconds (millis) per one engine second (millis)        
+        this.slotDataUnit = ((new Date(jsonServer.timeline.endDateLabel)).getTime() - (new Date(jsonServer.timeline.startDateLabel)).getTime()) / (jsonServer.timeline.endDateSlot - jsonServer.timeline.startDateSlot);
+        // timeCoefficient: number of data seconds (millis) per one engine second (millis) 
+        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;        
 
         //Recreate progress indicators
-        var progressIndicatorE = controller.createProgressIndicators(logs, json.timeline);
+        var progressIndicatorE = controller.createProgressIndicators(logs, jsonServer.timeline);
         svg3.appendChild(progressIndicatorE);
 
         for (var i=0;i<logs.length;i++) {
@@ -308,8 +310,8 @@ Controller.prototype = {
         var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
         var startTopY = 60;
-        for (var j=0; j<json.timeline.logs.length; j++) {
-            var log = json.timeline.logs[j];
+        for (var j=0; j<jsonServer.timeline.logs.length; j++) {
+            var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
             logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is gapWidth / gapValue
             logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j);
@@ -463,7 +465,7 @@ Controller.prototype = {
                 var begin = paths[j].begin;
                 var dur = paths[j].dur;
                 if (dur > 0) {
-                    tokenPathE = this.createTokenPathElement(id, begin, dur, color);
+                    tokenPathE = this.createTokenPathElement(cases[i].caseId, id, begin, dur, color);
                     tokenE.appendChild(tokenPathE);
                 }
             }
@@ -481,7 +483,7 @@ Controller.prototype = {
                 var isVirtual = nodes[j].isVirtual;
 
                 if (dur > 0) {
-                    tokenPathE = this.createTokenNodeElement(id, begin, dur, color, isVirtual);
+                    tokenPathE = this.createTokenNodeElement(cases[i].caseId, id, begin, dur, color, isVirtual);
                     tokenE.appendChild(tokenPathE);
                 }
             }
@@ -509,7 +511,7 @@ Controller.prototype = {
      *      <animateMotion class="tokenPathAnimation">
      *          <mpath>
      */
-    createTokenPathElement: function (edgeId, begin, duration, color) {
+    createTokenPathElement: function (caseId, edgeId, begin, duration, color) {
         //---------------------------------------------
         // Create animation for edge
         //---------------------------------------------
@@ -563,6 +565,12 @@ Controller.prototype = {
         
         animateMotion.appendChild(mPath);
         tokenPathE.appendChild(animateMotion);
+        
+        //Add tooltip to display caseId
+        var titleE = document.createElementNS(svgNS,"title");
+        var titleTextE = document.createTextNode(caseId);
+        titleE.appendChild(titleTextE);
+        tokenPathE.appendChild(titleE);
     
         return tokenPathE;
     },
@@ -572,7 +580,7 @@ Controller.prototype = {
      *      <animateMotion class="tokenPathAnimation">
      *          <mpath>
      */
-    createTokenNodeElement: function (nodeId, begin, duration, color, isVirtual) {
+    createTokenNodeElement: function (caseId, nodeId, begin, duration, color, isVirtual) {
         var modelNode = findModelNode(nodeId);
         var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
         var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
@@ -737,6 +745,12 @@ Controller.prototype = {
         
         animateMotion.appendChild(mPath);
         tokenPathE.appendChild(animateMotion);
+        
+        //Add tooltip to display caseId
+        var titleE = document.createElementNS(svgNS,"title");
+        var titleTextE = document.createTextNode(caseId);
+        titleE.appendChild(titleTextE);
+        tokenPathE.appendChild(titleE);        
     
         return tokenPathE;
     },
@@ -838,7 +852,7 @@ Controller.prototype = {
        if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
            return;
        } else {
-	       this.setCurrentTime(this.getCurrentTime() + 5*this.slotEngineUnit/1000); //move forward 5 slots
+	       this.setCurrentTime(this.getCurrentTime() + 1*this.slotEngineUnit/1000); //move forward 5 slots
 	   }
     },
     
@@ -846,9 +860,24 @@ Controller.prototype = {
        if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
            return;
        } else {
-           this.setCurrentTime(this.getCurrentTime() - 5*this.slotEngineUnit/1000); //move backward 5 slots
+           this.setCurrentTime(this.getCurrentTime() - 1*this.slotEngineUnit/1000); //move backward 5 slots
        }
-    },    
+    },  
+    
+    nextTrace: function () {
+        if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
+            return;
+        } else {
+            var tracedates = jsonServer.tracedates;
+            var currentTimeMillis = this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis;
+            for (var i=0; i<tracedates.length; i++) {
+                if (currentTimeMillis < tracedates[i]) {
+                    this.setCurrentTime((tracedates[i]-this.startDateMillis)/(1000*this.timeCoefficient));
+                    return;
+                }
+            }
+        }
+    },       
 
     pause: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
@@ -1099,7 +1128,7 @@ Controller.prototype = {
         //console.log("values:" + log.progress.values);
         //console.log("keyTimes:" + log.progress.keyTimes);
         animateE.setAttributeNS(null,"begin","0s");
-        animateE.setAttributeNS(null,"dur",timeline.timelineSlots + "s");
+        animateE.setAttributeNS(null,"dur",timeline.timelineSlots*this.slotEngineUnit/1000 + "s");
         animateE.setAttributeNS(null,"fill","freeze");
         animateE.setAttributeNS(null,"repeatCount", "1");
         
@@ -1110,7 +1139,7 @@ Controller.prototype = {
         textE.setAttributeNS(null,"x", x);
         textE.setAttributeNS(null,"y", y - 10);
         textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode(log.name);
+        var textNode = document.createTextNode(log.name.substr(0,5) + "...");
         textE.appendChild(textNode);
         
         pieE.appendChild(pathE);
