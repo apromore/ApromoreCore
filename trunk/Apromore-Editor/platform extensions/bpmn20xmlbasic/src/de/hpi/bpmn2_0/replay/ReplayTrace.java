@@ -94,7 +94,7 @@ public class ReplayTrace {
     
     public String getId() {
         if (logTrace != null) {
-            return logTrace.getName();
+            return logTrace.getId();
         }
         else {
             return null;
