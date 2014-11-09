@@ -19,8 +19,10 @@ public class XTrace2 {
         return xTrace.get(i);
     }
     
-    public String getName() {
-        return xTrace.getAttributes().get("concept:name").toString();
+    public String getId() {
+        //return xTrace.getAttributes().get("concept:name").toString();
+        return LogUtility.getConceptName(xTrace).toString();
+        
     }
     
     public String getFirstActName() {
