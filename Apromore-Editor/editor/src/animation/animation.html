@@ -21,6 +21,7 @@
 	    	$j("#pause").get(0).disabled = true;
 	    	$j("#forward").get(0).disabled = true;
 	    	$j("#backward").get(0).disabled = true;
+	    	$j("#nextTrace").get(0).disabled = true;
 	    	$j("#end").get(0).disabled = true;
 	    	$j("#slider2").get(0).disabled = true;	    	
     	}
@@ -46,13 +47,16 @@
                 <button id='forward' onclick="fastForward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_fastforward.png" alt="Forward" width="24" height="24" style="padding: 0"/>
                 </button>
+                <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0; background-color: none">
+                        <img src="/editor/libs/animation/images/control_nexttrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
+                </button>                
                 <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
                 </button>
                 
             </div>
 
-            <div id="progress_display" style="margin: 10px; padding: 10px; padding-left: 10px; position: relative; left: 200px; top: -150px; height: 160px;">
+            <div id="progress_display" style="margin: 10px; padding: 10px; padding-left: 10px; position: relative; left: 200px; top: -150px; height: 100px;">
                 <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="120px" viewBox="0 0 2000 50" style="background-color:yellow"></svg>
                 <table style="display: inline-table; vertical-align: bottom">
                         <tr><td id="date" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
@@ -109,10 +113,15 @@
     	controller.fastBackward();
     }
     
+    function nextTrace() {
+    	controller.nextTrace();
+    }    
+    
     function start(e) {
     	lastSliderValue = 11;
     	$j("#slider2").slider({ value: 11 });
-    	controller.start($j("#animationJSON").get(0).getAttribute("value"));
+    	//controller.start($j("#animationJSON").get(0).getAttribute("value"));
+    	controller.start();
     }	
 
     function end(e) {
@@ -147,11 +156,14 @@
 			        $j("#pause").get(0).disabled = false;
 			        $j("#forward").get(0).disabled = false;
 			        $j("#backward").get(0).disabled = false;
+			        $j("#nextTrace").get(0).disabled = false;
 					$j("#end").get(0).disabled = false;
 			        $j("#slider2").get(0).disabled = false;
 
 			        
 					$j("#uploadForm")[0].style="visibility: hidden";
+					$j("#uploadForm")[0].style.visibility = "hidden";
+					//$j("#uploadForm")[0].style.opacity = 0;
 			    }
 			    else if (e.status === 204) {
 			    	alert("Finish importing logs. No event logs are suitable for animation!");
