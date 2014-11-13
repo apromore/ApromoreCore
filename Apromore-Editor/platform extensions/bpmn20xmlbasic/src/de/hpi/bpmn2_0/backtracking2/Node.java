@@ -210,6 +210,24 @@ public class Node {
         return printString;
     }
     
-    
+    /*
+     * Compare to see if this node is better than the input 
+     */
+    public boolean isBetter(Node node) {
+        if (this.getMatchCount() > node.getMatchCount()) {
+            return true;
+        }
+        else if (this.getMatchCount() == node.getMatchCount()) {
+            if (this.getCost() < node.getCost()) {
+                return true;
+            }
+            else if (this.getCost() == node.getCost()) {
+                if (this.getDepth() < node.getDepth()) {
+                    return true;
+                }
+            }
+        }        
+        return false;
+    }
     
 }
