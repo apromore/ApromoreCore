@@ -96,6 +96,9 @@ public class AnimationJSONBuilder {
         json.put("name", animationLog.getName());
         json.put("color", animationLog.getColor());
         json.put("traceCount", animationLog.getTraces().size());
+        json.put("moveLogFitness", animationLog.getCostBasedMoveLogFitness());
+        json.put("moveModelFitness", animationLog.getCostBasedMoveModelFitness());
+        json.put("calculationTime", 1.0*animationLog.getCalculationTime()/1000);
         json.put("progress", this.parseLogProgress(animationLog));
         json.put("tokenAnimations", this.parseTraces(animationLog));
 

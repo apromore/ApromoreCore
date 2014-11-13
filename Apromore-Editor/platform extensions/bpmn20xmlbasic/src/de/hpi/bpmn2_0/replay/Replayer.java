@@ -37,6 +37,7 @@ import org.deckfour.xes.model.impl.XAttributeImpl;
 import org.deckfour.xes.model.impl.XEventImpl;
 import org.deckfour.xes.model.impl.XTraceImpl;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
 import org.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
 import servlet.BPMNAnimationServlet;
@@ -112,6 +113,7 @@ public class Replayer {
         //-------------------------------------------
         // Replay every trace in the log
         //-------------------------------------------
+        long startTime = DateTimeUtils.currentTimeMillis();
         for (XTrace trace : log) {
             replayTrace = this.replay(trace);
             if (!replayTrace.isEmpty()) {
@@ -123,7 +125,7 @@ public class Replayer {
                 if (logEndDate.isBefore(replayTrace.getEndDate())) {
                     logEndDate = replayTrace.getEndDate();
                 }
-                animationLog.getTraceMap().put(trace, replayTrace);
+                animationLog.add(trace, replayTrace);
             }
             else {
                 LOGGER.info("Trace " + LogUtility.getConceptName(trace) + ": No path found!");
@@ -131,6 +133,7 @@ public class Replayer {
         }
 
         if (!animationLog.isEmpty()) {
+            animationLog.setCalculationTime(DateTimeUtils.currentTimeMillis() - startTime);
             animationLog.setStartDate(new DateTime(logStartDate));
             animationLog.setEndDate(new DateTime(logEndDate));
             animationLog.setName(log.getAttributes().get("concept:name").toString());

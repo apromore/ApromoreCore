@@ -1,16 +1,10 @@
 package de.hpi.bpmn2_0.replay;
 
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -19,12 +13,13 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 public class AnimationLog {
-    Map<XTrace, ReplayTrace> traceMap = new HashMap();
-    String name = "";
-    DateTime startDate = null;
-    DateTime endDate = null;
-    Interval interval = null;
-    String color = "";
+    private Map<XTrace, ReplayTrace> traceMap = new HashMap();
+    private String name = "";
+    private DateTime startDate = null;
+    private DateTime endDate = null;
+    private Interval interval = null;
+    private String color = "";
+    private long calculationTime = 0; //in milliseconds
     private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
     
     public AnimationLog() {
@@ -67,12 +62,40 @@ public class AnimationLog {
         }
     }    
     
+    public void add(XTrace trace, ReplayTrace replayTrace) {
+        traceMap.put(trace, replayTrace);
+    }
+    
     public Collection<ReplayTrace> getTraces() {
         return this.traceMap.values();
     }
     
+    public double getCostBasedMoveLogFitness() {
+        double avgCost = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            avgCost += trace.getCostBasedMoveLogFitness();
+        }
+        if (this.getTraces().size() > 0) {
+            return 1.0*avgCost/this.getTraces().size();
+        }
+        else {
+            return 1.00;
+        }
+    }
     
-    
+    public double getCostBasedMoveModelFitness() {
+        double avgCost = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            avgCost += trace.getCostBasedMoveModelFitness();
+        }
+        if (this.getTraces().size() > 0) {
+            return 1.0*avgCost/this.getTraces().size();
+        }
+        else {
+            return 1.00;
+        }
+    }    
+       
     public boolean isEmpty() {
         return this.traceMap.isEmpty();
     }
@@ -83,6 +106,14 @@ public class AnimationLog {
     
     public String getColor() {
         return this.color;
+    }
+    
+    public long getCalculationTime() {
+        return this.calculationTime;
+    }
+    
+    public void setCalculationTime(long calculationTime) {
+        this.calculationTime = calculationTime;
     }
     
     /*

@@ -6,29 +6,21 @@ public class ReplayParams {
     private int maxDepth;
     private double minHits;
     private double maxHits;
-    private double minFitness;
     private int maxDiffSeries;
+    private double ActivityMatchCost;
     private double ActivitySkippedCost;
     private double EventSkippedCost;
+    private double NonActivityMoveCost;
     private double traceChunkSize; //maximum length of trace to be searched one at a time
-    private double ActivitySkipPercent;
-    private double MaxNodeDistance;
+    private int MaxNumberOfNodesVisited;
+    private double MaxActivitySkipPercent;
+    private int MaxNodeDistance;
     private int TimelineSlots;
     private int TotalEngineSeconds;
     private int ProgressCircleBarRadius;
     private int SequenceTokenDiffThreshold;
     private String BacktrackingDebug;
-    private int EventClusterSecondsGap;
-
-    public int getEventClusterSecondsGap() {
-        return EventClusterSecondsGap;
-    }
-
-    public void setEventClusterSecondsGap(int EventClusterSecondsGap) {
-        this.EventClusterSecondsGap = EventClusterSecondsGap;
-    }
-
-
+    
     public String getBacktrackingDebug() {
         return BacktrackingDebug;
     }
@@ -38,7 +30,7 @@ public class ReplayParams {
     }
     
     public boolean isBacktrackingDebug() {
-        return this.BacktrackingDebug.equals("true");
+        return this.BacktrackingDebug.toLowerCase().equals("true");
     }
 
 
@@ -78,21 +70,21 @@ public class ReplayParams {
     }
 
 
-    public double getMaxNodeDistance() {
+    public int getMaxNodeDistance() {
         return MaxNodeDistance;
     }
 
-    public void setMaxNodeDistance(double MaxNodeDistance) {
+    public void setMaxNodeDistance(int MaxNodeDistance) {
         this.MaxNodeDistance = MaxNodeDistance;
     }
 
 
     public double getMaxActivitySkip() {
-        return ActivitySkipPercent;
+        return MaxActivitySkipPercent;
     }
 
     public void setMaxActivitySkip(double ActivitySkipPercent) {
-        this.ActivitySkipPercent = ActivitySkipPercent;
+        this.MaxActivitySkipPercent = ActivitySkipPercent;
     }
 
 
@@ -103,7 +95,22 @@ public class ReplayParams {
     public void setTraceChunkSize(int traceChunkSize) {
         this.traceChunkSize = traceChunkSize;
     }
+    
+    public int getMaxNumberOfNodesVisited() {
+        return MaxNumberOfNodesVisited;
+    }
 
+    public void setMaxNumberOfNodesVisited(int MaxNumberOfNodesVisited) {
+        this.MaxNumberOfNodesVisited = MaxNumberOfNodesVisited;
+    }    
+
+    public double getActivityMatchCost() {
+        return ActivityMatchCost;
+    }
+
+    public void setActivityMatchCost(double ActivityMatchCost) {
+        this.ActivityMatchCost = ActivityMatchCost;
+    }
 
     public double getEventSkipCost() {
         return EventSkippedCost;
@@ -122,6 +129,13 @@ public class ReplayParams {
         this.ActivitySkippedCost = ActivitySkippedCost;
     }
 
+    public double getNonActivityMoveCost() {
+        return NonActivityMoveCost;
+    }
+
+    public void setNonActivityMoveCost(double NonActivityMoveCost) {
+        this.NonActivityMoveCost = NonActivityMoveCost;
+    }
 
     public int getMaxDiffSeries() {
         return maxDiffSeries;
@@ -130,16 +144,6 @@ public class ReplayParams {
     public void setMaxDiffSeries(int maxDiffSeries) {
         this.maxDiffSeries = maxDiffSeries;
     }
-
-
-    public double getMinFitness() {
-        return minFitness;
-    }
-
-    public void setMinFitness(double minFitness) {
-        this.minFitness = minFitness;
-    }
-
 
     public double getMaxMatch() {
         return maxHits;

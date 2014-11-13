@@ -58,6 +58,11 @@ public class State {
         return elementStatus;
     }
     
+    /*
+     * Create all next possible states from this state
+     * Or return empty set if this state is the end state.
+     * Some pruning conditions apply in generating next states
+     */
     public Set<State> nextStates () {
         //Use comparator to prevent adding duplicate states
         SortedSet<State> states = new TreeSet<>(
@@ -99,7 +104,7 @@ public class State {
                         //Skip Activity
                         //Only skip if this activity can reach the current event within the threshold of distance
                         //Otherwise, it is either rejected later or it can be covered by skip event state
-                        if (helper.countNodes(helper.getPath(node, eventNode)) <= 1.0*params.getMaxNodeDistance()*(helper.getAllNodes().size()-2)) {
+                        if (helper.countNodes(helper.getPath(node, eventNode)) <= params.getMaxNodeDistance()) {
                             if (!node.getOutgoingSequenceFlows().isEmpty()) {
                                 newMarkings = (HashSet)((HashSet)this.markings).clone();
                                 newMarkings.remove(sequence);
@@ -113,7 +118,7 @@ public class State {
                 //Because it will never reach that event no matter after how many activity skips -> always be rejected
                 else if (helper.getAllDecisions().contains(node)) {
                     for (SequenceFlow branch : node.getOutgoingSequenceFlows()) {
-                        if (helper.countNodes(helper.getPath((FlowNode)branch.getTargetRef(), eventNode)) <= 1.0*params.getMaxNodeDistance()*(helper.getAllNodes().size()-2)) {
+                        if (helper.countNodes(helper.getPath((FlowNode)branch.getTargetRef(), eventNode)) <= params.getMaxNodeDistance()) {
                             newMarkings = (HashSet)((HashSet)this.markings).clone();
                             newMarkings.remove(sequence);
                             newMarkings.add(branch);
@@ -123,7 +128,7 @@ public class State {
                 }
                 // Only add new node if the shortest path to next event node is within acceptable distance
                 else if (helper.getAllForks().contains(node)) {
-                    if (helper.countNodes(helper.getPath(new HashSet(node.getOutgoingSequenceFlows()), eventNode)) <= 1.0*params.getMaxNodeDistance()*(helper.getAllNodes().size()-2)) {
+                    if (helper.countNodes(helper.getPath(new HashSet(node.getOutgoingSequenceFlows()), eventNode)) <= params.getMaxNodeDistance()) {
                         newMarkings = (HashSet)((HashSet)this.markings).clone();
                         newMarkings.remove(sequence);
                         newMarkings.addAll(node.getOutgoingSequenceFlows());
@@ -135,7 +140,7 @@ public class State {
                     Set<Set<SequenceFlow>> sequenceORSet = SetUtils.powerSet(new HashSet(node.getOutgoingSequenceFlows()));
                     for (Set<SequenceFlow> flows : sequenceORSet) {
                         if (!flows.isEmpty() && 
-                            helper.countNodes(helper.getPath(flows, eventNode)) <= 1.0*params.getMaxNodeDistance()*(helper.getAllNodes().size()-2)) {
+                            helper.countNodes(helper.getPath(flows, eventNode)) <= 1.0*params.getMaxNodeDistance()) {
                             newMarkings = (HashSet)((HashSet)this.markings).clone();
                             newMarkings.remove(sequence);
                             newMarkings.addAll(flows);
@@ -172,7 +177,7 @@ public class State {
                 }
             }
 
-            //Skip Event (another state)
+            //Skip Event (there is always a skip event state created)
             newMarkings = (HashSet)((HashSet)this.markings).clone();
             states.add(new State(newMarkings, new EventNode(LogUtility.getConceptName(trace.get(traceIndex))), 
                                  StateElementStatus.EVENT_SKIPPED, this.trace, this.traceIndex+1, helper, params));
@@ -182,6 +187,10 @@ public class State {
     
     public boolean isEndState() {
         return (traceIndex >= trace.size() || markings.isEmpty());
+    }
+    
+    public boolean isTraceFinished() {
+        return (traceIndex >= trace.size());
     }
     
     public boolean isMatch() {
@@ -194,10 +203,8 @@ public class State {
     
     //Cost of reaching this state
     public double getCost() {
-        if (elementStatus == StateElementStatus.ACTIVITY_MATCHED || 
-            elementStatus == StateElementStatus.STARTEVENT || 
-            elementStatus == StateElementStatus.ENDEVENT) {
-            return 0;
+        if (elementStatus == StateElementStatus.ACTIVITY_MATCHED) {
+            return params.getActivityMatchCost();
         }
         else if (elementStatus == StateElementStatus.ACTIVITY_SKIPPED) {
             return params.getActivitySkipCost();
@@ -205,8 +212,8 @@ public class State {
         else if (elementStatus == StateElementStatus.EVENT_SKIPPED) {
             return params.getEventSkipCost();
         }
-        else {
-            return 0; //note: gateway should have cost=0 to deal with model having many gateways
+        else { // start/end event, gateways (gateways should have cost = 0 for nested gateways process)
+            return params.getNonActivityMoveCost(); 
         }
     } 
 
