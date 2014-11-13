@@ -22,6 +22,7 @@
 	    	$j("#forward").get(0).disabled = true;
 	    	$j("#backward").get(0).disabled = true;
 	    	$j("#nextTrace").get(0).disabled = true;
+	    	$j("#previousTrace").get(0).disabled = true;
 	    	$j("#end").get(0).disabled = true;
 	    	$j("#slider2").get(0).disabled = true;	    	
     	}
@@ -34,10 +35,13 @@
 		
     <div id="controls" style="position: absolute; top: 100%; left: 0; width: 100%">
         <div id="playback_controls" style="background: #EEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -120px; height: 120px; width: 100%; overflow: hidden">
-            <div id="buttons_and_rate" style="text-align: center; padding: 5px; width: 200px; top: -100px; background-color:none;">
+            <div id="buttons_and_rate" style="text-align: center; padding: 0px; width: 200px; top: -100px; background-color:none;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
+				<button id='previousTrace' onclick="previousTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0; background-color: none">
+                        <img src="/editor/libs/animation/images/control_previoustrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
+                </button>                
                 <button id='backward' onclick="fastBackward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_rewind.png" alt="Backward" width="24" height="24" style="padding: 0"/>
                 </button>
@@ -49,21 +53,29 @@
                 </button>
                 <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0; background-color: none">
                         <img src="/editor/libs/animation/images/control_nexttrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
-                </button>                
-                <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
+                </button>   
+                <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0; visibility:hidden">
                         <img src="/editor/libs/animation/images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
-                </button>
-                
+                </button>                
             </div>
 
-            <div id="progress_display" style="margin: 10px; padding: 10px; padding-left: 10px; position: relative; left: 200px; top: -150px; height: 100px;">
-                <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="120px" viewBox="0 0 2000 50" style="background-color:yellow"></svg>
-                <table style="display: inline-table; vertical-align: bottom">
+            <div id="progress_display" style="margin-top: 10px; padding: 0px; padding-left: 0px; position: relative; left: 200px; top: -150px; height: 200px; background-color: none">
+                <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="120px" viewBox="0 0 2000 50" style="padding-left:20px; background-color:yellow"></svg>
+                <table style="display: inline-table; vertical-align: bottom; background-color: green">
                         <tr><td id="date" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                         <tr><td id="time" style="text-align: center; font: 18pt monospace">--:--:--</span></td></tr>
                         <tr><td id="subtitle" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                 </table>
-                <svg id="process_svg2" xmlns="http://www.w3.org/2000/svg" width="500px" height="70px" viewBox="0 0 500 70" style="display: inline; background-color:none"></svg>
+                <svg id="process_svg2" xmlns="http://www.w3.org/2000/svg" width="500px" height="70px" viewBox="0 0 500 70" style="display: inline; background-color:pink"></svg>
+                <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none" border="1">
+                        <tr id="header">
+                        	<td style="text-align: center; font: 10pt monospace">&nbsp;</td>
+                        	<td style="text-align: center; font: 10pt monospace">Traces</td>
+                        	<td style="text-align: center; font: 10pt monospace">Move Log Fitness</td>
+                        	<td style="text-align: center; font: 10pt monospace">Move Model Fitness</td>
+                        	<td style="text-align: center; font: 10pt monospace">Calculation Time(s)</td>
+                        </tr>
+                </table>                
             </div>
         </div>
 
@@ -117,6 +129,10 @@
     	controller.nextTrace();
     }    
     
+    function previousTrace() {
+    	controller.previousTrace();
+    }  
+    
     function start(e) {
     	lastSliderValue = 11;
     	$j("#slider2").slider({ value: 11 });
@@ -157,6 +173,7 @@
 			        $j("#forward").get(0).disabled = false;
 			        $j("#backward").get(0).disabled = false;
 			        $j("#nextTrace").get(0).disabled = false;
+			        $j("#previousTrace").get(0).disabled = false;
 					$j("#end").get(0).disabled = false;
 			        $j("#slider2").get(0).disabled = false;
 
