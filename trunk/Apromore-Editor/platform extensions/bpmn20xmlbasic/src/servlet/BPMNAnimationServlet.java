@@ -179,20 +179,21 @@ public class BPMNAnimationServlet extends HttpServlet {
             ReplayParams params = new ReplayParams();
             params.setMaxCost(Double.valueOf(props.getProperty("MaxCost")).doubleValue());
             params.setMaxDepth(Integer.valueOf(props.getProperty("MaxDepth")).intValue());
-            params.setMinMatch(Double.valueOf(props.getProperty("MinMatch")).doubleValue());
-            params.setMaxMatch(Double.valueOf(props.getProperty("MaxMatch")).doubleValue());
-            params.setMinFitness(Double.valueOf(props.getProperty("MinFitness")).doubleValue());
+            params.setMinMatch(Double.valueOf(props.getProperty("MinMatchPercent")).doubleValue());
+            params.setMaxMatch(Double.valueOf(props.getProperty("MaxMatchPercent")).doubleValue());
             params.setMaxDiffSeries(Integer.valueOf(props.getProperty("MaxDiffSeries")).intValue());
+            params.setActivityMatchCost(Double.valueOf(props.getProperty("ActivityMatchCost")).doubleValue());
             params.setActivitySkipCost(Double.valueOf(props.getProperty("ActivitySkipCost")).doubleValue());
             params.setEventSkipCost(Double.valueOf(props.getProperty("EventSkipCost")).doubleValue());
+            params.setNonActivityMoveCost(Double.valueOf(props.getProperty("NonActivityMoveCost")).doubleValue());
             params.setTraceChunkSize(Integer.valueOf(props.getProperty("TraceChunkSize")).intValue());
-            params.setMaxActivitySkip(Double.valueOf(props.getProperty("MaxActivitySkip")).doubleValue());
-            params.setMaxNodeDistance(Double.valueOf(props.getProperty("MaxNodeDistance")).doubleValue());
+            params.setMaxNumberOfNodesVisited(Integer.valueOf(props.getProperty("MaxNumberOfNodesVisited")).intValue());
+            params.setMaxActivitySkip(Double.valueOf(props.getProperty("MaxActivitySkipPercent")).doubleValue());
+            params.setMaxNodeDistance(Integer.valueOf(props.getProperty("MaxNodeDistance")).intValue());
             params.setTimelineSlots(Integer.valueOf(props.getProperty("TimelineSlots")).intValue());
             params.setTotalEngineSeconds(Integer.valueOf(props.getProperty("TotalEngineSeconds")).intValue());
             params.setProgressCircleBarRadius(Integer.valueOf(props.getProperty("ProgressCircleBarRadius")).intValue());
             params.setSequenceTokenDiffThreshold(Integer.valueOf(props.getProperty("SequenceTokenDiffThreshold")).intValue());
-            params.setEventClusterSecondsGap(Integer.valueOf(props.getProperty("EventClusterSecondsGap")).intValue());
             params.setBacktrackingDebug(props.getProperty("BacktrackingDebug"));
             
             Replayer replayer = new Replayer(bpmnDefinition, params);

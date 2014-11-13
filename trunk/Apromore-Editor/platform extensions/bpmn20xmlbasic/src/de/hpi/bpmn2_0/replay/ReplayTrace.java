@@ -1,6 +1,7 @@
 package de.hpi.bpmn2_0.replay;
 
 import de.hpi.bpmn2_0.backtracking2.Node;
+import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
@@ -39,7 +40,7 @@ public class ReplayTrace {
     private TraceNode startNode = null;
     private DateTime startDate = null;
     private DateTime endDate = null;
-    private float fitness;
+    private double traceFitness;
     private XTrace2 logTrace = null;
     
     //All nodes in the trace. Different from model nodes because there can be different trace nodes
@@ -169,7 +170,6 @@ public class ReplayTrace {
     
     //nodeSet: set of branch nodes of a join
     //joinNode: join node to add
-    //Note that any collection with elements added here must be considered in pruning process
     public void add(Collection<FlowNode> nodeSet, TraceNode joinNode) {
         SequenceFlow traceFlow;
         SequenceFlow modelFlow = null;
@@ -309,13 +309,69 @@ public class ReplayTrace {
         return (startNode == null || this.timeOrderedReplayedNodes.size()==0);
     }
     
-    public float getFitness() {
-        return fitness;
+    /*
+     * MoveLogFitness = 1 - TotalMoveOnLogOnlyCost / AllMoveOnLogCost
+     * TotalMoveOnLogOnlyCost: total cost of EVENT_SKIP node in replay trace
+     * AllMoveOnLogCost: total cost of both ACTIVITY_MATCHED (meaning sync move on both) and EVENT_SKIP node in replay trace
+     */
+    public double getCostBasedMoveLogFitness() {
+        double totalMoveOnLogOnlyCost = 0;
+        double allMoveOnLogCost = 0;
+        Node node = backtrackingNode;
+        
+        while (node != null) {
+            if (node.getState().getElementStatus() == StateElementStatus.EVENT_SKIPPED) {
+                totalMoveOnLogOnlyCost += 1;
+                allMoveOnLogCost += 1;
+            }
+            else if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_MATCHED) {
+                allMoveOnLogCost += 1;
+            }
+            node = node.getParent();
+        }
+        
+        //The original trace might not be played fully, consider all remaining events as EVENT_SKIP
+        if (!backtrackingNode.getState().isTraceFinished()) {
+            totalMoveOnLogOnlyCost += (backtrackingNode.getState().getTrace().size() - backtrackingNode.getState().getTraceIndex());
+            allMoveOnLogCost += (backtrackingNode.getState().getTrace().size() - backtrackingNode.getState().getTraceIndex());
+        }
+        
+        if (allMoveOnLogCost > 0) {
+            return 1-(1.0*totalMoveOnLogOnlyCost/allMoveOnLogCost);
+        }
+        else {
+            return 1.00;
+        }
     }    
     
-    public void setFitness(int fitness) {
-        this.fitness = fitness;
-    }
+    /*
+     * MoveModelFitness = 1 - TotalMoveOnModelOnlyCost / AllMoveOnModelCost
+     * TotalMoveOnModelOnlyCost: total cost of ACTIVITY_SKIP node in the replay trace
+     * AllMoveOnModelCost: total cost of both ACTIVITY_MATCHED (sync move) and ACTIVITY_SKIP node in the replay trace     
+     */    
+    public double getCostBasedMoveModelFitness() {
+        double totalMoveOnModelOnlyCost = 0;
+        double allMoveOnModelCost = 0;
+        Node node = backtrackingNode;
+        
+        while (node != null) {
+            if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
+                totalMoveOnModelOnlyCost += 1;
+                allMoveOnModelCost += 1;
+            }
+            else if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_MATCHED) {
+                allMoveOnModelCost += 1;
+            }
+            node = node.getParent();
+        }
+        
+        if (allMoveOnModelCost > 0) {
+            return 1-(1.0*totalMoveOnModelOnlyCost/allMoveOnModelCost);
+        }
+        else {
+            return 1.00;
+        }
+    }     
     
     public void calcTiming() {
         if (this.replayer.getReplayParams().isBacktrackingDebug()) {

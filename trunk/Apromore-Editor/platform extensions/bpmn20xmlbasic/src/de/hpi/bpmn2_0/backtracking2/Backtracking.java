@@ -8,28 +8,22 @@ import de.hpi.bpmn2_0.replay.Replayer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
 import java.util.logging.Logger;
 import org.deckfour.xes.model.XTrace;
 
 public class Backtracking {
-    private int maxAllowedMiss;
+    private int maxAllowedUnmatch;
     private double maxAllowedCost;
     private int maxAllowedDepth;
-    private double bestProgressMark;
     private int progressSize; //progressive trial size of the trace, increase by TraceChunkSize parameter
-    
-    private boolean optimumFound = false; //when optimum node found: full trace played with zero cost
+    private boolean optimalNodeFound = false; //when optimal node found: full trace played with zero cost
     private boolean fullTraceMatched = false; //total trace is achieved
-    private Collection<Node> selectedNodes = null; // to contain selected nodes after finishing exploration
+    private Node bestNode = null;
     
     private ReplayParams params;
     private XTrace trace;
     private BPMNDiagramHelper helper;
-    private int totalNodesCount = 0; //total number of nodes of the state space tree
+    private int totalNodesVisited = 0; //total number of nodes of the state space tree
     
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     private static String indent = ""; //just for printing to log for debugging
@@ -45,21 +39,19 @@ public class Backtracking {
     * - nexts: select next states (limit search space)
     * - reject: evaluate a state and decide if it can be rejected (prune)
     * - accept/collect: evaluate a state and decide to take it or not (prune again)
-    * - select: select the best state (solution) after the exploration
+    * - select: select the best state (solution) 
     */  
     public Backtracking (ReplayParams params, XTrace trace, BPMNDiagramHelper helper) {
         this.params = params;
         this.trace = trace;
         this.helper = helper;
-        selectedNodes = new HashSet(); 
         indent = "";
     }
     
     /*
     * Explore long trace by chunk. 
     * At beginning, it is one starting node.    
-    * selectedNodes contain nodes selected after every chunk.
-    * Select the best nodes for next exploration after finishing every chunk
+    * Select the best node for next exploration after finishing a chunk
     */
     public Node explore() {
         //-------------------------------------------------------
@@ -81,13 +73,13 @@ public class Backtracking {
             if (progressSize > trace.size()) {
                 progressSize = trace.size();
             }
-            selectedNodes.clear();
-            optimumFound = false;
+            //selectedNodes.clear();
+            optimalNodeFound = false;
             fullTraceMatched = false;
-            maxAllowedMiss = (progressSize - Long.valueOf(Math.round(params.getMinMatch()*progressSize)).intValue());
+            maxAllowedUnmatch = (progressSize - Long.valueOf(Math.round(params.getMinMatch()*progressSize)).intValue());
             maxAllowedCost = params.getMaxCost();
             maxAllowedDepth = params.getMaxDepth();
-            totalNodesCount = 1; //the first node
+            totalNodesVisited = 0; 
             
             if (params.isBacktrackingDebug()) {
                 LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
@@ -95,33 +87,33 @@ public class Backtracking {
                             "MAX_DEPTH:" + params.getMaxDepth() + " " +
                             "MIN_MATCH:" + params.getMinMatch() + " " +
                             "MAX_MATCH:" + params.getMaxMatch() + " " +
-                            "MIN_FITNESS:" + params.getMinFitness() + " " +
+                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkip() + " " +                         
                             "MAX_DIFFSERIES:" + params.getMaxDiffSeries() + " " +
-                            "ACTIVITY_SKIPPED:" + params.getActivitySkipCost() + " " +
-                            "EVENT_SKIPPED:" + params.getEventSkipCost() + " " +
-                            "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize() + " " + 
-                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkip() + " " + 
-                            "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance());
+                            "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance() + " " + 
+                            "MAX_NO_OF_NODES_VISITED:" + params.getMaxNumberOfNodesVisited() + " " +
+                            "ACTIVITY_SKIPPED_COST:" + params.getActivitySkipCost() + " " +
+                            "EVENT_SKIPPED_COST:" + params.getEventSkipCost() + " " +
+                            "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize());                        
             }
             
             this.explore(selectedNode);
-            selectedNode = this.select();
+            selectedNode = bestNode;
             
+            //-----------------------------------------
+            // Adjust cost of movement after every chunk 
+            // to update the knowledge of the trend. 
+            // At the beginning, activity skip cost is set to be lower than 
+            // event skip cost based on assumption of high fitness log and model
+            // However, after every chunk replay, if there are less activity matches, 
+            // then activity skip cost must be increased because it is not good to 
+            // skip activity and maybe skip event is a better option.
+            // In case of there is no match, activity skip is not a good option at all
+            // Similarly, event skip cost should be the same as at the beginning (higher than 
+            // activity skip cost) if there is high match, but should be lower if 
+            // there is not good match between activity and the model
+            //-----------------------------------------            
             if (selectedNode != null) {
                 matchRatio = 1.0*selectedNode.getMatchCount()/progressSize;
-                //-----------------------------------------
-                // Adjust cost of movement after every chunk 
-                // to update the knowledge of the trend. 
-                // At the beginning, activity skip cost is set to be lower than 
-                // event skip cost based on assumption of high fitness log and model
-                // However, after every chunk replay, if there are less activity matches, 
-                // then activity skip cost must be increased because it is not good to 
-                // skip activity and maybe skip event is a better option.
-                // In case of there is no match, activity skip is not a good option at all
-                // Similarly, event skip cost should be the same as at the beginning (higher than 
-                // activity skip cost) if there is high match, but should be lower if 
-                // there is not good match between activity and the model
-                //-----------------------------------------
                 if (matchRatio != 0) {
                     params.setActivitySkipCost(params.getActivitySkipCost()/matchRatio);
                 } else {
@@ -134,7 +126,6 @@ public class Backtracking {
     }
         
     public void explore(Node node) {
-        Node nextNode;
         if (params.isBacktrackingDebug()) {
             LOGGER.info(indent + "Entering explore(" + 
                         node.getState().getName()+ 
@@ -145,62 +136,44 @@ public class Backtracking {
                         " matches:" + node.getMatchCount() + 
                         " activityskips:" + node.getActivitySkipCount() + 
                         " diffseries:" + node.getDiffSeries() + 
-                        " totalMiss:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
+                        " totalUnmatch:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
                         " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
-                        " nodesCount:" + totalNodesCount + 
-                        " selectedNodesCount:" + selectedNodes.size() +                 
-                        " maxAllowedMiss:" + maxAllowedMiss +
+                        " nodesVisited:" + totalNodesVisited + 
+                        " maxAllowedUnmatch:" + maxAllowedUnmatch +
                         " maxAllowedCost:" + maxAllowedCost +
                         " maxAllowedDepth:" + maxAllowedDepth + 
                         " fullTraceMatched:" + fullTraceMatched + 
-                        " optimumFound:" + optimumFound + 
+                        " optimalNodeFound:" + optimalNodeFound + 
                         ")");
+            indent = indent + "|  ";
         }
-        indent = indent + "|  ";
+        
+        totalNodesVisited++;
         
         if (reject(node)) {
             if (params.isBacktrackingDebug()) {
                 indent = indent.substring(3);
                 LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected");
             }
-            totalNodesCount--;
+            totalNodesVisited--;
             return;
         }
         else if (accept(node)) {
-            collect(node);
+            select(node); //update the current best node
             
-            if (params.isBacktrackingDebug()) {
+            if (params.isBacktrackingDebug() && (bestNode == node)) {
                 indent = indent.substring(3);
                 LOGGER.info(indent + "node(" + node.getState().getName()+ ") is accepted" + " maxAllowedCost:" + maxAllowedCost +
-                            " maxAllowedDepth:" + maxAllowedDepth + " fullTracePlayed:" + fullTraceMatched + " optimumFound:" + optimumFound);
+                            " maxAllowedDepth:" + maxAllowedDepth + " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
             }
-            totalNodesCount--;
+            totalNodesVisited--;
             return;
         }
         else {
+            select(node); //update the current best node, even if it is not accepted yet
             Collection<Node> childs = nexts(node);
-            totalNodesCount += (childs.size()-1);
             for (Iterator<Node> it = childs.iterator(); it.hasNext();) {
-                nextNode = it.next();
-                if (!optimumFound && selectedNodes.size() <= 100) {
-                    explore(nextNode);
-                }
-                else if (selectedNodes.size() > 100) {
-                    totalNodesCount--;
-                    if (params.isBacktrackingDebug()) {
-                        indent = indent.substring(3);
-                        LOGGER.info(indent + "Stop due to excessive selected nodes found. SelectedNodes: " + selectedNodes.size());
-                    }
-                    return;
-                }
-                else {
-                    totalNodesCount--;
-                    if (params.isBacktrackingDebug()) {
-                        indent = indent.substring(3);
-                        LOGGER.info(indent + "Stop since optimum node found! NodesCount:" + totalNodesCount);
-                    }
-                    return;
-                }
+                explore(it.next());
             }
         }
         
@@ -210,52 +183,71 @@ public class Backtracking {
         }
     }
     
-    //Simply get all child nodes but can apply further improvement here
+    /*
+     * Return list of next nodes to explore
+     * This list is prioritized to select the best node leading to highest match
+     */
     private Collection<Node> nexts(Node node) {
         return node.getChildren();
     }
     
+    /*
+     * Reject a node and prune the tree from the node as root
+     */
     private boolean reject(Node node) {
         boolean rejected = false;
-        double totalMiss = node.getState().getTraceIndex() - node.getMatchCount();
-        double totalMissPercent = 1.0*totalMiss/progressSize;
-        double progress;
-        if (node.getState().getTraceIndex() > 0) {
-            progress = 1.0*(2*node.getMatchCount() - node.getState().getTraceIndex())/node.getState().getTraceIndex();
-        }
-        else {
-            progress = bestProgressMark;
-        }
-        rejected =  node.getCost() > params.getMaxCost() || 
-                    node.getDepth() > params.getMaxDepth() ||
-                    node.getActivitySkipCount() > 1.0*params.getMaxActivitySkip()*helper.getActivities().size() ||
-                    totalMiss > maxAllowedMiss ||
-                    (totalMissPercent > (1 - params.getMinFitness())) ||
+        double totalUnmatch = node.getState().getTraceIndex() - node.getMatchCount();
+
+        rejected =  optimalNodeFound ||
+                    node.getCost() > maxAllowedCost || 
+                    node.getDepth() > maxAllowedDepth ||
+                    totalUnmatch > maxAllowedUnmatch ||
                     node.getDiffSeries() > params.getMaxDiffSeries() ||
-                    (fullTraceMatched && (node.getCost() >= maxAllowedCost || node.getDepth() > maxAllowedDepth));
-                    //progress < (bestProgressMark-0.1)
+                    node.getActivitySkipCount() > 1.0*params.getMaxActivitySkip()*helper.getActivities().size() ||
+                    totalNodesVisited > params.getMaxNumberOfNodesVisited();
         return rejected;
     }
     
+    /*
+     * Accept a node and prune the tree from the node as root
+     */
     private boolean accept(Node node) {
         if (node.getMatchCount() >= 1.0*params.getMaxMatch()*progressSize && node.getCost() == 0) {
-            optimumFound = true;
+            optimalNodeFound = true;
             fullTraceMatched = true;
             return true;
         }
         else if (node.getCost() <= params.getMaxCost() && 
                  node.getState().getTraceIndex() >= progressSize && 
                  node.getMatchCount() >= 1.0*params.getMinMatch()*progressSize) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /*
+     *  Select between the bestNode and the input node
+     */
+    private void select(Node node) {
+        if (bestNode != null && !node.isBetter(bestNode)) {
+            return;
+        }
+        else {
+            bestNode = node;
             
-            if ((progressSize - node.getMatchCount()) < maxAllowedMiss) {
-                maxAllowedMiss = progressSize - node.getMatchCount();
+            //---------------------------------------------
+            // Set new selection criteria based on the best node so far.
+            // Future nodes not meeting these criteria will be rejected
+            //---------------------------------------------
+            if ((progressSize - node.getMatchCount()) < maxAllowedUnmatch) {
+                maxAllowedUnmatch = progressSize - node.getMatchCount();
             }
-            
-            //--------------------------------------------------------------------------
-            //When trace is fully played, all other nodes must be able 
+
+            //When trace has been fully played, all other nodes must be able 
             //to play full trace at better cost and depth. The cost and depth should
             //be the earliest value that could achieve, not the values at current node.
-            //--------------------------------------------------------------------------
             if (node.getMatchCount() == progressSize) {
                 fullTraceMatched = true;
                 Node parent = node;
@@ -272,29 +264,14 @@ public class Backtracking {
                         break;
                     }
                 }
-            }
-            
-            //------------------------------------------------------------------
-            // Progress Mark
-            //------------------------------------------------------------------
-            double nodeProgress = 1.0*(2*node.getMatchCount() - progressSize)/progressSize;
-            if (bestProgressMark < nodeProgress) {
-                bestProgressMark = nodeProgress;
-            }
-            
-            return true;
-        }
-        else {
-            return false;
+            }             
         }
     }
     
-    private void collect(Node node) {
-        selectedNodes.add(node);
-    }
-    
+   
     //Select node with highest hits, lowest cost and lowest depth in that priority order
     //Return null if no nodes found in selectedNodes
+    /*
     public Node select() {
         Node selectedNode = null;
         double minCost = Integer.MAX_VALUE;
@@ -330,5 +307,6 @@ public class Backtracking {
         
         return selectedNode;
     }
+    */
 
 }
