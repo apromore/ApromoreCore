@@ -3,19 +3,20 @@
 <properties> 
 	<entry key="MaxCost">11</entry>
 	<entry key="MaxDepth">100</entry>
-	<entry key="MinMatch">0.7</entry>
-	<entry key="MaxMatch">1</entry>
-	<entry key="MinFitness">0.7</entry>
+	<entry key="MinMatchPercent">0.3</entry>
+	<entry key="MaxMatchPercent">1</entry>
 	<entry key="MaxDiffSeries">5</entry>	
-	<entry key="MaxActivitySkip">0.3</entry>
-	<entry key="MaxNodeDistance">0.3</entry>
+	<entry key="MaxActivitySkipPercent">0.5</entry>
+	<entry key="MaxNodeDistance">5</entry>
+	<entry key="ActivityMatchCost">0</entry>
 	<entry key="ActivitySkipCost">1</entry>
 	<entry key="EventSkipCost">5</entry>	
+	<entry key="NonActivityMoveCost">0</entry>	
 	<entry key="TraceChunkSize">20</entry>
-	<entry key="TimelineSlots">5000</entry>
+	<entry key="MaxNumberOfNodesVisited">1000</entry>
+	<entry key="TimelineSlots">120</entry>
 	<entry key="TotalEngineSeconds">120</entry>
 	<entry key="ProgressCircleBarRadius">20</entry>
 	<entry key="SequenceTokenDiffThreshold">2</entry>
-	<entry key="EventClusterSecondsGap">60</entry>
-	<entry key="BacktrackingDebug">false</entry>
+	<entry key="BacktrackingDebug">true</entry>
 </properties>
