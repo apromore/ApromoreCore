@@ -330,9 +330,26 @@ Controller.prototype = {
                 logDateTextE.innerHTML = log.startDateLabel.substr(0,19);  
                 timelineElement.insertBefore(logDateTextE, timelineElement.lastChild);              
             }
-       }        
+       }    
+       
+       // Show metrics for every log
+       var metricsTable = $j("#metrics_table")[0];
+       for (var i=0; i<logs.length; i++) {
+           var row = metricsTable.insertRow(1);
+           var cellName = row.insertCell(0); //log name
+           var cellTraceCount = row.insertCell(1); //trace count
+           var cellMoveLogFitness = row.insertCell(2); //move log fitness
+           var cellMoveModelFitness = row.insertCell(3); //move model fitness
+           var cellCalcTime = row.insertCell(4); //calculation time
+           cellName.innerHTML = logs[i].name.substr(0,5) + "...";
+           cellName.style.backgroundColor = logs[i].color;
+           cellTraceCount.innerHTML = logs[i].traceCount;
+           cellMoveLogFitness.innerHTML = logs[i].moveLogFitness;
+           cellMoveModelFitness.innerHTML = logs[i].moveModelFitness;
+           cellCalcTime.innerHTML = logs[i].calculationTime/1000;
+       }    
 
-        this.start();
+       this.start();
     },
 
     setCurrentTime: function(time) {
@@ -698,12 +715,7 @@ Controller.prototype = {
         pathE.setAttributeNS(null,"stroke","red");
         pathE.setAttributeNS(null,"stroke-width","1");
         pathE.setAttributeNS(null,"fill","none");
-        /*
-        if (isVirtual == "false") {
-            pathE.setAttributeNS(null,"visibility","hidden");
-        }
-        */
-        //pathE.setAttributeNS(null,"visibility","hidden");
+        pathE.setAttributeNS(null,"visibility","hidden");
         svgDocument().appendChild(pathE);
 
         //---------------------------------------------------------
@@ -868,8 +880,9 @@ Controller.prototype = {
         if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
             return;
         } else {
-            var tracedates = jsonServer.tracedates;
+            var tracedates = jsonServer.tracedates; //assume that jsonServer.tracedates has been sorted in ascending order 
             var currentTimeMillis = this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis;
+            //search for the next trace date/time immediately after the current time
             for (var i=0; i<tracedates.length; i++) {
                 if (currentTimeMillis < tracedates[i]) {
                     this.setCurrentTime((tracedates[i]-this.startDateMillis)/(1000*this.timeCoefficient));
@@ -877,7 +890,23 @@ Controller.prototype = {
                 }
             }
         }
-    },       
+    },   
+    
+    previousTrace: function () {
+        if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
+            return;
+        } else {
+            var tracedates = jsonServer.tracedates; //assume that jsonServer.tracedates has been sorted in ascending order
+            var currentTimeMillis = this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis;
+            //search for the previous trace date/time immediately before the current time
+            for (var i=tracedates.length-1; i>=0; i--) {
+                if (currentTimeMillis > tracedates[i]) {
+                    this.setCurrentTime((tracedates[i]-this.startDateMillis)/(1000*this.timeCoefficient));
+                    return;
+                }
+            }
+        }
+    },        
 
     pause: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
