@@ -96,9 +96,9 @@ public class Replayer {
         return processCheckMessage;
     }
     
-    public AnimationLog replay(XLog log) {
+    public AnimationLog replay(XLog log, String color) {
         AnimationLog animationLog = new AnimationLog();
-        animationLog.setColor(this.getLogColor());
+        animationLog.setColor(color /*this.getLogColor()*/);
         ReplayTrace replayTrace;
         
         //-------------------------------------------

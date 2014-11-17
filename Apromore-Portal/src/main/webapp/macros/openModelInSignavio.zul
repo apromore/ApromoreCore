@@ -2,6 +2,7 @@
 
     <n:style media="screen" type="text/css">
         @import url("/editor/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/editor/libs/ext-2.0.2/resources/css/file-upload.css");
         @import url("/editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm.css" type="text/css"/>
