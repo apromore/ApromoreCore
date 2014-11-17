@@ -62,6 +62,8 @@
 		</plugin>	
                 <plugin source="configurationExtension.js" name="ORYX.Plugins.ConfigurationExtension"/>
                 <plugin source="selectionExtension.js" name="ORYX.Plugins.SelectionExtension"/>
+                <plugin source="FileUploadField.js" name="file upload field"/> <!-- required by animationExtension.js -->
+                <plugin source="animationExtension.js" name="ORYX.Plugins.AnimationExtension"/>
 		
 		<!-- BPMN1.1 specific plugins -->
 		<plugin source="bpmn11.js" name="ORYX.Plugins.BPMN11">

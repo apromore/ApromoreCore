@@ -77,6 +77,7 @@ public class BPMNAnimationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         PrintWriter out=null;
         HashMap<String, XLog> logMap;
+        HashMap<String, String> colorMap;
         String jsonData = "";
         Definitions bpmnDefinition = null;
         
@@ -111,7 +112,8 @@ public class BPMNAnimationServlet extends HttpServlet {
                 uploadDir.mkdir();
         } 
 
-        logMap = new HashMap();
+        logMap = new HashMap<>();
+        colorMap = new HashMap<>();
         try {
             
             // parses the request's content to extract file data
@@ -136,6 +138,13 @@ public class BPMNAnimationServlet extends HttpServlet {
                             item.getInputStream();
                             OpenLogFilePlugin logImporter = new OpenLogFilePlugin();
                             logMap.put(fileName, (XLog)logImporter.importFile(storeFile));
+
+                            // color field must follow the log file
+                            item = (FileItem) iter.next();
+                            assert item.isFormField();
+                            assert "color".equals(item.getFieldName());
+                            LOGGER.info("Log color: " + item.getString());
+                            colorMap.put(fileName, item.getString());
                     } else {
                         if (item.getFieldName().equals("json")) {
                             jsonData = item.getString();
@@ -202,13 +211,14 @@ public class BPMNAnimationServlet extends HttpServlet {
             if (replayer.isValidProcess()) {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
                 EncodeTraces.getEncodeTraces().read(logMap.values());
-                for (XLog log : logMap.values()) {
-                    animationLog = replayer.replay(log);
+                for (String filename : logMap.keySet()) {
+                    assert colorMap.containsKey(filename);
+                    animationLog = replayer.replay(logMap.get(filename), colorMap.get(filename));
                     if (!animationLog.isEmpty()) {
                         replayedLogs.add(animationLog);
                     }
-                } 
-                
+                }
+
             } else {
                 LOGGER.info(replayer.getProcessCheckingMsg());
             }
@@ -230,13 +240,16 @@ public class BPMNAnimationServlet extends HttpServlet {
             */
             if (replayedLogs.size() > 0) {
                 out = res.getWriter();
-                res.setContentType("application/json");
+                res.setContentType("text/html");  // Ext2JS's file upload requires this rather than "application/json"
                 res.setStatus(200);
                 
                 //To be replaced
                 AnimationJSONBuilder jsonBuilder = new AnimationJSONBuilder(replayedLogs, params);
-                
-                out.write(jsonBuilder.parseLogCollection().toString());
+                JSONObject json = jsonBuilder.parseLogCollection();
+                json.put("success", true);  // Ext2JS's file upload requires this flag
+                String string = json.toString();
+                LOGGER.info(string);
+                out.write(string);
             }
             else {
                 out = res.getWriter();

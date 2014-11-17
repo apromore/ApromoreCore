@@ -25,6 +25,22 @@
 	    	$j("#previousTrace").get(0).disabled = true;
 	    	$j("#end").get(0).disabled = true;
 	    	$j("#slider2").get(0).disabled = true;	    	
+
+		var data = window.opener.parent.document.getElementById("jsonForAnimation2").value;
+                console.log("initializing");
+                console.dir(data);
+
+                $j("#animationJSON").get(0).setAttribute("value", data);
+                controller.reset(data);
+      
+                $j("#start").get(0).disabled = false;
+                $j("#pause").get(0).disabled = false;
+                $j("#forward").get(0).disabled = false;
+                $j("#backward").get(0).disabled = false;
+	    	$j("#nextTrace").get(0).disabled = false;
+	    	$j("#previousTrace").get(0).disabled = false;
+                $j("#end").get(0).disabled = false;
+                $j("#slider2").get(0).disabled = false;
     	}
     	
 	</script>	
@@ -51,10 +67,10 @@
                 <button id='forward' onclick="fastForward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_fastforward.png" alt="Forward" width="24" height="24" style="padding: 0"/>
                 </button>
-                <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0; background-color: none">
-                        <img src="/editor/libs/animation/images/control_nexttrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
+                <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0">
+                        <img src="/editor/libs/animation/images/control_nexttrace.png" alt="Next Trace" width="24" height="24" style="padding: 0"/>
                 </button>   
-                <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0; visibility:hidden">
+                <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
                 </button>                
             </div>
@@ -86,12 +102,6 @@
         <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 60px; top: -350px; width: 100px; height: 220px; overflow: hidden">
             <div id="slider2" disabled="disabled" style="left: 10px; top: 10px; height:200px;"></div>
         </div>
-
-        <form id="uploadForm" method="post" enctype="multipart/form-data" style="background: #EEE; border: 1px solid black; padding: 5px; position: relative; left: 500px; top: -400px; width: 200px">
-                <input type="file" multiple="multiple" name="file[]" id="logfile" /><br /><br />
-                <input type="button" value="Upload files" onclick="upload();" />
-                <input type="hidden" id="json" name="json" />
-        </form>
     </div>
 
         <input type="hidden" id="animationJSON"/>
@@ -146,55 +156,12 @@
         controller.end();
     }
     
-    function upload() {
-    	//alert(document.getElementById("json").getAttribute("value"));
-    	
-    	var form = new FormData($j('#uploadForm')[0]);
-		
-		$j.ajax({
-		    url: '/editor/editor/bpmnanimation',
-		    data: form,
-		    cache: false,
-		    contentType: false,
-		    processData: false,
-		    dataType: 'text',
-		    type: 'POST',
-		    
-		    complete: function(e, xhr, settings){
-		    	if (e.status === 200) {
-		    		data = e.responseText;
-		    		console.log(data);
-
-			        $j("#animationJSON").get(0).setAttribute("value", data);
-					controller.reset(data);
-			        
-			        $j("#start").get(0).disabled = false;
-			        $j("#pause").get(0).disabled = false;
-			        $j("#forward").get(0).disabled = false;
-			        $j("#backward").get(0).disabled = false;
-			        $j("#nextTrace").get(0).disabled = false;
-			        $j("#previousTrace").get(0).disabled = false;
-					$j("#end").get(0).disabled = false;
-			        $j("#slider2").get(0).disabled = false;
-
-			        
-					$j("#uploadForm")[0].style="visibility: hidden";
-					$j("#uploadForm")[0].style.visibility = "hidden";
-					//$j("#uploadForm")[0].style.opacity = 0;
-			    }
-			    else if (e.status === 204) {
-			    	alert("Finish importing logs. No event logs are suitable for animation!");
-			    }
-		    }
-		});
-    }
-    
     document.getElementById("svgLoc").innerHTML = window.opener.parent.document.getElementsByClassName("ORYX_Editor x-panel")[0].innerHTML;
     //console.log(window.opener.parent.document.getElementsByClassName("ORYX_Editor x-panel")[0].innerHTML);
     //$j("div#svgLoc > svg")[0].setAttributeNS(null,"style","width:8000px;height:1000px;overflow:scroll;");
     
     var jsonE = window.opener.parent.document.getElementById("jsonForAnimation");
-    document.getElementById("json").setAttribute("value", jsonE.getAttribute("value"));
+    //document.getElementById("json").setAttribute("value", jsonE.getAttribute("value"));
     
     jsonModel = JSON.parse(jsonE.getAttribute("value"));
     
