@@ -270,10 +270,10 @@ Controller.prototype = {
     },
 
     reset: function(jsonRaw) {
-        var svg3 = $j("div#progress_display > svg")[1];
         this.svgDocuments.clear();
         this.svgDocuments.push($j("div#svgLoc > svg")[0]);
-        this.svgDocuments.push($j("div#progress_display > svg")[0]);
+        this.svgDocuments.push($j("div#playback_controls > svg")[0]);
+        var svg3 = $j("div#progress_display > svg")[0];
         this.svgDocuments.push(svg3);
 
         this.clear();
@@ -304,12 +304,12 @@ Controller.prototype = {
         //Recreate timeline to update date labels
         $j("#timeline").remove();
         var timelineE = controller.createTimeline();
-        $j("div#progress_display > svg")[0].appendChild(timelineE);
+        $j("div#playback_controls > svg")[0].appendChild(timelineE);
         
-       // Add log intervals to timeline: must be after the timeline creation
+        // Add log intervals to timeline: must be after the timeline creation
         var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
-        var startTopY = 60;
+        var startTopY = 18;
         for (var j=0; j<jsonServer.timeline.logs.length; j++) {
             var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
@@ -1231,7 +1231,7 @@ Controller.prototype = {
         timelineElement.setAttributeNS(null,"id","timeline");
         
         var startTopX = 20;
-        var startTopY = 60;
+        var startTopY = 15;
         var gapWidth = 9;       
         var gapValue = this.slotEngineUnit/1000;
         var lineLen = 30;
