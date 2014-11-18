@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
@@ -70,14 +71,23 @@ public class BPMNAnimationServlet extends HttpServlet {
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 200; // 200MB
     private static final int REQUEST_SIZE = 1024 * 1024 * 500; // 500MB
 
+    /**
+     * Log record.
+     */
+    private class Log {
+        String fileName;
+        XLog   xlog;
+        String color;
+    }
+
     /* (non-Javadoc)
-      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-      */
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         PrintWriter out=null;
-        HashMap<String, XLog> logMap;
-        HashMap<String, String> colorMap;
+        List<Log> logs = new ArrayList<>();
+        Set<XLog> xlogs = new HashSet<>();
         String jsonData = "";
         Definitions bpmnDefinition = null;
         
@@ -90,7 +100,7 @@ public class BPMNAnimationServlet extends HttpServlet {
        /*
         * ------------------------------------------
         * Import event log files
-        * logMap contains list of imported logs
+        * logs variable contains list of imported logs
         * ------------------------------------------
         */ 
         // configures some settings
@@ -112,8 +122,6 @@ public class BPMNAnimationServlet extends HttpServlet {
                 uploadDir.mkdir();
         } 
 
-        logMap = new HashMap<>();
-        colorMap = new HashMap<>();
         try {
             
             // parses the request's content to extract file data
@@ -137,29 +145,28 @@ public class BPMNAnimationServlet extends HttpServlet {
                             LOGGER.info("Start importing file: " + filePath);
                             item.getInputStream();
                             OpenLogFilePlugin logImporter = new OpenLogFilePlugin();
-                            logMap.put(fileName, (XLog)logImporter.importFile(storeFile));
+                            XLog xlog = (XLog)logImporter.importFile(storeFile);
 
                             // color field must follow the log file
                             item = (FileItem) iter.next();
                             assert item.isFormField();
                             assert "color".equals(item.getFieldName());
                             LOGGER.info("Log color: " + item.getString());
-                            colorMap.put(fileName, item.getString());
+                            String color = item.getString();
+
+                            // Record the log
+                            Log log = new Log();
+                            log.fileName = fileName;
+                            log.xlog     = xlog;
+                            log.color    = item.getString();
+                            logs.add(log);
+                            xlogs.add(xlog);
                     } else {
                         if (item.getFieldName().equals("json")) {
                             jsonData = item.getString();
                         }
                     }
             }            
-            
-            /*
-            String log1File = "/editor/animation/repairExample.xes";
-            //String logFilePath = getServletContext().getRealPath(log1File);
-            URL url = getServletContext().getResource(log1File);
-            OpenLogFilePlugin logImporter = new OpenLogFilePlugin();
-            XLog log;
-            log = (XLog)logImporter.importFile(url.toURI());
-            */
             
             /*
             * ------------------------------------------
@@ -207,13 +214,11 @@ public class BPMNAnimationServlet extends HttpServlet {
             
             Replayer replayer = new Replayer(bpmnDefinition, params);
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
-            AnimationLog animationLog; 
             if (replayer.isValidProcess()) {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
-                EncodeTraces.getEncodeTraces().read(logMap.values());
-                for (String filename : logMap.keySet()) {
-                    assert colorMap.containsKey(filename);
-                    animationLog = replayer.replay(logMap.get(filename), colorMap.get(filename));
+                EncodeTraces.getEncodeTraces().read(xlogs);
+                for (Log log: logs) {
+                    AnimationLog animationLog = replayer.replay(log.xlog, log.color);
                     if (!animationLog.isEmpty()) {
                         replayedLogs.add(animationLog);
                     }
@@ -229,15 +234,6 @@ public class BPMNAnimationServlet extends HttpServlet {
             * ------------------------------------------
             */
             LOGGER.info("Start sending back JSON animation script to browser");
-            /*
-            boolean hasAnimation = false;
-            for (AnimationLog log : replayedLogs) {
-                if (!log.isEmpty()) {
-                    hasAnimation = true;
-                    break;
-                }
-            }
-            */
             if (replayedLogs.size() > 0) {
                 out = res.getWriter();
                 res.setContentType("text/html");  // Ext2JS's file upload requires this rather than "application/json"
@@ -258,14 +254,6 @@ public class BPMNAnimationServlet extends HttpServlet {
                 out.write("");
             }
             
-            /*
-            String sampleJsonFile = "/editor/animation/AnimationExample.json";
-            String sampleFilePath = getServletContext().getRealPath(sampleJsonFile);
-            File file = new File(sampleFilePath);
-            byte[] bytes = getBytesFromFile(file);
-            out.write(bytes);
-            */        
-
         } catch (Exception e) {
             try {
                 LOGGER.severe(e.toString());
