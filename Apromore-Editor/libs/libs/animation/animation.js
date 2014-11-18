@@ -335,7 +335,7 @@ Controller.prototype = {
        // Show metrics for every log
        var metricsTable = $j("#metrics_table")[0];
        for (var i=0; i<logs.length; i++) {
-           var row = metricsTable.insertRow(1);
+           var row = metricsTable.insertRow(i+1);
            var cellName = row.insertCell(0); //log name
            var cellTraceCount = row.insertCell(1); //trace count
            var cellMoveLogFitness = row.insertCell(2); //move log fitness
