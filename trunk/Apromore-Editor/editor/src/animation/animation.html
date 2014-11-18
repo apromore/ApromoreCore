@@ -51,7 +51,8 @@
 		
     <div id="controls" style="position: absolute; top: 100%; left: 0; width: 100%">
         <div id="playback_controls" style="background: #EEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -120px; height: 120px; width: 100%; overflow: hidden">
-            <div id="buttons_and_rate" style="text-align: center; padding: 0px; width: 200px; top: -100px; background-color:none;">
+            <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="50px" viewBox="0 0 2000 50" style="padding-left:20px"></svg>
+            <div id="buttons_and_rate" style="text-align: center; padding: 0px; width: 250px; top: -100px; background-color:none;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
@@ -75,14 +76,13 @@
                 </button>                
             </div>
 
-            <div id="progress_display" style="margin-top: 10px; padding: 0px; padding-left: 0px; position: relative; left: 200px; top: -150px; height: 200px; background-color: none">
-                <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="120px" viewBox="0 0 2000 50" style="padding-left:20px; background-color:yellow"></svg>
-                <table style="display: inline-table; vertical-align: bottom; background-color: green">
+            <div id="progress_display" style="margin-top: 10px; padding: 0px; padding-left: 0px; position: relative; left: 250px; top: -50px; height: 200px; background-color: none">
+                <table style="display: inline-table; vertical-align: bottom">
                         <tr><td id="date" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                         <tr><td id="time" style="text-align: center; font: 18pt monospace">--:--:--</span></td></tr>
                         <tr><td id="subtitle" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                 </table>
-                <svg id="process_svg2" xmlns="http://www.w3.org/2000/svg" width="500px" height="70px" viewBox="0 0 500 70" style="display: inline; background-color:pink"></svg>
+                <svg id="process_svg2" xmlns="http://www.w3.org/2000/svg" width="500px" height="70px" viewBox="0 0 500 70" style="display: inline"></svg>
                 <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none" border="1">
                         <tr id="header">
                         	<td style="text-align: center; font: 10pt monospace">&nbsp;</td>
@@ -230,8 +230,8 @@
 		 */
 
 		var timelineE = controller.createTimeline();
-        	$j("div#progress_display > svg")[0].appendChild(timelineE);
-        	$j("div#progress_display > svg")[0].pauseAnimations();
+        	$j("div#playback_controls > svg")[0].appendChild(timelineE);
+        	$j("div#playback_controls > svg")[0].pauseAnimations();
 	});
 	//////////////////////////End of window load
 		
