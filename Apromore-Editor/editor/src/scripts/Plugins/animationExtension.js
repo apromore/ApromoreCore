@@ -160,7 +160,7 @@ ORYX.Plugins.AnimationExtension = ORYX.Plugins.AbstractPlugin.extend({
 		    fp.add(new Ext.ux.ColorField({
 				fieldLabel: 'Color',
 				name: "color",
-				value: "#7777FF"
+				value: (dialog.defaultLogColors.length > 0) ? dialog.defaultLogColors.pop() : "black"
 			})
 		    );
 		    fp.doLayout(false);
@@ -178,6 +178,7 @@ ORYX.Plugins.AnimationExtension = ORYX.Plugins.AbstractPlugin.extend({
             }]
         });
 
+	dialog.defaultLogColors = ["#FF00FF" /* fuschia */, "#00CCFF" /* azure */, "FFCC00" /* amber */, "#00CC00" /* green */];
         dialog.show();
     },
 });
