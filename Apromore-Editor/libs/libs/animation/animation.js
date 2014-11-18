@@ -535,15 +535,12 @@ Controller.prototype = {
         var pathId = $j("#svg-"+edgeId).find("g").find("g").find("g").find("path").get(0).getAttribute("id");
         //console.log("edgeId=" + pathId + ", begin=" + begin + ", duration=" + duration);
         var tokenPathE = document.createElementNS(svgNS,"circle");
-    
-        if (color=="orange") {
-            var cx = 3;
-            var cy = 3;
-         } else {
-            var cx = -3;
-            var cy = -3;
-        }
-        
+
+        // small random offset so that traces don't occlude one another so much
+        var rand = 2 * Math.PI * Math.random();
+        var cx = 3 * Math.sin(rand);
+        var cy = 3 * Math.cos(rand);
+
         var svg = svgDocument();
         var pt  = svg.createSVGPoint();
         
