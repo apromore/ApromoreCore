@@ -160,8 +160,6 @@ ORYX.I18N.File.print = "Drucken";
 ORYX.I18N.File.printDesc = "Drucken";
 ORYX.I18N.File.pdf = "PDF Export";
 ORYX.I18N.File.pdfDesc = "Exportieren nach PDF";
-ORYX.I18N.File.animate = "Animate Process";
-ORYX.I18N.File.animateDesc = "Animate Event Log over Process Diagram";
 ORYX.I18N.File.info = "Über";
 ORYX.I18N.File.infoDesc = "Über";
 ORYX.I18N.File.genPDF = "PDF wird generiert";
@@ -209,6 +207,24 @@ ORYX.I18N.SyntaxChecker.desc = "Überprüfung der Syntax";
 ORYX.I18N.SyntaxChecker.noErrors = "Es wurden keine Syntaxfehler gefunden.";
 ORYX.I18N.SyntaxChecker.invalid = "Ungültige Antwort vom Server.";
 ORYX.I18N.SyntaxChecker.checkingMessage = "Überprüfung wird durchgeführt ...";
+
+if(!ORYX.I18N.ConfigurationExtension) ORYX.I18N.ConfigurationExtension = {};
+
+ORYX.I18N.ConfigurationExtension.name = "Konfiguration";
+ORYX.I18N.ConfigurationExtension.group = "Konfiguration";
+ORYX.I18N.ConfigurationExtension.desc = "Zeigen/Verbergen Sie Varianten";
+
+if(!ORYX.I18N.SelectionExtension) ORYX.I18N.SelectionExtension = {};
+
+ORYX.I18N.SelectionExtension.name = "Auswahl";
+ORYX.I18N.SelectionExtension.group = "Konfiguration";
+ORYX.I18N.SelectionExtension.desc = "Auserwählt...";
+
+if(!ORYX.I18N.AnimationExtension) ORYX.I18N.AnimationExtension = {};
+
+ORYX.I18N.AnimationExtension.name = "Animation";
+ORYX.I18N.AnimationExtension.group = "Konfiguration";
+ORYX.I18N.AnimationExtension.desc = "Lebendige Protokolle...";
 
 if(!ORYX.I18N.Undo) ORYX.I18N.Undo = {};
 
