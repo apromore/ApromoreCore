@@ -386,10 +386,10 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 		var associations = this.findElementsWithStencilIds(this.associationStencilIds);
 
 
-		// Returns a boolean which is false only if there is a variant list, and it doesn't include any of the selectedVariants
+		// Returns a boolean which is false only for sequence flows, for which there is a variant list, and the variants don't include any selectedVariants
 		// We use this to block reachability via sequence flows that don't occur in the selected variants
 		var isInSelectedVariants = function(shape) {
-			if (shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
+			if ("http://b3mn.org/stencilset/bpmn2.0#SequenceFlow" == shape.getStencil().id() && shape.hasProperty("variants") && shape.properties["oryx-variants"]) {
 				var variants = shape.properties["oryx-variants"].evalJSON();
                                 var match = false;
                                 for (i = 0; i < variants.totalCount; i++) {
