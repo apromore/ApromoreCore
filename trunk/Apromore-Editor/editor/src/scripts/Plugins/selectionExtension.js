@@ -35,6 +35,11 @@ ORYX.Plugins.SelectionExtension = ORYX.Plugins.AbstractPlugin.extend({
 	// Find all the variants occurring in this model
 	var variants = this.findAllVariants();
 
+	if (variants.length == 0) {
+		Ext.Msg.alert("There are no variants in this model to select.");
+		return;
+	}
+
 	if (this.minFrequency === undefined) {
 		this.minFrequency = 1;
 	}
