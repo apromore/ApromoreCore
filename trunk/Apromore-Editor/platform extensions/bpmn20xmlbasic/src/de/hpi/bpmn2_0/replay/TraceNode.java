@@ -6,10 +6,6 @@ import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import de.hpi.bpmn2_0.model.event.EndEvent;
 import de.hpi.bpmn2_0.model.event.StartEvent;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import org.deckfour.xes.model.XEvent;
 import org.joda.time.DateTime;
 
 public class TraceNode extends FlowNode {

@@ -3,32 +3,23 @@ package de.hpi.bpmn2_0.replay;
 import de.hpi.bpmn2_0.backtracking2.Node;
 import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
-import org.joda.time.Seconds;
-import servlet.BPMNAnimationServlet;
 
 /*
 * Note that this trace can be incomplete: not having end node
@@ -40,8 +31,8 @@ public class ReplayTrace {
     private TraceNode startNode = null;
     private DateTime startDate = null;
     private DateTime endDate = null;
-    private double traceFitness;
     private XTrace2 logTrace = null;
+    private long algoRuntime = 0; //milliseconds to run backtracking algo for this trace
     
     //All nodes in the trace. Different from model nodes because there can be different trace nodes
     //corresponding to one model node (as a result of loop effect in the model)
@@ -66,33 +57,28 @@ public class ReplayTrace {
     //private BidiMap<TraceNode,TraceNode> forkJoinMap = new DualHashBidiMap<>();
     //private BidiMap<TraceNode,TraceNode> ORforkJoinMap = new DualHashBidiMap<>();
     
-    private Metrics metrics = new Metrics();
-    
     private Replayer replayer;
     
     private Node backtrackingNode;
     
     private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
+
+    //fitness metrics
+    double mlCost = 0;        
+    double mmCost = 0;
+    double mSyncCost = 0;
+    double mlUpper = 0;
+    double mmUpper = 0;   
+    double traceFitness = -1;
+    boolean isFitnessMetricsCalculated = false;
     
-    public ReplayTrace(XTrace2 trace, Replayer replayer, Node backtrackingNode) {
+    public ReplayTrace(XTrace2 trace, Replayer replayer, Node backtrackingNode, long algoRuntime) {
         this.logTrace = trace;
         this.replayer = replayer;
         this.backtrackingNode = backtrackingNode;
+        this.algoRuntime = algoRuntime;
     }
-    
-    //startNode has been replayed
-    public ReplayTrace(TraceNode startNode, XTrace2 trace, Replayer replayer) {
-        this.startNode = startNode;
-        this.markingsMap.put(startNode.getModelNode(), startNode);
-        /*
-        if (!this.traceNodes.contains(startNode)) {
-            this.traceNodes.add(startNode);
-        }
-        */
-        this.logTrace = trace;
-        this.replayer = replayer;
-    }
-    
+       
     public String getId() {
         if (logTrace != null) {
             return logTrace.getId();
@@ -137,9 +123,12 @@ public class ReplayTrace {
         }
     }
     
+    public long getAlgoRuntime() {
+        return this.algoRuntime;
+    }
+    
     //newNode: node to add
     //curModelNode: source node to be connected with the new node
-    //Note that any collection with elements added here must be considered in pruning process
     public void add(FlowNode curModelNode, TraceNode newNode) {
         FlowNode newModelNode = newNode.getModelNode();
         SequenceFlow modelFlow = null;
@@ -164,7 +153,6 @@ public class ReplayTrace {
         curNode.getOutgoing().add(traceFlow);
         newNode.getIncoming().add(traceFlow);
         
-        //traceNodes.add(newNode);
         this.markingsMap.put(newNode.getModelNode(), newNode);
     }   
     
@@ -196,7 +184,7 @@ public class ReplayTrace {
             branchNode.getOutgoing().add(traceFlow);
             joinNode.getIncoming().add(traceFlow);
         }
-        //this.traceNodes.add(joinNode);
+        
         this.markingsMap.put(joinNode.getModelNode(), joinNode);
     }    
     
@@ -222,49 +210,6 @@ public class ReplayTrace {
         traceNode.setActivitySkipped(true);
     }
     
-    /*
-     * Remove all nodes that are not in the timeOrderedReplayedNodes.
-     * timeOrderedReplayedNodes keeps all nodes must be actually replayed in actual replay order
-     * All other trace nodes are grown during creating replay trace but not actually replayed
-     */
-    
-    /*
-    public void pruneOrphanNodes() throws TraceNodePruningException {
-        boolean stop = false;
-        SequenceFlow seqFlow;
-        TraceNode source;
-        TraceNode target;
-        ArrayList<TraceNode> toRemove = new ArrayList();
-        
-        for (Iterator<TraceNode> it = this.traceNodes.iterator(); it.hasNext();) {
-            TraceNode node = it.next();
-            if (!this.timeOrderedReplayedNodes.contains(node)) {
-                toRemove.add(node);
-                
-                for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                    source = (TraceNode)flow.getSourceRef();
-                    source.getOutgoing().remove(flow);
-                    node.getIncoming().remove(flow);
-                    flow.setSourceRef(null);
-                    flow.setTargetRef(null);
-                }
-
-                for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
-                    target = (TraceNode)flow.getTargetRef();
-                    target.getIncoming().remove(flow);
-                    node.getOutgoing().remove(flow);
-                    flow.setSourceRef(null);
-                    flow.setTargetRef(null);
-                }                
-            }
-        }
-        
-        this.traceNodes.removeAll(toRemove);
-        this.markingsMap.values().removeAll(toRemove);
-        
-    }
-    */
-   
     public void setNodeTime(FlowNode node, Date date) {
         this.markingsMap.get(node).setStart(new DateTime(date));
     }
@@ -297,12 +242,19 @@ public class ReplayTrace {
     }
                
     public void clear() {
-        this.startNode = null;
-        //this.traceNodes.clear();
-        this.markingsMap.clear();
-        //this.forkJoinMap.clear();
-        this.sequenceFlows.clear();
-        this.timeOrderedReplayedNodes.clear();
+        startNode = null;
+        logTrace = null;
+        
+        //Remove dependency between nodes
+        for (SequenceFlow flow : this.sequenceFlows) {
+            flow.setSourceRef(null);
+            flow.setTargetRef(null);
+        }
+        sequenceFlows.clear();
+        timeOrderedReplayedNodes.clear();
+        markingsMap.clear();
+        replayer = null;
+        backtrackingNode = null;
     }
     
     public boolean isEmpty() {
@@ -317,8 +269,8 @@ public class ReplayTrace {
     public double getCostBasedMoveLogFitness() {
         double totalMoveOnLogOnlyCost = 0;
         double allMoveOnLogCost = 0;
+
         Node node = backtrackingNode;
-        
         while (node != null) {
             if (node.getState().getElementStatus() == StateElementStatus.EVENT_SKIPPED) {
                 totalMoveOnLogOnlyCost += 1;
@@ -331,7 +283,7 @@ public class ReplayTrace {
         }
         
         //The original trace might not be played fully, consider all remaining events as EVENT_SKIP
-        if (!backtrackingNode.getState().isTraceFinished()) {
+        if (backtrackingNode != null && !backtrackingNode.getState().isTraceFinished()) {
             totalMoveOnLogOnlyCost += (backtrackingNode.getState().getTrace().size() - backtrackingNode.getState().getTraceIndex());
             allMoveOnLogCost += (backtrackingNode.getState().getTrace().size() - backtrackingNode.getState().getTraceIndex());
         }
@@ -352,8 +304,8 @@ public class ReplayTrace {
     public double getCostBasedMoveModelFitness() {
         double totalMoveOnModelOnlyCost = 0;
         double allMoveOnModelCost = 0;
-        Node node = backtrackingNode;
         
+        Node node = backtrackingNode;
         while (node != null) {
             if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
                 totalMoveOnModelOnlyCost += 1;
@@ -373,6 +325,88 @@ public class ReplayTrace {
         }
     }     
     
+    public double getTraceFitness(double minBoundMoveCostOnModel) {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return (1 - (mmCost + mlCost + mSyncCost)/(mlUpper + minBoundMoveCostOnModel));
+    }
+    
+    public void calcFitnessMetrics() {
+        mlUpper = this.logTrace.size()*replayer.getReplayParams().getEventSkipCost();
+        
+        Node node = backtrackingNode;
+        while (node != null) {
+            if (node.getState().getElementStatus() == StateElementStatus.EVENT_SKIPPED) {
+                mlCost += replayer.getReplayParams().getEventSkipCost();
+            }
+            else if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
+                mmCost += replayer.getReplayParams().getActivitySkipCost();
+                mmUpper += replayer.getReplayParams().getActivitySkipCost();
+            }
+            else if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_MATCHED) {
+                mSyncCost += replayer.getReplayParams().getActivityMatchCost();
+                mmUpper += replayer.getReplayParams().getActivitySkipCost();
+            }
+            node = node.getParent();
+        }
+        
+        //The original trace might not be played fully, consider all remaining events as EVENT_SKIP
+        if (backtrackingNode != null && !backtrackingNode.getState().isTraceFinished()) {
+            mlCost += (backtrackingNode.getState().getTrace().size() - backtrackingNode.getState().getTraceIndex())*replayer.getReplayParams().getEventSkipCost();
+        }
+        this.isFitnessMetricsCalculated = true;
+    }
+    
+    public double getMoveCostOnModelOnly() {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return mmCost;
+    }
+    
+    public double getMoveCostOnLogOnly() {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return mlCost;
+    }  
+    
+    public double getSyncMoveCost() {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return mSyncCost;
+    }  
+    
+    public double getUpperMoveCostOnLog() {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return mlUpper;
+    }   
+    
+    public double getUpperMoveCostOnModel() {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return mmUpper;
+    }     
+    
+    /**
+     * Calculate the trace fitness measure based on the input minimum move on model cost
+     * So this measure depends on a particular log where approximation takes place
+     * Use: mmCost, mlCost, mSyncCost, mlUpper
+     * @param minMMCost: this is the minimum calculated from the whole log containing this trace
+     * @return 
+     */
+    public double getApproxTraceFitness(double minMMCost) {
+        if (!isFitnessMetricsCalculated) {
+            this.calcFitnessMetrics();
+        }
+        return (1-(mmCost + mlCost + mSyncCost)/(mlUpper + minMMCost));
+    }
+       
     public void calcTiming() {
         if (this.replayer.getReplayParams().isBacktrackingDebug()) {
             LOGGER.info("REPLAYED TRACE BEFORE TIMING CALC");
@@ -530,7 +564,6 @@ public class ReplayTrace {
 
         }
     }
-   
     
     /*
     * Require a process model with block structure 
@@ -569,125 +602,6 @@ public class ReplayTrace {
             return f2j;
         }
     }  
-    
-    /*
-    public void print(TraceNode node, Integer indentNum) {
-        FlowNode flowNode;
-                
-        if (node == null) {
-            return;
-        }
-        
-        String printString = "";
-        String nodeType = "";
-        String branchNodes = "";
-        String dateString = "";
-        
-        if (node.isActivity()) {
-            nodeType = "Activity";
-            branchNodes = "";
-        }
-        else if (node.isStartEvent()) {
-            nodeType = "StartEvent";
-        }
-        else if (node.isEndEvent()) {
-            nodeType = "EndEvent";
-        }
-        else if (node.isFork()) {
-            nodeType = "Fork";
-            branchNodes += " => ";
-            for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getTargetRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }
-        }
-        else if (node.isJoin()) {
-            nodeType = "Join";
-            branchNodes += " <= ";
-            for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getSourceRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }            
-        }
-        else if (node.isDecision()) {
-            nodeType = "Decision";
-            branchNodes += " -> ";
-            for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getTargetRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }            
-        }
-        else if (node.isMerge()) {
-            nodeType = "Merge";
-            branchNodes += " <- ";
-            for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getSourceRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }            
-        }
-        else if (node.isORSplit()) {
-            nodeType = "OR-Split";
-            branchNodes += " => ";
-            for (SequenceFlow flow : node.getOutgoingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getTargetRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }
-        }
-        else if (node.isORJoin()) {
-            nodeType = "OR-Join";
-            branchNodes += " <= ";
-            for (SequenceFlow flow : node.getIncomingSequenceFlows()) {
-                flowNode = (FlowNode)flow.getSourceRef();
-                branchNodes += flowNode.getName();
-                branchNodes += "+";
-            }            
-        }
-        
-        if (node.getStart() != null) {
-            dateString = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(node.getStart().toDate());
-        }
-        
-        printString += (nodeType + ":" + node.getName() + ":" + dateString + ":" + branchNodes);
-        printString = this.padLeft(printString, indentNum);
-                
-        LOGGER.info(printString);
-        
-        if (node.isDecision() || node.isMerge() || node.isActivity() || 
-            node.isJoin() || node.isORJoin() ||
-            node.isStartEvent() || node.isEndEvent()) {
-            if (node.isDecision()) {
-                indentNum += 2;
-            }
-            else if (node.isMerge()) {
-                //indentNum -= 2;
-            }
-            
-            if (node.getTargets().size() > 0) {
-                if ((!node.getTargets().get(0).isJoin() && !node.getTargets().get(0).isORJoin()) ||
-                    !this.getForkJoinMap().containsValue(node.getTargets().get(0))) { // to do for join node without split node
-                    node = node.getTargets().get(0);
-                    indentNum += 2;
-                    this.print(node, indentNum);
-                }
-            }
-        }
-        else if (node.isFork() || node.isORSplit()){
-            indentNum += 2;
-            for (TraceNode branchNode : node.getTargets()) {
-                this.print(branchNode, indentNum);
-            }
-            node = this.getForkJoinMap().get(node);
-            indentNum -= 2;
-            this.print(node, indentNum);
-        }
-        
-    }
-    */
     
     /*
      * Print this trace to log in a hierarchical view
@@ -832,10 +746,6 @@ public class ReplayTrace {
         }
         output.append(s);
         return output.toString();
-    }
-    
-    public Metrics getMetrics() {
-        return this.metrics;
     }
     
 }
