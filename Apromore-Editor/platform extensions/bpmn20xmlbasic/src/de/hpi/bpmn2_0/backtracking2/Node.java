@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -184,6 +185,14 @@ public class Node {
         return children;
     }    
     
+    public Set<Node> getChildrenForShortestPathFinding() {
+        Set<Node> childs = new HashSet(); 
+        for (State nextState : state.nextStatesForShortestPathFinding()) {
+            childs.add(new Node(this, nextState));
+        }
+        return childs;
+    } 
+    
     @Override
     public String toString() {
         return state.getName();
@@ -228,6 +237,15 @@ public class Node {
             }
         }        
         return false;
+    }
+    
+    public void clear() {
+        parent = null;
+        if (children != null) {
+            children.clear();
+        }
+        state.clear();
+        state = null;
     }
     
 }

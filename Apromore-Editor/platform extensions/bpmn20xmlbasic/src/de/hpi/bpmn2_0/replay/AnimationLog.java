@@ -1,29 +1,35 @@
 package de.hpi.bpmn2_0.replay;
 
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 public class AnimationLog {
+    private XLog xlog = null;
     private Map<XTrace, ReplayTrace> traceMap = new HashMap();
+    private Set<XTrace> unplayTraces = new HashSet();
     private String name = "";
     private DateTime startDate = null;
     private DateTime endDate = null;
     private Interval interval = null;
     private String color = "";
-    private long calculationTime = 0; //in milliseconds
+    private long totalTime = 0; //in milliseconds
     private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
     
-    public AnimationLog() {
-//        traceMap = traces;
+    public AnimationLog(XLog xlog) {
+        this.xlog = xlog;
     }
     
     public Map<XTrace, ReplayTrace> getTraceMap() {
@@ -38,8 +44,24 @@ public class AnimationLog {
         this.name = name;
     }
     
+    public XLog getXLog() {
+        return this.xlog;
+    }
+    
     public DateTime getStartDate() {
-        return this.startDate;
+        if (startDate == null) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(2020, 1, 1);
+            DateTime logStartDate = new DateTime(cal.getTime());
+            
+            for (ReplayTrace trace : this.getTraces()) {
+                if (logStartDate.isAfter(trace.getStartDate())) {
+                    logStartDate = trace.getStartDate();
+                }
+            }
+            startDate = logStartDate;
+        }
+        return startDate;
     }
     
     public void setStartDate(DateTime startDate) {
@@ -47,7 +69,19 @@ public class AnimationLog {
     }
     
     public DateTime getEndDate() {
-        return this.endDate;
+        if (endDate == null) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(1920, 1, 1);
+            DateTime logEndDate = new DateTime(cal.getTime());
+            
+            for (ReplayTrace trace : this.getTraces()) {
+                if (logEndDate.isBefore(trace.getEndDate())) {
+                    logEndDate = trace.getEndDate();
+                }
+            }
+            endDate = logEndDate;
+        }
+        return endDate;
     }
     
     public void setEndDate(DateTime endDate) {
@@ -64,6 +98,14 @@ public class AnimationLog {
     
     public void add(XTrace trace, ReplayTrace replayTrace) {
         traceMap.put(trace, replayTrace);
+    }
+    
+    public void addUnreplayTrace(XTrace trace) {
+        this.unplayTraces.add(trace);
+    }
+    
+    public Set<XTrace> getUnplayTraces() {
+        return this.unplayTraces;
     }
     
     public Collection<ReplayTrace> getTraces() {
@@ -94,8 +136,57 @@ public class AnimationLog {
         else {
             return 1.00;
         }
-    }    
-       
+    }   
+    
+    public double getTraceFitness(double minBoundMoveCostOnModel) {
+        double avgCost = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            avgCost += trace.getTraceFitness(minBoundMoveCostOnModel);
+        }
+        if (this.getTraces().size() > 0) {
+            return 1.0*avgCost/this.getTraces().size();
+        }
+        else {
+            return 1.00;
+        }        
+    }  
+    
+    /**
+     * Get the approximate trace fitness. This is approximate measure since
+     * the calculation is based on approximate fitness value of every trace
+     * The moves for every trace alignment are not optimal and the minimum
+     * move on model cost is also approximated for the whole log
+     * @return 
+     */
+    public double getApproxTraceFitness() {
+        double minMMCost = this.getApproxMinMoveModelCost();
+        double totalTraceFitness = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            totalTraceFitness += trace.getApproxTraceFitness(minMMCost);
+        }        
+        if (this.getTraces().size() > 0) {
+            return 1.0*totalTraceFitness/this.getTraces().size();
+        }
+        else {
+            return 1.00;
+        }
+    }
+    
+    /**
+     * Get the minimum move model cost assuming that all events in every trace
+     * does not match any activities on the model.
+     * @return 
+     */
+    private double getApproxMinMoveModelCost() {
+        double minUpperMMCost = Double.MAX_VALUE;
+        for (ReplayTrace trace : this.getTraces()) {
+            if (minUpperMMCost > trace.getUpperMoveCostOnModel()) {
+                minUpperMMCost = trace.getUpperMoveCostOnModel();
+            }
+        }    
+        return minUpperMMCost;
+    }
+    
     public boolean isEmpty() {
         return this.traceMap.isEmpty();
     }
@@ -108,12 +199,20 @@ public class AnimationLog {
         return this.color;
     }
     
-    public long getCalculationTime() {
-        return this.calculationTime;
+    public long getTotalTime() {
+        return this.totalTime;
     }
     
-    public void setCalculationTime(long calculationTime) {
-        this.calculationTime = calculationTime;
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+    
+    public long getAlgoRuntime() {
+        long totalRuntime = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            totalRuntime += trace.getAlgoRuntime();
+        }
+        return totalRuntime;
     }
     
     /*
@@ -158,6 +257,17 @@ public class AnimationLog {
         return sequenceByIds;
     }
 
-    
+    public void clear() {
+        this.xlog = null;
+        for (ReplayTrace trace : this.traceMap.values()) {
+            trace.clear();
+        }
+        traceMap.clear();
+        
+        for (XTrace xTrace : this.unplayTraces) {
+            xTrace.clear();
+        }
+        unplayTraces.clear();
+    }
 
 }

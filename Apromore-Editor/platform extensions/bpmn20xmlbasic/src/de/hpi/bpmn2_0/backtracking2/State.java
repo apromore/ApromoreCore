@@ -31,6 +31,7 @@ public class State {
     private StateElementStatus elementStatus;
     private XTrace trace;
     private int traceIndex;
+    private Set<FlowNode> visitedNodes = new HashSet(); //contain visited nodes in case of nextForwardState
     private BPMNDiagramHelper helper;
     private ReplayParams params;
   
@@ -45,6 +46,18 @@ public class State {
         this.helper = helper;
         this.params = params;
     }
+    
+    public State(Set<SequenceFlow> markings, FlowNode element, StateElementStatus elementStatus,
+                 XTrace trace, int traceIndex, Set<FlowNode> visitedNodes, BPMNDiagramHelper helper, ReplayParams params) {
+        this.markings = markings;
+        this.element = element;
+        this.elementStatus = elementStatus;
+        this.trace = trace;
+        this.traceIndex = traceIndex;
+        this.visitedNodes = visitedNodes;
+        this.helper = helper;
+        this.params = params;
+    }    
     
     public String getName() {
         return element.getName() + "." + elementStatus.name();
@@ -91,7 +104,7 @@ public class State {
             Set<SequenceFlow> newMarkings;
             for (SequenceFlow sequence : markings) {
                 node = (FlowNode)sequence.getTargetRef();
-
+                
                 if (helper.getActivities().contains(node)) {
                     //Take Activity
                     if (node.getName().equals(LogUtility.getConceptName(trace.get(traceIndex)))) {
@@ -185,6 +198,113 @@ public class State {
         return states;
     }
     
+    /**
+     * Return next states for searching a path to the end event
+     * The move excludes those loop-back moves, just go forward to the end event
+     * Every time it generates only one next state except the case of XOR and OR split
+     * in which it will generate one state per branch
+     * @return 
+     */
+    public Set<State> nextStatesForShortestPathFinding () {
+        //Use comparator to prevent adding duplicate states
+        Set<State> states = new HashSet();
+        
+        //Select a node of the current markings and 
+        //and the possible move on the trace (skip or not)
+        if (!this.isCompleteState()) {
+            FlowNode node;
+            Set<SequenceFlow> newMarkings;
+            Set<FlowNode> newVisitedNodes;
+            boolean nextMoveDone = false;
+            for (SequenceFlow sequence : markings) {
+                
+                node = (FlowNode)sequence.getTargetRef();
+                
+                if (!visitedNodes.contains(node)) {
+                    if (helper.getActivities().contains(node)) {
+                        newMarkings = (HashSet)((HashSet)this.markings).clone();
+                        newMarkings.remove(sequence);
+                        newMarkings.add(node.getOutgoingSequenceFlows().get(0));
+                        newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                        newVisitedNodes.add(node);
+                        states.add(new State(newMarkings, node, StateElementStatus.ACTIVITY_SKIPPED, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                        nextMoveDone = true;
+                    }
+                    //Only a XOR or OR split gateway generates more than 1 states, one for every branch
+                    else if (helper.getAllDecisions().contains(node) || helper.getAllORSplits().contains(node)) {
+                        newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                        newVisitedNodes.add(node);
+                        for (SequenceFlow branch : node.getOutgoingSequenceFlows()) {
+                            newMarkings = (HashSet)((HashSet)this.markings).clone();
+                            newMarkings.remove(sequence);
+                            newMarkings.add(branch);
+                            states.add(new State(newMarkings, node, StateElementStatus.XORSPLIT, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                        }
+                        nextMoveDone = true;
+                    }
+                    else if (helper.getAllForks().contains(node)) {
+                        newMarkings = (HashSet)((HashSet)this.markings).clone();
+                        newMarkings.remove(sequence);
+                        newMarkings.addAll(node.getOutgoingSequenceFlows());
+                        newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                        newVisitedNodes.add(node);
+                        states.add(new State(newMarkings, node, StateElementStatus.ANDSPLIT, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                        nextMoveDone = true;
+                    }
+                    else if (helper.getAllJoins().contains(node)) {
+                        if (markings.containsAll(node.getIncomingSequenceFlows())) {
+                            newMarkings = (HashSet)((HashSet)this.markings).clone();
+                            newMarkings.removeAll(node.getIncomingSequenceFlows());
+                            newMarkings.add(node.getOutgoingSequenceFlows().get(0));
+                            newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                            newVisitedNodes.add(node);
+                            states.add(new State(newMarkings, node, StateElementStatus.ANDJOIN, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                            nextMoveDone = true;
+                        }
+                    } 
+                    else if (helper.getAllMerges().contains(node)) {
+                        newMarkings = (HashSet)((HashSet)this.markings).clone();
+                        newMarkings.remove(sequence);
+                        newMarkings.add(node.getOutgoingSequenceFlows().get(0));
+                        newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                        newVisitedNodes.add(node);
+                        states.add(new State(newMarkings, node, StateElementStatus.XORJOIN, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                        nextMoveDone = true;
+                    }
+                    else if (helper.getAllORJoins().contains(node)) {
+                        if (ORJoinEnactmentManager.isEnabled(node, this)) {
+                            newMarkings = (HashSet)((HashSet)this.markings).clone();
+                            for (SequenceFlow incoming : node.getIncomingSequenceFlows()) {
+                                newMarkings.remove(incoming);
+                            }
+                            newMarkings.add(node.getOutgoingSequenceFlows().get(0));
+                            newVisitedNodes = (HashSet)((HashSet)this.visitedNodes).clone();
+                            newVisitedNodes.add(node);
+                            states.add(new State(newMarkings, node, StateElementStatus.ORJOIN, this.trace, this.traceIndex, newVisitedNodes, helper, params));
+                            nextMoveDone = true;
+                        }
+                    }
+                    else if (node == helper.getStartEvent() || node == helper.getEndEvent()) {
+                        //Do nothing
+                    }
+                    
+                    if (nextMoveDone) {
+                        break; //only move one token at a time
+                    }
+                }
+                else {
+                    states.clear();
+                    break; //this state leads to a loop, discard it.
+                }
+            }
+        }
+        return states; //return empty set if no move is performed
+    }
+    
+    public boolean isCompleteState() {
+        return (markings.size()==1 && markings.contains(helper.getEndEvent().getIncomingSequenceFlows().get(0)));
+    }
+    
     public boolean isEndState() {
         return (traceIndex >= trace.size() || markings.isEmpty());
     }
@@ -192,6 +312,18 @@ public class State {
     public boolean isTraceFinished() {
         return (traceIndex >= trace.size());
     }
+    
+    /**
+     * Only reliable if the marking is proper complete and trace has been finished
+     * @return true if reliable
+     */
+    /*
+    public boolean isReliable() {
+        return (markings.size()==1 && 
+                markings.contains(helper.getEndEvent().getIncomingSequenceFlows().get(0)) &&
+                traceIndex >= trace.size());
+    }
+    */
     
     public boolean isMatch() {
         return (elementStatus == StateElementStatus.ACTIVITY_MATCHED);
@@ -279,6 +411,15 @@ public class State {
             markingStr += "*" + flow.getTargetRef().getName();
         }
         return markingStr;
+    }
+    
+    public void clear() {
+        markings.clear();
+        visitedNodes.clear();
+        element = null;
+        trace = null;
+        helper = null;
+        params = null;        
     }
     
     
