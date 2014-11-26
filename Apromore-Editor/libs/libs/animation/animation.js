@@ -336,17 +336,29 @@ Controller.prototype = {
        var metricsTable = $j("#metrics_table")[0];
        for (var i=0; i<logs.length; i++) {
            var row = metricsTable.insertRow(i+1);
-           var cellName = row.insertCell(0); //log name
-           var cellTraceCount = row.insertCell(1); //trace count
-           var cellMoveLogFitness = row.insertCell(2); //move log fitness
-           var cellMoveModelFitness = row.insertCell(3); //move model fitness
-           var cellCalcTime = row.insertCell(4); //calculation time
-           cellName.innerHTML = logs[i].name.substr(0,5) + "...";
-           cellName.style.backgroundColor = logs[i].color;
-           cellTraceCount.innerHTML = logs[i].traceCount;
-           cellMoveLogFitness.innerHTML = logs[i].moveLogFitness;
-           cellMoveModelFitness.innerHTML = logs[i].moveModelFitness;
-           cellCalcTime.innerHTML = logs[i].calculationTime/1000;
+           var cellLogName = row.insertCell(0); 
+           var cellPlayCount = row.insertCell(1); 
+           var cellUnplayCount = row.insertCell(2);
+           var cellTraceFitness = row.insertCell(3); 
+           var cellApproxFitness = row.insertCell(4); 
+           var cellAlgoTime = row.insertCell(5); 
+           var cellTotalTime = row.insertCell(6); 
+           
+           cellLogName.innerHTML = logs[i].name.substr(0,5) + "...";
+           cellLogName.style.backgroundColor = logs[i].color;
+           
+           cellPlayCount.innerHTML = logs[i].playCount;
+           
+           cellUnplayCount.innerHTML = logs[i].unplayCount;
+           cellUnplayCount.title = logs[i].unplayTraces;
+           
+           cellTraceFitness.innerHTML = logs[i].traceFitness;
+           
+           cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
+           
+           cellAlgoTime.innerHTML = logs[i].algoTime/1000;
+           
+           cellTotalTime.innerHTML = logs[i].totalTime/1000;
        }    
 
        this.start();

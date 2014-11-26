@@ -5,6 +5,7 @@ import de.hpi.bpmn2_0.replay.AnimatedSequenceFlow;
 import de.hpi.bpmn2_0.replay.AnimationLog;
 import de.hpi.bpmn2_0.replay.ReplayParams;
 import de.hpi.bpmn2_0.replay.ReplayTrace;
+import de.hpi.bpmn2_0.replay.Replayer;
 import de.hpi.bpmn2_0.replay.TimeUtilities;
 import de.hpi.bpmn2_0.replay.TraceNode;
 import java.text.DecimalFormat;
@@ -40,16 +41,16 @@ import org.json.JSONObject;
 * The SlotDataUnit can be used to show the location of a specific event date on the timeline bar
 */
 public class AnimationJSONBuilder {
-    //public final int TOTAL_TIMELINE_SLOTS = 120; 
-    //public final int TOTAL_TIMELINE_SECONDS = 120;
     private ArrayList<AnimationLog> animations = null;
     private Interval totalRealInterval = null; //total time interval of all logs
+    private Replayer replayer;
     private ReplayParams params;
     private static final Logger LOGGER = Logger.getLogger(AnimationJSONBuilder.class.getCanonicalName());
     
-    public AnimationJSONBuilder(ArrayList<AnimationLog> animations, ReplayParams params) {
+    public AnimationJSONBuilder(ArrayList<AnimationLog> animations, Replayer replayer, ReplayParams params) {
         this.animations = animations;
         this.params = params;
+        this.replayer = replayer;
         
         Set<DateTime> dateSet = new HashSet<>();
         for (AnimationLog animationLog : animations) {
@@ -95,10 +96,15 @@ public class AnimationJSONBuilder {
         
         json.put("name", animationLog.getName());
         json.put("color", animationLog.getColor());
-        json.put("traceCount", animationLog.getTraces().size());
+        json.put("playCount", animationLog.getTraces().size());
+        json.put("unplayCount", animationLog.getUnplayTraces().size());
+        json.put("unplayTraces", animationLog.getUnplayTraces().toString());
         json.put("moveLogFitness", animationLog.getCostBasedMoveLogFitness());
         json.put("moveModelFitness", animationLog.getCostBasedMoveModelFitness());
-        json.put("calculationTime", 1.0*animationLog.getCalculationTime()/1000);
+        json.put("approxTraceFitness", animationLog.getApproxTraceFitness());
+        json.put("traceFitness", animationLog.getTraceFitness(replayer.getMinBoundMoveCostOnModel()));
+        json.put("totalTime", 1.0*animationLog.getTotalTime()/1000);
+        json.put("algoTime", 1.0*animationLog.getAlgoRuntime()/1000);
         json.put("progress", this.parseLogProgress(animationLog));
         json.put("tokenAnimations", this.parseTraces(animationLog));
 
@@ -385,6 +391,16 @@ public class AnimationJSONBuilder {
     private int getEngineTime(DateTime dataTime) {
         double engineTime = Seconds.secondsBetween(totalRealInterval.getStart(), dataTime).getSeconds()*this.getTimeConversionRatio();
         return Double.valueOf(engineTime).intValue();
+    }
+    
+    public void clear() {
+        replayer = null;
+        params = null;
+        for (AnimationLog animLog : animations) {
+            animLog.clear();
+        }
+        animations.clear();
+        animations = null;
     }
     
 }

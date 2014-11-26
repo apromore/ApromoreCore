@@ -5,70 +5,44 @@
  */
 package de.hpi.bpmn2_0.replay;
 
-import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.model.event.EndEvent;
 import de.hpi.bpmn2_0.backtracking2.Backtracking;
 import de.hpi.bpmn2_0.backtracking2.Node;
-import de.hpi.bpmn2_0.backtracking2.State;
 import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
-import de.vogella.algorithms.dijkstra.model.Vertex;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.collections4.iterators.PermutationIterator;
-import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XAttributeImpl;
-import org.deckfour.xes.model.impl.XEventImpl;
-import org.deckfour.xes.model.impl.XTraceImpl;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
-import org.processmining.plugins.signaturediscovery.encoding.EncodingNotFoundException;
-import servlet.BPMNAnimationServlet;
 
 /**
  *
  * @author Administrator
  */
 public class Replayer {
-    private Definitions bpmnDefinition = null;
     private ReplayParams params;
-    private float fitness;
-    private double logStartTime;
-    private double logEndTime;
     private BPMNDiagramHelper helper;
     private boolean isValidProcess = true;
     private String processCheckMessage = "";
     private String[] colors = {"blue","orange","red","green","margenta"};
-    private int curColorIndex = -1; //index of the current color used
-    
-    //Contains number of token increased/decreased carried on every edge
-    //Used for OR-join enabledness check
-    private Map<SequenceFlow,Integer> edgeToTokenChangeMap = new HashMap();     
-    
-    //EncodeTraces encodedTraces; // mapping from traceId to trace encoded char string
-    Map<String, Node> traceBacktrackingNodeMap = new HashMap(); // mapping from trace string to leaf node of backtracking
-    
+    private Map<String, Node> traceBacktrackingNodeMap = new HashMap(); // mapping from traceId to trace encoded char string
+    private double minBoundMoveCostOnModel = -1; //not yet calculated
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     
     public Replayer(Definitions bpmnDefinition, ReplayParams params) {
-        this.bpmnDefinition = bpmnDefinition;
         this.params = params;
         this.isValidProcess = true;
         try {
@@ -80,7 +54,6 @@ public class Replayer {
             processCheckMessage = ex.getMessage();
             Logger.getLogger(Replayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         
     }
     
@@ -97,99 +70,116 @@ public class Replayer {
     }
     
     public AnimationLog replay(XLog log, String color) {
-        AnimationLog animationLog = new AnimationLog();
-        animationLog.setColor(color /*this.getLogColor()*/);
-        ReplayTrace replayTrace;
+        long startTime = DateTimeUtils.currentTimeMillis();
         
-        //-------------------------------------------
-        // Set the initial and very far log start/end date as marker only
-        //-------------------------------------------
-        Calendar cal = Calendar.getInstance();
-        cal.set(2020, 1, 1);
-        DateTime logStartDate = new DateTime(cal.getTime());
-        cal.set(1920, 1, 1);
-        DateTime logEndDate = new DateTime(cal.getTime());
+        AnimationLog animationLog = new AnimationLog(log);
+        animationLog.setColor(color /*this.getLogColor()*/);
+        animationLog.setName(log.getAttributes().get("concept:name").toString());
         
         //-------------------------------------------
         // Replay every trace in the log
         //-------------------------------------------
-        long startTime = DateTimeUtils.currentTimeMillis();
+        ReplayTrace replayTrace;
         for (XTrace trace : log) {
             replayTrace = this.replay(trace);
             if (!replayTrace.isEmpty()) {
-                LOGGER.info("Trace " + LogUtility.getConceptName(trace) + ": " + replayTrace.getBacktrackingNode().getPathString());
+                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
                 replayTrace.calcTiming();
-                if (logStartDate.isAfter(replayTrace.getStartDate())) {
-                    logStartDate = replayTrace.getStartDate();
-                }
-                if (logEndDate.isBefore(replayTrace.getEndDate())) {
-                    logEndDate = replayTrace.getEndDate();
-                }
                 animationLog.add(trace, replayTrace);
             }
             else {
-                LOGGER.info("Trace " + LogUtility.getConceptName(trace) + ": No path found!");
+                animationLog.addUnreplayTrace(trace);
+                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
             }                    
         }
+        
+        double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
+        double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
+        long endTime = DateTimeUtils.currentTimeMillis();
+        animationLog.setTotalTime(endTime - startTime);
 
         if (!animationLog.isEmpty()) {
-            animationLog.setCalculationTime(DateTimeUtils.currentTimeMillis() - startTime);
-            animationLog.setStartDate(new DateTime(logStartDate));
-            animationLog.setEndDate(new DateTime(logEndDate));
-            animationLog.setName(log.getAttributes().get("concept:name").toString());
-
-            LOGGER.info("LOG " + animationLog.getName() + ". TraceCount:" + animationLog.getTraces().size() + 
+            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
+                        ". Trace Fitness:" + traceFitness +
+                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
                         ". StartDate:" + animationLog.getStartDate().toString() +
                         ". EndDate:" + animationLog.getEndDate() +
-                        ". Color:" + animationLog.getColor());                
+                        ". Color:" + animationLog.getColor());        
+            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+            for (ReplayTrace trace : animationLog.getTraces()) {
+                LOGGER.info("Trace " + trace.getId() + "," + trace.getTraceFitness(minBoundMoveCostOnModel) + "," + trace.getBacktrackingNode().getPathString());
+            }
         } else {
-            LOGGER.info("LOG " + animationLog.getName() + ": no traces can be replayed");
+            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
         }
 
         return animationLog;
     }
     
-    /*
-    * Preprocess the trace, including
-    * - remove all events with name not found in the process model
-    * - add start and end event since trace only contains activities
-    * - calculate timing for start and end event from the first and last trace activity
-    */
-    /*
-    private XTrace preProcess(XTrace trace) {
-        XTrace processTrace = new XTraceImpl(trace.getAttributes());
+    public AnimationLog replayWithMultiThreading(XLog log, String color) {
+        long startTime = DateTimeUtils.currentTimeMillis();
         
-        //Remove unfound event name in process model
-        for (XEvent event : trace) {
-            if (helper.getActivityNames().contains(event.getAttributes().get("concept:name").toString())) {
-                processTrace.insertOrdered(event);
+        final AnimationLog animationLog = new AnimationLog(log);
+        animationLog.setColor(color /*this.getLogColor()*/);
+        animationLog.setName(log.getAttributes().get("concept:name").toString());
+        
+        //-------------------------------------------
+        // Replay every trace in the log with multithreading
+        //-------------------------------------------
+        //int threads = Runtime.getRuntime().availableProcessors();
+        int threads = 1;
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        
+        for (final XTrace trace : log) {
+            pool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    ReplayTrace replayTrace = replay(trace);
+                    if (!replayTrace.isEmpty()) {
+                        LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
+                        replayTrace.calcTiming();
+                        animationLog.add(trace, replayTrace);
+                    }
+                    else {
+                        animationLog.addUnreplayTrace(trace);
+                        LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
+                    } 
+                }
+            });                  
+        }
+        
+        pool.shutdown();
+        while (!pool.isTerminated()) {
+            try {
+                pool.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                //do nothing
             }
         }
         
-        //Create start event
-        //Timing 4 seconds prior to the first activity of trace
-        //Name is taken from the start event of process mdoel
-        XEvent event = (XEvent)trace.get(0).clone();        
-        DateTime timestamp = new DateTime(LogUtility.getTimestamp(processTrace.get(0))); 
-        LogUtility.setConceptName(event, helper.getStartEvent().getName());
-        LogUtility.setTimestamp(event, timestamp.minusSeconds(4).toDate());
-        processTrace.insertOrdered(event);
-        
-        //Create end event
-        //Timing 60 seconds after to the last activity of trace
-        //Name is taken from the end event of process mdoel
-        event = (XEvent)trace.get(0).clone();        
-        timestamp = new DateTime(LogUtility.getTimestamp(processTrace.get(processTrace.size()-1))); 
-        LogUtility.setConceptName(event, helper.getEndEvent().getName());
-        LogUtility.setTimestamp(event, timestamp.plusSeconds(60).toDate());        
-        processTrace.insertOrdered(event);
-        
-        return processTrace;
-    }
-    */
-    
-    
+        double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
+        double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
+        long endTime = DateTimeUtils.currentTimeMillis();
+        animationLog.setTotalTime(endTime - startTime);
 
+        if (!animationLog.isEmpty()) {
+            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
+                        ". Trace Fitness:" + traceFitness +
+                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
+                        ". StartDate:" + animationLog.getStartDate().toString() +
+                        ". EndDate:" + animationLog.getEndDate() +
+                        ". Color:" + animationLog.getColor());   
+            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+            for (ReplayTrace trace : animationLog.getTraces()) {
+                LOGGER.info("Trace " + trace.getId() + "," + trace.getTraceFitness(minBoundMoveCostOnModel) + "," + trace.getBacktrackingNode().getPathString());
+            }
+        } else {
+            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
+        }
+
+        return animationLog;
+    }
+    
     
     /*
     * Replay using backtracking algorithm
@@ -199,6 +189,8 @@ public class Replayer {
     */
     public ReplayTrace replay(XTrace trace) {
         Node leafNode; //contains the found backtracking leaf node
+        long start = 0;
+        long end = 0;
         
         //---------------------------------------------------
         // Use clustering. If the same trace has been replayed
@@ -211,10 +203,12 @@ public class Replayer {
         }
         else { // has to replay a new trace
             //--------------------------------------------
-            //Remove unfound event name in process model
+            //Remove event names not found in process model or 
+            //events with lifecycle:transition = "start" (not yet processed this case)
             //--------------------------------------------
             for (XEvent event : trace) {
-                if (!helper.getActivityNames().contains(LogUtility.getConceptName(event))) {
+                if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
+                     LogUtility.getLifecycleTransition(event).toLowerCase().equals("start")) {
                     trace.remove(event);
                 }
             }
@@ -223,10 +217,14 @@ public class Replayer {
             // Replay trace with backtracking algorithm
             //--------------------------------------------
             Backtracking backtrack = new Backtracking(this.params, trace, helper);
+            start = System.currentTimeMillis();
             leafNode = backtrack.explore();    
+            end = System.currentTimeMillis();
             if (leafNode != null && !traceBacktrackingNodeMap.containsKey(traceString)) {
                 traceBacktrackingNodeMap.put(traceString, leafNode); //traceString: the original trace string.
             }
+            backtrack.clear();
+            backtrack = null;
         }
         
         //---------------------------------
@@ -246,7 +244,7 @@ public class Replayer {
         // the activity or gateway taken and the markings contains
         // all tokens (process state) after the element is taken.
         //---------------------------------------------
-        ReplayTrace replayTrace = new ReplayTrace(new XTrace2(trace), this, leafNode);
+        ReplayTrace replayTrace = new ReplayTrace(new XTrace2(trace), this, leafNode, end-start);
         
         if (!stack.isEmpty()) {
             FlowNode modelNode=null;
@@ -319,7 +317,30 @@ public class Replayer {
         
         return replayTrace;
     }
-       
+    
+    /**
+     * Select the least cost move on model from start to end
+     * @return min cost or 0 if no path found due to unsound model
+     */    
+    public double getMinBoundMoveCostOnModel() {
+        if (minBoundMoveCostOnModel < 0) {
+            Backtracking backtrack = new Backtracking(this.params, helper);
+            Node selectedNode = backtrack.exploreForShortestPath();
+            double minMMCost = 0;
+            if (selectedNode != null) {
+                Node node = selectedNode;
+                while (node != null) {
+                    if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
+                        minMMCost += this.params.getActivitySkipCost();
+                    }
+                    node = node.getParent();
+                }
+            }
+            minBoundMoveCostOnModel = minMMCost;
+        }
+        return minBoundMoveCostOnModel;
+    }
+    
     /*
     * When current node is fired
     *   - Each of its active incoming sequences flow will reduce one token
@@ -380,28 +401,7 @@ public class Replayer {
         ORJoinEnactmentManager.update(edgeToTokenChangeMap);
     }
     */
- 
-    public float getFitness() {
-        return fitness;
-    }   
-    
-    
-    public double getLogStartTime() {
-        return logStartTime;
-    }
-    
-    public double getLogEndTime() {
-        return logEndTime;
-    }    
-    
-    public double getTaskAverageDuration(String taskId) {
-        return 0;
-    }    
-    
-    public double getEdgeAverageDuration(String edgeId) {
-        return 0;
-    }
-    
+    /*
     private String getLogColor() {
         curColorIndex++;
         if (curColorIndex < this.colors.length) {
@@ -410,4 +410,5 @@ public class Replayer {
             return "black"; //black is used to indicate out of color index
         }
     }
+    */
 }

@@ -1,59 +1,33 @@
 package servlet;
 
 import de.hpi.bpmn2_0.animation.AnimationJSONBuilder;
-import de.hpi.bpmn2_0.backtracking2.Backtracking;
-import de.hpi.bpmn2_0.backtracking2.Node;
-import de.hpi.bpmn2_0.backtracking2.State;
-import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
-import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.replay.AnimationLog;
-import de.hpi.bpmn2_0.replay.BPMNDiagramHelper;
 import de.hpi.bpmn2_0.replay.ReplayParams;
-import de.hpi.bpmn2_0.replay.ReplayTrace;
 import de.hpi.bpmn2_0.replay.Replayer;
-import de.hpi.bpmn2_0.replay.XTrace2;
-import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
-import de.hpi.bpmn2_0.transformation.BPMNPrefixMapper;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.xml.sax.SAXException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.SchemaFactory;
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
 
 /**
@@ -67,8 +41,8 @@ public class BPMNAnimationServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(BPMNAnimationServlet.class.getCanonicalName());
     
     private static final String UPLOAD_DIRECTORY = "upload";
-    private static final int THRESHOLD_SIZE = 1024 * 1024 * 50; // 50MB
-    private static final int MAX_FILE_SIZE = 1024 * 1024 * 200; // 200MB
+    private static final int THRESHOLD_SIZE = 1024 * 1024 * 200; // 200MB
+    private static final int MAX_FILE_SIZE = 1024 * 1024 * 500; // 500MB
     private static final int REQUEST_SIZE = 1024 * 1024 * 500; // 500MB
 
     /**
@@ -219,7 +193,8 @@ public class BPMNAnimationServlet extends HttpServlet {
                 EncodeTraces.getEncodeTraces().read(xlogs);
                 for (Log log: logs) {
                     AnimationLog animationLog = replayer.replay(log.xlog, log.color);
-                    if (!animationLog.isEmpty()) {
+                    //AnimationLog animationLog = replayer.replayWithMultiThreading(log.xlog, log.color);
+                    if (animationLog !=null && !animationLog.isEmpty()) {
                         replayedLogs.add(animationLog);
                     }
                 }
@@ -240,11 +215,13 @@ public class BPMNAnimationServlet extends HttpServlet {
                 res.setStatus(200);
                 
                 //To be replaced
-                AnimationJSONBuilder jsonBuilder = new AnimationJSONBuilder(replayedLogs, params);
+                AnimationJSONBuilder jsonBuilder = new AnimationJSONBuilder(replayedLogs, replayer, params);
                 JSONObject json = jsonBuilder.parseLogCollection();
                 json.put("success", true);  // Ext2JS's file upload requires this flag
                 String string = json.toString();
                 LOGGER.info(string);
+                jsonBuilder.clear();
+                
                 out.write(string);
             }
             else {

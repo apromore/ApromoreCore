@@ -447,11 +447,14 @@ public class BPMNDiagramHelper {
             return dijkstraAlgo;
         }
         else {
-            
             //Create Dijistra nodes but keep a mapping from BPMN node to Dijistra node
             //so that we can apply for Dijistra edge in the next step
-            for (FlowNode node : this.getAllNodes()) {
-                bpmnDijikstraNodeMap.put(node, new Vertex(node.getId(), node.getName(), node));
+            synchronized (bpmnDijikstraNodeMap) {
+                if (bpmnDijikstraNodeMap.isEmpty()) {
+                    for (FlowNode node : this.getAllNodes()) {
+                        bpmnDijikstraNodeMap.put(node, new Vertex(node.getId(), node.getName(), node));
+                    }
+                }
             }
             
             List<Edge<FlowNode>> edges = new ArrayList();
@@ -468,6 +471,7 @@ public class BPMNDiagramHelper {
             
             dijkstraAlgo = new DijkstraAlgorithm(new Graph(new ArrayList(bpmnDijikstraNodeMap.values()),edges));
             return dijkstraAlgo;
+        
         }
     }
     
@@ -484,8 +488,9 @@ public class BPMNDiagramHelper {
             return true;
         }
         else {
-            this.getDijkstraAlgo().execute(this.getDijikstraVertex(source));
-            ArrayList<Vertex> path = this.getDijkstraAlgo().getPath(this.getDijikstraVertex(target));
+            DijkstraAlgorithm algo = this.getDijkstraAlgo();
+            algo.execute(this.getDijikstraVertex(source));
+            ArrayList<Vertex> path = algo.getPath(this.getDijikstraVertex(target));
             return (path != null && path.size() > 0);
         }
     }
@@ -501,8 +506,9 @@ public class BPMNDiagramHelper {
             return path;
         }
         else {
-            this.getDijkstraAlgo().execute(this.getDijikstraVertex(source));
-            path = this.getDijkstraAlgo().getPath(this.getDijikstraVertex(target));
+            DijkstraAlgorithm algo = this.getDijkstraAlgo();
+            algo.execute(this.getDijikstraVertex(source));
+            path = algo.getPath(this.getDijikstraVertex(target));
             return path;
         }
     }
