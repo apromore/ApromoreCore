@@ -177,7 +177,7 @@ public class AnimationLog {
      * does not match any activities on the model.
      * @return 
      */
-    private double getApproxMinMoveModelCost() {
+    public double getApproxMinMoveModelCost() {
         double minUpperMMCost = Double.MAX_VALUE;
         for (ReplayTrace trace : this.getTraces()) {
             if (minUpperMMCost > trace.getUpperMoveCostOnModel()) {

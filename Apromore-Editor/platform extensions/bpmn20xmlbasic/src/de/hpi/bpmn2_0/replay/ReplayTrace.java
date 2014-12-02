@@ -424,7 +424,7 @@ public class ReplayTrace {
     }
     
     /*
-    * timeOrderedReplayedNodes keeps the tracenode in replay order. Note that
+    * timeOrderedReplayedNodes keeps the trace node in replay order. Note that
     * replay order follows the order of the trace event, so they are in ascending timing order.
     * In addition, in this order, the split gateway is always after the joining gateway and their
     * branch nodes are all in between them.
@@ -449,8 +449,8 @@ public class ReplayTrace {
             if (!node.isTimed()) {
                 
                 //----------------------------------------
-                //go backward and look for time node 
-                //known that start node is always timed
+                //go backward and look for a timed node, 
+                //known that start node is always timed or there is a timed activity
                 //----------------------------------------
                 for (int j=i-1;j>=0;j--) {
                     if (timeOrderedReplayedNodes.get(j).isTimed()) {
@@ -461,7 +461,7 @@ public class ReplayTrace {
                 }
                 
                 //----------------------------------------
-                //go forward and look for time node
+                //go forward and look for a timed node,
                 //known that end node is always timed or there is always a timed activity 
                 //----------------------------------------
                 for (int j=i+1;j<timeOrderedReplayedNodes.size();j++) {
@@ -473,12 +473,13 @@ public class ReplayTrace {
                 }
                 
                 //----------------------------------------
-                //It can happen that timeBefore = timeAfter due to two activities
+                //It may happen that timeBefore = timeAfter due to two activities
                 //on parallel branches and have the same timestamp
                 //----------------------------------------
                 if (timeBefore != null && timeAfter != null && timeBefore.isEqual(timeAfter) && 
                    !node.getSources().contains(timeOrderedReplayedNodes.get(timeBeforePos))) {
-                    if (node.getSources().size() <= 1) { //for activity or split gateway: continue search backward
+                    //For activity or split gateway: continue search backward for another timed node
+                    if (node.getSources().size() <= 1) { 
                         for (int j=timeBeforePos-1;j>=0;j--) {
                             if (timeOrderedReplayedNodes.get(j).isTimed() &&
                                 timeOrderedReplayedNodes.get(j).getStart().isBefore(timeAfter)) {
@@ -488,7 +489,8 @@ public class ReplayTrace {
                             }
                         }
                     }
-                    else {  //for joining gateway: continue search forward
+                    //For joining gateway: continue search forward for another timed node
+                    else {  
                         for (int j=timeAfterPos+1;j<timeOrderedReplayedNodes.size();j++) {
                             if (timeOrderedReplayedNodes.get(j).isTimed() && 
                                 timeOrderedReplayedNodes.get(j).getStart().isAfter(timeBefore)) {
