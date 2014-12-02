@@ -7,6 +7,7 @@ import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.replay.AnimationLog;
+import de.hpi.bpmn2_0.replay.Optimizer;
 import de.hpi.bpmn2_0.replay.ReplayParams;
 import de.hpi.bpmn2_0.replay.Replayer;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
@@ -62,6 +63,7 @@ public class BPMNAnimationServlet extends HttpServlet {
         PrintWriter out=null;
         List<Log> logs = new ArrayList<>();
         Set<XLog> xlogs = new HashSet<>();
+        Set<XLog> optimizedLogs = new HashSet<>();
         String jsonData = "";
         Definitions bpmnDefinition = null;
         
@@ -154,6 +156,21 @@ public class BPMNAnimationServlet extends HttpServlet {
             } else {
                 LOGGER.info("JSON data sent to server is empty");
             }
+            
+            
+            /*
+            * ------------------------------------------
+            * Optimize logs and process model
+            * ------------------------------------------
+            */
+            /*
+            Optimizer optimizer = new Optimizer();
+            for (XLog log : xlogs) {
+                optimizedLogs.add(optimizer.optimizeLog(log));
+            }
+            bpmnDefinition = optimizer.optimizeProcessModel(bpmnDefinition);
+            */
+            
             
             /*
             * ------------------------------------------
