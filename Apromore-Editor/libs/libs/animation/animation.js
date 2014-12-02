@@ -356,9 +356,9 @@ Controller.prototype = {
            
            cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
            
-           cellAlgoTime.innerHTML = logs[i].algoTime/1000;
+           cellAlgoTime.innerHTML = logs[i].algoTime;
            
-           cellTotalTime.innerHTML = logs[i].totalTime/1000;
+           cellTotalTime.innerHTML = logs[i].totalTime;
        }    
 
        this.start();
