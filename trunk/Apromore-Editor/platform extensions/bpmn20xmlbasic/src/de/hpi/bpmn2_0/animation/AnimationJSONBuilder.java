@@ -228,11 +228,12 @@ public class AnimationJSONBuilder {
         DateTime start = ((TraceNode)sequenceFlow.getSourceRef()).getComplete();
         DateTime end = ((TraceNode)sequenceFlow.getTargetRef()).getStart();
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
-        double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
+        //double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
+        double duration = (end.getMillis() - start.getMillis())*this.getTimeConversionRatio(); // in milliseconds
         
         DecimalFormat df = new DecimalFormat("#.#####");        
         json.put("begin", df.format(begin));
-        json.put("dur", df.format(duration));
+        json.put("dur", df.format(1.0*duration/1000));
 
         /*
         if (((TraceNode)sequenceFlow.getSourceRef()).isVirtual()) {
@@ -254,11 +255,12 @@ public class AnimationJSONBuilder {
         DateTime start = node.getStart();
         DateTime end = node.getComplete();
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
-        double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
+        //double duration = Seconds.secondsBetween(start, end).getSeconds()*this.getTimeConversionRatio();
+        double duration = (end.getMillis() - start.getMillis())*this.getTimeConversionRatio(); // in milliseconds
         
         DecimalFormat df = new DecimalFormat("#.#####");        
         json.put("begin", df.format(begin));
-        json.put("dur", df.format(duration));
+        json.put("dur", df.format(1.0*duration/1000));
         
         if (node.isActivitySkipped()) {
             json.put("isVirtual", "true");
