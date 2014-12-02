@@ -21,7 +21,8 @@ public class Backtracking {
     private boolean fullTraceMatched = false; //total trace is achieved
     private Set<Node> generatedNodes = new HashSet(); //keep all nodes created during exploration
     private Node bestNode = null;
-    private Set<Node> completeNodesForShortestPathFinding = new HashSet();
+    private Set<Node> completeNodesForShortestPathExploration = new HashSet();
+    private Node shortestPathNode = null;
     
     private ReplayParams params;
     private XTrace trace;
@@ -31,7 +32,7 @@ public class Backtracking {
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     private static String indent = ""; //just for printing to log for debugging
     
-    /*
+   /**
     * Backtracking algorithm is used to search for a solution on a 
     * state space. The problem space here can be viewed as a tree in which every node
     * is a a choice/decision (partial state) and children nodes are next choices.
@@ -57,10 +58,15 @@ public class Backtracking {
         indent = "";
     }    
     
-    /*
-    * Explore long trace by chunk. 
-    * At beginning, it is one starting node.    
-    * Select the best node for next exploration after finishing a chunk
+   /**
+    * Explore token play path for a trace, starting from the Start event node.
+    * In case of long trace, to avoid very large state space, the trace can 
+    * be played in chunks (progressSize) until the trace is finished
+    * In case the trace has been played out but the movement on the model not yet
+    * reaches a completion state, extra effort is tried to reach a completion state
+    * on the model via a shortest token path. The rest of movement is all gateway and activity_skip.
+    * Return the leaf node of the selected path
+    * The return path is always equal or longer than the trace alignment
     */
     public Node explore() {
         //-------------------------------------------------------
@@ -135,11 +141,34 @@ public class Backtracking {
             */
         }
         
-        //clean all nodes not on the path from selectedNode back to root
+        //--------------------------------------------------
+        // Continue token play to the end if the state on the model not yet
+        // reaches the completion state (proper or improper). The remaining
+        // movement does not allow loops, so it only flows towards the End event
+        //--------------------------------------------------
+        Node completionNode=null;
+        if (selectedNode != null && !selectedNode.getState().isProperCompletion() && !selectedNode.getState().isImproperCompletion()) {
+            totalNodesVisited = 0;
+            indent = "";
+            this.exploreShortestPath(selectedNode);
+            //bestNode = this.selectNodeForShortestPathExploration();
+            bestNode = shortestPathNode;
+            completionNode = bestNode;
+        }
         
-        return selectedNode;
+        if (completionNode != null) {
+            return completionNode;
+        }
+        else {
+            return selectedNode;
+        }
     }
-        
+    
+    /**
+     * Explore the token play path for a trace, starting from the input Node
+     * @param node: input node
+     * During this exploration, bestNode contains the best node found so far
+     */
     public void explore(Node node) {
         if (params.isBacktrackingDebug()) {
             LOGGER.info(indent + "Entering explore(" + 
@@ -163,7 +192,7 @@ public class Backtracking {
             indent = indent + "|  ";
         }
         
-        generatedNodes.add(node);
+        generatedNodes.add(node); //keep track of all nodes for clearance
         totalNodesVisited++;
         
         if (reject(node)) {
@@ -200,7 +229,11 @@ public class Backtracking {
         }
     }
     
-    public Node exploreForShortestPath() {
+    /**
+     * Explore a shortest token play path from the Start event node
+     * @return: the leaf node of the shortest path
+     */
+    public Node exploreShortestPath() {
         //----------------------------------------------
         // Starting node is Start Event, one token is on the sequence flow
         // followed the Start Event
@@ -211,15 +244,18 @@ public class Backtracking {
                                               trace, 0, helper, params));
         totalNodesVisited = 0; 
         indent = "";
-        this.exploreForShortestPath(firstNode);
-        return this.selectNodeForShortestPathFinding();
+        this.exploreShortestPath(firstNode);
+        //bestNode = this.selectNodeForShortestPathExploration();
+        bestNode = shortestPathNode;
+        return bestNode;
     }
     
     /**
-     * Explore a token play path from the input node to the End event
-     * @param node 
+     * Explore a shortest token play path from the input node to the End event
+     * @param node: the start node
+     * completeNodesForShortestPathExploration: contains all proper and improper completion state nodes
      */
-    public void exploreForShortestPath(Node node) {
+    public void exploreShortestPath(Node node) {
         if (params.isBacktrackingDebug()) {
             LOGGER.info(indent + "Entering explorePathToEnd(" + 
                         node.getState().getName()+ 
@@ -229,15 +265,23 @@ public class Backtracking {
             indent = indent + "|  ";
         }
         
-        generatedNodes.add(node);
+        generatedNodes.add(node); //keep track of all nodes for clearance
         totalNodesVisited++;
         
-        if (node.getState().isCompleteState()) {
-            completeNodesForShortestPathFinding.add(node); //add to list of complete nodes
+        if (shortestPathNode!=null && node.getActivitySkipCount() > shortestPathNode.getActivitySkipCount()) {
+            if (params.isBacktrackingDebug()) {
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected!");
+            }            
+        }
+        else if (node.getState().isProperCompletion() || node.getState().isImproperCompletion()) {
+            //completeNodesForShortestPathExploration.add(node); //add to list of complete nodes
+            if ((shortestPathNode == null) || 
+                (shortestPathNode != null && node.getActivitySkipCount() < shortestPathNode.getActivitySkipCount())) {
+                shortestPathNode = node;
+            }
             
             if (params.isBacktrackingDebug()) {
-                indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is complete");
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is proper completion!");
             }
             totalNodesVisited--;
             return;
@@ -246,7 +290,7 @@ public class Backtracking {
             Collection<Node> childs = nextNodesForShortestPathFinding(node);
             if (childs.size() > 0) {
                 for (Iterator<Node> it = childs.iterator(); it.hasNext();) {
-                    exploreForShortestPath(it.next());
+                    exploreShortestPath(it.next());
                 }
             }
             else {
@@ -263,7 +307,7 @@ public class Backtracking {
         }
     }
     
-    /*
+    /**
      * Return list of next nodes to explore
      * This list is prioritized to select the best node leading to highest match
      */
@@ -275,7 +319,7 @@ public class Backtracking {
         return node.getChildrenForShortestPathFinding();
     }
     
-    /*
+    /**
      * Reject a node and prune the tree from the node as root
      */
     private boolean reject(Node node) {
@@ -358,14 +402,14 @@ public class Backtracking {
     
     /**
      * Select the node with least cost and least depth from
-     * completeNodesForShortestPathFinding
+     * completeNodesForShortestPathExploration
      * @return selected node or null
      */
-    public Node selectNodeForShortestPathFinding() {
+    public Node selectNodeForShortestPathExploration() {
         Node selectedNode = null;
         double minCost = Integer.MAX_VALUE;
         double minDepth = Integer.MAX_VALUE;
-        for (Node node : completeNodesForShortestPathFinding) { 
+        for (Node node : completeNodesForShortestPathExploration) { 
             if (node.getCost() < minCost) {
                 selectedNode = node;
                 minCost = node.getCost();
@@ -404,11 +448,7 @@ public class Backtracking {
             }
         }
         generatedNodes.clear();
-        
-        for (Node completeNode : completeNodesForShortestPathFinding) {
-            completeNode.clear();
-        }
-        completeNodesForShortestPathFinding.clear();
+        completeNodesForShortestPathExploration.clear();
         
         params = null;
         trace = null;

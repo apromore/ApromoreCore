@@ -167,10 +167,15 @@ public class Node {
                                             if (n1.getCost() < n2.getCost()) {
                                                 return -1;
                                             }
-                                        }
-                                        else if (n1.getCost() == n2.getCost()) {
-                                            if (n1.getDepth() < n2.getDepth()) {
-                                                return -1;
+                                            else if (n1.getCost() == n2.getCost()) {
+                                                if (n1.getDepth() < n2.getDepth()) {
+                                                    return -1;
+                                                }
+                                                else if (n1.getDepth() == n2.getDepth()) {
+                                                    if (n1.getState().getMarkings().size() < n2.getState().getMarkings().size()) {
+                                                        return -1;
+                                                    }
+                                                }
                                             }
                                         }
                                         return +1;
@@ -187,7 +192,7 @@ public class Node {
     
     public Set<Node> getChildrenForShortestPathFinding() {
         Set<Node> childs = new HashSet(); 
-        for (State nextState : state.nextStatesForShortestPathFinding()) {
+        for (State nextState : state.nextStatesForShortestPathExploration()) {
             childs.add(new Node(this, nextState));
         }
         return childs;
