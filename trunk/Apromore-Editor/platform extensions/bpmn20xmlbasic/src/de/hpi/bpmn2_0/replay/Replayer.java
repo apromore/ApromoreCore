@@ -95,6 +95,7 @@ public class Replayer {
         
         double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
         double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
+        long algoRuntime = animationLog.getAlgoRuntime();
         long endTime = DateTimeUtils.currentTimeMillis();
         animationLog.setTotalTime(endTime - startTime);
 
@@ -102,12 +103,19 @@ public class Replayer {
             LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
                         ". Trace Fitness:" + traceFitness +
                         ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
+                        ". totalAlgoTime:" + algoRuntime +
+                        ". totalTime:" + animationLog.getTotalTime() +
                         ". StartDate:" + animationLog.getStartDate().toString() +
                         ". EndDate:" + animationLog.getEndDate() +
                         ". Color:" + animationLog.getColor());        
             LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
+            double minMMCost = animationLog.getApproxMinMoveModelCost();
             for (ReplayTrace trace : animationLog.getTraces()) {
-                LOGGER.info("Trace " + trace.getId() + "," + trace.getTraceFitness(minBoundMoveCostOnModel) + "," + trace.getBacktrackingNode().getPathString());
+                LOGGER.info(trace.getId() + "," + 
+                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
+                            trace.getApproxTraceFitness(minMMCost) + "," + 
+                            trace.getBacktrackingNode().getPathString());
             }
         } else {
             LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
@@ -159,6 +167,7 @@ public class Replayer {
         
         double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
         double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
+        long algoRuntime = animationLog.getAlgoRuntime();
         long endTime = DateTimeUtils.currentTimeMillis();
         animationLog.setTotalTime(endTime - startTime);
 
@@ -166,12 +175,20 @@ public class Replayer {
             LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
                         ". Trace Fitness:" + traceFitness +
                         ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
+                        ". totalAlgoTime:" + algoRuntime +
+                        ". totalTime:" + animationLog.getTotalTime() +
+                        ". StartDate:" + animationLog.getStartDate().toString() +
                         ". StartDate:" + animationLog.getStartDate().toString() +
                         ". EndDate:" + animationLog.getEndDate() +
                         ". Color:" + animationLog.getColor());   
             LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
+            double minMMCost = animationLog.getApproxMinMoveModelCost();
             for (ReplayTrace trace : animationLog.getTraces()) {
-                LOGGER.info("Trace " + trace.getId() + "," + trace.getTraceFitness(minBoundMoveCostOnModel) + "," + trace.getBacktrackingNode().getPathString());
+                LOGGER.info(trace.getId() + "," + 
+                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
+                            trace.getApproxTraceFitness(minMMCost) + "," + 
+                            trace.getBacktrackingNode().getPathString());
             }
         } else {
             LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
@@ -184,8 +201,10 @@ public class Replayer {
     /*
     * Replay using backtracking algorithm
     * Return replay trace or empty if backtracking returns no result
-    * Noted side effect: the input trace can be preprocessed (activities not in the model are removed)
+    * Side effect: the input trace can be preprocessed (activities not in the model are removed)
     * Assume: encodedTraces has been created for the log.
+    * The Start event will be assigned a timestamp 20 seconds before the first trace event
+    * The End event will be assigned a timestamp 60 seconds after the last trace event
     */
     public ReplayTrace replay(XTrace trace) {
         Node leafNode; //contains the found backtracking leaf node
@@ -214,7 +233,7 @@ public class Replayer {
             }
 
             //--------------------------------------------
-            // Replay trace with backtracking algorithm
+            // Replay trace with backtracking algorithm and measure time
             //--------------------------------------------
             Backtracking backtrack = new Backtracking(this.params, trace, helper);
             start = System.currentTimeMillis();
@@ -238,7 +257,7 @@ public class Replayer {
         }
         
         //---------------------------------------------
-        // Create replay trace from the backtracking result
+        // Create replay trace from the selected token play path
         // Use the model node and markings in every backtracking node's state 
         // to identify the connection between nodes. The state's model node is
         // the activity or gateway taken and the markings contains
@@ -281,7 +300,9 @@ public class Replayer {
                 //---------------------------------------
                 traceNode = new TraceNode(modelNode);
                 
-                //Connect this node to its incoming nodes based on the replay result
+                //Connect this node to its incoming nodes based on the replay markings
+                //The difference between current node's markings and previous node's 
+                //are tokens to be moved
                 moves = (Set)((HashSet)previousMarkings).clone();
                 moves.removeAll(node.getState().getMarkings()); //moves contains tokens consumed                
                 for (SequenceFlow takenFlow : moves) {
@@ -309,7 +330,7 @@ public class Replayer {
             if (helper.getTargets(modelNode).contains(helper.getEndEvent())) {
                 //traceNode = replayTrace.getMarkingsMap().get(helper.getEndEvent());
                 traceNode = new TraceNode(helper.getEndEvent());
-                traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(20));
+                traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(60));
                 replayTrace.add(modelNode, traceNode);
                 replayTrace.addToReplayedList(helper.getEndEvent());
             }
@@ -325,7 +346,7 @@ public class Replayer {
     public double getMinBoundMoveCostOnModel() {
         if (minBoundMoveCostOnModel < 0) {
             Backtracking backtrack = new Backtracking(this.params, helper);
-            Node selectedNode = backtrack.exploreForShortestPath();
+            Node selectedNode = backtrack.exploreShortestPath();
             double minMMCost = 0;
             if (selectedNode != null) {
                 Node node = selectedNode;
