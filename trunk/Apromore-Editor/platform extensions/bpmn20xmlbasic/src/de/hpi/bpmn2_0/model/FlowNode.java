@@ -78,6 +78,8 @@ public abstract class FlowNode extends FlowElement {
     @XmlSchemaType(name = "IDREF")
     @XmlElement(name = "outgoing")
     protected List<SequenceFlow> _outgoingSequenceFlows;
+    
+    protected Object nameRef = null;
 
     /**
      * Default constructor
@@ -220,4 +222,12 @@ public abstract class FlowNode extends FlowElement {
 
         return _outgoingSequenceFlows;
     }
+    
+    public Object getNameRef() {
+        return nameRef;
+    }
+    
+    public void setNameRef(Object nameRef) {
+        this.nameRef = nameRef;
+    }    
 }
