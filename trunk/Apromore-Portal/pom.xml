@@ -397,11 +397,6 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkbind</artifactId>
-            <version>6.5.3</version>
-        </dependency>
     </dependencies>
 
 </project>

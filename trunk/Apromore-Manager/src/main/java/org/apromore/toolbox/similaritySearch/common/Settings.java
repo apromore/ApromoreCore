@@ -20,10 +20,9 @@
 
 package org.apromore.toolbox.similaritySearch.common;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.StringTokenizer;
-
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
+
+import java.util.StringTokenizer;
 
 import static java.lang.Class.forName;
 

@@ -20,15 +20,18 @@
 
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
+import org.apromore.toolbox.similaritySearch.common.Settings;
+import org.apromore.toolbox.similaritySearch.common.stemmer.PorterStemmer;
+import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
+
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apromore.toolbox.similaritySearch.common.Settings;
-import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
-
 
 public class LabelEditDistance {
+
+    private static PorterStemmer porterStemmer = new PorterStemmer();
 
     public static double edTokensWithStemming(String a, String b, String delimeter, SnowballStemmer stemmer, boolean stem) {
 
@@ -93,23 +96,27 @@ public class LabelEditDistance {
 
         double mappedWeightFunc = 0;
 
-        int[][] result = HungarianAlgorithm.computeAssignments(costFuncCopy);
+        if(costFunc.length > 0) {
+            int[][] result = HungarianAlgorithm.computeAssignments(costFuncCopy);
 
-        for (int i = 0; i < result.length; i++) {
-            mappedWeightFunc += (-1) * costFunc[result[i][0]][result[i][1]];
+            for (int i = 0; i < result.length; i++) {
+                mappedWeightFunc += (-1) * costFunc[result[i][0]][result[i][1]];
+            }
+
+            // TOTAL mappingscore
+            double mappingScore = 0;
+            double mappedWeight = mappedWeightFunc;
+
+
+            if (mappedWeight == 0) {
+                mappingScore = 0;
+            } else {
+                mappingScore = mappedWeight * 2 / (aTokens.size() + bTokens.size());
+            }
+            return mappingScore;
+        }else {
+            return 0;
         }
-
-        // TOTAL mappingscore
-        double mappingScore = 0;
-        double mappedWeight = mappedWeightFunc;
-
-
-        if (mappedWeight == 0) {
-            mappingScore = 0;
-        } else {
-            mappingScore = mappedWeight * 2 / (aTokens.size() + bTokens.size());
-        }
-        return mappingScore;
     }
 
 
@@ -122,11 +129,18 @@ public class LabelEditDistance {
         for (String s : toRemove) {
             s = s.toLowerCase();
             if (s.length() > 2 && (!stemmer.hasStopWords() || stemmer.hasStopWords() && !stopWords.contains(s))) {
-                stemmer.setCurrent(s);
-                for (int i = repeat; i != 0; i--) {
-                    stemmer.stem();
+                String stemmedString;
+                if(porterStemmer == null) {
+                    stemmer.setCurrent(s);
+                    for (int i = repeat; i != 0; i--) {
+                        stemmer.stem();
+                    }
+                    stemmedString = stemmer.getCurrent();
+                }else {
+                    porterStemmer.add(s);
+                    porterStemmer.stem();
+                    stemmedString = porterStemmer.toString();
                 }
-                String stemmedString = stemmer.getCurrent();
                 result.add(stemmedString);
             }
         }
@@ -140,14 +154,21 @@ public class LabelEditDistance {
 
         for (String s : toRemove) {
             s = s.toLowerCase();
-//			if ( s.length() > 2) {
-            stemmer.setCurrent(s);
-            for (int i = repeat; i != 0; i--) {
-                stemmer.stem();
-            }
-            String stemmedString = stemmer.getCurrent();
-            result.add(stemmedString);
-//			}
+            String stemmedString;
+			if ( s.length() > 2) {
+                if(porterStemmer == null) {
+                    stemmer.setCurrent(s);
+                    for (int i = repeat; i != 0; i--) {
+                        stemmer.stem();
+                    }
+                    stemmedString = stemmer.getCurrent();
+                }else {
+                    porterStemmer.add(s);
+                    porterStemmer.stem();
+                    stemmedString = porterStemmer.toString();
+                }
+                result.add(stemmedString);
+			}
         }
         return result;
     }
