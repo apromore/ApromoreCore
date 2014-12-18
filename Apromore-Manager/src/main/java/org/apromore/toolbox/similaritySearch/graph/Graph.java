@@ -112,7 +112,7 @@ public class Graph {
     }
 
     public String getGraphLabel() {
-        return "";
+        return name;
     }
 
     public List<Vertex> getPreset(String vertexId) {

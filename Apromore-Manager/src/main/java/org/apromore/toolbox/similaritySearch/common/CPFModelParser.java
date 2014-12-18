@@ -20,50 +20,16 @@
 
 package org.apromore.toolbox.similaritySearch.common;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.HardType;
-import org.apromore.cpf.HumanType;
-import org.apromore.cpf.InputOutputType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.NonhumanType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ObjectRefType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.SoftType;
-import org.apromore.cpf.StateType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TypeAttribute;
-import org.apromore.cpf.WorkType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
-import org.apromore.manager.ManagerPortalEndpoint;
-import org.apromore.toolbox.similaritySearch.graph.Edge;
-import org.apromore.toolbox.similaritySearch.graph.Graph;
-import org.apromore.toolbox.similaritySearch.graph.Vertex;
+import com.processconfiguration.ConfigurationAnnotation;
+import com.processconfiguration.Variants;
+import org.apromore.cpf.*;
+import org.apromore.toolbox.similaritySearch.graph.*;
 import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
 import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
-import org.apromore.toolbox.similaritySearch.graph.VertexObject;
-import org.apromore.toolbox.similaritySearch.graph.VertexObjectRef;
-import org.apromore.toolbox.similaritySearch.graph.VertexResource;
-import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class CPFModelParser {
 
@@ -71,7 +37,13 @@ public class CPFModelParser {
 
     public static Graph readModel(CanonicalProcessType cpf) {
         Graph epcGraph = new Graph();
-        epcGraph.name = cpf.getName();
+        for(TypeAttribute attribute : cpf.getAttribute()) {
+            if(attribute.getName().equals("ProcessName")) {
+                epcGraph.name = attribute.getValue();
+                epcGraph.ID = attribute.getValue();
+                break;
+            }
+        }
 
         NetType mainNet = null;
         for (NetType n : cpf.getNet()) {
@@ -295,10 +267,12 @@ public class CPFModelParser {
             ot.setConfigurable(o.isConfigurable());
             ot.setId(o.getId());
             ot.setName(o.getName());
-            TypeAttribute a = new TypeAttribute();
-            a.setName("configurationAnnotation");
-            a.setValue(parseAnnotationFromSet(o.getModels()));
-            ot.getAttribute().add(a);
+            if(o.isConfigurable()) {
+                ot.setConfigurable(true);
+//                a.setName("configurationAnnotation");
+//                a.setValue(parseAnnotationFromSet(o.getModels()));
+//                ot.getAttribute().add(a);
+            }
             toReturn.getNet().get(0).getObject().add(ot);
         }
 
@@ -314,10 +288,14 @@ public class CPFModelParser {
             rt.setConfigurable(r.isConfigurable());
             rt.setId(r.getId());
             rt.setName(r.getName());
-            TypeAttribute a = new TypeAttribute();
-            a.setName("configurationAnnotation");
-            a.setValue(parseAnnotationFromSet(r.getModels()));
-            rt.getAttribute().add(a);
+
+            if(r.isConfigurable()) {
+                rt.setConfigurable(true);
+            }
+//            TypeAttribute a = new TypeAttribute();
+//            a.setName("configurationAnnotation");
+//            a.setValue(parseAnnotationFromSet(r.getModels()));
+//            rt.getAttribute().add(a);
             toReturn.getResourceType().add(rt);
         }
 
@@ -351,21 +329,25 @@ public class CPFModelParser {
                         n = new XORSplitType();
                     }
                 }
-                if (v.isAddedGW()) {
-                    TypeAttribute a = new TypeAttribute();
-                    a.setName("added");
-                    a.setValue("true");
-                    n.getAttribute().add(a);
-                }
+//                if (v.isAddedGW()) {
+//                    TypeAttribute a = new TypeAttribute();
+//                    a.setName("added");
+//                    a.setValue("true");
+//                    n.getAttribute().add(a);
+//                }
             }
 
-            n.setConfigurable(v.isConfigurable());
+//            n.setConfigurable(v.isConfigurable());
             n.setId(v.getID());
             n.setName(v.getLabel());
-            TypeAttribute a = new TypeAttribute();
-            a.setName("configurationAnnotation");
-            a.setValue(parseAnnotationFromMap(v.getAnnotationMap()));
-            n.getAttribute().add(a);
+
+            if(v.isConfigurable()) {
+                n.setConfigurable(true);
+            }
+//            TypeAttribute a = new TypeAttribute();
+//            a.setName("configurationAnnotation");
+//            a.setValue(parseAnnotationFromMap(v.getAnnotationMap()));
+//            n.getAttribute().add(a);
 
             if (v.getType().equals(Vertex.Type.event) || v.getType().equals(Vertex.Type.function)) {
                 // object ref
@@ -380,10 +362,10 @@ public class CPFModelParser {
                     oRef.setObjectId(o.getObjectID());
                     oRef.setOptional(o.isOptional());
                     // attributes
-                    TypeAttribute a1 = new TypeAttribute();
-                    a1.setName("configurationAnnotation");
-                    a1.setValue(parseAnnotationFromSet(o.getModels()));
-                    oRef.getAttribute().add(a1);
+//                    TypeAttribute a1 = new TypeAttribute();
+//                    a1.setName("configurationAnnotation");
+//                    a1.setValue(parseAnnotationFromSet(o.getModels()));
+//                    oRef.getAttribute().add(a1);
 
                     ((WorkType) n).getObjectRef().add(oRef);
                 }
@@ -393,16 +375,40 @@ public class CPFModelParser {
                     rRef.setResourceTypeId(r.getResourceID());
                     rRef.setQualifier(r.getQualifier());
                     // attrubutes
-                    TypeAttribute a1 = new TypeAttribute();
-                    a1.setName("configurationAnnotation");
-                    a1.setValue(parseAnnotationFromSet(r.getModels()));
-                    rRef.getAttribute().add(a1);
+//                    TypeAttribute a1 = new TypeAttribute();
+//                    a1.setName("configurationAnnotation");
+//                    a1.setValue(parseAnnotationFromSet(r.getModels()));
+//                    rRef.getAttribute().add(a1);
 
                     ((WorkType) n).getResourceTypeRef().add(rRef);
                 }
             }
             net.getNode().add(n);
         }
+
+        Set<String> setVariants = new HashSet<String>();
+        for (Edge e : g.getEdges()) {
+            setVariants.addAll(e.getLabels());
+        }
+        HashMap<String, String> mapVariants = new HashMap<String, String>();
+        for(String variant : setVariants) {
+            String id = "vid-"+idGenerator.getNextId();
+            mapVariants.put(id, variant);
+        }
+
+        HashMap<String, Variants.Variant> reverseMapVariants = new HashMap<String, Variants.Variant>();
+        TypeAttribute attributeVariants = new TypeAttribute();
+        attributeVariants.setName("bpmn_cpf/extensions");
+        Variants variants = new Variants();
+        for(Map.Entry<String, String> entry : mapVariants.entrySet()) {
+            Variants.Variant variant = new Variants.Variant();
+            variant.setId(entry.getKey());
+            variant.setName(entry.getValue());
+            variants.getVariant().add(variant);
+            reverseMapVariants.put(entry.getValue(), variant);
+        }
+        attributeVariants.setAny(variants);
+        toReturn.getAttribute().add(attributeVariants);
 
         for (Edge e : g.getEdges()) {
             EdgeType et = new EdgeType();
@@ -411,10 +417,37 @@ public class CPFModelParser {
             et.setSourceId(e.getFromVertex());
             et.setTargetId(e.getToVertex());
             // attributes
-            TypeAttribute a = new TypeAttribute();
-            a.setName("configurationAnnotation");
-            a.setValue(parseAnnotationFromSet(e.getLabels()));
-            et.getAttribute().add(a);
+            if(e.getLabels().size() > 0) {
+//                boolean afterSplit = false;
+                for(NodeType nt : net.getNode()) {
+                    if(nt.getId().equals(et.getSourceId()) && nt instanceof RoutingType) {
+                        nt.setConfigurable(true);
+//                        if(nt instanceof SplitType) {
+//                            afterSplit = true;
+//                        }
+                    }
+                    if(nt.getId().equals(et.getTargetId()) && nt instanceof RoutingType) {
+                        nt.setConfigurable(true);
+                    }
+                }
+//                if(afterSplit) {
+                    TypeAttribute a = new TypeAttribute();
+                    a.setName("bpmn_cpf/extensions");
+                    ConfigurationAnnotation configurationAnnotation = new ConfigurationAnnotation();
+                    for (String variant : e.getLabels()) {
+                        ConfigurationAnnotation.Configuration configuration = new ConfigurationAnnotation.Configuration();
+                        configuration.setVariantRef(reverseMapVariants.get(variant));
+                        configurationAnnotation.getConfiguration().add(configuration);
+                    }
+                    a.setAny(configurationAnnotation);
+                    et.getAttribute().add(a);
+//                }
+            }
+
+//            TypeAttribute a = new TypeAttribute();
+//            a.setName("configurationAnnotation");
+//            a.setValue(parseAnnotationFromSet(e.getLabels()));
+//            et.getAttribute().add(a);
             net.getEdge().add(et);
         }
 

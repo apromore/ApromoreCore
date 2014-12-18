@@ -20,21 +20,14 @@
 
 package org.apromore.cpf;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import org.apromore.cpf.cache.CachedJaxbContext;
-import org.xml.sax.SAXException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Utilities for working with the CPF (Validation/Parsing)
@@ -94,7 +87,8 @@ public class CPFSchema {
      * @return
      * @throws SAXException
      */
-    public static Schema getCPFSchema() throws SAXException {
+    public static Schema
+    getCPFSchema() throws SAXException {
         SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
         return sf.newSchema(CPFSchema.class.getResource(CPF_SCHEMA_LOCATION));
     }

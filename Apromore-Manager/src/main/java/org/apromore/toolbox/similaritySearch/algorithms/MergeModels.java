@@ -20,8 +20,6 @@
 
 package org.apromore.toolbox.similaritySearch.algorithms;
 
-
-import org.apromore.toolbox.similaritySearch.common.CPFModelParser;
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
@@ -207,19 +205,10 @@ public class MergeModels {
 
                 if (!g1Source.getType().equals(Vertex.Type.gateway)) {
 
-//					if ()
                     Vertex newSource = new Vertex(Vertex.GWType.xor, idGenerator.getNextId());
 
                     newSource.setConfigurable(true);
-                    LOGGER.error("SET CONFIGURABLE 1 "+newSource.isConfigurable());
                     merged.addVertex(newSource);
-
-                    for (Vertex v : merged.getVertices()) {
-
-                        if (v.getType().equals(Vertex.Type.gateway) && v.isConfigurable()) {
-                            LOGGER.error("CONFIGURABLE");
-                        }
-                    }
 
                     merged.connectVertices(newSource, g1Source, labelsg1g2);
                     for (Vertex v : g1SourcePrev) {
@@ -258,8 +247,6 @@ public class MergeModels {
 //						newEdge.addLabelToModel();
                     }
 
-                    LOGGER.error("Partial 1 count "+merged.getNrOfConfigGWs()[0]);
-
                 }
                 // this is gateway
                 else {
@@ -288,7 +275,6 @@ public class MergeModels {
                 if (!g1Sink.getType().equals(Vertex.Type.gateway)) {
                     Vertex newSink = new Vertex(Vertex.GWType.xor, idGenerator.getNextId());
                     newSink.setConfigurable(true);
-                    LOGGER.error("SET CONFIGURABLE 2 "+newSink.isConfigurable());
 //					System.out.println("newSink "+ newSink.getID());
                     try {
                         merged.getVertexLabel(newSink.getID());
@@ -299,14 +285,6 @@ public class MergeModels {
                     }
 
                     merged.addVertex(newSink);
-
-                    for (Vertex v : merged.getVertices()) {
-
-                        if (v.getType().equals(Vertex.Type.gateway) && v.isConfigurable()) {
-                            LOGGER.error("CONFIGURABLE");
-                        }
-                    }
-
 
                     merged.connectVertices(g1Sink, newSink, labelsg1g2);
 
@@ -339,8 +317,6 @@ public class MergeModels {
                             newEdge.addLabel(g2.getGraphLabel());
                         }
                     }
-
-                    LOGGER.error("Partial 2 count "+merged.getNrOfConfigGWs()[0]);
 
                 }else {
                     for (Vertex v : g2SourceFoll) {
@@ -393,7 +369,6 @@ public class MergeModels {
                 if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
                         vp.getLeft().getGWType().equals(vp.getRight().getGWType())
                         && (vp.getLeft().isAddedGW() || vp.getRight().isAddedGW())) {
-                    LOGGER.error("SET CONFIGURABLE 3");
                     vp.getLeft().setConfigurable(true);
                 }
 
@@ -407,7 +382,6 @@ public class MergeModels {
                 if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
                         !vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
                     vp.getLeft().setGWType(Vertex.GWType.or);
-                    LOGGER.error("SET CONFIGURABLE 4");
                     vp.getLeft().setConfigurable(true);
 
                 }
@@ -440,7 +414,6 @@ public class MergeModels {
         merged.name = merged.name.substring(0, merged.name.length() - 1);
         merged.ID = String.valueOf(idGenerator.getNextId());
 
-        LOGGER.error("Number of Config GW "+gwInf[0]);
         return merged;
     }
 

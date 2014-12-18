@@ -22,9 +22,6 @@ package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ObjectFactory;
-import org.apromore.cpf.cache.CachedJaxbContext;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
@@ -49,10 +46,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
