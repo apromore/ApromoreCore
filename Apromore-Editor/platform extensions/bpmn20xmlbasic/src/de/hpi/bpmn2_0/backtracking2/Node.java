@@ -1,18 +1,11 @@
 package de.hpi.bpmn2_0.backtracking2;
 
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
-import org.deckfour.xes.model.XTrace;
-import org.joda.time.DateTime;
 
 /*
 * Represent a node in the state search tree
@@ -20,13 +13,13 @@ import org.joda.time.DateTime;
 */
 public class Node {
     private Node parent;
-    private SortedSet<Node> children = null;
     private State state;
     private double cost = Integer.MIN_VALUE;
     private int depth = Integer.MIN_VALUE;
     private int benefit = Integer.MIN_VALUE;
     private int matchCount = Integer.MIN_VALUE;
     private int activitySkipCount = Integer.MIN_VALUE;
+    private boolean isComplete = false;
     
     public Node(Node parent, State state) {
         this.parent = parent;
@@ -84,7 +77,7 @@ public class Node {
         return cost;
     }
     
-    public int getDiffSeries() {
+    public int getConsecutiveUnmatch() {
         int count = 0;
         if (this.getState().getElementStatus() == StateElementStatus.EVENT_SKIPPED || 
             this.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
@@ -130,29 +123,23 @@ public class Node {
         return state.isEndState();
     }
     
-    //Benefit of this state, can be different from the cost perspective
-    public int getBenefit() {
-        if (benefit == Integer.MIN_VALUE) {
-            if (this.parent != null) {
-                benefit = state.getBenefit() + parent.getBenefit();
-            }
-            else {
-                benefit = state.getBenefit();
-            }
-            
-        }
-        return benefit;
+    /**
+     * Set if this node is a complete node (end of trace finished within pruning conditions)
+     * @param isComplete 
+     */
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
     }
     
-    public double getValue() {
-        return 1.0*(this.getBenefit() - this.getCost());
+    public boolean isComplete() {
+        return this.isComplete;
     }
     
     public Node getParent() {
         return this.parent;
     }    
 
-    public SortedSet<Node> getChildren() {
+    public SortedSet<Node> getChildNodes() {
         //Use comparator to priroritize the list of nodes
         //Nodes with higher match count, lower cost and  lower depth 
         //will be in first order and selected first from the set.
@@ -168,11 +155,11 @@ public class Node {
                                                 return -1;
                                             }
                                             else if (n1.getCost() == n2.getCost()) {
-                                                if (n1.getDepth() < n2.getDepth()) {
+                                                if (n1.getState().getMarkings().size() < n2.getState().getMarkings().size()) {
                                                     return -1;
                                                 }
-                                                else if (n1.getDepth() == n2.getDepth()) {
-                                                    if (n1.getState().getMarkings().size() < n2.getState().getMarkings().size()) {
+                                                else if (n1.getState().getMarkings().size() == n2.getState().getMarkings().size()) {
+                                                    if (n1.getDepth() < n2.getDepth()) {
                                                         return -1;
                                                     }
                                                 }
@@ -181,21 +168,27 @@ public class Node {
                                         return +1;
                                     }
                                 }); 
-        if (children == null) {
-            for (State nextState : state.nextStates()) {
-                sortedChilds.add(new Node(this, nextState));
-            }
-            children = sortedChilds;
+        for (State nextState : state.nextStates(this)) {
+            sortedChilds.add(new Node(this, nextState));
         }
-        return children;
+        return sortedChilds;
     }    
     
-    public Set<Node> getChildrenForShortestPathFinding() {
-        Set<Node> childs = new HashSet(); 
-        for (State nextState : state.nextStatesForShortestPathExploration()) {
-            childs.add(new Node(this, nextState));
+    public Set<Node> getChildNodesForShortestPathFinding() {
+        SortedSet<Node> sortedChilds = new TreeSet<>(
+                                new Comparator<Node>() {
+                                    @Override
+                                    public int compare(Node n1, Node n2) {
+                                        if (n1.getState().getMarkings().size() < n2.getState().getMarkings().size()) {
+                                            return -1;
+                                        }
+                                        return +1;
+                                    }
+                                });         
+        for (State nextState : state.nextStatesForShortestPathExploration(this)) {
+            sortedChilds.add(new Node(this, nextState));
         }
-        return childs;
+        return sortedChilds;
     } 
     
     @Override
@@ -244,11 +237,56 @@ public class Node {
         return false;
     }
     
+    public boolean isBetterOrEqual(Node node) {
+        if (this.getMatchCount() > node.getMatchCount()) {
+            return true;
+        }
+        else if (this.getMatchCount() == node.getMatchCount()) {
+            if (this.getCost() < node.getCost()) {
+                return true;
+            }
+            else if (this.getCost() == node.getCost()) {
+                if (this.getDepth() <= node.getDepth()) {
+                    return true;
+                }
+            }
+        }        
+        return false;
+    }    
+    
+    /**
+     * Check if this node contains less number of Activity Skip node from root
+     * than the input node
+     * @param node
+     * @return
+     */
+    public boolean isShorterOrEqual(Node node) {      
+        return (this.getActivitySkipCount() <= node.getActivitySkipCount());
+    }    
+    
+    @Override
+    public boolean equals(Object node) {
+        if (node == null) {
+            return false;
+        }
+        if (node == this) {
+            return true;
+        }
+        if (node.getClass() != this.getClass()) {
+            return false;
+        }        
+        return state.equals(((Node)node).getState());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.state.hashCode();
+        return hash;
+    }
+    
     public void clear() {
         parent = null;
-        if (children != null) {
-            children.clear();
-        }
         state.clear();
         state = null;
     }
