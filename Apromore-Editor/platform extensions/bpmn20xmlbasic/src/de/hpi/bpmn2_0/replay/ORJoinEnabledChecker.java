@@ -24,7 +24,8 @@ import java.util.Set;
 */
 public class ORJoinEnabledChecker {
     private final FlowNode orNode;
-    private final Map<SequenceFlow, ORJoinLabel> edgeToLabelMap = new HashMap<>(); //map sequence flow Id to ORJoinLabel
+    //map sequence flow Id to ORJoinLabel, for every sequence flows in the model
+    private final Map<SequenceFlow, ORJoinLabel> edgeToLabelMap = new HashMap<>(); 
     private boolean someTokenArrived = false;
     private int nonZeroNonIgnoredCounters = 0;
     private boolean hasBeenPreProcessed = false;
@@ -178,16 +179,20 @@ public class ORJoinEnabledChecker {
         return (this.getNonZeroNonIgnored()==0 && this.someTokenArrived());
     }
     
-    public boolean query(State state) {
-        
+    /**
+     * Check state of OR-join given the input process marking
+     * @param marking
+     * @return true if enabled, else false
+     */
+    public boolean query(Set<SequenceFlow> processMarking) {
         //--------------------------------------------------
         // Specify filled and empty slots (incoming sequences 
-        // with or without anyt tokens to this OR-join)
+        // with or without any tokens to this OR-join)
         //--------------------------------------------------
-        Set<SequenceFlow> filledSlots = new HashSet(); // filled slots are those incoming edges of OR-Join having at least one token
-        Set<SequenceFlow> emptySlots = new HashSet(); 
+        Set<SequenceFlow> filledSlots = new HashSet(); // filledSlots are incoming edges of OR-Join having at least one token
+        Set<SequenceFlow> emptySlots = new HashSet();  // emptySlots slots are incoming edges of OR-Join having no tokens
         for (SequenceFlow incoming : this.orNode.getIncomingSequenceFlows()) {
-            if (state.getMarkings().contains(incoming)) {
+            if (processMarking.contains(incoming)) {
                 filledSlots.add(incoming);
             }
             else {
@@ -216,7 +221,7 @@ public class ORJoinEnabledChecker {
         // the OR-join needs to wait. Otherwise, Or-join is enabled
         //--------------------------------------------------
         boolean enabled = true;
-        for (SequenceFlow flowWithToken : state.getMarkings()) {
+        for (SequenceFlow flowWithToken : processMarking) {
             if (this.edgeToLabelMap.containsKey(flowWithToken)) {
                 if (this.edgeToLabelMap.get(flowWithToken).isRed()) {
                     enabled = false;
@@ -225,6 +230,25 @@ public class ORJoinEnabledChecker {
             }
         }
         return enabled;
+    }
+    
+    /**
+     * Assume that query(State) has been called to color all labels of this OR-join
+     * Get all sequence flows containing tokens that this OR-join is waiting
+     * @param state: the current state of model
+     * @return all sequence flows in red (those with tokens and connected to red labels)
+     * or exceptions or unclear result if query(State) has not been called
+     */
+    public Set<SequenceFlow> getSequenceFlowsInRed(Set<SequenceFlow> processMarking) {
+        Set<SequenceFlow> redFlows = new HashSet();
+        for (SequenceFlow flowWithToken : processMarking) {
+            if (this.edgeToLabelMap.containsKey(flowWithToken)) {
+                if (this.edgeToLabelMap.get(flowWithToken).isRed()) {
+                    redFlows.add(flowWithToken);
+                }
+            }
+        }
+        return redFlows;
     }
     
     public void reset() {

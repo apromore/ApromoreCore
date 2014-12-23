@@ -4,7 +4,9 @@ import de.hpi.bpmn2_0.backtracking2.State;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /*
 * Manage enabledness of all OR-join gateways in the model
@@ -31,8 +33,19 @@ public class ORJoinEnactmentManager {
         return nodeToCheckerMap.get(orJoinNode).query();
     }
     
-    public static boolean isEnabled(FlowNode orJoinNode, State state) {
-        return nodeToCheckerMap.get(orJoinNode).query(state);
+    public static boolean isEnabled(FlowNode orJoinNode, Set<SequenceFlow> processMarking) {
+        return nodeToCheckerMap.get(orJoinNode).query(processMarking);
+    }
+    
+    /**
+     * Get set of sequence flows with tokens that an OR join node is waiting for
+     * Assume that the check enabledness (isEnabled method) has already been called on this node and this marking
+     * @param orJoinNode
+     * @param processMarking
+     * @return set of sequence flows or empty set if the OR node is enabled
+     */
+    public static Set<SequenceFlow> getSequencesWithTokenBeingWaitedFor(FlowNode orJoinNode, Set<SequenceFlow> processMarking) {
+        return nodeToCheckerMap.get(orJoinNode).getSequenceFlowsInRed(processMarking);
     }
     
     private static void reset() {
