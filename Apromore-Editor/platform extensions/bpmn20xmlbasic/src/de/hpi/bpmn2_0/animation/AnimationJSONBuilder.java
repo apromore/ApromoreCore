@@ -94,17 +94,28 @@ public class AnimationJSONBuilder {
     public JSONObject parseLog(AnimationLog animationLog) throws JSONException {
         JSONObject json = new JSONObject();
         
+        DecimalFormat df = new DecimalFormat("#.###"); 
+        
         json.put("name", animationLog.getName());
         json.put("color", animationLog.getColor());
-        json.put("playCount", animationLog.getTraces().size());
-        json.put("unplayCount", animationLog.getUnplayTraces().size());
-        json.put("unplayTraces", animationLog.getUnplayTraces().toString());
-        json.put("moveLogFitness", animationLog.getCostBasedMoveLogFitness());
-        json.put("moveModelFitness", animationLog.getCostBasedMoveModelFitness());
-        json.put("approxTraceFitness", animationLog.getApproxTraceFitness());
-        json.put("traceFitness", animationLog.getTraceFitness(replayer.getMinBoundMoveCostOnModel()));
-        json.put("totalTime", 1.0*animationLog.getTotalTime()/1000);
-        json.put("algoTime", 1.0*animationLog.getAlgoRuntime()/1000);
+        json.put("total", animationLog.getTraces().size() + animationLog.getUnplayTraces().size());        
+        json.put("play", animationLog.getTraces().size());
+        json.put("unplayTraces", animationLog.getUnplayTracesString());
+        json.put("reliable", animationLog.getReliableTraceCount());
+        json.put("unreliableTraces", animationLog.getUnReliableTraceIDs());
+        json.put("moveLogFitness", df.format(animationLog.getCostBasedMoveLogFitness()));
+        json.put("moveModelFitness", df.format(animationLog.getCostBasedMoveModelFitness()));
+        json.put("approxTraceFitness", df.format(animationLog.getApproxTraceFitness()));
+        json.put("approxFitnessFormulaTime", df.format(1.0*animationLog.getApproxTraceFitnessFormulaTime()/1000));
+        if (params.isExactTraceFitnessCalculation()) {
+            json.put("exactTraceFitness", df.format(animationLog.getTraceFitness(animationLog.getMinBoundMoveOnModel())));
+            json.put("exactFitnessFormulaTime", df.format(1.0*animationLog.getExactTraceFitnessFormulaTime()/1000));
+        }
+        else {
+            json.put("exactTraceFitness", 0);
+            json.put("exactFitnessFormulaTime", 0);
+        }
+        json.put("algoTime", df.format(1.0*animationLog.getAlgoRuntime()/1000));
         json.put("progress", this.parseLogProgress(animationLog));
         json.put("tokenAnimations", this.parseTraces(animationLog));
 
