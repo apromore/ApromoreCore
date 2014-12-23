@@ -25,7 +25,9 @@ public class AnimationLog {
     private DateTime endDate = null;
     private Interval interval = null;
     private String color = "";
-    private long totalTime = 0; //in milliseconds
+    private double exactTraceFitnessFormulaTime = 0; //in milliseconds
+    private double approxTraceFitnessFormulaTime = 0; //in milliseconds
+    private double minBoundMoveOnModel = 0;
     private static final Logger LOGGER = Logger.getLogger(ReplayTrace.class.getCanonicalName());
     
     public AnimationLog(XLog xlog) {
@@ -108,6 +110,14 @@ public class AnimationLog {
         return this.unplayTraces;
     }
     
+    public String getUnplayTracesString() {
+        String unreplay = "Unreplay: ";
+        for (XTrace trace : this.unplayTraces) {
+            unreplay += LogUtility.getConceptName(trace) + ",";
+        }
+        return unreplay;
+    }
+    
     public Collection<ReplayTrace> getTraces() {
         return this.traceMap.values();
     }
@@ -139,12 +149,12 @@ public class AnimationLog {
     }   
     
     public double getTraceFitness(double minBoundMoveCostOnModel) {
-        double avgCost = 0;
+        double totalFitness = 0;
         for (ReplayTrace trace : this.getTraces()) {
-            avgCost += trace.getTraceFitness(minBoundMoveCostOnModel);
+            totalFitness += trace.getTraceFitness(minBoundMoveCostOnModel);
         }
         if (this.getTraces().size() > 0) {
-            return 1.0*avgCost/this.getTraces().size();
+            return 1.0*totalFitness/this.getTraces().size();
         }
         else {
             return 1.00;
@@ -162,7 +172,7 @@ public class AnimationLog {
         double minMMCost = this.getApproxMinMoveModelCost();
         double totalTraceFitness = 0;
         for (ReplayTrace trace : this.getTraces()) {
-            totalTraceFitness += trace.getApproxTraceFitness(minMMCost);
+            totalTraceFitness += trace.getTraceFitness(minMMCost);
         }        
         if (this.getTraces().size() > 0) {
             return 1.0*totalTraceFitness/this.getTraces().size();
@@ -187,6 +197,34 @@ public class AnimationLog {
         return minUpperMMCost;
     }
     
+    public void setMinBoundMoveOnModel(double minBoundMoveOnModel) {
+        this.minBoundMoveOnModel = minBoundMoveOnModel;
+    }
+    
+    public double getMinBoundMoveOnModel() {
+        return this.minBoundMoveOnModel;
+    }
+    
+    public int getReliableTraceCount() {
+        int count = 0;
+        for (ReplayTrace trace : this.getTraces()) {
+            if (trace.isReliable()) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public String getUnReliableTraceIDs() {
+        String unreliableTraceIDs = "Unreliable:";
+        for (ReplayTrace trace : this.getTraces()) {
+            if (!trace.isReliable()) {
+                unreliableTraceIDs += trace.getId() + ",";
+            }
+        }
+        return unreliableTraceIDs;
+    }    
+    
     public boolean isEmpty() {
         return this.traceMap.isEmpty();
     }
@@ -199,13 +237,21 @@ public class AnimationLog {
         return this.color;
     }
     
-    public long getTotalTime() {
-        return this.totalTime;
+    public double getExactTraceFitnessFormulaTime() {
+        return this.exactTraceFitnessFormulaTime;
     }
     
-    public void setTotalTime(long totalTime) {
-        this.totalTime = totalTime;
+    public void setExactTraceFitnessFormulaTime(double exactTraceFitnessFormulaTime) {
+        this.exactTraceFitnessFormulaTime = exactTraceFitnessFormulaTime;
     }
+    
+    public double getApproxTraceFitnessFormulaTime() {
+        return this.approxTraceFitnessFormulaTime;
+    }
+    
+    public void setApproxTraceFitnessFormulaTime(double approxTraceFitnessFormulaTime) {
+        this.approxTraceFitnessFormulaTime = approxTraceFitnessFormulaTime;
+    }    
     
     public long getAlgoRuntime() {
         long totalRuntime = 0;

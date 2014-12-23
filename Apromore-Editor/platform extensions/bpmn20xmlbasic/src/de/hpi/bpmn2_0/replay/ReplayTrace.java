@@ -78,6 +78,12 @@ public class ReplayTrace {
         this.backtrackingNode = backtrackingNode;
         this.algoRuntime = algoRuntime;
     }
+    
+    public boolean isReliable() {
+        return ((backtrackingNode != null) && 
+                (backtrackingNode.getState().getTraceIndex() == backtrackingNode.getState().getTrace().size()) &&
+                (backtrackingNode.getState().isProperCompletion()));
+    }
        
     public String getId() {
         if (logTrace != null) {
@@ -325,14 +331,12 @@ public class ReplayTrace {
         }
     }     
     
-    public double getTraceFitness(double minBoundMoveCostOnModel) {
-        if (!isFitnessMetricsCalculated) {
-            this.calcFitnessMetrics();
-        }
-        return (1 - (mmCost + mlCost + mSyncCost)/(mlUpper + minBoundMoveCostOnModel));
-    }
-    
     public void calcFitnessMetrics() {
+        //Remember to reset these since this method can be called multiple times
+        mlCost = 0;        
+        mmCost = 0;
+        mSyncCost = 0;
+        mmUpper = 0;          
         mlUpper = this.logTrace.size()*replayer.getReplayParams().getEventSkipCost();
         
         Node node = backtrackingNode;
@@ -394,18 +398,14 @@ public class ReplayTrace {
     }     
     
     /**
-     * Calculate the trace fitness measure based on the input minimum move on model cost
-     * So this measure depends on a particular log where approximation takes place
-     * Use: mmCost, mlCost, mSyncCost, mlUpper
-     * @param minMMCost: this is the minimum calculated from the whole log containing this trace
+     * Get trace fitness
+     * @param minBoundMoveCostOnModel: the minimum move on model in event of no activity matches
      * @return 
      */
-    public double getApproxTraceFitness(double minMMCost) {
-        if (!isFitnessMetricsCalculated) {
-            this.calcFitnessMetrics();
-        }
-        return (1-(mmCost + mlCost + mSyncCost)/(mlUpper + minMMCost));
-    }
+    public double getTraceFitness(double minBoundMoveCostOnModel) {
+        this.calcFitnessMetrics();
+        return (1 - (mmCost + mlCost + mSyncCost)/(mlUpper + minBoundMoveCostOnModel));
+    }    
        
     public void calcTiming() {
         if (this.replayer.getReplayParams().isBacktrackingDebug()) {
@@ -449,9 +449,25 @@ public class ReplayTrace {
             if (!node.isTimed()) {
                 
                 //----------------------------------------
-                //go backward and look for a timed node, 
-                //known that start node is always timed or there is a timed activity
+                // The incoming nodes to this node have been already assigned timestamps 
+                // according to the traversal order starting from the Start event node (always timed)
+                // Therefore, a node selects timestamp based on those of its incoming nodes.
+                // This is to ensure a node's timestamp must be after all timestamp of its incoming nodes
                 //----------------------------------------
+                TraceNode mostRecentIncomingNode=null;
+                for (TraceNode incomingNode : node.getSources()) {
+                    if (timeBefore == null || timeBefore.isBefore(incomingNode.getStart())) {
+                        timeBefore = incomingNode.getStart();
+                        mostRecentIncomingNode = incomingNode;
+                    }
+                }
+                timeBeforePos = timeOrderedReplayedNodes.indexOf(mostRecentIncomingNode);
+                //----------------------------------------
+                //Go backward and look for a timed node, 
+                //known that it can either encounter a timed activity/gateway or 
+                //the Start event node (always timed)
+                //----------------------------------------
+                /*
                 for (int j=i-1;j>=0;j--) {
                     if (timeOrderedReplayedNodes.get(j).isTimed()) {
                         timeBefore = timeOrderedReplayedNodes.get(j).getStart();
@@ -459,13 +475,21 @@ public class ReplayTrace {
                         break;
                     }
                 }
+                */
                 
                 //----------------------------------------
-                //go forward and look for a timed node,
-                //known that end node is always timed or there is always a timed activity 
+                // Go forward and look for a timed node, known that it can encounter
+                // either a timed node or the End event node eventually (always timed).
+                // In the timeOrderedReplayedNodes array order, all nodes after 
+                // this node are either subsequent and connected to it on the model or
+                // in parallel with it. It is possible to set a node's timestamp 
+                // after that of a parallel node because its next sequential node may have timestamp 
+                // after the node in parallel. So, this ensures its timestamp is after 
+                // any next node in chronological order, either sequential or parallel
                 //----------------------------------------
                 for (int j=i+1;j<timeOrderedReplayedNodes.size();j++) {
-                    if (timeOrderedReplayedNodes.get(j).isTimed()) {
+                    if (timeOrderedReplayedNodes.get(j).isTimed() && 
+                            timeOrderedReplayedNodes.get(j).getStart().isAfter(timeBefore)) {
                         timeAfter = timeOrderedReplayedNodes.get(j).getStart();
                         timeAfterPos = j;
                         break;
@@ -473,12 +497,14 @@ public class ReplayTrace {
                 }
                 
                 //----------------------------------------
-                //It may happen that timeBefore = timeAfter due to two activities
-                //on parallel branches and have the same timestamp
+                //It may happen that timeBefore >= timeAfter because the two activities
+                //at timeBeforePos and timeAfterPos are on parallel branches and have 
+                //the same timestamp.
                 //----------------------------------------
+                /*
                 if (timeBefore != null && timeAfter != null && timeBefore.isEqual(timeAfter) && 
                    !node.getSources().contains(timeOrderedReplayedNodes.get(timeBeforePos))) {
-                    //For activity or split gateway: continue search backward for another timed node
+                    //For activity or split gateway: continue searching backward for another timed node
                     if (node.getSources().size() <= 1) { 
                         for (int j=timeBeforePos-1;j>=0;j--) {
                             if (timeOrderedReplayedNodes.get(j).isTimed() &&
@@ -489,7 +515,7 @@ public class ReplayTrace {
                             }
                         }
                     }
-                    //For joining gateway: continue search forward for another timed node
+                    //For joining gateway: continue searching forward for another timed node
                     else {  
                         for (int j=timeAfterPos+1;j<timeOrderedReplayedNodes.size();j++) {
                             if (timeOrderedReplayedNodes.get(j).isTimed() && 
@@ -501,10 +527,12 @@ public class ReplayTrace {
                         }
                     }
                 }
+                */
                 
                 //----------------------------------------------
                 //Always take two ends of the trace plus a buffer as time limit
                 //in case the replay trace has no timestamped activity at two ends 
+                //NOTE: This is in case some process models cannot reach the End Event (unsound model)
                 //----------------------------------------------
                 if (timeBefore == null) {
                     timeBefore = (new DateTime(LogUtility.getTimestamp(logTrace.getTrace().get(0)))).minusSeconds(20);
@@ -517,7 +545,9 @@ public class ReplayTrace {
                 // Take average timestamp between TimeBefore and TimeAfter
                 //----------------------------------------------
                 duration = (new Duration(timeBefore, timeAfter)).getMillis();
-                duration = Math.round(1.0*duration*(i-timeBeforePos)/(timeAfterPos - timeBeforePos));
+                if (timeAfterPos > timeBeforePos) {
+                    duration = Math.round(1.0*duration*(i-timeBeforePos)/(timeAfterPos - timeBeforePos));
+                }
                 node.setStart(timeBefore.plus(Double.valueOf(duration).longValue()));
             }
         }

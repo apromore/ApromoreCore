@@ -6,7 +6,7 @@ public class ReplayParams {
     private int maxDepth;
     private double minHits;
     private double maxHits;
-    private int maxDiffSeries;
+    private int MaxConsecutiveUnmatch;
     private double ActivityMatchCost;
     private double ActivitySkippedCost;
     private double EventSkippedCost;
@@ -20,11 +20,54 @@ public class ReplayParams {
     private int ProgressCircleBarRadius;
     private int SequenceTokenDiffThreshold;
     private String BacktrackingDebug;
+    private String ExporeShortestPathDebug;
+    private String ExactTraceFitnessCalculation;    
+    private long MaxTimePerTrace;
+    private long MaxTimeShortestPathExploration;
+    private String CheckViciousCycle;
+    private int CurrentShortestPath = Integer.MAX_VALUE; //number of activities
     
-    public String getBacktrackingDebug() {
-        return BacktrackingDebug;
+    public int getCurrentShortestPath() {
+        return this.CurrentShortestPath;
+    }
+    
+    public void setCurrentShortestPath(int CurrentShortestPath) {
+        this.CurrentShortestPath = CurrentShortestPath;
     }
 
+    public boolean isCheckViciousCycle() {
+        return CheckViciousCycle.toLowerCase().equals("true");
+    }
+
+    public void setCheckViciousCycle(String CheckViciousCycle) {
+        this.CheckViciousCycle = CheckViciousCycle;
+    }
+
+
+    public boolean isExactTraceFitnessCalculation() {
+        return ExactTraceFitnessCalculation.toLowerCase().equals("true");
+    }
+
+    public void setExactTraceFitnessCalculation(String ExactTraceFitnessCalculation) {
+        this.ExactTraceFitnessCalculation = ExactTraceFitnessCalculation;
+    }
+
+    public long getMaxTimePerTrace() {
+        return MaxTimePerTrace;
+    }
+
+    public void setMaxTimePerTrace(long MaxTimePerTrace) {
+        this.MaxTimePerTrace = MaxTimePerTrace;
+    }
+    
+    public long getMaxTimeShortestPathExploration() {
+        return MaxTimeShortestPathExploration;
+    }
+
+    public void setMaxTimeShortestPathExploration(long MaxTimeShortestPathExploration) {
+        this.MaxTimeShortestPathExploration = MaxTimeShortestPathExploration;
+    }    
+    
     public void setBacktrackingDebug(String BacktrackingDebug) {
         this.BacktrackingDebug = BacktrackingDebug;
     }
@@ -32,8 +75,20 @@ public class ReplayParams {
     public boolean isBacktrackingDebug() {
         return this.BacktrackingDebug.toLowerCase().equals("true");
     }
+    
+    public void setExploreShortestPathDebug(String ExporeShortestPathDebug) {
+        this.ExporeShortestPathDebug = ExporeShortestPathDebug;
+    }
+    
+    public boolean isExploreShortestPathDebug() {
+        return this.ExporeShortestPathDebug.toLowerCase().equals("true");
+    }    
 
-
+    /**
+     * The difference between token volume from two different logs 
+     * running through the same sequence flow within a unit of time
+     * @return 
+     */
     public int getSequenceTokenDiffThreshold() {
         return SequenceTokenDiffThreshold;
     }
@@ -79,11 +134,11 @@ public class ReplayParams {
     }
 
 
-    public double getMaxActivitySkip() {
+    public double getMaxActivitySkipPercent() {
         return MaxActivitySkipPercent;
     }
 
-    public void setMaxActivitySkip(double ActivitySkipPercent) {
+    public void setMaxActivitySkipPercent(double ActivitySkipPercent) {
         this.MaxActivitySkipPercent = ActivitySkipPercent;
     }
 
@@ -137,28 +192,28 @@ public class ReplayParams {
         this.NonActivityMoveCost = NonActivityMoveCost;
     }
 
-    public int getMaxDiffSeries() {
-        return maxDiffSeries;
+    public int getMaxConsecutiveUnmatch() {
+        return MaxConsecutiveUnmatch;
     }
 
-    public void setMaxDiffSeries(int maxDiffSeries) {
-        this.maxDiffSeries = maxDiffSeries;
+    public void setMaxConsecutiveUnmatch(int MaxConsecutiveUnmatch) {
+        this.MaxConsecutiveUnmatch = MaxConsecutiveUnmatch;
     }
 
-    public double getMaxMatch() {
+    public double getMaxMatchPercent() {
         return maxHits;
     }
 
-    public void setMaxMatch(double maxHits) {
+    public void setMaxMatchPercent(double maxHits) {
         this.maxHits = maxHits;
     }
 
 
-    public double getMinMatch() {
+    public double getMinMatchPercent() {
         return minHits;
     }
 
-    public void setMinMatch(double minHits) {
+    public void setMinMatchPercent(double minHits) {
         this.minHits = minHits;
     }
 

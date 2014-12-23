@@ -27,6 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+import org.jbpt.algo.graph.StronglyConnectedComponents;
+import org.jbpt.pm.ProcessModel;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 public class BPMNDiagramHelper {
     private static BPMNDiagramHelper instance = null;
@@ -61,15 +68,19 @@ public class BPMNDiagramHelper {
     //key: name of activity, value: activity node
     private Map<String,FlowNode> activities = new HashMap();
     
-    // key and value are reference to gateway
-    //private Map<Gateway, Gateway> j2fMap = new HashMap();
-    //private Map<Gateway, Gateway> j2fMapORGate = new HashMap();
-    
     // key and value are reference to node
-    private Map<FlowNode, Set<FlowNode>> nextActivitiesMap = new HashMap();
+    //private Map<FlowNode, Set<FlowNode>> nextActivitiesMap = new HashMap();
     
-    DijkstraAlgorithm dijkstraAlgo;
-    Map<FlowNode,Vertex<FlowNode>> bpmnDijikstraNodeMap = new HashMap();
+    private DijkstraAlgorithm dijkstraAlgo = null;
+    private Map<FlowNode,Vertex<FlowNode>> bpmnDijikstraNodeMap = new HashMap();
+    
+    private ProcessModel jbptProcessModel = null;
+    private Set<Set<FlowNode>> bpmnSCCSet = null;
+    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>(); 
+    
+    private DirectedGraph directedGraph = null;
+    private List<List<FlowNode>> bpmnCycles = null;
+    private Set<FlowNode> ANDJoinsOnViciousCycles = null;
     
     public BPMNDiagramHelper() {
     }
@@ -178,6 +189,9 @@ public class BPMNDiagramHelper {
                     //this.getJoin2ForkMap(); commented out to avoid stack overflow, due to relaxing block-structure
                     //this.getForkJoinMapORGate();
                     this.getDijkstraAlgo();
+                    //this.getJBPTProcessModel();
+                    //this.getStronglyConnectedComponents();
+                    this.getANDJoinsOnViciousCycles();
                 }
                 
             } else {
@@ -443,18 +457,11 @@ public class BPMNDiagramHelper {
     */
     
     public DijkstraAlgorithm getDijkstraAlgo() {
-        if (dijkstraAlgo != null) {
-            return dijkstraAlgo;
-        }
-        else {
+        if (dijkstraAlgo == null) {
             //Create Dijistra nodes but keep a mapping from BPMN node to Dijistra node
             //so that we can apply for Dijistra edge in the next step
-            synchronized (bpmnDijikstraNodeMap) {
-                if (bpmnDijikstraNodeMap.isEmpty()) {
-                    for (FlowNode node : this.getAllNodes()) {
-                        bpmnDijikstraNodeMap.put(node, new Vertex(node.getId(), node.getName(), node));
-                    }
-                }
+            for (FlowNode node : this.getAllNodes()) {
+                bpmnDijikstraNodeMap.put(node, new Vertex(node.getId(), node.getName(), node));
             }
             
             List<Edge<FlowNode>> edges = new ArrayList();
@@ -470,9 +477,10 @@ public class BPMNDiagramHelper {
             }
             
             dijkstraAlgo = new DijkstraAlgorithm(new Graph(new ArrayList(bpmnDijikstraNodeMap.values()),edges));
-            return dijkstraAlgo;
+            
         
         }
+        return dijkstraAlgo;
     }
     
     public Vertex<FlowNode> getDijikstraVertex(FlowNode node) {
@@ -611,6 +619,160 @@ public class BPMNDiagramHelper {
     }    
 
     
+    public ProcessModel getJBPTProcessModel() {
+        if (jbptProcessModel == null) {           
+            org.jbpt.pm.FlowNode jbptNode = null;
+            jbptProcessModel = new ProcessModel();
+            for (FlowNode node : this.getAllNodes()) {
+                if (node == this.getStartEvent() || node == this.getEndEvent()) {
+                    jbptNode = new org.jbpt.pm.Event(node.getName());
+                }
+                else if (this.getActivities().contains(node)) {
+                    jbptNode = new org.jbpt.pm.Activity(node.getName());
+                }
+                else if (this.getAllDecisions().contains(node) || this.getAllMerges().contains(node)) {
+                    jbptNode = new org.jbpt.pm.XorGateway(node.getName());
+                }
+                else if (this.getAllForks().contains(node) || this.getAllJoins().contains(node)) {
+                    jbptNode = new org.jbpt.pm.AndGateway(node.getName());
+                }
+                else if (this.getAllORSplits().contains(node) || this.getAllORJoins().contains(node)) {
+                    jbptNode = new org.jbpt.pm.OrGateway(node.getName());
+                }
+                jbptNodeMap.put(node, jbptNode);
+                jbptProcessModel.addFlowNode(jbptNode);
+            }
+            
+            org.jbpt.pm.FlowNode from = null;
+            org.jbpt.pm.FlowNode to = null;
+            for (SequenceFlow flow : this.getAllSequenceFlows()) {
+                from = jbptNodeMap.get((FlowNode)flow.getSourceRef());
+                to = jbptNodeMap.get((FlowNode)flow.getTargetRef());
+                jbptProcessModel.addControlFlow(from, to);
+            }
+        }
+        
+        return jbptProcessModel;    
+    }
+     
+    
+    /**
+     * Compute to get strongly connected components in the model.
+     * These are sets of nodes which form a cycle with only activity nodes,
+     * AND split/join gateways and OR/XOR split gateways.
+     * Assume that jbptProcessModel has been created
+     * @return set of subset, each represents strongly connected components
+     */
+    public Set<Set<FlowNode>> getStronglyConnectedComponents() {
+        if (bpmnSCCSet == null) {
+            bpmnSCCSet = new HashSet();
+            Set<FlowNode> bpmnSCC;
+
+            StronglyConnectedComponents scc = new StronglyConnectedComponents();
+            Set<Set<org.jbpt.pm.FlowNode>> jbptSCCSet = scc.compute(jbptProcessModel);
+            FlowNode node;
+            for (Set<org.jbpt.pm.FlowNode> jbptSCC : jbptSCCSet) {
+                if (jbptSCC.size() > 1) {
+                    bpmnSCC = new HashSet();
+                    boolean trueSCC = true;
+                    for (org.jbpt.pm.FlowNode jbptNode : jbptSCC) {
+                        node = jbptNodeMap.getKey(jbptNode);
+                        bpmnSCC.add(node);
+                        if (!getAllForks().contains(node) && !getAllJoins().contains(node) &&
+                                node.getIncomingSequenceFlows().size() >= 2) {
+                            trueSCC = false;
+                            break;
+                        }
+                    }
+                    if (trueSCC) {
+                        bpmnSCCSet.add(bpmnSCC);
+                    } else {
+                        bpmnSCC.clear();
+                    }
+                }
+            }
+        }
+        return bpmnSCCSet;
+    }
     
     
+    public DirectedGraph getDirectedGraph() {
+        if (directedGraph == null) {           
+            directedGraph = new DefaultDirectedGraph<FlowNode, DefaultEdge>(DefaultEdge.class);
+            for (FlowNode node : this.getAllNodes()) {
+                directedGraph.addVertex(node);
+            }
+            for (SequenceFlow flow : this.getAllSequenceFlows()) {
+                directedGraph.addEdge((FlowNode)flow.getSourceRef(), (FlowNode)flow.getTargetRef());
+            }
+        }
+        
+        return directedGraph;    
+    }    
+    
+    public List<List<FlowNode>> getSimpleCycles() {
+        if (directedGraph == null) {
+            this.getDirectedGraph();
+        }
+        
+        if (bpmnCycles == null) {
+            JohnsonSimpleCycles cycleAlgo = new JohnsonSimpleCycles(directedGraph);
+            bpmnCycles = cycleAlgo.findSimpleCycles();
+            List<List<FlowNode>> toRemove = new ArrayList();
+            for (List<FlowNode> cycle : bpmnCycles) {
+                boolean viciousCycle = true;
+                for (FlowNode node : cycle) {
+                    if (!getAllJoins().contains(node) && node.getIncomingSequenceFlows().size() >= 2) {
+                        viciousCycle = false;
+                        break;
+                    }
+                }
+                if (!viciousCycle) {
+                    toRemove.add(cycle);
+                }
+            }
+            bpmnCycles.removeAll(toRemove);
+        }
+        return bpmnCycles;
+        
+    }
+    
+    public Collection<FlowNode> getANDJoinsOnViciousCycles() {
+        if (bpmnCycles == null) {
+            this.getSimpleCycles();
+        }
+        
+        if (ANDJoinsOnViciousCycles == null) {
+            ANDJoinsOnViciousCycles = new HashSet();
+            for (List<FlowNode> cycle : bpmnCycles) {
+                for (FlowNode node : cycle) {
+                    if (this.getAllJoins().contains(node)) {
+                        ANDJoinsOnViciousCycles.add(node);
+                    }
+                }
+            }
+        }
+        return ANDJoinsOnViciousCycles;
+    }
+    
+    /**
+     * Return all activity nodes in a chain starting from the input activity
+     * Used for looking ahead on the model. Done by traversing from the start node
+     * until encountering a splitting gateway or End event.
+     * @param startNode: starting node
+     * @return set of activities including the input activity, or empty set
+     */
+    public Set<FlowNode> getActivityChain(FlowNode startNode) {
+        Set<FlowNode> activityChain = new HashSet();
+        Set<FlowNode> visited = new HashSet();
+        FlowNode node = startNode;
+        while (node.getOutgoingSequenceFlows().size() == 1 && !visited.contains(node)) {
+            visited.add(node);
+            if (this.getActivities().contains(node)) {
+                activityChain.add(node);
+            }            
+            node = (FlowNode)node.getOutgoingSequenceFlows().get(0).getTargetRef();
+        }
+        return activityChain;
+    } 
 }
