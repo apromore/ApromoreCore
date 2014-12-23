@@ -39,7 +39,6 @@ public class Replayer {
     private String processCheckMessage = "";
     private String[] colors = {"blue","orange","red","green","margenta"};
     private Map<String, Node> traceBacktrackingNodeMap = new HashMap(); // mapping from traceId to trace encoded char string
-    private double minBoundMoveCostOnModel = -1; //not yet calculated
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     
     public Replayer(Definitions bpmnDefinition, ReplayParams params) {
@@ -70,7 +69,6 @@ public class Replayer {
     }
     
     public AnimationLog replay(XLog log, String color) {
-        long startTime = DateTimeUtils.currentTimeMillis();
         
         AnimationLog animationLog = new AnimationLog(log);
         animationLog.setColor(color /*this.getLogColor()*/);
@@ -78,6 +76,7 @@ public class Replayer {
         
         //-------------------------------------------
         // Replay every trace in the log
+        // Note that the replay includes timing computation for the replayed trace
         //-------------------------------------------
         ReplayTrace replayTrace;
         for (XTrace trace : log) {
@@ -92,31 +91,53 @@ public class Replayer {
                 LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
             }                    
         }
-        
-        double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
-        double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
         long algoRuntime = animationLog.getAlgoRuntime();
-        long endTime = DateTimeUtils.currentTimeMillis();
-        animationLog.setTotalTime(endTime - startTime);
-
-        if (!animationLog.isEmpty()) {
-            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
-                        ". Trace Fitness:" + traceFitness +
-                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
-                        ". totalAlgoTime:" + algoRuntime +
-                        ". totalTime:" + animationLog.getTotalTime() +
-                        ". StartDate:" + animationLog.getStartDate().toString() +
-                        ". EndDate:" + animationLog.getEndDate() +
-                        ". Color:" + animationLog.getColor());        
+                
+        //------------------------------------------------
+        // Compute exact trace fitness 
+        //------------------------------------------------
+        long startMinMMTime = System.currentTimeMillis();
+        double minBoundMoveCostOnModel=0;
+        double traceFitness=0;
+        if (params.isExactTraceFitnessCalculation()) {
+            minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
+            animationLog.setMinBoundMoveOnModel(minBoundMoveCostOnModel);
+            traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
+        }
+        long endMinMMTime = System.currentTimeMillis();
+        animationLog.setExactTraceFitnessFormulaTime(endMinMMTime - startMinMMTime + algoRuntime);
+        
+        //------------------------------------------------
+        // Compute approximate trace fitness 
+        //------------------------------------------------        
+        long startApproxMinMMTime = System.currentTimeMillis();
+        double approxTraceFitness = animationLog.getApproxTraceFitness();
+        long endApproxMinMMTime = System.currentTimeMillis();
+        animationLog.setApproxTraceFitnessFormulaTime(endApproxMinMMTime - startApproxMinMMTime + algoRuntime);
+        
+        if (!animationLog.isEmpty()) {       
             LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
-            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
-            double minMMCost = animationLog.getApproxMinMoveModelCost();
+            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
+            double approxMMCost = animationLog.getApproxMinMoveModelCost();
             for (ReplayTrace trace : animationLog.getTraces()) {
                 LOGGER.info(trace.getId() + "," + 
                             trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
-                            trace.getApproxTraceFitness(minMMCost) + "," + 
+                            trace.getTraceFitness(approxMMCost) + "," + 
+                            trace.isReliable() + "," +
+                            trace.getAlgoRuntime() + "," +
                             trace.getBacktrackingNode().getPathString());
             }
+            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
+                        ". Exact Trace Fitness:" + traceFitness +
+                        ". Approx. Trace Fitness:" + approxTraceFitness +
+                        ". minBoundMoveCostOnModel:" + animationLog.getMinBoundMoveOnModel() +
+                        ". approxMMCost:" + animationLog.getApproxMinMoveModelCost() +
+                        ". totalAlgoTime:" + animationLog.getAlgoRuntime() +
+                        ". exactTraceFitnessFormulaTime:" + animationLog.getExactTraceFitnessFormulaTime() +
+                        ". approxTraceFitnessFormulaTime:" + animationLog.getApproxTraceFitnessFormulaTime() +
+                        ". StartDate:" + animationLog.getStartDate().toString() +
+                        ". EndDate:" + animationLog.getEndDate() +
+                        ". Color:" + animationLog.getColor());             
         } else {
             LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
         }
@@ -169,14 +190,12 @@ public class Replayer {
         double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
         long algoRuntime = animationLog.getAlgoRuntime();
         long endTime = DateTimeUtils.currentTimeMillis();
-        animationLog.setTotalTime(endTime - startTime);
 
         if (!animationLog.isEmpty()) {
             LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
                         ". Trace Fitness:" + traceFitness +
                         ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
                         ". totalAlgoTime:" + algoRuntime +
-                        ". totalTime:" + animationLog.getTotalTime() +
                         ". StartDate:" + animationLog.getStartDate().toString() +
                         ". StartDate:" + animationLog.getStartDate().toString() +
                         ". EndDate:" + animationLog.getEndDate() +
@@ -187,7 +206,7 @@ public class Replayer {
             for (ReplayTrace trace : animationLog.getTraces()) {
                 LOGGER.info(trace.getId() + "," + 
                             trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
-                            trace.getApproxTraceFitness(minMMCost) + "," + 
+                            trace.getTraceFitness(minMMCost) + "," + 
                             trace.getBacktrackingNode().getPathString());
             }
         } else {
@@ -244,16 +263,18 @@ public class Replayer {
             }
             backtrack.clear();
             backtrack = null;
-        }
+        }      
         
         //---------------------------------
         // Reverse the path to start from the root node
         //---------------------------------
         Stack<Node> stack = new Stack<>();
         Node node = leafNode;
-        while (node != null) {
-            stack.push(node);
-            node = node.getParent();
+        if (leafNode.getMatchCount() > 0) { //only get trace if at least one activity matched
+            while (node != null) {
+                stack.push(node);
+                node = node.getParent();
+            }
         }
         
         //---------------------------------------------
@@ -344,22 +365,19 @@ public class Replayer {
      * @return min cost or 0 if no path found due to unsound model
      */    
     public double getMinBoundMoveCostOnModel() {
-        if (minBoundMoveCostOnModel < 0) {
-            Backtracking backtrack = new Backtracking(this.params, helper);
-            Node selectedNode = backtrack.exploreShortestPath();
-            double minMMCost = 0;
-            if (selectedNode != null) {
-                Node node = selectedNode;
-                while (node != null) {
-                    if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
-                        minMMCost += this.params.getActivitySkipCost();
-                    }
-                    node = node.getParent();
+        Backtracking backtrack = new Backtracking(this.params, helper);
+        Node selectedNode = backtrack.exploreShortestPath();
+        double minMMCost = 0;
+        if (selectedNode != null) {
+            Node node = selectedNode;
+            while (node != null) {
+                if (node.getState().getElementStatus() == StateElementStatus.ACTIVITY_SKIPPED) {
+                    minMMCost += this.params.getActivitySkipCost();
                 }
+                node = node.getParent();
             }
-            minBoundMoveCostOnModel = minMMCost;
         }
-        return minBoundMoveCostOnModel;
+        return minMMCost;
     }
     
     /*
