@@ -12,6 +12,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 import org.deckfour.xes.model.XTrace;
 
+/**
+ * Implement state exploration with backtracking algorithm
+ * State is represented as nodes, state space search is a tree
+ * @author Bruce Nguyen
+ */
 public class Backtracking {
     private int maxAllowedUnmatch;
     private double maxAllowedCost;
@@ -19,18 +24,21 @@ public class Backtracking {
     private int progressSize; //progressive trial size of the trace, increase by TraceChunkSize parameter
     private boolean optimalNodeFound = false; //when optimal node found: full trace played with zero cost
     private boolean fullTraceMatched = false; //total trace is achieved
-    private Set<Node> generatedNodes = new HashSet(); //keep all nodes created during exploration
+    private Set<Node> visitedNodes = new HashSet(); //keep all nodes created during exploration
     private Node bestNode = null;
     private Set<Node> completeNodesForShortestPathExploration = new HashSet();
     private Node shortestPathNode = null;
     
     private ReplayParams params;
     private XTrace trace;
+    private boolean minMMSearch = false; //differentiate a trace replay or a min move on model exploration
     private BPMNDiagramHelper helper;
     private int totalNodesVisited = 0; //total number of nodes of the state space tree
     
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
     private static String indent = ""; //just for printing to log for debugging
+    
+    private long startTime;
     
    /**
     * Backtracking algorithm is used to search for a solution on a 
@@ -48,12 +56,14 @@ public class Backtracking {
     public Backtracking (ReplayParams params, XTrace trace, BPMNDiagramHelper helper) {
         this.params = params;
         this.trace = trace;
+        this.minMMSearch = false;
         this.helper = helper;
         indent = "";
     }
     
     public Backtracking (ReplayParams params, BPMNDiagramHelper helper) {
         this.params = params;
+        this.minMMSearch = true;
         this.helper = helper;
         indent = "";
     }    
@@ -65,7 +75,7 @@ public class Backtracking {
     * In case the trace has been played out but the movement on the model not yet
     * reaches a completion state, extra effort is tried to reach a completion state
     * on the model via a shortest token path. The rest of movement is all gateway and activity_skip.
-    * Return the leaf node of the selected path
+    * Return the leaf node of the selected path (bestNode)
     * The return path is always equal or longer than the trace alignment
     */
     public Node explore() {
@@ -77,9 +87,10 @@ public class Backtracking {
         Node selectedNode = new Node(null, new State(new HashSet<SequenceFlow>(helper.getStartEvent().getOutgoingSequenceFlows()), 
                                               helper.getStartEvent(), 
                                               StateElementStatus.STARTEVENT, 
-                                              trace, 0, helper, params));
+                                              trace, 0, new HashSet(), new HashSet(), helper, params));
         progressSize = 0;
         double matchRatio;
+        startTime = System.currentTimeMillis();
         while (selectedNode != null && progressSize < trace.size()) {
             //------------------------------------
             // Reset parameters for new exploration starting from selected node
@@ -91,20 +102,22 @@ public class Backtracking {
             //selectedNodes.clear();
             optimalNodeFound = false;
             fullTraceMatched = false;
-            maxAllowedUnmatch = (progressSize - Long.valueOf(Math.round(params.getMinMatch()*progressSize)).intValue());
+            maxAllowedUnmatch = (progressSize - Long.valueOf(Math.round(params.getMinMatchPercent()*progressSize)).intValue());
             maxAllowedCost = params.getMaxCost();
             maxAllowedDepth = params.getMaxDepth();
             totalNodesVisited = 0; 
             indent = "";
             
+            this.clean(); //clean before next chunk replay starting from bestNode
+            
             if (params.isBacktrackingDebug()) {
                 LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
                 LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
                             "MAX_DEPTH:" + params.getMaxDepth() + " " +
-                            "MIN_MATCH:" + params.getMinMatch() + " " +
-                            "MAX_MATCH:" + params.getMaxMatch() + " " +
-                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkip() + " " +                         
-                            "MAX_DIFFSERIES:" + params.getMaxDiffSeries() + " " +
+                            "MIN_MATCH:" + params.getMinMatchPercent() + " " +
+                            "MAX_MATCH:" + params.getMaxMatchPercent() + " " +
+                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkipPercent() + " " +                         
+                            "MAX_CONSECUTIVE_UNMATCH:" + params.getMaxConsecutiveUnmatch()+ " " +
                             "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance() + " " + 
                             "MAX_NO_OF_NODES_VISITED:" + params.getMaxNumberOfNodesVisited() + " " +
                             "ACTIVITY_SKIPPED_COST:" + params.getActivitySkipCost() + " " +
@@ -146,27 +159,23 @@ public class Backtracking {
         // reaches the completion state (proper or improper). The remaining
         // movement does not allow loops, so it only flows towards the End event
         //--------------------------------------------------
-        Node completionNode=null;
         if (selectedNode != null && !selectedNode.getState().isProperCompletion() && !selectedNode.getState().isImproperCompletion()) {
             totalNodesVisited = 0;
             indent = "";
+            this.clean(); //clean before next chunk replay starting from bestNode
+            params.setCurrentShortestPath(Integer.MAX_VALUE); //maximize this param since it will be set value during exploration
             this.exploreShortestPath(selectedNode);
-            //bestNode = this.selectNodeForShortestPathExploration();
-            bestNode = shortestPathNode;
-            completionNode = bestNode;
+            if (shortestPathNode != null) {
+                bestNode = shortestPathNode;
+            }
         }
         
-        if (completionNode != null) {
-            return completionNode;
-        }
-        else {
-            return selectedNode;
-        }
+        return bestNode;
     }
     
     /**
      * Explore the token play path for a trace, starting from the input Node
-     * @param node: input node
+     * @param node: input node 
      * During this exploration, bestNode contains the best node found so far
      */
     public void explore(Node node) {
@@ -179,7 +188,7 @@ public class Backtracking {
                         " depth:" + node.getDepth() + 
                         " matches:" + node.getMatchCount() + 
                         " activityskips:" + node.getActivitySkipCount() + 
-                        " diffseries:" + node.getDiffSeries() + 
+                        " consecutiveUnmatch:" + node.getConsecutiveUnmatch() + 
                         " totalUnmatch:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
                         " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
                         " nodesVisited:" + totalNodesVisited + 
@@ -192,46 +201,50 @@ public class Backtracking {
             indent = indent + "|  ";
         }
         
-        generatedNodes.add(node); //keep track of all nodes for clearance
+        visitedNodes.add(node); //keep track of all nodes for clearance
         totalNodesVisited++;
         
-        if (reject(node)) {
+        if (prune(node)) {
+            select(node); //update the current best node. select(node) updates pruning conditions, so must put it here, not before.
             if (params.isBacktrackingDebug()) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected");
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is pruned" + " maxAllowedCost:" + maxAllowedCost +
+                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch + 
+                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
             }
             totalNodesVisited--;
             return;
         }
-        else if (accept(node)) {
+        else if (complete(node)) {
+            node.setComplete(true);
             select(node); //update the current best node
-            
-            if (params.isBacktrackingDebug() && (bestNode == node)) {
+            if (params.isBacktrackingDebug()) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is accepted" + " maxAllowedCost:" + maxAllowedCost +
-                            " maxAllowedDepth:" + maxAllowedDepth + " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is complete" + " maxAllowedCost:" + maxAllowedCost +
+                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch + 
+                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
             }
             totalNodesVisited--;
             return;
         }
         else {
-            select(node); //update the current best node, even if it is not accepted yet
+            select(node); //update the current best node
             Collection<Node> childs = nexts(node);
             for (Iterator<Node> it = childs.iterator(); it.hasNext();) {
                 explore(it.next());
             }
         }
         
-        totalNodesVisited--;
         if (params.isBacktrackingDebug()) {
             indent = indent.substring(3);
-            LOGGER.info(indent + "explore(" + node.getState().getName()+ ")");
+            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
         }
+        totalNodesVisited--;        
     }
     
     /**
      * Explore a shortest token play path from the Start event node
-     * @return: the leaf node of the shortest path
+     * @return: the leaf node of the shortest path (shortestPathNode)
      */
     public Node exploreShortestPath() {
         //----------------------------------------------
@@ -241,9 +254,13 @@ public class Backtracking {
         Node firstNode = new Node(null, new State(new HashSet<SequenceFlow>(helper.getStartEvent().getOutgoingSequenceFlows()), 
                                               helper.getStartEvent(), 
                                               StateElementStatus.STARTEVENT, 
-                                              trace, 0, helper, params));
+                                              trace, 0, new HashSet(), new HashSet(), 
+                                              helper, params));
         totalNodesVisited = 0; 
         indent = "";
+        visitedNodes.clear();
+        params.setCurrentShortestPath(Integer.MAX_VALUE); //maximize this param since it will be set value during exploration
+        startTime = System.currentTimeMillis();
         this.exploreShortestPath(firstNode);
         //bestNode = this.selectNodeForShortestPathExploration();
         bestNode = shortestPathNode;
@@ -256,8 +273,10 @@ public class Backtracking {
      * completeNodesForShortestPathExploration: contains all proper and improper completion state nodes
      */
     public void exploreShortestPath(Node node) {
-        if (params.isBacktrackingDebug()) {
-            LOGGER.info(indent + "Entering explorePathToEnd(" + 
+        if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+                (!minMMSearch && params.isBacktrackingDebug())) {
+            String prefix = minMMSearch ? "exploreShortestPath" : "exploreToEndEvent";
+            LOGGER.info(indent + "Entering " + prefix + "(" + 
                         node.getState().getName()+ 
                         " markings:" + node.getState().getMarkingsText()+ 
                         " nodesVisited:" + totalNodesVisited + 
@@ -265,23 +284,40 @@ public class Backtracking {
             indent = indent + "|  ";
         }
         
-        generatedNodes.add(node); //keep track of all nodes for clearance
+        visitedNodes.add(node); //keep track of all nodes for clearance
         totalNodesVisited++;
+        long spanTime = System.currentTimeMillis() - startTime;
         
-        if (shortestPathNode!=null && node.getActivitySkipCount() > shortestPathNode.getActivitySkipCount()) {
-            if (params.isBacktrackingDebug()) {
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is rejected!");
-            }            
+        if ((minMMSearch && (spanTime/1000) > params.getMaxTimeShortestPathExploration()) ||
+            (!minMMSearch && (spanTime/1000) > params.getMaxTimePerTrace())) {
+            if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+                (!minMMSearch && params.isBacktrackingDebug())) {
+                indent = indent.substring(3);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ "): stops here due to timeover");
+            }
+            totalNodesVisited--;
+            return;
+        }
+        else if (shortestPathNode!=null && node.getActivitySkipCount() > shortestPathNode.getActivitySkipCount()) {
+            if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+                (!minMMSearch && params.isBacktrackingDebug())) {
+                indent = indent.substring(3);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is longer than current shortest node!");
+            }    
+            totalNodesVisited--;
+            return;
         }
         else if (node.getState().isProperCompletion() || node.getState().isImproperCompletion()) {
-            //completeNodesForShortestPathExploration.add(node); //add to list of complete nodes
             if ((shortestPathNode == null) || 
                 (shortestPathNode != null && node.getActivitySkipCount() < shortestPathNode.getActivitySkipCount())) {
                 shortestPathNode = node;
+                params.setCurrentShortestPath(node.getActivitySkipCount()); //for pruning in state generation
             }
             
-            if (params.isBacktrackingDebug()) {
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is proper completion!");
+            if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+                (!minMMSearch && params.isBacktrackingDebug())) {
+                indent = indent.substring(3);
+                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is a completion!");
             }
             totalNodesVisited--;
             return;
@@ -294,17 +330,19 @@ public class Backtracking {
                 }
             }
             else {
-                if (params.isBacktrackingDebug()) {
+                if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+                    (!minMMSearch && params.isBacktrackingDebug())) {
                     LOGGER.info(indent + "node(" + node.getState().getName()+ ") leads to a loop or deadlock");
                 }
             }
         }
         
-        totalNodesVisited--;
-        if (params.isBacktrackingDebug()) {
+        if ((minMMSearch && params.isExploreShortestPathDebug()) ||
+            (!minMMSearch && params.isBacktrackingDebug())) {
             indent = indent.substring(3);
-            LOGGER.info(indent + "explorePathToEnd(" + node.getState().getName()+ ")");
+            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
         }
+        totalNodesVisited--;
     }
     
     /**
@@ -312,42 +350,92 @@ public class Backtracking {
      * This list is prioritized to select the best node leading to highest match
      */
     private Collection<Node> nexts(Node node) {
-        return node.getChildren();
+        Set<Node> nextNodes = node.getChildNodes();
+        /*
+        if (params.isBacktrackingDebug()) {
+            Set<Node> removedNodes = (Set)((HashSet)visitedNodes).clone();
+            removedNodes.retainAll(nextNodes);
+            for (Node removedNode : removedNodes) {
+                LOGGER.info(indent + "Visited: " + removedNode.getState().getName()+ 
+                        " markings:" + removedNode.getState().getMarkingsText()+ 
+                        " trace:" +  removedNode.getState().getTraceWithIndex());
+            }
+        } 
+        nextNodes.removeAll(visitedNodes);
+        */
+        Set<Node> toRemove = new HashSet();
+        for (Node nextNode : nextNodes) {
+            for (Node visitedNode : visitedNodes) {
+                if (visitedNode.equals(nextNode) && visitedNode.isBetterOrEqual(nextNode)) {
+                    toRemove.add(nextNode);
+                    break;
+                }
+            }
+        }
+        if (!toRemove.isEmpty() && params.isBacktrackingDebug()) {
+            for (Node removedNode : toRemove) {
+                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+ 
+                        " markings:" + removedNode.getState().getMarkingsText()+ 
+                        " trace:" +  removedNode.getState().getTraceWithIndex());
+            }
+        }
+        nextNodes.removeAll(toRemove);
+        return nextNodes;
     }
     
     private Collection<Node> nextNodesForShortestPathFinding(Node node) {
-        return node.getChildrenForShortestPathFinding();
+        Collection<Node> nextNodes = node.getChildNodesForShortestPathFinding();
+        //nextNodes.removeAll(visitedNodes);
+        Set<Node> toRemove = new HashSet();
+        for (Node nextNode : nextNodes) {
+            for (Node visitedNode : visitedNodes) {
+                if (visitedNode.equals(nextNode) && visitedNode.isShorterOrEqual(nextNode)) {
+                    toRemove.add(nextNode);
+                    break;
+                }
+            }
+        }   
+        if (!toRemove.isEmpty() && params.isExploreShortestPathDebug()) {
+            for (Node removedNode : toRemove) {
+                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+ 
+                        " markings:" + removedNode.getState().getMarkingsText());
+            }
+        }        
+        nextNodes.removeAll(toRemove);
+        return nextNodes;
     }
     
     /**
      * Reject a node and prune the tree from the node as root
      */
-    private boolean reject(Node node) {
+    private boolean prune(Node node) {
         boolean rejected = false;
         double totalUnmatch = node.getState().getTraceIndex() - node.getMatchCount();
+        long timespan = System.currentTimeMillis() - startTime;
 
         rejected =  optimalNodeFound ||
                     node.getCost() > maxAllowedCost || 
                     node.getDepth() > maxAllowedDepth ||
                     totalUnmatch > maxAllowedUnmatch ||
-                    node.getDiffSeries() > params.getMaxDiffSeries() ||
-                    node.getActivitySkipCount() > 1.0*params.getMaxActivitySkip()*helper.getActivities().size() ||
-                    totalNodesVisited > params.getMaxNumberOfNodesVisited();
+                    node.getConsecutiveUnmatch() > params.getMaxConsecutiveUnmatch() ||
+                    node.getActivitySkipCount() > 1.0*params.getMaxActivitySkipPercent()*trace.size() ||
+                    totalNodesVisited > params.getMaxNumberOfNodesVisited() ||
+                    1.0*timespan/1000 > params.getMaxTimePerTrace();
         return rejected;
     }
     
     /*
      * Accept a node and prune the tree from the node as root
      */
-    private boolean accept(Node node) {
-        if (node.getMatchCount() >= 1.0*params.getMaxMatch()*progressSize && node.getCost() == 0) {
+    private boolean complete(Node node) {
+        if (node.getMatchCount() >= 1.0*params.getMaxMatchPercent()*progressSize && node.getCost() == 0) {
             optimalNodeFound = true;
             fullTraceMatched = true;
             return true;
         }
         else if (node.getCost() <= params.getMaxCost() && 
                  node.getState().getTraceIndex() >= progressSize && 
-                 node.getMatchCount() >= 1.0*params.getMinMatch()*progressSize) {
+                 node.getMatchCount() >= 1.0*params.getMinMatchPercent()*progressSize) {
             return true;
         }
         else {
@@ -361,12 +449,17 @@ public class Backtracking {
      *  Select between the bestNode and the input node
      */
     private void select(Node node) {
-        if (bestNode != null && !node.isBetter(bestNode)) {
-            return;
-        }
-        else {
+        /**
+         * Select node if bestNode is null or node is better than bestNode or
+         * bestNode is not complete and node is complete
+         */
+        if (bestNode == null ||
+           (bestNode != null && !bestNode.isComplete() && node.isComplete()) ||
+           (bestNode != null && !bestNode.isComplete() && !node.isComplete() && node.isBetter(bestNode)) ||
+           (bestNode != null && bestNode.isComplete() && node.isComplete() && node.isBetter(bestNode))) {
+
             bestNode = node;
-            
+
             //---------------------------------------------
             // Set new selection criteria based on the best node so far.
             // Future nodes not meeting these criteria will be rejected
@@ -394,7 +487,7 @@ public class Backtracking {
                         break;
                     }
                 }
-            }             
+            }  
         }
     }
     
@@ -432,24 +525,31 @@ public class Backtracking {
     }
     
     /**
-     * Clean all unselected nodes created after backtracking process
-     * to avoid memory leaks
+     * Clean visitedNodes and the contained nodes except nodes on 
+     * the bestNode to the root node.
      */
-    public void clear() {
+    private void clean() {
         Set<Node> selectedNodes = new HashSet();
         Node node = bestNode;
         while (node!=null) {
             selectedNodes.add(node);
             node = node.getParent();
         }
-        for (Node generatedNode : generatedNodes) {
+        for (Node generatedNode : visitedNodes) {
             if (!selectedNodes.contains(generatedNode)) {
                 generatedNode.clear();
             }
         }
-        generatedNodes.clear();
+        visitedNodes.clear();        
+    }
+    
+    /**
+     * Clean all unselected nodes created after backtracking process
+     * to avoid memory leaks
+     */
+    public void clear() {
+        clean();
         completeNodesForShortestPathExploration.clear();
-        
         params = null;
         trace = null;
         helper = null;
