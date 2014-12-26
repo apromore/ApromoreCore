@@ -337,28 +337,36 @@ Controller.prototype = {
        for (var i=0; i<logs.length; i++) {
            var row = metricsTable.insertRow(i+1);
            var cellLogName = row.insertCell(0); 
-           var cellPlayCount = row.insertCell(1); 
-           var cellUnplayCount = row.insertCell(2);
-           var cellTraceFitness = row.insertCell(3); 
-           var cellApproxFitness = row.insertCell(4); 
-           var cellAlgoTime = row.insertCell(5); 
-           var cellTotalTime = row.insertCell(6); 
+           var cellTotalCount = row.insertCell(1);           
+           var cellPlayCount = row.insertCell(2);
+           var cellReliableCount = row.insertCell(3); 
+           var cellExactFitness = row.insertCell(4); 
+           var cellExactFitnessFormulaTime = row.insertCell(5); 
+           var cellApproxFitness = row.insertCell(6); 
+           var cellApproxFitnessFormulaTime = row.insertCell(7);
+           var cellAlgoTime = row.insertCell(8); 
+           
            
            cellLogName.innerHTML = logs[i].name.substr(0,5) + "...";
            cellLogName.style.backgroundColor = logs[i].color;
            
-           cellPlayCount.innerHTML = logs[i].playCount;
+           cellTotalCount.innerHTML = logs[i].total;
            
-           cellUnplayCount.innerHTML = logs[i].unplayCount;
-           cellUnplayCount.title = logs[i].unplayTraces;
+           cellPlayCount.innerHTML = logs[i].play;
+           cellPlayCount.title = logs[i].unplayTraces;
            
-           cellTraceFitness.innerHTML = logs[i].traceFitness;
+           cellReliableCount.innerHTML = logs[i].reliable;
+           cellReliableCount.title = logs[i].unreliableTraces;
+           
+           cellExactFitness.innerHTML = logs[i].exactTraceFitness;
+           
+           cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
            
            cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
            
-           cellAlgoTime.innerHTML = logs[i].algoTime;
+           cellApproxFitnessFormulaTime.innerHTML = logs[i].approxFitnessFormulaTime;
            
-           cellTotalTime.innerHTML = logs[i].totalTime;
+           cellAlgoTime.innerHTML = logs[i].algoTime;
        }    
 
        this.start();
