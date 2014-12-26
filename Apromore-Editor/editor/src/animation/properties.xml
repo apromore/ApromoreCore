@@ -2,10 +2,10 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties> 
 	<entry key="MaxCost">6</entry>
-	<entry key="MaxDepth">15</entry>
+	<entry key="MaxDepth">150</entry>
 	<entry key="MinMatchPercent">0.7</entry>
 	<entry key="MaxMatchPercent">1</entry>
-	<entry key="MaxDiffSeries">5</entry>	
+	<entry key="MaxConsecutiveUnmatch">5</entry>	
 	<entry key="MaxActivitySkipPercent">0.5</entry>
 	<entry key="MaxNodeDistance">5</entry>
 	<entry key="ActivityMatchCost">0</entry>
@@ -18,5 +18,10 @@
 	<entry key="TotalEngineSeconds">120</entry>
 	<entry key="ProgressCircleBarRadius">20</entry>
 	<entry key="SequenceTokenDiffThreshold">2</entry>
-	<entry key="BacktrackingDebug">true</entry>
+	<entry key="MaxTimePerTrace">5</entry>
+	<entry key="MaxTimeShortestPathExploration">10</entry>
+	<entry key="ExactTraceFitnessCalculation">true</entry>
+	<entry key="CheckViciousCycle">false</entry>
+	<entry key="BacktrackingDebug">false</entry>
+	<entry key="ExploreShortestPathDebug">false</entry>
 </properties>
