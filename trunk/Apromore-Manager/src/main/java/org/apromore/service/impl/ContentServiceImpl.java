@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.processconfiguration.Configurable;
 import com.processconfiguration.ConfigurationAnnotation;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.ExpressionRepository;
@@ -179,7 +180,8 @@ public class ContentServiceImpl implements ContentService {
             if (any instanceof Element) {
                 nAtt.setAny(XMLUtils.anyElementToString((Element) any));
             }
-            else if (any instanceof ConfigurationAnnotation) {
+            else if (any instanceof Configurable ||
+                     any instanceof ConfigurationAnnotation) {
                 nAtt.setAny(XMLUtils.extensionElementToString(any));
             }
             else if (any != null) {
