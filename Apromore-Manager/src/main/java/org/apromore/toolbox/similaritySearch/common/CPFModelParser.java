@@ -255,6 +255,10 @@ public class CPFModelParser {
 
     public static CanonicalProcessType writeModel(Graph g, IdGeneratorHelper idGenerator) {
         CanonicalProcessType toReturn = new CanonicalProcessType();
+        TypeAttribute nameAttribute = new TypeAttribute();
+        nameAttribute.setName("ProcessName");
+        nameAttribute.setValue("merged");
+        toReturn.getAttribute();
 
         // objects and resources
         for (VertexObject o : g.getObjects().values()) {
