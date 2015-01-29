@@ -20,6 +20,7 @@
 
 package org.apromore.toolbox.similaritySearch.common;
 
+import com.processconfiguration.Configurable;
 import com.processconfiguration.ConfigurationAnnotation;
 import com.processconfiguration.Variants;
 import org.apromore.cpf.*;
@@ -343,6 +344,12 @@ public class CPFModelParser {
 
             if(v.isConfigurable()) {
                 n.setConfigurable(true);
+
+                TypeAttribute a = new TypeAttribute();
+                a.setName("bpmn_cpf/extensions");
+                Configurable configurable = new Configurable();
+                a.setAny(configurable);
+                n.getAttribute().add(a);
             }
 //            TypeAttribute a = new TypeAttribute();
 //            a.setName("configurationAnnotation");
