@@ -503,7 +503,8 @@ public class ProcessServiceImpl implements ProcessService {
                 Element extensionElements = XMLUtils.stringToAnyElement(attribute.getAny());
                 if (extensionElements != null) {
                     java.lang.Object o = JAXBContext.newInstance(org.apromore.cpf.ObjectFactory.class,
-                                                                 com.processconfiguration.ObjectFactory.class)
+                                                                 com.processconfiguration.ObjectFactory.class,
+                                                                 com.signavio.ObjectFactory.class)
                                                     .createUnmarshaller()
                                                     .unmarshal(extensionElements);
                     canonical.setProperty(attribute.getName(), attribute.getValue(), o);

@@ -21,6 +21,13 @@
   </xsd:appinfo>
 </xsd:annotation>
 
+<xsd:element name="signavioDiagramMetaData">
+  <xsd:complexType>
+    <xsd:attribute name="metaKey" type="xsd:string" use="required"/>
+    <xsd:attribute name="metaValue" type="xsd:string" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
 <xsd:element name="signavioLabel">
   <!-- TODO -->
 </xsd:element>
