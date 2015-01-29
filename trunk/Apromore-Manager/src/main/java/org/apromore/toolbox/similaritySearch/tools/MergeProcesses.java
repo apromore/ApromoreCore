@@ -21,6 +21,7 @@
 package org.apromore.toolbox.similaritySearch.tools;
 
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.toolbox.similaritySearch.algorithms.MergeModels;
 import org.apromore.toolbox.similaritySearch.common.CPFModelParser;
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
@@ -56,7 +57,6 @@ public class MergeProcesses {
         m2.setIdGenerator(idGenerator);
         m2.removeEmptyNodes();
         m2.reorganizeIDs();
-
 
         m1.addLabelsToUnNamedEdges();
         m2.addLabelsToUnNamedEdges();
