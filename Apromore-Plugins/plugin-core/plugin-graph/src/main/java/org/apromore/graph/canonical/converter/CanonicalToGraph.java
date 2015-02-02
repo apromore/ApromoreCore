@@ -452,6 +452,10 @@ public class CanonicalToGraph {
 
             if (source != null && target != null) {
                 CPFEdge cpfEdge = graph.addEdge(edge.getId(), source, target);
+                if (cpfEdge == null) {
+                    LOGGER.warn("Edge " + edge.getId() + " from " + edge.getSourceId() + " to " + edge.getTargetId() + " couldn't be converted from canonical graph to CPF");
+                    continue;
+                }
 
                 for (TypeAttribute attribute : edge.getAttribute()) {
                     cpfEdge.addAttribute(attribute.getName(), attribute.getValue(), attribute.getAny());
@@ -473,7 +477,12 @@ public class CanonicalToGraph {
                 graph.setNodeProperty(source.getId(), GraphConstants.TYPE, GraphUtil.getType(source));
                 graph.setNodeProperty(target.getId(), GraphConstants.TYPE, GraphUtil.getType(target));
             } else {
-                LOGGER.warn("Either the Source or Target Node for edge(" + edge.getId() + ") is NULL.");
+                if (source == null) {
+                    LOGGER.warn("Edge " + edge.getId() + " source " + edge.getSourceId() + " doesn't occur in the same process.");
+                }
+                if (target == null) {
+                    LOGGER.warn("Edge " + edge.getId() + " target " + edge.getTargetId() + " doesn't occur in the same process.");
+                }
             }
         }
     }
