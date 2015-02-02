@@ -716,9 +716,11 @@ ORYX.Core.Edge = {
 		var g = this.getStencil().property(e.key);
 		g.refToView().each((function (p) {
 			if (p == "selected") {
-				var svgElem = this.node.ownerDocument.getElementById(this.id +"_3");
-				svgElem.setAttributeNS(null, "visibility", this.getProperty("selected") ? "inherit" : "hidden");
-				svgElem.setAttributeNS(null, "stroke", this.getProperty("selectioncolor"));
+				var svgElem = this.node.ownerDocument.getElementById(this.id +"selected");
+				if (svgElem) {
+					svgElem.setAttributeNS(null, "visibility", this.getProperty("selected") ? "inherit" : "hidden");
+					svgElem.setAttributeNS(null, "stroke", this.getProperty("selectioncolor"));
+				}
 			}
 		}).bind(this));
 	}).bind(this));
@@ -1299,7 +1301,7 @@ ORYX.Core.Edge = {
             if (ORYX.Editor.checkClassType(path, SVGPathElement)) {
                 path = path.cloneNode(false);
 
-                var pathId = this.id + "_" + index;
+                var pathId = path.id; //this.id + "_" + index;
                 path.setAttributeNS(null, "id", pathId);
                 this._paths.push(path);
 
