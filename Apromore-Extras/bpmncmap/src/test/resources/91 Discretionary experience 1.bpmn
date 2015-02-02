@@ -17,7 +17,10 @@
          </extensionElements>
       </participant>
    </collaboration>
-   <process id="sid-c10411a6-0c7a-4557-a5d4-cbeb32e96c21" isExecutable="false">
+   <process id="sid-10bcb406-8862-4a06-9869-2cd987751b0a" isExecutable="false">
+      <extensionElements>
+         <pc:configurationMapping href="/filestore/dav/91%20Discretionary%20experience%201.cmap"/>
+      </extensionElements>
       <intermediateCatchEvent id="sid-626FECB9-A448-4BA0-B211-2C8891686FDF" name="Passenger continues&#10; with &#10;ID91 Discretionary &#10;experience 1">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -32,13 +35,6 @@
          <incoming>sid-E79A888A-C93A-473C-AFB9-9724CC4C0FF1</incoming>
          <outgoing>sid-9C289863-8A60-48EE-85F8-C03DB8EA996F</outgoing>
       </task>
-      <sequenceFlow id="sid-9C289863-8A60-48EE-85F8-C03DB8EA996F" isImmediate="true" name="" sourceRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2" targetRef="sid-31F8DF60-0154-4DC6-9B3F-25E1C805869F"/>
-      <sequenceFlow id="sid-E79A888A-C93A-473C-AFB9-9724CC4C0FF1" isImmediate="true" name="" sourceRef="sid-626FECB9-A448-4BA0-B211-2C8891686FDF" targetRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2"/>
-   </process>
-   <process id="sid-10bcb406-8862-4a06-9869-2cd987751b0a" isExecutable="false">
-      <extensionElements>
-         <pc:configurationMapping href="/filestore/dav/91%20Discretionary%20experience%201.cmap"/>
-      </extensionElements>
       <inclusiveGateway gatewayDirection="Diverging" id="sid-31F8DF60-0154-4DC6-9B3F-25E1C805869F" name="">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
@@ -77,7 +73,6 @@
          <incoming>sid-3CB079AD-9D23-4840-82B6-14BB55CCD43F</incoming>
          <incoming>sid-04F873C2-04A5-45C0-89C2-8E6141AAB986</incoming>
          <incoming>sid-CE49C3D4-30B4-4A0D-88F9-757205A313CD</incoming>
-         <incoming>sid-FBC5C8FF-7DAE-4D2A-965A-631215684801</incoming>
          <incoming>sid-2BDB5D1A-5384-4918-AA38-E823892AA515</incoming>
          <incoming>sid-5C433F60-291C-4E1F-9055-392B262A4850</incoming>
          <incoming>sid-8D752F17-A33F-4F72-8667-9908F50D540C</incoming>
@@ -279,7 +274,6 @@
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
          </extensionElements>
          <incoming>sid-4FE46B4F-154A-4C0F-B62B-00BA68CED44E</incoming>
-         <outgoing>sid-FBC5C8FF-7DAE-4D2A-965A-631215684801</outgoing>
          <outgoing>sid-2BDB5D1A-5384-4918-AA38-E823892AA515</outgoing>
       </task>
       <task completionQuantity="1" id="sid-BD0D7F76-F487-41D1-856C-054F6357C56E" isForCompensation="false" name="Go to terminal car rental outlet" startQuantity="1">
@@ -492,6 +486,8 @@
          <incoming>sid-0E0D55F7-1486-48A3-98CB-1D6EEBE056E2</incoming>
          <linkEventDefinition id="sid-5ddd9c37-7ce9-4eef-aee4-73c411d3b821" name="Continue with next step"/>
       </intermediateThrowEvent>
+      <sequenceFlow id="sid-9C289863-8A60-48EE-85F8-C03DB8EA996F" isImmediate="true" name="" sourceRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2" targetRef="sid-31F8DF60-0154-4DC6-9B3F-25E1C805869F"/>
+      <sequenceFlow id="sid-E79A888A-C93A-473C-AFB9-9724CC4C0FF1" isImmediate="true" name="" sourceRef="sid-626FECB9-A448-4BA0-B211-2C8891686FDF" targetRef="sid-26D48C04-C311-4CE8-ADD7-DF67AF4191B2"/>
       <sequenceFlow id="sid-4FE46B4F-154A-4C0F-B62B-00BA68CED44E" isImmediate="true" name="" sourceRef="sid-BD0D7F76-F487-41D1-856C-054F6357C56E" targetRef="sid-FE80B5C1-ABE2-4379-A1D9-305BA631181F"/>
       <sequenceFlow id="sid-573FC9C0-B0F5-41F4-92FC-8B1CF7FF4FF7" isImmediate="true" name="" sourceRef="sid-06D7FABD-9853-4262-8F08-C7B523615C8F" targetRef="sid-D30F2DAE-AD37-4BE7-9B3C-47C481314A4C"/>
       <sequenceFlow id="sid-B2FEDDFA-C929-4134-B203-4AB258B2DA34" isImmediate="true" name="" sourceRef="sid-7A6A1EDC-5D24-4FA8-A132-9DF4F50F9A09" targetRef="sid-E60C033F-9B56-4E24-BFFD-4357BDFC40D9"/>
@@ -554,7 +550,6 @@
       <sequenceFlow id="sid-04F873C2-04A5-45C0-89C2-8E6141AAB986" isImmediate="true" name="" sourceRef="sid-E60C033F-9B56-4E24-BFFD-4357BDFC40D9" targetRef="sid-ED7980CF-F884-4A23-8880-394ABF01DB6F"/>
       <sequenceFlow id="sid-CE49C3D4-30B4-4A0D-88F9-757205A313CD" isImmediate="true" name="" sourceRef="sid-10713589-B226-4005-B0B6-41CBBC11C1CE" targetRef="sid-ED7980CF-F884-4A23-8880-394ABF01DB6F"/>
       <sequenceFlow id="sid-26A1C5B2-E1E0-4630-B55A-ECB704461D00" isImmediate="true" name="" sourceRef="sid-A50DD37E-6D1D-4CEF-A867-7D0EE2F5D8CE" targetRef="sid-34E01F4C-CA02-4069-B5FB-E958E137281B"/>
-      <sequenceFlow id="sid-FBC5C8FF-7DAE-4D2A-965A-631215684801" isImmediate="true" name="" sourceRef="sid-FE80B5C1-ABE2-4379-A1D9-305BA631181F" targetRef="sid-ED7980CF-F884-4A23-8880-394ABF01DB6F"/>
       <sequenceFlow id="sid-DC74CBAD-627E-4855-977A-A5721CF50A71" isImmediate="true" name="" sourceRef="sid-6FA41088-56D2-45AA-ADDB-6A09D7669790" targetRef="sid-6A6C601E-9671-4ACA-AE30-C56E35B1F7EC"/>
       <sequenceFlow id="sid-3EC2FB85-A96E-4D50-B43B-67B061934185" isImmediate="false" name="" sourceRef="sid-7A47AB78-0A3C-4E42-98D1-2CA0934BC0B3" targetRef="sid-DF64AA63-3F14-4210-8A07-769C29E4FF7A"/>
       <sequenceFlow id="sid-A1DD0F27-42F9-41D1-8E14-99DDD7EB3D06" isImmediate="true" name="" sourceRef="sid-152B11A2-10F2-475D-BE3B-32C6FC85EDA7" targetRef="sid-B03F8320-5F66-453A-A65E-407E971BBE7B"/>
@@ -1218,11 +1213,6 @@
             <omgdi:waypoint x="978.0" y="2581.0"/>
             <omgdi:waypoint x="1038.7150564420226" y="2581.4851427651156"/>
             <omgdi:waypoint x="1038.0" y="2495.0"/>
-         </bpmndi:BPMNEdge>
-         <bpmndi:BPMNEdge bpmnElement="sid-FBC5C8FF-7DAE-4D2A-965A-631215684801" id="sid-FBC5C8FF-7DAE-4D2A-965A-631215684801_gui">
-            <omgdi:waypoint x="992.0" y="678.0"/>
-            <omgdi:waypoint x="1298.2600708292048" y="678.6012271415663"/>
-            <omgdi:waypoint x="1298.0" y="1170.0"/>
          </bpmndi:BPMNEdge>
          <bpmndi:BPMNEdge bpmnElement="sid-A1DD0F27-42F9-41D1-8E14-99DDD7EB3D06" id="sid-A1DD0F27-42F9-41D1-8E14-99DDD7EB3D06_gui">
             <omgdi:waypoint x="669.0" y="2455.0"/>
