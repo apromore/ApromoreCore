@@ -13,6 +13,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
@@ -118,12 +119,12 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(convertedCpf.getNet().get(0).getEdge().size(), Matchers.equalTo(2));
     }
 
-    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testFullCanoniserTest() throws Exception {
         CanonicalProcessType cpf = newInstance(CANONICAL_MODELS_DIR + "test5.cpf");
 
         MatcherAssert.assertThat(cpf.getNet().size(), Matchers.equalTo(9));
+        MatcherAssert.assertThat(cpf.getNet().get(0).getId(), Matchers.equalTo("N-Overall"));
         MatcherAssert.assertThat(cpf.getNet().get(0).getNode().size(), Matchers.equalTo(11));
         MatcherAssert.assertThat(cpf.getNet().get(0).getEdge().size(), Matchers.equalTo(13));
         MatcherAssert.assertThat(cpf.getNet().get(0).getObject().size(), Matchers.equalTo(7));
@@ -139,14 +140,14 @@ public class CanonicalGraphConverterUnitTest {
         CanonicalProcessType convertedCpf = g2c.convert(outputCanonical);
 
         MatcherAssert.assertThat(convertedCpf.getNet().size(), Matchers.equalTo(9));
-        MatcherAssert.assertThat(convertedCpf.getNet().get(0).getNode().size(), Matchers.equalTo(11));
-        MatcherAssert.assertThat(convertedCpf.getNet().get(0).getEdge().size(), Matchers.equalTo(13));
-        MatcherAssert.assertThat(convertedCpf.getNet().get(0).getObject().size(), Matchers.equalTo(7));
+        NetType net = findNetById("N-Overall", convertedCpf);
+        MatcherAssert.assertThat(net.getId(), Matchers.equalTo("N-Overall"));
+        MatcherAssert.assertThat(net.getNode().size(), Matchers.equalTo(11));
+        MatcherAssert.assertThat(net.getEdge().size(), Matchers.equalTo(13));
+        MatcherAssert.assertThat(net.getObject().size(), Matchers.equalTo(7));
         MatcherAssert.assertThat(convertedCpf.getResourceType().size(), Matchers.equalTo(45));
     }
 
-
-    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testTwoNetsWithResourcesObjectTreeCorrectToCanonical() throws Exception {
         CanonicalProcessType cpf = newInstance(CANONICAL_MODELS_DIR + "test3.cpf");
@@ -247,11 +248,10 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(outputCanonical.getNodes().size(), Matchers.equalTo(6));
         MatcherAssert.assertThat(outputCanonical.getEdges().size(), Matchers.equalTo(4));
 
-        Iterator resItor = outputCanonical.getResources().iterator();
-        ICPFResource cpfResource = (ICPFResource) resItor.next();
+        ICPFResource cpfResource = findResourceById("c17", outputCanonical);
         MatcherAssert.assertThat(cpfResource.getId(), Matchers.equalTo("c17"));
         MatcherAssert.assertThat(cpfResource.getName(), Matchers.equalTo("P2"));
-        cpfResource = (ICPFResource) resItor.next();
+        cpfResource = findResourceById("c7", outputCanonical);
         MatcherAssert.assertThat(cpfResource.getId(), Matchers.equalTo("c7"));
         MatcherAssert.assertThat(cpfResource.getName(), Matchers.equalTo("P1"));
 
@@ -324,7 +324,6 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(cpfEdge.getTarget().getId(), Matchers.equalTo("c13"));
     }
 
-    //@Ignore("Passes under J2SE 1.7, fails under J2SE 1.8")
     @Test
     public void testTwoNetsWithResourcesObjectTreeCorrectBackToGraph() throws Exception {
         CanonicalProcessType can = newInstance(CANONICAL_MODELS_DIR + "test3.cpf");
@@ -335,15 +334,15 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(convertedCpf.getResourceType().size(), Matchers.equalTo(2));
         MatcherAssert.assertThat(convertedCpf.getNet().size(), Matchers.equalTo(2));
 
-        ResourceTypeType resource = convertedCpf.getResourceType().get(0);
+        ResourceTypeType resource = findResourceTypeById("c17", convertedCpf);
         MatcherAssert.assertThat(resource.getId(), Matchers.equalTo("c17"));
         MatcherAssert.assertThat(resource.getName(), Matchers.equalTo("P2"));
-        resource = convertedCpf.getResourceType().get(1);
+        resource = findResourceTypeById("c7", convertedCpf);
         MatcherAssert.assertThat(resource.getId(), Matchers.equalTo("c7"));
         MatcherAssert.assertThat(resource.getName(), Matchers.equalTo("P1"));
 
         // ****** First Net  ******* //
-        NetType net1 = convertedCpf.getNet().get(0);
+        NetType net1 = findNetById("c16", convertedCpf);
         MatcherAssert.assertThat(net1.getId(), Matchers.equalTo("c16"));
         MatcherAssert.assertThat(net1.getNode().size(), Matchers.equalTo(3));
         MatcherAssert.assertThat(net1.getEdge().size(), Matchers.equalTo(2));
@@ -384,12 +383,12 @@ public class CanonicalGraphConverterUnitTest {
         //assertThat(edge.getTargetId(), equalTo("c3"));
 
         // ****** Seconds Net  ******* //
-        NetType net2 = convertedCpf.getNet().get(1);
+        NetType net2 = findNetById("c6", convertedCpf);
         MatcherAssert.assertThat(net2.getId(), Matchers.equalTo("c6"));
         MatcherAssert.assertThat(net2.getNode().size(), Matchers.equalTo(3));
         MatcherAssert.assertThat(net2.getEdge().size(), Matchers.equalTo(2));
 
-        event = (EventType) net2.getNode().get(0);
+        event = (EventType) findNodeById("c1", net2);
         MatcherAssert.assertThat(event.getId(), Matchers.equalTo("c1"));
         MatcherAssert.assertThat(event.getName(), Matchers.equalTo("S1"));
         MatcherAssert.assertThat(event.getResourceTypeRef().size(), Matchers.equalTo(1));
@@ -397,7 +396,7 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(resourceRef.getId(), Matchers.equalTo("c8"));
         MatcherAssert.assertThat(resourceRef.getResourceTypeId(), Matchers.equalTo("c7"));
 
-        task = (TaskType) net2.getNode().get(1);
+        task = (TaskType) findNodeById("c2", net2);
         MatcherAssert.assertThat(task.getId(), Matchers.equalTo("c2"));
         MatcherAssert.assertThat(task.getName(), Matchers.equalTo("T1"));
         MatcherAssert.assertThat(task.getResourceTypeRef().size(), Matchers.equalTo(1));
@@ -405,7 +404,7 @@ public class CanonicalGraphConverterUnitTest {
         MatcherAssert.assertThat(resourceRef.getId(), Matchers.equalTo("c9"));
         MatcherAssert.assertThat(resourceRef.getResourceTypeId(), Matchers.equalTo("c7"));
 
-        event = (EventType) net2.getNode().get(2);
+        event = (EventType) findNodeById("c3", net2);
         MatcherAssert.assertThat(event.getId(), Matchers.equalTo("c3"));
         MatcherAssert.assertThat(event.getName(), Matchers.equalTo("E1"));
         MatcherAssert.assertThat(event.getResourceTypeRef().size(), Matchers.equalTo(1));
@@ -460,5 +459,69 @@ public class CanonicalGraphConverterUnitTest {
     private CanonicalProcessType newInstance(String fileName) throws JAXBException, SAXException, FileNotFoundException {
         InputStream stream = ClassLoader.getSystemResourceAsStream(fileName);
         return ((JAXBElement<CanonicalProcessType>) unmarshaller.unmarshal(stream)).getValue();
+    }
+
+    /**
+     * @param id  the identifier of a resource within the <var>graph</var>
+     * @param graph  a canonical graph
+     * @return the resource in <var>graph</var> with the specified <var>id</var>
+     * @throw Exception if no resource in <var>graph</var> has the specified <var>id</var>
+     */
+    private static ICPFResource findResourceById(String id, Canonical graph) throws Exception {
+        for (ICPFResource resource : graph.getResources()) {
+            if (resource.getId().equals(id)) {
+                return resource;
+            }
+        }
+
+        throw new Exception("No resource with id " + id + " found");
+    }
+
+    /**
+     * @param id  the identifier of a resource type within the <var>cpf</var>
+     * @param cpf  a CPF document
+     * @return the resource type in the <var>cpf</var> with the specified <var>id</var>
+     * @throw Exception if no resource type in the <var>cpf</var> has the specified <var>id</var>
+     */
+    private static ResourceTypeType findResourceTypeById(String id, CanonicalProcessType cpf) throws Exception {
+        for (ResourceTypeType resourceType : cpf.getResourceType()) {
+            if (resourceType.getId().equals(id)) {
+                return resourceType;
+            }
+        }
+
+        throw new Exception("No resource type with id " + id + " found");
+    }
+
+    /**
+     * @param id  the identifier of a net within the <var>cpf</var>
+     * @param cpf  a CPF document
+     * @return the net in the <var>cpf</var> with the specified <var>id</var>
+     * @throw Exception if no net in the <var>cpf</var> has the specified <var>id</var>
+     */
+    private static NetType findNetById(String id, CanonicalProcessType cpf) throws Exception {
+        for (NetType net : cpf.getNet()) {
+            if (net.getId().equals(id)) {
+                return net;
+            }
+        }
+
+        throw new Exception("No net with id " + id + " found");
+    }
+
+    /**
+     * @param id  the identifier of a node within the <var>net</var>
+     * @param net  a cpf:Net element
+     * @return the node in the <var>net</var> with the specified <var>id</var>
+     * @throw Exception if no node in the <var>net</var> has the specified <var>id</var>
+     */
+    private static NodeType findNodeById(String id, NetType net) throws Exception {
+        for (NodeType node : net.getNode()) {
+            if (node.getId().equals(id)) {
+                return node;
+            }
+        }
+
+        throw new Exception("No node with id " + id + " found in net " + net.getId());
     }
 }
