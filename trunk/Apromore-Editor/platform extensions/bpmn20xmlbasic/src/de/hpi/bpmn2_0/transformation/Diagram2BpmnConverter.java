@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
- */
-
-package de.hpi.bpmn2_0.transformation;
+ */de.hpi.bpmn2_0.transformation;
 
 import de.hpi.bpmn2_0.annotations.CallingElement;
 import de.hpi.bpmn2_0.annotations.ContainerElement;
