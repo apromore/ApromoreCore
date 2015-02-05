@@ -98,47 +98,49 @@ public class GatewayFactory extends AbstractShapeFactory {
 
                                 // If there's a valid configuration, add a <configuration> child to the <configurable>
                                 String type = shape.getProperty("configuration");
-                                try {
-                                        Configurable.Configuration c = new Configurable.Configuration();
-					if ("InclusiveGateway".equals(shape.getStencilId())) {
-                                        	c.setType(TGatewayType.fromValue(type));
-					}
+                                if (type != null && !"unconfigured".equals(type)) {
+                                        try {
+                                                Configurable.Configuration c = new Configurable.Configuration();
+				                if ("InclusiveGateway".equals(shape.getStencilId())) {
+                                                        c.setType(TGatewayType.fromValue(type));
+					        }
 
-					switch (gateway.getGatewayDirection()) {
-					case CONVERGING:
-					case MIXED:
-						Set configuredIncomings = new HashSet();
-						for (Object incoming : shape.getIncomingsReadOnly()) {
-							if (!"true".equals(((GenericShape) incoming).getPropertyBoolean("absentinconfiguration"))) {
-								configuredIncomings.add(incoming);
-							}
-						}
-						if (!configuredIncomings.isEmpty()) {
-							state.configurableGatewaySourceMap.put(c, configuredIncomings);
-						}
-					}
+					        switch (gateway.getGatewayDirection()) {
+					        case CONVERGING:
+					        case MIXED:
+					                Set configuredIncomings = new HashSet();
+						        for (Object incoming : shape.getIncomingsReadOnly()) {
+							        if (!"true".equals(((GenericShape) incoming).getPropertyBoolean("absentinconfiguration"))) {
+							                 configuredIncomings.add(incoming);
+							         }
+						        }
+						        if (!configuredIncomings.isEmpty()) {
+							        state.configurableGatewaySourceMap.put(c, configuredIncomings);
+						        }
+					        }
 
-					switch (gateway.getGatewayDirection()) {
-					case DIVERGING:
-					case MIXED:
-						Set configuredOutgoings = new HashSet();
-						for (Object outgoing : shape.getOutgoingsReadOnly()) {
-							if (!"true".equals(((GenericShape) outgoing).getProperty("absentinconfiguration"))) {
-								configuredOutgoings.add(outgoing);
-							}
-						}
-						if (!configuredOutgoings.isEmpty()) {
-							state.configurableGatewayTargetMap.put(c, configuredOutgoings);
-						}
-					}
+					        switch (gateway.getGatewayDirection()) {
+					        case DIVERGING:
+					        case MIXED:
+						        Set configuredOutgoings = new HashSet();
+						        for (Object outgoing : shape.getOutgoingsReadOnly()) {
+							        if (!"true".equals(((GenericShape) outgoing).getProperty("absentinconfiguration"))) {
+								        configuredOutgoings.add(outgoing);
+							        }
+						        }
+						        if (!configuredOutgoings.isEmpty()) {
+							        state.configurableGatewayTargetMap.put(c, configuredOutgoings);
+						        }
+					        }
 
-                                        configurable.setConfiguration(c);
-                                }
-                                catch(IllegalArgumentException e) {
-                                        throw new BpmnConverterException("\"" + type + "\" is not a gateway type in configuration of " + gateway.getId(), e);
-                                }
-                                catch(NullPointerException e) {
-                                        throw new BpmnConverterException("Null gateway type in configuration of " + gateway.getId(), e);
+                                                configurable.setConfiguration(c);
+                                        }
+                                        catch(IllegalArgumentException e) {
+                                                throw new BpmnConverterException("\"" + type + "\" is not a gateway type in configuration of " + gateway.getId(), e);
+                                        }
+                                        catch(NullPointerException e) {
+                                                throw new BpmnConverterException("Null gateway type in configuration of " + gateway.getId(), e);
+                                        }
                                 }
 			}
 
