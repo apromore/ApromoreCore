@@ -409,7 +409,7 @@ class VariationPointView extends JPanel {
                 try {
                     return bundle.getString(super.getText());
                 } catch (MissingResourceException e) {
-                    LOGGER.severe("Unable to find l10n for key " + super.getText());
+                    LOGGER.log(Level.SEVERE, "Unable to find l10n for key \"" + super.getText() + "\"", e);
                     return super.getText();
                 }
             }
