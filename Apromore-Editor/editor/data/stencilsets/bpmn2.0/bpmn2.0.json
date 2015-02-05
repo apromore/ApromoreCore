@@ -3125,7 +3125,29 @@
 					"refToView":["bg_frame", "crosspath", "crosspath2"],
 					"fill":false,
 					"stroke":true
-				}
+				},
+				{
+                                        "id":"configuration",
+                                        "type":"Choice",
+                                        "title":"Configuration",
+                                        "value":"unconfigured",
+                                        "description":"What sort of gateway is this configured as?",
+                                        "readonly":false,
+                                        "optional":true,
+                                        "configurationExtension":true,
+                                        "items":[
+                                                {
+                                                        "id":"c1",
+                                                        "title":"Unconfigured",
+                                                        "value":"unconfigured"
+                                                },
+                                                {
+                                                        "id":"c2",
+                                                        "title":"Data-based Exclusive",
+                                                        "value":"data-based_exclusive"
+                                                }
+                                        ]
+                                }
 			],
 			"roles": 			[
 				"all",
@@ -3262,7 +3284,29 @@
 					"refToView":["bg_frame", "path9"],
 					"fill":false,
 					"stroke":true
-				}
+				},
+				{
+                                        "id":"configuration",
+                                        "type":"Choice",
+                                        "title":"Configuration",
+                                        "value":"unconfigured",
+                                        "description":"What sort of gateway is this configured as?",
+                                        "readonly":false,
+                                        "optional":true,
+                                        "configurationExtension":true,
+                                        "items":[
+                                                {
+                                                        "id":"c1",
+                                                        "title":"Unconfigured",
+                                                        "value":"unconfigured"
+                                                },
+                                                {
+                                                        "id":"c2",
+                                                        "title":"Parallel",
+                                                        "value":"parallel"
+                                                }
+                                        ]
+                                }
 			],
 			"roles": 			[
 				"all",
@@ -3357,7 +3401,7 @@
 					"id":"configuration",
 					"type":"Choice",
 					"title":"Configuration",
-					"value":"inclusive",
+					"value":"unconfigured",
 					"description":"What sort of gateway is this configured as?",
 					"readonly":false,
 					"optional":true,
@@ -3365,16 +3409,21 @@
 					"items":[
 						{
 							"id":"c1",
+							"title":"Unconfigured",
+							"value":"unconfigured"
+						},
+						{
+							"id":"c2",
 							"title":"Inclusive",
 							"value":"inclusive"
 						},
 						{
-							"id":"c2",
+							"id":"c3",
 							"title":"Parallel",
 							"value":"parallel"
 						},
 						{
-							"id":"c3",
+							"id":"c4",
 							"title":"Data-based Exclusive",
 							"value":"data-based_exclusive"
 						}
