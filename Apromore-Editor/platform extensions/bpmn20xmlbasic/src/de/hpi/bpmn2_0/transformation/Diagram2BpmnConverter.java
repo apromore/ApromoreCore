@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
- */de.hpi.bpmn2_0.transformation;
+ */
+package de.hpi.bpmn2_0.transformation;
 
 import de.hpi.bpmn2_0.annotations.CallingElement;
 import de.hpi.bpmn2_0.annotations.ContainerElement;
@@ -60,6 +61,7 @@ import de.hpi.bpmn2_0.model.misc.ProcessType;
 import de.hpi.bpmn2_0.model.participant.Lane;
 import de.hpi.bpmn2_0.model.participant.LaneSet;
 import de.hpi.bpmn2_0.model.participant.Participant;
+import de.hpi.bpmn2_0.transformation.BPMNPrefixMapper;
 import de.hpi.bpmn2_0.util.DiagramHelper;
 import de.hpi.bpmn2_0.util.SignavioIDChecker;
 import de.hpi.diagram.SignavioUUID;
