@@ -16,10 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
- */
-
-/**
- * PNML2Canonical is a class for converting an PnmlType object
+ */NML2Canonical is a class for converting an PnmlType object
  * into a CanonicalProcessType object.
  * A PNML2Canonical object encapsulates the state of the two main
  * components resulted from the canonization process.  This
