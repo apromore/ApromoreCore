@@ -35,6 +35,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.model.XAttributeLiteral;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
 /*
@@ -55,6 +59,7 @@ public class State {
     private Set<State> visitedStates = new HashSet(); //contain visited states, used in nextStates
     private BPMNDiagramHelper helper;
     private ReplayParams params;
+    private XConceptExtension xce = XConceptExtension.instance();
     
     private static final Logger LOGGER = Logger.getLogger(State.class.getCanonicalName());
   
@@ -137,8 +142,8 @@ public class State {
 
                 if (helper.getActivities().contains(node)) {
                     //Take Activity
-                    if (node.getName().equals(LogUtility.getConceptName(trace.get(traceIndex)))) {
-                    //if (node.getNameRef().equals(((XAttributeLiteral)(trace.get(traceIndex).getAttributes().get("concept:name"))).getValue())) {    
+//                    if (node.getName().equals(LogUtility.getConceptName(trace.get(traceIndex)))) {
+                    if (node.getNameRef() == xce.extractName(trace.get(traceIndex))) {
                         newMarkings = (HashSet)((HashSet)this.markings).clone();
                         newMarkings.remove(sequence);
                         newMarkings.add(node.getOutgoingSequenceFlows().get(0));
@@ -621,10 +626,10 @@ public class State {
      * and the future state (marking and traceIndex)
      * @param newMarking: the marking of next state
      * @param newTraceIndex: the trace index of next state
-     * @param nextElementStatus: the moved element to go to the next state
+     * @param movedElementStatus: the moved element to go to the next state
      * @param currentActivitySkipCount: the current activity skip count (from root node)
      * @param currentMatchCount: the current match count (from root node)
-     * @param currentDiffSeries: the current diff series (from root node)
+     * @param currentConsecutiveUnmatch: the current diff series (from root node)
      * @param currentCost: the current cost (from root node)
      * @return true if pruning conditions are met
      */

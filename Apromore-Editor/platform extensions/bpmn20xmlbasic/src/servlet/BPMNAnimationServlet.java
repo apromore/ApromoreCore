@@ -183,13 +183,12 @@ public class BPMNAnimationServlet extends HttpServlet {
             * Optimize logs and process model
             * ------------------------------------------
             */
-            /*
             Optimizer optimizer = new Optimizer();
             for (XLog log : xlogs) {
                 optimizedLogs.add(optimizer.optimizeLog(log));
             }
             bpmnDefinition = optimizer.optimizeProcessModel(bpmnDefinition);
-            */
+
             
             
             /*
@@ -234,6 +233,7 @@ public class BPMNAnimationServlet extends HttpServlet {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
                 EncodeTraces.getEncodeTraces().read(xlogs);
                 for (Log log: logs) {
+
                     AnimationLog animationLog = replayer.replay(log.xlog, log.color);
                     //AnimationLog animationLog = replayer.replayWithMultiThreading(log.xlog, log.color);
                     if (animationLog !=null && !animationLog.isEmpty()) {
