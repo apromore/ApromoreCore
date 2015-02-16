@@ -116,6 +116,11 @@ public class EncodeTraces {
         traceCharMap.clear();
     }
 
+    /**
+     * Return encoded charstream for traceId
+     * @param traceId
+     * @return 
+     */
     public String getCharStream(String traceId) {
         return traceCharMap.get(traceId);
     }
