@@ -83,7 +83,7 @@ public class BPMNAnimationServlet extends HttpServlet {
         PrintWriter out=null;
         List<Log> logs = new ArrayList<>();
         Set<XLog> xlogs = new HashSet<>();
-        Set<XLog> optimizedLogs = new HashSet<>();
+        //Set<XLog> optimizedLogs = new HashSet<>();
         String jsonData = "";
         Definitions bpmnDefinition = null;
         
@@ -184,8 +184,9 @@ public class BPMNAnimationServlet extends HttpServlet {
             * ------------------------------------------
             */
             Optimizer optimizer = new Optimizer();
-            for (XLog log : xlogs) {
-                optimizedLogs.add(optimizer.optimizeLog(log));
+            for (Log log : logs) {
+                //optimizedLogs.add(optimizer.optimizeLog(log.xlog));
+                log.xlog = optimizer.optimizeLog(log.xlog);
             }
             bpmnDefinition = optimizer.optimizeProcessModel(bpmnDefinition);
 
@@ -231,7 +232,7 @@ public class BPMNAnimationServlet extends HttpServlet {
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
             if (replayer.isValidProcess()) {
                 LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
-                EncodeTraces.getEncodeTraces().read(xlogs);
+                EncodeTraces.getEncodeTraces().read(xlogs); //build a mapping from traceId to charstream
                 for (Log log: logs) {
 
                     AnimationLog animationLog = replayer.replay(log.xlog, log.color);
