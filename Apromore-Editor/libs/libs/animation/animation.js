@@ -16,6 +16,7 @@ var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
 var jsonServer; //contains parsed objects returned from the server
+var caseLabelsVisible = true;
 
 function svgDocument() {
     return $j("div#svgLoc > svg")[0];
@@ -400,6 +401,17 @@ Controller.prototype = {
      * Thus, the end() method should NOT create a loopback to this method.
      */
     updateClock: function() {
+	this.updateMarkersOnce();
+
+	// Original implementation -- checks for termination, updates clock view
+    	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
+    		this.end();
+    	} else {
+            this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
+        }
+    },
+
+    updateMarkersOnce: function() {
         var t = this.getCurrentTime();
 	var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
 	t *= dt;
@@ -410,13 +422,6 @@ Controller.prototype = {
 		this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
 	    }
 	}
-
-	// Original implementation -- checks for termination, updates clock view
-    	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
-    		this.end();
-    	} else {
-            this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
-        }
     },
     
     /*
@@ -1012,8 +1017,14 @@ Controller.prototype = {
        
         return timelineElement;
        
+    },
+
+    setCaseLabelsVisible: function(visible) {
+	if (caseLabelsVisible != visible) {
+	    caseLabelsVisible = visible;
+	    this.updateMarkersOnce();
+	}
     }
-    
 };
 
 
@@ -1049,7 +1060,7 @@ LogCase.prototype = {
 	var t = document.createElementNS(svgNS,"text");
 	t.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
 	t.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
-	t.setAttributeNS(null,"style","fill: black; text-anchor: middle");
+	t.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
 	t.appendChild(document.createTextNode(label));
 
 	marker.setAttributeNS(null,"stroke","none");
