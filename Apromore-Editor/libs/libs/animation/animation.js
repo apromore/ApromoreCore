@@ -18,10 +18,11 @@ var jsonModel; //contains parsed objects of the process model
 var jsonServer; //contains parsed objects returned from the server
 
 function svgDocument() {
-    //return svgDocument();
-    //return $j("#svgPath").get(0);
-    //return $j("svg").get(0);
     return $j("div#svgLoc > svg")[0];
+}
+
+function svgDocumentG() {
+    return $j("div#svgLoc > svg > g")[0];
 }
 
 function getRandomInt(min, max) {
@@ -225,6 +226,9 @@ function updateClock_global() {
         controller.updateClock();
 }
 
+//
+// Animation controller
+//
 Controller = function(){
     //var tokens = [];
     this.clockTimer = null;
@@ -281,6 +285,17 @@ Controller.prototype = {
         jsonServer = JSON.parse(jsonRaw);
         var logs = jsonServer.logs;
         
+	// Reconstruct this.logCases to correspond to the changed jsonServer value
+	this.logCases = [];
+	for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
+	    var log = jsonServer.logs[log_index];
+            this.logCases[log_index] = [];
+	    for (var tokenAnimation_index = 0; tokenAnimation_index < log.tokenAnimations.length; tokenAnimation_index++) {
+		var tokenAnimation = log.tokenAnimations[tokenAnimation_index];
+		this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, log.color, tokenAnimation.caseId);
+	    }
+	}
+
         this.startPos = jsonServer.timeline.startDateSlot; //start slot 
         this.endPos = jsonServer.timeline.endDateSlot; // end slot
         this.timelineSlots = jsonServer.timeline.timelineSlots;
@@ -296,11 +311,6 @@ Controller.prototype = {
         var progressIndicatorE = controller.createProgressIndicators(logs, jsonServer.timeline);
         svg3.appendChild(progressIndicatorE);
 
-        for (var i=0;i<logs.length;i++) {
-            var animationE = this.animateTokens(logs[i]);
-            this.svgDocuments[0].appendChild(animationE);
-        }
-        
         //Recreate timeline to update date labels
         $j("#timeline").remove();
         var timelineE = controller.createTimeline();
@@ -390,6 +400,18 @@ Controller.prototype = {
      * Thus, the end() method should NOT create a loopback to this method.
      */
     updateClock: function() {
+        var t = this.getCurrentTime();
+	var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
+	t *= dt;
+
+	// Display all the log trace markers
+	for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
+	    for (var tokenAnimation_index = 0; tokenAnimation_index < jsonServer.logs[log_index].tokenAnimations.length; tokenAnimation_index++) {
+		this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
+	    }
+	}
+
+	// Original implementation -- checks for termination, updates clock view
     	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
     		this.end();
     	} else {
@@ -473,317 +495,6 @@ Controller.prototype = {
         }                      
     },
     
-    
-    /*
-     * <g class="tokenAnimation" id="tokenAnimation">
-     *      <g id="caseId" class="token">
-     *          <circle class="tokenPath">
-     *          <circle class="tokenPath">
-     *          <circle class="tokenPath">
-     * log: log object
-     */ 
-    animateTokens: function (log){
-        var name = log.name;
-        var color = log.color;
-        var cases = log.tokenAnimations;
-        
-        var animationE = document.createElementNS(svgNS,"g");
-        animationE.setAttributeNS(null,"id","tokenAnimation_" + name);
-        animationE.setAttributeNS(null,"class","tokenAnimation");
-        animationE.setAttributeNS(null,"style","visibility: visible;");
-        
-        for (var i=0;i<=(cases.length-1);i++) {
-            var tokenE = this.createTokenElement(cases[i].caseId);
-            
-            //Add tokens on sequence flows
-            var paths = cases[i].paths;
-            for (var j=0;j<=(paths.length-1);j++) {
-                var id = paths[j].id;
-                var begin = paths[j].begin;
-                var dur = paths[j].dur;
-                if (dur > 0) {
-                    tokenPathE = this.createTokenPathElement(cases[i].caseId, id, begin, dur, color);
-                    tokenE.appendChild(tokenPathE);
-                }
-            }
-            
-            //Add tokens on nodes (across)
-            var nodes = cases[i].nodes;
-            var incomingE;
-            var incomingPoint;
-            var outgoingE;
-            var ougoingPoint;
-            for (var j=0;j<=(nodes.length-1);j++) {
-                var id = nodes[j].id;
-                var begin = nodes[j].begin;
-                var dur = nodes[j].dur;
-                var isVirtual = nodes[j].isVirtual;
-
-                if (dur > 0) {
-                    tokenPathE = this.createTokenNodeElement(cases[i].caseId, id, begin, dur, color, isVirtual);
-                    tokenE.appendChild(tokenPathE);
-                }
-            }
-            
-            animationE.appendChild(tokenE);
-        }        
-        
-        return animationE;
-    },
-    
-    /*
-     * <g id="caseId" class="token">
-     */
-    createTokenElement: function (caseId) {
-        var tokenE = document.createElementNS(svgNS,"g");
-    
-        tokenE.setAttributeNS(null,"id",caseId);
-        tokenE.setAttributeNS(null,"class","token");
-
-        return tokenE;
-    },
-
-    /*
-     * <circle class="tokenPath">
-     *      <animateMotion class="tokenPathAnimation">
-     *          <mpath>
-     */
-    createTokenPathElement: function (caseId, edgeId, begin, duration, color) {
-        //---------------------------------------------
-        // Create animation for edge
-        //---------------------------------------------
-        var pathId = $j("#svg-"+edgeId).find("g").find("g").find("g").find("path").get(0).getAttribute("id");
-        //console.log("edgeId=" + pathId + ", begin=" + begin + ", duration=" + duration);
-        var tokenPathE = document.createElementNS(svgNS,"circle");
-
-        // small random offset so that traces don't occlude one another so much
-        var rand = 2 * Math.PI * Math.random();
-        var cx = 3 * Math.sin(rand);
-        var cy = 3 * Math.cos(rand);
-
-        var svg = svgDocument();
-        var pt  = svg.createSVGPoint();
-        
-        var matrix  = $j("#"+pathId).get(0).getCTM();
-        pt.x = cx;
-        pt.y = cy;
-        pt = pt.matrixTransform(matrix);         
-        
-        tokenPathE.setAttributeNS(null,"cx",pt.x);
-        tokenPathE.setAttributeNS(null,"cy",pt.y);
-        tokenPathE.setAttributeNS(null,"r",4);
-        
-        
-        /*
-        var tokenPathE = document.createElementNS(svgNS,"path"); //use path as a token dot.
-        
-        if (color == "red") {
-            dPath = "m 0,0 a 3 3 0 1 0 0.00001 0"; 
-        } else {
-            dPath = "m 0,0 a 3 3 0 1 1 0.00001 0";
-        };       
-        tokenPathE.setAttributeNS(null,"d",dPath);
-        */
-        
-        tokenPathE.setAttributeNS(null,"fill",color);
-        tokenPathE.setAttributeNS(null,"class","tokenPath");
-    
-        var animateMotion = document.createElementNS(svgNS,"animateMotion");
-        animateMotion.setAttributeNS(null,"class","tokenPathAnimation");
-        animateMotion.setAttributeNS(null,"begin",begin+"s");
-        animateMotion.setAttributeNS(null,"dur",duration+"s");
-    
-        
-        var mPath = document.createElementNS(svgNS,"mpath");
-        mPath.setAttributeNS(xlinkNS,"href","#"+pathId);
-        
-        animateMotion.appendChild(mPath);
-        tokenPathE.appendChild(animateMotion);
-        
-        //Add tooltip to display caseId
-        var titleE = document.createElementNS(svgNS,"title");
-        var titleTextE = document.createTextNode(caseId);
-        titleE.appendChild(titleTextE);
-        tokenPathE.appendChild(titleE);
-    
-        return tokenPathE;
-    },
-    
-     /*
-     * <circle class="tokenPath">
-     *      <animateMotion class="tokenPathAnimation">
-     *          <mpath>
-     */
-    createTokenNodeElement: function (caseId, nodeId, begin, duration, color, isVirtual) {
-        var modelNode = findModelNode(nodeId);
-        var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
-        var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
-        //console.log ("incoming: " + incomingEndPoint.x + "," + incomingEndPoint.y);
-        
-        var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
-        var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
-        //console.log ("outgoing: " + outgoingStartPoint.x + "," + outgoingStartPoint.y);
-        
-        var startPoint = getPointFromCTM(incomingEndPoint, incomingPathE.getCTM());
-        var endPoint = getPointFromCTM(outgoingStartPoint, outgoingPathE.getCTM());
-        
-        var nodeRectE = $j("#svg-" + nodeId).find("g").find("g").find("g").find("rect").get(0);
-        var taskRectPoints = getViewportPoints(nodeRectE); //only for tokens running on the edge of task shape (not used now)
-               
-        //---------------------------------------------------------
-        // Create path element
-        //---------------------------------------------------------
-        
-        var rectWidth = nodeRectE.getBBox().width;
-        var rectHeight = nodeRectE.getBBox().height;
-        var radius;
-        if (rectWidth < rectHeight) {
-            radius = (rectHeight)/2;
-        } else {
-            radius = (rectWidth)/2;
-        }
-              
-        if (isVirtual == "false") { //go through center
-            var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y + 
-                        " L" + endPoint.x + "," + endPoint.y; 
-            var pathId = nodeId +"_path";
-        } else {
-            var pathId = nodeId +"_virtualpath";
-            
-            // Both points are on a same edge
-            if ((Math.abs(startPoint.x - endPoint.x) < 10 && Math.abs(endPoint.x - taskRectPoints.se.x) < 10) || 
-                (Math.abs(startPoint.x - endPoint.x) < 10 && Math.abs(endPoint.x - taskRectPoints.sw.x) < 10) ||
-                (Math.abs(startPoint.y - endPoint.y) < 10 && Math.abs(endPoint.y - taskRectPoints.nw.y) < 10) ||
-                (Math.abs(startPoint.y - endPoint.y) < 10 && Math.abs(endPoint.y - taskRectPoints.sw.y) < 10)) {
-                var path = "m" + startPoint.x + "," + startPoint.y + " L" + endPoint.x + "," + endPoint.y;
-            }
-            else {
-                var arrayAbove = new Array();
-                var arrayBelow = new Array();
-                
-                if (taskRectPoints.se.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.se)) {
-                    arrayAbove.push(taskRectPoints.se);
-                } else {
-                    arrayBelow.push(taskRectPoints.se);
-                }
-                
-                if (taskRectPoints.sw.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.sw)) {
-                    arrayAbove.push(taskRectPoints.sw);
-                }
-                else {
-                    arrayBelow.push(taskRectPoints.sw);
-                }
-                
-                if (taskRectPoints.ne.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.ne)) {
-                    arrayAbove.push(taskRectPoints.ne);
-                } else {
-                    arrayBelow.push(taskRectPoints.ne);
-                }
-                
-                if (taskRectPoints.nw.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.nw)) {
-                    arrayAbove.push(taskRectPoints.nw);
-                } else {
-                    arrayBelow.push(taskRectPoints.nw);
-                }
-                
-                if (arrayAbove.length == 1) {
-                    var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                "L" + arrayAbove[0].x + "," + arrayAbove[0].y + " " +
-                                "L" + endPoint.x + "," + endPoint.y;
-                } 
-                else if (arrayBelow.length == 1) {
-                    var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                "L" + arrayBelow[0].x + "," + arrayBelow[0].y + " " +
-                                "L" + endPoint.x + "," + endPoint.y;
-                }
-                else {
-                    
-                    if (Math.abs(startPoint.x - taskRectPoints.sw.x) < 10) {
-                        var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
-                                    "L" + taskRectPoints.se.x + "," + taskRectPoints.se.y + " " +
-                                    "L" + endPoint.x + "," + endPoint.y;
-                    }
-                    else if (Math.abs(startPoint.x - taskRectPoints.se.x) < 10) {
-                        var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                    "L" + taskRectPoints.se.x + "," + taskRectPoints.se.y + " " +
-                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
-                                    "L" + endPoint.x + "," + endPoint.y;
-                    }
-                    else if (Math.abs(startPoint.y - taskRectPoints.sw.y) < 10) {
-                        var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
-                                    "L" + taskRectPoints.nw.x + "," + taskRectPoints.nw.y + " " +
-                                    "L" + endPoint.x + "," + endPoint.y;
-                    }
-                    else if (Math.abs(startPoint.y - taskRectPoints.nw.y) < 10) {
-                        var path =  "m" + startPoint.x + "," + startPoint.y + " " + 
-                                    "L" + taskRectPoints.nw.x + "," + taskRectPoints.nw.y + " " +
-                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
-                                    "L" + endPoint.x + "," + endPoint.y;
-                    }                    
-                }
-            }  
-        }   
-        
-        var pathE = document.createElementNS(svgNS,"path");
-        pathE.setAttributeNS(null,"id",pathId);  
-        pathE.setAttributeNS(null,"d",path);
-        pathE.setAttributeNS(null,"stroke","red");
-        pathE.setAttributeNS(null,"stroke-width","1");
-        pathE.setAttributeNS(null,"fill","none");
-        pathE.setAttributeNS(null,"visibility","hidden");
-        svgDocument().appendChild(pathE);
-
-        //---------------------------------------------------------
-        // Create animation element
-        //---------------------------------------------------------
-        var tokenPathE = document.createElementNS(svgNS,"circle");
-            
-        if (color=="orange") {
-            var cx = 3;
-            var cy = 3;
-         } else {
-            var cx = -3;
-            var cy = -3;
-        }
-        
-        var svg = svgDocument();
-        var pt  = svg.createSVGPoint();
-        
-        var matrix  = $j("#"+pathId).get(0).getCTM();
-        pt.x = cx;
-        pt.y = cy;
-        pt = pt.matrixTransform(matrix);         
-        
-        tokenPathE.setAttributeNS(null,"cx",pt.x);
-        tokenPathE.setAttributeNS(null,"cy",pt.y);
-        tokenPathE.setAttributeNS(null,"r",4);
-        
-        tokenPathE.setAttributeNS(null,"fill",color);
-        tokenPathE.setAttributeNS(null,"class","tokenPath");
-    
-        var animateMotion = document.createElementNS(svgNS,"animateMotion");
-        animateMotion.setAttributeNS(null,"class","tokenPathAnimation");
-        animateMotion.setAttributeNS(null,"begin",begin+"s");
-        animateMotion.setAttributeNS(null,"dur",duration+"s");
-    
-        
-        var mPath = document.createElementNS(svgNS,"mpath");
-        mPath.setAttributeNS(xlinkNS,"href","#"+pathId);
-        
-        animateMotion.appendChild(mPath);
-        tokenPathE.appendChild(animateMotion);
-        
-        //Add tooltip to display caseId
-        var titleE = document.createElementNS(svgNS,"title");
-        var titleTextE = document.createTextNode(caseId);
-        titleE.appendChild(titleTextE);
-        tokenPathE.appendChild(titleE);        
-    
-        return tokenPathE;
-    },
-              
     changeSpeed: function (speedRatio){
       
         var currentTime = this.getCurrentTime();
@@ -1305,3 +1016,212 @@ Controller.prototype = {
     
 };
 
+
+//
+// A log trace
+//
+
+// tokenAnimation is expected to one of the elements of jsonServer.logs[].tokenAnimations
+// color is the desired color the log trace marker
+// label is the desired text annotation of the log trace marker
+function LogCase(tokenAnimation, color, label) {
+    this.tokenAnimation = tokenAnimation;
+    this.color          = color;
+    this.label          = label;
+
+    this.markers        = [];
+    this.offsetAngle    = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
+};
+
+LogCase.prototype = {
+
+    createMarker: function(color, label) {
+	var animateMotion  = document.createElementNS(svgNS,"animateMotion");
+	var marker         = document.createElementNS(svgNS,"g");
+
+	var m = document.createElementNS(svgNS,"circle");
+	var offset = 0;
+	m.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
+	m.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
+	m.setAttributeNS(null,"r",5);
+	m.setAttributeNS(null,"fill",color);
+
+	var t = document.createElementNS(svgNS,"text");
+	t.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
+	t.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
+	t.setAttributeNS(null,"style","fill: black; text-anchor: middle");
+	t.appendChild(document.createTextNode(label));
+
+	marker.setAttributeNS(null,"stroke","none");
+	marker.appendChild(animateMotion);
+	marker.appendChild(m);
+	marker.appendChild(t);
+
+	return marker;
+    },
+
+    updateMarker: function(t, dt) {
+	// Remove any existing markers for this trace
+	for (var i = 0; i < this.markers.length; i++) {
+	    svgDocumentG().removeChild(this.markers[i]);
+	}
+	this.markers = [];
+
+	// Seek along the trace for the segment corresponding to the current time
+	for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
+	    var path  = this.tokenAnimation.paths[i];
+	    var begin = parseFloat(path.begin);
+	    var dur   = parseFloat(path.dur);
+	    var end   = begin + dur;
+
+	    if (begin <= t && t <= end) {
+		this.showPathMarker(t, dt, path, begin, dur);
+	    }
+	}
+
+	for (var i = 0; i < this.tokenAnimation.nodes.length; i++) {
+	    var node  = this.tokenAnimation.nodes[i];
+	    var begin = parseFloat(node.begin);
+	    var dur   = parseFloat(node.dur);
+	    var end   = begin + dur;
+
+	    if (begin <= t && t <= end) {
+		this.showNodeMarker(t, dt, node, begin, dur);
+	    }
+	}
+    },
+
+    // Cribbed from createTokenNodeElement
+    showNodeMarker: function(t, dt, node, begin, dur) {
+	var modelNode = findModelNode(node.id);
+	var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
+	var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
+
+        var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
+        var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
+    
+        var startPoint = getPointFromCTM(incomingEndPoint, incomingPathE.getCTM());
+        var endPoint = getPointFromCTM(outgoingStartPoint, outgoingPathE.getCTM());
+    
+        var nodeRectE = $j("#svg-" + node.id).find("g").find("g").find("g").find("rect").get(0);
+        var taskRectPoints = getViewportPoints(nodeRectE); //only for tokens running on the edge of task shape (not used now)
+    
+        //---------------------------------------------------------
+        // Create path element
+        //---------------------------------------------------------
+    
+        var rectWidth = nodeRectE.getBBox().width;
+        var rectHeight = nodeRectE.getBBox().height;
+        var radius;
+        if (rectWidth < rectHeight) {
+            radius = (rectHeight)/2;
+        } else {
+            radius = (rectWidth)/2;
+        }
+
+	if (node.isVirtual == "false") { //go through center
+            var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y +
+                        " L" + endPoint.x + "," + endPoint.y;
+            var pathId = node.id +"_path";
+        } else {
+            var pathId = node.id +"_virtualpath";
+
+            // Both points are on a same edge
+            if ((Math.abs(startPoint.x - endPoint.x) < 10 && Math.abs(endPoint.x - taskRectPoints.se.x) < 10) ||
+                (Math.abs(startPoint.x - endPoint.x) < 10 && Math.abs(endPoint.x - taskRectPoints.sw.x) < 10) ||
+                (Math.abs(startPoint.y - endPoint.y) < 10 && Math.abs(endPoint.y - taskRectPoints.nw.y) < 10) ||
+                (Math.abs(startPoint.y - endPoint.y) < 10 && Math.abs(endPoint.y - taskRectPoints.sw.y) < 10)) {
+                var path = "m" + startPoint.x + "," + startPoint.y + " L" + endPoint.x + "," + endPoint.y;
+            }
+            else {
+                var arrayAbove = new Array();
+                var arrayBelow = new Array();
+
+                if (taskRectPoints.se.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.se)) {
+                    arrayAbove.push(taskRectPoints.se);
+                } else {
+                    arrayBelow.push(taskRectPoints.se);
+                }
+
+                if (taskRectPoints.sw.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.sw)) {
+                    arrayAbove.push(taskRectPoints.sw);
+                }
+                else {
+                    arrayBelow.push(taskRectPoints.sw);
+                }
+
+                if (taskRectPoints.ne.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.ne)) {
+                    arrayAbove.push(taskRectPoints.ne);
+                } else {
+                    arrayBelow.push(taskRectPoints.ne);
+                }
+
+                if (taskRectPoints.nw.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.nw)) {
+                    arrayAbove.push(taskRectPoints.nw);
+                } else {
+                    arrayBelow.push(taskRectPoints.nw);
+                }
+
+                if (arrayAbove.length == 1) {
+                    var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                "L" + arrayAbove[0].x + "," + arrayAbove[0].y + " " +
+                                "L" + endPoint.x + "," + endPoint.y;
+                }
+                else if (arrayBelow.length == 1) {
+                    var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                "L" + arrayBelow[0].x + "," + arrayBelow[0].y + " " +
+                                "L" + endPoint.x + "," + endPoint.y;
+                }
+		else {
+
+                    if (Math.abs(startPoint.x - taskRectPoints.sw.x) < 10) {
+                        var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
+                                    "L" + taskRectPoints.se.x + "," + taskRectPoints.se.y + " " +
+                                    "L" + endPoint.x + "," + endPoint.y;
+                    }
+                    else if (Math.abs(startPoint.x - taskRectPoints.se.x) < 10) {
+                        var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                    "L" + taskRectPoints.se.x + "," + taskRectPoints.se.y + " " +
+                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
+                                    "L" + endPoint.x + "," + endPoint.y;
+                    }
+                    else if (Math.abs(startPoint.y - taskRectPoints.sw.y) < 10) {
+                        var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
+                                    "L" + taskRectPoints.nw.x + "," + taskRectPoints.nw.y + " " +
+                                    "L" + endPoint.x + "," + endPoint.y;
+                    }
+                    else if (Math.abs(startPoint.y - taskRectPoints.nw.y) < 10) {
+                        var path =  "m" + startPoint.x + "," + startPoint.y + " " +
+                                    "L" + taskRectPoints.nw.x + "," + taskRectPoints.nw.y + " " +
+                                    "L" + taskRectPoints.sw.x + "," + taskRectPoints.sw.y + " " +
+                                    "L" + endPoint.x + "," + endPoint.y;
+                    }
+                }
+            }
+        }
+
+	this.showMarker(t, dt, path, begin, dur);
+    },
+
+    // Cribbed from createTokenPathElement
+    showPathMarker: function(t, dt, path, begin, dur) {
+	var pathElement = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
+	this.showMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
+    },
+
+    showMarker: function(t, dt, d, begin, dur) {
+	var marker = this.createMarker(this.color, this.label);
+
+	var animateMotion = marker.firstChild;
+	animateMotion.setAttributeNS(null,"class","tokenPathAnimation");
+	animateMotion.setAttributeNS(null,"begin",begin/dt);
+	animateMotion.setAttributeNS(null,"dur",dur/dt);
+	animateMotion.setAttributeNS(null,"fill","freeze");
+	animateMotion.setAttributeNS(null,"path",d);
+
+	svgDocumentG().appendChild(marker);
+	this.markers.push(marker);
+    }
+};

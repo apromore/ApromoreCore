@@ -170,7 +170,6 @@
     function start(e) {
     	lastSliderValue = 11;
     	$j("#slider2").slider({ value: 11 });
-    	//controller.start($j("#animationJSON").get(0).getAttribute("value"));
     	controller.start();
     }	
 
@@ -180,14 +179,16 @@
         controller.end();
     }
     
-    document.getElementById("svgLoc").innerHTML = window.opener.parent.document.getElementsByClassName("ORYX_Editor x-panel")[0].innerHTML;
+    // The Apromore-Editor window of the BPMN process model
+    var editorDocument =  window.opener.parent.document
+
+    // Copy the SVG DOM depicting the process model from the Apromore-Editor window to this one, under the #svgLoc element
+    document.getElementById("svgLoc").innerHTML = editorDocument.getElementsByClassName("ORYX_Editor x-panel")[0].innerHTML;
     //console.log(window.opener.parent.document.getElementsByClassName("ORYX_Editor x-panel")[0].innerHTML);
     //$j("div#svgLoc > svg")[0].setAttributeNS(null,"style","width:8000px;height:1000px;overflow:scroll;");
     
-    var jsonE = window.opener.parent.document.getElementById("jsonForAnimation");
-    //document.getElementById("json").setAttribute("value", jsonE.getAttribute("value"));
-    
-    jsonModel = JSON.parse(jsonE.getAttribute("value"));
+    // Obtain the JSON animation data obtained from the BPMNAnimationServlet; jsonModel is declared in animation.html
+    jsonModel = JSON.parse(editorDocument.getElementById("jsonForAnimation").getAttribute("value"));
     
 	//////////////////////////////Load animation workspace after document has been fully loaded
 	$j(window).load(function(){	
@@ -238,11 +239,6 @@
                                 "scale(" + (ui.value / 6.6667 + 0.25) + ") " +
                                 "translate(" + (-bbox.x - (bbox.width/2)) + "," + (-bbox.y - (bbox.height/2)) + ")";
                         groupE.setAttribute("transform", transform);
-
-                        var tokenElements = $j("div#svgLoc > svg")[0].getElementsByClassName("tokenAnimation");
-                        for (i=0; i < tokenElements.length; ++i) {
-                                tokenElements[i].setAttribute("transform", transform);
-                        }
                 });
 
 		/* -------------------------------------------------------------------
@@ -254,8 +250,6 @@
 		 */
 
 		var timelineE = controller.createTimeline();
-        	$j("div#playback_controls > svg")[0].appendChild(timelineE);
-        	$j("div#playback_controls > svg")[0].pauseAnimations();
 	});
 	//////////////////////////End of window load
 		
