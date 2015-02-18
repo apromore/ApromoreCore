@@ -1018,17 +1018,31 @@ Controller.prototype = {
         timelineElement.appendChild(indicatorE); 
        
         // allow indicator to be dragged horizontally
+	timelineElement.setAttributeNS(null,"pointer-events","visible");
+        timelineElement.setAttributeNS(null,"onmousedown","controller.startIndicatorDrag(evt)");
         timelineElement.setAttributeNS(null,"onmousemove","controller.doIndicatorDrag(evt, " + startTopX + ", " + lineTopX + ")");
+        timelineElement.setAttributeNS(null,"onmouseup","controller.endIndicatorDrag(evt)");
         
         return timelineElement;
        
     },
 
+    startIndicatorDrag: function(evt) {
+	console.log("Start " + evt.type);
+	this.dragging = true;
+    },
+
     doIndicatorDrag: function(evt, from, to) {
-	if (evt.buttons) {
-	    var time = 120 * (evt.clientX - 50) / (to - from);
+	console.log("Do " + evt.type);
+	if (this.dragging) {
+	    var time = (this.slotEngineUnit / 1000.0) * 120 * (evt.clientX - 50) / (to - from);
 	    this.setCurrentTime(time);
 	}
+    },
+
+    endIndicatorDrag: function(evt) {
+	console.log("End " + evt.type);
+	this.dragging = false;
     },
 
     setCaseLabelsVisible: function(visible) {
@@ -1086,7 +1100,7 @@ LogCase.prototype = {
     updateMarker: function(t, dt) {
 	// Remove any existing markers for this trace
 	for (var i = 0; i < this.markers.length; i++) {
-	    svgDocumentG().removeChild(this.markers[i]);
+	    this.markers[i].parentNode.removeChild(this.markers[i]);
 	}
 	this.markers = [];
 
