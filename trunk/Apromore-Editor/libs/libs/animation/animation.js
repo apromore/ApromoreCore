@@ -387,6 +387,7 @@ Controller.prototype = {
         this.svgDocuments.forEach(function(s) {
                 s.setCurrentTime(time);
         });
+        this.updateMarkersOnce();
         this.updateClockOnce(time*this.timeCoefficient*1000 + this.startDateMillis);
     },
 
@@ -962,6 +963,7 @@ Controller.prototype = {
         
         var timelineElement = document.createElementNS(svgNS,"g");
         timelineElement.setAttributeNS(null,"id","timeline");
+        timelineElement.setAttributeNS(null,"style","-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none");
         
         var startTopX = 20;
         var startTopY = 15;
@@ -1002,7 +1004,7 @@ Controller.prototype = {
         indicatorE.setAttributeNS(null,"fill","red");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
         indicatorE.setAttributeNS(null,"width","4");
-        
+
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
         indicatorAnimation.setAttributeNS(null,"id","timelineTick");
         indicatorAnimation.setAttributeNS(null,"begin","0s");
@@ -1015,8 +1017,18 @@ Controller.prototype = {
        
         timelineElement.appendChild(indicatorE); 
        
+        // allow indicator to be dragged horizontally
+        timelineElement.setAttributeNS(null,"onmousemove","controller.doIndicatorDrag(evt, " + startTopX + ", " + lineTopX + ")");
+        
         return timelineElement;
        
+    },
+
+    doIndicatorDrag: function(evt, from, to) {
+	if (evt.buttons) {
+	    var time = 120 * (evt.clientX - 50) / (to - from);
+	    this.setCurrentTime(time);
+	}
     },
 
     setCaseLabelsVisible: function(visible) {
