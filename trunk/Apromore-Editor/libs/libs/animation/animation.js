@@ -22,10 +22,6 @@ function svgDocument() {
     return $j("div#svgLoc > svg")[0];
 }
 
-function svgDocumentG() {
-    return $j("div#svgLoc > svg > g")[0];
-}
-
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -506,41 +502,6 @@ Controller.prototype = {
         var currentTime = this.getCurrentTime();
         var newTime = currentTime/speedRatio;  
         
-       /*
-        * ---------------------------------------------
-        * Update for every token
-        * ---------------------------------------------
-        */
-        var curDur;
-        var curBegin;
-        var animateE;
-        var pathAnimationE;
-        var tokens;
-        var tokenPaths;
-        var animations = $j(".tokenAnimation"); //svgDoc.getElementsByClassName("tokenAnimation");
-        for (var i=0;i<animations.length;i++) {
-            animateE = animations[i];
-            tokens = animateE.getElementsByClassName("token");      
-            
-            for (var j=0; j<tokens.length; j++) {
-               tokenPaths = tokens[j].getElementsByClassName("tokenPath");
-               for (k=0; k<tokenPaths.length; k++) {
-                   pathAnimationE = tokenPaths[k].firstChild; 
-                   
-                   curDur = pathAnimationE.getAttribute("dur");
-                   curDur = curDur.substr(0,curDur.length - 1);
-                   
-                   curBegin = pathAnimationE.getAttribute("begin");
-                   curBegin = curBegin.substr(0,curBegin.length - 1);
-                    
-                   pathAnimationE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
-                   pathAnimationE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");
-                   
-                   //console.log("preDur:" + curSpeed + " " + "preBegin:" + curBegin + " " + "newDur:" + curSpeed/speedRatio + " " + "newBegin:" + newBegin);
-               }
-            }
-        } 
-        
         //------------------------------------------
         // Update the speed of circle progress bar
         //------------------------------------------
@@ -569,6 +530,17 @@ Controller.prototype = {
         
         timelineTickE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
         timelineTickE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");         
+        
+        //----------------------------------------
+        // Update Coefficients and units to ensure consistency
+        // between the clock, timeline and SVG documents
+        //----------------------------------------
+        if (this.slotEngineUnit) {
+            this.slotEngineUnit = this.slotEngineUnit/speedRatio;
+            if (this.timeCoefficient) {
+                this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
+            }             
+        }
        
         //-------------------------------------------------
         // Update SVG document
@@ -581,17 +553,6 @@ Controller.prototype = {
             svgDocument().innerHTML = content;
         }
         this.setCurrentTime(newTime);
-        
-        //----------------------------------------
-        // Update Coefficients and units to ensure consistency
-        // between the clock, timeline and SVG documents
-        //----------------------------------------
-        if (this.slotEngineUnit) {
-            this.slotEngineUnit = this.slotEngineUnit/speedRatio;
-            if (this.timeCoefficient) {
-                this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
-            }             
-        }
     },
     
     fastforward: function () {
@@ -665,160 +626,6 @@ Controller.prototype = {
         }
     },
     
-    /*
-     * Animation elements are attached as childs of every edge SVG element.
-     */
-    animateEdges: function() {
-        /*
-        this.animateEdgeWidth("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");  
-        this.animateEdgeBlink("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");
-        this.animateEdgeColor("sid-CDC54AAE-5FA1-4CAC-8088-BD35F57D0560_1");
-        
-        this.animateEdgeWidth("sid-795CC5A0-EA40-42CB-A86E-38BDAD7067C0_1"); 
-        this.animateEdgeColor("sid-3347E1CA-C190-492F-A838-67F16D38FBF6_1");
-        */
-    },
-    
-    animateEdgeWidth: function(edgeElementId) {
-        /*
-        var animateE = document.createElementNS(svgNS, "animate");
-        animateE.setAttributeNS(null,"class","edgeAnimation");
-        animateE.setAttributeNS(null,"attributeName", "stroke-width");
-        animateE.setAttributeNS(null,"values", "2;5;10;5;2");
-        animateE.setAttributeNS(null,"keyTimes", "0;0.2;0.5;0.8;1");
-        animateE.setAttributeNS(null,"begin","0s");
-        animateE.setAttributeNS(null,"dur", "40s");
-        animateE.setAttributeNS(null,"fill","freeze");
-        
-        var edgeE = svgDocument().getElementById(edgeElementId);
-        edgeE.appendChild(animateE);
-        
-        this.edgeAnimationElements.push(animateE);
-        */
-    },
-    
-    animateEdgeColor: function(edgeElementId) {
-        /*
-        var animateE = document.createElementNS(svgNS, "animate");
-        animateE.setAttributeNS(null,"class","edgeAnimation");
-        animateE.setAttributeNS(null,"attributeName", "stroke");
-        animateE.setAttributeNS(null,"from", "red");
-        animateE.setAttributeNS(null,"to", "red");
-        animateE.setAttributeNS(null,"begin", begin);
-        animateE.setAttributeNS(null,"dur", dur);
-        animateE.setAttributeNS(null,"fill","remove");
-        
-        var edgeE = svgDocument().getElementById(edgeElementId);
-        edgeE.appendChild(animateE);
-        
-        this.edgeAnimationElements.push(animateE);
-        */
-    },    
-    
-    animateEdgeBlink: function(edgeElementId) {
-        /*
-        var animateE = document.createElementNS(svgNS, "animate");
-        animateE.setAttributeNS(null,"class","edgeAnimation");
-        animateE.setAttributeNS(null,"attributeName", "visibility");
-        animateE.setAttributeNS(null,"from", "hidden");
-        animateE.setAttributeNS(null,"to","visible");
-        animateE.setAttributeNS(null,"begin","12s");
-        animateE.setAttributeNS(null,"dur", "0.5s");
-        animateE.setAttributeNS(null,"fill","freeze");
-        animateE.setAttributeNS(null,"repeatCount","20");
-        
-        var edgeE = svgDocument().getElementById(edgeElementId);
-        edgeE.appendChild(animateE);
-        
-        this.edgeAnimationElements.push(animateE);
-        */
-    },     
-    
-    animateTasks: function() {
-        /*
-        svgDoc = svgDocument();
-        
-        svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-9C2F52CE-0A69-49CA-9592-76D7A2496BA5bg_frame"), getRandomInt(10,50)));
-        svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-18FE9750-D3EE-47DE-BB31-0EFE64526364bg_frame"), getRandomInt(10,50)));
-        svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-F4B62085-B143-487A-9B60-9CB2FF6225BEbg_frame"), getRandomInt(10,50)));
-        svgDoc.appendChild(this.createTaskAnimation(svgDoc.getElementById("sid-6C32A869-174A-4EB0-918C-4BF689C870DCbg_frame"), getRandomInt(10,50)));
-        //console.log(tokenIndicatorE.innerHTML);
-        //alert(tokenIndicatorE.innerHTML);
-        */
-    },
-    
-     /*
-     * <g id="taskAnimation">
-     *  <g class='taskAnimationGroup'>
-     *      <rect> //bounding rect
-     *      <rect>
-     *          <animate class='taskAnimation'>
-     */ 
-    createTaskAnimation: function(taskRectE, duration) {
-        var indicatorE = document.createElementNS(svgNS,"g");
-        indicatorE.setAttributeNS(null,"id","taskAnimation");
-
-        var taskRectCoord = getViewportPoints(taskRectE).nw;
-        x = taskRectCoord.x;
-        y = taskRectCoord.y;
-        
-        var indicator1 = this.createTaskAnimationRect(x, y+5, "red", duration+getRandomInt(5,70)+"s", "0;10;20;50;90;70;90;50;30;0", "0;0.1;0.2;0.25;0.5;0.6;0.7;0.8;0.9;1");               
-        var indicator2 = this.createTaskAnimationRect(x, y+15, "blue", duration+getRandomInt(5,70)+"s", "0;10;20;50;90;70;90;50;30;0", "0;0.1;0.2;0.25;0.5;0.6;0.7;0.8;0.9;1");        
-        indicatorE.appendChild(indicator1);
-        indicatorE.appendChild(indicator2);
-        
-        return indicatorE;
-    },
-    
-    createTaskAnimationRect: function(x, y, color, duration, values, keyTimes) {
-        var indicatorE = document.createElementNS(svgNS,"g");
-        indicatorE.setAttributeNS(null,"class","taskAnimationGroup");
-        
-        /*
-         * ------------------------------------------
-         * Bounding rectangle
-         * ------------------------------------------
-         */
-        var boundingRectE = document.createElementNS(svgNS,"rect");               
-        boundingRectE.setAttributeNS(null,"x", x);
-        boundingRectE.setAttributeNS(null,"y", y);
-        boundingRectE.setAttributeNS(null,"width", "100");
-        boundingRectE.setAttributeNS(null,"height", "7");
-        boundingRectE.setAttributeNS(null,"stroke", "blue");
-        boundingRectE.setAttributeNS(null,"fill", "white");
-        
-        /*
-         * ------------------------------------------
-         * Animated rectangle
-         * ------------------------------------------
-         */
-        var mainRectE = document.createElementNS(svgNS,"rect");               
-        mainRectE.setAttributeNS(null,"x", x);
-        mainRectE.setAttributeNS(null,"y", y);
-        mainRectE.setAttributeNS(null,"width", "1");
-        mainRectE.setAttributeNS(null,"height", "7");
-        mainRectE.setAttributeNS(null,"fill", color);
-        
-        var animateE = document.createElementNS(svgNS, "animate");
-        animateE.setAttributeNS(null,"class","taskAnimation");
-        animateE.setAttributeNS(null,"attributeName", "width");
-        animateE.setAttributeNS(null,"repeatCount", "1");
-        animateE.setAttributeNS(null,"values", values);
-        animateE.setAttributeNS(null,"keyTimes", keyTimes);
-        animateE.setAttributeNS(null,"begin","0s");
-        animateE.setAttributeNS(null,"dur",duration);
-        animateE.setAttributeNS(null,"fill","freeze");
-        animateE.setAttributeNS(null,"calcMode","linear");
-        
-        mainRectE.appendChild(animateE);
-        this.taskAnimationElements.push(animateE);
-        
-        indicatorE.appendChild(boundingRectE);
-        indicatorE.appendChild(mainRectE);
-        
-        return indicatorE;     
-    },
-       
     /*
      * <g id="progressAnimation"><g class='progress'><path><animate class='progressanimation'>
      * logs: array of log object
@@ -1028,12 +835,10 @@ Controller.prototype = {
     },
 
     startIndicatorDrag: function(evt) {
-	console.log("Start " + evt.type);
 	this.dragging = true;
     },
 
     doIndicatorDrag: function(evt, from, to) {
-	console.log("Do " + evt.type);
 	if (this.dragging) {
 	    var time = (this.slotEngineUnit / 1000.0) * 120 * (evt.clientX - 50) / (to - from);
 	    this.setCurrentTime(time);
@@ -1041,7 +846,6 @@ Controller.prototype = {
     },
 
     endIndicatorDrag: function(evt) {
-	console.log("End " + evt.type);
 	this.dragging = false;
     },
 
@@ -1098,13 +902,15 @@ LogCase.prototype = {
     },
 
     updateMarker: function(t, dt) {
+
 	// Remove any existing markers for this trace
-	for (var i = 0; i < this.markers.length; i++) {
-	    this.markers[i].parentNode.removeChild(this.markers[i]);
+	while (this.markers.length > 0) {
+	    var marker = this.markers.pop();
+	    marker.remove();
 	}
-	this.markers = [];
 
 	// Seek along the trace for the segment corresponding to the current time
+	var g = $j("div#svgLoc > svg > g")[0];
 	for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
 	    var path  = this.tokenAnimation.paths[i];
 	    var begin = parseFloat(path.begin);
@@ -1112,7 +918,9 @@ LogCase.prototype = {
 	    var end   = begin + dur;
 
 	    if (begin <= t && t <= end) {
-		this.showPathMarker(t, dt, path, begin, dur);
+		var marker = this.showPathMarker(t, dt, path, begin, dur);
+		this.markers.push(marker);
+        	g.appendChild(marker);
 	    }
 	}
 
@@ -1123,7 +931,9 @@ LogCase.prototype = {
 	    var end   = begin + dur;
 
 	    if (begin <= t && t <= end) {
-		this.showNodeMarker(t, dt, node, begin, dur);
+		var marker = this.showNodeMarker(t, dt, node, begin, dur);
+		this.markers.push(marker);
+        	g.appendChild(marker);
 	    }
 	}
     },
@@ -1239,13 +1049,13 @@ LogCase.prototype = {
             }
         }
 
-	this.showMarker(t, dt, path, begin, dur);
+	return this.showMarker(t, dt, path, begin, dur);
     },
 
     // Cribbed from createTokenPathElement
     showPathMarker: function(t, dt, path, begin, dur) {
 	var pathElement = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
-	this.showMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
+	return this.showMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
     },
 
     showMarker: function(t, dt, d, begin, dur) {
@@ -1258,7 +1068,6 @@ LogCase.prototype = {
 	animateMotion.setAttributeNS(null,"fill","freeze");
 	animateMotion.setAttributeNS(null,"path",d);
 
-	svgDocumentG().appendChild(marker);
-	this.markers.push(marker);
+        return marker;
     }
 };
