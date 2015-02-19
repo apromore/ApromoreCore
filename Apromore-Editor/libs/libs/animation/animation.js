@@ -18,21 +18,8 @@ var jsonModel; //contains parsed objects of the process model
 var jsonServer; //contains parsed objects returned from the server
 var caseLabelsVisible = true;
 
-var svgDocumentCached;
-function svgDocument() {
-    if (!svgDocumentCached) {
-	svgDocumentCached = $j("div#svgLoc > svg")[0];
-    }
-    return svgDocumentCached;
-}
-
-var svgDocumentGCached;
-function svgDocumentG() {
-    if (!svgDocumentGCached) {
-	svgDocumentGCached = $j("div#svgLoc > svg > g")[0];
-    }
-    return svgDocumentGCached;
-}
+var svgDocument;  // initialized in Controller.reset
+var svgDocumentG;  // initialized in Controller.reset
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -44,7 +31,7 @@ function getRandomInt(min, max) {
  * Return object has four points: nw, ne, se, sw, cc (center) (each with x,y attribute)
 * ******************************************************************/
 function getViewportPoints(rect){
-    var svg = svgDocument();
+    var svg = svgDocument;
     var pt  = svg.createSVGPoint();
     var corners = {};
     
@@ -74,7 +61,7 @@ function getViewportPoints(rect){
  * output: SVGPoint
  */
 function toViewportCoords(groupE) {
-    var svg = svgDocument();
+    var svg = svgDocument;
     var pt  = svg.createSVGPoint();
     var matrix  = groupE.getScreenCTM();
     rect = groupE.getBBox();
@@ -91,7 +78,7 @@ function toViewportCoords(groupE) {
  * Return: a new point with x,y coordinate attribute
  * ***************************************************/
 function getPointFromCTM(point, transformMatrix) {
-    var newPoint  = svgDocument().createSVGPoint();
+    var newPoint  = svgDocument.createSVGPoint();
     newPoint.x = point.x;
     newPoint.y = point.y;
     newPoint = newPoint.matrixTransform(transformMatrix);
@@ -101,7 +88,7 @@ function getPointFromCTM(point, transformMatrix) {
 
 
 function drawCoordinateOrigin() {
-        var svg = svgDocument();
+        var svg = svgDocument;
         var pt  = svg.createSVGPoint();
         //var matrix  = groupE.getCTM();
         //var rect = groupE.getBBox();
@@ -133,7 +120,7 @@ function drawCoordinateOrigin() {
 }
 
  function drawProcessModelOrigin() {
-        var svg = svgDocument();
+        var svg = svgDocument;
         var pt  = svg.createSVGPoint();
         var matrix  = groupE.getCTM();
         var rect = groupE.getBBox();
@@ -239,11 +226,7 @@ function updateClock_global() {
 // Animation controller
 //
 Controller = function(){
-    //var tokens = [];
     this.clockTimer = null;
-    this.taskAnimationElements = [];
-    this.edgeAnimationElements = [];
-    this.progressAnimationElements = [];
 };         
 
 Controller.prototype = {
@@ -289,7 +272,14 @@ Controller.prototype = {
         var svg3 = $j("div#progress_display > svg")[0];
         this.svgDocuments.push(svg3);
 
-        this.clear();
+	svgDocument = $j("div#svgLoc > svg")[0];
+	svgDocumentG = $j("div#svgLoc > svg > g")[0];
+
+        var tokenE = svgDocument.getElementById("progressAnimation");
+        if (tokenE != null) {
+            svgDocument.removeChild(tokenE);
+            //tokenE.outerHTML = "";  
+        }
 
         jsonServer = JSON.parse(jsonRaw);
         var logs = jsonServer.logs;
@@ -474,41 +464,6 @@ Controller.prototype = {
         }
     },
     
-    clear: function() {
-        var tokenElements = svgDocument().getElementsByClassName("tokenAnimation");
-        if (tokenElements != null) {
-            while (tokenElements.length > 0) { //tokenElements array will be updated immediately, so only remove first element until no more elements
-                if (tokenElements[0] != null) {
-                    svgDocument().removeChild(tokenElements[0]); 
-                } 
-            }
-        }
-        
-        var tokenE = svgDocument().getElementById("progressAnimation");
-        if (tokenE != null) {
-            svgDocument().removeChild(tokenE);
-            //tokenE.outerHTML = "";  
-        }
-        
-        
-        
-        for (var i=0;i<=(this.taskAnimationElements.length-1);i++) {
-             //parentE = this.taskAnimationElements[i].parentElement;
-             //parentE.removeChild(this.taskAnimationElements[i]);
-             if (typeof this.taskAnimationElements[i] != 'undefined') {
-                this.taskAnimationElements[i].outerHTML = "";
-             }
-        }
-    
-        for (var i=0;i<=(this.edgeAnimationElements.length-1);i++) {
-             //parentE = this.edgeAnimationElements[i].parentElement;
-             //parentE.removeChild(this.taskAnimationElements[i]);
-             if (typeof this.edgeAnimationElements[i] != 'undefined') {
-                this.edgeAnimationElements[i].outerHTML = "";
-             }
-        }                      
-    },
-    
     changeSpeed: function (speedRatio){
       
         var currentTime = this.getCurrentTime();
@@ -562,8 +517,8 @@ Controller.prototype = {
         //-------------------------------------------------
         if ( jQuery.browser.webkit ) {
             var content = $j("#svgLoc > svg").html();
-            svgDocument().innerHTML = content;
-	    svgDocumentGCached = null;
+            svgDocument.innerHTML = content;
+	    svgDocumentG = $j("#svgLoc > svg > g")[0];
         }
         this.setCurrentTime(newTime);
     },
@@ -716,7 +671,6 @@ Controller.prototype = {
         animateE.setAttributeNS(null,"repeatCount", "1");
         
         pathE.appendChild(animateE);
-        this.progressAnimationElements.push(animateE);
         
         var textE = document.createElementNS(svgNS,"text");
         textE.setAttributeNS(null,"x", x);
@@ -883,52 +837,89 @@ function LogCase(tokenAnimation, color, label) {
     this.color          = color;
     this.label          = label;
 
-    this.markers        = [];
-    this.offsetAngle    = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
-
+    this.offsetAngle      = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
     this.pathElementCache = {};
-    for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
-	var path  = this.tokenAnimation.paths[i];
-	this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
-    }
+    this.nodeMarkers      = [];
+    this.pathMarkers      = [];
 };
 
 LogCase.prototype = {
 
     updateMarker: function(t, dt) {
 
-	// Remove any existing markers for this trace
-	while (this.markers.length > 0) {
-	    var marker = this.markers.pop();
-	    marker.remove();
+	// Delete any path markers which have moved beyond their interval
+	var newMarkers = []
+	var alreadyMarkedIndices = [];
+	while (this.pathMarkers.length > 0) {
+	    var marker = this.pathMarkers.pop();
+	    if (marker.begin <= t && t <= marker.end) {
+		alreadyMarkedIndices[marker.index] = true;
+		newMarkers.push(marker);
+	    } else {
+		marker.element.remove();
+	    }
 	}
+	this.pathMarkers = newMarkers;
 
-	// Seek along the trace for the segment corresponding to the current time
+	// Insert any new path markers
 	for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
 	    var path  = this.tokenAnimation.paths[i];
 	    var begin = parseFloat(path.begin);
 	    var dur   = parseFloat(path.dur);
 	    var end   = begin + dur;
 
-	    if (begin <= t && t <= end) {
-		var marker = this.createPathMarker(t, dt, this.pathElementCache[path.id], begin, dur);
-		this.markers.push(marker);
-        	svgDocumentG().appendChild(marker);
+	    if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
+		var marker = {
+		    begin:   begin,
+		    end:     end,
+		    index:   i,
+		    element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur)
+		};
+        	svgDocumentG.appendChild(marker.element);
+		this.pathMarkers.push(marker);
 	    }
 	}
 
+	// Delete any node markers which have moved beyond their interval
+	newMarkers = [];
+	alreadyMarkedIndices = [];
+	while (this.nodeMarkers.length > 0) {
+	    var marker = this.nodeMarkers.pop();
+	    if (marker.begin <= t && t <= marker.end) {
+		alreadyMarkedIndices[marker.index] = true;
+		newMarkers.push(marker);
+	    } else {
+		marker.element.remove();
+	    }
+	}
+	this.nodeMarkers = newMarkers;
+
+	// Insert any new node markers
 	for (var i = 0; i < this.tokenAnimation.nodes.length; i++) {
 	    var node  = this.tokenAnimation.nodes[i];
 	    var begin = parseFloat(node.begin);
 	    var dur   = parseFloat(node.dur);
 	    var end   = begin + dur;
 
-	    if (begin <= t && t <= end) {
-		var marker = this.createNodeMarker(t, dt, node, begin, dur);
-		this.markers.push(marker);
-        	svgDocumentG().appendChild(marker);
+	    if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
+		var marker = {
+		    begin:   begin,
+		    end:     end,
+		    index:   i,
+		    element: this.createNodeMarker(t, dt, node, begin, dur)
+		};
+		this.nodeMarkers.push(marker);
+        	svgDocumentG.appendChild(marker.element);
 	    }
 	}
+    },
+
+    getPathElement: function(path) {
+	var pathElement = this.pathElementCache[path.id];
+	if (!pathElement) {
+	    pathElement = this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
+	}
+	return pathElement;
     },
 
     createNodeMarker: function(t, dt, node, begin, dur) {
