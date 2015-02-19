@@ -18,8 +18,20 @@ var jsonModel; //contains parsed objects of the process model
 var jsonServer; //contains parsed objects returned from the server
 var caseLabelsVisible = true;
 
+var svgDocumentCached;
 function svgDocument() {
-    return $j("div#svgLoc > svg")[0];
+    if (!svgDocumentCached) {
+	svgDocumentCached = $j("div#svgLoc > svg")[0];
+    }
+    return svgDocumentCached;
+}
+
+var svgDocumentGCached;
+function svgDocumentG() {
+    if (!svgDocumentGCached) {
+	svgDocumentGCached = $j("div#svgLoc > svg > g")[0];
+    }
+    return svgDocumentGCached;
 }
 
 function getRandomInt(min, max) {
@@ -380,10 +392,10 @@ Controller.prototype = {
     },
 
     setCurrentTime: function(time) {
+        this.updateMarkersOnce();
         this.svgDocuments.forEach(function(s) {
                 s.setCurrentTime(time);
         });
-        this.updateMarkersOnce();
         this.updateClockOnce(time*this.timeCoefficient*1000 + this.startDateMillis);
     },
 
@@ -404,7 +416,7 @@ Controller.prototype = {
     	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
     		this.end();
     	} else {
-            this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
+            //this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
         }
     },
 
@@ -551,6 +563,7 @@ Controller.prototype = {
         if ( jQuery.browser.webkit ) {
             var content = $j("#svgLoc > svg").html();
             svgDocument().innerHTML = content;
+	    svgDocumentGCached = null;
         }
         this.setCurrentTime(newTime);
     },
@@ -872,34 +885,15 @@ function LogCase(tokenAnimation, color, label) {
 
     this.markers        = [];
     this.offsetAngle    = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
+
+    this.pathElementCache = {};
+    for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
+	var path  = this.tokenAnimation.paths[i];
+	this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
+    }
 };
 
 LogCase.prototype = {
-
-    createMarker: function(color, label) {
-	var animateMotion  = document.createElementNS(svgNS,"animateMotion");
-	var marker         = document.createElementNS(svgNS,"g");
-
-	var m = document.createElementNS(svgNS,"circle");
-	var offset = 0;
-	m.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
-	m.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
-	m.setAttributeNS(null,"r",5);
-	m.setAttributeNS(null,"fill",color);
-
-	var t = document.createElementNS(svgNS,"text");
-	t.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
-	t.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
-	t.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
-	t.appendChild(document.createTextNode(label));
-
-	marker.setAttributeNS(null,"stroke","none");
-	marker.appendChild(animateMotion);
-	marker.appendChild(m);
-	marker.appendChild(t);
-
-	return marker;
-    },
 
     updateMarker: function(t, dt) {
 
@@ -910,7 +904,6 @@ LogCase.prototype = {
 	}
 
 	// Seek along the trace for the segment corresponding to the current time
-	var g = $j("div#svgLoc > svg > g")[0];
 	for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
 	    var path  = this.tokenAnimation.paths[i];
 	    var begin = parseFloat(path.begin);
@@ -918,9 +911,9 @@ LogCase.prototype = {
 	    var end   = begin + dur;
 
 	    if (begin <= t && t <= end) {
-		var marker = this.showPathMarker(t, dt, path, begin, dur);
+		var marker = this.createPathMarker(t, dt, this.pathElementCache[path.id], begin, dur);
 		this.markers.push(marker);
-        	g.appendChild(marker);
+        	svgDocumentG().appendChild(marker);
 	    }
 	}
 
@@ -931,15 +924,14 @@ LogCase.prototype = {
 	    var end   = begin + dur;
 
 	    if (begin <= t && t <= end) {
-		var marker = this.showNodeMarker(t, dt, node, begin, dur);
+		var marker = this.createNodeMarker(t, dt, node, begin, dur);
 		this.markers.push(marker);
-        	g.appendChild(marker);
+        	svgDocumentG().appendChild(marker);
 	    }
 	}
     },
 
-    // Cribbed from createTokenNodeElement
-    showNodeMarker: function(t, dt, node, begin, dur) {
+    createNodeMarker: function(t, dt, node, begin, dur) {
 	var modelNode = findModelNode(node.id);
 	var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
 	var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
@@ -1049,24 +1041,38 @@ LogCase.prototype = {
             }
         }
 
-	return this.showMarker(t, dt, path, begin, dur);
+	return this.createMarker(t, dt, path, begin, dur);
     },
 
-    // Cribbed from createTokenPathElement
-    showPathMarker: function(t, dt, path, begin, dur) {
-	var pathElement = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
-	return this.showMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
+    createPathMarker: function(t, dt, pathElement, begin, dur) {
+	return this.createMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
     },
 
-    showMarker: function(t, dt, d, begin, dur) {
-	var marker = this.createMarker(this.color, this.label);
+    createMarker: function(t, dt, d, begin, dur) {
+	var marker = document.createElementNS(svgNS,"g");
+	marker.setAttributeNS(null,"stroke","none");
 
-	var animateMotion = marker.firstChild;
-	animateMotion.setAttributeNS(null,"class","tokenPathAnimation");
+	var animateMotion = document.createElementNS(svgNS,"animateMotion");
 	animateMotion.setAttributeNS(null,"begin",begin/dt);
 	animateMotion.setAttributeNS(null,"dur",dur/dt);
 	animateMotion.setAttributeNS(null,"fill","freeze");
 	animateMotion.setAttributeNS(null,"path",d);
+	marker.appendChild(animateMotion);
+
+	var circle = document.createElementNS(svgNS,"circle");
+	var offset = 2;
+	circle.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
+	circle.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
+	circle.setAttributeNS(null,"r",5);
+	circle.setAttributeNS(null,"fill",this.color);
+	marker.appendChild(circle);
+
+	var text = document.createElementNS(svgNS,"text");
+	text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
+	text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
+	text.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
+	text.appendChild(document.createTextNode(this.label));
+	marker.appendChild(text);
 
         return marker;
     }
