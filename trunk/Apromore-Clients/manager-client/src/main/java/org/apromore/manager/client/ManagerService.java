@@ -109,6 +109,8 @@ public interface ManagerService {
 
     ProcessSummariesType getProcesses(String userId, int folderId);
 
+    ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
+
     void createFolder(String userId, String folderName, int parentFolderId);
 
     void addProcessToFolder(int processId, int folderId);

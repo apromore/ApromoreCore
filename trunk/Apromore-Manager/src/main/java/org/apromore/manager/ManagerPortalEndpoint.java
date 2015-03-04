@@ -1430,7 +1430,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), null));
+        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
 
         return new ObjectFactory().createGetProcessesResponse(res);
     }

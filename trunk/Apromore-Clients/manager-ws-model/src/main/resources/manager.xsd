@@ -427,6 +427,8 @@
             <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType"/>
         </xs:sequence>
         <xs:attribute name="total_process_count" type="xs:long"/>
+        <xs:attribute name="process_count" type="xs:long"/>
+        <xs:attribute name="offset" type="xs:long"/>
     </xs:complexType>
 
     <xs:complexType name="ProcessSummaryType">
@@ -713,6 +715,8 @@
     <xs:complexType name="GetProcessesInputMsgType">
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderId" type="xs:int"/>
+        <xs:attribute name="pageIndex" type="xs:int"/>
+        <xs:attribute name="pageSize" type="xs:int"/>
     </xs:complexType>
 
     <xs:complexType name="GetProcessesOutputMsgType">

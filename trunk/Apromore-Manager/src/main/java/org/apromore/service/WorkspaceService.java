@@ -28,6 +28,8 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Interface for the User Service. Defines all the methods that will do the majority of the work for
@@ -49,6 +51,8 @@ public interface WorkspaceService {
     List<GroupProcess> getGroupProcesses(Integer processId);
 
     List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
+
+    Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
 
     void createFolder(String userId, String folderName, Integer parentFolderId);
 

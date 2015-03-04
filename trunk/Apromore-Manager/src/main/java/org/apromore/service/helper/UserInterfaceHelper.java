@@ -67,4 +67,15 @@ public interface UserInterfaceHelper {
      * @return the list of process Summaries
      */
     ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses);
+
+    /**
+     * Build a page out of the list of process summaries.
+     *
+     * @param userId the search conditions
+     * @param folderId the search conditions
+     * @param pageIndex the index into the sequence of pages of results
+     * @param pageSize the desired size of the page of results
+     * @return the list of process Summaries on the requested page
+     */
+    ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 }
