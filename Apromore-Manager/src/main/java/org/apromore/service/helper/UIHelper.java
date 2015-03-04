@@ -23,6 +23,8 @@ package org.apromore.service.helper;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.GroupProcess;
@@ -38,6 +40,8 @@ import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.WorkspaceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +62,8 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
+    private GroupProcessRepository gpRepository;
+    private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
     private WorkspaceService workspaceService;
 
@@ -66,14 +72,23 @@ public class UIHelper implements UserInterfaceHelper {
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepository Annotations Repository.
      * @param processRepository process Repository.
+     * @param groupProcessRepository process access control group Repository
+     * @param processModelVersionRepository process model version Repository.
      * @param folderRepository folder repository.
      * @param workspaceService Workspace Services.
      */
     @Inject
-    public UIHelper(final AnnotationRepository annotationRepository, final ProcessRepository processRepository,
-            final FolderRepository folderRepository, final WorkspaceService workspaceService) {
+    public UIHelper(final AnnotationRepository annotationRepository,
+                    final ProcessRepository processRepository,
+                    final GroupProcessRepository groupProcessRepository,
+                    final ProcessModelVersionRepository processModelVersionRepository,
+                    final FolderRepository folderRepository,
+                    final WorkspaceService workspaceService) {
+
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
+        this.gpRepository = groupProcessRepository;
+        this.pmvRepository = processModelVersionRepository;
         this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
     }
@@ -183,6 +198,73 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         return processSummaries;
+    }
+
+    /**
+     * Get the list of processes for a user.
+     *
+     * This is used to populate the main page's ProcessListbox area.
+     * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, Integer, Integer)
+     * {@inheritDoc}
+     */
+    public ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
+        assert pageSize != null;
+        assert pageIndex != null;
+
+        Page<Process> processes = workspaceService.getProcesses(userId, folderId, new PageRequest(pageIndex, pageSize));
+
+        ProcessSummariesType processSummaries = new ProcessSummariesType();
+        processSummaries.setTotalProcessCount(pRepository.count());
+        processSummaries.setOffset(new Long(pageIndex * pageSize));
+        processSummaries.setProcessCount(new Long(processes.getTotalElements()));
+        for (Process process: processes.getContent()) {
+            processSummaries.getProcessSummary().add(buildProcessSummary(process));
+        }
+
+        return processSummaries;
+    }
+
+    /**
+     * Populate a process summary.
+     *
+     * @param process
+     * @return the populated process summary
+     */
+    private ProcessSummaryType buildProcessSummary(final Process process) {
+        ProcessSummaryType processSummary = new ProcessSummaryType();
+        processSummary.setId(process.getId());
+        processSummary.setName(process.getName());
+        processSummary.setDomain(process.getDomain());
+        processSummary.setRanking(process.getRanking());
+        processSummary.setMakePublic(process.getPublicModel());
+
+        ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(process.getId(), "MAIN");
+        if (latestVersion != null) {
+            processSummary.setLastVersion(latestVersion.getVersionNumber());
+        }
+
+        if (process.getNativeType() != null) {
+            processSummary.setOriginalNativeType(process.getNativeType().getNatType());
+        }
+
+        if (process.getUser() != null) {
+            processSummary.setOwner(process.getUser().getUsername());
+        }
+
+        buildVersionSummaryTypeList(processSummary, null, process);
+
+        List<GroupProcess> groupProcesses = gpRepository.findByProcessId(process.getId());
+        boolean hasRead = false, hasWrite = false, hasOwnership = false;
+        for (GroupProcess groupProcess: groupProcesses) {
+            hasRead = hasRead || groupProcess.getHasRead();
+            hasWrite = hasWrite || groupProcess.getHasWrite();
+            hasOwnership = hasOwnership || groupProcess.getHasOwnership();
+        }
+        processSummary.setHasRead(hasRead);
+        processSummary.setHasWrite(hasWrite);
+        processSummary.setHasOwnership(hasOwnership);
+
+	return processSummary;
     }
 
 

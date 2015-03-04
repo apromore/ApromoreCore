@@ -21,6 +21,8 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Process;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -57,4 +59,28 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
      * @return the process if one exists, null otherwise.
      */
     Process findByNameAndFolderId(String processName, Integer folderId);
+
+    /**
+     * Finds processes within a folder which are in a group the user belongs to.
+     * @param folderId the folder id
+     * @param userRowGuid user id
+     * @param pageable which page of results to produce
+     * @return a page of processes
+     */
+    @Query("SELECT DISTINCT p FROM Process p JOIN p.groupProcesses gp JOIN gp.group g1, " +
+           "User u JOIN u.groups g2 " +
+           "WHERE (p.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2)")
+    Page<Process> findRootProcessesByUser(String userRowGuid, Pageable pageable);
+
+    /**
+     * Finds processes within a folder which are in a group the user belongs to.
+     * @param folderId the folder id
+     * @param userRowGuid user id
+     * @param pageable which page of results to produce
+     * @return a page of processes
+     */
+    @Query("SELECT DISTINCT p FROM Process p JOIN p.folder f JOIN p.groupProcesses gp JOIN gp.group g1, " +
+           "User u JOIN u.groups g2 " +
+           "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
+    Page<Process> findAllProcessesInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
 }

@@ -448,6 +448,23 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
+    public ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetProcessesRequest.....");
+
+        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+        msg.setPageIndex(pageIndex);
+        msg.setPageSize(pageSize);
+
+        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
+
+        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcesses();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public void createFolder(String userId, String folderName, int parentFolderId) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
