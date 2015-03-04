@@ -277,23 +277,17 @@ public class                                        MainController extends BaseC
     }
 
     public void reloadProcessSummaries() {
-        ProcessSummariesType processSummaries = new ProcessSummariesType();
-        processSummaries.getProcessSummary().clear();
-        UserType user = UserSessionManager.getCurrentUser();
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
-
-        processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId());
-
-        String message = processSummaries.getProcessSummary().size() + " out of " + processSummaries.getTotalProcessCount();
-        if (processSummaries.getTotalProcessCount() > 1) {
-            message += " processes.";
-        } else {
-            message += " process.";
-        }
-
-        this.displayMessage(message);
         this.simplesearch.clearSearches();
-        this.displayProcessSummaries(processSummaries, false);
+        switchToProcessSummaryView();
+
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
+        ProcessListboxController.ProcessSummaryListModel model = ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, false);
+
+        this.displayMessage(
+            model.getSize() + " out of " + model.getTotalProcessCount() +
+	    (model.getTotalProcessCount() > 1 ? " processes." : " process.")
+	);
 
         loadWorkspace();
     }

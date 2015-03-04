@@ -36,6 +36,8 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.service.WorkspaceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -115,6 +117,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public List<GroupProcess> getGroupProcesses(String userId, Integer folderId) {
         return (folderId == 0) ? groupProcessRepo.findRootProcessesByUser(userId)
                                : groupProcessRepo.findAllProcessesInFolderForUser(folderId, userId);
+    }
+
+    @Override
+    public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
+	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
+	                       : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
     }
 
     @Override

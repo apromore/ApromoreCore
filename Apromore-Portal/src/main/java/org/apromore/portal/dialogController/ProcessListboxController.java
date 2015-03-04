@@ -21,6 +21,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apromore.model.FolderType;
@@ -34,6 +35,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
+
+import org.apromore.model.FolderType;
+import org.apromore.model.UserType;
+import org.zkoss.zul.AbstractListModel;
 
 public class ProcessListboxController extends BaseListboxController {
 
@@ -121,6 +126,70 @@ public class ProcessListboxController extends BaseListboxController {
         if (isQueryResult && getListBox().getItemCount() > 0) {
             getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
         }
+    }
+
+    public ProcessSummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean isQueryResult) {
+	this.columnScore.setVisible(isQueryResult);
+
+	getListBox().clearSelection();
+	ProcessSummaryListModel model = new ProcessSummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+	getListBox().setModel(model);
+
+        if (isQueryResult && getListBox().getItemCount() > 0) {
+            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+        }
+
+	return model;
+    }
+
+    /**
+     * Lazily loading list of @link{ProcessSummaryType}.
+     *
+     * @see http://books.zkoss.org/wiki/ZK_Developer%27s_Reference/MVC/Model/List_Model#Huge_Amount_of_Data
+     */
+    class ProcessSummaryListModel extends ListModelList {
+	final int pageSize = 10;  // TODO: ought to be externally configurable
+
+	private ProcessSummariesType processSummaries;
+	private int currentPageIndex = 0;
+        private List<FolderType> subFolders;
+
+        /**
+         * Constructor.
+         *
+         * @param subFolders  will be displayed before processes
+         */
+        ProcessSummaryListModel(List<FolderType> subFolders) {
+            this.subFolders = subFolders;
+            setMultiple(true);
+        }
+
+	public Object getElementAt(int index) {
+            if (index < subFolders.size()) {
+                return subFolders.get(index);
+            } else {
+                int processIndex = index - subFolders.size();
+	        return getProcessSummaries(processIndex / pageSize).getProcessSummary().get(processIndex % pageSize);
+            }
+	}
+
+	public int getSize() {
+	    return subFolders.size() + getProcessSummaries(currentPageIndex).getProcessCount().intValue();
+	}
+
+	public int getTotalProcessCount() {
+	    return getProcessSummaries(currentPageIndex).getTotalProcessCount().intValue();
+	}
+
+	private ProcessSummariesType getProcessSummaries(int pageIndex) {
+	    if (processSummaries == null || currentPageIndex != pageIndex) {
+		UserType user = UserSessionManager.getCurrentUser();
+		FolderType currentFolder = UserSessionManager.getCurrentFolder();
+		processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+		currentPageIndex = pageIndex;
+	    }
+	    return processSummaries;
+	}
     }
 
     /**
