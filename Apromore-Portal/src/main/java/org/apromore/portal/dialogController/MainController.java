@@ -67,6 +67,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.ext.Paginal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,6 +107,7 @@ public class                                        MainController extends BaseC
     private NavigationController navigation;
 
     public Html breadCrumbs;
+    private Paginal pg;
 
     private String host;
     private String versionNumber;
@@ -126,6 +128,7 @@ public class                                        MainController extends BaseC
 
             Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
             this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+            this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
@@ -279,6 +282,7 @@ public class                                        MainController extends BaseC
     public void reloadProcessSummaries() {
         this.simplesearch.clearSearches();
         switchToProcessSummaryView();
+        pg.setActivePage(0);
 
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
