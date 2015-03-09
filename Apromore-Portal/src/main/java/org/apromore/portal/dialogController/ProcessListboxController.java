@@ -204,7 +204,11 @@ public class ProcessListboxController extends BaseListboxController {
      */
     @SuppressWarnings("unchecked")
     public void displayNewProcess(ProcessSummaryType process) {
-        getListModel().add(process);
+       // getListModel().add(process);  // This will trigger a UiException from ZK do to the additional complexity of paged result fetching
+
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
+        ProcessListboxController.ProcessSummaryListModel model = displayProcessSummaries(subFolders, false);
     }
 
 }
