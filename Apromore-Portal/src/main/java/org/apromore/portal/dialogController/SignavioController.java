@@ -102,7 +102,7 @@ public class SignavioController extends BaseController {
             mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(editSession.getProcessName());
             String JSON_DATA = "jsonData";
-            param.put(JSON_DATA, data.replace("\n", " ").trim());
+            param.put(JSON_DATA, data.replace("\n", " ").replace("'", "\\u0027").trim());
             param.put("url", getURL(editSession.getNativeType()));
             param.put("importPath", getImportPath(editSession.getNativeType()));
             param.put("exportPath", getExportPath(editSession.getNativeType()));
