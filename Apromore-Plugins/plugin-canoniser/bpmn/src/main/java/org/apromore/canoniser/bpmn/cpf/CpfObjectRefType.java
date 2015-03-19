@@ -27,7 +27,10 @@ import static org.apromore.cpf.InputOutputType.INPUT;
 import static org.apromore.cpf.InputOutputType.OUTPUT;
 import org.apromore.cpf.ObjectRefType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
+import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TDataObjectReference;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 
@@ -44,7 +47,14 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
     public CpfObjectRefType() { }
 
     /**
-     * Construct a CPF ObjectRef corresponding to a BPMN DataInputAssociation.
+     * Construct a CPF ObjectRef corresponding to a BPMN DataInputAssociation, DataOutputAssociation, or DataObjectReference.
+     *
+     * The three cases are distinguished by the <var>type</var> property:
+     * <dl>
+     * <dt>{@link INPUT}</dt>     <dd>{@link DataInputAssociation}</dd>
+     * <dt>{@link OUTPUT}</dt>    <dd>{@link DataOutputAssociation}</dd>
+     * <dt><code>null</code></dt> <dd>{@link DataObjectReference}</dd>
+     * </dl>
      *
      * @param association  a BPMN DataInputAssociation
      * @param parent  the BPMN Activity containing the <code>association</code>
@@ -69,12 +79,28 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
                                                  association.getSourceRef().size() + " sources");
                 }
 
+                // Handle targetRef
+                TBaseElement target = association.getTargetRef();
+                if (target != null) {
+                    org.apromore.cpf.TypeAttribute attribute = new org.apromore.cpf.TypeAttribute();
+                    attribute.setName("bpmn:dataInputAssociation.targetRef");
+                    attribute.setValue(target.getId());
+                    getAttribute().add(attribute);
+                }
+
                 // Handle objectId
-                CpfObjectType object = (CpfObjectType) initializer.findElement((TFlowElement) association.getSourceRef().get(0).getValue());
+                Object object = initializer.findElement((TFlowElement) association.getSourceRef().get(0).getValue());
                 if (object == null) {
                     throw new CanoniserException("DataInputAssociation " + association.getId() + " didn't have an identifiable source object");
+                } else if (object instanceof CpfObjectRefType) {
+                    CpfObjectRefType cpfObjectRef = (CpfObjectRefType) object;
+                    CpfObjectRefType.this.setObjectId(cpfObjectRef.getObjectId());
+                } else if (object instanceof CpfObjectType) {
+                    CpfObjectType cpfObject = (CpfObjectType) object;
+                    CpfObjectRefType.this.setObjectId(cpfObject.getId());
+                } else {
+                    throw new CanoniserException("DataInputAssociation " + association.getId() + " has unsupported source type " + object.getClass());
                 }
-                CpfObjectRefType.this.setObjectId(object.getId());
             }
         });
     }
@@ -97,10 +123,67 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
         initializer.defer(new Initialization() {
             @Override
+            public void initialize() throws CanoniserException {
+
+                // A single source is the only thing that makes sense, surely?
+                if (association.getSourceRef().size() != 1) {
+                    throw new CanoniserException("BPMN data output association " + association.getId() + " has " +
+                                                 association.getSourceRef().size() + " sources");
+                } else {
+                    TBaseElement source = (TBaseElement) association.getSourceRef().get(0).getValue();
+
+                    org.apromore.cpf.TypeAttribute attribute = new org.apromore.cpf.TypeAttribute();
+                    attribute.setName("bpmn:dataOutputAssociation.sourceRef");
+                    attribute.setValue(source.getId());
+                    getAttribute().add(attribute);
+                }
+
+                // Handle targetRef
+                TBaseElement target = association.getTargetRef();
+                if (target != null) {
+                    org.apromore.cpf.TypeAttribute attribute = new org.apromore.cpf.TypeAttribute();
+                    attribute.setName("bpmn:dataOutputAssociation.targetRef");
+                    attribute.setValue(target.getId());
+                    getAttribute().add(attribute);
+                }
+
+                // Handle objectId
+                Object object = initializer.findElement(association.getTargetRef());
+                if (object == null) {
+                    throw new CanoniserException("DataOutputAssociation " + association.getId() + " didn't have an identifiable target object");
+                } else if (object instanceof CpfObjectRefType) {
+                    CpfObjectRefType cpfObjectRef = (CpfObjectRefType) object;
+                    CpfObjectRefType.this.setObjectId(cpfObjectRef.getObjectId());
+                } else if (object instanceof CpfObjectType) {
+                    CpfObjectType cpfObject = (CpfObjectType) object;
+                    CpfObjectRefType.this.setObjectId(cpfObject.getId());
+                } else {
+                    throw new CanoniserException("DataOutputAssociation " + association.getId() + " has unsupported target type " + object.getClass());
+                }
+            }
+        });
+    }
+
+    /**
+     * Construct a CPF ObjectRef corresponding to a BPMN DataObjectReference.
+     *
+     * @param dataObjectReference  a BPMN DataObjectReference
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfObjectRefType(final TDataObjectReference dataObjectReference,
+                            final Initializer          initializer) throws CanoniserException {
+
+        initializer.populateBaseElement(this, dataObjectReference);
+
+        setType(null);
+
+        initializer.defer(new Initialization() {
+            @Override
             public void initialize() {
 
                 // Handle objectId
-                CpfObjectType object = (CpfObjectType) initializer.findElement(association.getTargetRef());
+                CpfObjectType object = (CpfObjectType) initializer.findElement((TDataObject) dataObjectReference.getDataObjectRef());
                 CpfObjectRefType.this.setObjectId(object.getId());
             }
         });

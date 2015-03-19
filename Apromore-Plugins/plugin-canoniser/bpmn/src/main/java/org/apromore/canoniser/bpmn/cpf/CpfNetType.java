@@ -161,7 +161,11 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
                 }
 
                 @Override public void visit(final TDataObjectReference dataObjectReference) {
-                    unimplemented(dataObjectReference);
+                    try {
+                        new CpfObjectRefType(dataObjectReference, initializer);
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TDataStoreReference dataStoreReference) {

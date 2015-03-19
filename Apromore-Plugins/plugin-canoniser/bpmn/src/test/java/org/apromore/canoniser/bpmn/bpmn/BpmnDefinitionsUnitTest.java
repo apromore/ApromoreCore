@@ -435,6 +435,79 @@ public class BpmnDefinitionsUnitTest implements TestConstants {
     }
 
     /**
+     * Test decanonisation of <code>DataInput.cpf</code>.
+     */
+    @Test
+    public final void testDecanoniseDataInput() throws Exception {
+        
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("DataInput");
+
+        // Inspect the test instance
+        assertNotNull(definitions);
+
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+
+        // Process
+        assertEquals(BpmnProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        TProcess process = (TProcess) definitions.getRootElement().get(0).getValue();
+        assertEquals("process", process.getId());
+        assertEquals(6, process.getFlowElement().size());
+        TTask task = ((JAXBElement<TTask>) process.getFlowElement().get(3)).getValue();
+
+        // Find the ioSpecification/dataInput
+        assertNotNull(task.getIoSpecification());
+        assertNotNull(task.getIoSpecification().getDataInput());
+        assertEquals(1, task.getIoSpecification().getDataInput().size());
+
+        // Find the dataInputAssociation/targetRef
+        assertNotNull(task.getDataInputAssociation());
+        assertEquals(1, task.getDataInputAssociation().size());
+        assertNotNull(task.getDataInputAssociation().get(0).getTargetRef());
+
+        // Show that they match
+        assertEquals(task.getIoSpecification().getDataInput().get(0), task.getDataInputAssociation().get(0).getTargetRef());
+    }
+
+    /**
+     * Test decanonisation of <code>DataOutput.cpf</code>.
+     */
+    @Test
+    public final void testDecanoniseDataOutput() throws Exception {
+        
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("DataOutput");
+
+        // Inspect the test instance
+        assertNotNull(definitions);
+
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+
+        // Process
+        assertEquals(BpmnProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        TProcess process = (TProcess) definitions.getRootElement().get(0).getValue();
+        assertEquals("process", process.getId());
+        assertEquals(6, process.getFlowElement().size());
+        TTask task = ((JAXBElement<TTask>) process.getFlowElement().get(3)).getValue();
+
+        // Find the ioSpecification/dataOutput
+        assertNotNull(task.getIoSpecification());
+        assertNotNull(task.getIoSpecification().getDataOutput());
+        assertEquals(1, task.getIoSpecification().getDataOutput().size());
+
+        // Find the dataOutputAssociation/sourceRef
+        assertNotNull(task.getDataOutputAssociation());
+        assertEquals(1, task.getDataOutputAssociation().size());
+        assertNotNull(task.getDataOutputAssociation().get(0).getSourceRef());
+        assertEquals(1, task.getDataOutputAssociation().get(0).getSourceRef().size());
+
+        // Show that they match
+        assertEquals(task.getIoSpecification().getDataOutput().get(0), task.getDataOutputAssociation().get(0).getSourceRef().get(0).getValue());
+    }
+
+    /**
      * Test {@link BpmnDefinitions#rewriteImplicitGatewaysExplicitly} against
      * <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ImplicitJoin.bpmn">ImplicitJoin.bpmn</a>.
      *

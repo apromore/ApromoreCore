@@ -21,14 +21,17 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
+import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.exception.CanoniserException;
-import static  org.apromore.cpf.InputOutputType.OUTPUT;
+import static org.apromore.cpf.InputOutputType.OUTPUT;
+import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TActivity;
+import org.omg.spec.bpmn._20100524.model.TDataOutput;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 
 /**
@@ -37,6 +40,8 @@ import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class BpmnDataOutputAssociation extends TDataOutputAssociation {
+
+    private static final Logger LOGGER = Logger.getLogger(BpmnDataOutputAssociation.class.getCanonicalName());
 
     /** No-arg constructor. */
     public BpmnDataOutputAssociation() { }
@@ -55,14 +60,44 @@ public class BpmnDataOutputAssociation extends TDataOutputAssociation {
         assert OUTPUT.equals(objectRef.getType()) : objectRef.getId() + " is not typed as an output";
         initializer.populateBaseElement(this, objectRef);
 
-        // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
-        // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
-        getOtherAttributes().put(new QName("workaround"), parent.getId());
-
         initializer.defer(new Initialization() {
             public void initialize() {
                 assert initializer.findElement(objectRef.getObjectId()) != null;
                 setTargetRef(initializer.findElement(objectRef.getObjectId()));
+
+                boolean sourceRefSet = false;
+                if (objectRef.getAttribute() != null) {
+                    for (TypeAttribute attribute: objectRef.getAttribute()) {
+                        switch (attribute.getName()) {
+                        case "bpmn:dataOutputAssociation.sourceRef":
+                            String id = attribute.getValue();
+                            if (parent.getIoSpecification() != null && parent.getIoSpecification().getDataOutput() != null) {
+                                for (TDataOutput dataOutput: parent.getIoSpecification().getDataOutput()) {
+                                    if (id.equals(dataOutput.getId())) {
+                                        // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
+                                        // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
+                                        getOtherAttributes().put(new QName("workaround"), dataOutput.getId());
+
+                                        /*
+                                        // This is what the code would look like if the workaround wasn't necessary:
+                                        BpmnObjectFactory factory = new BpmnObjectFactory();
+                                        getSourceRef().add((JAXBElement) factory.createDataOutput(dataOutput));
+                                        */
+                                        sourceRefSet = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if (!sourceRefSet) {
+                    LOGGER.warning("Incorrectly linking bpmn:dataOutputAssociation sourceRef to parent activity " + parent.getId() + " instead of an (item aware) dataOutput");
+                    // TODO: synthesize a dummy ioSpecification/dataOutput instead
+                    getOtherAttributes().put(new QName("workaround"), parent.getId());
+                }
             }
         });
     }

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 
 // Third party packages
@@ -757,5 +758,60 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
     @Ignore
     public void testChocolate() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Chocolate.c.bpmn");
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/DataInput.bpmn">data object inputs</a>.
+     */
+    @Test
+    public void testDataInput() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("DataInput.bpmn");
+
+        // bpmn:dataInputAssociation.targetRef -> cpf:objectRef/attribute[@name='bpmn:dataInputAssociation.targetRef']
+        CpfObjectRefType objectRef = (CpfObjectRefType) cpf.getElement("inputAssociation");
+        assertNotNull("ObjectRef not found", objectRef);
+        List<TypeAttribute> attributes = objectRef.getAttribute();
+        assertEquals(1, attributes.size());
+        TypeAttribute attribute = attributes.get(0);
+        assertEquals("bpmn:dataInputAssociation.targetRef", attribute.getName());
+        assertEquals("in", attribute.getValue());
+
+        // bpmn.ioSpecification -> cpf:TaskType/attribute[@name='bpmn:ioSpecification']
+        CpfTaskType task = (CpfTaskType) cpf.getElement("task");
+        assertNotNull("Task not found", task);
+        attributes = task.getAttribute();
+        assertEquals(1, attributes.size());
+        attribute = attributes.get(0);
+        assertEquals("bpmn:ioSpecification", attribute.getName());
+        assertNotNull(attribute.getValue());
+    }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/DataOutput.bpmn">data object outputs</a>.
+     */
+    @Test
+    public void testDataOutput() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("DataOutput.bpmn");
+
+        // bpmn:dataOutputAssociation.sourceRef -> cpf:objectRef/attribute[@name='bpmn:dataOutputAssociation.sourceRef']
+        CpfObjectRefType objectRef = (CpfObjectRefType) cpf.getElement("outputAssociation");
+        assertNotNull("ObjectRef not found", objectRef);
+        List<TypeAttribute> attributes = objectRef.getAttribute();
+        assertEquals(2, attributes.size());
+        TypeAttribute attribute = attributes.get(0);
+        assertEquals("bpmn:dataOutputAssociation.sourceRef", attribute.getName());
+        assertEquals("out", attribute.getValue());
+        attribute = attributes.get(1);
+        assertEquals("bpmn:dataOutputAssociation.targetRef", attribute.getName());
+        assertEquals("object", attribute.getValue());
+
+        // bpmn.ioSpecification -> cpf:TaskType/attribute[@name='bpmn:ioSpecification']
+        CpfTaskType task = (CpfTaskType) cpf.getElement("task");
+        assertNotNull("Task not found", task);
+        attributes = task.getAttribute();
+        assertEquals(1, attributes.size());
+        attribute = attributes.get(0);
+        assertEquals("bpmn:ioSpecification", attribute.getName());
+        assertNotNull(attribute.getValue());
     }
 }
