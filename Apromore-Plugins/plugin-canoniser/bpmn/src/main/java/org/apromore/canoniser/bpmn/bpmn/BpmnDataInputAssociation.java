@@ -21,14 +21,17 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
+import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.exception.CanoniserException;
-import static  org.apromore.cpf.InputOutputType.INPUT;
+import static org.apromore.cpf.InputOutputType.INPUT;
+import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TActivity;
+import org.omg.spec.bpmn._20100524.model.TDataInput;
 import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
 
 /**
@@ -37,6 +40,8 @@ import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class BpmnDataInputAssociation extends TDataInputAssociation {
+
+    private static final Logger LOGGER = Logger.getLogger(BpmnDataInputAssociation.class.getCanonicalName());
 
     /** No-arg constructor. */
     public BpmnDataInputAssociation() { }
@@ -57,7 +62,30 @@ public class BpmnDataInputAssociation extends TDataInputAssociation {
 
         initializer.defer(new Initialization() {
             public void initialize() {
-                setTargetRef(parent);
+
+                if (objectRef.getAttribute() != null) {
+                    for (TypeAttribute attribute: objectRef.getAttribute()) {
+                        switch (attribute.getName()) {
+                        case "bpmn:dataInputAssociation.targetRef":
+                            String id = attribute.getValue();
+                            if (parent.getIoSpecification() != null && parent.getIoSpecification().getDataInput() != null) {
+                                for (TDataInput dataInput: parent.getIoSpecification().getDataInput()) {
+                                    if (id.equals(dataInput.getId())) {
+                                        setTargetRef(dataInput);
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if (getTargetRef() == null) {
+                    LOGGER.warning("Incorrectly linking bpmn:dataInputAssociation targetRef to parent activity " + parent.getId() + " instead of an (item aware) dataInput");
+                    // TODO: synthesize a dummy ioSpecification/dataInput instead
+                    setTargetRef(parent);
+                }
 
                 // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
                 // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT

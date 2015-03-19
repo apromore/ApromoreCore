@@ -21,12 +21,27 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+import org.w3c.dom.Element;
 
+// Local packages
 import com.processconfiguration.Configurable;
 import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
@@ -36,6 +51,7 @@ import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
@@ -51,19 +67,6 @@ import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TInputOutputSpecification;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.w3c.dom.Element;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-// Local packages
 
 /**
  * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.
@@ -356,7 +359,24 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         // Handle default
         deferDefault(activity.getDefault());
 
+        // Handle ioSpecification
         TInputOutputSpecification ioSpec = activity.getIoSpecification();
+        if (ioSpec != null) {
+            TypeAttribute attribute = new TypeAttribute();
+            attribute.setName("bpmn:ioSpecification");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                Marshaller marshaller = BpmnDefinitions.newContext().createMarshaller();
+                marshaller.setProperty("jaxb.fragment", true);
+                BpmnObjectFactory factory = new BpmnObjectFactory();
+                marshaller.marshal(factory.createIoSpecification(ioSpec), baos);
+            } catch (JAXBException e) {
+		e.printStackTrace();
+                throw new CanoniserException("Failed to parse bpmn:ioSpecification " + ioSpec.getId(), e);
+            }
+            attribute.setValue(baos.toString());
+            work.getAttribute().add(attribute);
+        }
 
         /*
         if (activity.getCompletionQuantity() != null) {
