@@ -21,6 +21,7 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -91,7 +94,10 @@ import org.omg.spec.bpmn._20100524.model.TFormalExpression;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TInputOutputSpecification;
+import org.omg.spec.bpmn._20100524.model.TInputSet;
 import org.omg.spec.bpmn._20100524.model.TMessageEventDefinition;
+import org.omg.spec.bpmn._20100524.model.TOutputSet;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
@@ -511,6 +517,22 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
     void populateActivity(final TActivity activity, final CpfNodeType cpfNode) throws CanoniserException {
         populateFlowNode(activity, cpfNode);
+
+        if (cpfNode.getAttribute() != null) {
+            for (TypeAttribute attribute: cpfNode.getAttribute()) {
+                if ("bpmn:ioSpecification".equals(attribute.getName())) {
+                    // Deserialize the input/output specification
+                    try {
+                        activity.setIoSpecification(bpmn.newContext()
+                                                        .createUnmarshaller()
+                                                        .unmarshal(new StreamSource(new StringReader(attribute.getValue())), TInputOutputSpecification.class)
+                                                        .getValue());
+                    } catch (JAXBException e) {
+                        throw new CanoniserException("Unable to parse bpmn:ioSpecification property for CPF node " + cpfNode.getId(), e);
+                    }
+                }
+            }
+        }
 
         // Create data associations
         assert cpfNode instanceof WorkType;  // TODO - add a CpfWorkType interface matching WorkType
