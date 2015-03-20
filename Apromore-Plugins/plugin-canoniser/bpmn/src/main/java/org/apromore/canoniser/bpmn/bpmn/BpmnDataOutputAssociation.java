@@ -21,7 +21,9 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
+import java.util.List;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 // Local packages
@@ -33,6 +35,9 @@ import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TDataOutput;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
+import org.omg.spec.bpmn._20100524.model.TInputOutputSpecification;
+import org.omg.spec.bpmn._20100524.model.TInputSet;
+import org.omg.spec.bpmn._20100524.model.TOutputSet;
 
 /**
  * BPMN Data Output Association with canonisation methods.
@@ -93,10 +98,46 @@ public class BpmnDataOutputAssociation extends TDataOutputAssociation {
                     }
                 }
 
+                // Synthesize a dummy ioSpecification/dataOutput if the CPF didn't have a bpmn:dataOutputAssociation.sourceRef attribute
                 if (!sourceRefSet) {
-                    LOGGER.warning("Incorrectly linking bpmn:dataOutputAssociation sourceRef to parent activity " + parent.getId() + " instead of an (item aware) dataOutput");
-                    // TODO: synthesize a dummy ioSpecification/dataOutput instead
-                    getOtherAttributes().put(new QName("workaround"), parent.getId());
+                    BpmnObjectFactory factory = initializer.getFactory();
+
+                    TInputOutputSpecification ioSpec = parent.getIoSpecification();
+                    if (ioSpec == null) {
+                        ioSpec = factory.createTInputOutputSpecification();
+                        parent.setIoSpecification(ioSpec);
+                    }
+                    assert ioSpec != null;
+
+                    TDataOutput dataOutput = factory.createTDataOutput();
+                    dataOutput.setId(initializer.newId(parent.getId() + "_dataOutput"));
+                    dataOutput.setName("Apromore generated");
+                    ioSpec.getDataOutput().add(dataOutput);
+
+                    List<TInputSet> inputSets = ioSpec.getInputSet();
+                    assert inputSets != null;
+                    if (inputSets.isEmpty())  {
+                        TInputSet inputSet = factory.createTInputSet();
+                        inputSet.setId(initializer.newId(parent.getId() + "_inputSet"));
+                        inputSet.setName("Apromore generated");
+                        inputSets.add(inputSet);
+                    }
+
+                    List<TOutputSet> outputSets = ioSpec.getOutputSet();
+                    assert outputSets != null;
+                    if (outputSets.isEmpty()) {
+                        TOutputSet outputSet = factory.createTOutputSet();
+                        outputSet.setId(initializer.newId(parent.getId() + "_outputSet"));
+                        outputSet.setName("Apromore generated");
+                        outputSet.getDataOutputRefs().add((JAXBElement) factory.createDataOutput(dataOutput));  // TODO: figure out why this doesn't work
+                        outputSets.add(outputSet);
+                    }
+
+                    // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
+                    // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
+                    getOtherAttributes().put(new QName("workaround"), dataOutput.getId());
+
+                    LOGGER.info("Synthesized bpmn:dataOutput " + dataOutput.getId() + " for cpf:objectRef " + objectRef.getId());
                 }
             }
         });
