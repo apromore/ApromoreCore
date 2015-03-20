@@ -21,7 +21,9 @@
 package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
+import java.util.List;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 // Local packages
@@ -33,6 +35,9 @@ import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TDataInput;
 import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
+import org.omg.spec.bpmn._20100524.model.TInputOutputSpecification;
+import org.omg.spec.bpmn._20100524.model.TInputSet;
+import org.omg.spec.bpmn._20100524.model.TOutputSet;
 
 /**
  * BPMN Data Input Association with canonisation methods.
@@ -81,10 +86,43 @@ public class BpmnDataInputAssociation extends TDataInputAssociation {
                     }
                 }
 
+                // Synthesize a dummy ioSpecification/dataInput if the CPF didn't have a bpmn:dataInputAssociation.targetRef attribute
                 if (getTargetRef() == null) {
-                    LOGGER.warning("Incorrectly linking bpmn:dataInputAssociation targetRef to parent activity " + parent.getId() + " instead of an (item aware) dataInput");
-                    // TODO: synthesize a dummy ioSpecification/dataInput instead
-                    setTargetRef(parent);
+                    BpmnObjectFactory factory = initializer.getFactory();
+
+                    TInputOutputSpecification ioSpec = parent.getIoSpecification();
+                    if (ioSpec == null) {
+                        ioSpec = factory.createTInputOutputSpecification();
+                        parent.setIoSpecification(ioSpec);
+                    }
+                    assert ioSpec != null;
+                        
+                    TDataInput dataInput = factory.createTDataInput();
+                    dataInput.setId(initializer.newId(parent.getId() + "_dataInput"));
+                    dataInput.setName("Apromore generated");
+                    ioSpec.getDataInput().add(dataInput);
+
+                    List<TInputSet> inputSets = ioSpec.getInputSet();
+                    assert inputSets != null;
+                    if (inputSets.isEmpty()) {
+                        TInputSet inputSet = factory.createTInputSet();
+                        inputSet.setId(initializer.newId(parent.getId() + "_inputSet"));
+                        inputSet.setName("Apromore generated");
+                        inputSet.getDataInputRefs().add((JAXBElement) factory.createDataInput(dataInput));  // TODO: figure out why this doesn't work
+                        inputSets.add(inputSet);
+                    }
+
+                    List<TOutputSet> outputSets = ioSpec.getOutputSet();
+                    assert outputSets != null;
+                    if (outputSets.isEmpty()) {
+                        TOutputSet outputSet = factory.createTOutputSet();
+                        outputSet.setId(initializer.newId(parent.getId() + "_outputSet"));
+                        outputSet.setName("Apromore generated");
+                        outputSets.add(outputSet);
+                    }
+
+                    setTargetRef(dataInput);
+                    LOGGER.info("Synthesized bpmn:dataInput " + dataInput.getId() + " for cpf:objectRef " + objectRef.getId());
                 }
 
                 // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
