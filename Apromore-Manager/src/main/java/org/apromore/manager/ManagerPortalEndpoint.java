@@ -25,6 +25,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.exception.SchedulerException;
 import org.apromore.helper.Version;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
@@ -295,6 +296,16 @@ public class ManagerPortalEndpoint {
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
+
+//        LOGGER.error("Starting GED Matrix");
+//        long t = System.nanoTime();
+//        try {
+//            clusterService.computeGEDMatrix();
+//            long t1 = System.nanoTime();
+//            LOGGER.error("GED Matrix completed in " + (t1-t)/1000000 + " milliseconds");
+//        } catch (RepositoryException repoException) {
+//
+//        }
     }
 
 
