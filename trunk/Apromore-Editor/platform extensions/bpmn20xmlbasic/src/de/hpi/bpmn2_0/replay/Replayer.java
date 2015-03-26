@@ -89,7 +89,7 @@ public class Replayer {
     }
     
     public AnimationLog replay(XLog log, String color) {
-        
+
         AnimationLog animationLog = new AnimationLog(log);
         animationLog.setColor(color /*this.getLogColor()*/);
         animationLog.setName(log.getAttributes().get("concept:name").toString());

@@ -365,6 +365,10 @@ public class Vertex {
         return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public LinkedList<Vertex> getAllNonGWParents() {
         LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
         LinkedList<Vertex> toProcesGWs = new LinkedList<Vertex>();

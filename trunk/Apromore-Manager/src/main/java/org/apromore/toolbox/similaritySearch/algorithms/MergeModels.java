@@ -52,12 +52,26 @@ public class MergeModels {
 
         HashMap<String, String> objectresourceIDMap = new HashMap<String, String>();
 
+        HashSet<String> labelsg1 = new HashSet<String>();
+        HashSet<String> labelsg2 = new HashSet<String>();
         HashSet<String> labelsg1g2 = new HashSet<String>();
-        if(!g1.getGraphLabel().equals("merged")) {
+        if(!g1.getGraphLabel().equals("###merged###")) {
+            labelsg1.add(g1.getGraphLabel());
             labelsg1g2.add(g1.getGraphLabel());
+        }else {
+            for(Edge edge : g1.getEdges()) {
+                labelsg1.addAll(edge.getLabels());
+                labelsg1g2.addAll(edge.getLabels());
+            }
         }
-        if(!g2.getGraphLabel().equals("merged")) {
+        if(g2.getGraphLabel().equals("###merged###")) {
+            labelsg2.add(g2.getGraphLabel());
             labelsg1g2.add(g2.getGraphLabel());
+        }else {
+            for(Edge edge : g2.getEdges()) {
+                labelsg2.addAll(edge.getLabels());
+                labelsg1g2.addAll(edge.getLabels());
+            }
         }
 
         Graph merged = new Graph();
@@ -220,9 +234,9 @@ public class MergeModels {
                         v.removeChild(g1Source.getID());
                         HashSet<String> labels = merged.removeEdge(v.getID(), g1Source.getID());
                         Edge edge = merged.connectVertices(v, newSource, labels);
-                        if(!g1.getGraphLabel().equals("merged")) {
-                            edge.addLabel(g1.getGraphLabel());
-                        }
+
+                        edge.addLabels(labelsg1);//REMOVED BY ME
+
 //						newEdge.addLabelToModel();
                         //					System.out.println(" newSource connect  "+ newSource.getID()+" "+ v.getID()+" ");
                     }
@@ -232,9 +246,8 @@ public class MergeModels {
                         v.removeChild(g2Source.getID());
                         HashSet<String> labels = merged.getEdgeLabels(v.getID(), g2Source.getID());
                         Edge edge = merged.connectVertices(v, newSource, labels);
-                        if(!g2.getGraphLabel().equals("merged")) {
-                            edge.addLabel(g2.getGraphLabel());
-                        }
+
+                        edge.addLabels(labelsg2);//REMOVED BY ME
 //						newEdge.addLabelToModel();
                         //					System.out.println(" newSource connect  "+ newSource.getID()+" "+ v.getID());
                     }
@@ -249,16 +262,12 @@ public class MergeModels {
                         Edge edge = merged.connectVertices(fakeEvent, fakeFn);
                         Edge newEdge = merged.connectVertices(fakeFn, newSource);
                         if (g1Source.sourceBefore) {
-                            if(!g1.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g1.getGraphLabel());
-                                newEdge.addLabel(g1.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg1);
+                            newEdge.addLabels(labelsg1);
                         }
                         if (g2Source.sourceBefore) {
-                            if(!g2.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g2.getGraphLabel());
-                                newEdge.addLabel(g2.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg2);
+                            newEdge.addLabels(labelsg2);
                         }
 //						newEdge.addLabelToModel();
                     }
@@ -272,9 +281,7 @@ public class MergeModels {
                             HashSet<String> labels = merged.getEdgeLabels(v.getID(), g2Source.getID());
                             Edge edge = merged.connectVertices(v, g1Source, labels);
 
-                            if(!g2.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g2.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg1g2);//REMOVED BY ME
 //							newEdge.addLabelToModel();
 
                         }
@@ -312,13 +319,15 @@ public class MergeModels {
                         g1Sink.removeChild(v.getID());
                         v.removeParent(g1Sink.getID());
                         HashSet<String> labels = merged.removeEdge(g1Sink.getID(), v.getID());
-                        merged.connectVertices(newSink, v, labels);
+//                        merged.connectVertices(newSink, v, labels);
+                        merged.connectVertices(newSink, v, labelsg1);
                     }
 
                     for (Vertex v : g2SourceFoll) {
                         v.removeParent(g2Sink.getID());
                         HashSet<String> labels = merged.getEdgeLabels(g2Sink.getID(), v.getID());
-                        merged.connectVertices(newSink, v, labels);
+//                        merged.connectVertices(newSink, v, labels);
+                        merged.connectVertices(newSink, v, labelsg2);
                     }
 
                     // add fake nodes?
@@ -331,16 +340,12 @@ public class MergeModels {
                         Edge newEdge = merged.connectVertices(newSink, fakeFn);
 
                         if (g1Sink.sinkBefore) {
-                            if(!g1.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g1.getGraphLabel());
-                                newEdge.addLabel(g1.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg1);
+                            newEdge.addLabels(labelsg1);
                         }
                         if (g2Sink.sinkBefore) {
-                            if(!g2.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g2.getGraphLabel());
-                                newEdge.addLabel(g2.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg2);
+                            newEdge.addLabels(labelsg2);
                         }
                     }
 
@@ -351,9 +356,7 @@ public class MergeModels {
                             HashSet<String> labels = merged.getEdgeLabels(g2Sink.getID(), v.getID());
                             Edge edge = merged.connectVertices(g1Sink, v, labels);
 
-                            if(!g2.getGraphLabel().equals("merged")) {
-                                edge.addLabel(g2.getGraphLabel());
-                            }
+                            edge.addLabels(labelsg1g2);//REMOVED BY ME
                         }
                     }
                 }
@@ -375,12 +378,8 @@ public class MergeModels {
                                     // the common part should also have the labels of both graph
                                 }
                             }
-                            if(!g1.getGraphLabel().equals("merged")) {
-                                e.addLabel(g1.getGraphLabel());
-                            }
-                            if(!g2.getGraphLabel().equals("merged")) {
-                                e.addLabel(g2.getGraphLabel());
-                            }
+                            e.addLabels(labelsg1);//REMOVED BY ME
+                            e.addLabels(labelsg2);//REMOVED BY ME
                         }
                     }
                 }
@@ -445,8 +444,8 @@ public class MergeModels {
         for (String l : merged.getEdgeLabels()) {
             merged.name += l + ",";
         }
-        merged.name = "merged"; //merged.name.substring(0, merged.name.length() - 1);
-        merged.ID = "merged"; //String.valueOf(idGenerator.getNextId());
+        merged.name = "###merged###"; //merged.name.substring(0, merged.name.length() - 1);
+        merged.ID = "###merged###"; //String.valueOf(idGenerator.getNextId());
 
         return merged;
     }

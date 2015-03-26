@@ -64,6 +64,7 @@ public class MergeProcesses {
         Graph merged = MergeModels.mergeModels(m1, m2, idGenerator, removeEnt, algorithm, param);
 
         if (models.size() > 2) {
+            LOGGER.error("SHOULD NOT BE HERE " + models.toString());
             for (int i = 2; i < models.size(); i++) {
                 Graph m3 = CPFModelParser.readModel(models.get(i));
                 m3.setIdGenerator(idGenerator);
