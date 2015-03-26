@@ -313,6 +313,14 @@ public class Graph {
                         v.getAnnotationMap().put(label, "xor");
                     }
                 } else {
+                    if(v.getLabel() == null || v.getLabel().isEmpty()) {
+                       if(v.getParents() == null || v.getParents().size() == 0) {
+                           v.setLabel("startEvent");
+                       }else if(v.getChildren() == null || v.getChildren().size() == 0) {
+                           v.setLabel("endEvent");
+                       }
+                    }
+
                     for (VertexObjectRef o : v.objectRefs) {
                         o.addModel(label);
                     }

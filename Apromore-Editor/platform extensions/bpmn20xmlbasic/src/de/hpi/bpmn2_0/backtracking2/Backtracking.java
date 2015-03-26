@@ -453,14 +453,9 @@ public class Backtracking {
             fullTraceMatched = true;
             return true;
         }
-        else if (node.getCost() <= params.getMaxCost() && 
-                 node.getState().getTraceIndex() >= progressSize && 
-                 node.getMatchCount() >= 1.0*params.getMinMatchPercent()*progressSize) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        else return node.getCost() <= params.getMaxCost() &&
+                node.getState().getTraceIndex() >= progressSize &&
+                node.getMatchCount() >= 1.0 * params.getMinMatchPercent() * progressSize;
     }
     
     
