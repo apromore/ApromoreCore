@@ -10,3 +10,11 @@ call mvn install:install-file -Dfile=lpsolve55j.jar -DgroupId=lpsolve -Dartifact
 call mvn install:install-file -Dfile=jwnl.jar -DgroupId=jwnl -DartifactId=jwnl -Dversion=0.1 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=OpenXES-1.5.jar -DgroupId=org.deckfour.xes -DartifactId=OpenXES -Dversion=1.5 -Dpackaging=jar -DgeneratePom=true
+
+rem BP-diff libraries
+call mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jackson -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+

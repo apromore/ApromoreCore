@@ -35,10 +35,10 @@ import java.util.Set;
  */
 public class SignavioSession {
 
-    private EditSessionType editSession;
+    private EditSessionType editSession, editSession2;
     private MainController mainC;
-    private ProcessSummaryType process;
-    private VersionSummaryType version;
+    private ProcessSummaryType process, process2;
+    private VersionSummaryType version, version2;
     private Set<RequestParameterType<?>> params;
 
     /**
@@ -49,20 +49,25 @@ public class SignavioSession {
     /**
      * Constructor that builds the object.
      * @param editSession the edit session.
+     * @param editSession2 another edit session for the second process model in the case of a BP-diff comparison, <code>null</code> otherwise
      * @param mainC the main controller
      * @param process the process model
      * @param version the version of that process model.
+     * @param process2 the second process model in the case of a BP-diff comparison, <code>null</code> otherwise
+     * @param version2 the version of that second process model, <code>null</code> if no second model
      * @param params the canoniser params.
      */
-    public SignavioSession(EditSessionType editSession, MainController mainC, ProcessSummaryType process, VersionSummaryType version,
+    public SignavioSession(EditSessionType editSession, EditSessionType editSession2, MainController mainC, ProcessSummaryType process, VersionSummaryType version, ProcessSummaryType process2, VersionSummaryType version2,
             Set<RequestParameterType<?>> params) {
         this.editSession = editSession;
+        this.editSession2 = editSession2;
         this.mainC = mainC;
         this.process = process;
         this.version = version;
+        this.process2 = process2;
+        this.version2 = version2;
         this.params = params;
     }
-
 
     public EditSessionType getEditSession() {
         return editSession;
@@ -70,6 +75,14 @@ public class SignavioSession {
 
     public void setEditSession(EditSessionType editSession) {
         this.editSession = editSession;
+    }
+
+    public EditSessionType getEditSession2() {
+        return editSession2;
+    }
+
+    public void setEditSession2(EditSessionType editSession2) {
+        this.editSession2 = editSession2;
     }
 
     public MainController getMainC() {
@@ -94,6 +107,22 @@ public class SignavioSession {
 
     public void setVersion(VersionSummaryType version) {
         this.version = version;
+    }
+
+    public ProcessSummaryType getProcess2() {
+        return process2;
+    }
+
+    public void setProcess2(ProcessSummaryType process2) {
+        this.process2 = process2;
+    }
+
+    public VersionSummaryType getVersion2() {
+        return version2;
+    }
+
+    public void setVersion2(VersionSummaryType version2) {
+        this.version2 = version2;
     }
 
     public Set<RequestParameterType<?>> getParams() {

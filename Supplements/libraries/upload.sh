@@ -11,6 +11,13 @@ mvn install:install-file -Dfile=jwnl.jar -DgroupId=jwnl -DartifactId=jwnl -Dvers
 mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=OpenXES-1.5.jar -DgroupId=org.deckfour.xes -DartifactId=OpenXES -Dversion=1.5 -Dpackaging=jar -DgeneratePom=true
 
+# BP-diff libraries
+mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jackson -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+
 # In order to compile Quaestio with LiveConnect support, the system plugin.jar
 # needs to be added to the Maven repository.  This will also need to be ported
 # to upload.bat for Windows.
