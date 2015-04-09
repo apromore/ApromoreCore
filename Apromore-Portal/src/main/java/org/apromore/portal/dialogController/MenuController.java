@@ -74,6 +74,7 @@ public class MenuController extends Menubar {
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
+        Menuitem compareMI = (Menuitem) this.menuB.getFellow("compare");
         //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
         //exactMatchingMI.setDisabled(true);
 
@@ -128,6 +129,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 clusterSimilarProcesses();
+            }
+        });
+        compareMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                compareSimilarProcesses();
             }
         });
         mergeMI.addEventListener("onClick", new EventListener<Event>() {
@@ -201,6 +208,33 @@ public class MenuController extends Menubar {
     protected void clusterSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
         this.mainC.eraseMessage();
         new SimilarityClustersController(this.mainC);
+    }
+
+    /**
+     * Compare two similar processes.
+     *
+     * @throws InterruptedException
+     * @throws SuspendNotAllowedException
+     */
+    protected void compareSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        this.mainC.eraseMessage();
+        if (selectedProcessVersions.size() == 2) {
+            Iterator<ProcessSummaryType> i = selectedProcessVersions.keySet().iterator();
+            ProcessSummaryType process1 = i.next();
+            ProcessSummaryType process2 = i.next();
+            if (selectedProcessVersions.get(process1).size() == 1 & selectedProcessVersions.get(process2).size() == 1) {
+                VersionSummaryType version1 = selectedProcessVersions.get(process1).get(0);
+                VersionSummaryType version2 = selectedProcessVersions.get(process2).get(0);
+                this.mainC.displayMessage("Performing comparison.");
+                new CompareController(this.mainC, this, process1, version1, process2, version2);
+                this.mainC.displayMessage("Performed comparison.");
+            } else {
+                this.mainC.displayMessage("Only one version per process may be compared.");  // TODO: relax this restriction; comparing versions of the same process is actually the more useful case!
+            }
+        } else {
+            this.mainC.displayMessage("Must select exactly two process versions to compare.");
+        }
     }
 
     protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains, ParseException {

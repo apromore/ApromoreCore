@@ -30,6 +30,7 @@
             <!--<menuitem id="exactMatching" label="Exact Clone Detection" disabled="true" image="/img/clones.png"/>-->
             <!--<menuseparator/>-->
             <menuitem id="similarityClusters" label="Clone Detection" disabled="true" image="/img/approx_clones.png"/>
+            <menuitem id="compare" label="Compare" disabled="true" image="/img/compare.png"/>
         </menupopup>
     </menu>
     <menu id="design" label="Design">

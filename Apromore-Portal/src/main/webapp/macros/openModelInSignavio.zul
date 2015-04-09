@@ -100,41 +100,42 @@
                         // Import new process model
                         new Ajax.Request('${arg.importPath}', {
                             parameters: {
-                                'data': '${arg.jsonData}'},
-                                method: 'POST',
+                                'data': '${arg.jsonData}',
+                                'differences': '${arg.differences}'
+                            },
+                            method: 'POST',
 
-                                onSuccess: function(transport) {
-                                    var editorConfig = Ext.decode(transport.responseText);
-                                    oryxEditor.importJSON(editorConfig, true);
+                            onSuccess: function(transport) {
+                                var editorConfig = Ext.decode(transport.responseText);
+                                oryxEditor.importJSON(editorConfig, true);
 
-                                    // Call Auto-Layout if everything is available
-                                    window.setTimeout(function() {
-                                        var layouter;
-                                        if (urlData == 'http://b3mn.org/stencilset/epc#') {
-                                            layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                                return pluginData.name === "Layout-EPC";
-                                            });
-                                        } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
-                                            layouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                                return pluginData.name === "Layout-BPMN";
-                                            });
-                                        }
+                                // Call Auto-Layout if everything is available
+                                window.setTimeout(function() {
+                                    var layouter;
+                                    if (urlData == 'http://b3mn.org/stencilset/epc#') {
+                                        layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                            return pluginData.name === "Layout-EPC";
+                                        });
+                                    } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
+                                        layouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                            return pluginData.name === "Layout-BPMN";
+                                        });
+                                    }
 
-                                        var doAutoLayout = '${arg.doAutoLayout}' === 'true';
-                                        if (layouter && doAutoLayout) {
-                                            layouter.functionality();                                            
-                                        }
+                                    var doAutoLayout = '${arg.doAutoLayout}' === 'true';
+                                    if (layouter && doAutoLayout) {
+                                        layouter.functionality();                                            
+                                    }
 
-                                        Ext.select('svg').setVisible(true);
-                                        window.onbeforeunload = null;
-                                    }, 1000);
-                                }.bind(this),
+                                    Ext.select('svg').setVisible(true);
+                                    window.onbeforeunload = null;
+                                }, 1000);
+                            }.bind(this),
 
-                                onFailure: function(transport) {
-                                    alert("Failed to load process fragment!");
-                                }.bind(this)
-                            }
-                        );
+                            onFailure: function(transport) {
+                                alert("Failed to load process fragment!");
+                            }.bind(this)
+                        });
                     };
                 ]]>
             </n:script>

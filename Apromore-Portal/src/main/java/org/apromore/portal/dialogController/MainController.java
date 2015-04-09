@@ -86,7 +86,7 @@ import java.util.UUID;
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class                                        MainController extends BaseController {
+public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
 
@@ -337,26 +337,10 @@ public class                                        MainController extends BaseC
         }
     }
 
-    /**
-     * Call editor to edit process version whose id is processId, name is
-     * processName and version name is version. nativeType identifies language
-     * to be used to edit the process version. If annotation is instantiated, it
-     * identifies the annotation file to be used. If readOnly=1, annotations
-     * only are editable.
-     *
-     * @param process the process summary
-     * @param version the version of the process
-     * @param nativeType the native type of the process
-     * @param annotation the annotation of that process
-     * @param readOnly is this model readonly or not
-     * @param requestParameterTypes request parameters types.
-     * @throws InterruptedException
-     */
-    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
-        String instruction = "";
+    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
+
         editSession.setDomain(process.getDomain());
         editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
         editSession.setProcessId(process.getId());
@@ -377,9 +361,33 @@ public class                                        MainController extends BaseC
             editSession.setAnnotation(annotation);
         }
 
+        return editSession;
+    }
+
+    /**
+     * Call editor to edit process version whose id is processId, name is
+     * processName and version name is version. nativeType identifies language
+     * to be used to edit the process version. If annotation is instantiated, it
+     * identifies the annotation file to be used. If readOnly=1, annotations
+     * only are editable.
+     *
+     * @param process the process summary
+     * @param version the version of the process
+     * @param nativeType the native type of the process
+     * @param annotation the annotation of that process
+     * @param readOnly is this model readonly or not
+     * @param requestParameterTypes request parameters types.
+     * @throws InterruptedException
+     */
+    public void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
+            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+        String instruction = "";
+
+        EditSessionType editSession = createEditSession(process, version, nativeType, annotation);
+
         try {
             String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession, this, process, version, requestParameterTypes);
+            SignavioSession session = new SignavioSession(editSession, null, this, process, version, null, null, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInSignavio.zul?id=" + id;
@@ -388,6 +396,42 @@ public class                                        MainController extends BaseC
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    /**
+     * Display two process versions and allow their differences to be highlighted.
+     *
+     * @param process1 the process summary
+     * @param version1 the version of the process
+     * @param process2 the process summary
+     * @param version2 the version of the process
+     * @param nativeType the native type of the process
+     * @param annotation the annotation of that process
+     * @param readOnly is this model readonly or not
+     * @param requestParameterTypes request parameters types.
+     * @throws InterruptedException
+     */
+    public void compareProcesses(final ProcessSummaryType process1, final VersionSummaryType version1,
+            final ProcessSummaryType process2, final VersionSummaryType version2,
+            final String nativeType, final String annotation,
+            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+        String instruction = "";
+
+        EditSessionType editSession1 = createEditSession(process1, version1, nativeType, annotation);
+        EditSessionType editSession2 = createEditSession(process2, version2, nativeType, annotation);
+
+        try {
+            String id = UUID.randomUUID().toString();
+            SignavioSession session = new SignavioSession(editSession1, editSession2, this, process1, version1, process2, version2, requestParameterTypes);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "macros/compareModelsInSignavio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
