@@ -44,8 +44,16 @@ import ee.ut.core.comparison.verbalizer.VerbalizerGraphical;
 import ee.ut.core.models.reader.TypeModel;
 import ee.ut.runner.ModelAbstractions;
 import hub.top.petrinet.Node;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 // Local classes
 import org.apromore.model.ExportFormatResultType;
@@ -64,33 +72,70 @@ public class CompareController extends BaseController {
 
     private static final Logger LOGGER = Logger.getLogger(CompareController.class.getCanonicalName());
 
-    public CompareController(MainController mainC, MenuController menuC,
-                             ProcessSummaryType process1, VersionSummaryType version1,
-                             ProcessSummaryType process2, VersionSummaryType version2)
+    public CompareController(final MainController mainC,
+                             final MenuController menuC,
+                             final ProcessSummaryType process1,
+                             final VersionSummaryType version1,
+                             final ProcessSummaryType process2,
+                             final VersionSummaryType version2)
             throws SuspendNotAllowedException, InterruptedException, DialogException {
 
-        try {
-            ModelAbstractions<Node> model1 = toModelAbstractions(process1, version1);
-            ModelAbstractions<Node> model2 = toModelAbstractions(process2, version2);
+            final Window window = (Window) Executions.createComponents("macros/compareDialog.zul", null, null);
+            final Combobox algorithm = (Combobox) window.getFellow("algorithm");
+            final Button compareButton = (Button) window.getFellow("compare");
+            final Button cancelButton  = (Button) window.getFellow("cancel");
 
-            HashSet<String> commonLabels = new HashSet<String>(model1.getLabels());
-            commonLabels.retainAll(model2.getLabels());
-            model1.computePES(commonLabels);
-            model2.computePES(commonLabels);
-            model1.computeFoldedAES();
-            model2.computeFoldedAES();
-            Comparator<Node> diff = new ComparatorGED<Node>(model1, model2, commonLabels, new VerbalizerGraphical<Node>());
-            Differences differences = diff.getDifferences();
+            final Comboitem aes     = algorithm.appendItem("AES");
+            final Comboitem fes     = algorithm.appendItem("FES");
+            final Comboitem fes4aes = algorithm.appendItem("FES4AES");
 
-            Set<RequestParameterType<?>> requestParameters = new HashSet<>();
-            requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getEvents().size()));
-            requestParameters.add(new RequestParameterType<Integer>("m2_pes_size", model2.getPES().getEvents().size()));
-            requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
-            mainC.compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unable to perform comparison", e);
-            Messagebox.show("Unable to perform comparison", "Error", Messagebox.OK, Messagebox.ERROR);
-        }
+            algorithm.setSelectedItem(aes);  // default algorithm
+
+            compareButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    ModelAbstractions<Node> model1 = toModelAbstractions(process1, version1);
+                    ModelAbstractions<Node> model2 = toModelAbstractions(process2, version2);
+
+                    HashSet<String> commonLabels = new HashSet<String>(model1.getLabels());
+                    commonLabels.retainAll(model2.getLabels());
+                    model1.computePES(commonLabels);
+                    model2.computePES(commonLabels);
+
+                    final Comboitem item = algorithm.getSelectedItem();
+                    if (aes.equals(item)) {
+                        model1.computeFoldedAES();
+                        model2.computeFoldedAES();
+                    } else if (fes.equals(item)) {
+                        model1.computeFoldedFES();
+                        model2.computeFoldedFES();
+                    } else if (fes4aes.equals(item)) {
+                        model1.computeFES4AES();
+                        model2.computeFES4AES();
+                    } else {
+                        throw new Exception("Unsupported algorithm: " + item);
+                    }
+
+                    Comparator<Node> diff = new ComparatorGED<Node>(model1, model2, commonLabels, new VerbalizerGraphical<Node>());
+                    Differences differences = diff.getDifferences();
+
+                    Set<RequestParameterType<?>> requestParameters = new HashSet<>();
+                    requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getEvents().size()));
+                    requestParameters.add(new RequestParameterType<Integer>("m2_pes_size", model2.getPES().getEvents().size()));
+                    requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
+
+                    mainC.compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
+
+                    window.detach();
+                }
+            });
+
+            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    window.detach();
+                }
+            });
+
+            window.doModal();
     }
 
     private static String toString(Runs runs) {
@@ -104,6 +149,7 @@ public class CompareController extends BaseController {
             return s;
         }
     }
+
 
     /**
      * Create the corresponding BP-diff model for a process model version stored in Apromore.
