@@ -1,0 +1,37 @@
+<window width="300px" closable="false" position="center">
+    <vbox vflex="1">
+        <grid>
+            <columns sizable="true">
+                <column width="40%"></column>
+                <column width="60%"></column>
+            </columns>
+            <rows>
+                <!--
+                <row>
+                    <label value="Name*" />
+                    <textbox id="modelName" width="100%" />
+                </row>
+                <row>
+                    <label value="Version Number*" />
+                    <textbox id="versionNumber" width="100%" />
+                </row>
+                <row>
+                    <label value="Branch Name*" />
+                    <textbox id="branchName" width="100%" />
+                </row>
+                -->
+                <row>
+                    <label value="Algorithm" />
+                    <combobox id="algorithm" />
+                </row>
+                <row spans="2">
+                    <div align="center">
+                        <button id="compare" label="Compare" image="img/ok.png" />
+                        <button id="cancel" label="Cancel" image="img/cancel2.png" />
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>
+
