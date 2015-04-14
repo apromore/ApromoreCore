@@ -23,6 +23,7 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -219,21 +220,33 @@ public class MenuController extends Menubar {
     protected void compareSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         this.mainC.eraseMessage();
-        if (selectedProcessVersions.size() == 2) {
-            Iterator<ProcessSummaryType> i = selectedProcessVersions.keySet().iterator();
-            ProcessSummaryType process1 = i.next();
-            ProcessSummaryType process2 = i.next();
-            if (selectedProcessVersions.get(process1).size() == 1 & selectedProcessVersions.get(process2).size() == 1) {
-                VersionSummaryType version1 = selectedProcessVersions.get(process1).get(0);
-                VersionSummaryType version2 = selectedProcessVersions.get(process2).get(0);
-                this.mainC.displayMessage("Performing comparison.");
-                new CompareController(this.mainC, this, process1, version1, process2, version2);
-                this.mainC.displayMessage("Performed comparison.");
-            } else {
-                this.mainC.displayMessage("Only one version per process may be compared.");  // TODO: relax this restriction; comparing versions of the same process is actually the more useful case!
+
+        // Populate "details" with the process:version selections
+        List<VersionDetailType> details = new ArrayList<>();
+        for (ProcessSummaryType processSummary: selectedProcessVersions.keySet()) {
+            List<VersionSummaryType> versionSummaries = selectedProcessVersions.get(processSummary);
+            if (versionSummaries.isEmpty()) {
+                List<VersionSummaryType> x = processSummary.getVersionSummaries();
+                versionSummaries.add(x.get(x.size() - 1));  // default to the head version
             }
-        } else {
-            this.mainC.displayMessage("Must select exactly two process versions to compare.");
+            for (VersionSummaryType versionSummary: versionSummaries) {
+                details.add(new VersionDetailType(processSummary, versionSummary));
+            }
+        }
+
+        // If we have exactly two process:version selections, perform the comparison
+        switch (details.size()) {
+        case 0:
+        case 1:
+            this.mainC.displayMessage("Must select 2 process versions to compare.");
+            break;
+        case 2:
+            this.mainC.displayMessage("Performing comparison.");
+            new CompareController(this.mainC, this, details.get(0).getProcess(), details.get(0).getVersion(), details.get(1).getProcess(), details.get(1).getVersion());
+            this.mainC.displayMessage("Performed comparison.");
+            break;
+        default:
+            this.mainC.displayMessage("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
         }
     }
 
@@ -405,13 +418,15 @@ public class MenuController extends Menubar {
         if (mainC.getBaseListboxController() instanceof ProcessListboxController) {
             ArrayList<VersionSummaryType> versionList;
 
-            VersionSummaryType selectedVersion = ((ProcessVersionDetailController) mainC.getDetailListbox()).getSelectedVersion();
+            Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) mainC.getDetailListbox()).getListModel().getSelection();
             Set<Object> selectedProcesses = (Set<Object>) mainC.getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
                     versionList = new ArrayList<>();
-                    if (selectedVersion != null) {
-                        versionList.add(selectedVersion);
+                    if (selectedVersions != null) {
+                        for (VersionDetailType detail: selectedVersions) {
+                            versionList.add(detail.getVersion());
+                        }
                     } else {
                         for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
                             versionNumber = ((ProcessSummaryType) obj).getLastVersion();
