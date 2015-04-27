@@ -8,8 +8,8 @@
 **/apromore-client.properties
 Apromore-FileStore/src/main/webapp/WEB-INF/web.xml
 
-# The unpacked server
-Apromore-Assembly
+# Unpacked application server
+Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
 
 # Site-specific configuration
 site.properties
