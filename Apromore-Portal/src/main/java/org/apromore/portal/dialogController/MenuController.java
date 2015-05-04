@@ -68,7 +68,7 @@ public class MenuController extends Menubar {
         pasteMI.setDisabled(true);
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
-        Menuitem query = (Menuitem) this.menuB.getFellow("queryAPQL");
+//        Menuitem query = (Menuitem) this.menuB.getFellow("queryAPQL");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
