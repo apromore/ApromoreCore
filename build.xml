@@ -30,9 +30,12 @@
     <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
     <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
     <property name="dir-metric" location="${basedir}/Apromore-Plugins/plugin-toolbox/plugin-metric/"/>
+    <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <fileset id="pickupRepo" dir=".">
-        <include name="Apromore-Assembly/**/*.plan"/>
+        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/org.apromore.filestore.plan"/>
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/org.apromore.manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/org.apromore.portal.plan"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -242,7 +245,6 @@
         <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
         </exec>
     </target>
-
 
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">

@@ -30,6 +30,8 @@
             <!--<menuitem id="exactMatching" label="Exact Clone Detection" disabled="true" image="/img/clones.png"/>-->
             <!--<menuseparator/>-->
             <menuitem id="similarityClusters" label="Clone Detection" disabled="true" image="/img/approx_clones.png"/>
+			<menuseparator/>
+            <menuitem id="queryAPQL" label="APQL Query" disabled="true" image="/img/query.png"/>
         </menupopup>
     </menu>
     <menu id="design" label="Design">
@@ -40,6 +42,11 @@
             <menuitem id="designCmap" label="Define model:questionnaire mapping" disabled="true" image="/img/cmap.png"/>
         </menupopup>
     </menu>
+    <menu id="mining" label="Mining">
+            <menupopup>
+                <menuitem id="miningBPMNMiner" label="BPMNMiner" disabled="true" image="/img/merge.png"/>
+            </menupopup>
+        </menu>
    <!--
     <menu id="evaluation" label="Evaluation">
         <menupopup>

@@ -20,185 +20,34 @@
 
 package org.apromore.manager;
 
+import au.edu.qut.util.ImportEventLog;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.SchedulerException;
-import org.apromore.helper.Version;
 import org.apromore.dao.model.Cluster;
-import org.apromore.dao.model.ClusteringSummary;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.HistoryEnum;
-import org.apromore.dao.model.HistoryEvent;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.StatusEnum;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.*;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.helper.CanoniserHelper;
 import org.apromore.helper.PluginHelper;
-import org.apromore.mapper.ClusterMapper;
-import org.apromore.mapper.DomainMapper;
-import org.apromore.mapper.GroupMapper;
-import org.apromore.mapper.NativeTypeMapper;
-import org.apromore.mapper.SearchHistoryMapper;
-import org.apromore.mapper.UserMapper;
-import org.apromore.mapper.WorkspaceMapper;
-import org.apromore.model.AddProcessToFolderInputMsgType;
-import org.apromore.model.AddProcessToFolderOutputMsgType;
-import org.apromore.model.ClusterSummaryType;
-import org.apromore.model.ClusterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.CreateClustersInputMsgType;
-import org.apromore.model.CreateClustersOutputMsgType;
-import org.apromore.model.CreateFolderInputMsgType;
-import org.apromore.model.CreateFolderOutputMsgType;
-import org.apromore.model.CreateGEDMatrixInputMsgType;
-import org.apromore.model.CreateGEDMatrixOutputMsgType;
-import org.apromore.model.DeleteFolderInputMsgType;
-import org.apromore.model.DeleteFolderOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
-import org.apromore.model.DeployProcessInputMsgType;
-import org.apromore.model.DeployProcessOutputMsgType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditProcessDataInputMsgType;
-import org.apromore.model.EditProcessDataOutputMsgType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatInputMsgType;
-import org.apromore.model.ExportFormatOutputMsgType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ExportFragmentResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.GedMatrixSummaryType;
-import org.apromore.model.GetBreadcrumbsInputMsgType;
-import org.apromore.model.GetBreadcrumbsOutputMsgType;
-import org.apromore.model.GetClusterInputMsgType;
-import org.apromore.model.GetClusterOutputMsgType;
-import org.apromore.model.GetClusterSummariesInputMsgType;
-import org.apromore.model.GetClusterSummariesOutputMsgType;
-import org.apromore.model.GetClusteringSummaryInputMsgType;
-import org.apromore.model.GetClusteringSummaryOutputMsgType;
-import org.apromore.model.GetClustersRequestType;
-import org.apromore.model.GetClustersResponseType;
-import org.apromore.model.GetFolderGroupsInputMsgType;
-import org.apromore.model.GetFolderGroupsOutputMsgType;
-import org.apromore.model.GetFragmentInputMsgType;
-import org.apromore.model.GetFragmentOutputMsgType;
-import org.apromore.model.GetGedMatrixSummaryInputMsgType;
-import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
-import org.apromore.model.GetPairwiseDistancesInputMsgType;
-import org.apromore.model.GetPairwiseDistancesOutputMsgType;
-import org.apromore.model.GetProcessGroupsInputMsgType;
-import org.apromore.model.GetProcessGroupsOutputMsgType;
-import org.apromore.model.GetProcessesInputMsgType;
-import org.apromore.model.GetProcessesOutputMsgType;
-import org.apromore.model.GetSubFoldersInputMsgType;
-import org.apromore.model.GetSubFoldersOutputMsgType;
-import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
-import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.ImportProcessInputMsgType;
-import org.apromore.model.ImportProcessOutputMsgType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.MergeProcessesInputMsgType;
-import org.apromore.model.MergeProcessesOutputMsgType;
-import org.apromore.model.NativeMetaData;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ObjectFactory;
-import org.apromore.model.PairDistancesType;
-import org.apromore.model.ParameterType;
-import org.apromore.model.ParametersType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginParameters;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdType;
-import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.ProcessVersionIdsType;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
-import org.apromore.model.ReadCanoniserInfoInputMsgType;
-import org.apromore.model.ReadCanoniserInfoOutputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
-import org.apromore.model.ReadDomainsInputMsgType;
-import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadInitialNativeFormatInputMsgType;
-import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
-import org.apromore.model.ReadInstalledPluginsInputMsgType;
-import org.apromore.model.ReadInstalledPluginsOutputMsgType;
-import org.apromore.model.ReadNativeMetaDataInputMsgType;
-import org.apromore.model.ReadNativeMetaDataOutputMsgType;
-import org.apromore.model.ReadNativeTypesInputMsgType;
-import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadPluginInfoInputMsgType;
-import org.apromore.model.ReadPluginInfoOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserByEmailInputMsgType;
-import org.apromore.model.ReadUserByEmailOutputMsgType;
-import org.apromore.model.ReadUserByUsernameInputMsgType;
-import org.apromore.model.ReadUserByUsernameOutputMsgType;
-import org.apromore.model.RemoveFolderPermissionsInputMsgType;
-import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
-import org.apromore.model.RemoveProcessPermissionsInputMsgType;
-import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
-import org.apromore.model.ResetUserPasswordInputMsgType;
-import org.apromore.model.ResetUserPasswordOutputMsgType;
-import org.apromore.model.ResultType;
-import org.apromore.model.RunAPQLInputMsgType;
-import org.apromore.model.RunAPQLOutputMsgType;
-import org.apromore.model.SaveFolderPermissionsInputMsgType;
-import org.apromore.model.SaveFolderPermissionsOutputMsgType;
-import org.apromore.model.SaveProcessPermissionsInputMsgType;
-import org.apromore.model.SaveProcessPermissionsOutputMsgType;
-import org.apromore.model.SearchForSimilarProcessesInputMsgType;
-import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
-import org.apromore.model.SearchGroupsInputMsgType;
-import org.apromore.model.SearchGroupsOutputMsgType;
-import org.apromore.model.SearchUserInputMsgType;
-import org.apromore.model.SearchUserOutputMsgType;
-import org.apromore.model.UpdateFolderInputMsgType;
-import org.apromore.model.UpdateFolderOutputMsgType;
-import org.apromore.model.UpdateProcessInputMsgType;
-import org.apromore.model.UpdateProcessOutputMsgType;
-import org.apromore.model.UpdateSearchHistoryInputMsgType;
-import org.apromore.model.UpdateSearchHistoryOutputMsgType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.helper.Version;
+import org.apromore.mapper.*;
+import org.apromore.model.*;
 import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.PluginRequestImpl;
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.ClusterService;
-import org.apromore.service.DeploymentService;
-import org.apromore.service.DomainService;
-import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
-import org.apromore.service.MergeService;
-import org.apromore.service.PluginService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.SecurityService;
-import org.apromore.service.SimilarityService;
-import org.apromore.service.UserService;
-import org.apromore.service.WorkspaceService;
+import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.ClusterFilter;
-import org.apromore.service.model.ClusterSettings;
-import org.apromore.service.model.DecanonisedProcess;
-import org.apromore.service.model.ProcessData;
+import org.apromore.service.model.*;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -212,17 +61,12 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * The WebService Endpoint Used by the Portal.
@@ -252,6 +96,9 @@ public class ManagerPortalEndpoint {
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
+    private PQLService pqlService;
+    private DatabaseService dbService;
+    private BPMNMinerService bpmnMinerService;
 
 
     /**
@@ -281,7 +128,9 @@ public class ManagerPortalEndpoint {
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
-            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper) {
+            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
+            final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService
+    ) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -296,16 +145,9 @@ public class ManagerPortalEndpoint {
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
-
-//        LOGGER.error("Starting GED Matrix");
-//        long t = System.nanoTime();
-//        try {
-//            clusterService.computeGEDMatrix();
-//            long t1 = System.nanoTime();
-//            LOGGER.error("GED Matrix completed in " + (t1-t)/1000000 + " milliseconds");
-//        } catch (RepositoryException repoException) {
-//
-//        }
+        this.pqlService = pqlService;
+        this.dbService = dbService;
+        this.bpmnMinerService = bpmnMinerService;
     }
 
 
@@ -1037,20 +879,84 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<RunAPQLOutputMsgType> runAPQLExpression(@RequestPayload final JAXBElement<RunAPQLInputMsgType> req) {
         LOGGER.trace("Executing operation runAPQLExpression");
-        RunAPQLInputMsgType payload = req.getValue();
+
+        RunAPQLInputMsgType input=req.getValue();
         RunAPQLOutputMsgType res = new RunAPQLOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
+
+        ResultType resultType = new ResultType();
 
         try {
-            result.setCode(-1);
-            result.setMessage("Currently Not Implemented");
+//            pqlService.indexAllModels();
+            LOGGER.error("PRIMA RUNAPQL: "+input.getAPQLExpression()+" "+input.getIds()+" "+input.getUserID());
+//            pqlService.indexAllModels();
+            List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(), input.getIds(), input.getUserID());
+//            List<Detail> details=pqlService.getDetails();
+
+            if(!results.isEmpty() && !results.get(0).matches("([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+[;]?)+")) {
+                LOGGER.error("Results Contains Errors: ");
+                resultType.setMessage("ERRORS");
+                resultType.setCode(0);
+
+            }else {
+                resultType.setMessage("RESULTS");
+                resultType.setCode(1);
+            }
+            res.getProcessResult().addAll(results);
+            res.setResult(resultType);
         } catch (Exception ex) {
             LOGGER.error("runAPQLExpression", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
+            resultType.setCode(-1);
+            resultType.setMessage(ex.getMessage()+" runAPQLExpression");
         }
+
         return WS_OBJECT_FACTORY.createRunAPQLResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DBRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DBOutputMsgType> getProcessesLabels(@RequestPayload final JAXBElement<DBInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcessesLabels");
+
+        DBInputMsgType input=req.getValue();
+        DBOutputMsgType res = new DBOutputMsgType();
+
+        try {
+            List<String> labels=dbService.getLabels(input.getTable(),input.getColumnName());
+            res.getLabels().clear();
+            res.getLabels().addAll(labels);
+        } catch (Exception ex) {
+            LOGGER.error("getProcessesLabels", ex);
+        }
+
+        return WS_OBJECT_FACTORY.createDBResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DetailRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DetailOutputMsgType> getDetails(@RequestPayload final JAXBElement<DetailInputMsgType> req) {
+        LOGGER.trace("Executing operation runAPQLExpression");
+
+        DetailInputMsgType input=req.getValue();
+        DetailOutputMsgType res = new DetailOutputMsgType();
+
+        ResultType resultType = new ResultType();
+
+        try {
+//            pqlService.indexAllModels();
+//            LOGGER.error("PRIMA RUNAPQL: "+input.getAPQLExpression()+" "+input.getIds()+" "+input.getUserID());
+//            pqlService.indexAllModels();
+//            List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(),input.getIds(),input.getUserID());
+            List<Detail> details=pqlService.getDetails();
+
+            res.getDetail().addAll(details);
+
+        } catch (Exception ex) {
+            LOGGER.error("runAPQLExpression", ex);
+            resultType.setCode(-1);
+            resultType.setMessage(ex.getMessage() + " runAPQLExpression");
+        }
+
+        return WS_OBJECT_FACTORY.createDetailResponse(res);
     }
 
 
@@ -1500,6 +1406,51 @@ public class ManagerPortalEndpoint {
         workspaceSrv.deleteFolder(payload.getFolderId());
 
         return new ObjectFactory().createDeleteFolderResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DiscoverBPMNModelRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DiscoverBPMNModelOutputMsgType> discoverBPMNModel(@RequestPayload final JAXBElement<DiscoverBPMNModelInputMsgType> req) {
+        LOGGER.trace("Executing operation discoverBPMNModel");
+        DiscoverBPMNModelInputMsgType payload = req.getValue();
+
+        DiscoverBPMNModelOutputMsgType res = new DiscoverBPMNModelOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+
+            ByteArrayInputStream b = new ByteArrayInputStream(payload.getXESGZLog());
+
+            XLog log = ImportEventLog.importFromStream(new XFactoryNaiveImpl(), b);
+
+            int miningAlgorithm = payload.getMiningAlgorithm();
+            int dependencyAlgorithm = payload.getDependencyAlgorithm();
+            boolean sortLog = payload.isSortLog();
+            double interruptingEventTolerance = payload.getInterruptingEventTolerance();
+            double multiInstancePercentage = payload.getMultiInstancePercentage();
+            double multiInstanceTolerance = payload.getMultiInstanceTolerance();
+            double timerEventPercentage = payload.getTimerEventPercentage();
+            double timerEventTolerance = payload.getTimerEventTolerance();
+            double noiseThreshold = payload.getNoiseThreshold();
+            List<String> listCandidates = payload.getCanditateEntities().getElements();
+            Map<Set<String>, Set<String>> primaryKeySelections = new HashMap<>();
+            for(BPMNMinerEntry entry : payload.getPrimaryKeySelections().getEntries()) {
+                primaryKeySelections.put(new HashSet<String>(entry.getKey().getElements()), new HashSet<String>(entry.getValue().getElements()));
+            }
+
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog, miningAlgorithm, dependencyAlgorithm, interruptingEventTolerance,
+                    timerEventPercentage, timerEventTolerance, multiInstancePercentage, multiInstanceTolerance, noiseThreshold,
+                    listCandidates, primaryKeySelections);
+
+
+            result.setCode(0);
+            result.setMessage(model);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setCode(1);
+            result.setMessage(ex.getMessage());
+        }
+        return WS_OBJECT_FACTORY.createDiscoverBPMNModelResponse(res);
     }
 
 }

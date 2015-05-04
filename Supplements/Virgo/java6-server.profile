@@ -1,4 +1,26 @@
 org.osgi.framework.system.packages = \
+ com.sun.management,\
+ com.sun.jndi.ldap,\
+ com.sun.org.apache.xerces.internal.dom,\
+ com.sun.org.apache.xml.internal.utils,\
+ com.sun.org.apache.xml.internal.security.algorithms,\
+ com.sun.org.apache.xml.internal.security.c14n,\
+ com.sun.org.apache.xml.internal.security.c14n.helper,\
+ com.sun.org.apache.xml.internal.security.encryption,\
+ com.sun.org.apache.xml.internal.security.exceptions,\
+ com.sun.org.apache.xml.internal.security.keys,\
+ com.sun.org.apache.xml.internal.security.keys.content,\
+ com.sun.org.apache.xml.internal.security.keys.content.keyvalues,\
+ com.sun.org.apache.xml.internal.security.keys.content.x509,\
+ com.sun.org.apache.xml.internal.security.signature,\
+ com.sun.org.apache.xml.internal.security.transforms,\
+ com.sun.org.apache.xml.internal.security.transforms.params,\
+ com.sun.org.apache.xml.internal.security.utils,\
+ com.sun.org.apache.xml.internal.security.utils.resolver,\
+ com.sun.org.apache.xpath.internal,\
+ com.sun.org.apache.xalan.internal.res,\
+ com.sun.org.apache.xpath.internal.objects,\
+ com.sun.org.apache.xpath.internal.jaxp,\
  javax.accessibility,\
  javax.activation,\
  javax.activation;version="1.1.1",\
@@ -25,6 +47,7 @@ org.osgi.framework.system.packages = \
  javax.lang.model.element,\
  javax.lang.model.type,\
  javax.lang.model.util,\
+ javax.media.j3d,\
  javax.management,\
  javax.management.loading,\
  javax.management.modelmbean,\
@@ -154,6 +177,7 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.spi;version="2.1.1",\
  javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
+ javax.vecmath,\
  org.eclipse.virgo.kernel.equinox.extensions,\
  org.eclipse.virgo.kernel.equinox.extensions;version="3.6.0",\
  org.eclipse.virgo.kernel.equinox.extensions.hooks,\
@@ -200,28 +224,11 @@ org.osgi.framework.system.packages = \
  org.xml.sax;version="1.3",\
  org.xml.sax.ext;version="1.3",\
  org.xml.sax.helpers;version="1.3",\
- com.sun.org.apache.xerces.internal.dom,\
- com.sun.org.apache.xml.internal.utils,\
- com.sun.org.apache.xml.internal.security.algorithms,\
- com.sun.org.apache.xml.internal.security.c14n,\
- com.sun.org.apache.xml.internal.security.c14n.helper,\
- com.sun.org.apache.xml.internal.security.encryption,\
- com.sun.org.apache.xml.internal.security.exceptions,\
- com.sun.org.apache.xml.internal.security.keys,\
- com.sun.org.apache.xml.internal.security.keys.content,\
- com.sun.org.apache.xml.internal.security.keys.content.keyvalues,\
- com.sun.org.apache.xml.internal.security.keys.content.x509,\
- com.sun.org.apache.xml.internal.security.signature,\
- com.sun.org.apache.xml.internal.security.transforms,\
- com.sun.org.apache.xml.internal.security.transforms.params,\
- com.sun.org.apache.xml.internal.security.utils,\
- com.sun.org.apache.xml.internal.security.utils.resolver,\
- com.sun.org.apache.xpath.internal,\
- com.sun.org.apache.xalan.internal.res,\
- com.sun.org.apache.xpath.internal.objects,\
- com.sun.org.apache.xpath.internal.jaxp,\
- com.sun.jndi.ldap,\
- sun.misc
+ sun.awt,\
+ sun.management,\
+ sun.misc,\
+ sun.reflect,\
+ sun.reflect.generics.reflectiveObjects
 org.osgi.framework.bootdelegation = \
  org.eclipse.virgo.nano.authentication,\
  com.sun.*,\
@@ -229,6 +236,7 @@ org.osgi.framework.bootdelegation = \
  org.apache.xerces.jaxp.*,\
  org.w3c.*,\
  org.xml.*,\
+ sun.reflect.*,\
  sun.*
 org.osgi.framework.executionenvironment = \
  OSGi/Minimum-1.0,\
@@ -237,5 +245,7 @@ org.osgi.framework.executionenvironment = \
  J2SE-1.3,\
  J2SE-1.4,\
  J2SE-1.5,\
- JavaSE-1.6
+ JavaSE-1.5,\
+ JavaSE-1.6,\
+ JavaSE-1.7
 osgi.java.profile.name = Virgo-Java6

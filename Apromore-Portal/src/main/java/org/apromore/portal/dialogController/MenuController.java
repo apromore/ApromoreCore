@@ -23,26 +23,23 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.TabListitem;
+import org.apromore.portal.common.TabQuery;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.util.SessionTab;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Menu;
-import org.zkoss.zul.Menubar;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.*;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +67,7 @@ public class MenuController extends Menubar {
         pasteMI.setDisabled(true);
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
+        Menuitem query = (Menuitem) this.menuB.getFellow("queryAPQL");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
@@ -81,6 +79,22 @@ public class MenuController extends Menubar {
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
+
+		query.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createQuery();
+            }
+        });
+
+        Menu miningM = (Menu) this.menuB.getFellow("mining");
+        Menuitem bpmnMinerMI = (Menuitem) this.menuB.getFellow("miningBPMNMiner");
+        bpmnMinerMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                mineBPMNMinerModel();
+            }
+        });
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -156,6 +170,21 @@ public class MenuController extends Menubar {
         });
     }
 
+    protected void createQuery() throws InterruptedException , DialogException{
+        this.mainC.eraseMessage();
+        new APQLFilterController(this.mainC);
+    }
+
+    /**
+     * Mine a BPMN model using BPMNMiner
+     * @throws InterruptedException
+     * @throws SuspendNotAllowedException
+     */
+    protected void mineBPMNMinerModel() throws SuspendNotAllowedException, InterruptedException {
+//        this.mainC.eraseMessage();
+        new BPMNMinerController(this.mainC);
+    }
+
     /**
      * Deploy process mdel to a running process engine
      * @throws InterruptedException
@@ -180,6 +209,32 @@ public class MenuController extends Menubar {
     protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         this.mainC.eraseMessage();
+
+        int countSelected=0;
+        TabQuery tabQuery=null;
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+                tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                TabListitem tabItem=null;
+                for(Listitem item : items){
+                    if(item.isSelected()){
+                        countSelected++;
+                        tabItem=(TabListitem) item;
+                    }
+                }
+
+                if(countSelected==1){
+                    new SimilaritySearchController(this.mainC, this, tabItem.getProcessSummaryType(), tabItem.getVersionSummaryType().get(0));
+                    return;
+                }
+                break;
+            }
+        }
+
+
         if (selectedProcessVersions.size() == 1 && selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).size() == 1) {
             ProcessSummaryType process = selectedProcessVersions.keySet().iterator().next();
             VersionSummaryType version = selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).get(0);
@@ -207,6 +262,42 @@ public class MenuController extends Menubar {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         this.mainC.eraseMessage();
 
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        TabListitem tabItem=(TabListitem)item;
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                    }
+                }
+                if(processVersion.keySet().size()<2) {
+                    this.mainC.displayMessage("Select at least 2 process models for merge.");
+                    return;
+                }else {
+                    try {
+                        new ProcessMergeController(this.mainC, processVersion);
+                    } catch (SuspendNotAllowedException e) {
+                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    } catch (ExceptionAllUsers e) {
+                        String message;
+                        if (e.getMessage() == null) {
+                            message = "Couldn't retrieve users reference list.";
+                        } else {
+                            message = e.getMessage();
+                        }
+                        Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                    return;
+                }
+            }
+        }
+
         Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
         // At least 2 process versions must be selected. Not necessarily of different processes
         if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() > 1 || selectedProcessVersions.size() > 1) {
@@ -229,8 +320,39 @@ public class MenuController extends Menubar {
     }
 
     protected void cmapModel() throws ParseException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+
         this.mainC.eraseMessage();
+
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        int count=0;
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                TabListitem tabItem=null;
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        count++;
+                        tabItem=(TabListitem)item;
+                    }
+                }
+                if(count==1){
+                    try {
+                        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                        new CmapController(this.mainC, processVersion);
+                    } catch (ConfigureException e) {
+                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    } catch (RuntimeException e) {
+                        Messagebox.show("Unable to cmap model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                }else{
+                    this.mainC.displayMessage("Select only 1 process model to cmap.");
+                }
+            }
+        }
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() == 1) {
             try {
                 new CmapController(this.mainC, selectedProcessVersions);
@@ -247,8 +369,42 @@ public class MenuController extends Menubar {
     }
 
     protected void configureModel() throws ParseException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         this.mainC.eraseMessage();
+
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        int count=0;
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                TabListitem tabItem=null;
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        count++;
+                        tabItem=(TabListitem)item;
+                    }
+                }
+                if(count==1){
+                    try {
+                        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                        new CmapController(this.mainC, processVersion);
+                    } catch (ConfigureException e) {
+                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    } catch (RuntimeException e) {
+                        Messagebox.show("Unable to configure model: " + e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                }else{
+                    this.mainC.displayMessage("Select only 1 process model to cmap.");
+                }
+            }
+        }
+
+
+
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+
         if (selectedProcessVersions.size() == 1) {
             try {
                 new ConfigureController(this.mainC, selectedProcessVersions);
@@ -306,6 +462,26 @@ public class MenuController extends Menubar {
      */
     protected void editNative() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats, ParseException {
         this.mainC.eraseMessage();
+
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        TabListitem tabItem=(TabListitem)item;
+                        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                        new EditListProcessesController(this.mainC,this,processVersion);
+                        return;
+                    }
+                }
+            }
+        }
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             new EditListProcessesController(this.mainC, this, selectedProcessVersions);
@@ -339,6 +515,27 @@ public class MenuController extends Menubar {
      */
     protected void exportNative() throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
         this.mainC.eraseMessage();
+
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+                HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        TabListitem tabItem=(TabListitem)item;
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                    }
+                }
+                if(processVersion.keySet().size()>0){
+                    new ExportListNativeController(this.mainC, this, processVersion);
+                    return;
+                }
+            }
+        }
+
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             new ExportListNativeController(this.mainC, this, selectedProcessVersions);

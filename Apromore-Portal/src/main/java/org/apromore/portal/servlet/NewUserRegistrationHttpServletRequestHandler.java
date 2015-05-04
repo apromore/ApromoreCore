@@ -89,7 +89,7 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
     }
 
 
-    /* Construct the usertype for the manager from the user entered data in the request. */
+    /* Construct the usertype for the portal from the user entered data in the request. */
     private UserType constructUserType(HttpServletRequest request) {
         UserType user = new UserType();
         user.setFirstName(request.getParameter(FIRSTNAME));

@@ -20,6 +20,7 @@
     <http pattern="/info.zul*" security="none"/>
     <http pattern="/login.zul*" security="none"/>
     <http pattern="/register/*" security="none"/>
+    <http pattern="/services/*" security="none"/>
 
     <http auto-config="false" access-denied-page="/denied.zul" use-expressions="true"
           entry-point-ref="apromoreAuthenticationEntryPoint" authentication-manager-ref="remotingAuthenticationManager">

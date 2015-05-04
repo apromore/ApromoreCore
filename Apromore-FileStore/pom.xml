@@ -57,6 +57,7 @@
                             org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             com.springsource.javax.validation;version="[1.0.0.GA,1.0.0.GA]",
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]",
+                            <!--org.apache.servicemix.bundles.ant;version="[1.9,2.0)",-->
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             org.apromore.filestore-client;version="[1.0,1.1]"
@@ -166,6 +167,11 @@
             <groupId>org.apache.ant</groupId>
             <artifactId>com.springsource.org.apache.tools.ant</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
+            <!--<artifactId>org.apache.servicemix.bundles.ant</artifactId>-->
+            <!--<version>1.9.4_1</version>-->
+        <!--</dependency>-->
 
         <!-- Web -->
         <dependency>

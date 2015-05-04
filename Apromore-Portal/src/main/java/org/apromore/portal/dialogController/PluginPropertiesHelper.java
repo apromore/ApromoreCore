@@ -73,7 +73,7 @@ public class PluginPropertiesHelper {
     /**
      * Helper class that builds up a ZK Grid with inputs for Plugin properties.
      *
-     * @param service the manager service that does the comms to the manager.
+     * @param service the portal service that does the comms to the portal.
      * @param propertiesGrid the grid to be filled
      */
     public PluginPropertiesHelper(final ManagerService service, final Grid propertiesGrid) {

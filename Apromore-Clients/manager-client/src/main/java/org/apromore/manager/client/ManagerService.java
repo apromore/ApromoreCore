@@ -20,32 +20,9 @@
 
 package org.apromore.manager.client;
 
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.ClusterSettingsType;
-import org.apromore.model.ClusterSummaryType;
-import org.apromore.model.ClusterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.GedMatrixSummaryType;
-import org.apromore.model.GetFragmentOutputMsgType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.GroupType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.NativeMetaData;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PairDistanceType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
+import org.deckfour.xes.model.XLog;
 
 import javax.activation.DataHandler;
 import java.io.InputStream;
@@ -216,8 +193,11 @@ public interface ManagerService {
      * @param searchExpression the search expression to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    ProcessSummariesType runAPQLExpression(String searchExpression) throws Exception;
+    List<String> runAPQLExpression(String searchExpression, List<String> ids, String userID) throws Exception;
 
+    List<String> getProcessesLabels(String table, String columnName);
+
+    List<Detail> getDetails() throws Exception;
     /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model
@@ -451,4 +431,23 @@ public interface ManagerService {
      */
     void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
 
+    /**
+     * Mine BPMN Model from Log.
+     * @param log input log for mining.
+     * @param sortLog should the log be sorted based on timestamp.
+     * @param miningAlgorithm the mining algorithm (@see).
+     * @param dependencyAlgorithm the algorithm for dependency discovery (1 normal, 2 noise tollerant).
+     * @param interruptingEventTolerance the tolerance level for detecting interrupting events, a value between 0.0 and 1.0.
+     * @param timerEventPercentage the percentage of times a timer event must be detected to model it, a value between 0.0 and 1.0.
+     * @param timerEventTolerance the tolerance level for detecting timer events, a value between 0.0 and 1.0.
+     * @param multiInstancePercentage the percentage of times an activity must occur in parallel to model it as multi-instance, a value between 0.0 and 1.0.
+     * @param multiInstanceTolerance the tolerance level for detecting multi-instance activities, a value between 0.0 and 1.0.
+     * @param noiseThreshold the noise threshold, a value between 0.0 and 1.0.
+     * @param listCandidates the list of candidates primary keys.
+     * @param primaryKeySelections the selection of primary key for each activity.
+     * @throws Exception ... change to be something more relevant
+     */
+    String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+                             double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
+                             double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
 }

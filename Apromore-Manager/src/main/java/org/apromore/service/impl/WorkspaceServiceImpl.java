@@ -288,6 +288,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 //            }
 
             processRepo.save(process);
+        } else {
+            LOGGER.warning("Missing folderID "+folderId+" Missing processID "+processId);
         }
     }
 

@@ -26,6 +26,14 @@
     </scm>
 
     <dependencies>
+
+        <!-- BPMNMiner -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <version>6.0</version>
+        </dependency>
+
         <!-- Schema Bundles -->
         <dependency>
             <groupId>org.apromore</groupId>

@@ -25,132 +25,10 @@ import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
 import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
-import org.apromore.model.AddProcessToFolderInputMsgType;
-import org.apromore.model.AddProcessToFolderOutputMsgType;
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.ClusterSettingsType;
-import org.apromore.model.ClusterSummaryType;
-import org.apromore.model.ClusterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.CreateClustersInputMsgType;
-import org.apromore.model.CreateFolderInputMsgType;
-import org.apromore.model.CreateFolderOutputMsgType;
-import org.apromore.model.CreateGEDMatrixInputMsgType;
-import org.apromore.model.DeleteFolderInputMsgType;
-import org.apromore.model.DeleteFolderOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
-import org.apromore.model.DeployProcessInputMsgType;
-import org.apromore.model.DeployProcessOutputMsgType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditProcessDataInputMsgType;
-import org.apromore.model.EditProcessDataOutputMsgType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatInputMsgType;
-import org.apromore.model.ExportFormatOutputMsgType;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.FolderType;
-import org.apromore.model.FragmentIdsType;
-import org.apromore.model.GedMatrixSummaryType;
-import org.apromore.model.GetBreadcrumbsInputMsgType;
-import org.apromore.model.GetBreadcrumbsOutputMsgType;
-import org.apromore.model.GetClusterInputMsgType;
-import org.apromore.model.GetClusterOutputMsgType;
-import org.apromore.model.GetClusterSummariesInputMsgType;
-import org.apromore.model.GetClusterSummariesOutputMsgType;
-import org.apromore.model.GetClusteringSummaryInputMsgType;
-import org.apromore.model.GetClusteringSummaryOutputMsgType;
-import org.apromore.model.GetClustersRequestType;
-import org.apromore.model.GetClustersResponseType;
-import org.apromore.model.GetFolderGroupsInputMsgType;
-import org.apromore.model.GetFolderGroupsOutputMsgType;
-import org.apromore.model.GetFragmentInputMsgType;
-import org.apromore.model.GetFragmentOutputMsgType;
-import org.apromore.model.GetGedMatrixSummaryInputMsgType;
-import org.apromore.model.GetGedMatrixSummaryOutputMsgType;
-import org.apromore.model.GetPairwiseDistancesInputMsgType;
-import org.apromore.model.GetPairwiseDistancesOutputMsgType;
-import org.apromore.model.GetProcessGroupsInputMsgType;
-import org.apromore.model.GetProcessGroupsOutputMsgType;
-import org.apromore.model.GetProcessesInputMsgType;
-import org.apromore.model.GetProcessesOutputMsgType;
-import org.apromore.model.GetSubFoldersInputMsgType;
-import org.apromore.model.GetSubFoldersOutputMsgType;
-import org.apromore.model.GetWorkspaceFolderTreeInputMsgType;
-import org.apromore.model.GetWorkspaceFolderTreeOutputMsgType;
-import org.apromore.model.GroupAccessType;
-import org.apromore.model.GroupType;
-import org.apromore.model.ImportProcessInputMsgType;
-import org.apromore.model.ImportProcessOutputMsgType;
-import org.apromore.model.ImportProcessResultType;
-import org.apromore.model.MergeProcessesInputMsgType;
-import org.apromore.model.MergeProcessesOutputMsgType;
-import org.apromore.model.NativeMetaData;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ObjectFactory;
-import org.apromore.model.PairDistanceType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
-import org.apromore.model.ReadCanoniserInfoInputMsgType;
-import org.apromore.model.ReadCanoniserInfoOutputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
-import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
-import org.apromore.model.ReadDomainsInputMsgType;
-import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadInitialNativeFormatInputMsgType;
-import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
-import org.apromore.model.ReadInstalledPluginsInputMsgType;
-import org.apromore.model.ReadInstalledPluginsOutputMsgType;
-import org.apromore.model.ReadNativeMetaDataInputMsgType;
-import org.apromore.model.ReadNativeMetaDataOutputMsgType;
-import org.apromore.model.ReadNativeTypesInputMsgType;
-import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadPluginInfoInputMsgType;
-import org.apromore.model.ReadPluginInfoOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserByEmailInputMsgType;
-import org.apromore.model.ReadUserByEmailOutputMsgType;
-import org.apromore.model.ReadUserByUsernameInputMsgType;
-import org.apromore.model.ReadUserByUsernameOutputMsgType;
-import org.apromore.model.RemoveFolderPermissionsInputMsgType;
-import org.apromore.model.RemoveFolderPermissionsOutputMsgType;
-import org.apromore.model.RemoveProcessPermissionsInputMsgType;
-import org.apromore.model.RemoveProcessPermissionsOutputMsgType;
-import org.apromore.model.ResetUserPasswordInputMsgType;
-import org.apromore.model.ResetUserPasswordOutputMsgType;
-import org.apromore.model.RunAPQLInputMsgType;
-import org.apromore.model.RunAPQLOutputMsgType;
-import org.apromore.model.SaveFolderPermissionsInputMsgType;
-import org.apromore.model.SaveFolderPermissionsOutputMsgType;
-import org.apromore.model.SaveProcessPermissionsInputMsgType;
-import org.apromore.model.SaveProcessPermissionsOutputMsgType;
-import org.apromore.model.SearchForSimilarProcessesInputMsgType;
-import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
-import org.apromore.model.SearchGroupsInputMsgType;
-import org.apromore.model.SearchGroupsOutputMsgType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.SearchUserInputMsgType;
-import org.apromore.model.SearchUserOutputMsgType;
-import org.apromore.model.UpdateFolderInputMsgType;
-import org.apromore.model.UpdateFolderOutputMsgType;
-import org.apromore.model.UpdateProcessInputMsgType;
-import org.apromore.model.UpdateProcessOutputMsgType;
-import org.apromore.model.UpdateSearchHistoryInputMsgType;
-import org.apromore.model.UpdateSearchHistoryOutputMsgType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.model.WriteAnnotationInputMsgType;
-import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -158,12 +36,12 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashSet;
+import java.io.*;
+import java.util.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Performance Test for the Apromore Manager Client.
@@ -735,26 +613,53 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#runAPQLExpression(String)
+     * @see ManagerService#runAPQLExpression(String, List, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType runAPQLExpression(final String searchExpression) throws Exception {
-        LOGGER.debug("Preparing RunAPQLRequest.....");
+    public List<String> runAPQLExpression(final String searchExpression, final List<String> ids, final String userID) throws Exception {
+        LOGGER.debug("@@@@@@@@@@@@@@@@@@@Preparing RunAPQLRequest.....");
 
         RunAPQLInputMsgType msg = new RunAPQLInputMsgType();
         msg.setAPQLExpression(searchExpression);
+        msg.setUserID(userID);
+        msg.getIds().clear();
+        msg.getIds().addAll(ids);
 
         JAXBElement<RunAPQLInputMsgType> request = WS_CLIENT_FACTORY.createRunAPQLRequest(msg);
+        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ After Request: ");
         JAXBElement<RunAPQLOutputMsgType> response = (JAXBElement<RunAPQLOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-
+        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response List: "+response.getValue().getProcessResult());
         RunAPQLOutputMsgType resp = response.getValue();
+
         if (resp.getResult().getCode().equals(-1)) {
             throw new Exception(resp.getResult().getMessage());
         } else {
-            return response.getValue().getProcessSummaries();
+            LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response Error: "+response.getValue().getResult().getCode()+" "+response.getValue().getResult().getMessage());
+//            return response.getValue().getProcessSummaries();
+            return response.getValue().getProcessResult();
         }
+    }
+
+    @Override
+    public List<String> getProcessesLabels(String table, String columnName) {
+        DBInputMsgType msg = new DBInputMsgType();
+        msg.setColumnName(columnName);
+        msg.setTable(table);
+        JAXBElement<DBInputMsgType> request = WS_CLIENT_FACTORY.createDBRequest(msg);
+        JAXBElement<DBOutputMsgType> response = (JAXBElement<DBOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getLabels();
+    }
+
+    @Override
+    public List<Detail> getDetails() throws Exception{
+        DetailInputMsgType detail = new DetailInputMsgType();
+
+        JAXBElement<DetailInputMsgType> request = WS_CLIENT_FACTORY.createDetailRequest(detail);
+
+        JAXBElement<DetailOutputMsgType> response = (JAXBElement<DetailOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getDetail();
     }
 
     /**
@@ -1024,7 +929,7 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readPluginInfo(java.lang.String, java.lang.String)
      */
     @Override
@@ -1046,7 +951,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readInstalledPlugins(java.lang.String)
      */
     @Override
@@ -1067,7 +972,7 @@ public class ManagerServiceClient implements ManagerService {
 
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
      */
     @Override
@@ -1092,7 +997,7 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readNativeMetaData(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
      */
     @Override
@@ -1116,8 +1021,8 @@ public class ManagerServiceClient implements ManagerService {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(java.lang.String, java.lang.String, java.lang.String)
+    /** (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(String, String, String, String, String, String, String)
      */
     @Override
     public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner,
@@ -1146,7 +1051,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-    /*
+    /**
      * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
      */
     @Override
@@ -1171,7 +1076,7 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
-    /*
+    /**
      * @see org.apromore.manager.client.ManagerService#deployProcess
      * {@inheritDoc}
      */
@@ -1202,7 +1107,7 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
-    /*
+    /**
      * @see ManagerService#updateSearchHistories
      * {@inheritDoc}
      */
@@ -1221,6 +1126,76 @@ public class ManagerServiceClient implements ManagerService {
                 webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
+        }
+    }
+
+    /**
+     * @see ManagerService#discoverBPMNModel(XLog, boolean, int, int, double, double, double, double, double, double, List, Map)
+     * {@inheritDoc}
+     */
+    @Override
+    public String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+                                    double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
+                                    double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
+        LOGGER.debug("Preparing DiscoverBPMNModel Request...");
+
+        DiscoverBPMNModelInputMsgType msg = new DiscoverBPMNModelInputMsgType();
+
+        XesXmlSerializer serializer = new XesXmlSerializer();
+
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        serializer.serialize(log, b);
+
+        msg.setXESGZLog(b.toByteArray());
+        msg.setMiningAlgorithm(miningAlgorithm);
+        msg.setDependencyAlgorithm(dependencyAlgorithm);
+        msg.setSortLog(sortLog);
+        msg.setInterruptingEventTolerance(interruptingEventTolerance);
+        msg.setMultiInstancePercentage(multiInstancePercentage);
+        msg.setMultiInstanceTolerance(multiInstanceTolerance);
+        msg.setTimerEventPercentage(timerEventPercentage);
+        msg.setTimerEventTolerance(timerEventTolerance);
+        msg.setNoiseThreshold(noiseThreshold);
+
+        BPMNMinerList list = new BPMNMinerList();
+        list.getElements().addAll(listCandidates);
+        msg.setCanditateEntities(list);
+
+        BPMNMinerMap map = new BPMNMinerMap();
+        for(Map.Entry<Set<String>, Set<String>> entry : primaryKeySelections.entrySet()) {
+            BPMNMinerEntry bpmnMinerEntry = new BPMNMinerEntry();
+
+            BPMNMinerSet setKey = null;
+            BPMNMinerSet setValue = null;
+
+            if(entry.getKey() != null && entry.getValue() != null) {
+
+                if((setKey = bpmnMinerEntry.getKey()) == null) {
+                    setKey = new BPMNMinerSet();
+                    bpmnMinerEntry.setKey(setKey);
+                }
+                setKey.getElements().addAll(entry.getKey());
+
+                if((setValue = bpmnMinerEntry.getValue()) == null) {
+                    setValue = new BPMNMinerSet();
+                    bpmnMinerEntry.setValue(setValue);
+                }
+                setValue.getElements().addAll(entry.getValue());
+
+                map.getEntries().add(bpmnMinerEntry);
+            }
+        }
+        msg.setPrimaryKeySelections(map);
+
+        JAXBElement<DiscoverBPMNModelInputMsgType> request = WS_CLIENT_FACTORY.createDiscoverBPMNModelRequest(msg);
+
+        @SuppressWarnings("unchecked")
+        JAXBElement<DiscoverBPMNModelOutputMsgType> response = (JAXBElement<DiscoverBPMNModelOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }else {
+            return response.getValue().getResult().getMessage();
         }
     }
 }

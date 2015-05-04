@@ -73,17 +73,7 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.AnnotationService;
-import org.apromore.service.CanonicalConverter;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.ComposerService;
-import org.apromore.service.DecomposerService;
-import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
-import org.apromore.service.LockService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.UserService;
-import org.apromore.service.WorkspaceService;
+import org.apromore.service.*;
 import org.apromore.service.helper.AnnotationHelper;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -127,7 +117,7 @@ import java.util.Set;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
-public class ProcessServiceImpl implements ProcessService {
+public class ProcessServiceImpl extends AbstractObservable implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
@@ -152,6 +142,9 @@ public class ProcessServiceImpl implements ProcessService {
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
 
+    @Inject
+    private PQLService pqlService;
+    private boolean isPqlServiceCreate=false;
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepo Annotations repository.
@@ -256,7 +249,17 @@ public class ProcessServiceImpl implements ProcessService {
 
             pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
+
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
+            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
+            if(!isPqlServiceCreate) {
+                addObserver(pqlService);
+                isPqlServiceCreate=true;
+            }
+
+            if(process.getId()!=null) {
+                notifyObserver(user, nativeType, pmv, false);
+            }
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -284,12 +287,22 @@ public class ProcessServiceImpl implements ProcessService {
             if (!StringUtils.equals(originalBranchName, newBranchName)) {
                 Process process = processRepo.findOne(processId);
                 pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
+
+                notifyObserver(user,nativeType,pmv,false);
+                LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
+
             } else {
                 // Perform the update
                 if (user == null) {
                     throw new ImportException("Permission to change this model denied.  No user specified.");
                 } else if (canUserWriteProcess(user, processId)) {
                     pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
+                    if(!isPqlServiceCreate) {
+                        addObserver(pqlService);
+                        isPqlServiceCreate=true;
+                    }
+                    notifyObserver(user,nativeType,pmv,false);
+                    LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
                     throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
                 }

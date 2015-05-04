@@ -42,13 +42,6 @@
     </distributionManagement>
 
     <modules>
-        <!-- OSGI -->
-        <!--<module>Apromore-OSGI-Bundles/antlr4</module>-->
-        <!--<module>Apromore-OSGI-Bundles/ini4j</module>-->
-        <!--<module>Apromore-OSGI-Bundles/postgresql</module>-->
-        <!--<module>Apromore-OSGI-Bundles/irthemis</module>-->
-        <!--<module>Apromore-OSGI-Bundles/pql</module>-->
-
         <!-- Schema's -->
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/aris-schema</module>
@@ -62,17 +55,34 @@
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>
 
+        <!--&lt;!&ndash; OSGI &ndash;&gt;-->
+        <!--<module>Apromore-OSGI-Bundles/antlr4</module>-->
+        <!--<module>Apromore-OSGI-Bundles/ini4j</module>-->
+        <!--<module>Apromore-OSGI-Bundles/postgres</module>-->
+        <!--<module>Apromore-OSGI-Bundles/irthemis</module>-->
+        <!--<module>Apromore-OSGI-Bundles/json</module>-->
+        <!--<module>Apromore-OSGI-Bundles/jbpt-petri</module>-->
+        <!--<module>Apromore-OSGI-Bundles/pql</module>-->
+
+        <!-- PROM -->
+        <module>Apromore-OSGI-Bundles/log-osgi</module>
+        <module>Apromore-OSGI-Bundles/fodina-osgi</module>
+        <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
+        <module>Apromore-OSGI-Bundles/prom6-osgi</module>
+
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>Apromore-Extras/bpmncmap</module>
         <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
+		<module>Apromore-Extras/apql</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
         <module>Apromore-Clients/filestore-client</module>
+        <module>Apromore-Clients/portal-client</module>
 
         <!-- Manager Portal and Editor Web App creation -->
         <module>Apromore-FileStore</module>
@@ -104,6 +114,7 @@
         <ant.version>1.8.3</ant.version>
 
         <!-- Apromore Dependency Versions -->
+		<apql.version>1.0</apql.version>
         <manager-client.version>1.1</manager-client.version>
         <filestore-client.version>1.0</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
@@ -111,6 +122,7 @@
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
         <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
+        <portal-client.version>1.1</portal-client.version>
 
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <pax.runner.version>1.7.6</pax.runner.version>
@@ -192,6 +204,12 @@
         <taskmapping.version>0.1</taskmapping.version>
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
+		
+		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+        <jbpt-petri.version>0.2.393</jbpt-petri.version>
+        <v4-runtime.version>4.3</v4-runtime.version>
+        <mysql.version>5.1.21</mysql.version>
+        <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
         <antlr4-runtime.version>4.3</antlr4-runtime.version>
         <ini4j.version>0.5.2</ini4j.version>
@@ -240,7 +258,7 @@
         <maven.versions.plugin>2.0</maven.versions.plugin>
         <maven.war.plugin>2.1.1</maven.war.plugin>
         <maven.version.updater.plugin>1.0</maven.version.updater.plugin>
-        <maven.version.range>[3.0.3,3.3)</maven.version.range>
+        <maven.version.range>[3.0.3,3.4)</maven.version.range>
 
         <maven.wagon.svn.plugin>1.4</maven.wagon.svn.plugin>
         <maven.wagon-scm.extension>2.4</maven.wagon-scm.extension>
@@ -281,6 +299,71 @@
                 <version>${pax.runner.version}</version>
             </dependency>
 
+            <!-- BPMNMiner -->
+            <!--<dependency>-->
+                <!--<groupId>org.apromore</groupId>-->
+                <!--<artifactId>bpmnminer-osgi</artifactId>-->
+                <!--<version>1.0</version>-->
+            <!--</dependency>-->
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>log-osgi</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>prom6-osgi</artifactId>
+                <version>6.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apromore</groupId>-->
+                <!--<artifactId>prom5-osgi</artifactId>-->
+                <!--<version>5.0</version>-->
+            <!--</dependency>-->
+
+            <!-- Editor -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.2.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>exlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.deckfour.xes</groupId>
+                <artifactId>OpenXES</artifactId>
+                <version>2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons.fileupload.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.4</version>
+            </dependency>
+
             <!-- BPM Imports -->
             <dependency>
                 <groupId>org.jbpt</groupId>
@@ -317,8 +400,54 @@
                 <artifactId>lpsolve</artifactId>
                 <version>${lpsolve.version}</version>
             </dependency>
+			
+			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+            <dependency>
+                <groupId>org.jbpt</groupId>
+                <artifactId>jbpt-petri-osgi</artifactId>
+                <version>${jbpt-petri.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime-osgi</artifactId>
+                <version>${v4-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ini4j</groupId>
+                <artifactId>ini4j-osgi</artifactId>
+                <version>${ini4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>1.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.pql</groupId>
+                <artifactId>pql-osgi</artifactId>
+                <version>${pql.version}</version>
+            </dependency>
+
+            <!--<dependency>-->
+                <!--<groupId>org.pql</groupId>-->
+                <!--<artifactId>pql</artifactId>-->
+                <!--<version>${pql.version}</version>-->
+            <!--</dependency>-->
+            <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
             <!-- Clients -->
+			<dependency>
+                <groupId>com.apql</groupId>
+                <artifactId>apql</artifactId>
+                <version>${apql.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>manager-ws-model</artifactId>
@@ -338,6 +467,11 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>filestore-client</artifactId>
                 <version>${filestore-client.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>portal-client</artifactId>
+                <version>${portal-client.version}</version>
             </dependency>
 
             <!--  Core Plugins -->
