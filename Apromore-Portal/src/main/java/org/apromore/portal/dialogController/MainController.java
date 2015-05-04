@@ -20,6 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
 import org.apromore.plugin.property.RequestParameterType;
@@ -27,7 +28,6 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
-import org.apromore.helper.Version;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -50,6 +50,8 @@ import org.zkoss.zul.ext.Paginal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
