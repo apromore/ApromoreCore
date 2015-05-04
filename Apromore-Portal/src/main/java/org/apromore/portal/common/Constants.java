@@ -21,7 +21,7 @@
 package org.apromore.portal.common;
 
 public final class Constants {
-    // repository manager details
+    // repository portal details
     public static final String PROPERTY_FILE = "apromore.properties";
 
     // max number of searches kept for users

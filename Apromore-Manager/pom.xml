@@ -164,6 +164,74 @@
     </build>
 
     <dependencies>
+
+        <!-- PQL -->
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-petri-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pql</groupId>
+            <artifactId>pql-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <!-- BPMNMiner -->
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>bpmn</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>bpmnminer</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-contexts</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-framework</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-models</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>uitopia</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>

@@ -177,7 +177,7 @@ public class SimpleSearchController extends BaseController {
             }
         }
 
-        // Send to the manager to store it.
+        // Send to the portal to store it.
         mainC.updateSearchHistory(searchHist);
     }
 

@@ -1,0 +1,13 @@
+<window width="400px" closable="false" position="center" title="Select Candidate Entities">
+    <vbox>
+        <listbox id="list" width="400px" rows="10" checkmark="true" multiple="true">
+            <listhead>
+                <listheader label="Candidate Entities"/>
+            </listhead>
+        </listbox>
+        <div align="center">
+            <button id="entityCancelButton" label="Cancel" image="img/cancel2.png"></button>
+            <button id="entityNextButton" label="Ok" image="img/ok.png"></button>
+        </div>
+    </vbox>
+</window>

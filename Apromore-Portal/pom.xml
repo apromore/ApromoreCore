@@ -148,6 +148,25 @@
     </build>
 
     <dependencies>
+
+        <!-- BPMNMiner -->
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>bpmnminer</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Client -->
         <dependency>
             <groupId>org.apromore</groupId>

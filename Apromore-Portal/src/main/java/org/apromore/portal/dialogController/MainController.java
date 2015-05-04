@@ -20,22 +20,11 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.FolderType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginMessage;
-import org.apromore.model.PluginMessages;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
+import org.apromore.model.Detail;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.helper.Version;
@@ -45,6 +34,7 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.util.SessionTab;
 import org.wfmc._2002.xpdl1.Tool;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
@@ -54,41 +44,21 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Html;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Toolbarbutton;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 import org.zkoss.zul.ext.Paginal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class                                        MainController extends BaseController {
+public class MainController extends BaseController {
 
     private static final long serialVersionUID = 5147685906484044300L;
+	private static MainController controller = null;
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
@@ -112,6 +82,10 @@ public class                                        MainController extends BaseC
     private String host;
     private String versionNumber;
     private String buildDate;
+	
+	public static MainController getController() {
+        return controller;
+    }
 
     /**
      * onCreate is executed after the main window has been created it is
@@ -202,14 +176,18 @@ public class                                        MainController extends BaseC
             e.printStackTrace();
             Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+        controller=this;
     }
 
 
     public void loadWorkspace() {
+        setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
+
+		String userId = UserSessionManager.getCurrentUser().getId();
+        updateTabs(userId);
         updateActions();
 
         setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
-        String userId = UserSessionManager.getCurrentUser().getId();
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
         this.loadTree();
@@ -505,7 +483,7 @@ public class                                        MainController extends BaseC
         return UserSessionManager.getCurrentUser().getSearchHistories();
     }
 
-    /* Tell the manager we need to update the search history for this user. */
+    /* Tell the portal we need to update the search history for this user. */
     public void updateSearchHistory(final List<SearchHistoriesType> searchHist) throws Exception {
         getService().updateSearchHistories(UserSessionManager.getCurrentUser(), searchHist);
     }
@@ -554,7 +532,7 @@ public class                                        MainController extends BaseC
 
     @Command
     protected void signout() throws Exception {
-        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION,
+        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {
                     public void onEvent(Event evt) throws Exception {
                         switch ((Integer) evt.getData()) {
@@ -739,6 +717,42 @@ public class                                        MainController extends BaseC
 
     public void setBuildDate(final String newBuildDate) {
         buildDate = newBuildDate;
+    }
+
+    public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
+
+        LinkedList<Tab> listTabs = SessionTab.getTabsSession(userID);
+        TabQuery newTab = new TabQuery(nameQuery, userID, details, query);
+        newTab.setTabpanel(results);
+        listTabs.addLast(newTab);
+        SessionTab.setTabsSession(userID, listTabs);
+    }
+
+    private void updateTabs(String userId){
+        Window mainW = (Window) this.getFellow("mainW");
+
+        Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
+
+        LinkedList<Tab> tabs = SessionTab.getTabsSession(userId);
+        if(tabs == null) {
+            tabs = new LinkedList<Tab>();
+            for(Component component : tabbox.getTabs().getChildren()) {
+                Tab tab = (Tab) component;
+                if(tab.isClosable()) {
+                    tabs.addLast(tab);
+                }
+            }
+            SessionTab.setTabsSession(userId, tabs);
+        }else if(!tabs.isEmpty()){
+            tabs=SessionTab.getTabsSession(userId);
+            for(Tab tab : tabs) {
+                if(tab instanceof TabQuery && ((TabQuery)tab).isNew()){
+                    ((TabQuery) tab).setNew(false);
+                    tabbox.getTabs().appendChild(tab);
+                    ((TabQuery) tab).getTabpanel().setParent(tabbox.getTabpanels());
+                }
+            }
+        }
     }
 
 }

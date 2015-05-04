@@ -151,7 +151,16 @@
                     <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
                     <html id="folders" width="100%" visible="false" height="0"/>
 
-                    <BaseListbox id="baseListbox" vflex="true"/>
+                    <tabbox id="tabbox" vflex="true" height="100%">
+                    <tabs>
+                        <tab label="Processes"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel vflex="true">
+							<BaseListbox id="baseListbox" vflex="true"/>
+                        </tabpanel> 
+                    </tabpanels>
+                    </tabbox>
                 </div>
             </center>
         </borderlayout>
