@@ -20,8 +20,38 @@
 
 package org.apromore.portal.dialogController;
 
+// Java 2 Standard packages
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+// Third party packages
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treechildren;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Window;
+
+// Local packages
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
+import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -29,21 +59,6 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 
 /**
  * The Signavio Controller. This controls opening the signavio editor in apromore.
@@ -56,63 +71,118 @@ public class SignavioController extends BaseController {
 
     private MainController mainC;
 
-    private EditSessionType editSession;
-    private ProcessSummaryType process;
-    private VersionSummaryType version;
+    private EditSessionType editSession1, editSession2;
+    private ProcessSummaryType process, process2;
+    private VersionSummaryType version, version2;
     private Set<RequestParameterType<?>> params;
-
+    private int m1PESSize, m2PESSize;
+    private JSONObject differences;
 
     public SignavioController() {
         super();
 
-        if (Executions.getCurrent().getParameter("id") != null) {
-            SignavioSession session = UserSessionManager.getEditSession(Executions.getCurrent().getParameter("id"));
+        String id = Executions.getCurrent().getParameter("id");
+        if (id != null) {
+            SignavioSession session = UserSessionManager.getEditSession(id);
+            if (session == null) {
+                throw new AssertionError("No edit session associated with id " + id);
+            }
 
-            editSession = session.getEditSession();
+            editSession1 = session.getEditSession();
+            editSession2 = session.getEditSession2();
             mainC = session.getMainC();
             process = session.getProcess();
             version = session.getVersion();
+            process2 = session.getProcess2();
+            version2 = session.getVersion2();
             params =  session.getParams();
         }
 
         Map<String, String> param = new HashMap<>();
         try {
-            this.setTitle(editSession.getProcessName() + " (" + editSession.getNativeType() + ")");
+            String title = editSession1.getProcessName() + " (" + editSession1.getNativeType() + ")";
+            if (editSession2 != null) {
+                title += " vs " + editSession2.getProcessName() + " (" + editSession2.getNativeType() + ")";
+            }
+            this.setTitle(title);
 
-            ExportFormatResultType exportResult =
-                    getService().exportFormat(editSession.getProcessId(),
-                            editSession.getProcessName(),
-                            editSession.getOriginalBranchName(),
-                            editSession.getCurrentVersionNumber(),
-                            editSession.getNativeType(),
-                            editSession.getAnnotation(),
-                            editSession.isWithAnnotation(),
-                            editSession.getUsername(),
+            ExportFormatResultType exportResult1 =
+                    getService().exportFormat(editSession1.getProcessId(),
+                            editSession1.getProcessName(),
+                            editSession1.getOriginalBranchName(),
+                            editSession1.getCurrentVersionNumber(),
+                            editSession1.getNativeType(),
+                            editSession1.getAnnotation(),
+                            editSession1.isWithAnnotation(),
+                            editSession1.getUsername(),
                             params);
 
-            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+            title = editSession1.getProcessName();
+            PluginMessages pluginMessages = exportResult1.getMessage();
 
-            // Run the document through a pass-through XML transformation because we have ZK/Signavio issues if the native document used apostrophes to quote attributes
-            // If there's ever a non-XML process model format, we'll have to detect that and skip the XML parsing
-//            StringWriter stringWriter = new StringWriter();
-//            TransformerFactory.newInstance().newTransformer().transform(new StreamSource(new StringReader(data)), new StreamResult(stringWriter));
-//            data = stringWriter.toString();
-
-
-            mainC.showPluginMessages(exportResult.getMessage());
-            this.setTitle(editSession.getProcessName());
             String JSON_DATA = "jsonData";
-            param.put(JSON_DATA, data.replace("\n", " ").replace("'", "\\u0027").trim());
-            param.put("url", getURL(editSession.getNativeType()));
-            param.put("importPath", getImportPath(editSession.getNativeType()));
-            param.put("exportPath", getExportPath(editSession.getNativeType()));
+            String data1 = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
+            param.put(JSON_DATA, data1.replace("\n", " ").replace("'", "\\u0027").trim());
+            param.put("url", getURL(editSession1.getNativeType()));
+            param.put("importPath", getImportPath(editSession1.getNativeType()));
+            param.put("exportPath", getExportPath(editSession1.getNativeType()));
 
-            if (editSession.getAnnotation() == null) {
+            if (editSession2 != null) {
+                ExportFormatResultType exportResult2 =
+                    getService().exportFormat(editSession2.getProcessId(),
+                            editSession2.getProcessName(),
+                            editSession2.getOriginalBranchName(),
+                            editSession2.getCurrentVersionNumber(),
+                            editSession2.getNativeType(),
+                            editSession2.getAnnotation(),
+                            editSession2.isWithAnnotation(),
+                            editSession2.getUsername(),
+                            params);
+
+                String data2 = StreamUtil.convertStreamToString(exportResult2.getNative().getInputStream());
+                param.put("jsonData2", data2.replace("\n", " ").replace("'", "\\u0027").trim());
+
+                title += " differences with " + editSession2.getProcessName();
+                pluginMessages = null;
+                if (exportResult1.getMessage() != null) {
+                    pluginMessages = new PluginMessages();
+                    pluginMessages.getMessage().addAll(exportResult1.getMessage().getMessage());
+                }
+                if (exportResult2.getMessage() != null) {
+                    if (pluginMessages == null) {
+                        pluginMessages = new PluginMessages();
+                    }
+                    pluginMessages.getMessage().addAll(exportResult2.getMessage().getMessage());
+                }
+            }
+
+            this.setTitle(title);
+            mainC.showPluginMessages(pluginMessages);
+
+            for (RequestParameterType<?> requestParameter: params) {
+                switch (requestParameter.getId()) {
+                case "m1_differences_json":
+                    param.put("differences", (String) requestParameter.getValue());
+                    this.differences = new JSONObject((String) requestParameter.getValue());
+                    //LOGGER.info("Request parameter \"differences\" set to " + requestParameter.getValue());
+                    break;
+                case "m1_pes_size":
+                    this.m1PESSize = (Integer) requestParameter.getValue();
+                    break;
+                case "m2_pes_size":
+                    this.m2PESSize = (Integer) requestParameter.getValue();
+                    break;
+                default:
+                    LOGGER.info("Unsupported request parameter \"" + requestParameter.getId() + "\" with value " + requestParameter.getValue());
+                }
+            }
+
+            if (editSession1.getAnnotation() == null) {
                 param.put("doAutoLayout", "true");
-            } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession.getNativeType())) {
+            } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession1.getNativeType())) {
                 param.put("doAutoLayout", "false");
             } else {
-                if (editSession.isWithAnnotation()) {
+                if (editSession1.isWithAnnotation()) {
                     param.put("doAutoLayout", "false");
                 } else {
                     param.put("doAutoLayout", "true");
@@ -128,7 +198,7 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, true, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession1, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
@@ -138,13 +208,114 @@ public class SignavioController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, false, eventToString(event));
+                    new SaveAsDialogController(process, version, editSession1, false, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
             }
         });
+    }
 
+    public void onCreate() throws InterruptedException {
+        Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
+        if (treechildren != null) {
+            Label m1Label = (Label) this.getFellow("m1-pes-size");
+            m1Label.setValue(Integer.toString(m1PESSize));
+
+            Label m2Label = (Label) this.getFellow("m2-pes-size");
+            m2Label.setValue(Integer.toString(m2PESSize));
+
+            try {
+                JSONArray array = this.differences.getJSONArray("differences");
+                for (int i=0; i < array.length(); i++) {
+                    JSONObject difference = array.getJSONObject(i);
+
+                    // Add UI for this difference
+                    Treeitem item = new Treeitem();
+
+                    Treerow row = new Treerow();
+                    item.appendChild(row);
+
+                    Treecell cell = new Treecell(difference.getString("sentence"));
+                    row.appendChild(cell);
+
+                    onCreateRuns("model 1", difference.optJSONObject("runsM1"), item, "oryxEditor1");
+                    onCreateRuns("model 2", difference.optJSONObject("runsM2"), item, "oryxEditor2");
+
+                    treechildren.appendChild(item);
+                }
+            } catch (JSONException e) {
+                InterruptedException ie = new InterruptedException("Unable to parse differences JSON");
+                ie.initCause(e);
+                ie.printStackTrace();
+                throw ie;
+            }
+        }
+    }
+
+    private void onCreateRuns(final String modelName, JSONObject runsM1, Treeitem item, String oryxEditor) throws JSONException {
+
+        if (runsM1 != null) {
+            // Add UI for these runs
+            Treechildren m1children = item.getTreechildren();
+            if (m1children == null) {
+                m1children = new Treechildren();
+                item.appendChild(m1children);
+            }
+            assert m1children != null;
+
+            Treeitem m1item = new Treeitem();
+            m1children.appendChild(m1item);
+
+            Treerow m1row = new Treerow();
+            m1item.appendChild(m1row);
+
+            Treecell m1cell = new Treecell("Runs in " + modelName);
+            m1row.appendChild(m1cell);
+
+            LOGGER.info("About to fetch runs");
+            JSONArray runs = runsM1.getJSONArray("runs");
+            LOGGER.info("Runs " + runs);
+            for (int j=0; j < runs.length(); j++) {
+                LOGGER.info("About to fetch run " + j);
+                JSONObject run = runs.getJSONObject(j);
+                LOGGER.info("Run " + j + " " + run);
+
+                // Add UI for this run
+                Treechildren runChildren = m1item.getTreechildren();
+                if (runChildren == null) {
+                    runChildren = new Treechildren();
+                    m1item.appendChild(runChildren);
+                }
+                assert runChildren != null;
+
+                Treeitem runItem = new Treeitem();
+                runChildren.appendChild(runItem);
+
+                Treerow runRow = new Treerow();
+                runItem.appendChild(runRow);
+
+                Treecell runCell = new Treecell();
+                runRow.appendChild(runCell);
+
+                Button button = new Button("Run " + j);
+                final int jj = j;
+                button.setWidgetListener("onClick", oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")");
+
+                runCell.appendChild(button);
+
+                /*
+                LOGGER.info("About to fetch colorsBPMN");
+                final JSONObject colorsBPMN = run.getJSONObject("colorsBPMN");
+                LOGGER.info("Fetched colorsBPMN");
+                for (String colorBPMN: new Iterable<String>(){ public Iterator<String> iterator() { return colorsBPMN.keys(); }}) {
+                    LOGGER.info("  " + colorBPMN + " -> " + colorsBPMN.getString(colorBPMN));
+                }
+                LOGGER.info("Logged colorsBPMN");
+                */
+            }
+            LOGGER.info("Fetched runs");
+        }
     }
 
     /**
