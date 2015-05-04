@@ -259,7 +259,7 @@ public class BPMNMinerController extends BaseController {
 
             String defaultProcessName = this.fileOrArchive.split("\\.")[0];
             if(!modelName.getValue().isEmpty()) {
-                defaultProcessName = modelName.getName();
+                defaultProcessName = modelName.getValue();
             }
 
             InputStream inputStream = new ByteArrayInputStream(model.getBytes());
@@ -276,18 +276,6 @@ public class BPMNMinerController extends BaseController {
     public void noEntityException() {
         try {
 
-//            this.bpmnMinerW.detach();
-//            String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
-//                    ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
-//                    ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
-//                    new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
-//
-//            ImportListProcessesController importListProcessesController = new ImportListProcessesController(mainC);
-//
-//            String defaultProcessName = this.fileOrArchive.split("\\.")[0];
-//            InputStream inputStream = new ByteArrayInputStream(model.getBytes());
-//            importListProcessesController.importProcess(this.mainC, importListProcessesController, inputStream, defaultProcessName, this.nativeType, this.fileOrArchive);
-
             this.bpmnMinerW.detach();
             String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
@@ -299,7 +287,7 @@ public class BPMNMinerController extends BaseController {
 
             String defaultProcessName = this.fileOrArchive.split("\\.")[0];
             if(!modelName.getValue().isEmpty()) {
-                defaultProcessName = modelName.getName();
+                defaultProcessName = modelName.getValue();
             }
 
             InputStream inputStream = new ByteArrayInputStream(model.getBytes());

@@ -20,53 +20,73 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.ProcessSummariesType;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.Set;
+
+import org.apromore.model.UserType;
+import org.apromore.portal.common.UserSessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Window;
 
-public class APQLFilterController extends BaseFilterController {
+import org.zkoss.zul.Tree;
 
-    private static final long serialVersionUID = -7879730951994569217L;
+import org.apromore.portal.exception.DialogException;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 
-    public APQLFilterController(MainController mainController) {
-        super(mainController);
+import org.zkoss.zul.Applet;
 
-        Grid filterGrid = ((Grid) Executions.createComponents("macros/filter/apqlFilter.zul", getMainController(), null));
+public class APQLFilterController extends BaseController {
+    private MainController mainController;
 
-        final Textbox apqlQuery = (Textbox) filterGrid.getFellow("apqlQuery");
-        Button submitButton = (Button) filterGrid.getFellow("submitButton");
+    private Window queryWindow;
 
-        submitButton.addEventListener("onClick", new EventListener<Event>() {
+    private Tree processFolderTree;
+
+    private String selText;
+    private UserType user;
+    private Applet applet;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(APQLFilterController.class.getName());
+
+    public APQLFilterController(final MainController mainController) throws SuspendNotAllowedException, InterruptedException, DialogException{
+
+        this.mainController=mainController;
+
+        this.queryWindow = (Window) Executions.createComponents(
+                "macros/filter/apqlFilter.zul", null, null);
+
+        this.queryWindow.setTitle("APQL Query");
+
+        applet=(Applet)queryWindow.getFirstChild().getFirstChild();
+
+        user=UserSessionManager.getCurrentUser();
+        applet.setParam("user",user.getUsername());
+        applet.setParam("idSession",user.getId());
+
+        queryWindow.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
             @Override
-            public void onEvent(final Event event) throws Exception {
-                runAPQL(apqlQuery.getValue());
+            public void onEvent(Event event) throws Exception {
+                if(mainController!=null) {
+                    mainController.loadWorkspace();
+                    applet=null;
+                }
             }
         });
 
-        appendChild(filterGrid);
+        queryWindow.doModal();
     }
 
-
-    private void runAPQL(String query) {
-        try {
-            ProcessSummariesType processSummaries = getService().runAPQLExpression(query);
-            int nbAnswers = processSummaries.getProcessSummary().size();
-            String message = "Search returned " + nbAnswers;
-            if (nbAnswers > 1) {
-                message += " processes.";
-            } else {
-                message += " process.";
-            }
-            getMainController().displayMessage(message);
-            getMainController().displayProcessSummaries(processSummaries, true);
-        } catch (Exception e)  {
-            Messagebox.show(e.getMessage(), "Error", Messagebox.OK, Messagebox.EXCLAMATION);
-        }
+    protected void cancel() {
+        this.queryWindow.detach();
+        applet.detach();
     }
 
 }
