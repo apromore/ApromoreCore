@@ -1,0 +1,15 @@
+# Don't want to commit object files
+**/build/*
+**/target/*
+**/dependency-reduced-pom.xml
+
+# Properties created by the "ant apromore-pre-build" target
+**/apromore.properties
+**/apromore-client.properties
+Apromore-FileStore/src/main/webapp/WEB-INF/web.xml
+
+# Unpacked application server
+Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
+
+# Site-specific configuration
+site.properties

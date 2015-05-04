@@ -137,6 +137,13 @@ mvn install:install-file -Dfile=bpmnminer/ProM6-lib/Uitopia.jar -DgroupId=org.pr
 mvn install:install-file -Dfile=bpmnminer/ProM6-lib/UITopiaResources.jar -DgroupId=org.processmining -DartifactId=uitopiaResources -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.processmining -DartifactId=weka -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
+# BP-diff libraries
+mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jackson -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+
 # In order to compile Quaestio with LiveConnect support, the system plugin.jar
 # needs to be added to the Maven repository.  This will also need to be ported
 # to upload.bat for Windows.

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 call mvn install:install-file -Dfile=jbpt-core.jar -DgroupId=org.jbpt -DartifactId=jbpt-core -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=jbpt-deco.jar -DgroupId=org.jbpt -DartifactId=jbpt-deco -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpstruct.jar -DgroupId=ee.ut -DartifactId=bpstruct -Dversion=0.1.117 -Dpackaging=jar -DgeneratePom=true
@@ -10,12 +9,12 @@ call mvn install:install-file -Dfile=edu.sussex.nlp.jws.beta.11.jar -DgroupId=ed
 call mvn install:install-file -Dfile=lpsolve55j.jar -DgroupId=lpsolve -DartifactId=lpsolve -Dversion=55j -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=jwnl.jar -DgroupId=jwnl -DartifactId=jwnl -Dversion=0.1 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar -DgeneratePom=true
-# PQL
+rem PQL
 call mvn install:install-file -Dfile=pql/themis-0.1.1.jar -DgroupId=org.themis -DartifactId=themis -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=pql/json-20090211.jar -DgroupId=org.json -DartifactId=json -Dversion=20090211 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=pql/jbpt-petri-0.2.393.jar -DgroupId=org.jbpt -DartifactId=jbpt-petri -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=pql/PQL.jar -DgroupId=org.pql -DartifactId=pql -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-# BPMNMiner
+rem BPMNMiner
 call mvn install:install-file -Dfile=bpmnminer/AlphaMiner.jar -DgroupId=org.processmining -DartifactId=alphaminer -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Animation.jar -DgroupId=org.processmining -DartifactId=animation -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/BPMN.jar -DgroupId=org.processmining -DartifactId=bpmn -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -35,7 +34,7 @@ call mvn install:install-file -Dfile=bpmnminer/ProcessTree.jar -DgroupId=org.pro
 call mvn install:install-file -Dfile=bpmnminer/Properties.jar -DgroupId=org.processmining -DartifactId=properties -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/TransitionSystems.jar -DgroupId=org.processmining -DartifactId=transitionsystems -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Widgets.jar -DgroupId=org.processmining -DartifactId=widgets -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#ApacheUtils-lib
+rem ApacheUtils-lib
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/ApacheUtils.jar -DgroupId=org.processmining -DartifactId=apacheutils -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/commons-cli-1.2.jar -DgroupId=org.processmining -DartifactId=commons-cli -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/commons-lang3-3.1.jar -DgroupId=org.processmining -DartifactId=commons-lang3 -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -44,7 +43,7 @@ call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/java-merge-sort-1
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/juniversalchardet-1.0.3.jar -DgroupId=org.processmining -DartifactId=juniversalchardet -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/opencsv-2.4-patched.jar -DgroupId=org.processmining -DartifactId=opencsv -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ApacheUtils-lib/uncommons-maths-1.2.3.jar -DgroupId=org.processmining -DartifactId=uncommons-maths -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#BasicUtils-lib
+rem BasicUtils-lib
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/BasicUtils.jar -DgroupId=org.processmining -DartifactId=basicutils -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/javacsv-2.1.jar -DgroupId=org.processmining -DartifactId=javacsv -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/javailp-1.2a.jar -DgroupId=org.processmining -DartifactId=javailp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -52,28 +51,28 @@ call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/jgrapht-jdk1.6.jar
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/jmathplot.jar -DgroupId=org.processmining -DartifactId=jmathplot -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/trove-3.0.3.jar -DgroupId=org.processmining -DartifactId=trove -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/BasicUtils-lib/ujmp-complete-0.2.5.jar -DgroupId=org.processmining -DartifactId=ujmp-complete -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#Fodina-lib
+rem Fodina-lib
 call mvn install:install-file -Dfile=bpmnminer/Fodina-lib/fodina-2013-01-02.jar -DgroupId=org.processmining -DartifactId=fodina -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Fodina-lib/jgoodies-common-1.2.0.jar -DgroupId=org.processmining -DartifactId=jgoodies-common -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Fodina-lib/jgoodies-forms-1.4.1.jar -DgroupId=org.processmining -DartifactId=jgoodies-forms -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Fodina-lib/kxml2-2.2.3.jar -DgroupId=org.processmining -DartifactId=kxml2 -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Fodina-lib/nikefsmonitor-20130503.jar -DgroupId=org.processmining -DartifactId=nikefsmonitor -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#GraphViz-lib
+rem GraphViz-lib
 call mvn install:install-file -Dfile=bpmnminer/GraphViz-lib/grappa.jar -DgroupId=org.processmining -DartifactId=grappa -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#ILPMiner-lib
+rem ILPMiner-lib
 call mvn install:install-file -Dfile=bpmnminer/ILPMiner-lib/ILPMiner.jar -DgroupId=org.processmining -DartifactId=ilpminer -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ILPMiner-lib/oplall.jar -DgroupId=org.processmining -DartifactId=oplall -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#Log-lib
+rem Log-lib
 call mvn install:install-file -Dfile=bpmnminer/Log-lib/Log.jar -DgroupId=org.processmining -DartifactId=log -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Log-lib/LogAbstractions.jar -DgroupId=org.processmining -DartifactId=logabstractions -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Log-lib/OpenXES.jar -DgroupId=org.deckfour.xes -DartifactId=OpenXES -Dversion=2.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Log-lib/OpenXES-XStream.jar -DgroupId=org.deckfour.xes -DartifactId=OpenXES-Stream -Dversion=2.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Log-lib/Spex.jar -DgroupId=org.processmining -DartifactId=spex -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#PetriNets-lib
+rem PetriNets-lib
 call mvn install:install-file -Dfile=bpmnminer/PetriNets-lib/exp4j-0.3.8.jar -DgroupId=org.processmining -DartifactId=exp4j -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#Widgets-lib
+rem Widgets-lib
 call mvn install:install-file -Dfile=bpmnminer/Widgets-lib/japura-1.12.3.jar -DgroupId=org.processmining -DartifactId=japura -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-#ProM5-lib
+rem ProM5-lib
 call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/att.jar -DgroupId=org.processmining -DartifactId=att -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/commons-discovery-0.5.jar -DgroupId=org.processmining -DartifactId=commons-discovery -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/commons-math-1.1.jar -DgroupId=org.processmining -DartifactId=commons-math -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -97,7 +96,7 @@ call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/WSML-grammar-20070417.j
 call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/wsmo4j-0.6.1.jar -DgroupId=org.processmining -DartifactId=wsmo4j -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM5-lib/wsmo-api-0.6.1.jar -DgroupId=org.processmining -DartifactId=wsmo-api -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
-#ProM6-lib
+rem ProM6-lib
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/bsh-2.0b4.jar -DgroupId=org.processmining -DartifactId=bsh -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/colt.jar -DgroupId=org.processmining -DartifactId=colt -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/FilterableSortableTablePanel.jar -DgroupId=org.processmining -DartifactId=filterableSortableTablePanel -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
@@ -137,8 +136,9 @@ call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/Uitopia.jar -DgroupId=o
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/UITopiaResources.jar -DgroupId=org.processmining -DartifactId=uitopiaResources -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.processmining -DartifactId=weka -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 
-# In order to compile Quaestio with LiveConnect support, the system plugin.jar
-# needs to be added to the Maven repository.  This will also need to be ported
-# to upload.bat for Windows.
-#
-# call mvn install:install-file -Dfile=${JAVA_HOME}/jre/lib/plugin.jar -DgroupId=java -DartifactId=plugin -Dversion=1.7.0 -Dpackaging=jar -DgeneratePom=true
+rem BP-diff libraries
+call mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jackson -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+call mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
