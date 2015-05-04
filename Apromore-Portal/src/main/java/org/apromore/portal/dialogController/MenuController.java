@@ -73,6 +73,7 @@ public class MenuController extends Menubar {
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
+        Menuitem compareMI = (Menuitem) this.menuB.getFellow("compare");
         //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
         //exactMatchingMI.setDisabled(true);
 
@@ -206,7 +207,7 @@ public class MenuController extends Menubar {
         this.mainC.eraseMessage();
 
         int countSelected=0;
-        TabQuery tabQuery=null;
+        TabQuery tabQuery = null;
         LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
 
         for(Tab tab : tabs){
