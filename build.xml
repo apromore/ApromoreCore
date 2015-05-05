@@ -20,7 +20,7 @@
     <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
-    <property name="virgo-url" value="http://apromore.googlecode.com/svn/dev/software/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
+    <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.2.RELEASE.zip"/>
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.2.RELEASE"/>
 
