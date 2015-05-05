@@ -167,9 +167,9 @@
                                 <artifactItem>
                                     <groupId>org.deckfour.xes</groupId>
                                     <artifactId>OpenXES</artifactId>
-                                    <version>1.5</version>
+                                    <version>2.0</version>
                                     <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
-                                    <destFileName>OpenXES-1.5.jar</destFileName>
+                                    <destFileName>OpenXES-2.0.jar</destFileName>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>commons-fileupload</groupId>
