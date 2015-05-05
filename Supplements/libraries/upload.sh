@@ -135,7 +135,8 @@ mvn install:install-file -Dfile=bpmnminer/ProM6-lib/slickerbox1.0rc1.jar -Dgroup
 mvn install:install-file -Dfile=bpmnminer/ProM6-lib/TableLayout-20050920.jar -DgroupId=org.processmining -DartifactId=tableLayout -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=bpmnminer/ProM6-lib/Uitopia.jar -DgroupId=org.processmining -DartifactId=uitopia -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=bpmnminer/ProM6-lib/UITopiaResources.jar -DgroupId=org.processmining -DartifactId=uitopiaResources -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.processmining -DartifactId=weka -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=bpmnminer/com.springsource.org.apache.tools.ant-1.8.3.jar -DgroupId=org.processmining -DartifactId=weka -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.apache.ant -DartifactId=com.springsource.org.apache.tools.ant -Dversion=1.8.3 -Dpackaging=jar -DgeneratePom=true
 
 # BP-diff libraries
 mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
