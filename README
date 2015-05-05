@@ -19,8 +19,7 @@ MySQL is the default db that we support but we do have plugins for Postgres and 
 application will need to be told about the change as well as the Assembely project. Also we only have sql scripts to create the database
 for H2 and MySQL.
 
-Check out the Apromore source tree from the Subversion repository at http://code.google.com/p/apromore/source/checkout
-
+Check out the Apromore source tree from the github repository at https://github.com/apromore/ApromoreCode.git
 
 CONFIGURATION
 =============
