@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.antlr</groupId>
+    <artifactId>antlr4-runtime-osgi</artifactId>
+    <version>4.3</version>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>artifactId=org.abego.treelayout.core|antlr4-annotations|antlr4-runtime</Embed-Dependency>
+                        <Embed-Transitive>false</Embed-Transitive>
+                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>Antlr4 Runtime Library</Bundle-Name>
+                        <Bundle-SymbolicName>org.antlr.antlr4-osgi</Bundle-SymbolicName>
+                        <Export-Package>
+                            org.antlr.v4.runtime,
+                            org.antlr.v4.runtime.atn,
+                            org.antlr.v4.runtime.dfa,
+                            org.antlr.v4.runtime.misc,
+                            org.antlr.v4.runtime.tree,
+                            org.antlr.v4.runtime.tree.gui,
+                            org.antlr.v4.runtime.tree.pattern,
+                            org.antlr.v4.runtime.tree.xpath
+                        </Export-Package>
+                        <Import-Package></Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.abego.treelayout</groupId>
+            <artifactId>org.abego.treelayout.core</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-annotations</artifactId>
+            <version>4.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.3</version>
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--&lt;!&ndash;  UI Related Dependency &ndash;&gt;-->
+                    <!--<artifactId>org.abego.treelayout.core</artifactId>-->
+                    <!--<groupId>org.abego.treelayout</groupId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        </dependency>
+    </dependencies>
+</project>
