@@ -55,14 +55,14 @@
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>
 
-        <!--&lt;!&ndash; OSGI &ndash;&gt;-->
-        <!--<module>Apromore-OSGI-Bundles/antlr4</module>-->
-        <!--<module>Apromore-OSGI-Bundles/ini4j</module>-->
-        <!--<module>Apromore-OSGI-Bundles/postgres</module>-->
-        <!--<module>Apromore-OSGI-Bundles/irthemis</module>-->
-        <!--<module>Apromore-OSGI-Bundles/json</module>-->
-        <!--<module>Apromore-OSGI-Bundles/jbpt-petri</module>-->
-        <!--<module>Apromore-OSGI-Bundles/pql</module>-->
+        <!-- OSGI -->
+        <module>Apromore-OSGI-Bundles/antlr4</module>
+        <module>Apromore-OSGI-Bundles/ini4j</module>
+        <module>Apromore-OSGI-Bundles/postgres</module>
+        <module>Apromore-OSGI-Bundles/irthemis</module>
+        <module>Apromore-OSGI-Bundles/json</module>
+        <module>Apromore-OSGI-Bundles/jbpt-petri</module>
+        <module>Apromore-OSGI-Bundles/pql</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>
@@ -300,12 +300,6 @@
                 <version>${pax.runner.version}</version>
             </dependency>
 
-            <!-- BPMNMiner -->
-            <!--<dependency>-->
-                <!--<groupId>org.apromore</groupId>-->
-                <!--<artifactId>bpmnminer-osgi</artifactId>-->
-                <!--<version>1.0</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>log-osgi</artifactId>
@@ -1378,7 +1372,7 @@
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/release</url>
-        </pluginRepository>
+        </pluginR     </plu>
     </pluginRepositories>
 
     <build>
