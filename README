@@ -13,7 +13,7 @@ Ensure the following software is installed:
 - Maven 3.1.1
 - Ant 1.9.2
 - MySQL 5.6.x
-- Subversion 1.6
+- Git 2.3.5
 
 MySQL is the default db that we support but we do have plugins for Postgres and Oracle but some extra setup will be required. The manager
 application will need to be told about the change as well as the Assembely project. Also we only have sql scripts to create the database
