@@ -136,8 +136,7 @@ call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/TableLayout-20050920.ja
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/Uitopia.jar -DgroupId=org.processmining -DartifactId=uitopia -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/UITopiaResources.jar -DgroupId=org.processmining -DartifactId=uitopiaResources -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.processmining -DartifactId=weka -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-call mvn install:install-file -Dfile=bpmnminer/ProM6-lib/weka.jar -DgroupId=org.apache.ant -DartifactId=com.springsource.org.apache.tools.ant -Dversion=1.8.3 -Dpackaging=jar -DgeneratePom=true
-
+call mvn install:install-file -Dfile=bpmnminer/com.springsource.org.apache.tools.ant-1.8.3.jar -DgroupId=org.apache.ant -DartifactId=com.springsource.org.apache.tools.ant -Dversion=1.8.3 -Dpackaging=jar -DgeneratePom=true
 rem BP-diff libraries
 call mvn install:install-file -Dfile=diffbp-1.0.jar -DgroupId=diffbp -DartifactId=diffbp -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jackson -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
