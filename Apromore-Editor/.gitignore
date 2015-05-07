@@ -1,3 +1,5 @@
 editor/buildApps/bin
+platform/conf/classpath/configuration.properties
+platform/WebContent/WEB-INF/lib/OpenXES-2.0.jar
 tests/out/
 tests/reports/
