@@ -7,6 +7,8 @@
 **/apromore.properties
 **/apromore-client.properties
 Apromore-FileStore/src/main/webapp/WEB-INF/web.xml
+Apromore-Manager/src/main/resources/META-INF/spring/managerContext-services.xml
+Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml
 
 # Unpacked application server
 Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
