@@ -117,6 +117,26 @@
                 <filter token="SITE_PORT" value="${site.port}"/>
             </filterset>
         </copy>
+        <copy file="Apromore-Manager/src/main/resources/META-INF/spring/managerContext-services.xml_template"
+            toFile="Apromore-Manager/src/main/resources/META-INF/spring/managerContext-services.xml"
+            overwrite="true">
+            <filterset>
+                <filter token="LOLA_DIR" value="${lola.dir}"/>
+                <filter token="MYSQL_URL" value="${mysql.url}"/>
+                <filter token="MYSQL_USER" value="${mysql.user}"/>
+                <filter token="MYSQL_PASSWORD" value="${mysql.password}"/>
+            </filterset>
+        </copy>
+        <copy file="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml_template"
+            toFile="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml"
+            overwrite="true">
+            <filterset>
+                <filter token="LOLA_DIR" value="${lola.dir}"/>
+                <filter token="MYSQL_URL" value="${mysql.url}"/>
+                <filter token="MYSQL_USER" value="${mysql.user}"/>
+                <filter token="MYSQL_PASSWORD" value="${mysql.password}"/>
+            </filterset>
+        </copy>
         <copy file="Apromore-Portal/src/main/resources/apromore.properties_template"
             tofile="Apromore-Portal/src/main/resources/apromore.properties"
             overwrite="true">
