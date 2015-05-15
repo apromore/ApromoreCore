@@ -186,6 +186,21 @@
 
         <!-- BPMNMiner -->
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>bpmn</artifactId>
             <version>1.0</version>
@@ -222,14 +237,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Clients -->
