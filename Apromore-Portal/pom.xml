@@ -94,6 +94,14 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
+                                    <groupId>com.apql</groupId>
+                                    <artifactId>apql</artifactId>
+                                    <version>1.0</version>
+                                    <!--<classifier>jar-with-dependencies</classifier>-->
+                                    <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
+                                    <destFileName>APQL.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>com.processconfiguration</groupId>
                                     <artifactId>cmapper</artifactId>
                                     <version>2.0</version>

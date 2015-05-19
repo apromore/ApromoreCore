@@ -30,7 +30,6 @@ import javax.inject.Inject;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by corno on 22/07/2014.
@@ -60,46 +59,17 @@ public class PQLServiceImpl implements PQLService {
     private ProcessModelVersionRepository processModelVersionRepository;
 
     private String parameterCategory = Canoniser.DECANONISE_PARAMETER;
-//    private MyIndex index;
 
     private final Set<Double> indexedLabelSimilarities = new HashSet<Double>();
-//    private final double defaultLabelSimilarity = 0.75;
-//    private static final String OS = System.getProperty("os.name").toLowerCase();
-
-//    private LoLAModelChecker lolaModelChecker;
-//    private LabelManagerVSM labelMngr;
-//    private PQLBasicPredicates basicPredicatesLoLA;
-//    private PQLBasicPredicatesMySQL basicPredicatesMySQL;
-//    private PQLMySQL pqlMySQL;
-//    private PetriNetMySQL pnMySQL;
-//    private IThreeValuedLogic logic;
-
-//    private final String mysqlURL = "jdbc:mysql://127.0.0.1:3306/mysql";
-//    private final String mysqlUser = "root";
-//    private final String mysqlPassword = "MAcri";
-
-//    private final String pgHost = "localhost";
-//    private final String pgName = "vsm";
-//    private final String pgUser = "postgres";
-//    private final String pgPassword = "password";
-
-//    private IPQLAPI pqlAPI;
 
     private LolaDirBean lolaDir;
     private MySqlBeanImpl mySqlBean;
     private PGBeanImpl pgBean;
-    private LinkedList<Thread> queue;
 
-    private Map<PQLTask,PQLTask> map;
+    private Map<PQLTask,PQLTask> map = new HashMap<>();
     private PqlBeanImpl pqlBean;
-//    private Lock lock=new ReentrantLock();
-//    private Condition condition=lock.newCondition();
-    private AtomicInteger count=new AtomicInteger(0);
     private int numberOfCore = Runtime.getRuntime().availableProcessors();
     private Semaphore sem= new Semaphore(numberOfCore-1);
-
-//    public PQLServiceImpl() {
-//    }
 
     @Inject
     public PQLServiceImpl(LolaDirImpl lolaDir, MySqlBeanImpl mySqlBean, PGBeanImpl pgBean, PqlBeanImpl pqlBean) {
@@ -110,18 +80,12 @@ public class PQLServiceImpl implements PQLService {
         indexedLabelSimilarities.add(new Double(0.5));
         indexedLabelSimilarities.add(new Double(0.75));
         indexedLabelSimilarities.add(new Double(1.0));
-        queue=new LinkedList<>();
     }
 
 
 
     @Override
     public void indexAllModels() {
-        for(Canoniser canoniser : canoniserProviderService.listAll()){
-            if(canoniser.getNativeType().startsWith("PNML"))
-                PNMLCanoniser=canoniser.getNativeType();
-        }
-
         LinkedList<FolderTreeNode> root = null;
         LinkedList<GroupProcess> processes = new LinkedList<>();
 
@@ -157,16 +121,13 @@ public class PQLServiceImpl implements PQLService {
         Process process=pmv.getProcessBranch().getProcess();
         Version version2=new Version(pmv.getVersionNumber());
         Set<RequestParameterType<?>> canoniserProperties=readPluginProperties(parameterCategory);
-        for(Canoniser canoniser : canoniserProviderService.listAll()){
-            if(canoniser.getNativeType().startsWith("PNML"))
-                PNMLCanoniser=canoniser.getNativeType();
-        }
-        PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean);
+        PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled());
         IPQLAPI api=pqlBean.getApi();
 
         try {
 //            LOGGER.error("PQLSERVICE: Dati proc "+processname+" "+processId+" "+branch+" "+version+" "+PNMLCanoniser+" nulla false"+canoniserProperties);
-            ExportFormatResultType exportResult = this.processService.exportProcess(process.getName(), process.getId(), pmv.getProcessBranch().getBranchName(), version2, PNMLCanoniser, PNMLCanoniser, false, canoniserProperties);
+            LOGGER.info("indexOneModel name=" + process.getName() + " id=" + process.getId() + " branch=" + pmv.getProcessBranch().getBranchName() + " version=" + version2 + " canoniser=" + getPNMLCanoniser() + " canoniserProperties=" + canoniserProperties);
+            ExportFormatResultType exportResult = this.processService.exportProcess(process.getName(), process.getId(), pmv.getProcessBranch().getBranchName(), version2, getPNMLCanoniser(), null, false, canoniserProperties);
 
             InputStream input = exportResult.getNative().getInputStream();
 //            InputStream input2= exportResult.getNative().getInputStream();
@@ -212,7 +173,7 @@ public class PQLServiceImpl implements PQLService {
         Version version=new Version(pmv.getVersionNumber());
         Process process = pmv.getProcessBranch().getProcess();
         try {
-            PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean);
+            PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled());
             IPQLAPI api=pqlBean.getApi();
             LOGGER.info("-----------DELETE: " + pmv.getProcessBranch().getProcess().getId()+"/"+version.toString()+"/"+pmv.getProcessBranch().getBranchName());
 
@@ -226,47 +187,62 @@ public class PQLServiceImpl implements PQLService {
 
     @Override
     public void update(User user, NativeType nativeType,final ProcessModelVersion pmv, final boolean delete) {
-//            LOGGER.error("-----------lock: " + pmv.getProcessBranch().getProcess().getName());
-//            lock.lock();
+
+            // Don't do anything if PQL indexing has been disabled
+            if (!pqlBean.isIndexingEnabled()) {
+                return;
+            }
 
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-//                    while(count.get() > numberOfCore - 1) {
-//                            try {
-//                                PQLServiceImpl.this.wait();
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                    }
+                    String name = pmv.getProcessBranch().getProcess().getName();
+		    LOGGER.info("Updating thread started for " + name);
                     try {
                         PQLServiceImpl.this.sem.acquire();
-                        if (!delete) {
-                            indexOneModel(pmv);
-                        } else {
-//                            LOGGER.error("--------------------------------------------------------DELETED: " + pmv.getProcessBranch().getProcess().getName());
-                            deleteModel(pmv);
+                        try {
+                            if (delete) {
+                                LOGGER.info("Deleting " + name);
+                                deleteModel(pmv);
+                                LOGGER.info("Deleted " + name);
+                            } else {
+                                LOGGER.info("Indexing " + name);
+                                indexOneModel(pmv);
+                                LOGGER.info("Indexed " + name);
+                            }
+
+		          LOGGER.info("Updating thread completed for " + name);
+                        } catch (Throwable e) {
+                            LOGGER.error("Updating thread failed for " + name, e);
+                        } finally {
+                            PQLServiceImpl.this.sem.release();
                         }
-
-                        count.decrementAndGet();
-                        queue.remove(Thread.currentThread());
-//                        LOGGER.error("-----------COUNT: " + count.get() + " ");
-                        PQLServiceImpl.this.sem.release();
-                    }catch(InterruptedException ie){
-
+                    } catch(InterruptedException ie) {
+		        LOGGER.error("Updating thread interrupted for " + pmv.getProcessBranch().getProcess().getName(), ie);
                     }
+		    LOGGER.info("Updating thread terminated for " + pmv.getProcessBranch().getProcess().getName());
                 }
             };
-            Thread thread = new Thread(run);
-//            queue.addLast(thread);
-//            count.incrementAndGet();
-//            LOGGER.error("-----------COUNTBEFOREWHILE: " + count.get()+" ");
+            //Thread thread = new Thread(run);
+            //thread.start();
+            run.run();
+    }
 
-//            if(count.get() > numberOfCore - 1) {
-//                LOGGER.error("-----------if: " + count.get()+" ");
-//                condition.await();
-//            }
-            thread.start();
+    private String getPNMLCanoniser() {
+        if (PNMLCanoniser != null) {
+            LOGGER.info("RECALLED " + PNMLCanoniser);
+            return PNMLCanoniser;
+        }
+
+        for(Canoniser canoniser : canoniserProviderService.listAll()){
+            if(canoniser.getNativeType().startsWith("PNML")) {
+                PNMLCanoniser=canoniser.getNativeType();
+                LOGGER.info("INITIALIZED " + PNMLCanoniser);
+                return PNMLCanoniser;
+            }
+        }
+
+        throw new RuntimeException("Unable to find a canoniser for PNML");
     }
 
     private Set<RequestParameterType<?>> readPluginProperties(String parameterCategory) {
@@ -311,7 +287,7 @@ public class PQLServiceImpl implements PQLService {
                             version = new Version(vst.getVersionNumber());
                             if (version != null && canoniserProperties != null) {
                                 LOGGER.info("PROCESS: " + procName + " " + procId + " " + vst.getName() + " " + version.toString() + " " + nativeType);
-                                ExportFormatResultType exportResult = this.processService.exportProcess(procName, procId, vst.getName(), version, PNMLCanoniser, annotationName, withAnnotation, canoniserProperties);
+                                ExportFormatResultType exportResult = this.processService.exportProcess(procName, procId, vst.getName(), version, getPNMLCanoniser(), annotationName, withAnnotation, canoniserProperties);
                                 DataHandler data = exportResult.getNative();
 
                                 InputStream input = data.getInputStream();
@@ -350,20 +326,20 @@ public class PQLServiceImpl implements PQLService {
         Set<String> idNets=new HashSet<>();
         List<String> results=new LinkedList<>();
         IPQLAPI api=pqlBean.getApi();
-//        LOGGER.error("-----------PQLAPI: " + api);
+        LOGGER.error("-----------PQLAPI: " + api);
         try {
             api.prepareQuery(queryPQL);
             if (api.getLastNumberOfParseErrors() != 0) {
                 results = api.getLastParseErrorMessages();
             } else {//risultati
-//                LOGGER.error("-----------IDS PQLServiceImpl" + IDs);
+                LOGGER.error("-----------IDS PQLServiceImpl" + IDs);
                 map=api.getLastQuery().getTaskMap();
                 LinkedList<PQLTask> tasks=new LinkedList<>(map.values());
 
                 idNets=new HashSet<>(IDs);
                 idNets=api.checkLastQuery(idNets);
                 results.addAll(idNets);
-//                LOGGER.error("-----------QUERYAPQL ESATTA "+results);
+                LOGGER.error("-----------QUERYAPQL ESATTA "+results);
             }
 
         } catch (Exception e) {
@@ -384,7 +360,9 @@ public class PQLServiceImpl implements PQLService {
             detail= new Detail();
             detail.setLabelOne(task.getLabel());
             detail.setSimilarityLabelOne(""+task.getSimilarity());
-            detail.getDetail().addAll(taskTwo.getSimilarLabels());
+            if (taskTwo.getSimilarLabels() != null) {
+                detail.getDetail().addAll(taskTwo.getSimilarLabels());
+            }
             details.add(detail);
         }
         return details;

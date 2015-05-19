@@ -1,8 +1,0 @@
-# Application info
-Host = http://@SITE_HOST@:@SITE_PORT@/
-OryxEndPoint_xpdl = editor/openFromApromore?
-OryxEndPoint_epml = editor/openFromApromore?
-
-# Version and build info
-version.number=2.1.165-604
-version.builddate=12/11/2013
