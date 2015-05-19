@@ -6,7 +6,7 @@ import org.jbpt.petri.persist.PetriNetMySQL;
 import org.pql.api.IPQLAPI;
 import org.pql.api.PQLAPI;
 import org.pql.core.PQLBasicPredicates;
-import org.pql.label.LabelManagerVSM;
+import org.pql.label.LabelManagerLevenshtein;
 import org.pql.logic.IThreeValuedLogic;
 import org.pql.logic.KleeneLogic;
 import org.pql.mc.LoLAModelChecker;
@@ -29,7 +29,7 @@ public class PqlBeanImpl implements PqlBean {
     private final double defaultLabelSimilarity = 0.75;
 
     private LoLAModelChecker lolaModelChecker;
-    private LabelManagerVSM labelMngr;
+    private LabelManagerLevenshtein labelMngr;
     private PQLBasicPredicates basicPredicatesLoLA;
     private PQLBasicPredicatesMySQL basicPredicatesMySQL;
     private PQLMySQL pqlMySQL;
@@ -41,15 +41,17 @@ public class PqlBeanImpl implements PqlBean {
     private LolaDirBean lolaDir;
     private MySqlBeanImpl mySqlBean;
     private PGBeanImpl pgBean;
+    private boolean indexingEnabled;
 
 //    public PqlBeanImpl(){
 //    }
 
     @Inject
-    public PqlBeanImpl(LolaDirImpl lolaDir, MySqlBeanImpl mySqlBean, PGBeanImpl pgBean){
-        this.lolaDir = lolaDir;
-        this.mySqlBean=mySqlBean;
-        this.pgBean=pgBean;
+    public PqlBeanImpl(LolaDirImpl lolaDir, MySqlBeanImpl mySqlBean, PGBeanImpl pgBean, boolean indexingEnabled){
+        this.lolaDir         = lolaDir;
+        this.mySqlBean       = mySqlBean;
+        this.pgBean          = pgBean;
+        this.indexingEnabled = indexingEnabled;
 
         indexedLabelSimilarities.add(new Double(0.5));
         indexedLabelSimilarities.add(new Double(0.75));
@@ -62,9 +64,7 @@ public class PqlBeanImpl implements PqlBean {
             logic = new KleeneLogic();
 
             lolaModelChecker = new LoLAModelChecker(lolaDir.getLolaDir());
-            labelMngr = new LabelManagerVSM(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(),
-                    pgBean.getHost(), pgBean.getName(), pgBean.getUser(), pgBean.getPassword(), defaultLabelSimilarity,
-                    indexedLabelSimilarities);
+            labelMngr = new LabelManagerLevenshtein(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(), defaultLabelSimilarity, indexedLabelSimilarities);
             pnMySQL = new PetriNetMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
 
             basicPredicatesMySQL = new PQLBasicPredicatesMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(), labelMngr);
@@ -80,4 +80,8 @@ public class PqlBeanImpl implements PqlBean {
         return pqlAPI;
     }
 
+    @Override
+    public boolean isIndexingEnabled() {
+        return indexingEnabled;
+    }
 }

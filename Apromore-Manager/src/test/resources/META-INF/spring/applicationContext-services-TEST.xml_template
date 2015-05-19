@@ -60,12 +60,12 @@
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
     <bean id="lolaDir" class="org.apromore.service.impl.LolaDirImpl">
-        <constructor-arg value="@LOLA_DIR@"/>
+        <constructor-arg value="@PQL_LOLA_DIR@"/>
     </bean>
     <bean id="mysqlbean" class="org.apromore.service.impl.MySqlBeanImpl">
-        <constructor-arg value="@MYSQL_URL@"/>
-        <constructor-arg value="@MYSQL_USER@"/>
-        <constructor-arg value="@MYSQL_PASSWORD@"/>
+        <constructor-arg value="@PQL_MYSQL_URL@"/>
+        <constructor-arg value="@PQL_MYSQL_USER@"/>
+        <constructor-arg value="@PQL_MYSQL_PASSWORD@"/>
     </bean>
     <bean id="pgbean" class="org.apromore.service.impl.PGBeanImpl">
         <!--
@@ -83,6 +83,7 @@
         <constructor-arg ref="lolaDir"/>
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
+        <constructor-arg type="boolean" value="false"/>
     </bean>
 
 

@@ -317,6 +317,8 @@ public class ManagerServiceClient implements ManagerService {
         GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
         msg.setUserId(userId);
         msg.setFolderId(folderId);
+        msg.setPageIndex(0);  // TODO: implement paging for query result sets
+        msg.setPageSize(200);  // TODO: implement paging for query result sets
 
         JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
 

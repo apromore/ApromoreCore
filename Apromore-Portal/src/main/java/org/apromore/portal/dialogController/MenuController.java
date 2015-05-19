@@ -68,7 +68,7 @@ public class MenuController extends Menubar {
         pasteMI.setDisabled(true);
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
-//        Menuitem query = (Menuitem) this.menuB.getFellow("queryAPQL");
+        Menuitem query = (Menuitem) this.menuB.getFellow("queryPQL");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
         Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
@@ -143,6 +143,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 compareSimilarProcesses();
+            }
+        });
+        query.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createQuery();
             }
         });
         mergeMI.addEventListener("onClick", new EventListener<Event>() {
@@ -291,6 +297,17 @@ public class MenuController extends Menubar {
         default:
             this.mainC.displayMessage("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
         }
+    }
+
+    /**
+     * Open a dialog prompting for a PQL query to execute.
+     *
+     * @throws InterruptedException
+     * @throws DialogException
+     */
+    protected void createQuery() throws InterruptedException, DialogException {
+        this.mainC.eraseMessage();
+        new PQLFilterController(this.mainC);
     }
 
     protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains, ParseException {

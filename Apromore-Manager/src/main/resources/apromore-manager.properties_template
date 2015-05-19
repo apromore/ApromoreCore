@@ -1,0 +1,27 @@
+# Application info
+Host = http://@SITE_HOST@:@SITE_PORT@/
+OryxEndPoint_xpdl = editor/openFromApromore?
+OryxEndPoint_epml = editor/openFromApromore?
+
+# Version and build info
+version.number=2.1.165-604
+version.builddate=12/11/2013
+
+# Database Driver details
+jdbc.driver=@JDBC_DRIVER@
+jdbc.url=@JDBC_URL@
+jdbc.username=@JDBC_USERNAME@
+jdbc.password=@JDBC_PASSWORD@
+
+# JPA details
+jpa.database=@JPA_DATABASE@
+jpa.databasePlatform=@JPA_DATABASE_PLATFORM@
+jpa.showSql=@JPA_SHOW_SQL@
+jpa.generateDDL=@JPA_GENERATE_DDL@
+
+# PQL details
+pql.enableIndexing = @PQL_ENABLE_INDEXING@
+pql.lola.dir       = @PQL_LOLA_DIR@
+pql.mysql.url      = @PQL_MYSQL_URL@
+pql.mysql.user     = @PQL_MYSQL_USER@
+pql.mysql.password = @PQL_MYSQL_PASSWORD@

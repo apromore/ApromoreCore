@@ -22,7 +22,7 @@ package org.apromore.portal.common;
 
 public final class Constants {
     // repository portal details
-    public static final String PROPERTY_FILE = "apromore.properties";
+    public static final String PROPERTY_FILE = "apromore-portal.properties";
 
     // max number of searches kept for users
     public static final Integer maxSearches = 10;

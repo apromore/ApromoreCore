@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SizeEvent;
 import org.zkoss.zul.Window;
 
 import org.zkoss.zul.Tree;
@@ -43,7 +44,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 
 import org.zkoss.zul.Applet;
 
-public class APQLFilterController extends BaseController {
+public class PQLFilterController extends BaseController {
     private MainController mainController;
 
     private Window queryWindow;
@@ -51,23 +52,22 @@ public class APQLFilterController extends BaseController {
     private Tree processFolderTree;
 
     private String selText;
-    private UserType user;
     private Applet applet;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(APQLFilterController.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PQLFilterController.class.getName());
 
-    public APQLFilterController(final MainController mainController) throws SuspendNotAllowedException, InterruptedException, DialogException{
+    public PQLFilterController(final MainController mainController) throws SuspendNotAllowedException, InterruptedException, DialogException{
 
         this.mainController=mainController;
 
         this.queryWindow = (Window) Executions.createComponents(
-                "macros/filter/apqlFilter.zul", null, null);
+                "macros/filter/pqlFilter.zul", null, null);
 
-        this.queryWindow.setTitle("APQL Query");
+        this.queryWindow.setTitle("PQL Query");
 
         applet=(Applet)queryWindow.getFirstChild().getFirstChild();
 
-        user=UserSessionManager.getCurrentUser();
+        UserType user=UserSessionManager.getCurrentUser();
         applet.setParam("user",user.getUsername());
         applet.setParam("idSession",user.getId());
 
@@ -78,6 +78,14 @@ public class APQLFilterController extends BaseController {
                     mainController.loadWorkspace();
                     applet=null;
                 }
+            }
+        });
+
+        queryWindow.addEventListener(Events.ON_SIZE, new EventListener<SizeEvent>() {
+            @Override
+            public void onEvent(SizeEvent sizeEvent) throws Exception {
+                applet.setWidth(sizeEvent.getWidth());
+                applet.setHeight(sizeEvent.getHeight());
             }
         });
 
