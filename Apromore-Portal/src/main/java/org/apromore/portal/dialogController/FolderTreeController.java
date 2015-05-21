@@ -23,7 +23,6 @@ package org.apromore.portal.dialogController;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.MiscFolderTreeRenderer;
-import org.apromore.portal.common.SecurityFolderTreeRenderer;
 import org.apromore.portal.exception.DialogException;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;

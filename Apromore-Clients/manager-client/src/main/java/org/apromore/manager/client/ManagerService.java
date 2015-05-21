@@ -84,8 +84,6 @@ public interface ManagerService {
 
     List<GroupAccessType> getProcessGroups(int processId);
 
-    ProcessSummariesType getProcesses(String userId, int folderId);
-
     ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
 
     void createFolder(String userId, String folderName, int parentFolderId);

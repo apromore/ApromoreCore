@@ -66,26 +66,30 @@ public class FolderTree {
                     node.add(buildTree(childNode, folder.getFolders(), folder.getId(), set));
                 } else {
                     node.add(childNode);
-                    if (loadAll) {
-                        ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folder.getId());
-                        for (ProcessSummaryType process : processes.getProcessSummary()) {
-                            childNode.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
-                        }
-                    }
+                    addProcesses(childNode, folder.getId());
                 }
             }else {
                 node.add(new FolderTreeNode((ProcessSummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 
-        if (loadAll) {
-            ProcessSummariesType processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId);
-            for (ProcessSummaryType process : processes.getProcessSummary()) {
-                node.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
-            }
-        }
+        addProcesses(node, folderId);
 
         return node;
+    }
+
+    private void addProcesses(FolderTreeNode node, int folderId) {
+        if (loadAll) {
+            final int PAGE_SIZE = 100;
+            int page = 0;
+            ProcessSummariesType processes;
+            do {
+                processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
+                for (ProcessSummaryType process : processes.getProcessSummary()) {
+                    node.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+                }
+            } while(PAGE_SIZE * page++ + processes.getProcessSummary().size() < processes.getProcessCount());
+        }
     }
 
     public FolderTreeNode getRoot() {
