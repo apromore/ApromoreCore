@@ -97,17 +97,33 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
     public void setTabpanel(List<ResultPQL> processes){
         Tabpanel newTabpanel = new Tabpanel();
         newTabpanel.setStyle("overflow:auto");
+
         Listbox list = new Listbox();
         list.setMultiple(true);
 
         Listhead head = new Listhead();
         head.setSizable(true);
+
         Listheader imgHeader=new Listheader();
         imgHeader.setWidth("25px");
         imgHeader.setVisible(true);
         head.appendChild(imgHeader);
+
         head.appendChild(builtChild("1", "Name", null, "auto", null));
-        head.appendChild(builtChild("1", "ID", null, "auto", null));
+
+        Listheader idListHeader = builtChild("1", "ID", null, "auto", null);
+        idListHeader.setSortAscending(new java.util.Comparator<TabListitem>() {
+            public int compare(TabListitem o1, TabListitem o2) {
+                return o1.getProcessSummaryType().getId().intValue() - o2.getProcessSummaryType().getId().intValue();
+            }
+	});
+        idListHeader.setSortDescending(new java.util.Comparator<TabListitem>() {
+            public int compare(TabListitem o1, TabListitem o2) {
+                return o2.getProcessSummaryType().getId().intValue() - o1.getProcessSummaryType().getId().intValue();
+            }
+	});
+        head.appendChild(idListHeader);
+
         head.appendChild(builtChild("1", "Original Language", null, "auto", null));
         head.appendChild(builtChild("1", "Domain", null, "auto", null));
         head.appendChild(builtChild("1", "Ranking", null, "auto", null));
