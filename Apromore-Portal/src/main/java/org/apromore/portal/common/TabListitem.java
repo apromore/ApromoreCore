@@ -76,7 +76,7 @@ public class TabListitem extends Listitem {
             if (attributesToShow.get(0))
                 name.setLabel(pst.getName());
             if (attributesToShow.get(1))
-                id.setLabel(pst.getId() + "");
+                id.setLabel(pst.getId().toString());
             if (attributesToShow.get(2))
                 nativeType.setLabel(pst.getOriginalNativeType());
             if (attributesToShow.get(3))
