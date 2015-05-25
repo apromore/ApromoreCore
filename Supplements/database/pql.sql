@@ -27,7 +27,7 @@ CREATE TABLE `jbpt_labels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `label` (`label`(5))
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 delimiter //
 CREATE TRIGGER `jbpt_labels_before_del_tr` BEFORE DELETE ON `jbpt_labels`
@@ -37,7 +37,6 @@ BEGIN
   DELETE FROM pql_tasks WHERE pql_tasks.label_id=OLD.id;
 END;//
 delimiter ;
-
 #
 # Structure for the `jbpt_petri_nets` table : 
 #
@@ -53,7 +52,7 @@ CREATE TABLE `jbpt_petri_nets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`(20)),
   UNIQUE KEY `identifier` (`identifier`(20))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 delimiter //
 CREATE TRIGGER `jbpt_petri_nets_before_del_tr` BEFORE DELETE ON `jbpt_petri_nets`
@@ -63,6 +62,8 @@ BEGIN
   DELETE FROM pql_always_occurs WHERE pql_always_occurs.net_id=OLD.id;
   DELETE FROM pql_can_conflict WHERE pql_can_conflict.net_id=OLD.id;
   DELETE FROM pql_can_cooccur WHERE pql_can_cooccur.net_id=OLD.id;
+  DELETE FROM pql_total_causal WHERE pql_total_causal.net_id=OLD.id;
+  DELETE FROM pql_total_concur WHERE pql_total_concur.net_id=OLD.id;
 
   DELETE FROM jbpt_petri_nodes WHERE jbpt_petri_nodes.net_id=OLD.id;
 END;//
@@ -87,7 +88,7 @@ CREATE TABLE `jbpt_petri_nodes` (
   KEY `label_id` (`label_id`),
   CONSTRAINT `jbpt_nodes_fk` FOREIGN KEY (`net_id`) REFERENCES `jbpt_petri_nets` (`id`),
   CONSTRAINT `jbpt_petri_nodes_fk` FOREIGN KEY (`label_id`) REFERENCES `jbpt_labels` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 delimiter //
 CREATE TRIGGER `jbpt_petri_nodes_before_del_tr` BEFORE DELETE ON `jbpt_petri_nodes`
@@ -144,7 +145,7 @@ CREATE TABLE `pql_tasks` (
   UNIQUE KEY `label_id_and_sim` (`label_id`,`similarity`),
   KEY `label_id` (`label_id`),
   CONSTRAINT `pql_tasks_fk` FOREIGN KEY (`label_id`) REFERENCES `jbpt_labels` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 delimiter //
 CREATE TRIGGER `pql_tasks_before_del_tr` BEFORE DELETE ON `pql_tasks`
@@ -241,6 +242,46 @@ CREATE TABLE `pql_tasks_sim` (
   KEY `label_id` (`label_id`),
   CONSTRAINT `pql_tasks_sim_fk_label_id` FOREIGN KEY (`label_id`) REFERENCES `jbpt_labels` (`id`),
   CONSTRAINT `pql_tasks_sim_fk_task_id` FOREIGN KEY (`task_id`) REFERENCES `pql_tasks` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Structure for the `pql_total_causal` table : 
+#
+
+DROP TABLE IF EXISTS `pql_total_causal`;
+
+CREATE TABLE `pql_total_causal` (
+  `net_id` int(11) unsigned NOT NULL,
+  `taskA_id` int(10) unsigned NOT NULL,
+  `taskB_id` int(10) unsigned NOT NULL,
+  `value` tinyint(1) NOT NULL,
+  PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
+  KEY `net_id` (`net_id`),
+  KEY `taskA_id` (`taskA_id`),
+  KEY `taskB_id` (`taskB_id`),
+  CONSTRAINT `pql_total_causal_fk` FOREIGN KEY (`net_id`) REFERENCES `jbpt_petri_nets` (`id`),
+  CONSTRAINT `pql_total_causal_fk1` FOREIGN KEY (`taskA_id`) REFERENCES `pql_tasks` (`id`),
+  CONSTRAINT `pql_total_causal_fk2` FOREIGN KEY (`taskB_id`) REFERENCES `pql_tasks` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Structure for the `pql_total_concur` table : 
+#
+
+DROP TABLE IF EXISTS `pql_total_concur`;
+
+CREATE TABLE `pql_total_concur` (
+  `net_id` int(11) unsigned NOT NULL,
+  `taskA_id` int(10) unsigned NOT NULL,
+  `taskB_id` int(10) unsigned NOT NULL,
+  `value` tinyint(1) NOT NULL,
+  PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
+  KEY `net_id` (`net_id`),
+  KEY `taskA_id` (`taskA_id`),
+  KEY `taskB_id` (`taskB_id`),
+  CONSTRAINT `pql_total_concurrent_fk` FOREIGN KEY (`net_id`) REFERENCES `jbpt_petri_nets` (`id`),
+  CONSTRAINT `pql_total_concurrent_fk1` FOREIGN KEY (`taskA_id`) REFERENCES `pql_tasks` (`id`),
+  CONSTRAINT `pql_total_concurrent_fk2` FOREIGN KEY (`taskB_id`) REFERENCES `pql_tasks` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
@@ -478,6 +519,52 @@ BEGIN
   SELECT DISTINCT `jbpt_labels`.`label`
   FROM `pql_tasks_sim`,`jbpt_labels`
   WHERE `pql_tasks_sim`.`label_id`=`jbpt_labels`.`id` AND `pql_tasks_sim`.`task_id` = task_id;
+END;//
+delimiter ;
+
+#
+# Definition for the `pql_total_causal_create` procedure : 
+#
+
+DROP PROCEDURE IF EXISTS `pql_total_causal_create`;
+
+delimiter //
+CREATE PROCEDURE `pql_total_causal_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+    DETERMINISTIC
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+  DELETE FROM `pql_total_causal`
+  WHERE `pql_total_causal`.`net_id`=net_id AND
+  `pql_total_causal`.`taskA_id`=taskA_id AND
+  `pql_total_causal`.`taskB_id`=taskB_id;
+
+  INSERT INTO `pql_total_causal`
+  (`pql_total_causal`.`net_id`,`pql_total_causal`.`taskA_id`,`pql_total_causal`.`taskB_id`,`pql_total_causal`.`value`)
+  VALUES (net_id,taskA_id,taskB_id,value);
+END;//
+delimiter ;
+
+#
+# Definition for the `pql_total_concur_create` procedure : 
+#
+
+DROP PROCEDURE IF EXISTS `pql_total_concur_create`;
+
+delimiter //
+CREATE PROCEDURE `pql_total_concur_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+    DETERMINISTIC
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+  DELETE FROM `pql_total_concur`
+  WHERE `pql_total_concur`.`net_id`=net_id AND
+  `pql_total_concur`.`taskA_id`=taskA_id AND
+  `pql_total_concur`.`taskB_id`=taskB_id;
+
+  INSERT INTO `pql_total_concur`
+  (`pql_total_concur`.`net_id`,`pql_total_concur`.`taskA_id`,`pql_total_concur`.`taskB_id`,`pql_total_concur`.`value`)
+  VALUES (net_id,taskA_id,taskB_id,value);
 END;//
 delimiter ;
 
@@ -957,6 +1044,58 @@ BEGIN
   VALUES (taskID,labelBid);
 
   RETURN taskID;
+END;//
+delimiter ;
+
+#
+# Definition for the `pql_total_causal` function : 
+#
+
+DROP FUNCTION IF EXISTS `pql_total_causal`;
+
+delimiter //
+CREATE FUNCTION `pql_total_causal`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER)
+    RETURNS tinyint(1)
+    DETERMINISTIC
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+  DECLARE result tinyint(1);
+
+  SELECT `pql_total_causal`.`value` INTO result
+  FROM `pql_total_causal` WHERE `pql_total_causal`.`net_id`=net_id AND `pql_total_causal`.`taskA_id`=taskA_id AND `pql_total_causal`.`taskB_id`=taskB_id;
+
+  IF result IS NULL THEN
+    RETURN -1;
+  END IF;
+
+  RETURN result;
+END;//
+delimiter ;
+
+#
+# Definition for the `pql_total_concur` function : 
+#
+
+DROP FUNCTION IF EXISTS `pql_total_concur`;
+
+delimiter //
+CREATE FUNCTION `pql_total_concur`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER)
+    RETURNS tinyint(1)
+    DETERMINISTIC
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+  DECLARE result tinyint(1);
+
+  SELECT `pql_total_concur`.`value` INTO result
+  FROM `pql_total_concur` WHERE `pql_total_concur`.`net_id`=net_id AND `pql_total_concur`.`taskA_id`=taskA_id AND `pql_total_concur`.`taskB_id`=taskB_id;
+
+  IF result IS NULL THEN
+    RETURN -1;
+  END IF;
+
+  RETURN result;
 END;//
 delimiter ;
 

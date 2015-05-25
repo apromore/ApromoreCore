@@ -29,16 +29,17 @@
                             org.pql.api,
                             org.pql.cmd,
                             org.pql.core,
+                            org.pql.index,
                             org.pql.label,
                             org.pql.logic,
                             org.pql.mc,
-                            org.pql.persist,
                             org.pql.query,
-                            org.pql.test,
-                            org.pql.untangling
+                            org.pql.test
                         </Export-Package>
                         <Import-Package>
                             org.jbpt.automaton,
+                            org.jbpt.graph.abs,
+                            org.jbpt.hypergraph.abs,
                             org.jbpt.petri,
                             org.jbpt.petri.behavior,
                             org.jbpt.petri.io,
