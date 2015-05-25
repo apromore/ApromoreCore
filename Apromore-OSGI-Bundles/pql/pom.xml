@@ -39,6 +39,7 @@
                         <Import-Package>
                             org.jbpt.automaton,
                             org.jbpt.graph.abs,
+                            org.jbpt.algo.graph,
                             org.jbpt.hypergraph.abs,
                             org.jbpt.petri,
                             org.jbpt.petri.behavior,
