@@ -18,9 +18,10 @@ import org.pql.mc.LoLAModelChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 
 /**
  * Created by corno on 23/08/2014.
@@ -50,6 +51,12 @@ public class PqlBeanImpl implements PqlBean {
 
     @Inject
     public PqlBeanImpl(LolaDirImpl lolaDir, MySqlBeanImpl mySqlBean, PGBeanImpl pgBean, boolean indexingEnabled){
+
+        File lolaPath = new File(lolaDir.getLolaDir());
+        if (indexingEnabled && !lolaPath.isFile()) {
+            LOGGER.error("LoLA 2.0 executable not found at " + lolaDir.getLolaDir());
+        }
+
         this.lolaDir         = lolaDir;
         this.mySqlBean       = mySqlBean;
         this.pgBean          = pgBean;
@@ -63,21 +70,6 @@ public class PqlBeanImpl implements PqlBean {
     @Override
     public IPQLAPI getApi() {
         try {
-/*
-            logic = new KleeneLogic();
-
-            lolaModelChecker = new LoLAModelChecker(lolaDir.getLolaDir());
-            labelMngr = new LabelManagerLevenshtein(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(), defaultLabelSimilarity, indexedLabelSimilarities);
-            pnMySQL = new PetriNetMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
-
-            basicPredicatesMySQL = new PQLBasicPredicatesMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(), logic);
-            basicPredicatesLoLA = new PQLBasicPredicates(lolaModelChecker);
-
-            pqlMySQL = new PQLMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(), labelMngr,
-                    basicPredicatesLoLA);
-            pqlAPI = new PQLAPI(lolaModelChecker, logic, pnMySQL, pqlMySQL,
-                    basicPredicatesMySQL, labelMngr);
-*/
             IThreeValuedLogic          logic            = new KleeneLogic();
             LoLAModelChecker           lolaModelChecker = new LoLAModelChecker(lolaDir.getLolaDir());
             PetriNetMySQL              pnMySQL          = new PetriNetMySQL(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
