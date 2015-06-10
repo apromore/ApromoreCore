@@ -9,4 +9,5 @@ public interface PqlBean {
 
     IPQLAPI getApi();
     boolean isIndexingEnabled();
+    String getLabelSimilaritySearch();
 }

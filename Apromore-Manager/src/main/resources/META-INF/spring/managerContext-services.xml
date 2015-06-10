@@ -64,22 +64,17 @@
         <constructor-arg value="${pql.mysql.password}"/>
     </bean>
     <bean id="pgbean" class="org.apromore.service.impl.PGBeanImpl">
-        <!--
-        <constructor-arg value="${pg.host}"/>
-        <constructor-arg value="${pg.name}"/>
-        <constructor-arg value="${pg.user}"/>
-        <constructor-arg value="${pg.password}"/>
-        -->
-        <constructor-arg value="localhost"/>
-        <constructor-arg value="themis"/>
-        <constructor-arg value="apromore"/>
-        <constructor-arg value=""/>
+        <constructor-arg value="${pql.postgres.host}"/>
+        <constructor-arg value="${pql.postgres.name}"/>
+        <constructor-arg value="${pql.postgres.user}"/>
+        <constructor-arg value="${pql.postgres.password}"/>
     </bean>
     <bean id="pqlbean" class="org.apromore.service.impl.PqlBeanImpl" scope="prototype"><!-- prototype means that this bean is not a singleton  -->
         <constructor-arg ref="lolaDir"/>
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
         <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
+        <constructor-arg type="String" value="${pql.labelSimilaritySearch}"/>
     </bean>
 
 

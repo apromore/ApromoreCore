@@ -21,7 +21,13 @@ jpa.generateDDL=@JPA_GENERATE_DDL@
 
 # PQL details
 pql.enableIndexing = @PQL_ENABLE_INDEXING@
+pql.labelSimilaritySearch = @PQL_LABEL_SIMILARITY_SEARCH@
 pql.lola.dir       = @PQL_LOLA_DIR@
 pql.mysql.url      = @PQL_MYSQL_URL@
 pql.mysql.user     = @PQL_MYSQL_USER@
 pql.mysql.password = @PQL_MYSQL_PASSWORD@
+pql.postgres.host     = @PQL_POSTGRES_HOST@
+pql.postgres.name     = @PQL_POSTGRES_NAME@
+pql.postgres.user     = @PQL_POSTGRES_USER@
+pql.postgres.password = @PQL_POSTGRES_PASSWORD@
+
