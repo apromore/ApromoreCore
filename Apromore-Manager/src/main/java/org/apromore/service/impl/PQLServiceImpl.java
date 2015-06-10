@@ -121,7 +121,7 @@ public class PQLServiceImpl implements PQLService {
         Process process=pmv.getProcessBranch().getProcess();
         Version version2=new Version(pmv.getVersionNumber());
         Set<RequestParameterType<?>> canoniserProperties=readPluginProperties(parameterCategory);
-        PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled());
+        PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled(),this.pqlBean.getLabelSimilaritySearch());
         IPQLAPI api=pqlBean.getApi();
 
         try {
@@ -173,7 +173,7 @@ public class PQLServiceImpl implements PQLService {
         Version version=new Version(pmv.getVersionNumber());
         Process process = pmv.getProcessBranch().getProcess();
         try {
-            PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled());
+            PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled(), this.pqlBean.getLabelSimilaritySearch());
             IPQLAPI api=pqlBean.getApi();
             LOGGER.info("-----------DELETE: " + pmv.getProcessBranch().getProcess().getId()+"/"+version.toString()+"/"+pmv.getProcessBranch().getBranchName());
 

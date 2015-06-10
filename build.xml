@@ -135,11 +135,16 @@
                 <filter token="JPA_SHOW_SQL"          value="${jpa.showSql}"/>
                 <filter token="JPA_GENERATE_DDL"      value="${jpa.generateDDL}"/>
 
-                <filter token="PQL_ENABLE_INDEXING" value="${pql.enableIndexing}"/>
-                <filter token="PQL_LOLA_DIR"        value="${pql.lola.dir}"/>
-                <filter token="PQL_MYSQL_URL"       value="${pql.mysql.url}"/>
-                <filter token="PQL_MYSQL_USER"      value="${pql.mysql.user}"/>
-                <filter token="PQL_MYSQL_PASSWORD"  value="${pql.mysql.password}"/>
+                <filter token="PQL_ENABLE_INDEXING"         value="${pql.enableIndexing}"/>
+                <filter token="PQL_LABEL_SIMILARITY_SEARCH" value="${pql.labelSimilaritySearch}"/>
+                <filter token="PQL_LOLA_DIR"                value="${pql.lola.dir}"/>
+                <filter token="PQL_MYSQL_URL"               value="${pql.mysql.url}"/>
+                <filter token="PQL_MYSQL_USER"              value="${pql.mysql.user}"/>
+                <filter token="PQL_MYSQL_PASSWORD"          value="${pql.mysql.password}"/>
+                <filter token="PQL_POSTGRES_HOST"           value="${pql.postgres.host}"/>
+                <filter token="PQL_POSTGRES_NAME"           value="${pql.postgres.name}"/>
+                <filter token="PQL_POSTGRES_USER"           value="${pql.postgres.user}"/>
+                <filter token="PQL_POSTGRES_PASSWORD"       value="${pql.postgres.password}"/>
             </filterset>
         </copy>
         <copy file="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml_template"
