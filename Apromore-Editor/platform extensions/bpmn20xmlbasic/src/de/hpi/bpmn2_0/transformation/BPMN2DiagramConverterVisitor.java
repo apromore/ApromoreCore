@@ -160,13 +160,19 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	 *
 	 * This class doesn't actually add @link shape to the diagram.
 	 */
-	private BasicDiagram diagram;
+	private BasicShape diagram;
 
 	/** A reverse mapping of the <code>bpmnElement</code> attribute links from the BPMN XML. */
 	private Map<BaseElement,DiagramElement> bpmndiMap;
 
 	/** Sequence flows which are configured to be absent. */
 	private Set<SequenceFlow> absentInConfiguration;
+
+	/** X-offset of the graphical origin. */
+	private double parentOriginX;
+
+	/** Y-offset of the graphical origin. */
+	private double parentOriginY;
 
 	/** The shape this visitor is populating. */
 	private BasicEdge shape = new BasicEdge("UNIDENTIFED-EDGE");
@@ -179,7 +185,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	 * @param absentInConfiguration  sequence flows which have been configured absent
 	 * @throws IllegalArgumentException if <var>diagram</var> or <var>bpmndiMap</var> are <code>null</code>
          */
-	BPMN2DiagramConverterVisitor(BasicDiagram diagram, Map<BaseElement,DiagramElement> bpmndiMap, Set<SequenceFlow> absentInConfiguration) {
+	BPMN2DiagramConverterVisitor(BasicShape diagram, Map<BaseElement,DiagramElement> bpmndiMap, Set<SequenceFlow> absentInConfiguration, double originX, double originY) {
 		if (diagram               == null) { throw new IllegalArgumentException("Null diagram"); }
 		if (bpmndiMap             == null) { throw new IllegalArgumentException("Null bpmndiMap"); }
 		assert absentInConfiguration != null;
@@ -187,6 +193,8 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 		this.diagram               = diagram;
 		this.bpmndiMap             = bpmndiMap;
 		this.absentInConfiguration = absentInConfiguration;
+		this.parentOriginX         = originX;
+		this.parentOriginY         = originY;
 	}
 	
 	/**
@@ -363,10 +371,10 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 
 		Bounds bounds = new Bounds();
         try {
-            bounds.setCoordinates(that.getBounds().getX(),
-                    that.getBounds().getY(),
-                    that.getBounds().getX() + that.getBounds().getWidth(),
-                    that.getBounds().getY() + that.getBounds().getHeight());
+            bounds.setCoordinates(that.getBounds().getX() - parentOriginX,
+                    that.getBounds().getY() - parentOriginY,
+                    that.getBounds().getX() + that.getBounds().getWidth() - parentOriginX,
+                    that.getBounds().getY() + that.getBounds().getHeight() - parentOriginY);
         }catch (NullPointerException e){
             bounds.setCoordinates(0,0,100,100);
         }
@@ -405,7 +413,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 				logger.warning("DataInputAssociation " + dataInputAssociation.getId() + " lacks a BPMNEdge");
                         }
 			else {
-				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, parentOriginX, parentOriginY);
 				bpmndiMap.get(dataInputAssociation).acceptVisitor(subVisitor);
 				diagram.addChildShape(subVisitor.getShape());
 			}
@@ -417,7 +425,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 				logger.warning("DataOutputAssociation " + dataOutputAssociation.getId() + " lacks a BPMNEdge");
                         }
 			else {
-				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+				BPMN2DiagramConverterVisitor subVisitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, parentOriginX, parentOriginY);
 				bpmndiMap.get(dataOutputAssociation).acceptVisitor(subVisitor);
 				diagram.addChildShape(subVisitor.getShape());
 			}
@@ -1092,7 +1100,7 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 				logger.severe("Message for flow " + that.getId() + " has no diagram shape");
 			}
 			else {
-				BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
+				BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, parentOriginX, parentOriginY);
 				bpmndiMap.get(that.getMessageRef()).acceptVisitor(visitor);
 				shape.addChildShape(visitor.getShape());
 			}

@@ -7,7 +7,7 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="apromore-client.properties"/>
+    <context:property-placeholder location="apromore-manager-client.properties"/>
 
     <bean id="managerClient" class="org.apromore.manager.client.ManagerServiceClient" >
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerServiceTemplate" />

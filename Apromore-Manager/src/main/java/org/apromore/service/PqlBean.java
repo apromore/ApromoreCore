@@ -8,4 +8,6 @@ import org.pql.api.IPQLAPI;
 public interface PqlBean {
 
     IPQLAPI getApi();
+    boolean isIndexingEnabled();
+    String getLabelSimilaritySearch();
 }

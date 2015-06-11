@@ -75,7 +75,7 @@
         <module>Apromore-Extras/bpmncmap</module>
         <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
-	<!--<module>Apromore-Extras/apql</module>-->
+	<module>Apromore-Extras/apql</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
@@ -100,7 +100,9 @@
         <module>Supplements/bpmn2cpf</module>
         <module>Supplements/cpf2bpmn</module>
         <module>Supplements/cpf2epml</module>
+        <module>Supplements/cpf2pnml</module>
         <module>Supplements/epml2cpf</module>
+        <module>Supplements/pnml2cpf</module>
     </modules>
 
     <properties>
@@ -192,7 +194,7 @@
         <easymock.version>3.1</easymock.version>
         <powermock.version>1.4.12</powermock.version>
         <mock-javamail.version>1.9</mock-javamail.version>
-        <hamcrest.version>1.1</hamcrest.version>
+        <hamcrest.version>1.3</hamcrest.version>
         <ipsedixit.version>1.0.0</ipsedixit.version>
         <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
 
@@ -229,9 +231,9 @@
         <maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
         <maven.clean.plugin>2.5</maven.clean.plugin>
         <maven.compiler.plugin>3.0</maven.compiler.plugin>
-        <maven.dependency.plugin>2.6</maven.dependency.plugin>
+        <maven.dependency.plugin>2.8</maven.dependency.plugin>
         <maven.deploy.plugin>2.7</maven.deploy.plugin>
-        <maven.enforcer.plugin>1.2</maven.enforcer.plugin>
+        <maven.enforcer.plugin>1.3</maven.enforcer.plugin>
         <maven.exec.plugin>1.2.1</maven.exec.plugin>
         <maven.findbugs.plugin>2.5.2</maven.findbugs.plugin>
         <maven.help.plugin>2.2</maven.help.plugin>
@@ -248,10 +250,10 @@
         <maven.par.plugin>1.0.0.RELEASE</maven.par.plugin>
         <maven.plugin.plugin>3.2</maven.plugin.plugin>
         <maven.pmd.plugin>3.0</maven.pmd.plugin>
-        <maven.project.info.reports.plugin>2.6</maven.project.info.reports.plugin>
+        <maven.project.info.reports.plugin>2.7</maven.project.info.reports.plugin>
         <maven.release.plugin>2.4</maven.release.plugin>
         <maven.resources.plugin>2.6</maven.resources.plugin>
-        <maven.site.plugin>3.0</maven.site.plugin>
+        <maven.site.plugin>3.3</maven.site.plugin>
         <maven.source.plugin>2.2.1</maven.source.plugin>
         <maven.surefire.plugin>2.14.1</maven.surefire.plugin>
         <maven.taglist.plugin>2.4</maven.taglist.plugin>
@@ -329,11 +331,6 @@
                 <version>2.2.7</version>
             </dependency>
             <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>${json.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>exlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet-api.version}</version>
@@ -342,11 +339,6 @@
                 <groupId>org.deckfour.xes</groupId>
                 <artifactId>OpenXES</artifactId>
                 <version>2.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons.fileupload.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -426,7 +418,7 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-core</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
             </dependency>
 
             <dependency>
