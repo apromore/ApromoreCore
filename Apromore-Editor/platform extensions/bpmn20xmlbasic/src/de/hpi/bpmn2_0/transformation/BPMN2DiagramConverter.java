@@ -25,6 +25,7 @@ import com.sun.xml.bind.IDResolver;
 import de.hpi.bpmn2_0.model.*;
 import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.Activity;
+import de.hpi.bpmn2_0.model.activity.SubProcess;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNDiagram;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNEdge;
 import de.hpi.bpmn2_0.model.bpmndi.BPMNShape;
@@ -48,6 +49,7 @@ import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicShape;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -258,51 +260,98 @@ public class BPMN2DiagramConverter {
         List<BasicDiagram> diagrams = new ArrayList<>();
         
         logger.fine("Generating JSON diagram from BPMN JAXB");
-        for (BPMNDiagram bpmnDiagram : definitions.getDiagram()) {
-            logger.fine("BPMN diagram=" + bpmnDiagram + " class=" + bpmnDiagram.getClass());
 
-            BasicDiagram diagram = new BasicDiagram(
-                "canvas",                        // id
-                "BPMNDiagram",                        // type
-                new StencilSetReference(
-                    "http://b3mn.org/stencilset/bpmn2.0#",        // stencilSet.ns
-                    rootDir + "stencilsets//bpmn2.0/bpmn2.0.json"    // stencilSet.url
-                )
-            );
+        BasicDiagram diagram = new BasicDiagram(
+            "canvas",                                            // id
+            "BPMNDiagram",                                       // type
+            new StencilSetReference(
+                "http://b3mn.org/stencilset/bpmn2.0#",           // stencilSet.ns
+                rootDir + "stencilsets//bpmn2.0/bpmn2.0.json"    // stencilSet.url
+            )
+        );
 
-            // Additional properties
-            diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
-            diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
-            diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
-            diagram.setProperty("name",               bpmnDiagram.getName());
-            diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
-            diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
-            diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
+        // Additional properties
+        diagram.addSsextension("http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#");
+        diagram.setBounds(new Bounds(new Point(0, 0), new Point(2400, 2000)));
+        diagram.setProperty("expressionlanguage", "http://www.w3.org/1999/XPath");
+        //diagram.setProperty("name",               bpmnDiagram.getName());
+        //diagram.setProperty("orientation",        bpmnDiagram.getOrientation());
+        diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
+        diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
+            
+        for (BaseElement root: definitions.getRootElement()) {
 
             // For Configurable BPMN, look for the pc:configurationMapping element
-            for (BaseElement root: definitions.getRootElement()) {
-                ExtensionElements extensionElements = root.getExtensionElements();
-                if (extensionElements != null) {
-                    ConfigurationMapping configurationMapping = extensionElements.getFirstExtensionElementOfType(ConfigurationMapping.class);
-                    if (configurationMapping != null) {
-                        diagram.setProperty("cmap", configurationMapping.getHref());
-                    }
+            ExtensionElements extensionElements = root.getExtensionElements();
+            if (extensionElements != null) {
+                ConfigurationMapping configurationMapping = extensionElements.getFirstExtensionElementOfType(ConfigurationMapping.class);
+                if (configurationMapping != null) {
+                    diagram.setProperty("cmap", configurationMapping.getHref());
                 }
             }
 
             // Child elements
-            for (DiagramElement element : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
-                BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration);
-                element.acceptVisitor(visitor);
-                if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
-                    diagram.addChildShape(visitor.getShape());
-                }
-            }
-
-            diagrams.add(diagram);
+            Process process = (Process) root;
+            flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
         }
 
+        diagrams.add(diagram);
+
         return diagrams;
+    }
+
+    /**
+     * Recursively descend into BPMN subprocesses to populate JSON childShapes.
+     *
+     * @param flowElements  the contents of the BPMN process or subprocess
+     * @param shape  the JSON process or subprocess to be populated
+     * @param originX  the X offset on the canvas of the BPMN process or subprocess
+     * @param originY  the Y offset on the canvas of the BPMN process or subprocess
+     */
+    private void flowElementsToShapes(final List<FlowElement>               flowElements,
+                                      final BasicShape                      shape,
+                                      final Map<BaseElement,DiagramElement> bpmndiMap,
+                                      final Set<String>                     messageRefSet,
+                                      final Set<SequenceFlow>               absentInConfiguration,
+                                      final double                          originX,
+                                      final double                          originY) {
+
+        Map<BoundaryEvent, BasicShape> boundaryEventShapeMap = new HashMap<>();
+        Map<FlowNode, BasicShape>      subProcessShapeMap    = new HashMap<>();
+
+        for (final FlowElement flowElement: flowElements) {
+            System.err.println("Flow element id " + flowElement.getId());
+            BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, originX, originY);
+            DiagramElement diagramElement = bpmndiMap.get(flowElement);
+            diagramElement.acceptVisitor(visitor);
+
+            if (flowElement instanceof FlowNode) {
+                subProcessShapeMap.put((FlowNode) flowElement, visitor.getShape());
+            }
+
+            if (flowElement instanceof SubProcess) {
+                SubProcess subProcess = (SubProcess) flowElement;
+                de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bounds = ((BPMNShape) diagramElement).getBounds();
+		flowElementsToShapes(subProcess.getFlowElement(), visitor.getShape(), bpmndiMap, messageRefSet, absentInConfiguration, bounds.getX(), bounds.getY());
+            }
+
+            if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
+                if (flowElement instanceof BoundaryEvent) {
+                    boundaryEventShapeMap.put((BoundaryEvent) flowElement, visitor.getShape());
+                } else {
+                    shape.addChildShape(visitor.getShape());
+                }
+            }
+        }
+
+        for (BoundaryEvent boundaryEvent: boundaryEventShapeMap.keySet()) {
+            BasicShape attachedTo = subProcessShapeMap.get(boundaryEvent.getAttachedToRef());
+            if (attachedTo != null) {
+                attachedTo.addChildShape(boundaryEventShapeMap.get(boundaryEvent));
+            } else {
+                throw new RuntimeException("Unable to attach boundary event " + boundaryEvent.getId() + " to " + boundaryEvent.getAttachedToRef().getId());
+            }
+        }
     }
     
     public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
