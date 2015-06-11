@@ -27,7 +27,7 @@
   	
   	<oryx:magnet oryx:cx="100" oryx:cy="80" oryx:default="yes" />
   </oryx:magnets>
-  <g pointer-events="fill" oryx:minimumSize="120 100" oryx:maximumSize="" >
+  <g pointer-events="fill" oryx:minimumSize="120 80" oryx:maximumSize="" >
   	<defs>
 		<radialGradient id="background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
 			<stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
