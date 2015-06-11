@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="queryWindow" width="1000px" height="700px" closable="true" position="center" sizable="true">
+    <vbox>
+        <applet id="apql"
+                codebase="applets/"
+                archive="APQL.jar"
+                code="com.apql.Apql.APQLApplet.class"
+                mayscript="true"
+                width="1000px" height="700px"/>
+    </vbox>
+</window>

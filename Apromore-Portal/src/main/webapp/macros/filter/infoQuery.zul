@@ -1,0 +1,17 @@
+<window id="windowGrid" title="Similarity Labels" width="1000px" closable="true" height="600px" border="normal">
+    <vbox width="100%"  heights="150px,450px">
+		<vbox>
+			<textbox id="textBoxQuery" rows="5" width="1000px" vflex="1" readonly="true" style="overflow:scroll"/>
+		</vbox>
+		<splitter id="s1" collapse="before"/>
+		<vbox>
+			<grid id="grid" hflex="1" vflex="1" style="overflow:scroll">
+				<columns sizable="true">
+					<column label="Label" hflex="1" align="center" sort="auto"/>
+					<column label="Similarity" hflex="0.2" align="center" sort="auto"/>
+					<column label="Similar labels" hflex="1" align="center" sort="auto"/>
+				</columns>
+			</grid>
+		</vbox>
+    </vbox>
+</window>

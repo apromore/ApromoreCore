@@ -797,6 +797,7 @@ ORYX.Core.Shape = {
                     if (index != undefined) {
                         this.nodes.splice(index, 0, uiObject);
                     } else {
+                        uiObject.node = this.node.childNodes[0].childNodes[1].appendChild(uiObject.node);
                         this.nodes.push(uiObject);
                     }
                 } else if (uiObject instanceof ORYX.Core.Controls.Control) {

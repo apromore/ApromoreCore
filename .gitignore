@@ -4,11 +4,13 @@
 **/dependency-reduced-pom.xml
 
 # Properties created by the "ant apromore-pre-build" target
-**/apromore.properties
-**/apromore-client.properties
+Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties
+Apromore-Clients/manager-client/src/main/resources/apromore-manager-client.properties
+Apromore-Clients/portal-client/src/main/resources/apromore-portal-client.properties
 Apromore-FileStore/src/main/webapp/WEB-INF/web.xml
-Apromore-Manager/src/main/resources/META-INF/spring/managerContext-services.xml
+Apromore-Manager/src/main/resources/apromore-manager.properties
 Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml
+Apromore-Portal/src/main/resources/apromore-portal.properties
 
 # Unpacked application server
 Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
