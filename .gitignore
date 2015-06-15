@@ -2,6 +2,7 @@
 **/build/*
 **/target/*
 **/dependency-reduced-pom.xml
+**/*.iml
 
 # Properties created by the "ant apromore-pre-build" target
 Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties
