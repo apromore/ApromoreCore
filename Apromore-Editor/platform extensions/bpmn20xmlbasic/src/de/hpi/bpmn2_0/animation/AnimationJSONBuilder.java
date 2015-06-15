@@ -255,7 +255,8 @@ public class AnimationJSONBuilder {
         JSONObject json = new JSONObject();
         json.put("id", sequenceFlow.getId());
         
-        DateTime logStart = animationLog.getStartDate();
+        //DateTime logStart = animationLog.getStartDate();
+        DateTime logStart = totalRealInterval.getStart(); //Bruce 15.06.2015: fix bug of playing multiple logs with different start dates
         DateTime start = ((TraceNode)sequenceFlow.getSourceRef()).getComplete();
         DateTime end = ((TraceNode)sequenceFlow.getTargetRef()).getStart();
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
@@ -282,7 +283,8 @@ public class AnimationJSONBuilder {
         JSONObject json = new JSONObject();
         json.put("id", node.getId());
         
-        DateTime logStart = animationLog.getStartDate();
+        //DateTime logStart = animationLog.getStartDate();
+        DateTime logStart = totalRealInterval.getStart(); //Bruce 15.06.2015: fix bug of multiple logs with different start dates
         DateTime start = node.getStart();
         DateTime end = node.getComplete();
         double begin = Seconds.secondsBetween(logStart, start).getSeconds()*this.getTimeConversionRatio();
