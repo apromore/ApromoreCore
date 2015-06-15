@@ -143,7 +143,12 @@ mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactId=jac
 mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
 mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
 mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
-
+# ProDrift librarie
+mvn install:install-file -Dfile=jsc.jar -DgroupId=jsc -DartifactId=jsc -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=weka-dev-3.7.12.jar -DgroupId=weka -DartifactId=weka-dev -Dversion=3.7.12 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=prodrift-1.1.jar -DgroupId=ee.ut -DartifactId=prodrift -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=lingpipe-4.1.0.jar -DgroupId=com.aliasi -DartifactId=lingpipe -Dversion=4.1.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=Jama-1.0.2.jar -DgroupId=jama -DartifactId=jama -Dversion=1.5.0 -Dpackaging=jar -DgeneratePom=true
 # In order to compile Quaestio with LiveConnect support, the system plugin.jar
 # needs to be added to the Maven repository.  This will also need to be ported
 # to upload.bat for Windows.

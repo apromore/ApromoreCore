@@ -1,0 +1,43 @@
+<window width="800px" closable="false" position="center" title="Process Drift Detection">
+    <vbox>
+        <grid>
+            <columns sizable="true">
+                <column width="50%"></column>
+                <column width="50%"></column>
+            </columns>
+            <rows>
+
+                <row id="logF" visible="true">
+                    <label value="Log File(.xml, .mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
+
+                    <hbox align="center">
+                        <button id="logFileUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"></button>
+                    	<label id="fileName" value=" " width="100%"/>
+                    </hbox>
+
+                </row>
+
+
+
+                <row id="winsize" visible="true">
+                    <label value="Window Size" width="100%"/>
+                    <intbox value="100" width="100%" constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."/>
+                </row>
+                <row id="fWinOrAwinChoice">
+                    <label value="Window Type (please choose one)" width="100%"/>
+                    <listbox width="100%"/>
+                </row>
+
+
+
+                <row id="driftButtons" spans="2">
+                    <div align="center">
+                        <button id="proDriftOKButton" label="OK" image="img/ok.png" disabled="false"></button>
+                        <button id="proDriftCancelButton" label="Cancel" image="img/cancel2.png">
+                        </button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>

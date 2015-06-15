@@ -93,7 +93,9 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
                 groupEntities, candidatesEntities, selectedEntities, true);
 
         System.out.println("Output file:");
-        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(null, diagram);
+        UIContext context = new UIContext();
+        UIPluginContext uiPluginContext = context.getMainPluginContext();
+        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
         StringBuilder sb = new StringBuilder();

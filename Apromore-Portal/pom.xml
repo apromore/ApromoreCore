@@ -75,6 +75,23 @@
                             net.sf.cglib.core,
                             net.sf.cglib.reflect,
                             com.google.common.base,
+                            org.deckfour.xes.classification,
+                            org.deckfour.xes.extension,
+                            org.deckfour.xes.extension.std,
+                            org.deckfour.xes.extension.std.cost,
+                            org.deckfour.xes.factory,
+                            org.deckfour.xes.id,
+                            org.deckfour.xes.in,
+                            org.deckfour.xes.info,
+                            org.deckfour.xes.info.impl,
+                            org.deckfour.xes.logging,
+                            org.deckfour.xes.model,
+                            org.deckfour.xes.model.buffered,
+                            org.deckfour.xes.model.impl,
+                            org.deckfour.xes.nikefs2,
+                            org.deckfour.xes.out,
+                            org.deckfour.xes.util,
+                            org.deckfour.xes.xstream,
                             *;resolution:=optional
                         </Import-Package>
                         <Web-ContextPath>/portal</Web-ContextPath>

@@ -29,7 +29,8 @@
                             animation|alphaminer|bpmn|efficientstorage|flex|graphviz|heuristicsminer|inductiveminer|interactivevisualization|logdialog|lpsolve55j|pnetreplayer|processtree|properties|bpmnminer|
                             jcommon|jfreechart|
                             prom5-lib||prom5-models|prom5-plugins|java_cup|att|jahmm|holub|jung||mathCollection|commons-discovery|commons-math|
-                            gantzgraf|slickerbox|mxml|wsmo4j|wsmo-api|wsml2reasoner-noncom|wsml-grammar|kaon2|jri|jrclient|decisionminer
+                            gantzgraf|slickerbox|mxml|wsmo4j|wsmo-api|wsml2reasoner-noncom|wsml-grammar|kaon2|jri|jrclient|decisionminer|
+                            log|logabstractions
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
@@ -513,6 +514,15 @@
                             org.processmining.contexts.util.jgraph,
                             org.processmining.converting,
                             org.processmining.exporting,
+                            org.processmining.filtering,
+                            org.processmining.filtering.filter.factories,
+                            org.processmining.filtering.filter.implementations,
+                            org.processmining.filtering.filter.interfaces,
+                            org.processmining.filtering.xfilter.factories,
+                            org.processmining.filtering.xfilter.implementations,
+                            org.processmining.filtering.xfilter.interfaces,
+                            org.processmining.filtering.xflog.implementations,
+                            org.processmining.filtering.xflog.interfaces,
                             org.processmining.framework,
                             org.processmining.framework.abstractplugins,
                             org.processmining.framework.annotations,
@@ -576,6 +586,20 @@
                             org.processmining.framework.util.ui.wizard,
                             org.processmining.framework.xstream,
                             org.processmining.importing,
+                            org.processmining.log.algorithms,
+                            org.processmining.log.connections,
+                            org.processmining.log.csvexport,
+                            org.processmining.log.csvimport,
+                            org.processmining.log.csvimport.exception,
+                            org.processmining.log.csvimport.handler,
+                            org.processmining.log.csvimport.ui,
+                            org.processmining.log.dialogs,
+                            org.processmining.log.models,
+                            org.processmining.log.models.impl,
+                            org.processmining.log.parameters,
+                            org.processmining.log.plugins,
+                            org.processmining.log.repair,
+                            org.processmining.log.utils,
                             org.processmining.mining,
                             org.processmining.mining.dot,
                             org.processmining.mining.epcmining,
@@ -668,6 +692,15 @@
                             org.processmining.plugins.ilpminer.templates,
                             org.processmining.plugins.ilpminer.templates.cplex,
                             org.processmining.plugins.ilpminer.templates.javailp,
+                            org.processmining.plugins.log,
+                            org.processmining.plugins.log.exporting,
+                            org.processmining.plugins.log.logabstraction,
+                            org.processmining.plugins.log.logclassifiers,
+                            org.processmining.plugins.log.logfilters,
+                            org.processmining.plugins.log.logfilters.impl,
+                            org.processmining.plugins.log.logfilters.ui,
+                            org.processmining.plugins.log.reverse,
+                            org.processmining.plugins.loginsertstart,
                             org.processmining.plugins.operationalsupport,
                             org.processmining.plugins.operationalsupport.providers,
                             org.processmining.plugins.operationalsupport.providers.timetsannotation,
@@ -701,6 +734,11 @@
                             org.processmining.plugins.pnml.graphics.utils,
                             org.processmining.plugins.pnml.importing,
                             org.processmining.plugins.pnml.toolspecific,
+                            org.processmining.plugins.psd.model,
+                            org.processmining.plugins.psd.model.pattern,
+                            org.processmining.plugins.psd.model.sequence,
+                            org.processmining.plugins.psd.ui,
+                            org.processmining.plugins.psd.utils,
                             org.processmining.plugins.replayer.replayresult,
                             org.processmining.plugins.transitionsystem,
                             org.processmining.plugins.transitionsystem.converter,
@@ -1739,6 +1777,18 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>wsmo-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>log</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>logabstractions</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>

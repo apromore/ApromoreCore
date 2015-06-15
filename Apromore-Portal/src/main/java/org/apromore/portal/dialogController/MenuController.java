@@ -77,20 +77,21 @@ public class MenuController extends Menubar {
         //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
         //exactMatchingMI.setDisabled(true);
 
+        //proDrift
+        Menuitem proDriftMI = (Menuitem) this.menuB.getFellow("ProDriftDetection");
+
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
-
-        Menu miningM = (Menu) this.menuB.getFellow("mining");
         Menuitem bpmnMinerMI = (Menuitem) this.menuB.getFellow("miningBPMNMiner");
+
         bpmnMinerMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 mineBPMNMinerModel();
             }
         });
-
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -173,6 +174,14 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 deployProcessModel();
+            }
+        });
+
+        //proDrift
+        proDriftMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                proDriftGetParameters();
             }
         });
     }
@@ -369,6 +378,15 @@ public class MenuController extends Menubar {
         } else {
             this.mainC.displayMessage("Select at least 2 process models for merge.");
         }
+    }
+
+    //proDrift
+    protected void proDriftGetParameters() {
+            try {
+                new ProDriftController(this.mainC);
+            } catch (SuspendNotAllowedException e) {
+                Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
     }
 
     protected void cmapModel() throws ParseException {

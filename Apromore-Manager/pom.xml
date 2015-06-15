@@ -244,6 +244,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- ProDrift -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+        </dependency>
+
         <!-- Clients -->
         <dependency>
             <groupId>org.apromore</groupId>

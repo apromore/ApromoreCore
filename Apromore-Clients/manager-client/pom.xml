@@ -40,6 +40,12 @@
             <artifactId>prom6-osgi</artifactId>
         </dependency>
 
+        <!-- Pro Drift Dependancies -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+        </dependency>
+
         <!-- Apromore WS Models -->
         <dependency>
             <groupId>org.apromore</groupId>

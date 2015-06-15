@@ -20,6 +20,7 @@
 
 package org.apromore.manager;
 
+import ee.ut.eventstr.model.ProDriftDetectionResult;
 import au.edu.qut.util.ImportEventLog;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -95,6 +96,7 @@ public class ManagerPortalEndpoint {
     private MergeService merSrv;
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
+    private ProDriftDetectionService proDriftSrv;
     private UserInterfaceHelper uiHelper;
     private PQLService pqlService;
     private DatabaseService dbService;
@@ -121,6 +123,7 @@ public class ManagerPortalEndpoint {
      * @param merSrv Merge Service.
      * @param secSrv security Service.
      * @param wrkSrv workspace service.
+     * @param proDriftSrv Process Drift Detection Service.
      * @param uiHelper UI Helper.
      */
     @Inject
@@ -129,7 +132,8 @@ public class ManagerPortalEndpoint {
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
-            final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService
+            final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService,
+			final ProDriftDetectionService proDriftSrv
     ) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
@@ -144,6 +148,7 @@ public class ManagerPortalEndpoint {
         this.merSrv = merSrv;
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
+        this.proDriftSrv = proDriftSrv;
         this.uiHelper = uiHelper;
         this.pqlService = pqlService;
         this.dbService = dbService;
@@ -1451,6 +1456,41 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createDiscoverBPMNModelResponse(res);
+    }
+
+	@PayloadRoot(localPart = "ProDriftDetectorRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ProDriftDetectorOutputMsgType> proDriftDetector(@RequestPayload final JAXBElement<ProDriftDetectorInputMsgType> req) {
+        LOGGER.trace("Executing operation proDriftDetector");
+
+        ProDriftDetectorInputMsgType reqValue = req.getValue();
+        ProDriftDetectorOutputMsgType res = new ProDriftDetectorOutputMsgType();
+
+
+        try {
+
+            byte[] logByteArray = reqValue.getLogByteArray();
+            int winSize = reqValue.getWinSize();
+            String fWinorAwin = reqValue.getFWinorAwin();
+            String logFileName = reqValue.getLogFileName();
+
+            ProDriftDetectionResult pddres = proDriftSrv.proDriftDetector(logByteArray, winSize, fWinorAwin, logFileName);
+
+            res.setPValuesDiagram(pddres.getpValuesDiagram());
+
+            res.getDriftPoints().addAll(pddres.getDriftPoints());
+            res.getLastReadTrace().addAll(pddres.getLastReadTrace());
+            res.getStartOfTransitionPoints().addAll(pddres.getStartOfTransitionPoints());
+            res.getEndOfTransitionPoints().addAll(pddres.getEndOfTransitionPoints());
+
+
+
+        } catch (Exception ex) {
+            LOGGER.error("", ex);
+        }
+
+
+        return WS_OBJECT_FACTORY.createProDriftDetectorResponse(res);
     }
 
 }

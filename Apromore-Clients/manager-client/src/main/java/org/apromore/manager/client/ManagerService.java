@@ -20,6 +20,7 @@
 
 package org.apromore.manager.client;
 
+import ee.ut.eventstr.model.ProDriftDetectionResult;
 import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
 import org.deckfour.xes.model.XLog;
@@ -448,4 +449,15 @@ public interface ManagerService {
     String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                              double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                              double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
+    
+/**
+     * Detect drifts in the log
+     * @param logByteArray the log as a byte array
+     * @param winSize the window size
+     * @param fWinorAwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
+     * @param logFileName Name of log file
+     * @return the ProDriftDetectionResult from the WebService
+     */
+    ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName);
+
 }
