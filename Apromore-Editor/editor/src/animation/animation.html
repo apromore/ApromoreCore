@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <!--
-  ~ Copyright © 2009-2014 The Apromore Initiative.
+  ~ Copyright ï¿½ 2009-2014 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -46,21 +46,21 @@
 	    	$j("#end").get(0).disabled = true;
 	    	$j("#slider2").get(0).disabled = true;	    	
 
-		var data = window.opener.parent.document.getElementById("jsonForAnimation2").value;
-                console.log("initializing");
-                console.dir(data);
+			var data = window.opener.parent.document.getElementById("jsonForAnimation2").value;
+            console.log("initializing");
+            //console.log(data);
 
-                $j("#animationJSON").get(0).setAttribute("value", data);
-                controller.reset(data);
-      
-                $j("#start").get(0).disabled = false;
-                $j("#pause").get(0).disabled = false;
-                $j("#forward").get(0).disabled = false;
-                $j("#backward").get(0).disabled = false;
+            $j("#animationJSON").get(0).setAttribute("value", data);
+            controller.reset(data);
+  
+            $j("#start").get(0).disabled = false;
+            $j("#pause").get(0).disabled = false;
+            $j("#forward").get(0).disabled = false;
+            $j("#backward").get(0).disabled = false;
 	    	$j("#nextTrace").get(0).disabled = false;
 	    	$j("#previousTrace").get(0).disabled = false;
-                $j("#end").get(0).disabled = false;
-                $j("#slider2").get(0).disabled = false;
+            $j("#end").get(0).disabled = false;
+            $j("#slider2").get(0).disabled = false;
     	}
     	
 	</script>	
@@ -70,9 +70,13 @@
 <body onload="initialize();" style="overflow: hidden">		
 		
     <div id="controls" style="position: absolute; top: 100%; left: 0; width: 100%">
-        <div id="playback_controls" style="background: #EEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -120px; height: 120px; width: 100%; overflow: hidden">
-            <svg id="progress_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="50px" viewBox="0 0 2000 50" style="padding-left:20px"></svg>
-            <div id="buttons_and_rate" style="text-align: center; padding: 0px; width: 250px; top: -100px; background-color:none;">
+    	<!-- Modify div attributes to adjust the control panel, e.g. size, position, and color -->
+        <div id="playback_controls" style="background: #EEEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -180px; height: 170px; width: 100%; overflow: hidden">
+            
+            <!-- SVG for the timeline -->
+            <svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="60px" viewBox="0 0 2000 60" style="padding-left:20px"></svg>
+            
+            <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: -40px; height: 100px; overflow: hidden; background-color:#EEEEDD;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
                         <img src="/editor/libs/animation/images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
@@ -96,37 +100,46 @@
                 </button>                
             </div>
 
-            <div id="progress_display" style="margin-top: 10px; padding: 0px; padding-left: 0px; position: relative; left: 250px; top: -50px; height: 200px; background-color: none">
-                <table style="display: inline-table; vertical-align: bottom">
+            <div id="progress_display" style="float:left; margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow: hidden; background-color: #EEEEBB;">
+            	
+            	<!-- Running Clock -->
+                <table style="display: inline-table; vertical-align: top">
                         <tr><td id="date" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                         <tr><td id="time" style="text-align: center; font: 18pt monospace">--:--:--</span></td></tr>
                         <tr><td id="subtitle" style="text-align: center; font: 10pt monospace">&nbsp;</td></tr>
                 </table>
-                <svg id="process_svg2" xmlns="http://www.w3.org/2000/svg" width="500px" height="70px" viewBox="0 0 500 70" style="display: inline"></svg>
-                <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none" border="1">
+                
+                <!-- SVG for the circular progress bars -->
+                <svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg" width="400px" height="70px" viewBox="0 0 400 70" style="display: inline; background-color: none;" ></svg>
+            </div>
+            
+            <div id="log_list" style="margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow-y: scroll; background-color: #EEEEFF;">
+                <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none;" border="1">
                         <tr id="header">
-                        	<td style="text-align: center; font: 10pt monospace">&nbsp;</td>
+                        	<td style="text-align: center; font: 10pt monospace">Log</td>
                         	<td style="text-align: center; font: 10pt monospace">Total</td>
                         	<td style="text-align: center; font: 10pt monospace">Play</td>
                         	<td style="text-align: center; font: 10pt monospace">Reliable</td>
                         	<td style="text-align: center; font: 10pt monospace">Fitness</td>
                         	<td style="text-align: center; font: 10pt monospace">Time(s)</td>
                         	<td style="text-align: center; font: 10pt monospace">A. Fitness</td>
-                        	<td style="text-align: center; font: 10pt monospace">Time(s)</td>
+                        	<td style="text-align: center; font: 10pt monospace">A. Time(s)</td>
                         	<td style="text-align: center; font: 10pt monospace">Algo Runtime(s)</td>
                         </tr>
-			<tr>
-				<td colspan="9"><input id="toggleCaseLabelVisibility" type="checkbox" checked="checked" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
-			</tr>
+						<tr>
+							<td colspan="9"><input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
+						</tr>
                 </table>                
             </div>
         </div>
 
-        <div id="zoom_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -350px; width: 25px; height: 150px; overflow: hidden">
+		<!-- Modify div attributes to adjust the zoom panel, e.g. size, position, and color -->
+        <div id="zoom_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -400px; width: 25px; height: 150px; overflow: hidden">
             <div id="zoom_slider" disabled="disabled" style="left: 10px; top: 10px"></div>
         </div>
         
-        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 60px; top: -350px; width: 100px; height: 220px; overflow: hidden">
+        <!-- Modify div attributes to adjust the speed panel, e.g. size, position, and color -->
+        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 60px; top: -400px; width: 100px; height: 220px; overflow: hidden">
             <div id="slider2" disabled="disabled" style="left: 10px; top: 10px; height:200px;"></div>
         </div>
     </div>
@@ -183,8 +196,8 @@
     }
 
     function toggleCaseLabelVisibility() {
-	var input = $j("input#toggleCaseLabelVisibility")[0];
-	controller.setCaseLabelsVisible(input.checked);
+		var input = $j("input#toggleCaseLabelVisibility")[0];
+		controller.setCaseLabelsVisible(input.checked);
     }
     
     // The Apromore-Editor window of the BPMN process model

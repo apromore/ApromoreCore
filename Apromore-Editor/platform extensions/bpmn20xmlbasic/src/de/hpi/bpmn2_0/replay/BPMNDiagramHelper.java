@@ -48,8 +48,8 @@ import java.util.Set;
 import java.util.Stack;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.jbpt.algo.graph.StronglyConnectedComponents;
-import org.jbpt.pm.ProcessModel;
+//import org.jbpt.algo.graph.StronglyConnectedComponents;
+//import org.jbpt.pm.ProcessModel;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -94,9 +94,9 @@ public class BPMNDiagramHelper {
     private DijkstraAlgorithm dijkstraAlgo = null;
     private Map<FlowNode,Vertex<FlowNode>> bpmnDijikstraNodeMap = new HashMap();
     
-    private ProcessModel jbptProcessModel = null;
+//    private ProcessModel jbptProcessModel = null;
     private Set<Set<FlowNode>> bpmnSCCSet = null;
-    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>(); 
+//    private BidiMap<FlowNode, org.jbpt.pm.FlowNode> jbptNodeMap = new DualHashBidiMap<>(); 
     
     private DirectedGraph directedGraph = null;
     private List<List<FlowNode>> bpmnCycles = null;
@@ -639,41 +639,41 @@ public class BPMNDiagramHelper {
     }    
 
     
-    public ProcessModel getJBPTProcessModel() {
-        if (jbptProcessModel == null) {           
-            org.jbpt.pm.FlowNode jbptNode = null;
-            jbptProcessModel = new ProcessModel();
-            for (FlowNode node : this.getAllNodes()) {
-                if (node == this.getStartEvent() || node == this.getEndEvent()) {
-                    jbptNode = new org.jbpt.pm.Event(node.getName());
-                }
-                else if (this.getActivities().contains(node)) {
-                    jbptNode = new org.jbpt.pm.Activity(node.getName());
-                }
-                else if (this.getAllDecisions().contains(node) || this.getAllMerges().contains(node)) {
-                    jbptNode = new org.jbpt.pm.XorGateway(node.getName());
-                }
-                else if (this.getAllForks().contains(node) || this.getAllJoins().contains(node)) {
-                    jbptNode = new org.jbpt.pm.AndGateway(node.getName());
-                }
-                else if (this.getAllORSplits().contains(node) || this.getAllORJoins().contains(node)) {
-                    jbptNode = new org.jbpt.pm.OrGateway(node.getName());
-                }
-                jbptNodeMap.put(node, jbptNode);
-                jbptProcessModel.addFlowNode(jbptNode);
-            }
-            
-            org.jbpt.pm.FlowNode from = null;
-            org.jbpt.pm.FlowNode to = null;
-            for (SequenceFlow flow : this.getAllSequenceFlows()) {
-                from = jbptNodeMap.get((FlowNode)flow.getSourceRef());
-                to = jbptNodeMap.get((FlowNode)flow.getTargetRef());
-                jbptProcessModel.addControlFlow(from, to);
-            }
-        }
-        
-        return jbptProcessModel;    
-    }
+//    public ProcessModel getJBPTProcessModel() {
+//        if (jbptProcessModel == null) {           
+//            org.jbpt.pm.FlowNode jbptNode = null;
+//            jbptProcessModel = new ProcessModel();
+//            for (FlowNode node : this.getAllNodes()) {
+//                if (node == this.getStartEvent() || node == this.getEndEvent()) {
+//                    jbptNode = new org.jbpt.pm.Event(node.getName());
+//                }
+//                else if (this.getActivities().contains(node)) {
+//                    jbptNode = new org.jbpt.pm.Activity(node.getName());
+//                }
+//                else if (this.getAllDecisions().contains(node) || this.getAllMerges().contains(node)) {
+//                    jbptNode = new org.jbpt.pm.XorGateway(node.getName());
+//                }
+//                else if (this.getAllForks().contains(node) || this.getAllJoins().contains(node)) {
+//                    jbptNode = new org.jbpt.pm.AndGateway(node.getName());
+//                }
+//                else if (this.getAllORSplits().contains(node) || this.getAllORJoins().contains(node)) {
+//                    jbptNode = new org.jbpt.pm.OrGateway(node.getName());
+//                }
+//                jbptNodeMap.put(node, jbptNode);
+//                jbptProcessModel.addFlowNode(jbptNode);
+//            }
+//            
+//            org.jbpt.pm.FlowNode from = null;
+//            org.jbpt.pm.FlowNode to = null;
+//            for (SequenceFlow flow : this.getAllSequenceFlows()) {
+//                from = jbptNodeMap.get((FlowNode)flow.getSourceRef());
+//                to = jbptNodeMap.get((FlowNode)flow.getTargetRef());
+//                jbptProcessModel.addControlFlow(from, to);
+//            }
+//        }
+//        
+//        return jbptProcessModel;    
+//    }
      
     
     /**
@@ -683,37 +683,37 @@ public class BPMNDiagramHelper {
      * Assume that jbptProcessModel has been created
      * @return set of subset, each represents strongly connected components
      */
-    public Set<Set<FlowNode>> getStronglyConnectedComponents() {
-        if (bpmnSCCSet == null) {
-            bpmnSCCSet = new HashSet();
-            Set<FlowNode> bpmnSCC;
-
-            StronglyConnectedComponents scc = new StronglyConnectedComponents();
-            Set<Set<org.jbpt.pm.FlowNode>> jbptSCCSet = scc.compute(jbptProcessModel);
-            FlowNode node;
-            for (Set<org.jbpt.pm.FlowNode> jbptSCC : jbptSCCSet) {
-                if (jbptSCC.size() > 1) {
-                    bpmnSCC = new HashSet();
-                    boolean trueSCC = true;
-                    for (org.jbpt.pm.FlowNode jbptNode : jbptSCC) {
-                        node = jbptNodeMap.getKey(jbptNode);
-                        bpmnSCC.add(node);
-                        if (!getAllForks().contains(node) && !getAllJoins().contains(node) &&
-                                node.getIncomingSequenceFlows().size() >= 2) {
-                            trueSCC = false;
-                            break;
-                        }
-                    }
-                    if (trueSCC) {
-                        bpmnSCCSet.add(bpmnSCC);
-                    } else {
-                        bpmnSCC.clear();
-                    }
-                }
-            }
-        }
-        return bpmnSCCSet;
-    }
+//    public Set<Set<FlowNode>> getStronglyConnectedComponents() {
+//        if (bpmnSCCSet == null) {
+//            bpmnSCCSet = new HashSet();
+//            Set<FlowNode> bpmnSCC;
+//
+//            StronglyConnectedComponents scc = new StronglyConnectedComponents();
+//            Set<Set<org.jbpt.pm.FlowNode>> jbptSCCSet = scc.compute(jbptProcessModel);
+//            FlowNode node;
+//            for (Set<org.jbpt.pm.FlowNode> jbptSCC : jbptSCCSet) {
+//                if (jbptSCC.size() > 1) {
+//                    bpmnSCC = new HashSet();
+//                    boolean trueSCC = true;
+//                    for (org.jbpt.pm.FlowNode jbptNode : jbptSCC) {
+//                        node = jbptNodeMap.getKey(jbptNode);
+//                        bpmnSCC.add(node);
+//                        if (!getAllForks().contains(node) && !getAllJoins().contains(node) &&
+//                                node.getIncomingSequenceFlows().size() >= 2) {
+//                            trueSCC = false;
+//                            break;
+//                        }
+//                    }
+//                    if (trueSCC) {
+//                        bpmnSCCSet.add(bpmnSCC);
+//                    } else {
+//                        bpmnSCC.clear();
+//                    }
+//                }
+//            }
+//        }
+//        return bpmnSCCSet;
+//    }
     
     
     public DirectedGraph getDirectedGraph() {

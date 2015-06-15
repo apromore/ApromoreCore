@@ -58,6 +58,16 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -192,6 +202,13 @@
                                     <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
                                     <destFileName>joda-time-2.4.jar</destFileName>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jgrapht</groupId>
+                                    <artifactId>jgrapht-core</artifactId>
+                                    <version>0.9.1</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>jgrapht-core.0.9.1.jar</destFileName>
+                                </artifactItem>                                
                             </artifactItems>
                         </configuration>
                     </execution>

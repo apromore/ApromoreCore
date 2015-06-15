@@ -16,7 +16,7 @@ var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
 var jsonServer; //contains parsed objects returned from the server
-var caseLabelsVisible = true;
+var caseLabelsVisible = false;
 
 var svgDocument;  // initialized in Controller.reset
 var svgDocumentG;  // initialized in Controller.reset
@@ -226,7 +226,11 @@ function updateClock_global() {
 // Animation controller
 //
 Controller = function(){
-    this.clockTimer = null;
+	// ID of the timer used by the digital clock on the replay control panel
+	// The timer is set whenever the replay is started or restarted, and cleared whenevenr it is paused.
+	// The synchronization between the digital clock and internal timer of SVG documents is done vie this timer
+	// because the timer will read the internal time of every SVG documents at every internal instant
+    this.clockTimer = null; 
 };         
 
 Controller.prototype = {
@@ -272,28 +276,31 @@ Controller.prototype = {
         var svg3 = $j("div#progress_display > svg")[0];
         this.svgDocuments.push(svg3);
 
-	svgDocument = $j("div#svgLoc > svg")[0];
-	svgDocumentG = $j("div#svgLoc > svg > g")[0];
-
-        var tokenE = svgDocument.getElementById("progressAnimation");
-        if (tokenE != null) {
-            svgDocument.removeChild(tokenE);
-            //tokenE.outerHTML = "";  
-        }
-
-        jsonServer = JSON.parse(jsonRaw);
-        var logs = jsonServer.logs;
-        
-	// Reconstruct this.logCases to correspond to the changed jsonServer value
-	this.logCases = [];
-	for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
-	    var log = jsonServer.logs[log_index];
-            this.logCases[log_index] = [];
-	    for (var tokenAnimation_index = 0; tokenAnimation_index < log.tokenAnimations.length; tokenAnimation_index++) {
-		var tokenAnimation = log.tokenAnimations[tokenAnimation_index];
-		this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, log.color, tokenAnimation.caseId);
+		svgDocument = $j("div#svgLoc > svg")[0];
+		svgDocumentG = $j("div#svgLoc > svg > g")[0];
+	
+	    var tokenE = svgDocument.getElementById("progressAnimation");
+	    if (tokenE != null) {
+	        svgDocument.removeChild(tokenE);
+	        //tokenE.outerHTML = "";  
 	    }
-	}
+	
+	    jsonServer = JSON.parse(jsonRaw);
+	    var logs = jsonServer.logs;
+	        
+		// Reconstruct this.logCases to correspond to the changed jsonServer value
+		this.logCases = [];
+		
+		var offsets = [3,-3,9,-9,12,-12,15,-15];
+	
+		for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
+		    var log = jsonServer.logs[log_index];
+	        this.logCases[log_index] = [];
+		    for (var tokenAnimation_index = 0; tokenAnimation_index < log.tokenAnimations.length; tokenAnimation_index++) {
+				var tokenAnimation = log.tokenAnimations[tokenAnimation_index];
+				this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, log.color, tokenAnimation.caseId, offsets[log_index]);
+		    }
+		}
 
         this.startPos = jsonServer.timeline.startDateSlot; //start slot 
         this.endPos = jsonServer.timeline.endDateSlot; // end slot
@@ -355,8 +362,13 @@ Controller.prototype = {
            var cellApproxFitnessFormulaTime = row.insertCell(7);
            var cellAlgoTime = row.insertCell(8); 
            
-           
-           cellLogName.innerHTML = logs[i].name.substr(0,5) + "...";
+           if (logs[i].name.length > 15) {
+           		cellLogName.innerHTML = logs[i].name.substr(0,15) + "...";
+           }
+           else {
+           		cellLogName.innerHTML = logs[i].name;
+           }
+           cellLogName.title = logs[i].name;
            cellLogName.style.backgroundColor = logs[i].color;
            
            cellTotalCount.innerHTML = logs[i].total;
@@ -400,27 +412,30 @@ Controller.prototype = {
      * Thus, the end() method should NOT create a loopback to this method.
      */
     updateClock: function() {
-	this.updateMarkersOnce();
+		this.updateMarkersOnce();
 
-	// Original implementation -- checks for termination, updates clock view
+		// Original implementation -- checks for termination, updates clock view
     	if (this.getCurrentTime() > this.endPos*this.slotEngineUnit/1000) {
     		this.end();
     	} else {
-            //this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
+            this.updateClockOnce(this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis);
         }
     },
 
+	/*
+	 * Update all tokens (LogCase objects) with the new current time 
+	 */
     updateMarkersOnce: function() {
         var t = this.getCurrentTime();
-	var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
-	t *= dt;
+		var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
+		t *= dt;
 
-	// Display all the log trace markers
-	for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
-	    for (var tokenAnimation_index = 0; tokenAnimation_index < jsonServer.logs[log_index].tokenAnimations.length; tokenAnimation_index++) {
-		this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
-	    }
-	}
+		// Display all the log trace markers
+		for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
+		    for (var tokenAnimation_index = 0; tokenAnimation_index < jsonServer.logs[log_index].tokenAnimations.length; tokenAnimation_index++) {
+			this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
+		    }
+		}
     },
     
     /*
@@ -449,7 +464,17 @@ Controller.prototype = {
     
     start: function() {
         this.pause();
-        this.setCurrentTime(this.startPos);
+        this.setCurrentTime(this.startPos); // The startPos timing could be a little less than the first event timing in the log to accomodate the start event of BPMN
+        
+        var date = new Date();
+        date.setTime(this.startPos);
+        var dayString = new Intl.DateTimeFormat([], {
+                    year: "numeric", month: "short", day: "numeric"
+            }).format(date);
+        var timeString = new Intl.DateTimeFormat([], {
+                    hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
+            }).format(date);        
+        console.log(dayString + " " + timeString);
     },
    
     /*
@@ -679,6 +704,10 @@ Controller.prototype = {
         var textNode = document.createTextNode(log.name.substr(0,5) + "...");
         textE.appendChild(textNode);
         
+        var tooltip = document.createElementNS(svgNS,"title");
+        tooltip.appendChild(document.createTextNode(log.name));
+        textE.appendChild(tooltip);
+        
         pieE.appendChild(pathE);
         pieE.appendChild(textE); 
         
@@ -832,7 +861,7 @@ Controller.prototype = {
 // tokenAnimation is expected to one of the elements of jsonServer.logs[].tokenAnimations
 // color is the desired color the log trace marker
 // label is the desired text annotation of the log trace marker
-function LogCase(tokenAnimation, color, label) {
+function LogCase(tokenAnimation, color, label, offset) {
     this.tokenAnimation = tokenAnimation;
     this.color          = color;
     this.label          = label;
@@ -841,6 +870,7 @@ function LogCase(tokenAnimation, color, label) {
     this.pathElementCache = {};
     this.nodeMarkers      = [];
     this.pathMarkers      = [];
+    this.offset = offset;
 };
 
 LogCase.prototype = {
@@ -873,7 +903,7 @@ LogCase.prototype = {
 		    begin:   begin,
 		    end:     end,
 		    index:   i,
-		    element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur)
+		    element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur, this.offset)
 		};
         	svgDocumentG.appendChild(marker.element);
 		this.pathMarkers.push(marker);
@@ -906,7 +936,7 @@ LogCase.prototype = {
 		    begin:   begin,
 		    end:     end,
 		    index:   i,
-		    element: this.createNodeMarker(t, dt, node, begin, dur)
+		    element: this.createNodeMarker(t, dt, node, begin, dur, this.offset)
 		};
 		this.nodeMarkers.push(marker);
         	svgDocumentG.appendChild(marker.element);
@@ -922,7 +952,7 @@ LogCase.prototype = {
 	return pathElement;
     },
 
-    createNodeMarker: function(t, dt, node, begin, dur) {
+    createNodeMarker: function(t, dt, node, begin, dur, offset) {
 	var modelNode = findModelNode(node.id);
 	var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
 	var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
@@ -1032,38 +1062,44 @@ LogCase.prototype = {
             }
         }
 
-	return this.createMarker(t, dt, path, begin, dur);
+	return this.createMarker(t, dt, path, begin, dur, offset);
     },
 
-    createPathMarker: function(t, dt, pathElement, begin, dur) {
-	return this.createMarker(t, dt, pathElement.getAttribute("d"), begin, dur);
+    createPathMarker: function(t, dt, pathElement, begin, dur, offset) {
+		return this.createMarker(t, dt, pathElement.getAttribute("d"), begin, dur, offset);
     },
 
-    createMarker: function(t, dt, d, begin, dur) {
-	var marker = document.createElementNS(svgNS,"g");
-	marker.setAttributeNS(null,"stroke","none");
-
-	var animateMotion = document.createElementNS(svgNS,"animateMotion");
-	animateMotion.setAttributeNS(null,"begin",begin/dt);
-	animateMotion.setAttributeNS(null,"dur",dur/dt);
-	animateMotion.setAttributeNS(null,"fill","freeze");
-	animateMotion.setAttributeNS(null,"path",d);
-	marker.appendChild(animateMotion);
-
-	var circle = document.createElementNS(svgNS,"circle");
-	var offset = 2;
-	circle.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
-	circle.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
-	circle.setAttributeNS(null,"r",5);
-	circle.setAttributeNS(null,"fill",this.color);
-	marker.appendChild(circle);
-
-	var text = document.createElementNS(svgNS,"text");
-	text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
-	text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
-	text.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
-	text.appendChild(document.createTextNode(this.label));
-	marker.appendChild(text);
+    createMarker: function(t, dt, d, begin, dur, offset) {
+		var marker = document.createElementNS(svgNS,"g");
+		marker.setAttributeNS(null,"stroke","none");
+	
+		var animateMotion = document.createElementNS(svgNS,"animateMotion");
+		animateMotion.setAttributeNS(null,"begin",begin/dt);
+		animateMotion.setAttributeNS(null,"dur",dur/dt);
+		animateMotion.setAttributeNS(null,"fill","freeze");
+		animateMotion.setAttributeNS(null,"path",d);
+		marker.appendChild(animateMotion);
+	
+		var circle = document.createElementNS(svgNS,"circle");
+		
+		//Bruce 15/6/2015: add offset as a parameter, add 'rotate' attribute, put markers of different logs on separate lines.
+		//var offset = 2;
+		//circle.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
+		//circle.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
+		circle.setAttributeNS(null,"cx", 0);
+		circle.setAttributeNS(null,"cy", offset);
+		circle.setAttributeNS(null,"r",3);
+		circle.setAttributeNS(null,"fill",this.color);
+		marker.appendChild(circle);
+	
+		
+		var text = document.createElementNS(svgNS,"text");
+		text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
+		text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
+		text.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
+		text.appendChild(document.createTextNode(this.label));
+		marker.appendChild(text);
+		
 
         return marker;
     }
