@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.bpmnminer.CandidatesEntitiesController;
 import org.apromore.portal.dialogController.bpmnminer.PrimaryKeyController;
@@ -7,9 +8,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.in.XParser;
-import org.deckfour.xes.in.XParserRegistry;
-import org.deckfour.xes.in.XesXmlParser;
+import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.conceptualmodels.ConceptualModel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.Data;
@@ -19,6 +18,8 @@ import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -41,9 +42,7 @@ public class BPMNMinerController extends BaseController {
 
     private SelectDynamicListController domainCB;
 
-    private String fileOrArchive;
     private String nativeType = "BPMN 2.0";
-    private Media media;
 
     private String[] arrayMiningAlgorithms = new String[] {
             "Heusistics Miner ProM 5.2 without unused relationships",
@@ -74,10 +73,12 @@ public class BPMNMinerController extends BaseController {
     private DiscoverERmodel erModel;
     private List<String> listCandidates;
     private boolean[] selected;
+    private Label l;
     private HashMap<String, Data> data;
-    private Map<Set<String>, Set<String>> group;
-    private HashMap<Set<String>, String> primaryKeys_entityName;
-    private ConceptualModel concModel;
+
+    private org.zkoss.util.media.Media logFile = null;
+    private byte[] logByteArray = null;
+    String logFileName = null;
 
     public BPMNMinerController(MainController mainC) {
         try {
@@ -93,6 +94,7 @@ public class BPMNMinerController extends BaseController {
 
             this.bpmnMinerW = (Window) Executions.createComponents("macros/bpmnMiner.zul", null, null);
 
+            this.l = (Label) this.bpmnMinerW.getFellow("fileName");
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
             this.miningAlgorithms.setModel(new ListModelArray<Object>(arrayMiningAlgorithms));
@@ -138,32 +140,25 @@ public class BPMNMinerController extends BaseController {
      * @param event the event to process.
      * @throws InterruptedException
      */
-    private void uploadFile(UploadEvent event) throws InterruptedException {
-        try {
-            this.media = event.getMedia();
-            this.fileOrArchive = event.getMedia().getName();
-            if(event.getMedia().getName().endsWith("gz")){
-                GZIPInputStream gzIS = new GZIPInputStream(event.getMedia().getStreamData());
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                int size;
-                byte[] buffer = new byte[2048];
-                while ((size = gzIS.read(buffer, 0, buffer.length)) != -1) {
-                    bos.write(buffer, 0, size);
-                }
-                InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
-                log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS);
-            }else {
-                log = importFromStream(new XFactoryNaiveImpl(), event.getMedia().getStreamData());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void uploadFile(UploadEvent event) {
+            logFile = event.getMedia();
+            l.setStyle("color: blue");
+            l.setValue(logFile.getName());
+            logByteArray = logFile.getByteData();
+            logFileName = logFile.getName();
     }
 
-    private XLog importFromStream(XFactory factory, InputStream is) throws Exception {
-        XParser parser = new XesXmlParser(factory);
+    private XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {
+        XParser parser = null;
+        if(name.endsWith("mxml")) {
+            parser = new XMxmlParser(factory);
+        }else if(name.endsWith("mxml.gz")) {
+            parser = new XMxmlGZIPParser(factory);
+        }else if(name.endsWith("xes")) {
+            parser = new XesXmlParser(factory);
+        }else if(name.endsWith("xes.gz")) {
+            parser = new XesXmlGZIPParser(factory);
+        }
 
         Collection<XLog> logs;
         try {
@@ -214,6 +209,17 @@ public class BPMNMinerController extends BaseController {
     }
 
     protected void createCanditatesEntity() {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(logByteArray, 0, logByteArray.length);
+            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
+            log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if(log == null) {
             Messagebox.show("Please select a log.");
         }else if(miningAlgorithms.getSelectedIndex() < 0) {
@@ -245,7 +251,6 @@ public class BPMNMinerController extends BaseController {
     }
 
     public void setSelectedPrimaryKeys(Map<Set<String>, Set<String>> group) {
-
         try {
 
             this.bpmnMinerW.detach();
@@ -257,14 +262,14 @@ public class BPMNMinerController extends BaseController {
             ImportListProcessesController importListProcessesController = new ImportListProcessesController(mainC);
             importListProcessesController.cancelAll();
 
-            String defaultProcessName = this.fileOrArchive.split("\\.")[0];
+            String defaultProcessName = this.logFileName.split("\\.")[0];
             if(!modelName.getValue().isEmpty()) {
                 defaultProcessName = modelName.getValue();
             }
 
             InputStream inputStream = new ByteArrayInputStream(model.getBytes());
 
-            ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importListProcessesController, inputStream, defaultProcessName, this.nativeType, this.fileOrArchive);
+            ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importListProcessesController, inputStream, defaultProcessName, this.nativeType, this.logFileName);
             oneImport.importProcess(domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername());
 
         } catch (Exception e) {
@@ -275,7 +280,6 @@ public class BPMNMinerController extends BaseController {
 
     public void noEntityException() {
         try {
-
             this.bpmnMinerW.detach();
             String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
@@ -285,14 +289,14 @@ public class BPMNMinerController extends BaseController {
             ImportListProcessesController importListProcessesController = new ImportListProcessesController(mainC);
             importListProcessesController.cancelAll();
 
-            String defaultProcessName = this.fileOrArchive.split("\\.")[0];
+            String defaultProcessName = this.logFileName.split("\\.")[0];
             if(!modelName.getValue().isEmpty()) {
                 defaultProcessName = modelName.getValue();
             }
 
             InputStream inputStream = new ByteArrayInputStream(model.getBytes());
 
-            ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importListProcessesController, inputStream, defaultProcessName, this.nativeType, this.fileOrArchive);
+            ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importListProcessesController, inputStream, defaultProcessName, this.nativeType, this.logFileName);
             oneImport.importProcess(domainCB.getValue(), UserSessionManager.getCurrentUser().getUsername());
 
         } catch (Exception e) {

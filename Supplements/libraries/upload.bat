@@ -143,3 +143,11 @@ call mvn install:install-file -Dfile=jackson-1.0.jar -DgroupId=ut.ee -DartifactI
 call mvn install:install-file -Dfile=jbpt-1.0.jar -DgroupId=ut.ee -DartifactId=jbpt -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
 call mvn install:install-file -Dfile=pnapi-1.0.jar -DgroupId=ut.ee -DartifactId=pnapi -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
 call mvn install:install-file -Dfile=umaBPDiff-1.0.jar -DgroupId=ut.ee -DartifactId=umaBPDiff -Dversion=1.0 -Dpackaging=jar -DegeneratePom=true
+rem ProDrift libraries
+call mvn install:install
+-file -Dfile=prodrift-1.1.jar -DgroupId=ee.ut -DartifactId=proDrift -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jsc.jar -DgroupId=jsc -DartifactId=jsc -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=weka-dev-3.7.12.jar -DgroupId=weka -DartifactId=weka-dev -Dversion=3.7.12 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=prodrift-1.1.jar -DgroupId=ee.ut -DartifactId=prodrift -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=lingpipe-4.1.0.jar -DgroupId=com.aliasi -DartifactId=lingpipe -Dversion=4.1.0 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=Jama-1.0.2.jar -DgroupId=jama -DartifactId=jama -Dversion=1.5.0 -Dpackaging=jar -DgeneratePom=true
