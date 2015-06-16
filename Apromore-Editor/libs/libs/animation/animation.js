@@ -1094,8 +1094,10 @@ LogCase.prototype = {
 	
 		
 		var text = document.createElementNS(svgNS,"text");
-		text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
-		text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
+		//text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
+		//text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
+		text.setAttributeNS(null,"x",0);
+		text.setAttributeNS(null,"y",offset - 10);		
 		text.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
 		text.appendChild(document.createTextNode(this.label));
 		marker.appendChild(text);
