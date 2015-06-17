@@ -80,36 +80,27 @@ public class TranslatePetriNet {
 
         // Process Place
         for (PlaceType place : pnet.getPlace()) {
-            if (data.gettargetvalues().contains(place.getId()) || data.getsourcevalues().contains(place.getId())) {
-                // place has arcs
-                if (!data.getinput().contains(place.getId()) && data.getoutput().contains(place.getId())) {
-                    // start of process (only outgoing arcs)
-                    data.setOutputnode(String.valueOf(place.getId()));
-                    tts.setValues(data, ids);
-                    tts.translateOutput(place);
-                    addNodeAnnotations(place);
+            boolean hasIncomingArcs = data.getsourcevalues().contains(place.getId());
+            boolean hasOutgoingArcs = data.gettargetvalues().contains(place.getId());
 
-                } else if (data.getinput().contains(place.getId()) && !data.getoutput().contains(place.getId())) {
-                    // end of process (only incoming arcs)
-                    data.setInputnode(String.valueOf(place.getId()));
-                    tts.setValues(data, ids);
-                    tts.translateInput(place);
-                    addNodeAnnotations(place);
+            tts.setValues(data, ids);
 
-                } else {
-                    // internal to process (both incoming and outgoing arcs)
-                    tts.setValues(data, ids);
-                    tts.translateState(place);
-                    addNodeAnnotations(place);
-                }
+            if (hasIncomingArcs && hasOutgoingArcs) {  // internal to process (both incoming and outgoing arcs)
+                tts.translateState(place);
 
-            } else {
-                // isolated place (no incoming or outgoing arcs)
-                tts.setValues(data, ids);
+            } else if (!hasIncomingArcs && hasOutgoingArcs) {  // start of process (only outgoing arcs)
+                data.setOutputnode(String.valueOf(place.getId()));
+                tts.translateOutput(place);
+
+            } else if (hasIncomingArcs && !hasOutgoingArcs) {  // end of process (only incoming arcs)
+                data.setInputnode(String.valueOf(place.getId()));
+                tts.translateInput(place);
+
+            } else {  // isolated place (no incoming or outgoing arcs)
                 tts.translateEvent(place);
-                addNodeAnnotations(place);
             }
 
+            addNodeAnnotations(place);
             ids = tts.getIds();
         }
 
