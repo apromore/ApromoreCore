@@ -148,7 +148,7 @@ public class BPMNMinerController extends BaseController {
             logFileName = logFile.getName();
     }
 
-    private XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {
+    public static XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {
         XParser parser = null;
         if(name.endsWith("mxml")) {
             parser = new XMxmlParser(factory);
