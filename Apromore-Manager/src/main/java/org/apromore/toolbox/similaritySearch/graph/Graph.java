@@ -495,8 +495,6 @@ public class Graph {
         removeSplitJoins(gateways);
 
         boolean process = true;
-
-        process = true;
         while (process) {
             removeSplitJoins(gateways);
             process = mergeSplitsAndJoins(gateways);
@@ -1051,14 +1049,14 @@ public class Graph {
 //				}
                 Vertex parent = v.getParents().getFirst();
                 Vertex child = v.getChildren().getFirst();
-                HashSet<String> labels = getEdgeLabels(v.getID(), child.getID());
+                HashSet<String> parentLabels = removeEdge(parent.getID(), v.getID());
+                HashSet<String> childLabels = removeEdge(v.getID(), child.getID());
 
-                removeEdge(parent.getID(), v.getID());
-                removeEdge(v.getID(), child.getID());
                 removeVertex(v.getID());
                 parent.removeChild(v.getID());
                 child.removeParent(v.getID());
-                connectVertices(parent, child, labels);
+                Edge e = connectVertices(parent, child, parentLabels);
+                e.addLabels(childLabels);
                 gateways.remove(v);
             }
         }
