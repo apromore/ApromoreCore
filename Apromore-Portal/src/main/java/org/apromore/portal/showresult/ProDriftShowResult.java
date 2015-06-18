@@ -131,14 +131,21 @@ public class ProDriftShowResult extends Window {
                 int end  = startOfTransitionPoints.get(i).intValue();
 
                 ByteArrayOutputStream ba = eventLogList.get(i);
+                ByteArrayOutputStream outputStream;
+                String filename;
 
-                byte[] b = ba.toByteArray();
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(b.length);
-                GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
-                gzOS.write(b);
-                gzOS.close();
+                if(XLogReader.getExtension(logName).endsWith("gz")) {
+                    outputStream = eventLogList.get(i);
+                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName);
+                }else {
+                    byte[] b = ba.toByteArray();
+                    outputStream = new ByteArrayOutputStream(b.length);
+                    GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
+                    gzOS.write(b);
+                    gzOS.close();
+                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName) + "gz";
+                }
 
-                String filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName) + ".gz";
                 ZipEntry entry = new ZipEntry(filename);
 
                 entry.setSize(outputStream.toByteArray().length);
