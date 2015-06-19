@@ -421,6 +421,9 @@ public class Graph {
             } else if ((v.getType().equals(Vertex.Type.function)
                     || v.getType().equals(Vertex.Type.event))
                     && (v.getLabel() == null || v.getLabel().length() == 0)) {
+                if(v.getType().equals(Vertex.Type.event) && ((v.getChildren().size() == 0 && v.getParents().size() > 0) || (v.getChildren().size() > 0 && v.getParents().size() == 0))) {
+                    continue;
+                }
                 vToRemove.add(v);
             }
         }
@@ -1010,8 +1013,7 @@ public class Graph {
         LinkedList<Vertex> toRemove = new LinkedList<Vertex>();
 
         for (Vertex v : gateways) {
-            if ((v.getParents().size() == 0 || v.getParents().size() == 1)
-                    && (v.getChildren().size() == 0 || v.getChildren().size() == 1) /*&& canMove(v, false)*/) {
+            if (v.getParents().size() < 2 && v.getChildren().size() < 2) {
                 toRemove.add(v);
             }
         }
@@ -1055,8 +1057,8 @@ public class Graph {
                 removeVertex(v.getID());
                 parent.removeChild(v.getID());
                 child.removeParent(v.getID());
-                Edge e = connectVertices(parent, child, parentLabels);
-                e.addLabels(childLabels);
+                Edge e = connectVertices(parent, child, childLabels);
+//                e.addLabels(childLabels);
                 gateways.remove(v);
             }
         }

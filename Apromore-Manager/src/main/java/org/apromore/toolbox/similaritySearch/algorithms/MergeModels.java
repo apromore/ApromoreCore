@@ -161,11 +161,14 @@ public class MergeModels {
 
                     Vertex cLeft = getMappingPair(mapping, c);
                     Edge e = merged.containsEdge(vp.getLeft().getID(), cLeft.getID());
+
                     if (e != null) {
-                        if(e.getLabels().size() == 0) {
-                            e.addLabels(labelsg1);
+                        if(!(labels == null || labels.size() == 0)) {
+                            if(e.getLabels().size() == 0) {
+                                e.addLabels(labelsg1);
+                            }
+                            e.addLabels(labels);
                         }
-                        e.addLabels(labels);
                     }
 
                 }
@@ -265,7 +268,7 @@ public class MergeModels {
                     for (Vertex v : g2SourcePrev) {
                         v.removeChild(g2Source.getID());
                         if (!containsVertex(mapping, v)) {
-                            HashSet<String> labels = merged.getEdgeLabels(v.getID(), g2Source.getID());
+                            HashSet<String> labels = merged.removeEdge(v.getID(), g2Source.getID());
                             merged.connectVertices(v, g1Source, labels);
                         }
                     }
@@ -310,86 +313,83 @@ public class MergeModels {
                     for (Vertex v : g2SourceFoll) {
                         v.removeParent(g2Sink.getID());
                         if (!containsVertex(mapping, v)) {
-                            HashSet<String> labels = merged.getEdgeLabels(g2Sink.getID(), v.getID());
+                            HashSet<String> labels = merged.removeEdge(g2Sink.getID(), v.getID());
                             merged.connectVertices(g1Sink, v, labels);
                         }
                     }
                 }
             }
 
-            for (VertexPair vp : mapping) {
-                for (Vertex v : vp.getLeft().getParents()) {
-                    // this edge is in mapping
-                    // save labels from the both graph
-                    if (containsVertex(mapping, v)) {
-                        Edge e = merged.containsEdge(v.getID(), vp.getLeft().getID());
-                        if (e != null) {
-                            // this is a part of a mapping
-                            Vertex v2 = getMappingPair(mapping, v);
-                            if (v2 != null) {
-                                Edge e2 = g2.containsEdge(v2.getID(), vp.getRight().getID());
-                                if (e2 != null) {
-                                    e.addLabels(e2.getLabels());
-                                    // the common part should also have the labels of both graph
-                                }
+        }
+
+        for (VertexPair vp : mapping) {
+            for (Vertex v : vp.getLeft().getParents()) {
+                // this edge is in mapping
+                // save labels from the both graph
+                if (containsVertex(mapping, v)) {
+                    Edge e = merged.containsEdge(v.getID(), vp.getLeft().getID());
+                    if (e != null) {
+                        // this is a part of a mapping
+                        Vertex v2 = getMappingPair(mapping, v);
+                        if (v2 != null) {
+                            Edge e2 = g2.containsEdge(v2.getID(), vp.getRight().getID());
+                            if (e2 != null) {
+                                e.addLabels(e2.getLabels());
+                                // the common part should also have the labels of both graph
                             }
                         }
                     }
                 }
             }
+        }
 
-            // remove mapping
-            for (VertexPair vp : mapping) {
-                // remove edges
-                for (Vertex v : vp.getRight().getParents()) {;
-                    merged.removeEdge(v.getID(), vp.getRight().getID());
-                }
-                for (Vertex v : vp.getRight().getChildren()) {
-                    merged.removeEdge(vp.getRight().getID(), v.getID());
-                }
-
-                if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
-                        vp.getLeft().getGWType().equals(vp.getRight().getGWType())
-                        && (vp.getLeft().isAddedGW() || vp.getRight().isAddedGW())) {
-                    vp.getLeft().setConfigurable(true);
-                }
-
-                if (vp.getLeft().getType().equals(Vertex.Type.gateway)
-                        && (vp.getLeft().isInitialGW() || vp.getRight().isInitialGW())) {
-
-                    vp.getLeft().setInitialGW();
-                }
-
-                // change gateways
-                if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
-                        !vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
-                    vp.getLeft().setGWType(Vertex.GWType.or);
-                    vp.getLeft().setConfigurable(true);
-
-                }
-                merged.removeVertex(vp.getRight().getID());
+        // remove mapping
+        for (VertexPair vp : mapping) {
+            // remove edges
+            for (Vertex v : vp.getRight().getParents()) {;
+                merged.removeEdge(v.getID(), vp.getRight().getID());
             }
+            for (Vertex v : vp.getRight().getChildren()) {
+                merged.removeEdge(vp.getRight().getID(), v.getID());
+            }
+
+            if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
+                    vp.getLeft().getGWType().equals(vp.getRight().getGWType())
+                    && (vp.getLeft().isAddedGW() || vp.getRight().isAddedGW())) {
+                vp.getLeft().setConfigurable(true);
+            }
+
+            if (vp.getLeft().getType().equals(Vertex.Type.gateway)
+                    && (vp.getLeft().isInitialGW() || vp.getRight().isInitialGW())) {
+
+                vp.getLeft().setInitialGW();
+            }
+
+            // change gateways
+            if (vp.getLeft().getType().equals(Vertex.Type.gateway) &&
+                    !vp.getLeft().getGWType().equals(vp.getRight().getGWType())) {
+                vp.getLeft().setGWType(Vertex.GWType.or);
+                vp.getLeft().setConfigurable(true);
+
+            }
+            merged.removeVertex(vp.getRight().getID());
         }
 
         long mergeTime = System.currentTimeMillis();
 
         for (Edge e : merged.getEdges()) {
             if(e.getLabels().size() == 0) {
-                e.addLabels(labelsg1g2);
+               e.addLabels(labelsg1g2);
             }
         }
 
-        HashMap<String, HashMap<String, HashSet<String>>> map = new HashMap<>();
-        for (Edge e : merged.getEdges()) {
-
-        }
         merged.cleanGraph();
 
         // labels for all edges should be added to the model
         for (Edge e : merged.getEdges()) {
-            if(e.getLabels().size() == labelsg1g2.size()) {
-               e.getLabels().clear();
-            }
+//            if(e.getLabels().size() == labelsg1g2.size()) {
+//               e.getLabels().clear();
+//            }
             e.addLabelToModel();
         }
 
