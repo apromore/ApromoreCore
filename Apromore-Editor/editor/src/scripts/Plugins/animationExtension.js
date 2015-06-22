@@ -135,7 +135,7 @@ ORYX.Plugins.AnimationExtension = ORYX.Plugins.AbstractPlugin.extend({
                                     Ext.Msg.alert("Failure", "Ajax communication failed");
                                     break;
                                 case Ext.form.Action.SERVER_INVALID:
-                                    Ext.Msg.alert("Failure", action.result.msg);
+                                    Ext.Msg.alert("Failure", "Server Error. Please read the server log."); //action.result.errors.errormsg);
                                     break;
                                 default:
                                     Ext.Msg.alert("Failure", "Unknown server failure code: " + action.failureType);

@@ -199,7 +199,7 @@ public class AnimationJSONBuilder {
         if (log.getEndDate().isEqual(totalRealInterval.getEnd())) {
             json.put("endDatePos", params.getTimelineSlots());
         } else {
-            json.put("endDatePos", Seconds.secondsBetween(totalRealInterval.getStart(), totalRealInterval.getEnd()).getSeconds()/
+            json.put("endDatePos", Seconds.secondsBetween(totalRealInterval.getStart(), log.getEndDate()).getSeconds()/
                                      this.getSlotDataUnit());
         }        
         

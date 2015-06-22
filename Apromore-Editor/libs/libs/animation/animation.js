@@ -1078,6 +1078,7 @@ LogCase.prototype = {
 		animateMotion.setAttributeNS(null,"dur",dur/dt);
 		animateMotion.setAttributeNS(null,"fill","freeze");
 		animateMotion.setAttributeNS(null,"path",d);
+		animateMotion.setAttributeNS(null,"rotate","auto");
 		marker.appendChild(animateMotion);
 	
 		var circle = document.createElementNS(svgNS,"circle");

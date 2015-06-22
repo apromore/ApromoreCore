@@ -227,7 +227,9 @@ public class BPMNAnimationServlet extends HttpServlet {
             params.setBacktrackingDebug(props.getProperty("BacktrackingDebug"));
             params.setExploreShortestPathDebug(props.getProperty("ExploreShortestPathDebug"));     
             params.setCheckViciousCycle(props.getProperty("CheckViciousCycle"));
-            
+            params.setStartEventToFirstEventDuration(Integer.valueOf(props.getProperty("StartEventToFirstEventDuration")).intValue());
+            params.setLastEventToEndEventDuration(Integer.valueOf(props.getProperty("LastEventToEndEventDuration")).intValue());            
+
             Replayer replayer = new Replayer(bpmnDefinition, params);
             ArrayList<AnimationLog> replayedLogs = new ArrayList();
             if (replayer.isValidProcess()) {
@@ -268,15 +270,21 @@ public class BPMNAnimationServlet extends HttpServlet {
                 out.write(string);
             }
             else {
+                /*
                 out = res.getWriter();
                 res.setContentType("text/html");
                 res.setStatus(204);
                 out.write("");
+                */
+                String json = "{success:false, errors: {errormsg: '" + "No logs can be played." + "'}}"; 
+                res.setContentType("text/html; charset=UTF-8");
+                res.getWriter().print(json);                
             }
             
         } catch (Exception e) {
             try {
                 LOGGER.severe(e.toString());
+                /*
                 res.setStatus(500);
                 res.setContentType("text/plain");
                 PrintWriter writer = new PrintWriter(out);
@@ -284,6 +292,10 @@ public class BPMNAnimationServlet extends HttpServlet {
                 e.printStackTrace(writer);
                 e.printStackTrace();
                 res.getWriter().write(e.toString());
+                */
+                String json = "{success:false, errors: {errormsg: '" +e.getMessage() + "'}}"; 
+                res.setContentType("text/html; charset=UTF-8");
+                res.getWriter().print(json);
             } catch (Exception el) {
                 System.err.println("Original exception was:");
                 e.printStackTrace();
