@@ -49,11 +49,13 @@ public class MergeProcesses {
 
         IdGeneratorHelper idGenerator = new IdGeneratorHelper();
         Graph m1 = CPFModelParser.readModel(models.get(0));
+        if(m1.getGraphLabel() == null) m1.name = models.get(0).getName();
         m1.setIdGenerator(idGenerator);
         m1.removeEmptyNodes();
         m1.reorganizeIDs();
 
         Graph m2 = CPFModelParser.readModel(models.get(1));
+        if(m2.getGraphLabel() == null) m2.name = models.get(1).getName();
         m2.setIdGenerator(idGenerator);
         m2.removeEmptyNodes();
         m2.reorganizeIDs();
@@ -64,9 +66,9 @@ public class MergeProcesses {
         Graph merged = MergeModels.mergeModels(m1, m2, idGenerator, removeEnt, algorithm, param);
 
         if (models.size() > 2) {
-            LOGGER.error("SHOULD NOT BE HERE " + models.toString());
             for (int i = 2; i < models.size(); i++) {
                 Graph m3 = CPFModelParser.readModel(models.get(i));
+                if(m3.getGraphLabel() == null) m3.name = models.get(i).getName();
                 m3.setIdGenerator(idGenerator);
                 m3.removeEmptyNodes();
                 m3.reorganizeIDs();
@@ -74,7 +76,6 @@ public class MergeProcesses {
 
                 merged = MergeModels.mergeModels(merged, m3, idGenerator, removeEnt, algorithm, param);
             }
-
         }
 
         return CPFModelParser.writeModel(merged, idGenerator);
