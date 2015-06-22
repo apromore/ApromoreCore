@@ -555,10 +555,12 @@ public class ReplayTrace {
                 //NOTE: This is in case some process models cannot reach the End Event (unsound model)
                 //----------------------------------------------
                 if (timeBefore == null) {
-                    timeBefore = (new DateTime(LogUtility.getTimestamp(logTrace.getTrace().get(0)))).minusSeconds(20);
+                    timeBefore = (new DateTime(LogUtility.getTimestamp(logTrace.getTrace().get(0)))).minusSeconds(
+                                               replayer.getReplayParams().getStartEventToFirstEventDuration());
                 }
                 if (timeAfter == null) {
-                    timeAfter = (new DateTime(LogUtility.getTimestamp(logTrace.getTrace().get(logTrace.getTrace().size()-1)))).plusSeconds(20);
+                    timeAfter = (new DateTime(LogUtility.getTimestamp(logTrace.getTrace().get(logTrace.getTrace().size()-1)))).plusSeconds(
+                                                replayer.getReplayParams().getLastEventToEndEventDuration());
                 }
                 
                 //----------------------------------------------

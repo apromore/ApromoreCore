@@ -46,6 +46,24 @@ public class ReplayParams {
     private long MaxTimeShortestPathExploration;
     private String CheckViciousCycle;
     private int CurrentShortestPath = Integer.MAX_VALUE; //number of activities
+    private int StartEventToFirstEventDuration = 60; // default is 1 minute
+    private int LastEventToEndEventDuration = 24*3600; // default is 1 day
+    
+    public int getStartEventToFirstEventDuration() {
+        return this.StartEventToFirstEventDuration;
+    }
+    
+    public void setStartEventToFirstEventDuration(int newDuration) {
+        this.StartEventToFirstEventDuration = newDuration;
+    }    
+    
+    public int getLastEventToEndEventDuration() {
+        return this.LastEventToEndEventDuration;
+    }
+    
+    public void setLastEventToEndEventDuration(int newDuration) {
+        this.LastEventToEndEventDuration = newDuration;
+    }       
     
     public int getCurrentShortestPath() {
         return this.CurrentShortestPath;

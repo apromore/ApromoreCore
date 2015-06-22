@@ -33,6 +33,7 @@ import de.hpi.bpmn2_0.backtracking2.Node;
 import de.hpi.bpmn2_0.backtracking2.StateElementStatus;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -264,10 +265,12 @@ public class Replayer {
             //Remove event names not found in process model or 
             //events with lifecycle:transition = "start" (not yet processed this case)
             //--------------------------------------------
-            for (XEvent event : trace) {
+            Iterator<XEvent> iterator = trace.iterator();
+            while (iterator.hasNext()) {
+                XEvent event = iterator.next();
                 if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
                      LogUtility.getLifecycleTransition(event).toLowerCase().equals("start")) {
-                    trace.remove(event);
+                    iterator.remove();
                 }
             }
 
@@ -328,7 +331,8 @@ public class Replayer {
                 if (replayTrace.getStart() == null) {
                     traceNode = new TraceNode(modelNode);
                     if (node.getState().getElementStatus() == StateElementStatus.STARTEVENT) {
-                        traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(0)))).minusSeconds(20));
+                        traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(0)))).minusSeconds(
+                                                            params.getStartEventToFirstEventDuration()));
                     }   
                     replayTrace.setStart(traceNode);
                     replayTrace.addToReplayedList(modelNode);
@@ -371,7 +375,8 @@ public class Replayer {
             if (helper.getTargets(modelNode).contains(helper.getEndEvent())) {
                 //traceNode = replayTrace.getMarkingsMap().get(helper.getEndEvent());
                 traceNode = new TraceNode(helper.getEndEvent());
-                traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(60));
+                traceNode.setStart((new DateTime(LogUtility.getTimestamp(trace.get(trace.size()-1)))).plusSeconds(
+                                                                params.getLastEventToEndEventDuration()));
                 replayTrace.add(modelNode, traceNode);
                 replayTrace.addToReplayedList(helper.getEndEvent());
             }
