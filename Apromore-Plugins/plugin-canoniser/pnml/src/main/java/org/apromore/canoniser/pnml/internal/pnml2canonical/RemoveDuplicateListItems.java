@@ -25,11 +25,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RemoveDuplicateListItems {
-    List<String> list = new LinkedList<String>();
+public abstract class RemoveDuplicateListItems {
 
-    public List<String> transform(List<String> list) {
-        this.list = list;
+    /**
+     * Sort a list and remove one of each distinct string which occurs.
+     *
+     * E.g. [a,b,r,a,c,a,d,a,b,r,a] becomes [a,a,a,a,b,r]
+     *
+     * @param list  will be mutated, may not be <code>null</code>, must support the options {@link List.remove} operation
+     * @return <var>list</var>, redundantly since the parameter is mutated into the result as well
+     */
+    public static List<String> transform(List<String> list) {
         Collections.sort(list);
         String lastValue = null;
         for (Iterator<String> i = list.iterator(); i.hasNext(); ) {

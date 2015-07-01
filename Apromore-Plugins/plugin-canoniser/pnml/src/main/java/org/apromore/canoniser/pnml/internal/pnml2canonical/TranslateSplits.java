@@ -28,74 +28,66 @@ import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.pnml.TransitionType;
 
-public class TranslateSplits {
-    DataHandler data;
-    long ids;
+public abstract class TranslateSplits {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateAndSplits(TransitionType tra) {
+    public static void translateAndSplits(TransitionType tra, DataHandler data) {
         ANDSplitType andsplit = new ANDSplitType();
         TaskType task = new TaskType();
         MessageType msg = new MessageType();
         TimerType time = new TimerType();
         EdgeType split = new EdgeType();
         EdgeType triggeredge = new EdgeType();
-        TranslateTrigger tt = new TranslateTrigger();
-        tt.setValues(data, ids);
-        String trigger = tt.translateOperationTrigger(tra);
+
+        String trigger = TranslateTrigger.translateOperationTrigger(tra);
         if (trigger.equals("none") || trigger.equals("res")) {
-            data.put_objectmap(String.valueOf(ids), task);
+            data.put_objectmap(String.valueOf(data.getIds()), task);
         }
-        andsplit.setId(String.valueOf(ids++));
+        andsplit.setId(String.valueOf(data.nextId()));
         if (tra.getName() != null) {
             andsplit.setName(tra.getName().getText());
         }
         if (trigger.equals("none")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("res")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
             // task.getResourceTypeRef().add(new ResourceTypeRefType());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("message")) {
-            msg.setId(String.valueOf(ids++));
+            msg.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 msg.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(msg.getId());
             triggeredge.setTargetId(task.getId());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("time")) {
-            time.setId(String.valueOf(ids++));
+            time.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 time.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(time.getId());
             triggeredge.setTargetId(task.getId());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         }
 
@@ -127,65 +119,65 @@ public class TranslateSplits {
 
     }
 
-    public void translateXorSplits(TransitionType tra) {
+    public static void translateXorSplits(TransitionType tra, DataHandler data) {
         XORSplitType xorsplit = new XORSplitType();
         TaskType task = new TaskType();
         MessageType msg = new MessageType();
         TimerType time = new TimerType();
         EdgeType split = new EdgeType();
         EdgeType triggeredge = new EdgeType();
-        TranslateTrigger tt = new TranslateTrigger();
-        tt.setValues(data, ids);
-        String trigger = tt.translateOperationTrigger(tra);
+        //TranslateTrigger tt = new TranslateTrigger();
+        //tt.setValues(data, ids);
+        String trigger = TranslateTrigger.translateOperationTrigger(tra);
         if (trigger.equals("none") || trigger.equals("res")) {
-            data.put_objectmap(String.valueOf(ids), task);
+            data.put_objectmap(String.valueOf(data.getIds()), task);
         }
-        xorsplit.setId(String.valueOf(ids++));
+        xorsplit.setId(String.valueOf(data.nextId()));
         if (tra.getName() != null) {
             xorsplit.setName(tra.getName().getText());
         }
         if (trigger.equals("none")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("res")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
             // task.getResourceTypeRef().add(new ResourceTypeRefType());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("message")) {
-            msg.setId(String.valueOf(ids++));
+            msg.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 msg.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(msg.getId());
             triggeredge.setTargetId(task.getId());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         } else if (trigger.equals("time")) {
-            time.setId(String.valueOf(ids++));
+            time.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 time.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(time.getId());
             triggeredge.setTargetId(task.getId());
-            split.setId(String.valueOf(ids++));
+            split.setId(String.valueOf(data.nextId()));
             split.setSourceId(task.getId());
         }
 
@@ -217,7 +209,4 @@ public class TranslateSplits {
 
     }
 
-    public long getIds() {
-        return ids;
-    }
 }

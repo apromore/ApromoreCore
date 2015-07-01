@@ -28,38 +28,43 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.pnml.TransitionType;
 
-public class TranslateSplitJoins {
-    DataHandler data;
-    long ids;
+public abstract class TranslateSplitJoins {
+
+    /*
     ANDJoinType andjoin = new ANDJoinType();
     ANDSplitType andsplit = new ANDSplitType();
     XORJoinType xorjoin = new XORJoinType();
     XORSplitType xorsplit = new XORSplitType();
+    */
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateAndSplitJoins(TransitionType tra) {
+    public static void translateAndSplitJoins(TransitionType tra, DataHandler data) {
         TaskType task = new TaskType();
-        data.put_objectmap(String.valueOf(ids), task);
-        andjoin.setId(String.valueOf(ids++));
+        data.put_objectmap(String.valueOf(data.getIds()), task);
+
+        ANDJoinType andjoin = new ANDJoinType();
+        andjoin.setId(String.valueOf(data.nextId()));
         andjoin.setName(tra.getName().getText());
-        andsplit.setId(String.valueOf(ids++));
+
+        ANDSplitType andsplit = new ANDSplitType();
+        andsplit.setId(String.valueOf(data.nextId()));
         andsplit.setName(tra.getName().getText());
-        task.setId(String.valueOf(ids++));
+
+        task.setId(String.valueOf(data.nextId()));
         task.setName(tra.getName().getText());
+
         EdgeType join = new EdgeType();
-        join.setId(String.valueOf(ids++));
+        join.setId(String.valueOf(data.nextId()));
         join.setSourceId(andjoin.getId());
         join.setTargetId(task.getId());
+
         EdgeType split = new EdgeType();
-        split.setId(String.valueOf(ids++));
+        split.setId(String.valueOf(data.nextId()));
         split.setSourceId(task.getId());
         split.setTargetId(andsplit.getId());
+
         andjoin.setOriginalID(tra.getId());
         andsplit.setOriginalID(tra.getId());
+
         data.getNet().getNode().add(andjoin);
         data.getNet().getEdge().add(join);
         data.getNet().getNode().add(task);
@@ -69,26 +74,34 @@ public class TranslateSplitJoins {
                 String.valueOf(andsplit.getId()));
     }
 
-    public void translateXorSplitJoins(TransitionType tra) {
+    public static void translateXorSplitJoins(TransitionType tra, DataHandler data) {
         TaskType task = new TaskType();
-        data.put_objectmap(String.valueOf(ids), task);
-        xorjoin.setId(String.valueOf(ids++));
+        data.put_objectmap(String.valueOf(data.getIds()), task);
+
+        XORJoinType xorjoin = new XORJoinType();
+        xorjoin.setId(String.valueOf(data.nextId()));
         xorjoin.setName(tra.getName().getText());
-        xorsplit.setId(String.valueOf(ids++));
+
+        XORSplitType xorsplit = new XORSplitType();
+        xorsplit.setId(String.valueOf(data.nextId()));
         xorsplit.setName(tra.getName().getText());
-        task.setId(String.valueOf(ids++));
+
+        task.setId(String.valueOf(data.nextId()));
         task.setName(tra.getName().getText());
+
         EdgeType join = new EdgeType();
-        join.setId(String.valueOf(ids++));
+        join.setId(String.valueOf(data.nextId()));
         join.setSourceId(xorjoin.getId());
         join.setTargetId(task.getId());
+
         EdgeType split = new EdgeType();
-        split.setId(String.valueOf(ids++));
+        split.setId(String.valueOf(data.nextId()));
         split.setSourceId(task.getId());
         split.setTargetId(xorsplit.getId());
 
         xorjoin.setOriginalID(tra.getId());
         xorsplit.setOriginalID(tra.getId());
+
         data.getNet().getNode().add(xorjoin);
         data.getNet().getEdge().add(join);
         data.getNet().getNode().add(task);
@@ -98,26 +111,34 @@ public class TranslateSplitJoins {
                 String.valueOf(xorsplit.getId()));
     }
 
-    public void translateAndJoinXorSplit(TransitionType tra) {
+    public static void translateAndJoinXorSplit(TransitionType tra, DataHandler data) {
         TaskType task = new TaskType();
-        data.put_objectmap(String.valueOf(ids), task);
-        andjoin.setId(String.valueOf(ids++));
+        data.put_objectmap(String.valueOf(data.getIds()), task);
+
+        ANDJoinType andjoin = new ANDJoinType();
+        andjoin.setId(String.valueOf(data.nextId()));
         andjoin.setName(tra.getName().getText());
-        xorsplit.setId(String.valueOf(ids++));
+
+        XORSplitType xorsplit = new XORSplitType();
+        xorsplit.setId(String.valueOf(data.nextId()));
         xorsplit.setName(tra.getName().getText());
-        task.setId(String.valueOf(ids++));
+
+        task.setId(String.valueOf(data.nextId()));
         task.setName(tra.getName().getText());
+
         EdgeType join = new EdgeType();
-        join.setId(String.valueOf(ids++));
+        join.setId(String.valueOf(data.nextId()));
         join.setSourceId(andjoin.getId());
         join.setTargetId(task.getId());
+
         EdgeType split = new EdgeType();
-        split.setId(String.valueOf(ids++));
+        split.setId(String.valueOf(data.nextId()));
         split.setSourceId(task.getId());
         split.setTargetId(xorsplit.getId());
 
         andjoin.setOriginalID(tra.getId());
         xorsplit.setOriginalID(tra.getId());
+
         data.getNet().getNode().add(andjoin);
         data.getNet().getEdge().add(join);
         data.getNet().getNode().add(task);
@@ -127,26 +148,34 @@ public class TranslateSplitJoins {
                 String.valueOf(xorsplit.getId()));
     }
 
-    public void translateXorJoinAndSplit(TransitionType tra) {
+    public static void translateXorJoinAndSplit(TransitionType tra, DataHandler data) {
         TaskType task = new TaskType();
-        data.put_objectmap(String.valueOf(ids), task);
-        xorjoin.setId(String.valueOf(ids++));
+        data.put_objectmap(String.valueOf(data.getIds()), task);
+
+        XORJoinType xorjoin = new XORJoinType();
+        xorjoin.setId(String.valueOf(data.nextId()));
         xorjoin.setName(tra.getName().getText());
-        andsplit.setId(String.valueOf(ids++));
+
+        ANDSplitType andsplit = new ANDSplitType();
+        andsplit.setId(String.valueOf(data.nextId()));
         andsplit.setName(tra.getName().getText());
-        task.setId(String.valueOf(ids++));
+
+        task.setId(String.valueOf(data.nextId()));
         task.setName(tra.getName().getText());
+
         EdgeType join = new EdgeType();
-        join.setId(String.valueOf(ids++));
+        join.setId(String.valueOf(data.nextId()));
         join.setSourceId(xorjoin.getId());
         join.setTargetId(task.getId());
+
         EdgeType split = new EdgeType();
-        split.setId(String.valueOf(ids++));
+        split.setId(String.valueOf(data.nextId()));
         split.setSourceId(task.getId());
         split.setTargetId(andsplit.getId());
 
         xorjoin.setOriginalID(tra.getId());
         andsplit.setOriginalID(tra.getId());
+
         data.getNet().getNode().add(xorjoin);
         data.getNet().getEdge().add(join);
         data.getNet().getNode().add(task);
@@ -156,7 +185,4 @@ public class TranslateSplitJoins {
                 String.valueOf(andsplit.getId()));
     }
 
-    public long getIds() {
-        return ids;
-    }
 }
