@@ -33,25 +33,14 @@ import org.apromore.pnml.OrganizationUnitType;
 import org.apromore.pnml.RoleType;
 import org.apromore.pnml.TransitionToolspecificType;
 
-public class TranslateTransitionToolspecifc {
-    DataHandler data;
-    long ids;
-    long resid;
-    String cpfId = null;
-    Map<Object, String> units = new HashMap<Object, String>();
-    Map<Object, String> roles = new HashMap<Object, String>();
+public abstract class TranslateTransitionToolspecific {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translate(Object obj) {
+    static public void translate(Object obj, DataHandler data) {
         org.apromore.pnml.TransitionType element = (org.apromore.pnml.TransitionType) obj;
         List<TransitionToolspecificType> pnmlTransitionToolspecific = element.getToolspecific();
 
         SimulationType simu = new SimulationType();
-        cpfId = data.get_id_map_value(element.getId());
+        String cpfId = data.get_id_map_value(element.getId());
 
         if (element.getToolspecific() != null) {
             int countsimu = 0;
@@ -67,14 +56,14 @@ public class TranslateTransitionToolspecifc {
 //                    }
                     if (transitionToolspecific.getTransitionResource() != null) {
                         if (transitionToolspecific.getTransitionResource().getOrganizationalUnitName() != null) {
-                            if (!units.containsKey(((OrganizationUnitType) transitionToolspecific
+                            if (!data.units.containsKey(((OrganizationUnitType) transitionToolspecific
                                     .getTransitionResource().getOrganizationalUnitName()).getName() +
                                     "-" + ((RoleType) transitionToolspecific.getTransitionResource().getRoleName()).getName())) {
-                                units.put(((OrganizationUnitType) transitionToolspecific.getTransitionResource()
+                                data.units.put(((OrganizationUnitType) transitionToolspecific.getTransitionResource()
                                         .getOrganizationalUnitName()).getName() + "-" + ((RoleType) transitionToolspecific
                                         .getTransitionResource().getRoleName()).getName(), String.valueOf(data.getResourceID()));
                                 ResourceTypeType roleunit = new ResourceTypeType();
-                                resid = data.getResourceID();
+                                long resid = data.getResourceID();
                                 roleunit.setId(String.valueOf(resid++));
                                 data.setResourceID(resid);
                                 roleunit.setName(((OrganizationUnitType) transitionToolspecific.getTransitionResource().getOrganizationalUnitName()).getName() + "-"
@@ -96,7 +85,7 @@ public class TranslateTransitionToolspecifc {
                             Object test = data.get_objectmap_value(cpfId);
                             if (test != null) {
                                 ResourceTypeRefType rtrunit = new ResourceTypeRefType();
-                                rtrunit.setResourceTypeId(units.get(((OrganizationUnitType) transitionToolspecific
+                                rtrunit.setResourceTypeId(data.units.get(((OrganizationUnitType) transitionToolspecific
                                         .getTransitionResource()
                                         .getOrganizationalUnitName()).getName()
                                         + "-"
@@ -145,7 +134,4 @@ public class TranslateTransitionToolspecifc {
         }
     }
 
-    public long getIds() {
-        return ids;
-    }
 }

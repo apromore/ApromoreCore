@@ -33,21 +33,13 @@ import org.apromore.pnml.ArcType;
 import org.apromore.pnml.ArcTypeType;
 import org.apromore.pnml.NodeType;
 
-public class TranslateArc {
+public abstract class TranslateArc {
 
     static private final Logger LOGGER = Logger.getLogger(TranslateArc.class.getCanonicalName());
 
-    DataHandler data;
-    long ids;
+    static public void translateEdge(ArcType arc, DataHandler data) {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateEdge(ArcType arc) {
-
-        data.put_id_map(arc.getId(), String.valueOf(ids));
+        data.put_id_map(arc.getId(), String.valueOf(data.getIds()));
 
         String sourceId = ((NodeType) arc.getSource()).getId();
 
@@ -61,35 +53,35 @@ public class TranslateArc {
             // the AND-join was inserted as was an AND-split, so this edge ought to source from the split
             sourceId = data.get_andsplitjoinmap().get(sourceId);
         } else {
-            sourceId = getEdgeRealId(sourceId);
+            sourceId = getEdgeRealId(sourceId, data);
         }
 
         String targetId = ((NodeType) arc.getTarget()).getId();
 
         // Convert targetId from PNML to CPF
         if (data.getOutputnode().equals(targetId)) {
-            targetId = getEdgeRealId(data.getOutputState());
+            targetId = data.getOutputState();
         } else if (data.get_andsplitmap().containsKey(targetId)) {
             // the AND-split was inserted, so this incoming edge ought to target to the transition/task
             targetId = data.get_andsplitmap().get(targetId);
         } else {
             // even if an AND-join was inserted, its id would be the same as the original transition/task's
-            targetId = getEdgeRealId(targetId);
+            targetId = getEdgeRealId(targetId, data);
         }
 
         ArcTypeType type = arc.getType();
         if (type != null && "reset".equals(type.getText())) {
             // This PNML arc corresponds to a CPF cancellation set element
 
-            org.apromore.cpf.NodeType cancellingNode = findCpfNodeById(targetId);
-            org.apromore.cpf.NodeType cancelledNode  = findCpfNodeById(sourceId);
+            org.apromore.cpf.NodeType cancellingNode = findCpfNodeById(targetId, data);
+            org.apromore.cpf.NodeType cancelledNode  = findCpfNodeById(sourceId, data);
             
             while (cancellingNode instanceof ANDJoinType) {
                 // The resetted PNML transition had multiple incoming arcs, so this routing element was inserted
                 // consequently we need to traverse the forward edge to find the actual cancelling node.
-                Set<EdgeType> outgoingEdges = findCpfNodeOutgoingEdges(cancellingNode.getId());
+                Set<EdgeType> outgoingEdges = findCpfNodeOutgoingEdges(cancellingNode.getId(), data);
                 for (EdgeType outgoing: outgoingEdges) {
-                    cancellingNode = findCpfNodeById(outgoing.getTargetId());
+                    cancellingNode = findCpfNodeById(outgoing.getTargetId(), data);
                 }
             }
 
@@ -108,7 +100,7 @@ public class TranslateArc {
             // This PNML arc corresponds to a CPF edge
             EdgeType edge = new EdgeType();
 
-            edge.setId(String.valueOf(ids++));
+            edge.setId(String.valueOf(data.nextId()));
             edge.setOriginalID(arc.getId());
             edge.setSourceId(sourceId);
             edge.setTargetId(targetId);
@@ -118,7 +110,7 @@ public class TranslateArc {
     }
 
     // TODO: keep track of this on the DataHandler rather than doing a linear search
-    private Set<EdgeType> findCpfNodeOutgoingEdges(final String sourceId) {
+    static private Set<EdgeType> findCpfNodeOutgoingEdges(final String sourceId, DataHandler data) {
         Set<EdgeType> outgoingEdgeSet = new HashSet();
         for (EdgeType edge: data.getNet().getEdge()) {
             if (edge.getSourceId().equals(sourceId)) {
@@ -129,7 +121,7 @@ public class TranslateArc {
     }
 
     // TODO: keep track of this on the DataHandler rather than doing a linear search
-    private org.apromore.cpf.NodeType findCpfNodeById(final String cpfId) {
+    static private org.apromore.cpf.NodeType findCpfNodeById(final String cpfId, final DataHandler data) {
         for (org.apromore.cpf.NodeType node: data.getNet().getNode()) {
             if (node.getId().equals(cpfId)) {
                 return node;
@@ -138,12 +130,7 @@ public class TranslateArc {
         return null;
     }
 
-    public long getIds() {
-        return ids;
-    }
-
-
-    private String getEdgeRealId(String originalId) {
-        return data.id_map.get(originalId);
+    static private String getEdgeRealId(String originalId, DataHandler data) {
+        return data.get_id_map_value(originalId);
     }
 }

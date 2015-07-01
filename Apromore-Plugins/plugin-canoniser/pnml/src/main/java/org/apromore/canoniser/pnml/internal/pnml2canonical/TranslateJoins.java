@@ -28,81 +28,72 @@ import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.pnml.TransitionType;
 
-public class TranslateJoins {
-    DataHandler data;
-    long ids;
+public abstract class TranslateJoins {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateAndJoins(TransitionType tra) {
+    public static void translateAndJoins(TransitionType tra, DataHandler data) {
         ANDJoinType andjoin = new ANDJoinType();
         TaskType task = new TaskType();
         MessageType msg = new MessageType();
         TimerType time = new TimerType();
         EdgeType joinEdge = new EdgeType();
         EdgeType triggeredge = new EdgeType();
-        TranslateTrigger tt = new TranslateTrigger();
-        tt.setValues(data, ids);
-        String trigger = tt.translateOperationTrigger(tra);
+        String trigger = TranslateTrigger.translateOperationTrigger(tra);
         if (trigger.equals("none") || trigger.equals("res")) {
-            data.put_objectmap(String.valueOf(ids), task);
+            data.put_objectmap(String.valueOf(data.getIds()), task);
         }
-        andjoin.setId(String.valueOf(ids++));
+        andjoin.setId(String.valueOf(data.nextId()));
         if (tra.getName() != null) {
             andjoin.setName(tra.getName().getText());
         }
         switch (trigger) {
         case "none":
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setId(String.valueOf(data.nextId()));
             joinEdge.setTargetId(task.getId());
             break;
 
         case "res":
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
             // task.getResourceTypeRef().add(new ResourceTypeRefType());
-            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setId(String.valueOf(data.nextId()));
             joinEdge.setTargetId(task.getId());
             break;
 
         case "message":
-            msg.setId(String.valueOf(ids++));
+            msg.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 msg.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(msg.getId());
-            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setId(String.valueOf(data.nextId()));
             joinEdge.setTargetId(task.getId());
             break;
 
         case "time":
-            time.setId(String.valueOf(ids++));
+            time.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 time.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(time.getId());
-            joinEdge.setId(String.valueOf(ids++));
+            joinEdge.setId(String.valueOf(data.nextId()));
             joinEdge.setTargetId(task.getId());
             break;
         }
@@ -130,65 +121,65 @@ public class TranslateJoins {
 
     }
 
-    public void translateXorJoins(TransitionType tra) {
+    public static void translateXorJoins(TransitionType tra, DataHandler data) {
         XORJoinType xorjoin = new XORJoinType();
         TaskType task = new TaskType();
         MessageType msg = new MessageType();
         TimerType time = new TimerType();
         EdgeType join = new EdgeType();
         EdgeType triggeredge = new EdgeType();
-        TranslateTrigger tt = new TranslateTrigger();
-        tt.setValues(data, ids);
-        String trigger = tt.translateOperationTrigger(tra);
+        //TranslateTrigger tt = new TranslateTrigger();
+        //tt.setValues(data, ids);
+        String trigger = TranslateTrigger.translateOperationTrigger(tra);
         if (trigger.equals("none") || trigger.equals("res")) {
-            data.put_objectmap(String.valueOf(ids), task);
+            data.put_objectmap(String.valueOf(data.getIds()), task);
         }
-        xorjoin.setId(String.valueOf(ids++));
+        xorjoin.setId(String.valueOf(data.nextId()));
         if (tra.getName() != null) {
             xorjoin.setName(tra.getName().getText());
         }
         if (trigger.equals("none")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            join.setId(String.valueOf(ids++));
+            join.setId(String.valueOf(data.nextId()));
             join.setTargetId(task.getId());
         } else if (trigger.equals("res")) {
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
             // task.getResourceTypeRef().add(new ResourceTypeRefType());
-            join.setId(String.valueOf(ids++));
+            join.setId(String.valueOf(data.nextId()));
             join.setTargetId(task.getId());
         } else if (trigger.equals("message")) {
-            msg.setId(String.valueOf(ids++));
+            msg.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 msg.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(msg.getId());
-            join.setId(String.valueOf(ids++));
+            join.setId(String.valueOf(data.nextId()));
             join.setTargetId(task.getId());
         } else if (trigger.equals("time")) {
-            time.setId(String.valueOf(ids++));
+            time.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 time.setName(tra.getName().getText());
             }
-            task.setId(String.valueOf(ids++));
+            task.setId(String.valueOf(data.nextId()));
             if (tra.getName() != null) {
                 task.setName(tra.getName().getText());
             }
-            triggeredge.setId(String.valueOf(ids++));
+            triggeredge.setId(String.valueOf(data.nextId()));
             triggeredge.setSourceId(task.getId());
             triggeredge.setTargetId(time.getId());
-            join.setId(String.valueOf(ids++));
+            join.setId(String.valueOf(data.nextId()));
             join.setTargetId(task.getId());
         }
 
@@ -212,10 +203,6 @@ public class TranslateJoins {
             data.put_andjoinmap(String.valueOf(tra.getId()), String.valueOf(task.getId()));
             data.put_andjoinmap(String.valueOf(tra.getId()), String.valueOf(time.getId()));
         }
-    }
-
-    public long getIds() {
-        return ids;
     }
 
 }

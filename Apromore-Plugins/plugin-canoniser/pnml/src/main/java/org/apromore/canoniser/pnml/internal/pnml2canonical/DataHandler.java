@@ -36,38 +36,40 @@ import org.apromore.pnml.NodeType;
 import org.apromore.pnml.PlaceType;
 
 public class DataHandler {
-    Map<String, String> id_map = new HashMap<String, String>();
-    Map<String, String> andsplitmap = new HashMap<String, String>();
-    Map<String, String> andjoinmap = new HashMap<String, String>();
-    Map<String, String> andsplitjoinmap = new HashMap<String, String>();
-    Map<String, String> triggermap = new HashMap<String, String>();
-    Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
-    Map<String, String> xorcounter = new HashMap<String, String>();
-    Map<String, Object> objectmap = new HashMap<String, Object>();
-    List<ArcType> centerarcs = new LinkedList<ArcType>();
-    List<ArcType> updatedarcs = new LinkedList<ArcType>();
-    List<NodeType> noderef = new LinkedList<NodeType>();
-    List<Object> annotationobjects = new LinkedList<Object>();
-    List<PlaceType> center = new LinkedList<PlaceType>();
-    List<String> targetvalues = new LinkedList<String>();
-    List<String> sourcevalues = new LinkedList<String>();
-    List<String> output = new LinkedList<String>();
-    List<String> input = new LinkedList<String>();
-    AnnotationsType annotations = new AnnotationsType();
-    String inputevent;
-    String outputstate;
-    CanonicalProcessType cproc = new CanonicalProcessType();
-    EdgeType inputedge;
-    EdgeType outputedge;
-    String subnettask;
-    long ids = 6121979;
-    long resourceid = 10000;
-    long rootid;
-    File folder;
-    NetType net;
-    String filename;
-    String inputnode;
-    String outputnode;
+    private Map<String, String> id_map = new HashMap<String, String>();
+    private Map<String, String> andsplitmap = new HashMap<String, String>();
+    private Map<String, String> andjoinmap = new HashMap<String, String>();
+    private Map<String, String> andsplitjoinmap = new HashMap<String, String>();
+    private Map<String, String> triggermap = new HashMap<String, String>();
+    private Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
+    private Map<String, String> xorcounter = new HashMap<String, String>();
+    private Map<String, Object> objectmap = new HashMap<String, Object>();
+    private List<ArcType> centerarcs = new LinkedList<ArcType>();
+    private List<ArcType> updatedarcs = new LinkedList<ArcType>();
+    private List<NodeType> noderef = new LinkedList<NodeType>();
+    private List<Object> annotationobjects = new LinkedList<Object>();
+    private List<PlaceType> center = new LinkedList<PlaceType>();
+    private List<String> targetvalues = new LinkedList<String>();
+    private List<String> sourcevalues = new LinkedList<String>();
+    private List<String> output = new LinkedList<String>();
+    private List<String> input = new LinkedList<String>();
+    private AnnotationsType annotations = new AnnotationsType();
+    private String inputevent;
+    private String outputstate;
+    private CanonicalProcessType cproc = new CanonicalProcessType();
+    private EdgeType inputedge;
+    private EdgeType outputedge;
+    private String subnettask;
+    private long ids = 0;  // 6121979;
+    private long resourceid = 10000;
+    private long rootid;
+    private File folder;
+    private NetType net;
+    private String filename;
+    private String inputnode;
+    private String outputnode;
+    final Map<Object, String> units = new HashMap<Object, String>();
+    //final Map<Object, String> roles = new HashMap<Object, String>();
 
     public void put_id_map(String key, String value) {
         id_map.put(key, value);
@@ -126,7 +128,14 @@ public class DataHandler {
     }
 
     public void addsourcevalues(String value) {
-        sourcevalues.add(value);
+/*
+        if (sourcevalues.contains(value)) {
+            System.err.println("source values !+= " + value);
+        } else {
+*/
+            sourcevalues.add(value);
+            System.err.println("source values += " + value + ", now " + sourcevalues + " data=" + this);
+//        }
     }
 
     public List<String> getsourcevalues() {
@@ -295,17 +304,12 @@ public class DataHandler {
 
     }
 
-    public void setIds(long lid) {
-        ids = lid;
-    }
-
     public long getIds() {
         return ids;
     }
 
-    public long countIds() {
-        ids++;
-        return ids;
+    public long nextId() {
+        return ids++;
     }
 
     public void addAnnotationObject(Object object) {
