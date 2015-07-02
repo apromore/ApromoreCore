@@ -128,14 +128,7 @@ public class DataHandler {
     }
 
     public void addsourcevalues(String value) {
-/*
-        if (sourcevalues.contains(value)) {
-            System.err.println("source values !+= " + value);
-        } else {
-*/
-            sourcevalues.add(value);
-            System.err.println("source values += " + value + ", now " + sourcevalues + " data=" + this);
-//        }
+        sourcevalues.add(value);
     }
 
     public List<String> getsourcevalues() {
