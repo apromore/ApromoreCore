@@ -57,9 +57,11 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
                 if (ea.getType().equals(Vertex.Type.gateway) && eb.getType().equals(Vertex.Type.gateway)
                         && similarity >= cedcutoff) {
                     result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
-                } else if ((ea.getType().equals(Vertex.Type.event) && eb.getType().equals(Vertex.Type.event)
-                        || ea.getType().equals(Vertex.Type.function) && eb.getType().equals(Vertex.Type.function)) &&
-                        AssingmentProblem.canMap(ea, eb) && similarity >= ledcutoff) {
+                } else if (((ea.getType().equals(Vertex.Type.event) && eb.getType().equals(Vertex.Type.event))
+                        || (ea.getType().equals(Vertex.Type.function) && eb.getType().equals(Vertex.Type.function))
+                        || (ea.getType().equals(Vertex.Type.state) && eb.getType().equals(Vertex.Type.state))
+                        || (ea.getType().equals(Vertex.Type.node) && eb.getType().equals(Vertex.Type.node)))
+                        && AssingmentProblem.canMap(ea, eb) && similarity >= ledcutoff) {
                     result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
                 }
             }
