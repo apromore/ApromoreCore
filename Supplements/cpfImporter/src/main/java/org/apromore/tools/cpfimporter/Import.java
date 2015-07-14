@@ -147,7 +147,7 @@ public final class Import {
             manager.createFolder(user, file.getName(), parentId);
             LOGGER.info(file + " created");
         } else {
-            LOGGER.info(file + " already exists");
+            LOGGER.debug(file + " already exists");
         }
     }
 
