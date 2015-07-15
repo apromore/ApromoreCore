@@ -88,85 +88,12 @@
 
     <target name="apromore-site-config">
         <!-- Substitute fields from site.properties into lower level configuration files -->
+        <copy file="site.properties" tofile="Apromore-Config/src/main/resources/org/apromore/config/site.properties" overwrite="true"/>
         <copy file="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml_template"
             tofile="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml"
             overwrite="true">
             <filterset>
                 <filter token="FILESTORE_DIR" value="${filestore.dir}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/manager-client/src/main/resources/apromore-manager-client.properties_template"
-            tofile="Apromore-Clients/manager-client/src/main/resources/apromore-manager-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/portal-client/src/main/resources/apromore-portal-client.properties_template"
-            tofile="Apromore-Clients/portal-client/src/main/resources/apromore-portal-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties_template"
-            tofile="Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Manager/src/main/resources/apromore-manager.properties_template"
-            tofile="Apromore-Manager/src/main/resources/apromore-manager.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-
-                <filter token="JDBC_DRIVER"   value="${jdbc.driver}"/>
-                <filter token="JDBC_URL"      value="${jdbc.url}"/>
-                <filter token="JDBC_USERNAME" value="${jdbc.username}"/>
-                <filter token="JDBC_PASSWORD" value="${jdbc.password}"/>
-
-                <filter token="JPA_DATABASE"          value="${jpa.database}"/>
-                <filter token="JPA_DATABASE_PLATFORM" value="${jpa.databasePlatform}"/>
-                <filter token="JPA_SHOW_SQL"          value="${jpa.showSql}"/>
-                <filter token="JPA_GENERATE_DDL"      value="${jpa.generateDDL}"/>
-
-                <filter token="PQL_ENABLE_INDEXING"         value="${pql.enableIndexing}"/>
-                <filter token="PQL_LABEL_SIMILARITY_SEARCH" value="${pql.labelSimilaritySearch}"/>
-                <filter token="PQL_LOLA_DIR"                value="${pql.lola.dir}"/>
-                <filter token="PQL_MYSQL_URL"               value="${pql.mysql.url}"/>
-                <filter token="PQL_MYSQL_USER"              value="${pql.mysql.user}"/>
-                <filter token="PQL_MYSQL_PASSWORD"          value="${pql.mysql.password}"/>
-                <filter token="PQL_POSTGRES_HOST"           value="${pql.postgres.host}"/>
-                <filter token="PQL_POSTGRES_NAME"           value="${pql.postgres.name}"/>
-                <filter token="PQL_POSTGRES_USER"           value="${pql.postgres.user}"/>
-                <filter token="PQL_POSTGRES_PASSWORD"       value="${pql.postgres.password}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml_template"
-            toFile="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml"
-            overwrite="true">
-            <filterset>
-                <filter token="PQL_LOLA_DIR" value="${pql.lola.dir}"/>
-                <filter token="PQL_MYSQL_URL" value="${pql.mysql.url}"/>
-                <filter token="PQL_MYSQL_USER" value="${pql.mysql.user}"/>
-                <filter token="PQL_MYSQL_PASSWORD" value="${pql.mysql.password}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Portal/src/main/resources/apromore-portal.properties_template"
-            tofile="Apromore-Portal/src/main/resources/apromore-portal.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
             </filterset>
         </copy>
     </target>

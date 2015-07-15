@@ -64,7 +64,8 @@ public class MainController extends BaseController {
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
-    private static final String HOST_NAME = "Host";
+    private static final String HOST_NAME = "site.host";
+    private static final String PORT_NUMBER = "site.port";
     private static final String VERSION_NUMBER = "version.number";
     private static final String BUILD_DATE = "version.builddate";
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
@@ -704,7 +705,7 @@ public class MainController extends BaseController {
         Properties properties = new Properties();
         properties.load(inputStream);
 
-        setHost(properties.getProperty(HOST_NAME));
+        setHost("http://" + properties.getProperty(HOST_NAME) + ":" + properties.getProperty(PORT_NUMBER));
         setVersionNumber(properties.getProperty(VERSION_NUMBER));
         setBuildDate(properties.getProperty(BUILD_DATE));
     }
