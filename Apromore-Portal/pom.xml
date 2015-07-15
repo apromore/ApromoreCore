@@ -45,6 +45,7 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
+                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
@@ -199,6 +200,11 @@
         </dependency>
 
         <!-- Client -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>config</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>

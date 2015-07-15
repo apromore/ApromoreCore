@@ -1,5 +1,0 @@
-hostname=@SITE_HOST@
-port=@SITE_PORT@
-externalport=@SITE_EXTERNALPORT@
-filestore-url=filestore/dav
-manager-url=manager/services/manager

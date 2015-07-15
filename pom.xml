@@ -76,7 +76,7 @@
         <module>Apromore-Extras/bpmncmap</module>
         <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
-		<module>Apromore-Extras/apql</module>
+        <module>Apromore-Extras/apql</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
@@ -86,6 +86,7 @@
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Manager Portal and Editor Web App creation -->
+        <module>Apromore-Config</module>
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
@@ -443,6 +444,11 @@
                 <groupId>com.apql</groupId>
                 <artifactId>apql</artifactId>
                 <version>${apql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>config</artifactId>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>

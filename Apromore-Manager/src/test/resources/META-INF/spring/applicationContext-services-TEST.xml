@@ -60,24 +60,18 @@
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
     <bean id="lolaDir" class="org.apromore.service.impl.LolaDirImpl">
-        <constructor-arg value="@PQL_LOLA_DIR@"/>
+        <constructor-arg value="${pql.lola.dir}"/>
     </bean>
     <bean id="mysqlbean" class="org.apromore.service.impl.MySqlBeanImpl">
-        <constructor-arg value="@PQL_MYSQL_URL@"/>
-        <constructor-arg value="@PQL_MYSQL_USER@"/>
-        <constructor-arg value="@PQL_MYSQL_PASSWORD@"/>
+        <constructor-arg value="${pql.mysql.dir}"/>
+        <constructor-arg value="${pql.mysql.user}"/>
+        <constructor-arg value="${pql.mysql.password}"/>
     </bean>
     <bean id="pgbean" class="org.apromore.service.impl.PGBeanImpl">
-        <!--
-        <constructor-arg value="${pg.host}"/>
-        <constructor-arg value="${pg.name}"/>
-        <constructor-arg value="${pg.user}"/>
-        <constructor-arg value="${pg.password}"/>
-        -->
-        <constructor-arg value="localhost"/>
-        <constructor-arg value="themis"/>
-        <constructor-arg value="apromore"/>
-        <constructor-arg value=""/>
+        <constructor-arg value="${pql.postgres.host}"/>
+        <constructor-arg value="${pql.postgres.name}"/>
+        <constructor-arg value="${pql.postgres.user}"/>
+        <constructor-arg value="${pql.postgres.password}"/>
     </bean>
     <bean id="pqlbean" class="org.apromore.service.impl.PqlBeanImpl" scope="prototype"><!-- prototype means that this bean is not a singleton  -->
         <constructor-arg ref="lolaDir"/>

@@ -7,7 +7,7 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="apromore-portal-client.properties"/>
+    <context:property-placeholder location="classpath:/org/apromore/config/site.properties"/>
 
     <bean id="portalClient" class="org.apromore.portal.client.PortalServiceClient" >
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="portalServiceTemplate" />
@@ -27,7 +27,7 @@
 
     <bean id="portalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${port}/${portal-url}">
+          p:defaultUri="http://${site.host}:${site.port}/portal/services/portal">
         <constructor-arg ref="messageFactory"/>
     </bean>
 
@@ -39,7 +39,7 @@
 
     <bean id="portalExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${externalport}/${portal-url}">
+          p:defaultUri="http://${site.host}:${site.externalport}/portal/services/portal">
         <constructor-arg ref="messageFactory"/>
     </bean>
 </beans>
