@@ -25,12 +25,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.apromore.filestore.webdav.exceptions.UnauthenticatedException;
 import org.apromore.filestore.webdav.exceptions.WebDavException;
@@ -63,6 +65,9 @@ public class WebDavSpringServlet extends HttpServletBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDavSpringServlet.class.getName());
     private static final boolean READ_ONLY = false;
+
+    private static final String PROPERTY_FILE = "org/apromore/config/site.properties";
+    private static final String FILESTORE_DIR = "filestore.dir";
 
     protected static MessageDigest MD5_HELPER;
     private ResourceLocks resLocks;
@@ -215,6 +220,17 @@ public class WebDavSpringServlet extends HttpServletBean {
                 rootPath = file.substring(0, ix).replace('/', File.separatorChar);
             } else {
                 throw new WebDavException("Could not determine root of war file. Can't extract from path '" + file + "' for this webdav container");
+            }
+        } else if (rootPath.equals("*APROMORE-CONFIG*")) {
+            try {
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE);
+
+                Properties properties = new Properties();
+                properties.load(inputStream);
+
+                rootPath = properties.getProperty(FILESTORE_DIR);
+            } catch (IOException e) {
+                throw new WebDavException("Unable to initialize rootpath using *APROMORE-CONFIG*", e);
             }
         }
         return new File(rootPath);

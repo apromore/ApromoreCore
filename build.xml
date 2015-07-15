@@ -89,13 +89,6 @@
     <target name="apromore-site-config">
         <!-- Substitute fields from site.properties into lower level configuration files -->
         <copy file="site.properties" tofile="Apromore-Config/src/main/resources/org/apromore/config/site.properties" overwrite="true"/>
-        <copy file="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml_template"
-            tofile="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml"
-            overwrite="true">
-            <filterset>
-                <filter token="FILESTORE_DIR" value="${filestore.dir}"/>
-            </filterset>
-        </copy>
     </target>
 
 
