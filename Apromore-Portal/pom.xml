@@ -158,19 +158,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!-- substitute site.properties into apromore.properties -->
-        <!--
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/apromore.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        -->
     </build>
 
     <dependencies>
