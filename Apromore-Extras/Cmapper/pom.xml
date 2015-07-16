@@ -126,6 +126,11 @@
             <artifactId>javabdd</artifactId>
             <version>1.0b2</version>
         </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- held over from experiments to replace DavFileSystemView with the one in Jakarta Slide
         <dependency>
             <groupId>slide</groupId>

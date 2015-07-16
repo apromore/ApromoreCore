@@ -113,28 +113,5 @@
                 </configuration>
             </plugin>
         </plugins>
-
-        <!-- substitute site.properties into apromore-client.properties -->
-        <!--
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/META-INF/spring/*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/apromore-client.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        -->
     </build>
-
 </project>
