@@ -54,12 +54,12 @@ public class FsPlatformPropertiesImpl implements PlatformProperties {
 		
 		Properties props = new Properties();
 		try {
-			props.load(this.getClass().getClassLoader().getResourceAsStream("configuration.properties"));
+			props.load(this.getClass().getClassLoader().getResourceAsStream("org/apromore/config/site.properties"));
 		} catch (IOException e) {
 			throw new InitializationException(e);
 		}
 		
-		String tempRootDirectoryPath = props.getProperty("fileSystemRootDirectory");
+		String tempRootDirectoryPath = props.getProperty("editor.dir");
 		System.out.println("ROOT: " +tempRootDirectoryPath );
 		if (tempRootDirectoryPath.endsWith(File.separator)) {
 			rootDirectoryPath = tempRootDirectoryPath.substring(0, tempRootDirectoryPath.length()-1);
@@ -67,7 +67,7 @@ public class FsPlatformPropertiesImpl implements PlatformProperties {
 			rootDirectoryPath = tempRootDirectoryPath;
 		}
 		
-		serverName = props.getProperty("host");
+		serverName = "http://" + props.getProperty("site.host") + ":" + props.getProperty("site.port");
 		platformUri = context.getContextPath() + "/p";
 		explorerUri = context.getContextPath() + "/explorer";
 		editorUri = context.getContextPath() + "/editor";
