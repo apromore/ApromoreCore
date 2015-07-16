@@ -30,10 +30,6 @@
 		<copy file="${configuration}/editor/plugins.xml" tofile="../platform/WebContent/WEB-INF/xml/editor/plugins.xml" overwrite="true" />
 		<copy file="${configuration}/editor/stencilsets.json" tofile="../platform/WebContent/WEB-INF/json/stencilsets.json" overwrite="true" />
 		<copy file="${configuration}/editor/extensions.json" tofile="../platform/WebContent/WEB-INF/json/extensions.json" overwrite="true" />
-		<echo file="../platform/conf/classpath/configuration.properties">
-			host = ${host}
-			fileSystemRootDirectory = ${fileSystemRootDirectory}
-		</echo>
 	</target>
 
 	<target name="com.signavio.configuration.copy" depends="com.signavio.configuration.copy.editor, com.signavio.configuration.copy.explorer, com.signavio.configuration.copy.platform">

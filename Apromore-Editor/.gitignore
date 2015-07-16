@@ -1,5 +1,6 @@
 editor/buildApps/bin
-platform/conf/classpath/configuration.properties
+platform/WebContent/WEB-INF/lib/apromore-config.jar
+platform/WebContent/WEB-INF/lib/jgrapht-core.0.9.1.jar
 platform/WebContent/WEB-INF/lib/OpenXES-2.0.jar
 tests/out/
 tests/reports/
