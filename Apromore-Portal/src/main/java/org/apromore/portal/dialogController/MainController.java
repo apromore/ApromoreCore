@@ -20,6 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.config.Site;
 import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
@@ -700,14 +701,9 @@ public class MainController extends BaseController {
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
-
-        Properties properties = new Properties();
-        properties.load(inputStream);
-
-        setHost("http://" + properties.getProperty(HOST_NAME) + ":" + properties.getProperty(PORT_NUMBER));
-        setVersionNumber(properties.getProperty(VERSION_NUMBER));
-        setBuildDate(properties.getProperty(BUILD_DATE));
+        setHost("http://" + Site.getHost() + ":" + Site.getPort());
+        setVersionNumber(Site.getVersionNumber());
+        setBuildDate(Site.getBuildDate());
     }
 
     /* From the data in the properties automagically update the label in the header. */

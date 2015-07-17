@@ -65,15 +65,15 @@ public class APQLApplet extends JApplet {
                     try {
                         JFrame frame = new JFrame();
                         frame.setTitle("Independent Frame");
-                        frame.setLocation(100, 100);
-                        //frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        frame.setLocationRelativeTo(null);
+                        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
                         //Create and set up the content pane.
                         Main main2 = new Main();
-                        main2.setMinimumSize(new Dimension(1000, 700));
                         frame.setContentPane(main2);
 
                         //Display the window.
+                        frame.setMinimumSize(new Dimension(1000, 700));
                         frame.pack();
                         frame.setVisible(true);
 
