@@ -34,6 +34,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.apromore.config.Site;
 import org.apromore.filestore.webdav.exceptions.UnauthenticatedException;
 import org.apromore.filestore.webdav.exceptions.WebDavException;
 import org.apromore.filestore.webdav.locking.ResourceLocks;
@@ -65,9 +66,6 @@ public class WebDavSpringServlet extends HttpServletBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDavSpringServlet.class.getName());
     private static final boolean READ_ONLY = false;
-
-    private static final String PROPERTY_FILE = "org/apromore/config/site.properties";
-    private static final String FILESTORE_DIR = "filestore.dir";
 
     protected static MessageDigest MD5_HELPER;
     private ResourceLocks resLocks;
@@ -223,13 +221,8 @@ public class WebDavSpringServlet extends HttpServletBean {
             }
         } else if (rootPath.equals("*APROMORE-CONFIG*")) {
             try {
-                InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE);
-
-                Properties properties = new Properties();
-                properties.load(inputStream);
-
-                rootPath = properties.getProperty(FILESTORE_DIR);
-            } catch (IOException e) {
+                rootPath = Site.getFilestoreDir();
+            } catch (Exception e) {
                 throw new WebDavException("Unable to initialize rootpath using *APROMORE-CONFIG*", e);
             }
         }

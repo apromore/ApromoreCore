@@ -89,39 +89,21 @@
                     <keypass>${dsig.keypass}</keypass>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>../../site.properties</file>
-                            </files>
-                        </configuration>
-                   </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
   <dependencies>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>3.8.1</version>
+          <scope>test</scope>
+      </dependency>
 
-	  <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
+      <dependency>
+          <groupId>org.apromore</groupId>
+          <artifactId>manager-client</artifactId>
       </dependency>
       <dependency>
           <groupId>org.apromore</groupId>
@@ -136,29 +118,34 @@
           <artifactId>sardine</artifactId>
       </dependency>
 
-		<dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkbind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zul</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkplus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zhtml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkspring-core</artifactId>
-        </dependency>
+      <dependency>
+          <groupId>org.zkoss.zk</groupId>
+          <artifactId>zkbind</artifactId>
+      </dependency>
       <dependency>
           <groupId>org.zkoss.zk</groupId>
           <artifactId>zul</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.zkoss.zk</groupId>
+          <artifactId>zkplus</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.zkoss.zk</groupId>
+          <artifactId>zhtml</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.zkoss.zk</groupId>
+          <artifactId>zkspring-core</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.zkoss.zk</groupId>
+          <artifactId>zul</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.deckfour.xes</groupId>
+          <artifactId>OpenXES</artifactId>
+          <scope>runtime</scope>
       </dependency>
       <dependency>
           <groupId>org.jsoup</groupId>
