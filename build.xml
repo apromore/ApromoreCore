@@ -5,13 +5,6 @@
         Supports deployment of Apromore to Eclipse Virgo.
     </description>
 
-    <!-- Per-site properties (network address, directories to use, etc) -->
-    <property file="site.properties"/>
-
-    <!-- Change this property to select a different database plugin for Deployment!
-         You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available. -->
-    <property name="database-name" value="mysql"/>
-
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="dir-sups" location="${basedir}/Supplements"/>
     <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
@@ -48,10 +41,11 @@
     </fileset>
 
 
-
-
     <!-- Project Setup -->
-    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools, apromore-site-config"/>
+    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools">
+        <!-- Substitute fields from site.properties into lower level configuration files -->
+        <copy file="site.properties" tofile="Apromore-Config/src/main/resources/org/apromore/config/site.properties" overwrite="true"/>
+    </target>
 
     <target name="apromore-load-libs">
         <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
@@ -84,11 +78,6 @@
             <arg value="clean"/>
             <arg value="install"/>
         </exec>
-    </target>
-
-    <target name="apromore-site-config">
-        <!-- Substitute fields from site.properties into lower level configuration files -->
-        <copy file="site.properties" tofile="Apromore-Config/src/main/resources/org/apromore/config/site.properties" overwrite="true"/>
     </target>
 
 
