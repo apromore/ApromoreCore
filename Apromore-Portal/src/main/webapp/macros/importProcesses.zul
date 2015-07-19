@@ -11,7 +11,7 @@
             <rows>
                 <row>
                     <label value="File to upload"/>
-                    <button id="uploadButton" label="Browse" upload="true"/>
+                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1"/>
                     <label id="filenameLabel" value=""/>
                 </row>
                 <row spans="1,2">

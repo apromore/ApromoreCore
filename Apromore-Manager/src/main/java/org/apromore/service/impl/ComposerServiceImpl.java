@@ -86,7 +86,7 @@ public class ComposerServiceImpl implements ComposerService {
     private Canonical composeFragment(FragmentVersion fv) {
         Canonical canonical = new Canonical();
         canonical = gService.fillNodesByFragment(canonical, fv.getUri());
-        canonical = gService.fillEdgesByFragmentURI(canonical, fv.getUri());
+        canonical = gService.fillEdgesByFragmentURINoError(canonical, fv.getUri());
         return canonical;
     }
 
