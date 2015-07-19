@@ -32,6 +32,7 @@ import javax.servlet.ServletContext;
 
 import com.signavio.platform.core.PlatformProperties;
 import com.signavio.platform.exceptions.InitializationException;
+import org.apromore.config.Site;
 
 /**
  * Read the properties from the web.xml file
@@ -52,14 +53,7 @@ public class FsPlatformPropertiesImpl implements PlatformProperties {
 	public FsPlatformPropertiesImpl(ServletContext context) {
 		supportedBrowserEditor = context.getInitParameter("supportedBrowserEditor");
 		
-		Properties props = new Properties();
-		try {
-			props.load(this.getClass().getClassLoader().getResourceAsStream("configuration.properties"));
-		} catch (IOException e) {
-			throw new InitializationException(e);
-		}
-		
-		String tempRootDirectoryPath = props.getProperty("fileSystemRootDirectory");
+		String tempRootDirectoryPath = Site.getEditorDir();
 		System.out.println("ROOT: " +tempRootDirectoryPath );
 		if (tempRootDirectoryPath.endsWith(File.separator)) {
 			rootDirectoryPath = tempRootDirectoryPath.substring(0, tempRootDirectoryPath.length()-1);
@@ -67,7 +61,7 @@ public class FsPlatformPropertiesImpl implements PlatformProperties {
 			rootDirectoryPath = tempRootDirectoryPath;
 		}
 		
-		serverName = props.getProperty("host");
+		serverName = "http://" + Site.getHost() + ":" + Site.getPort();
 		platformUri = context.getContextPath() + "/p";
 		explorerUri = context.getContextPath() + "/explorer";
 		editorUri = context.getContextPath() + "/editor";

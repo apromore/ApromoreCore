@@ -24,6 +24,10 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
         </dependency>
         <dependency>
@@ -174,6 +178,13 @@
                         </goals>
                         <configuration>
                             <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apromore</groupId>
+                                    <artifactId>config</artifactId>
+                                    <version>1.1</version>
+                                    <outputDirectory>${basedir}/platform/WebContent/WEB-INF/lib</outputDirectory>
+                                    <destFileName>apromore-config.jar</destFileName>
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.deckfour.xes</groupId>
                                     <artifactId>OpenXES</artifactId>
