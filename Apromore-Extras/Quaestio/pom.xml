@@ -86,35 +86,9 @@
                     <keypass>${dsig.keypass}</keypass>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>../../site.properties</file>
-                            </files>
-                        </configuration>
-                   </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
-	<!-- Needed for LiveConnect
-        <dependency>
-            <groupId>java</groupId>
-            <artifactId>plugin</artifactId>
-            <version>1.7.0</version>
-            <scope>provided</scope>
-        </dependency>
-	-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>
@@ -150,6 +124,12 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.5.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

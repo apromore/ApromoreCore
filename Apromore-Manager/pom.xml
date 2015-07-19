@@ -50,6 +50,7 @@
                             com.mysql.jdbc;bundle-version="[5.1.31,6.0)"
                         </Require-Bundle>
                         <Import-Bundle>
+                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             org.springframework.data.jpa;bundle-version="[1.1,2.0)",
                             org.springframework.data.core;bundle-version="[1.3,2.0)",
                             org.eclipse.persistence.jpa;bundle-version="[2.4,3.0)",
@@ -138,30 +139,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!-- substitute site.properties into apromore.properties -->
-        <!--
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>false</filtering>
-                <includes>
-                    <include>apromore.properties,datasource.properties,logback.xml,META-INF/**</include>
-                </includes>
-                <excludes>
-                    <exclude>apromore.properties</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>apromore.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        -->
     </build>
 
     <dependencies>
@@ -251,6 +228,11 @@
         </dependency>
 
         <!-- Clients -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>config</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-ws-model</artifactId>

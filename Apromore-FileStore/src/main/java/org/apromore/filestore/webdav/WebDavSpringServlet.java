@@ -25,13 +25,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Properties;
 
+import org.apromore.config.Site;
 import org.apromore.filestore.webdav.exceptions.UnauthenticatedException;
 import org.apromore.filestore.webdav.exceptions.WebDavException;
 import org.apromore.filestore.webdav.locking.ResourceLocks;
@@ -215,6 +218,12 @@ public class WebDavSpringServlet extends HttpServletBean {
                 rootPath = file.substring(0, ix).replace('/', File.separatorChar);
             } else {
                 throw new WebDavException("Could not determine root of war file. Can't extract from path '" + file + "' for this webdav container");
+            }
+        } else if (rootPath.equals("*APROMORE-CONFIG*")) {
+            try {
+                rootPath = Site.getFilestoreDir();
+            } catch (Exception e) {
+                throw new WebDavException("Unable to initialize rootpath using *APROMORE-CONFIG*", e);
             }
         }
         return new File(rootPath);

@@ -71,8 +71,8 @@
         </init-param>
         <init-param>
             <param-name>rootpath</param-name>
-            <param-value>@FILESTORE_DIR@</param-value>
-            <description>folder where webdav content on the local filesystem is stored (*WAR-FILE-ROOT*)</description>
+            <param-value>*APROMORE-CONFIG*</param-value>
+            <description>folder where webdav content on the local filesystem is stored (*WAR-FILE-ROOT* and *APROMORE-CONFIG* are treated specially)</description>
         </init-param>
         <init-param>
             <param-name>servletPath</param-name>

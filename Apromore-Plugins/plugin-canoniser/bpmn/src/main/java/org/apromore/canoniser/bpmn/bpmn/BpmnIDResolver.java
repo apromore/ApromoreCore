@@ -91,7 +91,7 @@ public class BpmnIDResolver extends IDResolver {
 
     /** {@inheritDoc} */
     public final void bind(final String id, final Object ref) {
-        assert !idMap.containsKey(id);
+        assert !idMap.containsKey(id): "bind(" + id + ", " + ref + ") failed; id already mapped to " + idMap.get(id);
         idMap.put(id, ref);
     }
 
