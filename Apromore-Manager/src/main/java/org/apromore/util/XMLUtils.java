@@ -117,4 +117,30 @@ public class XMLUtils {
 
     }
 
+    /**
+     * Converts a XML String to an Object suitable to put into xs:any
+     *
+     * @param value String containing XML
+     * @return Object representation of XML
+     */
+    public static Element stringToAnyElementNoError(final String value) {
+        // If Object is NULL, then we return NULL
+        if (value == null) {
+            return null;
+        }
+        try {
+            // Otherwise return XML representation
+            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            assert documentBuilder.isNamespaceAware();
+            Element result = documentBuilder.parse(new ByteArrayInputStream(value.getBytes("UTF-8"))).getDocumentElement();
+            return result;
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            LOGGER.warn("stringToAnyElement returning JAXBElement with plain String {} instead of XML", value);
+            throw new IllegalArgumentException("Invalid Node in ANY!", e);
+        }
+
+    }
+
 }
