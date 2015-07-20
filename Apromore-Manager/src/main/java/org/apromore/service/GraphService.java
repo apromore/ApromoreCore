@@ -43,4 +43,11 @@ public interface GraphService {
      * @param fragmentURI the fragment URI.
      */
     Canonical fillEdgesByFragmentURI(Canonical procModelGraph, String fragmentURI);
+
+    /**
+     * Fill the Nodes by Fragment.
+     * @param procModelGraph the graph we are building.
+     * @param fragmentURI the fragment URI.
+     */
+    Canonical fillEdgesByFragmentURINoError(Canonical procModelGraph, String fragmentURI);
 }
