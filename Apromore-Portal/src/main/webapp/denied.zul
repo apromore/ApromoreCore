@@ -51,7 +51,7 @@
                                             </small>
                                         </h:p>
                                         <h:hr class="margin-mm"/>
-                                        <h:p>Head back to the main page and try again! <h:a href="index.zul" class="btn btn-boo" data-toggle="tab">Apromore Home</h:a></h:p>
+                                        <h:p>Head back to the main page and try again! <h:a href="login.zul" class="btn btn-boo" data-toggle="tab">Apromore Home</h:a></h:p>
                                     </h:div>
                                 </h:div>
 
