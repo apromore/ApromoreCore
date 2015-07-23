@@ -7,10 +7,10 @@ INSERT INTO native_type VALUES (5,'BPMN 2.0', 'bpmn');
 INSERT INTO native_type VALUES (6,'AML fragment', 'aml');
 
 
-INSERT INTO role VALUES (1,'80da507e-cdd7-40f4-a9f8-b2d2edb12856','Administrator','Testing description 2');
-INSERT INTO role VALUES (2,'0ecd70b4-a204-41cd-a246-e3fcef88f6fe','User','Testing');
-INSERT INTO role VALUES (3,'72503ce0-d7cd-47b3-a33c-1b741d7599a1','Manaager','Middle role');
-INSERT INTO role VALUES (4,'f8b91579-f061-47e8-9f73-e2691884058f','Manager','Middle role');
+INSERT INTO role VALUES (1,'80da507e-cdd7-40f4-a9f8-b2d2edb12856','ROLE_ADMIN','Testing description 2');
+INSERT INTO role VALUES (2,'0ecd70b4-a204-41cd-a246-e3fcef88f6fe','ROLE_USER','Testing');
+INSERT INTO role VALUES (3,'72503ce0-d7cd-47b3-a33c-1b741d7599a1','ROLE_MANAGER','Middle role');
+INSERT INTO role VALUES (4,'f8b91579-f061-47e8-9f73-e2691884058f','ROLE_MANAGER','Middle role');
 
 
 INSERT INTO user VALUES (1,'75f4a46a-bd32-4fbb-ba7a-c50d06414fac','james','2012-05-23 11:52:48','Cameron','James','2012-05-23 11:52:48',1);
