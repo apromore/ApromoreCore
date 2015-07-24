@@ -1,3 +1,5 @@
+CREATE USER apromore PASSWORD 'MAcri' ADMIN
+;
 CREATE TABLE annotation
 (
    id int auto_increment PRIMARY KEY NOT NULL,
