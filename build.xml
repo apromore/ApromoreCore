@@ -231,4 +231,28 @@
         </copy>
     </target>
 
+    <target name="create-h2">
+        <delete>
+            <fileset dir="Apromore-Assembly" includes="Manager-Repository.*"/>
+        </delete>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+        </java>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+        </java>
+    </target>
+
 </project>
