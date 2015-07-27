@@ -97,7 +97,7 @@
         <delete file="${dir-deployment}/virgo.zip"/>
     </target>
 
-    <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
+    <target name="configure-virgo" depends="check-virgo">
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
