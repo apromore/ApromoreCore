@@ -65,10 +65,6 @@ public class MainController extends BaseController {
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
-    private static final String HOST_NAME = "site.host";
-    private static final String PORT_NUMBER = "site.port";
-    private static final String VERSION_NUMBER = "version.number";
-    private static final String BUILD_DATE = "version.builddate";
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
     private MenuController menu;
