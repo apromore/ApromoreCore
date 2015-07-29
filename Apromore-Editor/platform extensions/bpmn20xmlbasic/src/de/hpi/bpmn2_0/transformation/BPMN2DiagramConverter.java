@@ -291,8 +291,10 @@ public class BPMN2DiagramConverter {
             }
 
             // Child elements
-            Process process = (Process) root;
-            flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+            if (root instanceof Process) {
+                Process process = (Process) root;
+                flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+            }
         }
 
         diagrams.add(diagram);
