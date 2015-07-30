@@ -281,6 +281,14 @@ CREATE TABLE group_process
    has_ownership bit DEFAULT 0 NOT NULL
 )
 ;
+CREATE TABLE history_event (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  status varchar(50) NOT NULL,
+  type varchar(50) NOT NULL,
+  occurDate timestamp DEFAULT NULL,
+  userId int(11) DEFAULT NULL
+)
+;
 CREATE TABLE membership
 (
    id int auto_increment PRIMARY KEY NOT NULL,
