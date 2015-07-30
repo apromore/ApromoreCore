@@ -255,4 +255,36 @@
         </java>
     </target>
 
+    <target name="populate">
+        <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
+            <arg value="-from"/> <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
+            <arg value="-to"/>   <arg value="airport"/>
+            <arg value="International departure.bpmn"/>
+            <arg value="1 Terminal entry.bpmn"/>
+            <arg value="1x Manage LAGs in belongings.bpmn"/>
+            <arg value="2 Check-in.bpmn"/>
+            <arg value="2x Finalise Check-in.bpmn"/>
+            <arg value="2x Get restricted items checked.bpmn"/>
+            <arg value="2x Get tourist refund items checked.bpmn"/>
+            <arg value="2x Perform baggage check in.bpmn"/>
+            <arg value="2x Perform preliminary check in.bpmn"/>
+            <arg value="2x Request change of name.bpmn"/>
+            <arg value="3 Security.bpmn"/>
+            <arg value="3x Undergo Secondary screening.bpmn"/>
+            <arg value="3x Undergo preparation.bpmn"/>
+            <arg value="3x Undergo security checks.bpmn"/>
+            <arg value="4 Customs and Immigration.bpmn"/>
+            <arg value="4x Evaluate Validity.bpmn"/>
+            <arg value="4x Undergo customs and immigration checks.bpmn"/>
+            <arg value="5 Boarding.bpmn"/>
+            <arg value="5x Proceed through boarding checks.bpmn"/>
+            <arg value="6 Travel document acquisition.bpmn"/>
+            <arg value="7 LAGs.bpmn"/>
+            <arg value="91 Discretionary experience 1.bpmn"/>
+            <arg value="92 Discretionary experience 2.bpmn"/>
+            <arg value="93 Discretionary experience 3.bpmn"/>
+            <arg value="94 Discretionary experience 4.bpmn"/>
+        </java>
+    </target>
+
 </project>
