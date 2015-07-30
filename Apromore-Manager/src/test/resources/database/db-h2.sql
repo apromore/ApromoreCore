@@ -132,11 +132,11 @@ CREATE TABLE cluster_assignment
 CREATE TABLE edge
 (
    id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(40),
+   uri varchar(256),
    sourceNodeId int,
    targetNodeId int,
    cancelNodeId int,
-   originalId varchar(40),
+   originalId varchar(200),
    conditionExpressionId int,
    def bit DEFAULT 0
 )
@@ -316,7 +316,7 @@ CREATE TABLE native_type
 CREATE TABLE node
 (
    id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(40),
+   uri varchar(256),
    subVersionId int,
    originalId varchar(200),
    netId varchar(200),
