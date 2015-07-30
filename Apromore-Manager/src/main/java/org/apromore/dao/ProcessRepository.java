@@ -69,7 +69,7 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
      */
     @Query("SELECT DISTINCT p FROM Process p JOIN p.groupProcesses gp JOIN gp.group g1, " +
            "User u JOIN u.groups g2 " +
-           "WHERE (p.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2)")
+           "WHERE (p.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2) ORDER BY p.id")
     Page<Process> findRootProcessesByUser(String userRowGuid, Pageable pageable);
 
     /**
@@ -81,6 +81,6 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
      */
     @Query("SELECT DISTINCT p FROM Process p JOIN p.folder f JOIN p.groupProcesses gp JOIN gp.group g1, " +
            "User u JOIN u.groups g2 " +
-           "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2)")
+           "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY p.id")
     Page<Process> findAllProcessesInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
 }
