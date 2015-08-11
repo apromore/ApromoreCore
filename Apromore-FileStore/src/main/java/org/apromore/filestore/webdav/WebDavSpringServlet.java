@@ -106,7 +106,7 @@ public class WebDavSpringServlet extends HttpServletBean {
         }
 
         File root = getFileRoot();
-        servletPath = getInitParameter("servletPath");
+        servletPath = getInitParameter("servletPath").replace("${site.filestore}", Site.getSiteFilestore());
         store = constructStore(resourceHandlerImplementation, root);
 
         lazyFolderCreationOnPut = getInitParameter("lazyFolderCreationOnPut") != null && getInitParameter("lazyFolderCreationOnPut").equals("1");

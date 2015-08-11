@@ -28,6 +28,7 @@
                     </instructions>
                 </configuration>
             </plugin>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
@@ -39,6 +40,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <overwrite>true</overwrite>
                             <outputDirectory>${basedir}/target/classes/org/apromore/config</outputDirectory>
                             <resources>
                                 <resource>

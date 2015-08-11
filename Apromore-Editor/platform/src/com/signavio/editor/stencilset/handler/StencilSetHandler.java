@@ -59,7 +59,7 @@ public class StencilSetHandler extends BasisHandler {
         String editorUri = Platform.getInstance().getPlatformProperties().getEditorUri();
         StringBuilder newUri = new StringBuilder(Platform.getInstance().getPlatformProperties().getEditorUri());
         newUri.replace(editorUri.lastIndexOf(path), editorUri.lastIndexOf(path) + path.length(), "/");
-        EDITOR_URL_PREFIX = newUri.toString();
+        EDITOR_URL_PREFIX = newUri.toString() + "/";
 
     }
 

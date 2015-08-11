@@ -89,7 +89,7 @@ ORYX.Plugins.AnimationExtension = ORYX.Plugins.AbstractPlugin.extend({
                 handler: function(){
                     if(fp.getForm().isValid()){  // TODO: find a better war to prevent isValid from being undefined
                         fp.getForm().submit({
-                            url: '/editor/editor/bpmnanimation',
+                            url: ORYX.CONFIG.EDITOR_PATH + '/editor/bpmnanimation',
                             params: {
                                 newStatus: 'delivered'
                             },
@@ -124,7 +124,7 @@ ORYX.Plugins.AnimationExtension = ORYX.Plugins.AbstractPlugin.extend({
 				}
                                	element2.setAttribute("value", data);
 
-                                window.open("/editor/editor/animation/animation.html", "_blank");
+                                window.open(ORYX.CONFIG.EDITOR_PATH + '/editor/animation/animation.html', "_blank");
                             },
                             failure:  function(fp, action) {
                                 switch (action.failureType) {
