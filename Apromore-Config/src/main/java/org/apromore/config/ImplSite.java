@@ -1,11 +1,13 @@
 package org.apromore.config;
 
-// Java 2 Standard packages
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public abstract class Site {
+/**
+ * Created by conforti on 10/08/15.
+ */
+public class ImplSite {
 
     private static final String PROPERTY_FILE = "org/apromore/config/site.properties";
 
@@ -22,19 +24,30 @@ public abstract class Site {
     private static final String SITE_EDITOR        = "site.editor";
     private static final String SITE_FILESTORE     = "site.filestore";
 
+    private String versionNumber;
+    private String buildDate;
+    private String host;
+    private String port;
+    private String editorDir;
+    private String filestoreDir;
+    private String siteManager;
+    private String sitePortal;
+    private String siteEditor;
+    private String siteFilestore;
+
     /**
      * The properties contained in {@link PROPERTY_FILE}.
      *
      * Don't access this directly; it's lazily initialized by accessing it via {@link getProperties}.
      */
-    private static Properties properties = null;
+    private Properties properties = null;
 
     /**
      * Lazily initialize {@link properties }
      *
      * @throws RuntimeException if the {@link PROPERTY_FILE} can't be found in the classpath
      */
-    private static Properties getProperties() {
+    private Properties getProperties() {
         if (properties == null) {
             try {
                 InputStream inputStream = Site.class.getClassLoader().getResourceAsStream(PROPERTY_FILE);
@@ -50,44 +63,90 @@ public abstract class Site {
 
     // Public accessors
 
-    public static String getBuildDate() {
+    public String getBuildDate() {
         return getProperties().getProperty(VERSION_BUILD_DATE);
     }
 
-    public static String getEditorDir() {
+    public String getEditorDir() {
         return getProperties().getProperty(EDITOR_DIR);
     }
 
-    public static String getFilestoreDir() {
+    public String getFilestoreDir() {
         return getProperties().getProperty(FILESTORE_DIR);
     }
 
-    public static String getSiteManager() {
+    public String getSiteManager() {
         return getProperties().getProperty(SITE_MANAGER);
     }
 
-    public static String getSitePortal() {
+    public String getSitePortal() {
         return getProperties().getProperty(SITE_PORTAL);
     }
 
-    public static String getSiteEditor() {
+    public String getSiteEditor() {
         return getProperties().getProperty(SITE_EDITOR);
     }
 
-    public static String getSiteFilestore() {
+    public String getSiteFilestore() {
         return getProperties().getProperty(SITE_FILESTORE);
     }
 
 
-    public static String getHost() {
+    public String getHost() {
         return getProperties().getProperty(SITE_HOST);
     }
 
-    public static String getPort() {
+    public String getPort() {
         return getProperties().getProperty(SITE_PORT);
     }
 
-    public static String getVersionNumber() {
+    public String getVersionNumber() {
         return getProperties().getProperty(VERSION_NUMBER);
+    }
+
+    private void setProperties(Properties properties) {
+        return;
+    }
+
+    // Public accessors
+
+    public void setBuildDate(String buildDate) {
+        return;
+    }
+
+    public void setEditorDir(String editorDir) {
+        return;
+    }
+
+    public void setFilestoreDir(String filestoreDir) {
+        return;
+    }
+
+    public void setSiteManager(String siteManager) {
+        return;
+    }
+
+    public void setSitePortal(String sitePortal) {
+        return;
+    }
+
+    public void setSiteEditor(String siteEditor) {
+        return;
+    }
+
+    public void setSiteFilestore(String siteFilestore) {
+        return;
+    }
+
+    public void setHost(String host) {
+        return;
+    }
+
+    public void setPort(String port) {
+        return;
+    }
+
+    public void setVersionNumber(String versionNumber) {
+        return;
     }
 }

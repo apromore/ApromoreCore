@@ -26,6 +26,24 @@
         <finalName>portal</finalName>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.parent.basedir}/site.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
@@ -95,7 +113,7 @@
                             org.deckfour.xes.xstream,
                             *;resolution:=optional
                         </Import-Package>
-                        <Web-ContextPath>/portal</Web-ContextPath>
+                        <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>

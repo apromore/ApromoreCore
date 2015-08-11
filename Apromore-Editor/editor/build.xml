@@ -2,6 +2,9 @@
 <project name="Signavio Core Components - Editor" default="com.signavio.editor.war">
 
 	<!-- Editor properties *************************************************** -->
+
+	<property file="../site.properties"/>
+
 	<property name="root" value="." />
 	<property name="src" value="${root}/src" />
 	<property name="data" value="${root}/data" />
@@ -114,6 +117,13 @@
 			<!-- load all sources from plugins defined in the plugins.xml-->
 			<filelist dir="${src}/scripts/Plugins/" files="${config.plugins.plugin.source}" />
 		</concat>
+
+		<loadfile property="oryx.debug.js" srcFile="${build}/oryx.debug.js"/>
+		<echo file="${build}/oryx.debug.js">
+			${oryx.debug.js}
+			ORYX.CONFIG.EDITOR_PATH = '/${site.editor}';
+		</echo>
+
 	</target>
 
 	<target name='com.signavio.editor.js.compress' depends="com.signavio.editor.js.concat">

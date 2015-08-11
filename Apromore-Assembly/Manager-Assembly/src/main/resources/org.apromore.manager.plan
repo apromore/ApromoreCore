@@ -2,9 +2,6 @@
         xmlns="http://www.eclipse.org/virgo/schema/plan"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
-    <attributes>
-        <attribute name="web.context.path" value="manager"/>
-    </attributes>
 
     <artifact type="bundle" name="org.apromore.plugin.database-h2" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.database-mysql" version="[1.1.0, 2)"/>
@@ -33,7 +30,5 @@
     <artifact type="bundle" name="org.apromore.manager-security" version="[1.1.0, 2)"/>
 
     <!-- Load the Web Application last after all the bundles it uses are loaded.-->
-    <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)">
-        <property name="header:Web-ContextPath" value="${web.context.path}"/>
-    </artifact>
+    <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)" />
 </plan>
