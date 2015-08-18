@@ -133,7 +133,6 @@
                                     <groupId>com.apql</groupId>
                                     <artifactId>apql</artifactId>
                                     <version>1.0</version>
-                                    <!--<classifier>jar-with-dependencies</classifier>-->
                                     <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
                                     <destFileName>APQL.jar</destFileName>
                                 </artifactItem>
@@ -148,7 +147,6 @@
                                     <groupId>com.processconfiguration</groupId>
                                     <artifactId>quaestio</artifactId>
                                     <version>1.0</version>
-                                    <!--<classifier>jar-with-dependencies</classifier>-->
                                     <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
                                     <destFileName>quaestio-applet.jar</destFileName>
                                 </artifactItem>
@@ -183,13 +181,20 @@
         <!-- BPMNMiner -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <version>6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>ee.ut</groupId>
+            <artifactId>prodrift</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
