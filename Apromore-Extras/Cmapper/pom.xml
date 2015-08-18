@@ -117,12 +117,6 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.springframework:org.springframework.core</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
                                     <artifact>org.springframework.ws:org.springframework.ws</artifact>
                                     <includes>
                                         <include>**</include>

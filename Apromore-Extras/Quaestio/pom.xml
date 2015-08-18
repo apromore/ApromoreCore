@@ -62,6 +62,18 @@
                                     </includes>
                                 </filter>
                                 <filter>
+                                    <artifact>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apache.httpcomponents:httpcore</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
                                     <artifact>org.apromore:cmap-schema</artifact>
                                     <includes>
                                         <include>**</include>
@@ -69,6 +81,18 @@
                                 </filter>
                                 <filter>
                                     <artifact>org.apromore:manager-client</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apromore:manager-ws-model</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework:org.springframework.beans</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
@@ -86,13 +110,13 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.springframework:org.springframework.core</artifact>
+                                    <artifact>org.springframework.ws:org.springframework.ws</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.springframework.ws:org.springframework.ws</artifact>
+                                    <artifact>org.springframework.ws:org.springframework.xml</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
@@ -183,6 +207,12 @@
         </dependency>
 
         <!-- not required for compilation, but for runtime -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
