@@ -42,10 +42,8 @@
 
 
     <!-- Project Setup -->
-    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools">
-        <!-- Substitute fields from site.properties into lower level configuration files -->
-        <copy file="site.properties" tofile="Apromore-Config/src/main/resources/org/apromore/config/site.properties" overwrite="true"/>
-    </target>
+    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools"/>
+
 
     <target name="apromore-load-libs">
         <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
@@ -255,8 +253,9 @@
         </java>
     </target>
 
-    <target name="populate">
+    <target name="install-sample-data">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
+            <!-- Configurable BPMN samples -->
             <arg value="-from"/> <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
             <arg value="-to"/>   <arg value="airport"/>
             <arg value="International departure.bpmn"/>
@@ -284,7 +283,36 @@
             <arg value="92 Discretionary experience 2.bpmn"/>
             <arg value="93 Discretionary experience 3.bpmn"/>
             <arg value="94 Discretionary experience 4.bpmn"/>
+            <!-- PQL samples -->
+            <arg value="-from"/> <arg value="Supplements/samples/pql"/>
+            <arg value="-to"/>   <arg value="pql"/>
+            <arg value="1.pnml"/>
+            <arg value="2.pnml"/>
+            <arg value="3.pnml"/>
+            <arg value="4.pnml"/>
+            <arg value="5.pnml"/>
+            <arg value="6.pnml"/>
+            <arg value="7.pnml"/>
+            <arg value="8.pnml"/>
+            <arg value="9.pnml"/>
+            <arg value="10.pnml"/>
+            <!-- Log animation samples -->
+            <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
+            <arg value="-to"/>   <arg value="repair"/>
+            <arg value="repairExample.bpmn"/>
         </java>
+        <copy todir="Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
+            <!-- Configurable BPMN samples -->
+            <fileset dir="Apromore-Extras/bpmncmap/src/test/resources">
+                <include name="*.cmap"/>
+                <include name="*.qml"/>
+            </fileset>
+            <!-- Log animation samples -->
+            <fileset dir="Supplements/samples/repairExample">
+                <include name="RepairExample20140901103825.mxml"/>
+                <include name="repairExample_complete_lifecycle_only.xes"/>
+            </fileset>
+        </copy>
     </target>
 
 </project>

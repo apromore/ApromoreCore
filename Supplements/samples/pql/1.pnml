@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+	<module>
+		<net id="petrinet" type="PTNet">
+			<place id="sid-B3BFA337-4D5B-4D3F-AB2C-591A698E46F3">
+				<initialMarking>
+					<text>1</text>
+				</initialMarking>
+			</place>
+			<place id="sid-612AF203-D514-4930-87C2-B8E6A820E968" />
+			<place id="sid-94848EBF-C062-476E-BB03-B9B230FCCF4A" />
+			<place id="sid-D5F229F9-271B-4427-A297-85875890810E" />
+			<place id="sid-3F8BEAB0-9D37-4532-AA90-39731218684D" />
+			<transition id="sid-D03CA84E-FAAB-4F7E-8D76-986DB4B81A8E">
+				<name>
+					<text>A</text>
+				</name>
+			</transition>
+			<transition id="sid-C4A1D308-36F6-4DA9-A3E6-E86AAF2247A2">
+				<name>
+					<text>B</text>
+				</name>
+			</transition>
+			<transition id="sid-5CCF46BE-C2B6-4630-A654-EE54853FA475">
+				<name>
+					<text>D</text>
+				</name>
+			</transition>
+			<transition id="sid-7087B72D-0B77-4C87-A9FE-B170EE7C3D4B">
+				<name>
+					<text>A</text>
+				</name>
+			</transition>
+			<arc
+				id="from_sid-B3BFA337-4D5B-4D3F-AB2C-591A698E46F3_to_sid-D03CA84E-FAAB-4F7E-8D76-986DB4B81A8E"
+				source="sid-B3BFA337-4D5B-4D3F-AB2C-591A698E46F3" target="sid-D03CA84E-FAAB-4F7E-8D76-986DB4B81A8E" />
+			<arc
+				id="from_sid-D03CA84E-FAAB-4F7E-8D76-986DB4B81A8E_to_sid-612AF203-D514-4930-87C2-B8E6A820E968"
+				source="sid-D03CA84E-FAAB-4F7E-8D76-986DB4B81A8E" target="sid-612AF203-D514-4930-87C2-B8E6A820E968" />
+			<arc
+				id="from_sid-612AF203-D514-4930-87C2-B8E6A820E968_to_sid-C4A1D308-36F6-4DA9-A3E6-E86AAF2247A2"
+				source="sid-612AF203-D514-4930-87C2-B8E6A820E968" target="sid-C4A1D308-36F6-4DA9-A3E6-E86AAF2247A2" />
+			<arc
+				id="from_sid-C4A1D308-36F6-4DA9-A3E6-E86AAF2247A2_to_sid-94848EBF-C062-476E-BB03-B9B230FCCF4A"
+				source="sid-C4A1D308-36F6-4DA9-A3E6-E86AAF2247A2" target="sid-94848EBF-C062-476E-BB03-B9B230FCCF4A" />
+			<arc
+				id="from_sid-94848EBF-C062-476E-BB03-B9B230FCCF4A_to_sid-5CCF46BE-C2B6-4630-A654-EE54853FA475"
+				source="sid-94848EBF-C062-476E-BB03-B9B230FCCF4A" target="sid-5CCF46BE-C2B6-4630-A654-EE54853FA475" />
+			<arc
+				id="from_sid-5CCF46BE-C2B6-4630-A654-EE54853FA475_to_sid-D5F229F9-271B-4427-A297-85875890810E"
+				source="sid-5CCF46BE-C2B6-4630-A654-EE54853FA475" target="sid-D5F229F9-271B-4427-A297-85875890810E" />
+			<arc
+				id="from_sid-D5F229F9-271B-4427-A297-85875890810E_to_sid-7087B72D-0B77-4C87-A9FE-B170EE7C3D4B"
+				source="sid-D5F229F9-271B-4427-A297-85875890810E" target="sid-7087B72D-0B77-4C87-A9FE-B170EE7C3D4B" />
+			<arc
+				id="from_sid-7087B72D-0B77-4C87-A9FE-B170EE7C3D4B_to_sid-3F8BEAB0-9D37-4532-AA90-39731218684D"
+				source="sid-7087B72D-0B77-4C87-A9FE-B170EE7C3D4B" target="sid-3F8BEAB0-9D37-4532-AA90-39731218684D" />
+		</net>
+		<finalmarkings>
+			<marking>
+				<place idref="sid-3F8BEAB0-9D37-4532-AA90-39731218684D">
+					<text>1</text>
+				</place>
+			</marking>
+		</finalmarkings>
+	</module>
+</pnml>

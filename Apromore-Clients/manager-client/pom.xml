@@ -35,14 +35,6 @@
             <artifactId>OpenXES</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-        </dependency>
 
         <!-- Pro Drift Dependancies -->
         <dependency>
