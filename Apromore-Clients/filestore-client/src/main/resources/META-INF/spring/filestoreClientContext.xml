@@ -7,7 +7,7 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="apromore-filestore-client.properties"/>
+    <context:property-placeholder location="classpath:/org/apromore/config/site.properties"/>
 
     <bean id="fileStoreClient" class="org.apromore.filestore.client.FileStoreServiceClient">
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="fileStoreServiceTemplate" />
@@ -15,7 +15,7 @@
 
     <bean id="fileStoreServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${port}/${filestore-url}">
+          p:defaultUri="http://${site.host}:${site.port}/${site.filestore}">
         <constructor-arg ref="messageFactory"/>
     </bean>
 
@@ -39,7 +39,7 @@
 
     <bean id="fileStoreExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${externalport}/${filestore-url}">
+          p:defaultUri="http://${site.host}:${site.externalport}/${site.filestore}">
         <constructor-arg ref="messageFactory"/>
     </bean>
 </beans>

@@ -53,12 +53,7 @@ import org.apromore.pnml.PnmlType;
 
 public class PNML2Canonical {
 
-    private long ids = 0; //System.currentTimeMillis();
-
     DataHandler data = new DataHandler();
-    TranslatePetriNet tpn = new TranslatePetriNet();
-    RemoveDuplicateXORS removeDuplicatexors = new RemoveDuplicateXORS();
-
 
     public CanonicalProcessType getCPF() {
         return data.getCanonicalProcess();
@@ -84,29 +79,22 @@ public class PNML2Canonical {
      * @throws CanoniserException
      * @since 1.0
      */
-    /*
-    public PNML2Canonical(PnmlType pnml) throws CanoniserException {
-        removeDuplicatexors.remove(pnml, data);
-        main(pnml);
-    }
-    */
     public PNML2Canonical(final PnmlType pnml,
                           final String   filename,
                           final boolean  isCpfTaskPnmlTransition,
                           final boolean  isCpfEdgePnmlPlace) throws CanoniserException {
 
-        removeDuplicatexors.remove(pnml, data);
+        RemoveDuplicateXORS.remove(pnml, data);
         main(pnml, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace);
         if (filename != null) {
-            new CheckForSubnet(pnml, filename, data.getRootid());
+            new CheckForSubnet(pnml, filename, data.getRootid(), data);
         }
     }
 
     public PNML2Canonical(final PnmlType pnml,
-                          final long     id,
                           final boolean  isCpfTaskPnmlTransition,
                           final boolean  isCpfEdgePnmlPlace) throws CanoniserException {
-        this.ids = id;
+
         main(pnml, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace);
     }
 
@@ -124,12 +112,10 @@ public class PNML2Canonical {
             for (org.apromore.pnml.NetType pnet : pnml.getNet()) {
                 NetType net = CpfObjectFactory.getInstance().createNetType();
                 data.setNet(net);
-                tpn.setValues(data, ids);
-                tpn.translatePetriNet(pnet);
-                ids = tpn.getIds();
-                data.put_id_map(pnet.getId(), String.valueOf(ids));
-                data.setRootId(ids);
-                data.getNet().setId(String.valueOf(ids++));
+                TranslatePetriNet.translatePetriNet(pnet, data);
+                data.put_id_map(pnet.getId(), String.valueOf(data.getIds()));
+                data.setRootId(data.getIds());
+                data.getNet().setId(String.valueOf(data.nextId()));
                 data.getCanonicalProcess().getNet().add(data.getNet());
             }
         }

@@ -20,6 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.config.Site;
 import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
@@ -64,9 +65,6 @@ public class MainController extends BaseController {
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
-    private static final String HOST_NAME = "Host";
-    private static final String VERSION_NUMBER = "version.number";
-    private static final String BUILD_DATE = "version.builddate";
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
     private MenuController menu;
@@ -699,14 +697,9 @@ public class MainController extends BaseController {
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
-
-        Properties properties = new Properties();
-        properties.load(inputStream);
-
-        setHost(properties.getProperty(HOST_NAME));
-        setVersionNumber(properties.getProperty(VERSION_NUMBER));
-        setBuildDate(properties.getProperty(BUILD_DATE));
+        setHost("http://" + Site.getHost() + ":" + Site.getPort());
+        setVersionNumber(Site.getVersionNumber());
+        setBuildDate(Site.getBuildDate());
     }
 
     /* From the data in the properties automagically update the label in the header. */

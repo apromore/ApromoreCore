@@ -1,6 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.bpmnminer.CandidatesEntitiesController;
 import org.apromore.portal.dialogController.bpmnminer.PrimaryKeyController;
@@ -10,16 +9,11 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import org.processmining.models.graphbased.directed.conceptualmodels.ConceptualModel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.Data;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.ForeignKeyData;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -27,7 +21,6 @@ import org.zkoss.zul.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Created by conforti on 10/04/15.
@@ -45,13 +38,13 @@ public class BPMNMinerController extends BaseController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            "Heusistics Miner ProM 5.2 without unused relationships",
+            "Heuristics Miner ProM 5.2 without unused relationships",
             "Inductive Miner",
-            "Heusistics Miner ProM 6",
+            "Heuristics Miner ProM 6",
             "Fodina Miner",
             "Alpha Algorithm",
             "ILP Miner",
-            "Heusistics Miner ProM 5.2 with unused relationships"
+            "Heuristics Miner ProM 5.2 with unused relationships"
     };
     private String[] arrayDependencyAlgorithms = new String[] {
             "Normal",
@@ -141,11 +134,11 @@ public class BPMNMinerController extends BaseController {
      * @throws InterruptedException
      */
     private void uploadFile(UploadEvent event) {
-            logFile = event.getMedia();
-            l.setStyle("color: blue");
-            l.setValue(logFile.getName());
-            logByteArray = logFile.getByteData();
-            logFileName = logFile.getName();
+        logFile = event.getMedia();
+        l.setStyle("color: blue");
+        l.setValue(logFile.getName());
+        logByteArray = logFile.getByteData();
+        logFileName = logFile.getName();
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {

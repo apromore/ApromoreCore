@@ -25,15 +25,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.dom.DOMSource;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.processconfiguration.ConfigurationAnnotation;
-import com.processconfiguration.TGatewayType;;
-import com.processconfiguration.Variants;
+import com.processconfiguration.TGatewayType;
 import org.apromore.common.Constants;
 import org.apromore.dao.EdgeRepository;
 import org.apromore.dao.NodeRepository;
@@ -154,6 +150,58 @@ public class GraphServiceImpl implements GraphService {
                         }
                     } else {
                         cpfEdge.addAttribute(attribute.getName(), attribute.getValue(), XMLUtils.stringToAnyElement(attribute.getAny()));
+                    }
+                }
+            } else {
+                if (v1 == null && v2 != null) {
+                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentURI);
+                }
+                if (v2 == null && v1 != null) {
+                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in fragment " + fragmentURI);
+                }
+                if (v1 == null && v2 == null) {
+                    LOGGER.info("Null source and target nodes found for an edge in fragment " + fragmentURI);
+                }
+            }
+        }
+        return procModelGraph;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Canonical fillEdgesByFragmentURINoError(final Canonical procModelGraph, final String fragmentURI) {
+        List<Edge> edges = edgeRepo.getEdgesByFragmentURI(fragmentURI);
+        for (Edge edge : edges) {
+            CPFNode v1 = procModelGraph.getNode(edge.getSourceNode().getUri());
+            CPFNode v2 = procModelGraph.getNode(edge.getTargetNode().getUri());
+            if (v1 != null && v2 != null) {
+                CPFEdge cpfEdge = new CPFEdge(procModelGraph, edge.getOriginalId(), v1, v2);
+
+                if (edge.getConditionExpression() != null) {
+                    CPFExpression cpfExpression = new CPFExpression();
+                    cpfExpression.setDescription( edge.getConditionExpression().getDescription() );
+                    cpfExpression.setExpression(  edge.getConditionExpression().getExpression()  );
+                    cpfExpression.setLanguage(    edge.getConditionExpression().getLanguage()    );
+                    cpfExpression.setReturnType(  edge.getConditionExpression().getReturnType()  );
+                    cpfEdge.setConditionExpr(cpfExpression);
+                }
+
+                if (edge.getDef() != null) {
+                    cpfEdge.setDefault(edge.getDef());
+                }
+
+                cpfEdge.setOriginalId(edge.getOriginalId());
+
+                for (EdgeAttribute attribute: edge.getAttributes()) {
+                    if ("bpmn_cpf/extensions".equals(attribute.getName())) {
+                        Element element = XMLUtils.stringToAnyElementNoError(attribute.getAny());
+                        if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurationAnnotation".equals(element.getLocalName())) {
+                            cpfEdge.addAttribute("bpmn_cpf/extensions", null, createConfigurationAnnotation(element, procModelGraph));
+                        } else {
+                            cpfEdge.addAttribute("bpmn_cpf/extensions", null, element);
+                        }
+                    } else {
+                        cpfEdge.addAttribute(attribute.getName(), attribute.getValue(), XMLUtils.stringToAnyElementNoError(attribute.getAny()));
                     }
                 }
             } else {
@@ -402,7 +450,7 @@ public class GraphServiceImpl implements GraphService {
                     if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurationAnnotation".equals(element.getLocalName())) {
                         cpfNode.addAttribute("bpmn_cpf/extensions", null, createConfigurationAnnotation(element, procModelGraph));
                     } else if ("http://www.processconfiguration.com".equals(element.getNamespaceURI()) && "configurable".equals(element.getLocalName())) {
-                        ((CPFNode) cpfNode).setConfigurable(true);
+                        cpfNode.setConfigurable(true);
                     } else {
                         cpfNode.addAttribute("bpmn_cpf/extensions", null, XMLUtils.stringToAnyElement(attribute.getAny()));
                     }

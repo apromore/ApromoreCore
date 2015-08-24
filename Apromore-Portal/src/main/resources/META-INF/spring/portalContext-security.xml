@@ -8,7 +8,6 @@
     <beans:bean id="resetPassword" class="org.apromore.portal.servlet.ResetPasswordHttpServletRequestHandler" />
     <beans:bean id="newUserRegistration" class="org.apromore.portal.servlet.NewUserRegistrationHttpServletRequestHandler" />
 
-
     <!-- Http Security Setup -->
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
@@ -45,14 +44,16 @@
         <beans:property name="remoteAuthenticationManager" ref="remoteAuthenticationManager"/>
     </beans:bean>
 
+    <beans:bean id="site" class="org.apromore.config.ImplSite" />
+
     <beans:bean id="remoteAuthenticationManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-        <beans:property name="serviceUrl" value="http://localhost:9000/manager/remoting/remoteAuth"/>
+        <beans:property name="serviceUrl" value="#{'http://localhost:' + site.port + '/' + site.siteManager + '/remoting/remoteAuth'}"/>
         <beans:property name="serviceInterface" value="org.apromore.security.ApromoreRemoteAuthenticationManager"/>
         <beans:property name="httpInvokerRequestExecutor" ref="httpInvokerRequestExecutor"/>
     </beans:bean>
 
     <beans:bean id="remoteUserDetailsService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-        <beans:property name="serviceUrl" value="http://localhost:9000/manager/remoting/remoteUserDetails"/>
+        <beans:property name="serviceUrl" value="#{'http://localhost:' + site.port + '/' + site.siteManager + '/remoting/remoteUserDetails'}"/>
         <beans:property name="serviceInterface" value="org.springframework.security.core.userdetails.UserDetailsService"/>
         <beans:property name="httpInvokerRequestExecutor" ref="httpInvokerRequestExecutor"/>
     </beans:bean>

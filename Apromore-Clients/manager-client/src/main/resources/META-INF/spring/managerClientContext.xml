@@ -7,7 +7,7 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="apromore-manager-client.properties"/>
+    <context:property-placeholder location="classpath:/org/apromore/config/site.properties"/>
 
     <bean id="managerClient" class="org.apromore.manager.client.ManagerServiceClient" >
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerServiceTemplate" />
@@ -27,7 +27,7 @@
 
     <bean id="managerServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${port}/${manager-url}">
+          p:defaultUri="http://${site.host}:${site.port}/${site.manager}/services/manager">
         <constructor-arg ref="messageFactory"/>
     </bean>
 
@@ -39,7 +39,7 @@
 
     <bean id="managerExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${hostname}:${externalport}/${manager-url}">
+          p:defaultUri="http://${site.host}:${site.externalport}/${site.manager}/services/manager">
         <constructor-arg ref="messageFactory"/>
     </bean>
 </beans>

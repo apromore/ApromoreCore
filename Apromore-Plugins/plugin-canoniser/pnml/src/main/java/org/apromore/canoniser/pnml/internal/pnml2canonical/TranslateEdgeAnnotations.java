@@ -27,14 +27,9 @@ import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 
 
-public class TranslateEdgeAnnotations {
-    DataHandler data;
+public abstract class TranslateEdgeAnnotations {
 
-    public void setValues(DataHandler data) {
-        this.data = data;
-    }
-
-    public void addEdgeAnnotations(Object obj) {
+    static public void addEdgeAnnotations(Object obj, DataHandler data) {
         GraphicsType graphT = new GraphicsType();
         LineType line = new LineType();
         String cpfId = null;

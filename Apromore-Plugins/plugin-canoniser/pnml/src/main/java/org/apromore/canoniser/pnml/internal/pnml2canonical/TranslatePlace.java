@@ -25,20 +25,12 @@ import org.apromore.cpf.EventType;
 import org.apromore.cpf.StateType;
 import org.apromore.pnml.PlaceType;
 
-public class TranslatePlace {
+public abstract class TranslatePlace {
 
-    DataHandler data;
-    long ids;
-
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateState(PlaceType place) {
+    static public void translateState(PlaceType place, DataHandler data) {
         StateType node = new StateType();
-        data.put_id_map(place.getId(), String.valueOf(ids));
-        node.setId(String.valueOf(ids++));
+        data.put_id_map(place.getId(), String.valueOf(data.getIds()));
+        node.setId(String.valueOf(data.nextId()));
         if (place.getName() != null) {
             node.setName(place.getName().getText());
         }
@@ -46,11 +38,11 @@ public class TranslatePlace {
         data.getNet().getNode().add(node);
     }
 
-    public void translateEvent(PlaceType place) {
-        EventType node = new EventType();
-        data.put_id_map(place.getId(), String.valueOf(ids));
+    static public void translateEvent(PlaceType place, DataHandler data) {
+        data.put_id_map(place.getId(), String.valueOf(data.getIds()));
 
-        node.setId(String.valueOf(ids++));
+        EventType node = new EventType();
+        node.setId(String.valueOf(data.nextId()));
         if (place.getName() != null) {
             node.setName(place.getName().getText());
         }
@@ -58,45 +50,54 @@ public class TranslatePlace {
         data.getNet().getNode().add(node);
     }
 
-    public void translateInput(PlaceType place) {
-        EventType node = new EventType();
-        StateType state = new StateType();
-        data.setInputEdge(new EdgeType());
+    static public void translateInput(PlaceType place, DataHandler data) {
 
-        data.put_id_map(place.getId(), String.valueOf(ids));
-        node.setId(String.valueOf(ids++));
+        data.put_id_map(place.getId(), String.valueOf(data.getIds()));
+
+        // (event)
+        EventType node = new EventType();
+        node.setId(String.valueOf(data.nextId()));
         node.setName(place.getName().getText());
-        state.setId(String.valueOf(ids++));
+        node.setOriginalID(place.getId());
+        data.getNet().getNode().add(node);
+
+        // (state)
+        StateType state = new StateType();
+        state.setId(String.valueOf(data.nextId()));
         state.setName(place.getName().getText());
         data.setInputEvent(state.getId());
-        node.setOriginalID(place.getId());
-        data.getInputEdge().setId(String.valueOf(ids++));
+        data.getNet().getNode().add(state);
+
+        // (event) -(edge)-> (state)
+        data.setInputEdge(new EdgeType());
+        data.getInputEdge().setId(String.valueOf(data.nextId()));
         data.getInputEdge().setSourceId(node.getId());
         data.getInputEdge().setTargetId(state.getId());
-        data.getNet().getNode().add(node);
-        data.getNet().getNode().add(state);
     }
 
-    public void translateOutput(PlaceType place) {
+    static public void translateOutput(PlaceType place, DataHandler data) {
+
+        data.put_id_map(place.getId(), String.valueOf(data.getIds()));
+
+        // (event)
         EventType node = new EventType();
-        StateType state = new StateType();
-        data.setOutputEdge(new EdgeType());
-        data.put_id_map(place.getId(), String.valueOf(ids));
-        node.setId(String.valueOf(ids++));
+        node.setId(String.valueOf(data.nextId()));
         node.setName(place.getName().getText());
-        state.setId(String.valueOf(ids++));
+        node.setOriginalID(place.getId());
+        data.getNet().getNode().add(node);
+
+        // (state)
+        StateType state = new StateType();
+        state.setId(String.valueOf(data.nextId()));
         state.setName(place.getName().getText());
         data.setOutputState(state.getId());
-        data.getOutputEdge().setId(String.valueOf(ids++));
+        data.getNet().getNode().add(state);
+
+        // (state) -(edge)-> (node)
+        data.setOutputEdge(new EdgeType());
+        data.getOutputEdge().setId(String.valueOf(data.nextId()));
         data.getOutputEdge().setSourceId(state.getId());
         data.getOutputEdge().setTargetId(node.getId());
-        node.setOriginalID(place.getId());
-        data.getNet().getNode().add(state);
-        data.getNet().getNode().add(node);
-    }
-
-    public long getIds() {
-        return ids;
     }
 
 }

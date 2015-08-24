@@ -2,10 +2,10 @@
 <ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" version="http://www.informatik.hu-berlin.de/top/pntd/ptNetb">
     <Net id="6122020">
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="6121981">
-            <name>out</name>
+            <name>ready</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="6121980">
-            <name>out</name>
+            <name>ready</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="6121983">
             <name>low</name>

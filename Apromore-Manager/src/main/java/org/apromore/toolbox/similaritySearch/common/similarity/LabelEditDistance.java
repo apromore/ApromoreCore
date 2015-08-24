@@ -35,6 +35,9 @@ public class LabelEditDistance {
 
     public static double edTokensWithStemming(String a, String b, String delimeter, SnowballStemmer stemmer, boolean stem) {
 
+        if(a != null && b != null && a.equals(b)) return 1;
+        else if(a == null && b == null) return 1;
+
         LinkedList<String> aTokensInit = new LinkedList<String>();
         LinkedList<String> bTokensInit = new LinkedList<String>();
 
@@ -64,9 +67,15 @@ public class LabelEditDistance {
             if (aTokens.size() == 0) {
                 aTokens = removeStopWordsAndStem1(aTokensInit, stemmer);
             }
+            if (aTokens.size() == 0) {
+                aTokens = aTokensInit;
+            }
 
             if (bTokens.size() == 0) {
                 bTokens = removeStopWordsAndStem1(bTokensInit, stemmer);
+            }
+            if (bTokens.size() == 0) {
+                bTokens = bTokensInit;
             }
         }
 

@@ -45,7 +45,6 @@ public class TestMarshalingUnitTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMarshaling() throws Exception {
-        String canonical = "12345";
         ByteArrayOutputStream anf = new ByteArrayOutputStream();
         ByteArrayOutputStream cpf = new ByteArrayOutputStream();
 
@@ -60,7 +59,7 @@ public class TestMarshalingUnitTest {
 
         JAXBElement<PnmlType> pnml = (JAXBElement<PnmlType>) u.unmarshal(source);
         PnmlType pkg = pnml.getValue();
-        PNML2Canonical pnml2canonical = new PNML2Canonical(pkg, Long.parseLong(canonical), false, false);
+        PNML2Canonical pnml2canonical = new PNML2Canonical(pkg, false, false);
 
         jc = JAXBContext.newInstance("org.apromore.anf");
         Marshaller m_anf = jc.createMarshaller();

@@ -291,8 +291,10 @@ public class BPMN2DiagramConverter {
             }
 
             // Child elements
-            Process process = (Process) root;
-            flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+            if (root instanceof Process) {
+                Process process = (Process) root;
+                flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+            }
         }
 
         diagrams.add(diagram);
@@ -347,7 +349,9 @@ public class BPMN2DiagramConverter {
         for (BoundaryEvent boundaryEvent: boundaryEventShapeMap.keySet()) {
             BasicShape attachedTo = subProcessShapeMap.get(boundaryEvent.getAttachedToRef());
             if (attachedTo != null) {
-                attachedTo.addChildShape(boundaryEventShapeMap.get(boundaryEvent));
+                BasicShape boundaryEventShape = boundaryEventShapeMap.get(boundaryEvent);
+                attachedTo.addChildShape(boundaryEventShape);
+                attachedTo.addOutgoingAndUpdateItsIncomings(boundaryEventShape);
             } else {
                 throw new RuntimeException("Unable to attach boundary event " + boundaryEvent.getId() + " to " + boundaryEvent.getAttachedToRef().getId());
             }

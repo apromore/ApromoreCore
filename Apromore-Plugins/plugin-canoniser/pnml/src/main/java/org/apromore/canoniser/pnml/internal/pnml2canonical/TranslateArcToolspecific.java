@@ -26,24 +26,15 @@ import org.apromore.anf.CpfTypeEnum;
 import org.apromore.anf.SimulationType;
 import org.apromore.pnml.ArcToolspecificType;
 
-public class TranslateArcToolspecific {
-    DataHandler data;
-    long ids;
-    String cpfId = null;
+public abstract class TranslateArcToolspecific {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-
-    public void translate(Object obj) {
+    static public void translate(Object obj, DataHandler data) {
         org.apromore.pnml.ArcType element = (org.apromore.pnml.ArcType) obj;
         List<ArcToolspecificType> pnmlArcToolSpecific = element.getToolspecific();
 
         SimulationType probabillity = new SimulationType();
 
-        cpfId = data.get_id_map_value(element.getId());
+        String cpfId = data.get_id_map_value(element.getId());
         if (element.getToolspecific() != null) {
             for (Object obj1 : pnmlArcToolSpecific) {
                 if (obj1 instanceof ArcToolspecificType) {
@@ -60,7 +51,4 @@ public class TranslateArcToolspecific {
         }
     }
 
-    public long getIds() {
-        return ids;
-    }
 }

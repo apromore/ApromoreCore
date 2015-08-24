@@ -27,28 +27,17 @@ import org.apromore.cpf.TaskType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 
-public class TranslateTransition {
+public abstract class TranslateTransition {
 
-    DataHandler data;
-    long ids;
-
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translateTask(TransitionType tran) {
-        data.put_id_map(tran.getId(), String.valueOf(ids));
-        TranslateTrigger tt = new TranslateTrigger();
-        tt.setValues(data, ids);
-        boolean translated = tt.translateTrigger(tran);
-        ids = tt.getIds();
+    static public void translateTask(TransitionType tran, DataHandler data) {
+        data.put_id_map(tran.getId(), String.valueOf(data.getIds()));
+        boolean translated = TranslateTrigger.translateTrigger(tran, data);
 
         if (!translated) {
             TaskType task = new TaskType();
 
-            data.put_objectmap(String.valueOf(ids), task);
-            task.setId(String.valueOf(ids++));
+            data.put_objectmap(String.valueOf(data.getIds()), task);
+            task.setId(String.valueOf(data.nextId()));
             if (tran.getName() != null) {
                 task.setName(tran.getName().getText());
             }
@@ -64,10 +53,7 @@ public class TranslateTransition {
                                 && transitionToolspecific.getTrigger()
                                 .getType() == 200) {
                             if (transitionToolspecific.getTransitionResource() == null) {
-
-                                task.getResourceTypeRef().add(
-                                        new ResourceTypeRefType());
-
+                                task.getResourceTypeRef().add(new ResourceTypeRefType());
                             }
                         }
                         if (transitionToolspecific.isSubprocess() != null) {
@@ -79,10 +65,6 @@ public class TranslateTransition {
             data.getNet().getNode().add(task);
 
         }
-    }
-
-    public long getIds() {
-        return ids;
     }
 
 }

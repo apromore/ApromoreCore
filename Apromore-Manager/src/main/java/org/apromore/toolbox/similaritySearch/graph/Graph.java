@@ -419,7 +419,10 @@ public class Graph {
             if (v.getChildren().size() == 0 && v.getParents().size() == 0) {
                 vToRemove2.add(v);
             } else if ((v.getType().equals(Vertex.Type.function)
-                    || v.getType().equals(Vertex.Type.event))
+                    || v.getType().equals(Vertex.Type.event)
+                    || v.getType().equals(Vertex.Type.state)
+                    || v.getType().equals(Vertex.Type.node))
+                    && v.getChildren().size() == 1 && v.getParents().size() ==1
                     && (v.getLabel() == null || v.getLabel().length() == 0)) {
                 if(v.getType().equals(Vertex.Type.event) && ((v.getChildren().size() == 0 && v.getParents().size() > 0) || (v.getChildren().size() > 0 && v.getParents().size() == 0))) {
                     continue;

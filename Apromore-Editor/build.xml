@@ -2,9 +2,9 @@
 <project name="Signavio Core Components - Main Build Script" >
 
     <!-- PROPERTIES -->
-    <property file="../site.properties"/>
     <property file="user.properties"/>
     <property file="build.properties"/>
+    <property file="site.properties"/>
 
     <property name="build" value="build"/>
     <property name="libs" value="libs"/>
@@ -30,10 +30,10 @@
         <loadfile property="explorer.js" srcFile="${explorer}/explorer.js"/>
         <echo file="${build}/explorer/explorer.js">${explorer.js}
             ${version.js}
-            Signavio.Config.EXPLORER_PATH = '/${war}/explorer';
-            Signavio.Config.EDITOR_PATH = '/${war}/editor';
-            Signavio.Config.BACKEND_PATH = '/${war}/p';
-            Signavio.Config.LIBS_PATH = '/${war}/libs';
+            Signavio.Config.EXPLORER_PATH = '/${site.editor}/explorer';
+            Signavio.Config.EDITOR_PATH = '/${site.editor}/editor';
+            Signavio.Config.BACKEND_PATH = '/${site.editor}/p';
+            Signavio.Config.LIBS_PATH = '/${site.editor}/libs';
 
             Signavio.Config.DIAGRAMS_IMAGE_PATH = Signavio.Config.EXPLORER_PATH + "/src/img"
             Signavio.Config.STENCILSET_EXTENSION_PATH = Signavio.Config.EDITOR_PATH + "/stencilsets/extensions/";
@@ -68,7 +68,7 @@
         <ant antfile="build.xml" target="com.signavio.platform.compile" dir="${platform}" inheritall="false"/>
 
         <!-- Build War -->
-        <war destfile="${target}/${war}.war" webxml="${platform}/WebContent/WEB-INF/web.xml" update="true">
+        <war destfile="${target}/${site.editor}.war" webxml="${platform}/WebContent/WEB-INF/web.xml" update="true">
             <classes dir="${platform}/target/classes"/>
             <webinf dir="${platform}/WebContent/WEB-INF"/>
             <metainf dir="${platform}/WebContent/META-INF"/>

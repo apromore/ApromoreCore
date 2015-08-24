@@ -26,6 +26,24 @@
         <finalName>portal</finalName>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.parent.basedir}/site.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
@@ -45,6 +63,7 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
+                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
@@ -94,7 +113,7 @@
                             org.deckfour.xes.xstream,
                             *;resolution:=optional
                         </Import-Package>
-                        <Web-ContextPath>/portal</Web-ContextPath>
+                        <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>
@@ -114,7 +133,6 @@
                                     <groupId>com.apql</groupId>
                                     <artifactId>apql</artifactId>
                                     <version>1.0</version>
-                                    <!--<classifier>jar-with-dependencies</classifier>-->
                                     <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
                                     <destFileName>APQL.jar</destFileName>
                                 </artifactItem>
@@ -129,7 +147,6 @@
                                     <groupId>com.processconfiguration</groupId>
                                     <artifactId>quaestio</artifactId>
                                     <version>1.0</version>
-                                    <!--<classifier>jar-with-dependencies</classifier>-->
                                     <outputDirectory>${project.build.directory}/portal/applets</outputDirectory>
                                     <destFileName>quaestio-applet.jar</destFileName>
                                 </artifactItem>
@@ -157,19 +174,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!-- substitute site.properties into apromore.properties -->
-        <!--
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <targetPath>${basedir}/target/classes</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/apromore.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        -->
     </build>
 
     <dependencies>
@@ -177,13 +181,20 @@
         <!-- BPMNMiner -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <version>6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
             <version>1.0</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>ee.ut</groupId>
+            <artifactId>prodrift</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
@@ -199,6 +210,10 @@
         </dependency>
 
         <!-- Client -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>

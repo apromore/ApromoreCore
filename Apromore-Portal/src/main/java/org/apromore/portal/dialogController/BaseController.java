@@ -20,6 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
+import org.apromore.config.Site;
 import org.apromore.manager.client.ManagerService;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Window;
@@ -70,19 +71,19 @@ public class BaseController extends Window {
         String importPath = "";
         switch (nativeType) {
             case "XPDL 2.2":
-                importPath = "/editor/editor/xpdlimport";
+                importPath = "/" + Site.getSiteEditor() + "/editor/xpdlimport";
                 break;
             case "BPMN 2.0":
-                importPath = "/editor/editor/bpmnimport";
+                importPath = "/" + Site.getSiteEditor() + "/editor/bpmnimport";
                 break;
             case "PNML 1.3.2":
-                importPath = "/editor/editor/pnmlimport";
+                importPath = "/" + Site.getSiteEditor() + "/editor/pnmlimport";
                 break;
             case "YAWL 2.2":
-                importPath = "/editor/editor/yawlimport";
+                importPath = "/" + Site.getSiteEditor() + "/editor/yawlimport";
                 break;
             case "EPML 2.0":
-                importPath = "/editor/editor/epmlimport";
+                importPath = "/" + Site.getSiteEditor() + "/editor/epmlimport";
                 break;
         }
         return importPath;
@@ -92,19 +93,19 @@ public class BaseController extends Window {
         String exportPath = "";
         switch (nativeType) {
             case "XPDL 2.2":
-                exportPath = "/editor/editor/xpdlexport";
+                exportPath = "/" + Site.getSiteEditor() + "/editor/xpdlexport";
                 break;
             case "BPMN 2.0":
-                exportPath = "/editor/editor/bpmnexport";
+                exportPath = "/" + Site.getSiteEditor() + "/editor/bpmnexport";
                 break;
             case "PNML 1.3.2":
-                exportPath = "/editor/editor/pnmlexport";
+                exportPath = "/" + Site.getSiteEditor() + "/editor/pnmlexport";
                 break;
             case "YAWL 2.2":
-                exportPath = "/editor/editor/yawlexport";
+                exportPath = "/" + Site.getSiteEditor() + "/editor/yawlexport";
                 break;
             case "EPML 2.0":
-                exportPath = "/editor/editor/epmlexport";
+                exportPath = "/" + Site.getSiteEditor() + "/editor/epmlexport";
                 break;
         }
         return exportPath;

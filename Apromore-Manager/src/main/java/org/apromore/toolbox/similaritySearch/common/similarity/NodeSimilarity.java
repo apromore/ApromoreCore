@@ -33,8 +33,10 @@ public class NodeSimilarity {
         // functions or events -
         // compare the labels of these nodes
         // tokenize, stem and find the similarity score
-        if ((n.getType().equals(Type.function) && m.getType().equals(Type.function)
-                || n.getType().equals(Type.event) && m.getType().equals(Type.event))
+        if (((n.getType().equals(Type.function) && m.getType().equals(Type.function))
+                || (n.getType().equals(Type.event) && m.getType().equals(Type.event))
+                || (n.getType().equals(Type.state) && m.getType().equals(Type.state))
+                || (n.getType().equals(Type.node) && m.getType().equals(Type.node)))
                 && AssingmentProblem.canMap(n, m)) {
             return LabelEditDistance.edTokensWithStemming(m.getLabel(),
                     n.getLabel(), Settings.STRING_DELIMETER,
