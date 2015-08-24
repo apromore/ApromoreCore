@@ -264,7 +264,7 @@ public class BPMNAnimationServlet extends HttpServlet {
                 JSONObject json = jsonBuilder.parseLogCollection();
                 json.put("success", true);  // Ext2JS's file upload requires this flag
                 String string = json.toString();
-                //LOGGER.info(string);
+                LOGGER.info(string);
                 jsonBuilder.clear();
                 
                 out.write(string);
