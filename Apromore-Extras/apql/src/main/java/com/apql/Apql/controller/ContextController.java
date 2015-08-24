@@ -34,6 +34,9 @@ public class ContextController {
     private QueryController queryController=QueryController.getQueryController();
     private HashMap<String,List<JLabel>> cache=new HashMap<>();
 
+    /** If not <code>null</code>, replaces the calls to the manager for process label lists with a fixed set of test data. */
+    private List<String> testProcessLabels = null;
+
     private ContextController(){}
 
     public static ContextController getContextController(){
@@ -61,6 +64,7 @@ public class ContextController {
         int queryLenght=text.length();
 
         String word=findWord(text,caretPosition);
+        System.out.println("WORD \"" + word + "\"");
 
         if(checkEmptyQuery(queryLenght, text)){
             System.out.println("EMPTY QUERY");
@@ -71,6 +75,7 @@ public class ContextController {
 //            scroll.setPreferredSize(new Dimension(30*selectClause.length, 150));
             return buildScroll(selectClause);
         }else if(indexSELECT < 0 && indexFROM < 0 && indexWHERE < 0) {
+            System.out.println("NEITHER SELECT, FROM, NOR WHERE");
             String[] selectClause=null;
 //            panel=new PopupPanel(1,1);
             if(Keywords.SELECT.toLowerCase().matches(word+"[a-zA-Z]*") || Keywords.SELECT.matches(word.toUpperCase()+"[a-zA-Z]*")){
@@ -267,11 +272,14 @@ public class ContextController {
                 e.printStackTrace();
             }
         }else if(checkWordWhereContext(word, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+            System.out.println("WHERE CONTEXT " + word);
             String[] keywords={""};
             LinkedList<String> suggests=new LinkedList<>();
             String wordWhere=findWordWhere(text,caretPosition);
+            System.out.println("  wordWhere " + wordWhere);
             System.out.println("PRIMA IF: "+wordWhere);
             if(wordWhere.matches("[a-zA-Z]+[,]") || wordWhere.matches("[\"][a-zA-Z0-9_]+[\"][,]") || word.matches("[a-zA-Z]+")) {
+                System.out.println("WITH WORD");
                 for (String str : Keywords.getKeywords()) {
                     if (str.toLowerCase().startsWith(word.toLowerCase())) {
                         suggests.add(str);
@@ -280,7 +288,7 @@ public class ContextController {
             }else if(wordWhere.matches("[a-zA-Z0-9 ]+")){
                 System.out.println("WITH SPACE");
                 try {
-                    List<String> labels= ServiceController.getManagerService().getProcessesLabels("pql.jbpt_labels","label");
+                    List<String> labels = getProcessLabels();
                     for(String label : labels){
                         if(label.startsWith(wordWhere)){
                             suggests.add(label);
@@ -290,15 +298,18 @@ public class ContextController {
                     ex.printStackTrace();
                 }
             }else if(word.matches("[a-zA-Z]+[(][\"]")){
-                System.out.println("WITH APICI");
+                System.out.println("WITH QUOTES");
                 try {
-                    List<String> labels= ServiceController.getManagerService().getProcessesLabels("pql.jbpt_labels","label");
+                    List<String> labels = getProcessLabels();
+                    System.out.println("  labels " + labels);
                     for(String label : labels){
                         suggests.add(label);
                     }
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
+            }else {
+                System.out.println("WITHOUT");
             }
             Collections.sort(suggests);
             keywords=(suggests.toArray(keywords));
@@ -307,6 +318,7 @@ public class ContextController {
             System.out.println("EMPTY WHERE CLAUSE " + word);
             return buildScroll(Keywords.getWhereClause());
         }else{
+            System.out.println("ELSE");
             String[] keywords={""};
             LinkedList<String> suggests=new LinkedList<>();
 
@@ -321,6 +333,23 @@ public class ContextController {
         }
 
         return scroll;
+    }
+
+    private List<String> getProcessLabels() {
+        if (testProcessLabels != null) {
+            return testProcessLabels;
+        } else {
+            return ServiceController.getManagerService().getProcessesLabels("pql.jbpt_labels","label");
+        }
+    }
+
+    /**
+     * Disable querying the manager for process labels.
+     *
+     * @param processLabels  the list of process labels to use, rather than ones obtained from the manager
+     */
+    void setProcessLabels(List<String> processLabels) {
+        testProcessLabels = processLabels;
     }
 
     private boolean checkEmptyQuery(int queryLenght, String text){
@@ -412,7 +441,7 @@ public class ContextController {
         return (indexSELECT >= 0 && indexFROM > 0 && indexWHERE > 0 && indexSELECT < indexFROM && indexFROM < indexWHERE && caretPosition > indexWHERE+5-charTen);
     }
 
-    private String findWord(String text, int caretPos) {
+    String findWord(String text, int caretPos) {
         String word = "";
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
