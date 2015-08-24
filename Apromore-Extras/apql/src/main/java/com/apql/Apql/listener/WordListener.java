@@ -62,7 +62,6 @@ public class WordListener implements KeyListener {
 		} else if (arg0.getKeyCode() == 17 && !viewController.isPopupOpen()) {
 
 		} else if (viewController.isPopupOpen()) {
-            Keywords.createList();
             String word=findWord();
             PopupFrame popup = viewController.getPopup();
             popup.setVisible(false);
