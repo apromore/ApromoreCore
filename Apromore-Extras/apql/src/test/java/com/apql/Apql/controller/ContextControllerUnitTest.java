@@ -35,7 +35,6 @@ public class ContextControllerUnitTest {
 
     @Before public void setup() {
         contextController.setProcessLabels(Arrays.asList("foo", "bar", "baz", "quux"));
-        Keywords.createList();
         QueryController.getQueryController().settextPane(queryText);
     }
 
