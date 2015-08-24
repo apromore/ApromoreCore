@@ -5,13 +5,6 @@
         Supports deployment of Apromore to Eclipse Virgo.
     </description>
 
-    <!-- Per-site properties (network address, directories to use, etc) -->
-    <property file="site.properties"/>
-
-    <!-- Change this property to select a different database plugin for Deployment!
-         You also need to make sure that the correct JDBC Driver JAR (compatible with OSGi) is available. -->
-    <property name="database-name" value="mysql"/>
-
     <!-- Folders used to build and deploy dependencies for Apromore. -->
     <property name="dir-sups" location="${basedir}/Supplements"/>
     <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
@@ -48,10 +41,9 @@
     </fileset>
 
 
-
-
     <!-- Project Setup -->
-    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools, apromore-site-config"/>
+    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools"/>
+
 
     <target name="apromore-load-libs">
         <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
@@ -86,91 +78,6 @@
         </exec>
     </target>
 
-    <target name="apromore-site-config">
-        <!-- Substitute fields from site.properties into lower level configuration files -->
-        <copy file="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml_template"
-            tofile="Apromore-FileStore/src/main/webapp/WEB-INF/web.xml"
-            overwrite="true">
-            <filterset>
-                <filter token="FILESTORE_DIR" value="${filestore.dir}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/manager-client/src/main/resources/apromore-manager-client.properties_template"
-            tofile="Apromore-Clients/manager-client/src/main/resources/apromore-manager-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/portal-client/src/main/resources/apromore-portal-client.properties_template"
-            tofile="Apromore-Clients/portal-client/src/main/resources/apromore-portal-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties_template"
-            tofile="Apromore-Clients/filestore-client/src/main/resources/apromore-filestore-client.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-                <filter token="SITE_EXTERNALPORT" value="${site.externalport}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Manager/src/main/resources/apromore-manager.properties_template"
-            tofile="Apromore-Manager/src/main/resources/apromore-manager.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-
-                <filter token="JDBC_DRIVER"   value="${jdbc.driver}"/>
-                <filter token="JDBC_URL"      value="${jdbc.url}"/>
-                <filter token="JDBC_USERNAME" value="${jdbc.username}"/>
-                <filter token="JDBC_PASSWORD" value="${jdbc.password}"/>
-
-                <filter token="JPA_DATABASE"          value="${jpa.database}"/>
-                <filter token="JPA_DATABASE_PLATFORM" value="${jpa.databasePlatform}"/>
-                <filter token="JPA_SHOW_SQL"          value="${jpa.showSql}"/>
-                <filter token="JPA_GENERATE_DDL"      value="${jpa.generateDDL}"/>
-
-                <filter token="PQL_ENABLE_INDEXING"         value="${pql.enableIndexing}"/>
-                <filter token="PQL_LABEL_SIMILARITY_SEARCH" value="${pql.labelSimilaritySearch}"/>
-                <filter token="PQL_LOLA_DIR"                value="${pql.lola.dir}"/>
-                <filter token="PQL_MYSQL_URL"               value="${pql.mysql.url}"/>
-                <filter token="PQL_MYSQL_USER"              value="${pql.mysql.user}"/>
-                <filter token="PQL_MYSQL_PASSWORD"          value="${pql.mysql.password}"/>
-                <filter token="PQL_POSTGRES_HOST"           value="${pql.postgres.host}"/>
-                <filter token="PQL_POSTGRES_NAME"           value="${pql.postgres.name}"/>
-                <filter token="PQL_POSTGRES_USER"           value="${pql.postgres.user}"/>
-                <filter token="PQL_POSTGRES_PASSWORD"       value="${pql.postgres.password}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml_template"
-            toFile="Apromore-Manager/src/test/resources/META-INF/spring/applicationContext-services-TEST.xml"
-            overwrite="true">
-            <filterset>
-                <filter token="PQL_LOLA_DIR" value="${pql.lola.dir}"/>
-                <filter token="PQL_MYSQL_URL" value="${pql.mysql.url}"/>
-                <filter token="PQL_MYSQL_USER" value="${pql.mysql.user}"/>
-                <filter token="PQL_MYSQL_PASSWORD" value="${pql.mysql.password}"/>
-            </filterset>
-        </copy>
-        <copy file="Apromore-Portal/src/main/resources/apromore-portal.properties_template"
-            tofile="Apromore-Portal/src/main/resources/apromore-portal.properties"
-            overwrite="true">
-            <filterset>
-                <filter token="SITE_HOST" value="${site.host}"/>
-                <filter token="SITE_PORT" value="${site.port}"/>
-            </filterset>
-        </copy>
-    </target>
-
 
     <!-- Virgo Related -->
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
@@ -188,7 +95,7 @@
         <delete file="${dir-deployment}/virgo.zip"/>
     </target>
 
-    <target name="configure-virgo" depends="check-virgo" if="virgo.installed">
+    <target name="configure-virgo" depends="check-virgo">
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
@@ -318,6 +225,92 @@
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="create-h2">
+        <delete>
+            <fileset dir="Apromore-Assembly" includes="Manager-Repository.*"/>
+        </delete>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+        </java>
+        <java classname="org.h2.tools.RunScript">
+            <classpath>
+                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+            </classpath>
+            <arg value="-url"/>
+            <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
+            <arg value="-script"/>
+            <arg file="Apromore-Manager/src/test/resources/database/db-data.sql"/>
+        </java>
+    </target>
+
+    <target name="install-sample-data">
+        <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
+            <!-- Configurable BPMN samples -->
+            <arg value="-from"/> <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
+            <arg value="-to"/>   <arg value="airport"/>
+            <arg value="International departure.bpmn"/>
+            <arg value="1 Terminal entry.bpmn"/>
+            <arg value="1x Manage LAGs in belongings.bpmn"/>
+            <arg value="2 Check-in.bpmn"/>
+            <arg value="2x Finalise Check-in.bpmn"/>
+            <arg value="2x Get restricted items checked.bpmn"/>
+            <arg value="2x Get tourist refund items checked.bpmn"/>
+            <arg value="2x Perform baggage check in.bpmn"/>
+            <arg value="2x Perform preliminary check in.bpmn"/>
+            <arg value="2x Request change of name.bpmn"/>
+            <arg value="3 Security.bpmn"/>
+            <arg value="3x Undergo Secondary screening.bpmn"/>
+            <arg value="3x Undergo preparation.bpmn"/>
+            <arg value="3x Undergo security checks.bpmn"/>
+            <arg value="4 Customs and Immigration.bpmn"/>
+            <arg value="4x Evaluate Validity.bpmn"/>
+            <arg value="4x Undergo customs and immigration checks.bpmn"/>
+            <arg value="5 Boarding.bpmn"/>
+            <arg value="5x Proceed through boarding checks.bpmn"/>
+            <arg value="6 Travel document acquisition.bpmn"/>
+            <arg value="7 LAGs.bpmn"/>
+            <arg value="91 Discretionary experience 1.bpmn"/>
+            <arg value="92 Discretionary experience 2.bpmn"/>
+            <arg value="93 Discretionary experience 3.bpmn"/>
+            <arg value="94 Discretionary experience 4.bpmn"/>
+            <!-- PQL samples -->
+            <arg value="-from"/> <arg value="Supplements/samples/pql"/>
+            <arg value="-to"/>   <arg value="pql"/>
+            <arg value="1.pnml"/>
+            <arg value="2.pnml"/>
+            <arg value="3.pnml"/>
+            <arg value="4.pnml"/>
+            <arg value="5.pnml"/>
+            <arg value="6.pnml"/>
+            <arg value="7.pnml"/>
+            <arg value="8.pnml"/>
+            <arg value="9.pnml"/>
+            <arg value="10.pnml"/>
+            <!-- Log animation samples -->
+            <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
+            <arg value="-to"/>   <arg value="repair"/>
+            <arg value="repairExample.bpmn"/>
+        </java>
+        <copy todir="Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
+            <!-- Configurable BPMN samples -->
+            <fileset dir="Apromore-Extras/bpmncmap/src/test/resources">
+                <include name="*.cmap"/>
+                <include name="*.qml"/>
+            </fileset>
+            <!-- Log animation samples -->
+            <fileset dir="Supplements/samples/repairExample">
+                <include name="RepairExample20140901103825.mxml"/>
+                <include name="repairExample_complete_lifecycle_only.xes"/>
             </fileset>
         </copy>
     </target>

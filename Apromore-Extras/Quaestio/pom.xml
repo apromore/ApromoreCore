@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.4.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -46,9 +46,96 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>WEB-INF/**</exclude>
                                     </excludes>
                                 </filter>
-                            </filters>                            <transformers>
+                                <filter>
+                                    <artifact>com.sun.xml:com.springsource.com.sun.xml.bind</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>commons-codec:commons-codec</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>javax.mail:com.springsource.javax.mail</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apache.httpcomponents:httpcore</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apromore:cmap-schema</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apromore:manager-client</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apromore:manager-ws-model</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework:org.springframework.beans</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework:org.springframework.context</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework:org.springframework.core</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework.ws:org.springframework.ws</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework.ws:org.springframework.xml</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.springframework:org.springframework.oxm</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                            <minimizeJar>true</minimizeJar>
+                            <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.processconfiguration.quaestio.Main</mainClass>
                                     <manifestEntries>
@@ -86,42 +173,26 @@
                     <keypass>${dsig.keypass}</keypass>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>../../site.properties</file>
-                            </files>
-                        </configuration>
-                   </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
-	<!-- Needed for LiveConnect
         <dependency>
-            <groupId>java</groupId>
-            <artifactId>plugin</artifactId>
-            <version>1.7.0</version>
-            <scope>provided</scope>
+            <groupId>javax.mail</groupId>
+            <artifactId>com.springsource.javax.mail</artifactId>
         </dependency>
-	-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>
+            <!--
+            <scope>provided</scope>
+            -->
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
+            <!--
+            <scope>provided</scope>
+            -->
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -147,9 +218,15 @@
 
         <!-- not required for compilation, but for runtime -->
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.5.1</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

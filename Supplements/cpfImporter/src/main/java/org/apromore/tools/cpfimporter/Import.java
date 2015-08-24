@@ -22,6 +22,7 @@ package org.apromore.tools.cpfimporter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -48,45 +49,74 @@ public final class Import {
 
     private final static String PWD = "./";
 
-    private ManagerService manager;
-    private String importRootFolder;
+    private static ManagerService manager;
 
     /* The Canonical Process Importer Starting point. */
     public static void main(String[] args) throws Exception {
-        if (args.length > 0) {
-            new Import(args[0]);
-        } else {
-            new Import("");
-        }
-    }
-
-
-    /**
-     * Default Constructor.
-     */
-    public Import(final String arg0) throws Exception {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
         manager = (ManagerService) ctx.getAutowireCapableBeanFactory().getBean("managerClient");
 
-        importRootFolder = arg0;
-        File fileArg = new File(arg0);
-        if (fileArg.isFile()) {
-            uploadProcess(new File(arg0));
-        } else {
-            processDirectory(fileArg);
+        File fromDir = new File(PWD);  // default to reading files from the current directory
+        File toDir = null;          // default to keeping the existing subdirectory path form inside the fromDir
+
+        if (args.length < 1) {
+            args = new String[] {""};
+        }
+
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]) {
+            case "-h":
+            case "-?":
+            case "-help":
+            case "--help":
+                displayHelp(System.out);
+                System.exit(0);
+                break;
+            case "-from":
+                fromDir = new File(args[++i]);
+                if (!fromDir.isDirectory()) {
+                    throw new Exception("-from " + fromDir + " is not a directory");
+                }
+                break;
+            case "-to":
+                toDir = new File(args[++i]);
+                break;
+            default:
+                File fileArg = new File(fromDir, args[i]);
+                File toArg = (toDir == null) ? new File(args[i]) : new File(toDir, args[i]);
+                if (fileArg.isFile()) {
+                    uploadProcess(fileArg, toArg);
+                }
+                else if (fileArg.isDirectory()) {
+                    processDirectory(fileArg, toArg);
+                } else {
+                    System.err.println("Argument \"" + fileArg + "\" is neither a file nor a directory");
+                    System.exit(-1);
+                }
+            }
         }
     }
 
 
-    private void processDirectory(File directory) {
+    private static void  displayHelp(PrintStream out) {
+        out.println("cpfImporter takes a list of the following arguments:\n" +
+                    "  <file>                 add a single process model\n" +
+                    "  <directory>            recursively add all process models in the directory\n" +
+                    "  -from <directory>      use the specified base directory\n" +
+                    "  -to <directory>        use the specified directory as the base folder within Apromore\n" +
+                    "  -h, -help, --help, -?  show this message");
+    }
+
+
+    private static void processDirectory(File directory, final File toDir) {
         try {
             File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        processDirectory(file);
+                        processDirectory(file, toDir);
                     } else {
-                        uploadProcess(file);
+                        uploadProcess(file, toDir);
                     }
                 }
             }
@@ -97,13 +127,13 @@ public final class Import {
 
 
     /* upload a single process into apromore. */
-    private void uploadProcess(final File file) {
+    private static void uploadProcess(final File file, final File toFile) {
         try {
             final String userName = "admin";
             final Set<RequestParameterType<?>> noCanoniserParameters = Collections.emptySet();
 
-            File parentFile = file.getParentFile();
-            String ext = FilenameUtils.getExtension(file.getName());
+            File parentFile = toFile.getParentFile();
+            String ext = FilenameUtils.getExtension(toFile.getName());
             if (getNativeFormat(ext) != null && parentFile != null) {
                 createFolder(parentFile);
                 int parentId = getFolderId(parentFile);
@@ -112,17 +142,17 @@ public final class Import {
                 String now = DateFormat.getInstance().format(new Date());
 
                 manager.importProcess(
-                    userName,                                   // user name
-                    parentId,                                   // folder ID
-                    getNativeFormat(ext),                       // native type
-                    FilenameUtils.getBaseName(file.getName()),  // process name
-                    "1.0",                                      // version number
-                    new FileInputStream(file),                  // XML serialization of the process
+                    userName,                                     // user name
+                    parentId,                                     // folder ID
+                    getNativeFormat(ext),                         // native type
+                    FilenameUtils.getBaseName(toFile.getName()),  // process name
+                    "1.0",                                        // version number
+                    new FileInputStream(file),                    // XML serialization of the process
                     "domain",
                     "documentation",
-                    now,                                        // creation timestamp
-                    now,                                        // last modification timestamp
-                    true,                                       // make public?
+                    now,                                          // creation timestamp
+                    now,                                          // last modification timestamp
+                    true,                                         // make public?
                     noCanoniserParameters);
             }
         } catch (Exception e) {
@@ -131,7 +161,7 @@ public final class Import {
     }
 
     /* creates a folder in apromore. */
-    private void createFolder(final File file) throws Exception {
+    private static void createFolder(final File file) throws Exception {
         final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
 //        String filename = file.getPath().replaceFirst("./", "");
@@ -147,11 +177,11 @@ public final class Import {
             manager.createFolder(user, file.getName(), parentId);
             LOGGER.info(file + " created");
         } else {
-            LOGGER.info(file + " already exists");
+            LOGGER.debug(file + " already exists");
         }
     }
 
-    private int getFolderId(final File file) {
+    private static int getFolderId(final File file) {
         final String user = "ad1f7b60-1143-4399-b331-b887585a0f30";
 
         List<FolderType> tree = manager.getWorkspaceFolderTree(user);
@@ -179,7 +209,7 @@ public final class Import {
         return null;
     }
 
-    private String getNativeFormat(String ext) {
+    private static String getNativeFormat(String ext) {
         if (ext.equalsIgnoreCase("epml")) {
             return "EPML 2.0";
         } else if (ext.equalsIgnoreCase("bpmn")) {

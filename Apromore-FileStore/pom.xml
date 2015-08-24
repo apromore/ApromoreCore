@@ -31,6 +31,25 @@
         <finalName>filestore</finalName>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.parent.basedir}/site.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
@@ -47,6 +66,7 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
+                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
@@ -74,7 +94,7 @@
                             net.sf.cglib.reflect,
                             *
                         </Import-Package>
-                        <Web-ContextPath>/filestore</Web-ContextPath>
+                        <Web-ContextPath>/${site.filestore}</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>
@@ -119,6 +139,10 @@
 
     <dependencies>
         <!-- Apromore Security/clients -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>config</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>

@@ -29,18 +29,13 @@ import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionType;
 
-public class RemoveDuplicateXORS {
-    RemoveDuplicateListItems removeDuplicateListItems = new RemoveDuplicateListItems();
-    PnmlType pnml;
-    List<NodeType> nodes = new LinkedList<NodeType>();
-    List<NodeType> places = new LinkedList<NodeType>();
-    List<String> arcs = new LinkedList<String>();
-    List<ArcType> delarcs = new LinkedList<ArcType>();
-    DataHandler data;
+public abstract class RemoveDuplicateXORS {
 
-    public PnmlType remove(PnmlType pnml, DataHandler data) {
-        this.pnml = pnml;
-        this.data = data;
+    public static  PnmlType remove(PnmlType pnml, DataHandler data) {
+        List<NodeType> nodes = new LinkedList<NodeType>();
+        List<NodeType> places = new LinkedList<NodeType>();
+        List<String> arcs = new LinkedList<String>();
+        List<ArcType> delarcs = new LinkedList<ArcType>();
         ArcType arc = new ArcType();
         if (pnml.getNet() != null && pnml.getNet().size() > 0) {
             for (int i = 0; i < pnml.getNet().size(); i++) {
@@ -89,7 +84,7 @@ public class RemoveDuplicateXORS {
                             arcs.add(((ArcType) obj).getId());
                         }
                     }
-                    removeDuplicateListItems.transform(arcs);
+                    RemoveDuplicateListItems.transform(arcs);
 
                     for (Object obj : pnet.getArc()) {
                         if (obj instanceof ArcType) {

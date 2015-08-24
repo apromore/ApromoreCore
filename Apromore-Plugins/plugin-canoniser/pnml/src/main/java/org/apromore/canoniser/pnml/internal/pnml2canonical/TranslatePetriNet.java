@@ -38,28 +38,11 @@ import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 
-public class TranslatePetriNet {
+public abstract class TranslatePetriNet {
 
     final static Logger LOGGER = Logger.getLogger(TranslatePetriNet.class.getCanonicalName());
 
-    TranslateOperations            to  = new TranslateOperations();
-    TranslateArc                   ta  = new TranslateArc();
-    TranslatePlace                 tts = new TranslatePlace();
-    TranslateTransition            tt  = new TranslateTransition();
-    TranslateTransitionToolspecifc ttt = new TranslateTransitionToolspecifc();
-    TranslateArcToolspecific       tat = new TranslateArcToolspecific();
-    TranslateNodeAnnotations       tna = new TranslateNodeAnnotations();
-    TranslateEdgeAnnotations       tea = new TranslateEdgeAnnotations();
-
-    private DataHandler data;
-    private long        ids;
-
-    public void setValues(final DataHandler data, final long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
-
-    public void translatePetriNet(final NetType pnet) throws CanoniserException {
+    static public void translatePetriNet(final NetType pnet, final DataHandler data) throws CanoniserException {
 
         // Populate "data" based on PNML arc sources and targets
         for (ArcType arc : pnet.getArc()) {
@@ -74,105 +57,87 @@ public class TranslatePetriNet {
             }
         }
 
-        RemoveDuplicateListItems removeDuplicateListItems = new RemoveDuplicateListItems();
-        removeDuplicateListItems.transform(data.gettargetvalues());
-        removeDuplicateListItems.transform(data.getsourcevalues());
+        RemoveDuplicateListItems.transform(data.gettargetvalues());
+        RemoveDuplicateListItems.transform(data.getsourcevalues());
 
         // Process Place
         for (PlaceType place : pnet.getPlace()) {
-            boolean hasIncomingArcs = data.getsourcevalues().contains(place.getId());
-            boolean hasOutgoingArcs = data.gettargetvalues().contains(place.getId());
+            boolean hasMultipleIncomingArcs = data.getsourcevalues().contains(place.getId());
+            boolean hasMultipleOutgoingArcs = data.gettargetvalues().contains(place.getId());
 
-            tts.setValues(data, ids);
+            if (hasMultipleIncomingArcs || hasMultipleOutgoingArcs) {  // place has arcs
+                boolean hasOutgoingArc = data.getinput().contains(place.getId());
+                boolean hasIncomingArc = data.getoutput().contains(place.getId());
 
-            if (hasIncomingArcs && hasOutgoingArcs) {  // internal to process (both incoming and outgoing arcs)
-                tts.translateState(place);
+                if (!hasOutgoingArc && hasIncomingArc) {  // start of process (only outgoing arcs)
+                    data.setOutputnode(String.valueOf(place.getId()));
+                    TranslatePlace.translateOutput(place, data);
 
-            } else if (!hasIncomingArcs && hasOutgoingArcs) {  // start of process (only outgoing arcs)
-                data.setOutputnode(String.valueOf(place.getId()));
-                tts.translateOutput(place);
+                } else if (hasOutgoingArc && !hasIncomingArc) {  // end of process (only incoming arcs)
+                    data.setInputnode(String.valueOf(place.getId()));
+                    TranslatePlace.translateInput(place, data);
 
-            } else if (hasIncomingArcs && !hasOutgoingArcs) {  // end of process (only incoming arcs)
-                data.setInputnode(String.valueOf(place.getId()));
-                tts.translateInput(place);
+                } else {  // internal to process (both incoming and outgoing arcs)
+                    TranslatePlace.translateState(place, data);
+                }
 
             } else {  // isolated place (no incoming or outgoing arcs)
-                tts.translateEvent(place);
+                TranslatePlace.translateEvent(place, data);
             }
 
-            addNodeAnnotations(place);
-            ids = tts.getIds();
+            addNodeAnnotations(place, data);
         }
 
         // Process Operation, Transition, TransitionToolspecifc
         for (TransitionType transition : pnet.getTransition()) {
-             if (transition.getToolspecific().size() >= 1 ||
-                 (data.gettargetvalues().contains(transition.getId()) ||
-                  data.getsourcevalues().contains(transition.getId()))) {
+            if (transition.getToolspecific().size() >= 1 ||
+                (data.gettargetvalues().contains(transition.getId()) ||
+                 data.getsourcevalues().contains(transition.getId()))) {
 
-                 if (transition.getToolspecific().size() >= 1) {
-                     for (TransitionToolspecificType obj2 : transition.getToolspecific()) {
-                         if ((data.gettargetvalues().contains(transition.getId()) ||
-                              data.getsourcevalues().contains(transition.getId())) &&
-                             obj2.getOperator() == null) {
+                if (transition.getToolspecific().size() >= 1) {
+                    for (TransitionToolspecificType obj2 : transition.getToolspecific()) {
+                        if ((data.gettargetvalues().contains(transition.getId()) ||
+                             data.getsourcevalues().contains(transition.getId())) &&
+                            obj2.getOperator() == null) {
 
-                            to.setValues(data, ids);
-                            to.translateOperation(null, transition);
-                            addNodeAnnotations(transition);
-                            ids = to.getIds();
+                            TranslateOperations.translateOperation(null, transition, data);
+                            addNodeAnnotations(transition, data);
 
                         } else {
                             if (obj2.getOperator() != null) {
-                                to.setValues(data, ids);
-                                to.translateOperation((TransitionToolspecificType) obj2, transition);
-                                ids = to.getIds();
-                                addNodeAnnotations(transition);
+                                TranslateOperations.translateOperation((TransitionToolspecificType) obj2, transition, data);
+                                addNodeAnnotations(transition, data);
 
                             } else {
-                                tt.setValues(data, ids);
-                                tt.translateTask(transition);
-                                addNodeAnnotations(transition);
-                                ids = tt.getIds();
+                                TranslateTransition.translateTask(transition, data);
+                                addNodeAnnotations(transition, data);
                             }
                         }
                     }
 
                 } else {
-                    to.setValues(data, ids);
-                    to.translateOperation(null, transition);
-                    addNodeAnnotations(transition);
-                    ids = to.getIds();
+                    TranslateOperations.translateOperation(null, transition, data);
+                    addNodeAnnotations(transition, data);
                 }
             } else {
-                tt.setValues(data, ids);
-                tt.translateTask(transition);
-                addNodeAnnotations(transition);
-                ids = tt.getIds();
+                TranslateTransition.translateTask(transition, data);
+                addNodeAnnotations(transition, data);
             }
 
-            ttt.setValues(data, ids);
-            ttt.translate(transition);
-            ids = ttt.getIds();
+            TranslateTransitionToolspecific.translate(transition, data);
         }
 
         // Process Arc, ArcToolspecific
         for (ArcType arc : pnet.getArc()) {
-            ta.setValues(data, ids);
-            ta.translateEdge(arc);
-            addEdgeAnnotations(arc);
-            ids = ta.getIds();
+            TranslateArc.translateEdge(arc, data);
+            addEdgeAnnotations(arc, data);
 
-            tat.setValues(data, ids);
-            tat.translate(arc);
-            ids = tat.getIds();
+            TranslateArcToolspecific.translate(arc, data);
         }
 
         // Populate HumanResources
         for (NetToolspecificType toolspecific : pnet.getToolspecific()) {
-            TranslateHumanResources thr = new TranslateHumanResources();
-            thr.setValues(data, ids);
-            thr.translate(pnet);
-            ids = thr.getIds();
+            TranslateHumanResources.translate(pnet, data);
         }
 
         if (!data.getOutputnode().equals("end")) {
@@ -190,14 +155,31 @@ public class TranslatePetriNet {
                 WorkType cancellingNode = (WorkType) node;
                 for (CancellationRefType cancellationRef: new ArrayList<CancellationRefType>(cancellingNode.getCancelNodeId())) {
                     Set<CancellationRefType> emptySet = Collections.emptySet();
-                    cancel(cancellingNode, findCpfNodeById(cancellationRef.getRefId()), 0, emptySet, emptySet);
+                    cancel(cancellingNode, findCpfNodeById(cancellationRef.getRefId(), data), 0, emptySet, emptySet, data);
                 }
             }
         }
     }
 
+    /**
+     * Dump the CPF net component of <var>data</var> in XML format to {@link System#err}.
+     *
+     * This is intended for debugging.
+     *
+     * @param data
+     */
+    private static void dump(DataHandler data) {
+        try {
+            org.apromore.cpf.CanonicalProcessType cpf = new org.apromore.cpf.CanonicalProcessType();
+            cpf.getNet().add(data.getNet());
+            org.apromore.cpf.CPFSchema.marshalCanonicalFormat(System.err, cpf, false);
+        } catch (javax.xml.bind.JAXBException | org.xml.sax.SAXException e) {
+            e.printStackTrace();
+        }
+    }
+
     // TODO: replace this with a hashcode lookup to improve on the current linear complexity
-    private org.apromore.cpf.NodeType findCpfNodeById(final String cpfId) {
+    private static org.apromore.cpf.NodeType findCpfNodeById(final String cpfId, DataHandler data) {
         for (org.apromore.cpf.NodeType node: data.getNet().getNode()) {
             if (cpfId.equals(node.getId())) {
                 return node;
@@ -216,11 +198,12 @@ public class TranslatePetriNet {
      * @param cancelledNodes
      * @param cancelledEdges
      */
-    private void cancel(final WorkType                  cancellingNode,
+    private static void cancel(final WorkType                  cancellingNode,
                         final org.apromore.cpf.NodeType node,
                         int                             distance,
                         final Set<CancellationRefType>  cancelledNodes,
-                        final Set<CancellationRefType>  cancelledEdges) {
+                        final Set<CancellationRefType>  cancelledEdges,
+                        final DataHandler               data) {
 
         switch (distance) {
         case 0:
@@ -235,7 +218,7 @@ public class TranslatePetriNet {
                         break;
                     }
 
-                    org.apromore.cpf.NodeType newNode = findCpfNodeById(edge.getTargetId());
+                    org.apromore.cpf.NodeType newNode = findCpfNodeById(edge.getTargetId(), data);
 
                     Set<CancellationRefType> newCancelledNodes = new HashSet(cancelledNodes);
                     CancellationRefType nodeCancellationRef = CpfObjectFactory.getInstance().createCancellationRefType();
@@ -243,7 +226,7 @@ public class TranslatePetriNet {
                     newCancelledNodes.add(nodeCancellationRef);
 
                     if (newNode instanceof WorkType) { distance++; };
-                    cancel(cancellingNode, newNode, distance, newCancelledNodes, newCancelledEdges);
+                    cancel(cancellingNode, newNode, distance, newCancelledNodes, newCancelledEdges, data);
                 }
             }
             break;
@@ -265,18 +248,12 @@ public class TranslatePetriNet {
         }
     }
 
-    private void addNodeAnnotations(Object obj) {
-        tna.setValues(data);
-        tna.addNodeAnnotations(obj);
+    static private void addNodeAnnotations(Object obj, DataHandler data) {
+        TranslateNodeAnnotations.addNodeAnnotations(obj, data);
     }
 
-    private void addEdgeAnnotations(Object obj) {
-        tea.setValues(data);
-        tea.addEdgeAnnotations(obj);
-    }
-
-    public long getIds() {
-        return ids;
+    static private void addEdgeAnnotations(Object obj, DataHandler data) {
+        TranslateEdgeAnnotations.addEdgeAnnotations(obj, data);
     }
 
 }

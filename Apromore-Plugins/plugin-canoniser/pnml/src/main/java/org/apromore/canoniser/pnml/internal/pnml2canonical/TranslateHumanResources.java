@@ -32,19 +32,11 @@ import org.apromore.pnml.ResourceType;
 import org.apromore.pnml.ResourcesType;
 import org.apromore.pnml.RoleType;
 
-public class TranslateHumanResources {
-    DataHandler data;
-    long ids;
-    long resid;
-    String cpfId = null;
-    Map<String, HumanType> hmap = new HashMap<String, HumanType>();
+public abstract class TranslateHumanResources {
 
-    public void setValues(DataHandler data, long ids) {
-        this.data = data;
-        this.ids = ids;
-    }
+    static public void translate(org.apromore.pnml.NetType pnet, DataHandler data) {
+        Map<String, HumanType> hmap = new HashMap<String, HumanType>();
 
-    public void translate(org.apromore.pnml.NetType pnet) {
         for (Object obj : pnet.getToolspecific()) {
             if (obj instanceof NetToolspecificType) {
                 NetToolspecificType ts = (NetToolspecificType) obj;
@@ -55,7 +47,7 @@ public class TranslateHumanResources {
                             ResourceType humanres = (ResourceType) human;
                             HumanType ht = new HumanType();
                             ht.setName(humanres.getName());
-                            resid = data.getResourceID();
+                            long resid = data.getResourceID();
                             ht.setId(String.valueOf(resid++));
                             data.setResourceID(resid);
                             hmap.put(ht.getName(), ht);
@@ -122,7 +114,4 @@ public class TranslateHumanResources {
 
     }
 
-    public long getIds() {
-        return ids;
-    }
 }

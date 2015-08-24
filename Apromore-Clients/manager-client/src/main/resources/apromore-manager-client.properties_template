@@ -1,4 +1,0 @@
-hostname=@SITE_HOST@
-port=@SITE_PORT@
-externalport=@SITE_EXTERNALPORT@
-manager-url=manager/services/manager

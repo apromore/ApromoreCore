@@ -21,12 +21,12 @@
 package org.apromore.toolbox.clustering.hierarchy;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
@@ -55,22 +55,82 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private FragmentDistanceRepository fragmentDistanceRepository;
     private ComposerService composerService;
 
-    private Map<Integer, SimpleGraph> models = new HashMap<>();
-    private Map<Integer, Canonical> canModels = new HashMap<>();
+    private Map<Integer, SimpleGraph> models = new ConcurrentHashMap<>();
+    private Map<Integer, Canonical> canModels = new ConcurrentHashMap<>();
 
     private List<DissimilarityCalc> chain = new LinkedList<>();
     private List<GEDMatrixCalc> chain2 = new LinkedList<>();
-    private MultiKeyMap dissimmap = null;
 
     private double dissThreshold;
     private long startedTime = 0;
     private int totalPairs = 0;
-    private int reportingInterval = 0;
-    private int processedPairs = 0;
+    private AtomicInteger reportingInterval = new AtomicInteger();
+    private AtomicInteger processedPairs = new AtomicInteger();
 
     private AtomicInteger coresUsed = new AtomicInteger();
     private int coresAvailable = Runtime.getRuntime().availableProcessors();
 
+    private MultiKeyMap dissimmap = null;
+    private ReentrantReadWriteLock readWriteLockDiss = new ReentrantReadWriteLock();
+    private ReentrantReadWriteLock.ReadLock readLockDiss = readWriteLockDiss.readLock();
+    private ReentrantReadWriteLock.WriteLock writeLockDiss = readWriteLockDiss.writeLock();
+
+    private StringBuffer reporting = new StringBuffer();
+
+    private MultiKeyMap writtenDiss = new MultiKeyMap();
+    private ReentrantReadWriteLock readWriteLockWrittenDiss = new ReentrantReadWriteLock();
+    private ReentrantReadWriteLock.ReadLock readLockWrittenDiss = readWriteLockWrittenDiss.readLock();
+    private ReentrantReadWriteLock.WriteLock writeLockWrittenDiss = readWriteLockWrittenDiss.writeLock();
+
+    private ReentrantLock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
+
+    private void writeOnWrittenDissimmap(Integer frag1, Integer frag2, Double distFid2Fid1) {
+        writeLockWrittenDiss.lock();
+        writtenDiss.put(frag1, frag2, distFid2Fid1);
+        writeLockWrittenDiss.unlock();
+    }
+
+    private Object readFromWrittenDissimmap(Integer frag1, Integer frag2) {
+        readLockWrittenDiss.lock();
+        Object o = writtenDiss.get(frag1, frag2);
+        readLockWrittenDiss.unlock();
+        return o;
+    }
+
+    private void writeOnDissimmap(Integer frag1, Integer frag2, Double distFid2Fid1) {
+        writeLockDiss.lock();
+        dissimmap.put(frag1, frag2, distFid2Fid1);
+        writeOnWrittenDissimmap(frag2, frag1, distFid2Fid1);
+        writeLockDiss.unlock();
+    }
+
+    private Object readFromDissimmap(Integer frag1, Integer frag2) {
+        readLockDiss.lock();
+        Object o = dissimmap.get(frag1, frag2);
+        readLockDiss.unlock();
+        return o;
+    }
+
+    private int sizeDissimmap() {
+        readLockDiss.lock();
+        int i = dissimmap.size();
+        readLockDiss.unlock();
+        return i;
+    }
+
+    private void saveDissimmap() {
+        MultiKeyMap clone = null;
+        writeLockDiss.lock();
+        if(!dissimmap.isEmpty()) {
+            clone = (MultiKeyMap) dissimmap.clone();
+            dissimmap.clear();
+        }
+        writeLockDiss.unlock();
+        if(clone != null && !clone.isEmpty()) {
+            new Thread(new MatrixStorer(clone)).start();
+        }
+    }
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
@@ -97,9 +157,9 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      */
     @Override
     public Double getDissimilarity(Integer frag1, Integer frag2) {
-        Double result = (Double) dissimmap.get(frag1, frag2);
+        Double result = (Double) readFromDissimmap(frag1, frag2);
         if (result == null) {
-            result = (Double) dissimmap.get(frag2, frag1);
+            result = (Double) readFromDissimmap(frag2, frag1);
         }
         return result;
     }
@@ -132,9 +192,9 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
     public void computeDissimilarity() {
         Integer intraRoot;
-        Integer interRoot;
-        List<Integer> h1;
-        List<Integer> h2;
+//        Integer interRoot;
+//        List<Integer> h1;
+//        List<Integer> h2;
 
         startedTime = System.currentTimeMillis();
         List<Integer> processedFragmentIds = new ArrayList<>();
@@ -142,24 +202,36 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         dissimmap = new MultiKeyMap();
         int nfrag = crel.getNumberOfFragments();
         totalPairs = nfrag * (nfrag + 1) / 2;
-        reportingInterval = 0;
-        processedPairs = 0;
+        reportingInterval.set(0);
+        processedPairs.set(0);
+
+        LOGGER.info("Cores Available " + coresAvailable);
 
         List<Integer> roots = crel.getRoots();
         for (int p = 0; p < roots.size(); p++) {
             intraRoot = roots.get(p);
 
             while(coresUsed.get() >= coresAvailable) {
+                lock.lock();
                 try {
-                    Thread.currentThread().sleep(1000L);
+                    condition.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                lock.unlock();
+//                try {
+//                    Thread.currentThread().sleep(1000L);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
 
             coresUsed.incrementAndGet();
-            MatrixExecutor matrixExecutor = new MatrixExecutor(intraRoot, processedFragmentIds, roots, p);
-            new Thread(matrixExecutor).start();
+//            MatrixExecutor matrixExecutor = new MatrixExecutor(intraRoot, processedFragmentIds, roots, p);
+//            Thread t = new Thread(matrixExecutor);
+//            t.start();
+
+            new Thread(new MatrixExecutor(intraRoot, processedFragmentIds, roots, p)).start();
 
 //            h1 = crel.getHierarchy(intraRoot);
 //            h1.removeAll(processedFragmentIds);
@@ -181,9 +253,12 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         }
 
         // ged values are written to the database periodically after reporting period. if there are left over geds we have to write them here.
-        if (!dissimmap.isEmpty()) {
-            fragmentDistanceRepository.saveDistances(dissimmap);
-            dissimmap.clear();
+        saveDissimmap();
+
+        writtenDiss.clear();
+
+        if(reporting.length() > 0) {
+            LOGGER.info(reporting.toString());
         }
     }
 
@@ -220,37 +295,39 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
             if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
-                Double distFid2Fid1 = (Double) dissimmap.get(fid2, fid1);
+                Double distFid2Fid1 = (Double) readFromDissimmap(fid2, fid1);
                 if(distFid2Fid1 != null) {
-                    dissimmap.put(fid1, fid2, distFid2Fid1);
+                    writeOnDissimmap(fid1, fid2, distFid2Fid1);
                 }else {
-                    distFid2Fid1 = fragmentDistanceRepository.getDistance(fid2, fid1);
+//                    distFid2Fid1 = fragmentDistanceRepository.getDistance(fid2, fid1); //Removed by Raf
+                    distFid2Fid1 = (Double) readFromWrittenDissimmap(fid2, fid1);
                     if(distFid2Fid1 != null){
-                        dissimmap.put(fid1, fid2, distFid2Fid1);
+                        writeOnDissimmap(fid1, fid2, distFid2Fid1);
                     }else {
                         double dissim = computeFromGEDMatrixCalc(fid1, fid2); // computeFromDissimilarityCalc(fid1, fid2);
                         if (dissim <= dissThreshold) {
-                            dissimmap.put(fid1, fid2, dissim);
+                            writeOnDissimmap(fid1, fid2, dissim);
                         }
                     }
                 }
             }
 
-            reportingInterval++;
-            processedPairs++;
-            if (reportingInterval == 1000) {
-                reportingInterval = 0;
+            int r = reportingInterval.incrementAndGet();
+            int p = processedPairs.incrementAndGet();
+            if(r == 10000) {
+                reportingInterval.addAndGet(-10000);
                 long duration = (System.currentTimeMillis() - startedTime) / 1000;
-                double percentage = (double) processedPairs * 100 / totalPairs;
+                double percentage = (double) p * 100 / totalPairs;
                 percentage = (double) Math.round((percentage * 1000)) / 1000d;
-                LOGGER.info(processedPairs + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + dissimmap.size());
-                fragmentDistanceRepository.saveDistances(dissimmap);
-                dissimmap.clear();
+                int s = sizeDissimmap();
+                if(s > 0) {
+                    LOGGER.info(p + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + s);
+                    saveDissimmap();
+                }
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to compute GED between {} and {} due to {}. " +
-                    "GED computation between other fragments will proceed normally.",
-                    fid1, fid2, e.getMessage());
+            reporting.append("Failed to compute GED between " + fid1 + " and " + fid2 + " due to " + e.getMessage() + ".\n");
+//            LOGGER.error("Failed to compute GED between {} and {} due to {}. GED computation between other fragments will proceed normally.", fid1, fid2, e.getMessage());
         }
     }
 
@@ -358,24 +435,49 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         @Override
         public void run() {
             h1 = crel.getHierarchy(intraRoot);
-            h1.removeAll(processedFragmentIds);
+
+            List<Integer> cloneH1 = new ArrayList<Integer>(h1); //Added by Raf
+            cloneH1.removeAll(processedFragmentIds); //Added by Raf
+//            h1.removeAll(processedFragmentIds); //Removed by Raf
 
             LOGGER.info("Processing Root: " + intraRoot);
-            computeIntraHierarchyGEDs(h1);
+            computeIntraHierarchyGEDs(cloneH1); //Added by Raf
+//            computeIntraHierarchyGEDs(h1); //Removed by Raf
 
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
                     interRoot = roots.get(q);
                     h2 = crel.getHierarchy(interRoot);
-                    computeInterHierarchyGEDs(h1, h2);
+                    computeInterHierarchyGEDs(cloneH1, h2); //Added by Raf
+//                    computeInterHierarchyGEDs(h1, h2); //Removed by Raf
                 }
             }
 
             // at this point we have processed all fragments of h1, with fragments in the entire repository.
             // so we can remove all h1's fragments from the cache
+            h1.removeAll(processedFragmentIds); //Added by Raf
+
             clearCaches(processedFragmentIds, h1);
 
             coresUsed.decrementAndGet();
+
+            lock.lock();
+            condition.signalAll();
+            lock.unlock();
+        }
+    }
+
+    class MatrixStorer implements Runnable {
+
+        private MultiKeyMap clone;
+
+        public MatrixStorer(MultiKeyMap clone) {
+            this.clone = clone;
+        }
+
+        @Override
+        public void run() {
+            fragmentDistanceRepository.saveDistances(clone);
         }
     }
 

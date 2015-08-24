@@ -744,7 +744,7 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setUser(user);
         } catch (Exception ex) {
-            LOGGER.error("Get User by there username failed for " + payload.getUsername(), ex);
+            LOGGER.error("Get User by username failed for " + payload.getUsername(), ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }

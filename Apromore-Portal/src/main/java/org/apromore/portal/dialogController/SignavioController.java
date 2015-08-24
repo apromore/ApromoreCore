@@ -32,6 +32,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import org.apromore.config.Site;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,6 +127,7 @@ public class SignavioController extends BaseController {
             param.put("url", getURL(editSession1.getNativeType()));
             param.put("importPath", getImportPath(editSession1.getNativeType()));
             param.put("exportPath", getExportPath(editSession1.getNativeType()));
+            param.put("editor", Site.getSiteEditor());
 
             if (editSession2 != null) {
                 ExportFormatResultType exportResult2 =

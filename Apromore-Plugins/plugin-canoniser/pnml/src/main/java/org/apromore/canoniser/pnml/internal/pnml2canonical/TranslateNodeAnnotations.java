@@ -34,14 +34,9 @@ import org.apromore.anf.SizeType;
 import org.apromore.pnml.Fill;
 import org.apromore.pnml.PlaceType;
 
-public class TranslateNodeAnnotations {
-    DataHandler data;
+public abstract class TranslateNodeAnnotations {
 
-    public void setValues(DataHandler data) {
-        this.data = data;
-    }
-
-    public void addNodeAnnotations(Object obj) {
+    static public void addNodeAnnotations(Object obj, DataHandler data) {
         GraphicsType graphT = new GraphicsType();
         LineType line = new LineType();
         FillType fill = new FillType();

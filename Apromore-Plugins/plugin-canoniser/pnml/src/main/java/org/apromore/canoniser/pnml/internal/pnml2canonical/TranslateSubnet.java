@@ -28,31 +28,18 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.pnml.PnmlType;
 
 public class TranslateSubnet {
-    private long ids = 6121980;
-    DataHandler data = new DataHandler();
-    TranslatePetriNet tpn = new TranslatePetriNet();
-    RemoveDuplicateXORS xors = new RemoveDuplicateXORS();
 
-
-    public CanonicalProcessType getCPF() {
-        return data.getCanonicalProcess();
-    }
-
-    public AnnotationsType getANF() {
-        return data.getAnnotations();
-    }
-
-    public TranslateSubnet(PnmlType pnml, org.apromore.pnml.NetType subnet, long id, String filename)
+    public TranslateSubnet(PnmlType pnml, org.apromore.pnml.NetType subnet, String filename, DataHandler data)
             throws CanoniserException {
         pnml = new PnmlType();
         pnml.getNet().add(subnet);
-        xors.remove(pnml, data);
-        main(pnml, subnet, id);
+        RemoveDuplicateXORS.remove(pnml, data);
+        main(pnml, subnet, data);
 
-        CheckForSubnet check = new CheckForSubnet(pnml, filename, data.getRootid(), subnet);
+        CheckForSubnet check = new CheckForSubnet(pnml, filename, subnet, data);
     }
 
-    void main(PnmlType pnml, org.apromore.pnml.NetType subnet, long id) throws CanoniserException {
+    private void main(PnmlType pnml, org.apromore.pnml.NetType subnet, DataHandler data) throws CanoniserException {
         data.setCanonicalProcess(new CanonicalProcessType());
         //TODO FM extensions
 //        TypeAttribute att = new TypeAttribute();
@@ -65,14 +52,12 @@ public class TranslateSubnet {
                 for (org.apromore.pnml.NetType pnet : pnml.getNet()) {
                     NetType net = new NetType();
                     data.setNet(net);
-                    tpn.setValues(data, ids);
-                    tpn.translatePetriNet(pnet);
-                    ids = tpn.getIds();
-                    data.put_id_map(String.valueOf(data.getNet().getId()), String.valueOf(ids));
-                    data.setRootId(ids);
-                    data.getNet().setId(String.valueOf(ids++));
+                    TranslatePetriNet.translatePetriNet(pnet, data);
+                    data.put_id_map(String.valueOf(data.getNet().getId()), String.valueOf(data.getIds()));
+                    data.setRootId(data.getIds());
+                    data.getNet().setId(String.valueOf(data.nextId()));
                     data.getCanonicalProcess().getNet().add(data.getNet());
-                    data.getCanonicalProcess().getRootIds().add(String.valueOf(id));
+                    data.getCanonicalProcess().getRootIds().add(String.valueOf(data.getRootid()));
 
                 }
             }

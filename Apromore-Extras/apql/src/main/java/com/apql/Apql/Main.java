@@ -97,7 +97,6 @@ public class Main extends JPanel {
         error = new JTextPane();
         error.setEditable(false);
         error.setPreferredSize(new Dimension(150, 150));
-        Keywords.createList();
         QueueHistory queueHistory=new QueueHistory(20);
 
 

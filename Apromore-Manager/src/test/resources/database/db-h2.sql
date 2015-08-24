@@ -1,3 +1,5 @@
+CREATE USER apromore PASSWORD 'MAcri' ADMIN
+;
 CREATE TABLE annotation
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -130,11 +132,11 @@ CREATE TABLE cluster_assignment
 CREATE TABLE edge
 (
    id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(40),
+   uri varchar(256),
    sourceNodeId int,
    targetNodeId int,
    cancelNodeId int,
-   originalId varchar(40),
+   originalId varchar(200),
    conditionExpressionId int,
    def bit DEFAULT 0
 )
@@ -279,6 +281,14 @@ CREATE TABLE group_process
    has_ownership bit DEFAULT 0 NOT NULL
 )
 ;
+CREATE TABLE history_event (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  status varchar(50) NOT NULL,
+  type varchar(50) NOT NULL,
+  occurDate timestamp DEFAULT NULL,
+  userId int(11) DEFAULT NULL
+)
+;
 CREATE TABLE membership
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -314,7 +324,7 @@ CREATE TABLE native_type
 CREATE TABLE node
 (
    id int auto_increment PRIMARY KEY NOT NULL,
-   uri varchar(40),
+   uri varchar(256),
    subVersionId int,
    originalId varchar(200),
    netId varchar(200),
