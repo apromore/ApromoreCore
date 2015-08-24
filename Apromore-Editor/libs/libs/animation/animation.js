@@ -690,8 +690,9 @@ Controller.prototype = {
         animateE.setAttributeNS(null,"keyTimes", log.progress.keyTimes);
         //console.log("values:" + log.progress.values);
         //console.log("keyTimes:" + log.progress.keyTimes);
-        animateE.setAttributeNS(null,"begin","0s");
-        animateE.setAttributeNS(null,"dur",timeline.timelineSlots*this.slotEngineUnit/1000 + "s");
+        animateE.setAttributeNS(null,"begin", log.progress.begin + "s");
+        //animateE.setAttributeNS(null,"dur",timeline.timelineSlots*this.slotEngineUnit/1000 + "s");
+        animateE.setAttributeNS(null,"dur", log.progress.dur + "s");
         animateE.setAttributeNS(null,"fill","freeze");
         animateE.setAttributeNS(null,"repeatCount", "1");
         
