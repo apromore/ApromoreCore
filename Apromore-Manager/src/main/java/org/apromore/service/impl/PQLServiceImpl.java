@@ -15,10 +15,15 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.jbpt.petri.Flow;
 import org.jbpt.petri.INetSystem;
+import org.jbpt.petri.Marking;
+import org.jbpt.petri.Node;
 import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
+import org.jbpt.petri.io.PNMLSerializer;
 import org.pql.api.IPQLAPI;
+import org.pql.api.PQLQueryResult;
 import org.pql.core.PQLTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +33,8 @@ import org.springframework.stereotype.Service;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import java.io.InputStream;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -121,50 +128,13 @@ public class PQLServiceImpl implements PQLService {
         Process process=pmv.getProcessBranch().getProcess();
         Version version2=new Version(pmv.getVersionNumber());
         Set<RequestParameterType<?>> canoniserProperties=readPluginProperties(parameterCategory);
-        PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled(),this.pqlBean.getLabelSimilaritySearch());
-        IPQLAPI api=pqlBean.getApi();
 
         try {
-//            LOGGER.error("PQLSERVICE: Dati proc "+processname+" "+processId+" "+branch+" "+version+" "+PNMLCanoniser+" nulla false"+canoniserProperties);
             LOGGER.info("indexOneModel name=" + process.getName() + " id=" + process.getId() + " branch=" + pmv.getProcessBranch().getBranchName() + " version=" + version2 + " canoniser=" + getPNMLCanoniser() + " canoniserProperties=" + canoniserProperties);
             ExportFormatResultType exportResult = this.processService.exportProcess(process.getName(), process.getId(), pmv.getProcessBranch().getBranchName(), version2, getPNMLCanoniser(), null, false, canoniserProperties);
-
-            InputStream input = exportResult.getNative().getInputStream();
-//            InputStream input2= exportResult.getNative().getInputStream();
-//            Scanner sc=new Scanner(input2);
-//            PrintWriter pw=new PrintWriter(new FileWriter("C:/Users/corno/net/"+pmv.getProcessBranch().getProcess().getName()+".txt"));
-//            while(sc.hasNextLine()){
-//                pw.println(sc.nextLine());
-//            }
-//            pw.close();
-            byte[] bytes = IOUtils.toByteArray(input);
-
-            INetSystem netSystem = api.bytes2NetSystem(bytes);
-
-            int pi,ti;
-            pi = ti = 1;
-            for (Place p : (Set<Place>)netSystem.getPlaces())
-                p.setName("p"+pi++);
-            for (Transition t : (Set<Transition>)netSystem.getTransitions()) {
-                t.setName("t" + ti++);
-                t.setLabel(t.getLabel().replaceAll("[\n]"," "));
-            }
-
-            netSystem.loadNaturalMarking();
-
-
-            if (api.checkNetSystem(netSystem)) {
-//                LOGGER.info("SOUNDNESS: " + true);
-                api.indexNetSystem(netSystem, process.getId() + "/" + version2.toString() + "/" + pmv.getProcessBranch().getBranchName(), indexedLabelSimilarities);
-//                LOGGER.error("--------------------------------------------------------INDEXED: "+process.getName());
-            }
-//            else{
-//                LOGGER.info("SOUNDNESS: " + false);
-//            }
-        }catch(Exception e){
-            LOGGER.error("-----------ERRORRE: " + e.toString());
-            for (StackTraceElement ste : e.getStackTrace())
-                LOGGER.info("ERRORE2: " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ste.getFileName());
+            storeModel(exportResult, process.getId(), version2, pmv.getProcessBranch().getBranchName());
+        } catch(Exception e){
+            LOGGER.error("Unable to index model " + process + " " + version2, e);
         }
     }
 
@@ -177,55 +147,29 @@ public class PQLServiceImpl implements PQLService {
             IPQLAPI api=pqlBean.getApi();
             LOGGER.info("-----------DELETE: " + pmv.getProcessBranch().getProcess().getId()+"/"+version.toString()+"/"+pmv.getProcessBranch().getBranchName());
 
-            api.deleteNetSystem(pmv.getProcessBranch().getProcess().getId() + "/" + version.toString() + "/" + pmv.getProcessBranch().getBranchName());
-        }catch(Exception e){
-            LOGGER.error("-----------ERRORRE: " + e.toString());
-            for (StackTraceElement ste : e.getStackTrace())
-                LOGGER.info("ERRORE3: " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ste.getFileName());
+            String externalId = pmv.getProcessBranch().getProcess().getId() + "/" + version.toString() + "/" + pmv.getProcessBranch().getBranchName();
+            int internalId = api.getInternalID(externalId);
+            if (internalId == 0) {
+                throw new Exception("No model with PQL external id " + externalId + " found in PQL database");
+            }
+            if (!api.deleteIndex(internalId)) {
+                throw new Exception("Failed to delete model with PQL external id " + externalId + " and internal id " + internalId);
+            }
+        } catch(Exception e) {
+            LOGGER.error("Unable to delete model " + process.getId() + " " + version, e);
         }
     }
 
     @Override
     public void update(User user, NativeType nativeType,final ProcessModelVersion pmv, final boolean delete) {
 
-            // Don't do anything if PQL indexing has been disabled
-            if (!pqlBean.isIndexingEnabled()) {
-                return;
+        if (pqlBean.isIndexingEnabled()) {
+            if (delete) {
+                deleteModel(pmv);
+            } else {
+                indexOneModel(pmv);
             }
-
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    String name = pmv.getProcessBranch().getProcess().getName();
-		    LOGGER.info("Updating thread started for " + name);
-                    try {
-                        PQLServiceImpl.this.sem.acquire();
-                        try {
-                            if (delete) {
-                                LOGGER.info("Deleting " + name);
-                                deleteModel(pmv);
-                                LOGGER.info("Deleted " + name);
-                            } else {
-                                LOGGER.info("Indexing " + name);
-                                indexOneModel(pmv);
-                                LOGGER.info("Indexed " + name);
-                            }
-
-		          LOGGER.info("Updating thread completed for " + name);
-                        } catch (Throwable e) {
-                            LOGGER.error("Updating thread failed for " + name, e);
-                        } finally {
-                            PQLServiceImpl.this.sem.release();
-                        }
-                    } catch(InterruptedException ie) {
-		        LOGGER.error("Updating thread interrupted for " + pmv.getProcessBranch().getProcess().getName(), ie);
-                    }
-		    LOGGER.info("Updating thread terminated for " + pmv.getProcessBranch().getProcess().getName());
-                }
-            };
-            //Thread thread = new Thread(run);
-            //thread.start();
-            run.run();
+        }
     }
 
     private String getPNMLCanoniser() {
@@ -260,25 +204,17 @@ public class PQLServiceImpl implements PQLService {
     }
 
     private void indexModels(LinkedList<GroupProcess> processes, Integer folderId, String userID) {
-        Process currentProc;
-        String procName;
-        Integer procId;
-        Version version = null;
-        String nativeType;
-        String annotationName = null;
-        boolean withAnnotation = false;
 
-        IPQLAPI api=pqlBean.getApi();
-//        LOGGER.error("-----------PQLAPI: " + api);
-
-        Set<RequestParameterType<?>> canoniserProperties = null;
         try {
             for (GroupProcess process : processes) {
-                currentProc = process.getProcess();
-                procName = currentProc.getName();
-                procId = currentProc.getId();
-                nativeType = currentProc.getNativeType().getNatType();
-                canoniserProperties = readPluginProperties(parameterCategory);
+                Process currentProc = process.getProcess();
+                String procName = currentProc.getName();
+                Integer procId = currentProc.getId();
+                Version version = null;
+                String nativeType = currentProc.getNativeType().getNatType();
+                String annotationName = null;
+                boolean withAnnotation = false;
+                Set<RequestParameterType<?>> canoniserProperties = readPluginProperties(parameterCategory);
 
                 for (ProcessSummaryType pst : helperService.buildProcessSummaryList(userID, folderId, null).getProcessSummary()) {
                     if (pst.getName().equals(procName)) {
@@ -288,60 +224,71 @@ public class PQLServiceImpl implements PQLService {
                             if (version != null && canoniserProperties != null) {
                                 LOGGER.info("PROCESS: " + procName + " " + procId + " " + vst.getName() + " " + version.toString() + " " + nativeType);
                                 ExportFormatResultType exportResult = this.processService.exportProcess(procName, procId, vst.getName(), version, getPNMLCanoniser(), annotationName, withAnnotation, canoniserProperties);
-                                DataHandler data = exportResult.getNative();
-
-                                InputStream input = data.getInputStream();
-                                byte[] bytes = IOUtils.toByteArray(input);
-
-                                INetSystem netSystem = api.bytes2NetSystem(bytes);
-
-                                int pi,ti;
-                                pi = ti = 1;
-                                for (Place p : (Set<Place>)netSystem.getPlaces())
-                                    p.setName("p"+pi++);
-                                for (Transition t : (Set<Transition>)netSystem.getTransitions())
-                                    t.setName("t"+ti++);
-
-                                netSystem.loadNaturalMarking();
-
-//                                LOGGER.info("SOUNDNESS: " + api.checkNetSystem(netSystem));
-                                if (api.checkNetSystem(netSystem)) {
-//                                    LOGGER.error("INDEX: " + );
-                                    api.indexNetSystem(netSystem, procId.toString() + "/" + vst.getVersionNumber() + "/" + vst.getName(), indexedLabelSimilarities);
-                                }
+				storeModel(exportResult, procId, version, vst.getName());
                             }
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("-----------ERRORRE: " + e.toString());
-            for (StackTraceElement ste : e.getStackTrace())
-                LOGGER.info("ERRORE5: " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ste.getFileName());
+            LOGGER.error("Unable to index models in folder " + folderId, e);
         }
+    }
+
+    /**
+     * Store the text of a PNML model into the PQL database.
+     *
+     * This is a relatively quick, synchronous operation.  The model is not indexed immediately, but
+     * becomes available for eventual (asynchronous) indexing by the PQL "bot" process.
+     *
+     * @param exportResult  a PNML model obtained from the {@link ProcessService#exportProcess} method
+     * @param procId
+     * @param version
+     * @param branchName
+     * @throws IOException  if the native PNML serialization couldn't be obtained from the <var>exportResult</var>
+     * @throws SQLException  if the model couldn't be store into the PQL database
+     */
+    private void storeModel(ExportFormatResultType exportResult, Integer procId, Version version, String branchName) throws IOException, SQLException {
+
+        byte[] bytes = IOUtils.toByteArray(exportResult.getNative().getInputStream());
+
+        PNMLSerializer pnmlSerializer = new PNMLSerializer();
+
+        // External ids are strings, e.g. "17/1.0/MAIN"
+        String externalId = procId.toString() + "/" + version.toString() + "/" + branchName;
+
+        IPQLAPI api = pqlBean.getApi();
+        int internalId = api.storeNetSystem(bytes, externalId);
+
+        LOGGER.info("SOUNDNESS: " + api.checkNetSystem(internalId));
     }
 
     @Override
     public List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID) {
         Set<String> idNets=new HashSet<>();
-        List<String> results=new LinkedList<>();
+        List<String> results = Collections.emptyList();
         IPQLAPI api=pqlBean.getApi();
         LOGGER.error("-----------PQLAPI: " + api);
+        LOGGER.error("----------- query: " + queryPQL);
+        LOGGER.error("-----------   IDs: " + IDs);
+        LOGGER.error("-----------  user: " + userID);
         try {
-            api.prepareQuery(queryPQL);
-            if (api.getLastNumberOfParseErrors() != 0) {
-                results = api.getLastParseErrorMessages();
+            PQLQueryResult pqlQueryResult = api.query(queryPQL /*, new HashSet<>(IDs) */);
+            if (pqlQueryResult.getNumberOfParseErrors() != 0) {
+                results = pqlQueryResult.getParseErrorMessages();
             } else {//risultati
                 LOGGER.error("-----------IDS PQLServiceImpl" + IDs);
-                map=api.getLastQuery().getTaskMap();
+/*
+                map=pqlQueryResult.getTaskMap();
                 LinkedList<PQLTask> tasks=new LinkedList<>(map.values());
-
+                
                 idNets=new HashSet<>(IDs);
                 idNets=api.checkLastQuery(idNets);
                 results.addAll(idNets);
+*/
+                results = new LinkedList<>(pqlQueryResult.getSearchResults());
                 LOGGER.error("-----------QUERYAPQL ESATTA "+results);
             }
-
         } catch (Exception e) {
             LOGGER.error("-----------ERRORRE: " + e.toString());
             for (StackTraceElement ste : e.getStackTrace())
