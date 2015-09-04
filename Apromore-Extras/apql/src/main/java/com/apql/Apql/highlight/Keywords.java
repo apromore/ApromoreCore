@@ -46,6 +46,7 @@ public final class Keywords {
     public static final String CAN_CONFLICT = "CanConflict";
     public static final String CAN_COOCCUR = "CanCooccur";
     public static final String CAN_OCCUR = "CanOccur";
+    public static final String TOTAL_CAUSAL = "TotalCausal";
     private static String[] keywords;
     private static String[] selectClause;
     private static String[] whereClause;
@@ -90,6 +91,7 @@ public final class Keywords {
             tmp.add(Keywords.CAN_CONFLICT);
             tmp.add(Keywords.CAN_COOCCUR);
             tmp.add(Keywords.CAN_OCCUR);
+            tmp.add(Keywords.TOTAL_CAUSAL);
             Collections.sort(tmp);
             whereClause = (tmp.toArray(whereClause));
         }
@@ -130,6 +132,7 @@ public final class Keywords {
             tmp.add(Keywords.CAN_CONFLICT);
             tmp.add(Keywords.CAN_COOCCUR);
             tmp.add(Keywords.CAN_OCCUR);
+            tmp.add(Keywords.TOTAL_CAUSAL);
             Collections.sort(tmp);
 //            tmp.addFirst(model);
             tmp.addFirst(name);

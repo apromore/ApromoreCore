@@ -52,13 +52,32 @@ public class ContextControllerUnitTest {
 
     @Test public void testFindContext_SelectWithWord() {
         testFindContext("SELECT *", "", Arrays.asList("*"));
+        testFindContext("SELECT f", "", Arrays.asList("FROM"));
+        testFindContext("SELECT nimrod", "", Arrays.asList("name"));
     }
 
     @Test public void testFindContext_EmptySelectClause() {
         testFindContext("SELECT ", "*", Arrays.asList("*", "domain", "id", "language", "owner", "name", "ranking", "FROM"));
     }
 
-    @Test public void testFindContext_FromWithWord() {
+    @Test public void testFindContext_FromWithWord_HomeSlash() {
+        testFindContext("SELECT * FROM \"Home/", "\"", null);
+    }
+
+    @Test public void testFindContext_FromWithWord_NoHome() {
+        testFindContext("SELECT * FROM \"", "", Arrays.asList("Home"));
+        testFindContext("SELECT * FROM \"Home", "", Arrays.asList("Home"));
+    }
+
+    @Test public void testFindContext_FromWithWord_IdNetsNode() {
+        testFindContext("SELECT * FROM foo", "", Collections.<String>emptyList());
+    }
+
+    @Test public void testFindContext_FromWithWord_Home() {
+        testFindContext("SELECT * FROM \"Hx", "", null);
+    }
+
+    @Test public void testFindContext_FromWithWord_NoTokens() {
         testFindContext("SELECT * FROM foo", "", Collections.<String>emptyList());
     }
 
@@ -80,13 +99,34 @@ public class ContextControllerUnitTest {
         testFindContext("SELECT * FROM * WHERE CanOccur(\"", "foo\")", Arrays.asList("bar", "baz", "foo", "quux"));
     }
 
+    @Test public void testFindContext_WhereContext_Without() {
+        testFindContext("SELECT * FROM * WHERE sqrt(", "9)", Arrays.asList((String) null));
+    }
+
     @Test public void testFindContext_EmptyWhereClause() {
-        testFindContext("SELECT * FROM * WHERE ", "", Arrays.asList("ALL", "AND", "ANY", "AlwaysOccurs", "CanConflict", "CanCooccur", "CanOccur", "EACH", "EQUALS", "EXCEPT", "FALSE", "GetTasks", "IN", "INTERSECT", "IS", "NOT", "OF", "OR", "OVERLAPS", "PROPER", "SUBSET", "TRUE", "UNION", "UNIVERSE", "UNKNOWN", "WITH"));
+        testFindContext("SELECT * FROM * WHERE ", "", Arrays.asList("ALL", "AND", "ANY", "AlwaysOccurs", "CanConflict", "CanCooccur", "CanOccur", "EACH", "EQUALS", "EXCEPT", "FALSE", "GetTasks", "IN", "INTERSECT", "IS", "NOT", "OF", "OR", "OVERLAPS", "PROPER", "SUBSET", "TRUE", "TotalCausal", "UNION", "UNIVERSE", "UNKNOWN", "WITH"));
     }
 
     @Test public void testFindContext_Else() {
         testFindContext("FROM foo", "", Arrays.asList((String) null));
         testFindContext("FROM un", "", Arrays.asList("UNION", "UNIVERSE", "UNKNOWN"));
+    }
+
+    @Test public void testFindProcess() {
+        assertEquals("", contextController.findProcess("", 0));
+        assertEquals("pql/1.p", contextController.findProcess("\"pql/1.pnml\" \"pql/2.pnml\"", 8));
+        assertEquals("pql/1.pnml", contextController.findProcess("\"pql/1.pnml\" \"pql/2.pnml\"", 11));
+        assertEquals("", contextController.findProcess("\"pql/1.pnml\" \"pql/2.pnml\"", 12));
+        assertEquals("pql/2.p", contextController.findProcess("\"pql/1.pnml\" \"pql/2.pnml\"", 21));
+        assertEquals("foo ba", contextController.findProcess("\"foo bar\" \"baz quux\"", 7));
+        assertEquals("foo bar", contextController.findProcess("\"foo bar\" \"baz quux\"", 8));
+        assertEquals("", contextController.findProcess("\"foo bar\" \"baz quux\"", 9));
+        assertEquals("", contextController.findProcess("\"foo bar\" \"baz quux\"", 10));
+        assertEquals("", contextController.findProcess("\"foo bar\" \"baz quux\"", 11));
+        assertEquals("b", contextController.findProcess("\"foo bar\" \"baz quux\"", 12));
+        assertEquals("baz qu", contextController.findProcess("\"foo bar\" \"baz quux\"", 17));
+        assertEquals("ba", contextController.findProcess("\"foo\"bar\"quux\"", 7));
+        assertEquals(",", contextController.findProcess("\"foo\", \"quux\"", 6));
     }
 
     @Test public void testFindWord() {
@@ -120,9 +160,13 @@ public class ContextControllerUnitTest {
 
     /**
      * @param context  the result of {@link ContextController#getContextController}
-     * @return the suggestions displayed within the <var>context</var>
+     * @return the suggestions displayed within the <var>context</var>, or <code>null</code> if <var>context</var> is <code>null</code>
      */
     private List<String> toSuggestionList(JScrollPane context) {
+
+        if (context == null) {
+             return null;
+        }
 
         PopupPanel panel = (PopupPanel) context.getViewport().getView();
         List<String> result = new ArrayList<>(panel.resultsNumber());
