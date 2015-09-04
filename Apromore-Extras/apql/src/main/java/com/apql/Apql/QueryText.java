@@ -17,42 +17,35 @@ import java.awt.event.MouseListener;
 
 //import java.awt.dnd.*;
 
-public class QueryText extends JTextPane { //implements DropTargetListener {
+public class QueryText extends JTextPane {
 
-	private static final long serialVersionUID = -7719436763743034599L;
+    private static final long serialVersionUID = -7719436763743034599L;
     private QueryController queryController=QueryController.getQueryController();
     private ViewController viewController = ViewController.getController();
-	public QueryText() {
-		setPreferredSize(new Dimension(450, 210));
-		QueryController.getQueryController().settextPane(this);
-		addKeyListener(new WordListener());
+    public QueryText() {
+        setPreferredSize(new Dimension(450, 210));
+        QueryController.getQueryController().settextPane(this);
+        addKeyListener(new WordListener());
         Keymap parent = this.getKeymap();
         Keymap newmap = JTextComponent.addKeymap("KeymapExampleMap", parent);
-        KeyStroke suggest = KeyStroke
-                .getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
-        KeyStroke copy = KeyStroke
-                .getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK);
-        KeyStroke paste = KeyStroke
-                .getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK);
-        KeyStroke cut = KeyStroke
-                .getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
-        KeyStroke selectAll = KeyStroke
-                .getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK);
-        KeyStroke expandCollapse = KeyStroke
-                .getKeyStroke(KeyEvent.VK_BACK_SLASH, InputEvent.CTRL_MASK);
-        KeyStroke undo = KeyStroke
-                .getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK);
-        KeyStroke redo = KeyStroke
-                .getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK);
 
-        Action actionSuggest = new ButtonAction.CTRLSpace();
-        Action actionCopy=new ButtonAction.CTRLC(this);
-        Action actionCut=new ButtonAction.CTRLX(this);
-        Action actionPaste=new ButtonAction.CTRLV(this);
-        Action actionSelect=new ButtonAction.CTRLA(this);
+        KeyStroke suggest        = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
+        KeyStroke copy           = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK);
+        KeyStroke paste          = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK);
+        KeyStroke cut            = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
+        KeyStroke selectAll      = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK);
+        KeyStroke expandCollapse = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SLASH, InputEvent.CTRL_MASK);
+        KeyStroke undo           = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK);
+        KeyStroke redo           = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK);
+
+        Action actionSuggest        = new ButtonAction.CTRLSpace();
+        Action actionCopy           = new ButtonAction.CTRLC(this);
+        Action actionCut            = new ButtonAction.CTRLX(this);
+        Action actionPaste          = new ButtonAction.CTRLV(this);
+        Action actionSelect         = new ButtonAction.CTRLA(this);
         Action actionExpandCollapse = new ButtonAction.CTRLBack();
-        Action actionUndo = new ButtonAction.CTRLZ();
-        Action actionRedo = new ButtonAction.CTRLY();
+        Action actionUndo           = new ButtonAction.CTRLZ();
+        Action actionRedo           = new ButtonAction.CTRLY();
 
         newmap.addActionForKeyStroke(suggest, actionSuggest);
         newmap.addActionForKeyStroke(copy, actionCopy);
@@ -62,26 +55,18 @@ public class QueryText extends JTextPane { //implements DropTargetListener {
         newmap.addActionForKeyStroke(expandCollapse, actionExpandCollapse);
         newmap.addActionForKeyStroke(undo, actionUndo);
         newmap.addActionForKeyStroke(redo, actionRedo);
+
         this.setKeymap(newmap);
-//        setDropTarget(new DropTarget(this,this));
-		addMouseListener(new MouseListener() {
 
+        addMouseListener(new MouseListener() {
 
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) { }
 
-            }
+            public void mousePressed(MouseEvent e) { }
 
-            public void mousePressed(MouseEvent e) {
+            public void mouseExited(MouseEvent e) { }
 
-            }
-
-            public void mouseExited(MouseEvent e) {
-
-            }
-
-            public void mouseEntered(MouseEvent e) {
-
-            }
+            public void mouseEntered(MouseEvent e) { }
 
             public void mouseClicked(MouseEvent e) {
                 int position=queryController.getTextPane().getCaretPosition();
@@ -96,85 +81,6 @@ public class QueryText extends JTextPane { //implements DropTargetListener {
                 }
             }
         });
-		setVisible(true);
-//        setDragEnabled(true);
-	}
-
-//    @Override
-//    public void dragEnter(DropTargetDragEvent dtde) {
-//        System.out.println("1");
-//    }
-//
-//    @Override
-//    public void dragOver(DropTargetDragEvent dtde) {
-//        System.out.println("2");
-//    }
-//
-//    @Override
-//    public void dropActionChanged(DropTargetDragEvent dtde) {
-//        System.out.println("3");
-//    }
-//
-//    @Override
-//    public void dragExit(DropTargetEvent dte) {
-//        System.out.println("4");
-//    }
-//
-//    @Override
-//    public void drop(DropTargetDropEvent evt) {
-//        Transferable transferable=evt.getTransferable();
-//        if(transferable.isDataFlavorSupported(TableRowFlavor.TABLEROWFLAVOUR)){
-//            evt.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-//            try {
-//                TableProcess dragContents = (TableProcess) transferable.getTransferData(TableRowFlavor.TABLEROWFLAVOUR);
-//                HashSet<String> locationsVersion = new HashSet<>();
-//                for(TableRow row : dragContents.getRows()) {
-//                    if (row.isSelected()) {
-//                        locationsVersion.add(row.toString());
-//                        row.clearSelection();
-//                    }
-//                }
-//                queryController.setLocations(locationsVersion);
-//                queryController.addQueryLocation();
-//            } catch (UnsupportedFlavorException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        viewController.getTableProcess().clearSelection();
-//    }
-//
-//    private void findProcess(){
-//        QueryController queryController=QueryController.getQueryController();
-//        DraggableNodeTree node;
-//        HashSet<String> locations=new HashSet<String>();
-//
-//        JTree tree = ViewController.getController().getFolderProcessTree();
-//        TreePath[] path = tree.getSelectionPaths();
-//
-//        for(TreePath tp : path) {
-//            node =(DraggableNodeTree) tp.getLastPathComponent();
-//            Enumeration e = node.breadthFirstEnumeration();
-//            while (e.hasMoreElements()) {
-//                DraggableNodeTree n = (DraggableNodeTree) e.nextElement();
-//
-//                if (n instanceof DraggableNodeProcess) {
-//                    DraggableNodeProcess dnp=(DraggableNodeProcess)n;
-//                    if(queryController.getVersion().equals(ViewController.LATESTVERSION)){
-//                        locations.add(dnp.getPathNode()+"{LATESTVERSION}");
-//                    }else if(queryController.getVersion().equals(ViewController.ALLVERSIONS) || queryController.getVersion().equals(ViewController.CHOOSEVERSION)){
-//                        locations.add(dnp.getPathNode()+"{ALLVERSION}");
-//                    }
-//                }
-//            }
-//        }
-//        queryController.setLocations(locations);
-//
-//        queryController.addQueryLocation();
-//
-//        tree.clearSelection();
-//    }
-
-
+        setVisible(true);
+    }
 }

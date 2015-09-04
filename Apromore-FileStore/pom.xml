@@ -149,10 +149,6 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>manager-ws-model</artifactId>
         </dependency>
         <dependency>

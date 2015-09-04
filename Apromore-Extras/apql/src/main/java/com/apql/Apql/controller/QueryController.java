@@ -206,7 +206,7 @@ public class QueryController {
         int indexSELECT=text.indexOf(Keywords.SELECT);
         int indexFROM=text.indexOf(Keywords.FROM);
         int indexWHERE=text.indexOf(Keywords.WHERE, indexFROM + 4);
-        int queryLenght=text.length();
+        int queryLength=text.length();
 
         if(malformedQuery()){
 //            System.out.println("QUERY MALFORMATA"+fromBeforeSelect + " " +whereBeforeFrom + " " + whereBeforeSelect);
@@ -216,7 +216,7 @@ public class QueryController {
         }else {
             char[] strchar = text.toCharArray();
             /*
-            for (int i = indexFROM + 4; i < queryLenght; i++) {//trovo la posizione della keyword WHERE
+            for (int i = indexFROM + 4; i < queryLength; i++) {//trovo la posizione della keyword WHERE
                 if (strchar[i] == 'W' && strchar[i - 1] != '"' && text.substring(i, i + Keywords.WHERE.length()).equals(Keywords.WHERE)) {
 		    System.out.println("Changed indexWHERE from " + indexWHERE + " to " + i);
                     indexWHERE = i;
@@ -235,7 +235,7 @@ public class QueryController {
                 strLocations = text.substring(indexFROM + 4);
             } else {
                 strLocations = text.substring(indexFROM + 4, indexWHERE);
-                afterLoc = text.substring(indexWHERE, queryLenght);
+                afterLoc = text.substring(indexWHERE, queryLength);
             }
 
             StringTokenizer st = new StringTokenizer(strLocations, ",;");
@@ -265,7 +265,7 @@ public class QueryController {
        int indexSELECT=text.indexOf(Keywords.SELECT);
        int indexFROM=text.indexOf(Keywords.FROM);
        int indexWHERE=text.indexOf(Keywords.WHERE);
-       int queryLenght=text.length();
+       int queryLength=text.length();
 
        boolean wrongSelect=indexSELECT > 0 && text.charAt(indexSELECT-1)=='"';
        boolean wrongFrom=indexFROM > 0 && text.charAt(indexFROM-1)=='"';
@@ -274,7 +274,7 @@ public class QueryController {
        boolean fromBeforeSelect=indexSELECT > indexFROM;
        boolean whereBeforeFrom=indexFROM > indexWHERE && indexWHERE!= -1;
        boolean whereBeforeSelect= indexWHERE!=-1 && indexWHERE < indexSELECT;
-       return queryLenght==0 || wrongSelect || wrongFrom || wrongWhere || fromBeforeSelect || whereBeforeFrom || whereBeforeSelect || text.trim().length()==0;
+       return queryLength==0 || wrongSelect || wrongFrom || wrongWhere || fromBeforeSelect || whereBeforeFrom || whereBeforeSelect || text.trim().length()==0;
    }
 
     public HashSet<String> getIdNets(){

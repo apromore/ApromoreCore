@@ -4,7 +4,7 @@
 
  <groupId>org.jbpt</groupId>
  <artifactId>jbpt-petri-osgi</artifactId>
- <version>0.2.393</version>
+ <version>0.2.433</version>
  <packaging>bundle</packaging>
 
  <build>
@@ -45,19 +45,19 @@
   <dependency>
    <groupId>org.jbpt</groupId>
    <artifactId>jbpt-petri</artifactId>
-   <version>0.2.393</version>
+   <version>0.2.433</version>
   </dependency>
 
   <dependency>
    <groupId>org.jbpt</groupId>
    <artifactId>jbpt-deco</artifactId>
-   <version>0.2.393</version>
+   <version>0.2.433</version>
   </dependency>
 
   <dependency>
    <groupId>org.jbpt</groupId>
    <artifactId>jbpt-core</artifactId>
-   <version>0.2.393</version>
+   <version>0.2.433</version>
   </dependency>
 
   <dependency>

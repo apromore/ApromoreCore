@@ -203,7 +203,7 @@
 
         <build-tools.version>1.0</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
-        <jbpt.version>0.2.393</jbpt.version>
+        <jbpt.version>0.2.433</jbpt.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <diffbp.version>1.0</diffbp.version>
         <rpsdag.version>0.1</rpsdag.version>
@@ -212,7 +212,7 @@
         <lpsolve.version>55j</lpsolve.version>
 		
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
-        <jbpt-petri.version>0.2.393</jbpt-petri.version>
+        <jbpt-petri.version>0.2.433</jbpt-petri.version>
         <v4-runtime.version>4.3</v4-runtime.version>
         <mysql.version>5.1.21</mysql.version>
         <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->

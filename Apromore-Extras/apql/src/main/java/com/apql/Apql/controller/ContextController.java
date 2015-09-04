@@ -29,10 +29,12 @@ import java.util.List;
  */
 public class ContextController {
     private static ContextController context;
-    private String text;
     private ViewController viewController=ViewController.getController();
     private QueryController queryController=QueryController.getQueryController();
     private HashMap<String,List<JLabel>> cache=new HashMap<>();
+
+    /** If not <code>null</code>, replaces the calls to the manager for process model lists with a fixed set of test data. */
+    private List<String> testLocations = null;
 
     /** If not <code>null</code>, replaces the calls to the manager for process label lists with a fixed set of test data. */
     private List<String> testProcessLabels = null;
@@ -50,90 +52,77 @@ public class ContextController {
         cache.put(key,values);
     }
 
+    /**
+     * @return a UI offering context-sensitive suggestions at the current caret position, or <code>null</code> if there are no suggestions
+     */
     public JScrollPane findContext(){
         JTextPane textPane=QueryController.getQueryController().getTextPane();
 
-        text=textPane.getText();
+        String text=textPane.getText();
 
         int caretPosition=QueryController.getQueryController().getCaretPosition();
-        PopupPanel panel=null;
-        JScrollPane scroll=null;
         int indexSELECT=text.indexOf(Keywords.SELECT);
         int indexFROM=text.indexOf(Keywords.FROM);
         int indexWHERE=text.indexOf(Keywords.WHERE);
-        int queryLenght=text.length();
+        int queryLength=text.length();
 
         String word=findWord(text,caretPosition);
         System.out.println("WORD \"" + word + "\"");
 
-        if(checkEmptyQuery(queryLenght, text)){
+        if(checkEmptyQuery(queryLength, text)){
+            // eg: ""
             System.out.println("EMPTY QUERY");
             String[] selectClause={Keywords.SELECT};
-//            panel=new PopupPanel(1,1);
-//            panel.addResults(selectClause);
-//            scroll = new JScrollPane(panel);
-//            scroll.setPreferredSize(new Dimension(30*selectClause.length, 150));
             return buildScroll(selectClause);
         }else if(indexSELECT < 0 && indexFROM < 0 && indexWHERE < 0) {
+            // eg: "random"
             System.out.println("NEITHER SELECT, FROM, NOR WHERE");
             String[] selectClause=null;
-//            panel=new PopupPanel(1,1);
             if(Keywords.SELECT.toLowerCase().matches(word+"[a-zA-Z]*") || Keywords.SELECT.matches(word.toUpperCase()+"[a-zA-Z]*")){
                 selectClause=new String[]{Keywords.SELECT};
-//                panel.addResults(selectClause);
             }else{
                 selectClause=new String[]{""};
             }
-//            scroll = new JScrollPane(panel);
-//            scroll.setPreferredSize(new Dimension(30*selectClause.length, 150));
             return buildScroll(selectClause);
         }else if(checkWordSelectContext(word, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+            // eg: "SELECT nimrod"
             System.out.println("SELECT WITH WORD");
             String[] selectClause;
-//            panel=new PopupPanel(1,1);
-             if(word.substring(0,1).toLowerCase().equals("i")){
-                selectClause= new String[]{Keywords.id};
-            }else if(word.substring(0,1).toLowerCase().equals("n")){
-                selectClause= new String[]{Keywords.name};
-            }else if(word.substring(0,1).toLowerCase().equals("*")){
-                selectClause= new String[]{Keywords._STAR_};
-            }else if(word.substring(0,1).toLowerCase().equals("f")){
-                selectClause= new String[]{Keywords.FROM};
-            }else{
-                 selectClause= new String[]{""};
+            switch (word.substring(0,1).toLowerCase()) {
+            case "i": selectClause= new String[]{Keywords.id};    break;
+            case "n": selectClause= new String[]{Keywords.name};   break;
+            case "*": selectClause= new String[]{Keywords._STAR_}; break;
+            case "f": selectClause= new String[]{Keywords.FROM};   break;
+            default:  selectClause= new String[]{""};
             }
-//            panel.addResults(selectClause);
-//            scroll = new JScrollPane(panel);
-//            scroll.setPreferredSize(new Dimension(30*selectClause.length, 150));
             return buildScroll(selectClause);
         } else if(checkSelectContext(indexSELECT,indexFROM,indexWHERE,caretPosition)){
+            // eg: "SELECT "
             System.out.println("EMPTY SELECT CLAUSE "+word);
             String[] selectClause=Keywords.getSelectClause();
-//            panel=new PopupPanel(5,1);
-//            panel.addResults(selectClause);
-//            scroll = new JScrollPane(panel);
-//            scroll.setPreferredSize(new Dimension(30*selectClause.length, 150));
             return buildScroll(selectClause);
-        }else if(checkWordFromContext(word, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+        }else if(checkWordFromContext(word, text, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+            // eg: "SELECT * FROM foo"
             System.out.println("FROM WITH WORD: "+word+"-----"+text);
             StringTokenizer st=new StringTokenizer(word,"/");
 
-//            ManagerService manager=ServiceController.getManagerService();
-//            String userID=manager.readUserByUsername(viewController.getUsername()).getId();
-
             String process=findProcess(text,caretPosition);
-            int lenght=0;
+            int length=0;
             System.out.println("pathProcess: "+process+" "+st.countTokens());
 
             String folder;
-//            List<FolderType> subFolders;
-//            List<ProcessSummaryType> subProcesses;
 
             if(st.hasMoreTokens()){
                 folder=st.nextToken();
                 System.out.println("folder: "+folder);
                 if(process.equals("Home/")){
-                    DraggableNodeTree dnt=((FolderProcessTree)viewController.getFolderProcessTree()).getRoot();
+                    System.out.println("@@@@@@@@@@@ HOME/");
+                    FolderProcessTree fpt=(FolderProcessTree)viewController.getFolderProcessTree();
+                    if (fpt==null) {
+                        System.out.println("  No processes in home folder");
+                        return null;
+                    }
+                    DraggableNodeTree dnt=fpt.getRoot();
                     List<JLabel> labelResults=new LinkedList<>();
                     Enumeration e = dnt.children();
 
@@ -145,45 +134,20 @@ public class ContextController {
                             labelResults.add(new ProcessLabel(Integer.parseInt(ob.getId()), (ob).getName(), ((DraggableNodeProcess) ob).getOriginalLanguage(), ((DraggableNodeProcess) ob).getLatestBranch(), ((DraggableNodeProcess) ob).getVersions()));
                         }
                     }
-//                    panel=new PopupPanel(labelResults.size(),1);
-//                    panel.addResults(labelResults);
-//                    scroll = new JScrollPane(panel);
-//                    if(labelResults.size()<=5) {
-//                        scroll.setPreferredSize(new Dimension(190, 30 * labelResults.size()));
-//                        scroll.setMaximumSize(new Dimension(190, 30 * labelResults.size()));
-//                        scroll.setMinimumSize(new Dimension(190, 30 * labelResults.size()));
-//                    }else {
-//                        scroll.setPreferredSize(new Dimension(190, 150));
-//                        scroll.setMaximumSize(new Dimension(190, 150));
-//                        scroll.setMinimumSize(new Dimension(190, 150));
-//                    }
                     return buildScroll(labelResults);
                 }else if((folder.equals("\"") || folder.equals("\"H") || folder.equals("\"Ho") || folder.equals("\"Hom") || folder.equals("\"Home")) && !st.hasMoreTokens()){
                     System.out.println("@@@@@@@@@@@ NO HOME");
                     System.out.println("@@@@@@@@@@@ TOKEN: "+folder);
-                    panel=new PopupPanel(1,1);
                     List<JLabel> resultLabels=new LinkedList<>();
                     resultLabels.add(new FolderLabel(0,"Home"));
-//                    resultLabels.add(new KeywordLabel(Keywords.WHERE,viewController.getImageIcon(ViewController.ICONKEY)));
-//                    panel.addResults(resultLabels);
-//                    scroll = new JScrollPane(panel);
-//                    if(resultLabels.size()<=5) {
-//                        scroll.setPreferredSize(new Dimension(190, 40 * resultLabels.size()));
-//                        scroll.setMaximumSize(new Dimension(190, 40 * resultLabels.size()));
-//                        scroll.setMinimumSize(new Dimension(190, 40 * resultLabels.size()));
-//                    }else {
-//                        scroll.setPreferredSize(new Dimension(190, 150));
-//                        scroll.setMaximumSize(new Dimension(190, 150));
-//                        scroll.setMinimumSize(new Dimension(190, 150));
-//                    }
-//                    return scroll;
                     return buildScroll(resultLabels);
                 }else if(!folder.startsWith("\"H")){
-                    System.out.println("-------------------------------IDNETSNODE: "+ queryController.getLocations().size());
+                    System.out.println("-------------------------------IDNETSNODE: "+ getLocations().size());
+                    System.out.println("-------------------------------IDNETSNODE: "+ getLocations());
                     LinkedList<JLabel> results=new LinkedList<>();
 
                     LinkedList<String> tmp =new LinkedList<>();
-                    for(String str : queryController.getLocations()){
+                    for(String str : getLocations()){
                         if(str.startsWith(folder)){
                             tmp.add(str);
                         }
@@ -193,41 +157,30 @@ public class ContextController {
                         results.addLast(new ProcessLabel(0,"\""+str,null,null,null));
                     }
 
-//                    panel=new PopupPanel(tmp.size(),1);
-//                    panel.addResults(results);
-//                    scroll = new JScrollPane(panel);
-//                    if(results.size()<=5) {
-//                        scroll.setPreferredSize(new Dimension(190, 30 * results.size()));
-//                        scroll.setMaximumSize(new Dimension(190, 30*results.size()));
-//                        scroll.setMinimumSize(new Dimension(190, 30 * results.size()));
-//                    } else {
-//                        scroll.setPreferredSize(new Dimension(190, 150));
-//                        scroll.setMaximumSize(new Dimension(190, 150));
-//                        scroll.setMinimumSize(new Dimension(190, 150));
-//                    }
-
-
-//                    scroll.setPreferredSize(new Dimension(200, 30));
-//                    return scroll;
                     return buildScroll(results);
                 }else{
                     System.out.println("@@@@@@@@@@@ HOME");
-                    DraggableNodeTree dnt=((FolderProcessTree)viewController.getFolderProcessTree()).getRoot();
+                    FolderProcessTree fpt=(FolderProcessTree)viewController.getFolderProcessTree();
+                    if (fpt==null) {
+                        System.out.println("  No processes in home folder");
+                        return null;
+                    }
+                    DraggableNodeTree dnt=fpt.getRoot();
                     List<JLabel> labelResults=new LinkedList<>();
                     DraggableNodeTree ob;
-                    lenght+=5;
+                    length+=5;
                     while(st.hasMoreTokens()){
                         folder=st.nextToken();
-                        lenght+=folder.length();
-                        System.out.println("folder in HOME: "+folder+" "+lenght+" "+process+" "+process.length()+" "+st.countTokens());
+                        length+=folder.length();
+                        System.out.println("folder in HOME: "+folder+" "+length+" "+process+" "+process.length()+" "+st.countTokens());
                         Enumeration e = dnt.children();
                         while(e.hasMoreElements()){
                             ob =(DraggableNodeTree) e.nextElement();
-                             if (ob.getName().startsWith(folder) && st.hasMoreTokens()) {
+                            if (ob.getName().startsWith(folder) && st.hasMoreTokens()) {
                                 System.out.println("SECOND OPTION");
                                 dnt=ob;
-                                 lenght+=1;
-                            }else if(ob.getName().startsWith(folder) && !st.hasMoreTokens() && process.length()-1 == lenght){
+                                length+=1;
+                            }else if(ob.getName().startsWith(folder) && !st.hasMoreTokens() && process.length()-1 == length){
                                 System.out.println("THIRD OPTION");
                                 e=ob.children();
                                 while(e.hasMoreElements()){
@@ -250,12 +203,15 @@ public class ContextController {
                     }
                     return buildScroll(labelResults);
                 }
+            } else {
+                System.out.println("NO TOKENS");
             }
-        } else if(checkFromContext(indexSELECT, indexFROM, indexWHERE, caretPosition)){
+        } else if(checkFromContext(text, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+            // eg: "SELECT * FROM "
             System.out.println("EMPTY FROM CLAUSE "+ word);
             try {
 
-                LinkedList<String> processes=(LinkedList)queryController.getLocations();
+                LinkedList<String> processes=(LinkedList)getLocations();
                 LinkedList<JLabel> results=new LinkedList<>();
                 KeywordLabel where=new KeywordLabel(Keywords.WHERE,viewController.getImageIcon(ViewController.ICONKEY));
                 FolderLabel home=new FolderLabel(0,"Home");
@@ -271,7 +227,7 @@ public class ContextController {
             }catch(Exception e){
                 e.printStackTrace();
             }
-        }else if(checkWordWhereContext(word, indexSELECT, indexFROM, indexWHERE, caretPosition)){
+        }else if(checkWordWhereContext(word, text, indexSELECT, indexFROM, indexWHERE, caretPosition)){
             System.out.println("WHERE CONTEXT " + word);
             String[] keywords={""};
             LinkedList<String> suggests=new LinkedList<>();
@@ -279,6 +235,7 @@ public class ContextController {
             System.out.println("  wordWhere " + wordWhere);
             System.out.println("PRIMA IF: "+wordWhere);
             if(wordWhere.matches("[a-zA-Z]+[,]") || wordWhere.matches("[\"][a-zA-Z0-9_]+[\"][,]") || word.matches("[a-zA-Z]+")) {
+                // eg: "SELECT * FROM * WHERE foo"
                 System.out.println("WITH WORD");
                 for (String str : Keywords.getKeywords()) {
                     if (str.toLowerCase().startsWith(word.toLowerCase())) {
@@ -286,6 +243,7 @@ public class ContextController {
                     }
                 }
             }else if(wordWhere.matches("[a-zA-Z0-9 ]+")){
+                // eg: "SELECT * FROM * WHERE 123"
                 System.out.println("WITH SPACE");
                 try {
                     List<String> labels = getProcessLabels();
@@ -298,6 +256,7 @@ public class ContextController {
                     ex.printStackTrace();
                 }
             }else if(word.matches("[a-zA-Z]+[(][\"]")){
+                // eg: SELECT * FROM * WHERE CanOccur("
                 System.out.println("WITH QUOTES");
                 try {
                     List<String> labels = getProcessLabels();
@@ -309,15 +268,18 @@ public class ContextController {
                     ex.printStackTrace();
                 }
             }else {
+                // eg: SELECT * FROM * WHERE sqrt(
                 System.out.println("WITHOUT");
             }
             Collections.sort(suggests);
             keywords=(suggests.toArray(keywords));
             return buildScroll(keywords);
-        }else if(checkWhereContext(indexSELECT, indexFROM, indexWHERE, caretPosition)) {
+        }else if(checkWhereContext(text, indexSELECT, indexFROM, indexWHERE, caretPosition)) {
+            // eg: "SELECT * FROM * WHERE "
             System.out.println("EMPTY WHERE CLAUSE " + word);
             return buildScroll(Keywords.getWhereClause());
         }else{
+            // eg: "FROM un"
             System.out.println("ELSE");
             String[] keywords={""};
             LinkedList<String> suggests=new LinkedList<>();
@@ -332,7 +294,7 @@ public class ContextController {
             return buildScroll(keywords);
         }
 
-        return scroll;
+        return null;
     }
 
     private List<String> getProcessLabels() {
@@ -346,14 +308,29 @@ public class ContextController {
     /**
      * Disable querying the manager for process labels.
      *
+     * This is only used to isolate this class from the manager during unit testing.
+     *
      * @param processLabels  the list of process labels to use, rather than ones obtained from the manager
      */
     void setProcessLabels(List<String> processLabels) {
         testProcessLabels = processLabels;
     }
 
-    private boolean checkEmptyQuery(int queryLenght, String text){
-        return queryLenght==0 || text.trim().length()==0;
+    private List<String> getLocations() {
+        if (testLocations != null) {
+            return testLocations;
+        } else {
+            System.out.println("getLocations() = " + queryController.getLocations());
+            return queryController.getLocations();
+        }
+    }
+
+    void setLocations(List<String> locations) {
+        testLocations = locations;
+    }
+
+    private boolean checkEmptyQuery(int queryLength, String text){
+        return queryLength==0 || text.trim().length()==0;
     }
 
     private boolean checkWordSelectContext(String word, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
@@ -367,7 +344,7 @@ public class ContextController {
         return (!word.equals("") && checkSelectContext(indexSELECT,indexFROM,indexWHERE,caretPosition));
     }
 
-    private boolean checkWordFromContext(String word, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
+    private boolean checkWordFromContext(String word, String text, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
 //        System.out.println("----------checkWordFromContext----------");
 //        System.out.println("word: "+word);
 //        System.out.println("indexSelect: "+indexSELECT);
@@ -375,10 +352,10 @@ public class ContextController {
 //        System.out.println("indexWhere: "+indexWHERE);
 //        System.out.println("caret: "+caretPosition);
 //        System.out.println("----------checkWordFromContext----------");
-        return (!word.equals("") && checkFromContext(indexSELECT, indexFROM, indexWHERE, caretPosition));
+        return (!word.equals("") && checkFromContext(text, indexSELECT, indexFROM, indexWHERE, caretPosition));
     }
 
-    private boolean checkWordWhereContext(String word, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
+    private boolean checkWordWhereContext(String word, String text, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
         System.out.println("----------checkWordWhereContext----------");
         System.out.println("word: "+word);
 //        System.out.println("indexSelect: "+indexSELECT);
@@ -387,7 +364,7 @@ public class ContextController {
 //        System.out.println("caret: "+caretPosition);
         System.out.println("----------checkWordWhereContext----------");
 //        word.matches("[a-zA-Z]+[(][\"][a-zA-Z0-9 ]+")
-        return (!word.equals("") && checkWhereContext(indexSELECT, indexFROM, indexWHERE, caretPosition));
+        return (!word.equals("") && checkWhereContext(text, indexSELECT, indexFROM, indexWHERE, caretPosition));
     }
 
     private boolean checkSelectContext(int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
@@ -402,7 +379,7 @@ public class ContextController {
                (indexSELECT >= 0 && indexFROM > 0 && indexWHERE > 0 && indexSELECT < indexFROM && indexFROM < indexWHERE && caretPosition > indexSELECT+6 && caretPosition < indexFROM);
     }
 
-    private boolean checkFromContext(int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
+    private boolean checkFromContext(String text, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
         int charTen=0;
         for(int i=indexFROM; i>0 ;i--)
             if(text.charAt(i)==13)
@@ -417,7 +394,7 @@ public class ContextController {
                 (indexSELECT >= 0 && indexFROM > 0 && indexWHERE > 0 && indexSELECT < indexFROM && indexFROM < indexWHERE && caretPosition >= indexFROM+4 && caretPosition < indexWHERE);
     }
 
-    private boolean checkWhereContext(int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
+    private boolean checkWhereContext(String text, int indexSELECT, int indexFROM, int indexWHERE, int caretPosition){
         int charTen=0;
         for(int i=indexWHERE; i>0 ;i--)
             if(text.charAt(i)==13)
@@ -468,7 +445,7 @@ public class ContextController {
         return word;
     }
 
-    private String findWordWhere(String Text,int caretPos){
+    private String findWordWhere(String text, int caretPos){
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
             if (text.charAt(i) != 13) {
@@ -493,7 +470,7 @@ public class ContextController {
         return findWord(text,caretPos);
     }
 
-    private String findProcess(String text, int caretPos){
+    String findProcess(String text, int caretPos){
         String word = "";
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {

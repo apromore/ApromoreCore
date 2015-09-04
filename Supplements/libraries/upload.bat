@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-call mvn install:install-file -Dfile=jbpt-core.jar -DgroupId=org.jbpt -DartifactId=jbpt-core -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
-call mvn install:install-file -Dfile=jbpt-deco.jar -DgroupId=org.jbpt -DartifactId=jbpt-deco -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jbpt-core.jar -DgroupId=org.jbpt -DartifactId=jbpt-core -Dversion=0.2.433 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jbpt-deco.jar -DgroupId=org.jbpt -DartifactId=jbpt-deco -Dversion=0.2.433 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpstruct.jar -DgroupId=ee.ut -DartifactId=bpstruct -Dversion=0.1.117 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=rpsdag.jar -DgroupId=tu -DartifactId=rpsdag -Dversion=0.1 -Dpackaging=jar
 call mvn install:install-file -Dfile=taskmapping.jar -DgroupId=tu -DartifactId=taskmapping -Dversion=0.1 -Dpackaging=jar
@@ -13,8 +13,8 @@ call mvn install:install-file -Dfile=javabdd-1.0b2.jar -DgroupId=net.sf.javabdd 
 rem PQL
 call mvn install:install-file -Dfile=pql/themis-0.1.1.jar -DgroupId=org.themis -DartifactId=themis -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=pql/json-20090211.jar -DgroupId=org.json -DartifactId=json -Dversion=20090211 -Dpackaging=jar -DgeneratePom=true
-call mvn install:install-file -Dfile=pql/jbpt-petri-0.2.393.jar -DgroupId=org.jbpt -DartifactId=jbpt-petri -Dversion=0.2.393 -Dpackaging=jar -DgeneratePom=true
-call mvn install:install-file -Dfile=pql/PQL.jar -DgroupId=org.pql -DartifactId=pql -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=pql/jbpt-petri-0.2.433.jar -DgroupId=org.jbpt -DartifactId=jbpt-petri -Dversion=0.2.433 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=pql/PQL-1.0.jar -DgroupId=org.pql -DartifactId=pql -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 rem BPMNMiner
 call mvn install:install-file -Dfile=bpmnminer/AlphaMiner.jar -DgroupId=org.processmining -DartifactId=alphaminer -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=bpmnminer/Animation.jar -DgroupId=org.processmining -DartifactId=animation -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true

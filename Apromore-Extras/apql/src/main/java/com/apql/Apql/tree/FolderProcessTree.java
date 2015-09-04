@@ -40,7 +40,7 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
         this.manager= ServiceController.getManagerService();
         this.user=manager.readUserByUsername(controller.getUsername());
         try {
-            sound=new HashSet<>(ServiceController.getManagerService().getProcessesLabels("pql.jbpt_petri_nets","identifier"));
+            sound=new HashSet<>(ServiceController.getManagerService().getProcessesLabels("pql.jbpt_petri_nets","external_id"));
         }catch(Exception ex){
             ex.printStackTrace();
         }

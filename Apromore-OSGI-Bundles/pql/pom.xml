@@ -51,6 +51,7 @@
                             org.jbpt.petri.untangling,
                             org.jbpt.petri.untangling.pss,
                             org.jbpt.petri.wftree,
+                            org.jbpt.throwable,
                             com.mysql.jdbc,
                             org.themis,
                             org.themis.ir,
@@ -148,13 +149,13 @@
         <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-petri-osgi</artifactId>
-            <version>0.2.393</version>
+            <version>0.2.433</version>
         </dependency>
 
         <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-core</artifactId>
-            <version>0.2.393</version>
+            <version>0.2.433</version>
         </dependency>
 
         <dependency>

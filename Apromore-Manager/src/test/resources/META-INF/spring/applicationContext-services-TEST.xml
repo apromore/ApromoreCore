@@ -78,7 +78,7 @@
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
         <constructor-arg type="boolean" value="false"/>
-        <constructor-arg type="String" value="levenshtein"/>
+        <constructor-arg type="String" value="LEVENSHTEIN"/>
     </bean>
 
 

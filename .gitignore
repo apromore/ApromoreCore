@@ -5,6 +5,9 @@
 **/*.iml
 
 # Unpacked application server
+Apromore-Assembly/Editor-Repository
+Apromore-Assembly/Filestore-Repository
+Apromore-Assembly/Manager-Repository\.*
 Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
 
 # Site-specific configuration

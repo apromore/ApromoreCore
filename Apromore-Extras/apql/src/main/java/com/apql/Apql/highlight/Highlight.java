@@ -90,6 +90,8 @@ public class Highlight {
                     colorWord(pos, Keywords.ALWAYS_OCCURS, keyWord);
                 } else if(tmpString.equalsIgnoreCase(Keywords.GET_TASKS)){
                     colorWord(pos, Keywords.GET_TASKS, keyWord);
+                } else if(tmpString.equalsIgnoreCase(Keywords.TOTAL_CAUSAL)){
+                    colorWord(pos, Keywords.TOTAL_CAUSAL, keyWord);
                 } else if ((tmpString.equals("*") || tmpString.equals("id") || tmpString.equals("name") || tmpString.equals("language") || tmpString.equals("version") || tmpString.equals("owner") || tmpString.equals("domain") || tmpString.equals("ranking"))) {
                     colorWord(pos, tmpString, selectClause);
                 } else {
