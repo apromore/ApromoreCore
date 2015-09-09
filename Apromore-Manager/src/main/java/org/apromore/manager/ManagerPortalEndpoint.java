@@ -153,6 +153,7 @@ public class ManagerPortalEndpoint {
         this.pqlService = pqlService;
         this.dbService = dbService;
         this.bpmnMinerService = bpmnMinerService;
+
     }
 
 

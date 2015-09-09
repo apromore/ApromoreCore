@@ -39,7 +39,7 @@
 
     <bean id="managerExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${site.host}:${site.externalport}/${site.manager}/services/manager">
+          p:defaultUri="http://${site.externalhost}:${site.externalport}/${site.manager}/services/manager">
         <constructor-arg ref="messageFactory"/>
     </bean>
 </beans>

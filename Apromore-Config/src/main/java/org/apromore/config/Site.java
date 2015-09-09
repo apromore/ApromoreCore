@@ -21,6 +21,8 @@ public abstract class Site {
     private static final String SITE_PORTAL        = "site.portal";
     private static final String SITE_EDITOR        = "site.editor";
     private static final String SITE_FILESTORE     = "site.filestore";
+    private static final String SITE_EXTERNALHOST  = "site.externalhost";
+    private static final String SITE_EXTERNALPORT  = "site.externalport";
 
     /**
      * The properties contained in {@link PROPERTY_FILE}.
@@ -90,4 +92,13 @@ public abstract class Site {
     public static String getVersionNumber() {
         return getProperties().getProperty(VERSION_NUMBER);
     }
+
+    public static String getExternalhost() {
+        return getProperties().getProperty(SITE_EXTERNALHOST);
+    }
+
+    public static String getExternalport() {
+        return getProperties().getProperty(SITE_EXTERNALPORT);
+    }
+
 }

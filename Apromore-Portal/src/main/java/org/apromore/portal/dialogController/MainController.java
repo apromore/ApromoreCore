@@ -697,7 +697,7 @@ public class MainController extends BaseController {
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
-        setHost("http://" + Site.getHost() + ":" + Site.getPort());
+        setHost("http://" + Site.getExternalhost() + ":" + Site.getExternalport());
         setVersionNumber(Site.getVersionNumber());
         setBuildDate(Site.getBuildDate());
     }

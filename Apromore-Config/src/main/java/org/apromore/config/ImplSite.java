@@ -23,6 +23,8 @@ public class ImplSite {
     private static final String SITE_PORTAL        = "site.portal";
     private static final String SITE_EDITOR        = "site.editor";
     private static final String SITE_FILESTORE     = "site.filestore";
+    private static final String SITE_EXTERNALHOST  = "site.externalhost";
+    private static final String SITE_EXTERNALPORT  = "site.externalport";
 
     private String versionNumber;
     private String buildDate;
@@ -34,6 +36,8 @@ public class ImplSite {
     private String sitePortal;
     private String siteEditor;
     private String siteFilestore;
+    private String externalhost;
+    private String externalport;
 
     /**
      * The properties contained in {@link PROPERTY_FILE}.
@@ -91,7 +95,6 @@ public class ImplSite {
         return getProperties().getProperty(SITE_FILESTORE);
     }
 
-
     public String getHost() {
         return getProperties().getProperty(SITE_HOST);
     }
@@ -103,6 +106,15 @@ public class ImplSite {
     public String getVersionNumber() {
         return getProperties().getProperty(VERSION_NUMBER);
     }
+
+    public String getExternalhost() {
+        return getProperties().getProperty(SITE_EXTERNALHOST);
+    }
+
+    public String getExternalportPort() {
+        return getProperties().getProperty(SITE_EXTERNALPORT);
+    }
+
 
     private void setProperties(Properties properties) {
         return;
@@ -147,6 +159,14 @@ public class ImplSite {
     }
 
     public void setVersionNumber(String versionNumber) {
+        return;
+    }
+
+    public void getExternalhost(String externalhost) {
+        return;
+    }
+
+    public void getExternalport(String externalport) {
         return;
     }
 }

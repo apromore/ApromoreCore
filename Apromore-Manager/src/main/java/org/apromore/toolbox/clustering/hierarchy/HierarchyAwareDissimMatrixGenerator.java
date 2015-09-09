@@ -21,6 +21,7 @@
 package org.apromore.toolbox.clustering.hierarchy;
 
 import javax.inject.Inject;
+import java.lang.Object;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +32,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.FragmentDistanceRepository;
+import org.apromore.dao.FragmentVersionRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.model.*;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
@@ -50,6 +54,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
+
+    private FragmentVersionRepository fragmentVersionRepository;
 
     private ContainmentRelation crel;
     private FragmentDistanceRepository fragmentDistanceRepository;
@@ -82,8 +88,75 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ReentrantReadWriteLock.ReadLock readLockWrittenDiss = readWriteLockWrittenDiss.readLock();
     private ReentrantReadWriteLock.WriteLock writeLockWrittenDiss = readWriteLockWrittenDiss.writeLock();
 
+    private ConcurrentHashMap<Integer, Set<Folder>> folderMap = new ConcurrentHashMap<>();
+
     private ReentrantLock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
+
+    private Set<FragmentVersion> getRootFragments(Integer fragmentID) {
+        Set<FragmentVersion> rootFragments = new HashSet<>();
+        List parentFragments = fragmentVersionRepository.getParentFragments(fragmentID);
+        if(parentFragments.isEmpty()) {
+            rootFragments.add(fragmentVersionRepository.findOne(fragmentID));
+        }else {
+            for(FragmentVersionDag fragmentVersionDag : (List<FragmentVersionDag>) parentFragments) {
+                if(!fragmentID.equals(fragmentVersionDag.getFragmentVersion().getId())) {
+                    rootFragments.addAll(getRootFragments(fragmentVersionDag.getFragmentVersion().getId()));
+                }
+            }
+        }
+        return rootFragments;
+    }
+
+    private Set<Folder> getFoldersOfProcessFragment(Integer fragmentID) {
+        Set<Folder> folders;
+        if((folders = folderMap.get(fragmentID)) == null) {
+            Set<FragmentVersion> rootFragments = getRootFragments(fragmentID);
+
+            folders = new HashSet<>();
+            for (FragmentVersion rootFragment : rootFragments) {
+                for(ProcessModelVersion processModelVersionRoot : rootFragment.getRootProcessModelVersions()) {
+                    folders.add(processModelVersionRoot.getProcessBranch().getProcess().getFolder());
+                }
+            }
+            folderMap.put(fragmentID, folders);
+        }
+        return folders;
+    }
+
+    private boolean isSameFolder(Integer root1, Integer root2) {
+        Set<Folder> foldersRoot1 = getFoldersOfProcessFragment(root1);
+        Set<Folder> foldersRoot2 = getFoldersOfProcessFragment(root2);
+
+        for(Folder folder1 : foldersRoot1) {
+            for(Folder folder2 : foldersRoot2) {
+                if(isSubFolder(folder1, folder2) || isSubFolder(folder2, folder1)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isSameFolder(Folder folder1, Folder folder2) {
+        return convertFolderToString(folder1).equals(convertFolderToString(folder2));
+    }
+
+    private String convertFolderToString(Folder folder) {
+        String parent = "";
+        if(folder.getParentFolder() != null) parent = convertFolderToString(folder.getParentFolder());
+        return parent + "/" + folder.getName();
+    }
+
+    private boolean isSubFolder(Folder folder1, Folder folder2) {
+        if(isSameFolder(folder1, folder2)) return true;
+        for(Folder subfolder : folder1.getSubFolders()) {
+            if(isSubFolder(subfolder, folder2)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void writeOnWrittenDissimmap(Integer frag1, Integer frag2, Double distFid2Fid1) {
         writeLockWrittenDiss.lock();
@@ -134,10 +207,11 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-            final ComposerService compSrv) {
+            final ComposerService compSrv, final FragmentVersionRepository fragmentVersionRepository) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
+        this.fragmentVersionRepository = fragmentVersionRepository;
     }
 
 
@@ -208,6 +282,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         LOGGER.info("Cores Available " + coresAvailable);
 
         List<Integer> roots = crel.getRoots();
+
         for (int p = 0; p < roots.size(); p++) {
             intraRoot = roots.get(p);
 
@@ -294,16 +369,16 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     /* Computes the Dissimilarity for the two fragments. */
     private void computeDissim(Integer fid1, Integer fid2) {
         try {
-            if (!crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
+            if (isSameFolder(fid1, fid2) && !crel.areInContainmentRelation(crel.getFragmentIndex(fid1), crel.getFragmentIndex(fid2))) {
                 Double distFid2Fid1 = (Double) readFromDissimmap(fid2, fid1);
-                if(distFid2Fid1 != null) {
+                if (distFid2Fid1 != null) {
                     writeOnDissimmap(fid1, fid2, distFid2Fid1);
-                }else {
+                } else {
 //                    distFid2Fid1 = fragmentDistanceRepository.getDistance(fid2, fid1); //Removed by Raf
                     distFid2Fid1 = (Double) readFromWrittenDissimmap(fid2, fid1);
-                    if(distFid2Fid1 != null){
+                    if (distFid2Fid1 != null) {
                         writeOnDissimmap(fid1, fid2, distFid2Fid1);
-                    }else {
+                    } else {
                         double dissim = computeFromGEDMatrixCalc(fid1, fid2); // computeFromDissimilarityCalc(fid1, fid2);
                         if (dissim <= dissThreshold) {
                             writeOnDissimmap(fid1, fid2, dissim);
@@ -314,13 +389,13 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
             int r = reportingInterval.incrementAndGet();
             int p = processedPairs.incrementAndGet();
-            if(r == 10000) {
+            if (r == 10000) {
                 reportingInterval.addAndGet(-10000);
                 long duration = (System.currentTimeMillis() - startedTime) / 1000;
                 double percentage = (double) p * 100 / totalPairs;
                 percentage = (double) Math.round((percentage * 1000)) / 1000d;
                 int s = sizeDissimmap();
-                if(s > 0) {
+                if (s > 0) {
                     LOGGER.info(p + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + s);
                     saveDissimmap();
                 }

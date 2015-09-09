@@ -39,7 +39,7 @@
 
     <bean id="fileStoreExternalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
           p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${site.host}:${site.externalport}/${site.filestore}">
+          p:defaultUri="http://${site.externalhost}:${site.externalport}/${site.filestore}">
         <constructor-arg ref="messageFactory"/>
     </bean>
 </beans>
