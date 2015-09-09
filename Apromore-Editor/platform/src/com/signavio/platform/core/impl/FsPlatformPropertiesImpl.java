@@ -61,7 +61,7 @@ public class FsPlatformPropertiesImpl implements PlatformProperties {
 			rootDirectoryPath = tempRootDirectoryPath;
 		}
 		
-		serverName = "http://" + Site.getHost() + ":" + Site.getPort();
+		serverName = "http://" + Site.getExternalhost() + ":" + Site.getExternalport();
 		platformUri = context.getContextPath() + "/p";
 		explorerUri = context.getContextPath() + "/explorer";
 		editorUri = context.getContextPath() + "/editor";

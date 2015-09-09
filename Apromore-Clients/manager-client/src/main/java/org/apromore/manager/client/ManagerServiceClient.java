@@ -43,7 +43,6 @@ import java.util.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Performance Test for the Apromore Manager Client.

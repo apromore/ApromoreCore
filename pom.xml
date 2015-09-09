@@ -290,6 +290,8 @@
         <javadocs.skip>false</javadocs.skip>
         <pmd.skip>false</pmd.skip>
 
+        <minimizejar>true</minimizejar>
+
         <dsig.keystore>${project.parent.basedir}/Supplements/keystore/signing-jar.keystore</dsig.keystore>
         <dsig.alias>applet</dsig.alias>
         <dsig.storepass>applet</dsig.storepass>
