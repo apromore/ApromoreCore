@@ -167,7 +167,7 @@
         <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-core</artifactId>
-            <version>0.2.393</version>
+            <version>0.2.433</version>
             <scope>provided</scope>
         </dependency>
 
