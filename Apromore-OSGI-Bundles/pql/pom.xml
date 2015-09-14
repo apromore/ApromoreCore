@@ -1,11 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+    -->
 
     <groupId>org.pql</groupId>
     <artifactId>pql-osgi</artifactId>
     <version>1.0</version>
     <packaging>bundle</packaging>
+
+    <repositories>
+        <repository>
+            <id>ApromoreDev.mvn-repo</id>
+            <name>Maven repository for JARs specific to the Apromore project</name>
+            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -22,12 +38,10 @@
                         <Bundle-Name>pql OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pql-osgi</Bundle-SymbolicName>
                         <Export-Package>
-                            org.eclipse.jdt.internal.jarinjarloader,
                             org.jbpt.persist,
                             org.jbpt.petri.persist,
                             org.pql.antlr,
                             org.pql.api,
-                            org.pql.cmd,
                             org.pql.core,
                             org.pql.index,
                             org.pql.label,
@@ -116,22 +130,10 @@
             <version>5.1.31</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.themis</groupId>-->
-            <!--<artifactId>themis</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.themis</groupId>
             <artifactId>themis-osgi</artifactId>
             <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql-osgi</artifactId>
-            <version>9.3-1101-jdbc41</version>
         </dependency>
 
         <dependency>
