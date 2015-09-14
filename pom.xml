@@ -42,6 +42,9 @@
     </distributionManagement>
 
     <modules>
+        <module>Apromore-Extras/Build-Tools</module>
+        <module>Apromore-Extras/Test-Tools</module>
+
         <!-- Schema's -->
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/aris-schema</module>
@@ -1323,6 +1326,11 @@
     </dependencyManagement>
 
     <repositories>
+        <repository>
+            <id>ApromoreDev.mvn-repo</id>
+            <name>Maven repository for JARs specific to the Apromore project</name>
+            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+        </repository>
         <repository>
             <id>EclipseLink Repo</id>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
