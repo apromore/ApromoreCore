@@ -1,5 +1,6 @@
 Apromore Build Instructions with Eclipse Virgo
 
+
 REQUIREMENTS
 ============
 
@@ -22,23 +23,14 @@ for H2 and MySQL.
 
 Check out the Apromore source tree from the github repository at https://github.com/apromore/ApromoreCode.git
 
+
 CONFIGURATION
 =============
 
-Configuration occurs in the top level site.properties file.  Because these configurations are site-specific, this file is not present in
-the subversion repository.  A template file site.properties_template is provided which can be copied and edited.  The template contains
-reasonable defaults, but at least two properties cannot be defaulted and require explicit settings:
-
-- editor.dir: This needs to reference an empty directory with write permission, e.g. C:/Development/Temp/signarvio-root
-
-- filestore.dir: This is the local directory which will be accessible via WebDAV at http://localhost:9000/filestore/dav
-                 e.g. C:/Development/Temp/webdav-root
-
-- lola.dir: This is the executable for LoLA 2.0, e.g. C:/Development/util/lola2/lola.exe
-
+Configuration occurs in the top level site.properties file.  The default version of this file from a fresh git checkout contains
+reasonable defaults that use MySQL as the main database, but disable PQL (which requires Postgres and more intricate configuration).
 At this point MySQL isn't required for the builds at it now uses H2. To run Apromore after the build you will need MySQL setup.
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
-
 
 
 DATABASE SETUP
@@ -71,9 +63,6 @@ BUILD IT
 ========
 
 * Change to the root of the project you checked out of SVN.
-* Run the ant command 'ant apromore-pre-build'. This will upload any libraries that are needed and not in any maven
-  repository, build some support libraries, place all of them in your local maven repository, and generate some lower-level
-  configuration files within the source tree using the values in site.properties.
 * Run the maven command 'mvn clean install'. This will build the Apromore manager, portal and editor and all the extra plugins.
 * Run the ant command 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
 
