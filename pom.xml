@@ -94,11 +94,13 @@
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
         <module>Apromore-Editor</module>
+        <module>Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
         <module>Apromore-Assembly/Filestore-Assembly</module>
+        <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
 
         <!-- Command line tools -->
         <module>Supplements/cpfImporter</module>

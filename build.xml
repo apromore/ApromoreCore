@@ -29,11 +29,13 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/org.apromore.filestore.plan"/>
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/org.apromore.manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/org.apromore.portal.plan"/>
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/org.apromore.pql-indexer.plan"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">
         <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
+        <include name="site.properties"/>
     </fileset>
 
     <fileset id="webAppRepo" dir=".">

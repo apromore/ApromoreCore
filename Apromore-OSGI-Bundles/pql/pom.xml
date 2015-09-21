@@ -42,6 +42,7 @@
                             org.jbpt.petri.persist,
                             org.pql.antlr,
                             org.pql.api,
+                            org.pql.bot,
                             org.pql.core,
                             org.pql.index,
                             org.pql.label,

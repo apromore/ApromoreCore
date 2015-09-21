@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/aop             http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+            http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
+
+    <bean id="pqlIndexerConfig" class="org.apromore.pql.indexer.PQLIndexerConfigurationBean">
+        <constructor-arg type="Integer" value="10"/>  <!-- thread limit   -->
+
+        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
+
+        <constructor-arg type="String"  value="${pql.labelSimilaritySearch}"/>
+        <constructor-arg type="double"  value="${pql.defaultLabelSimilarity}"/>
+        <constructor-arg type="String"  value="${pql.indexedLabelSimilarities}"/>
+
+        <constructor-arg type="int"     value="${pql.defaultBotSleepTime}"/>
+        <constructor-arg type="int"     value="${pql.defaultBotMaxIndexTime}"/>
+
+        <constructor-arg type="String"  value="${pql.lola.dir}"/>
+
+        <constructor-arg type="String"  value="${pql.mysql.url}"/>
+        <constructor-arg type="String"  value="${pql.mysql.user}"/>
+        <constructor-arg type="String"  value="${pql.mysql.password}"/>
+
+        <constructor-arg type="String"  value="${pql.postgres.host}"/>
+        <constructor-arg type="String"  value="${pql.postgres.name}"/>
+        <constructor-arg type="String"  value="${pql.postgres.user}"/>
+        <constructor-arg type="String"  value="${pql.postgres.password}"/>
+    </bean>
+
+    <context:property-placeholder properties-ref="pqlIndexerProperties"/>
+
+    <osgi-compendium:cm-properties id="pqlIndexerProperties" persistent-id="site"/>
+</beans>
