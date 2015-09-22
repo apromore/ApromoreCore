@@ -22,4 +22,8 @@ public interface PQLService extends Observer{
     List<String> runAPQLQuery(String queryPQL,List<String> IDs,String userID);
     List<Detail> getDetails();
 
+    /**
+     * This is a kludge to work around the circular dependency between {@link ProcessServiceImpl} and {@link PQLServiceImpl}.
+     */
+    void setProcessService(ProcessService processService);
 }
