@@ -49,7 +49,7 @@ public class PQLServiceImpl implements PQLService {
     private String PNMLCanoniser;
     @Inject
     private WorkspaceService workspaceService;
-    @Inject
+    // @Inject  kludge so that the constructor for ProcessServiceImpl can explicitly inject it; workaround for circular dependency
     private ProcessService processService;
     @Inject
     private PluginService pluginService;
@@ -89,7 +89,9 @@ public class PQLServiceImpl implements PQLService {
         indexedLabelSimilarities.add(new Double(1.0));
     }
 
-
+    public void setProcessService(ProcessService processService) {
+        this.processService = processService;
+    }
 
     @Override
     public void indexAllModels() {
@@ -155,20 +157,34 @@ public class PQLServiceImpl implements PQLService {
             if (!api.deleteIndex(internalId)) {
                 throw new Exception("Failed to delete model with PQL external id " + externalId + " and internal id " + internalId);
             }
+            LOGGER.info("Deleted model with PQL external id " + externalId + " and internal id " + internalId);
+
+            /*
+            try {
+                LOGGER.info("Performing post-deletion cleanup");
+                api.cleanupIndex();
+                LOGGER.info("Performed post-deletion cleanup");
+            } catch (SQLException e) {
+                LOGGER.error("Unable to perform post-deletion cleanup", e);
+            }
+            */
         } catch(Exception e) {
             LOGGER.error("Unable to delete model " + process.getId() + " " + version, e);
+        }
+
+    }
+
+    @Override
+    public void notifyUpdate(final ProcessModelVersion pmv) {
+        if (pqlBean.isIndexingEnabled()) {
+            indexOneModel(pmv);
         }
     }
 
     @Override
-    public void update(User user, NativeType nativeType,final ProcessModelVersion pmv, final boolean delete) {
-
+    public void notifyDelete(final ProcessModelVersion pmv) {
         if (pqlBean.isIndexingEnabled()) {
-            if (delete) {
-                deleteModel(pmv);
-            } else {
-                indexOneModel(pmv);
-            }
+            deleteModel(pmv);
         }
     }
 

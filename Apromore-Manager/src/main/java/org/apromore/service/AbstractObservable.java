@@ -1,15 +1,8 @@
 package org.apromore.service;
 
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Process;
-import org.apromore.helper.Version;
-
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by corno on 7/07/2014.
@@ -28,9 +21,16 @@ public abstract class AbstractObservable implements Observable {
     }
 
     @Override
-    public void notifyObserver(User user, NativeType nativeType,ProcessModelVersion pmv, boolean delete) {
+    public void notifyUpdate(ProcessModelVersion pmv) {
         for(Observer ob: observers){
-            ob.update(user,nativeType,pmv,delete);
+            ob.notifyUpdate(pmv);
+        }
+    }
+
+    @Override
+    public void notifyDelete(ProcessModelVersion pmv) {
+        for(Observer ob: observers){
+            ob.notifyDelete(pmv);
         }
     }
 }
