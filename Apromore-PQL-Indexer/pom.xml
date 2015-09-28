@@ -121,10 +121,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>config</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.gemini</groupId>
             <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
         </dependency>

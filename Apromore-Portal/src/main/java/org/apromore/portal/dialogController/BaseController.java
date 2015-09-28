@@ -20,10 +20,15 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.config.Site;
-import org.apromore.manager.client.ManagerService;
+// Third party packages
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Window;
+
+// Local classes
+import org.apromore.manager.client.ManagerService;
+import org.apromore.portal.ConfigBean;
 
 /**
  * Base Controller that all controllers inherit.
@@ -35,6 +40,13 @@ public class BaseController extends Window {
     public static final String MANAGER_SERVICE = "managerClient";
     private ManagerService managerService;
 
+    protected ConfigBean config;
+
+    protected BaseController() {
+        config = (ConfigBean) WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
+                                                        .getAutowireCapableBeanFactory()
+                                                        .getBean("portalConfig");
+    }
 
     public ManagerService getService() {
         if (managerService == null) {
@@ -71,19 +83,19 @@ public class BaseController extends Window {
         String importPath = "";
         switch (nativeType) {
             case "XPDL 2.2":
-                importPath = "/" + Site.getSiteEditor() + "/editor/xpdlimport";
+                importPath = "/" + config.getSiteEditor() + "/editor/xpdlimport";
                 break;
             case "BPMN 2.0":
-                importPath = "/" + Site.getSiteEditor() + "/editor/bpmnimport";
+                importPath = "/" + config.getSiteEditor() + "/editor/bpmnimport";
                 break;
             case "PNML 1.3.2":
-                importPath = "/" + Site.getSiteEditor() + "/editor/pnmlimport";
+                importPath = "/" + config.getSiteEditor() + "/editor/pnmlimport";
                 break;
             case "YAWL 2.2":
-                importPath = "/" + Site.getSiteEditor() + "/editor/yawlimport";
+                importPath = "/" + config.getSiteEditor() + "/editor/yawlimport";
                 break;
             case "EPML 2.0":
-                importPath = "/" + Site.getSiteEditor() + "/editor/epmlimport";
+                importPath = "/" + config.getSiteEditor() + "/editor/epmlimport";
                 break;
         }
         return importPath;
@@ -93,19 +105,19 @@ public class BaseController extends Window {
         String exportPath = "";
         switch (nativeType) {
             case "XPDL 2.2":
-                exportPath = "/" + Site.getSiteEditor() + "/editor/xpdlexport";
+                exportPath = "/" + config.getSiteEditor() + "/editor/xpdlexport";
                 break;
             case "BPMN 2.0":
-                exportPath = "/" + Site.getSiteEditor() + "/editor/bpmnexport";
+                exportPath = "/" + config.getSiteEditor() + "/editor/bpmnexport";
                 break;
             case "PNML 1.3.2":
-                exportPath = "/" + Site.getSiteEditor() + "/editor/pnmlexport";
+                exportPath = "/" + config.getSiteEditor() + "/editor/pnmlexport";
                 break;
             case "YAWL 2.2":
-                exportPath = "/" + Site.getSiteEditor() + "/editor/yawlexport";
+                exportPath = "/" + config.getSiteEditor() + "/editor/yawlexport";
                 break;
             case "EPML 2.0":
-                exportPath = "/" + Site.getSiteEditor() + "/editor/epmlexport";
+                exportPath = "/" + config.getSiteEditor() + "/editor/epmlexport";
                 break;
         }
         return exportPath;

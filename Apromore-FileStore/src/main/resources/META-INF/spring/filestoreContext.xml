@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+            http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
     <context:annotation-config/>
     <context:component-scan base-package="org.apromore"/>
+
+    <context:property-placeholder properties-ref="filestoreProperties"/>
+    <osgi-compendium:cm-properties id="filestoreProperties" persistent-id="site"/>
+
+    <bean id="filestoreConfig" class="org.apromore.filestore.ConfigBean">
+        <constructor-arg type="String" value="${site.filestore}"/>
+        <constructor-arg type="String" value="${filestore.dir}"/>
+    </bean>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
