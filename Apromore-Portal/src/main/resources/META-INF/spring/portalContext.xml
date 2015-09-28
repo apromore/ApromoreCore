@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+            http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
     <context:annotation-config/>
+
+    <context:property-placeholder properties-ref="portalProperties"/>
+
+    <osgi-compendium:cm-properties id="portalProperties" persistent-id="site"/>
+
+    <bean id="portalConfig" class="org.apromore.portal.ConfigBean">
+        <constructor-arg type="String" value="${site.editor}"/>
+        <constructor-arg type="String" value="${site.externalhost}"/>
+        <constructor-arg type="int"    value="${site.externalport}"/>
+        <constructor-arg type="String" value="${version.number}"/>
+        <constructor-arg type="String" value="${version.builddate}"/>
+    </bean>
 
     <import resource="portal-osgi-context.xml" />
     <import resource="portalContext-services.xml" />

@@ -20,11 +20,11 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.config.Site;
 import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
@@ -697,9 +697,9 @@ public class MainController extends BaseController {
 
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
-        setHost("http://" + Site.getExternalhost() + ":" + Site.getExternalport());
-        setVersionNumber(Site.getVersionNumber());
-        setBuildDate(Site.getBuildDate());
+        setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
+        setVersionNumber(config.getVersionNumber());
+        setBuildDate(config.getVersionBuildDate());
     }
 
     /* From the data in the properties automagically update the label in the header. */
