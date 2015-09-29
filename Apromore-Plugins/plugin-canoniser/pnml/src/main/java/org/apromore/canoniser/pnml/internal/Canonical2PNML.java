@@ -264,7 +264,7 @@ public class Canonical2PNML {
         return transition.getName() == null;
     }
 
-    public static void main(String[] arg) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         final String HELP_TEXT = "A document in CPF format is read from standard input.\n" +
                                  "The PNML conversion is written to standard output.\n" +
@@ -278,8 +278,8 @@ public class Canonical2PNML {
         boolean isCpfTaskPnmlTransition = false;
         boolean isCpfEdgePnmlPlace = false;
 
-        for(int i=0; i<arg.length; i++) {
-            switch(arg[i]) {
+        for(String arg: args) {
+            switch(arg) {
             case "-e":
                 isCpfEdgePnmlPlace = true;
                 break;
@@ -293,7 +293,7 @@ public class Canonical2PNML {
                 validate = true;
                 break;
             default:
-                System.err.println(arg[i] + " is not a supported option\n" + HELP_TEXT);
+                System.err.println(arg + " is not a supported option\n" + HELP_TEXT);
                 System.exit(-1);
             }
         }
