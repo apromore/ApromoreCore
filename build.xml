@@ -43,44 +43,6 @@
     </fileset>
 
 
-    <!-- Project Setup -->
-    <target name="apromore-pre-build" depends="apromore-load-libs, apromore-build-tools"/>
-
-
-    <target name="apromore-load-libs">
-        <!-- Load the Libraries that aren't found in the Maven Central Repo or any other -->
-        <exec dir="${dir-sups-lib}/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="upload.bat"/>
-        </exec>
-        <exec dir="${dir-sups-lib}" executable="./upload.sh" osfamily="unix" />
-    </target>
-
-    <target name="apromore-build-tools">
-        <!-- Build the tools required for the main Apromore product. -->
-        <exec dir="${dir-extras-build-tools}" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="mvn"/>
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
-        <exec dir="${dir-extras-test-tools}" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="mvn"/>
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
-        <exec dir="${dir-extras-build-tools}" executable="mvn" osfamily="unix">
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
-        <exec dir="${dir-extras-test-tools}" executable="mvn" osfamily="unix">
-            <arg value="clean"/>
-            <arg value="install"/>
-        </exec>
-    </target>
-
-
     <!-- Virgo Related -->
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
 

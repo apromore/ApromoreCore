@@ -9,13 +9,12 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
     <bean id="pqlIndexerConfig" class="org.apromore.pql.indexer.PQLIndexerConfigurationBean">
-        <constructor-arg type="Integer" value="10"/>  <!-- thread limit   -->
-
         <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
 
         <constructor-arg type="String"  value="${pql.labelSimilaritySearch}"/>
-        <constructor-arg type="double"  value="${pql.defaultLabelSimilarity}"/>
-        <constructor-arg type="String"  value="${pql.indexedLabelSimilarities}"/>
+        <constructor-arg type="String"  value="${pql.labelSimilarityConfig}"/>
+        <constructor-arg type="double"  value="${pql.defaultLabelSimilarityThreshold}"/>
+        <constructor-arg type="String"  value="${pql.indexedLabelSimilarityThresholds}"/>
 
         <constructor-arg type="int"     value="${pql.defaultBotSleepTime}"/>
         <constructor-arg type="int"     value="${pql.defaultBotMaxIndexTime}"/>

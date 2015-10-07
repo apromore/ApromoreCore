@@ -1,18 +1,26 @@
 package org.apromore.pql.indexer;
 
 // Java 2 Standard Edition
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 // Third party packages
-import org.pql.api.PQLAPI;
-import org.pql.bot.IPQLBotPersistenceLayer;
-import org.pql.bot.PQLBotPersistenceLayerMySQL;
-import org.pql.logic.ThreeValuedLogicType;
+import org.pql.bot.PQLBot;
+import org.pql.core.PQLBasicPredicatesMC;
 import org.pql.index.IndexType;
+import org.pql.index.PQLIndexMySQL;
+import org.pql.label.ILabelManager;
+import org.pql.label.LabelManagerLevenshtein;
+import org.pql.label.LabelManagerLuceneVSM;
+import org.pql.label.LabelManagerThemisVSM;
 import org.pql.label.LabelManagerType;
+import org.pql.logic.IThreeValuedLogic;
+import org.pql.logic.KleeneLogic;
+import org.pql.mc.LoLA2ModelChecker;
+import org.slf4j.LoggerFactory;
 
 /**
  * Bean for access to <code>site.properties</code>.
@@ -21,32 +29,30 @@ import org.pql.label.LabelManagerType;
  */
 public class PQLIndexerConfigurationBean {
 
-    /** Maximum number of indexing threads; <code>null</code> means limited only by the JVM's maximum concurrent processes */
-    private Integer threadLimit;
+    private String mysqlURL;
+    private String mysqlUser;
+    private String mysqlPassword;
 
     /** Whether PQL indexing is enabled at all. */
     private boolean isIndexingEnabled;
 
     /** Time between checks for unindexed models, in seconds. */
-    private int defaultBotSleepTime;;
+    private int defaultBotSleepTime;
 
     /** Time between checks for unindexed models, in seconds. */
     private int defaultBotMaxIndexTime;
 
-    /** PQL library object. */
-    private PQLAPI pqlAPI = null;
-
-    /** PQL library object. */
-    private IPQLBotPersistenceLayer pqlBotPersistenceLayer = null;
+    private IndexType indexType;
+    private LoLA2ModelChecker mc;
+    private PQLIndexMySQL index;
 
     /**
      * This constructor is invoked by a <code>bean</code> element in <code>pqlIndexerContext.xml</code>.
      *
-     * @param threadLimit
      * @param isIndexingEnabled
      * @param labelSimilaritySearch
-     * @param defaultLabelSimilarity    number within the interval 0 to 1
-     * @param indexedLabelSimilarities  comma-delimited list of numbers within the interval 0 to 1
+     * @param defaultLabelSimilarityThreshold   number within the interval 0 to 1
+     * @param indexedLabelSimilarityThresholds  comma-delimited list of numbers within the interval 0 to 1
      * @param defaultBotSleepTime       seconds
      * @param defaultBotMaxIndexTime    seconds
      * @param lolaDir                   file in the local filesystem
@@ -59,11 +65,11 @@ public class PQLIndexerConfigurationBean {
      * @param postgresPassword
      * @throws PQLIndexerConfigurationException  if the bean can't be created due to problems with <var>site.properties</var>
      */
-    public PQLIndexerConfigurationBean(Integer threadLimit,
-                                       boolean isIndexingEnabled,
+    public PQLIndexerConfigurationBean(boolean isIndexingEnabled,
                                        String  labelSimilaritySearch,
-                                       double  defaultLabelSimilarity,
-                                       String  indexedLabelSimilarities,
+                                       String  labelSimilarityConfig,
+                                       double  defaultLabelSimilarityThreshold,
+                                       String  indexedLabelSimilarityThresholds,
                                        int     defaultBotSleepTime,
                                        int     defaultBotMaxIndexTime,
                                        String  lolaDir,
@@ -75,47 +81,98 @@ public class PQLIndexerConfigurationBean {
                                        String  postgresUser,
                                        String  postgresPassword) throws PQLIndexerConfigurationException {
 
-        this.threadLimit            = threadLimit;
+        LoggerFactory.getLogger(getClass()).info("PQL Indexer configured with:" + 
+            " pql.enableIndexing=" + isIndexingEnabled +
+            " pql.labelSimilaritySearch=" + labelSimilaritySearch +
+            " pql.labelSimilarityConfig=" + labelSimilarityConfig +
+            " pql.defaultLabelSimilarityThreshold=" + defaultLabelSimilarityThreshold +
+            " pql.indexedLabelSimilarityThresholds=" + indexedLabelSimilarityThresholds +
+            " pql.defaultBotSleepTime=" + defaultBotSleepTime +
+            " pql.defaultBotMaxIndexTime=" + defaultBotMaxIndexTime +
+            " pql.lola.dir=" + lolaDir +
+            " pql.mysql.url=" + mysqlURL +
+            " pql.mysql.user=" + mysqlUser +
+            " pql.postgres.host=" + postgresHost +
+            " pql.postgres.name=" + postgresName +
+            " pql.postgres.user=" + postgresUser);
+
+        this.mysqlURL               = mysqlURL;
+        this.mysqlUser              = mysqlUser;
+        this.mysqlPassword          = mysqlPassword;
+
         this.isIndexingEnabled      = isIndexingEnabled;
         this.defaultBotSleepTime    = defaultBotSleepTime;
         this.defaultBotMaxIndexTime = defaultBotMaxIndexTime;
 
-        if (isIndexingEnabled) {
+        this.indexType = IndexType.PREDICATES;
+        this.mc        = new LoLA2ModelChecker(lolaDir);
 
-            // Initialize indexedLabelSimilarities
-            final Set<Double> indexedLabelSimilaritiesSet = new HashSet<>();
-            for (String indexedLabelSimilarity: Arrays.asList(indexedLabelSimilarities.split(","))) {
-                try {
-                    indexedLabelSimilaritiesSet.add(Double.parseDouble(indexedLabelSimilarity));
-                } catch (NumberFormatException e) {
-                    throw new PQLIndexerConfigurationException("Misconfigured pql.indexedLabelSimilarities " + indexedLabelSimilarities, e);
-                }
-            }
-
+        // Initialize indexedLabelSimilarities
+        final Set<Double> indexedLabelSimilarityThresholdsSet = new HashSet<>();
+        for (String indexedLabelSimilarityThreshold: Arrays.asList(indexedLabelSimilarityThresholds.split(","))) {
             try {
-                this.pqlAPI = new PQLAPI(
-                    mysqlURL, mysqlUser, mysqlPassword,
-                    postgresHost, postgresName, postgresUser, postgresPassword,
-                    lolaDir,
-                    ThreeValuedLogicType.KLEENE,
-                    IndexType.PREDICATES,
-                    Enum.valueOf(LabelManagerType.class, labelSimilaritySearch),
-                    defaultLabelSimilarity,
-                    indexedLabelSimilaritiesSet
-                );
-
-                this.pqlBotPersistenceLayer = new PQLBotPersistenceLayerMySQL( mysqlURL, mysqlUser, mysqlPassword) {};
-
-            } catch (ClassNotFoundException|SQLException e) {
-                throw new PQLIndexerConfigurationException("Unable to create PQL API", e);
+                indexedLabelSimilarityThresholdsSet.add(Double.parseDouble(indexedLabelSimilarityThreshold));
+            } catch (NumberFormatException e) {
+                throw new PQLIndexerConfigurationException("Misconfigured pql.indexedLabelSimilarityThresholds " + indexedLabelSimilarityThresholds, e);
             }
         }
+
+        IThreeValuedLogic    logic     = new KleeneLogic();
+        PQLBasicPredicatesMC bp        = new PQLBasicPredicatesMC(mc, logic);
+        
+        // Initialize labelManager
+        ILabelManager labelManager;
+        try {
+            switch (LabelManagerType.valueOf(labelSimilaritySearch)) {
+            case LEVENSHTEIN:
+                labelManager = new LabelManagerLevenshtein(mysqlURL, mysqlUser, mysqlPassword,
+                                                           defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet);
+                break;
+            case LUCENE:
+                labelManager = new LabelManagerLuceneVSM(mysqlURL, mysqlUser, mysqlPassword,
+                                                         defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet,
+                                                         labelSimilarityConfig);
+                break;
+            case THEMIS_VSM:
+                labelManager = new LabelManagerThemisVSM(mysqlURL, mysqlUser, mysqlPassword,
+                                                         postgresHost, postgresName, postgresUser, postgresPassword,
+                                                         defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet);
+                break;
+            default:
+                throw new PQLIndexerConfigurationException("Misconfigured pql.labelSimilaritySearch " + labelSimilaritySearch);
+            }
+        } catch (ClassNotFoundException | IOException | SQLException e) {
+            throw new PQLIndexerConfigurationException("Unable to create label manager", e);
+        }
+        assert labelManager != null;
+
+        // Initialize index
+        try {
+            index = new PQLIndexMySQL(mysqlURL, mysqlUser, mysqlPassword,
+                                      bp, labelManager, mc, logic,
+                                      defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet, indexType,
+                                      defaultBotMaxIndexTime, defaultBotSleepTime);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new PQLIndexerConfigurationException("Unable to create index", e);
+        }
+        assert index != null;
     }
 
-    public Integer                 getThreadLimit()            { return threadLimit;            }
-    public boolean                 isIndexingEnabled()         { return isIndexingEnabled;      }
-    public int                     getDefaultBotSleepTime()    { return defaultBotSleepTime;    }
-    public int                     getDefaultBotMaxIndexTime() { return defaultBotMaxIndexTime; }
-    public PQLAPI                  getPQLAPI()                 { return pqlAPI;                 }
-    public IPQLBotPersistenceLayer getPQLBotPersistenceLayer() { return pqlBotPersistenceLayer; }
+    public boolean isIndexingEnabled() { return isIndexingEnabled; }
+
+    public PQLBot createBot() throws PQLIndexerConfigurationException {
+        try {
+            return new PQLBot(mysqlURL, mysqlUser, mysqlPassword,
+                              null,  // bot name will be a random UUID
+                              index,
+                              mc,
+                              indexType,
+                              defaultBotMaxIndexTime,
+                              defaultBotSleepTime,
+                              true  /* verbose */);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new PQLIndexerConfigurationException("Unable to create bot", e);
+        }
+    }
 }
