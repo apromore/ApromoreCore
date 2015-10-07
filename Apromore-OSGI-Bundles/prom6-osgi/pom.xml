@@ -215,12 +215,12 @@
                             <!--com.fasterxml.sort,-->
                             <!--com.fasterxml.sort.std,-->
                             <!--com.fasterxml.sort.util,-->
-                            <!--com.fluxicon.slickerbox.colors,-->
-                            <!--com.fluxicon.slickerbox.components,-->
-                            <!--com.fluxicon.slickerbox.components.glasspane,-->
-                            <!--com.fluxicon.slickerbox.factory,-->
-                            <!--com.fluxicon.slickerbox.ui,-->
-                            <!--com.fluxicon.slickerbox.util,-->
+                            com.fluxicon.slickerbox.colors,
+                            com.fluxicon.slickerbox.components,
+                            com.fluxicon.slickerbox.components.glasspane,
+                            com.fluxicon.slickerbox.factory,
+                            com.fluxicon.slickerbox.ui,
+                            com.fluxicon.slickerbox.util,
                             <!--com.imsl.math,-->
                             <!--com.jgraph.algebra,-->
                             <!--com.jgraph.algebra.cost,-->
