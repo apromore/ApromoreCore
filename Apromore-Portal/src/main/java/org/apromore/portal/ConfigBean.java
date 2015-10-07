@@ -1,5 +1,8 @@
 package org.apromore.portal;
 
+// Third party packages
+import org.slf4j.LoggerFactory;
+
 public class ConfigBean {
 
     private String siteEditor;
@@ -9,6 +12,14 @@ public class ConfigBean {
     private String versionBuildDate;
 
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String versionNumber, String versionBuildDate) {
+
+        LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
+            " site.editor=" + siteEditor +
+            " site.externalHost=" + siteExternalHost +
+            " site.externalPort=" + siteExternalPort +
+            " version.number=" + versionNumber +
+            " version.builddate=" + versionBuildDate);
+
         this.siteEditor       = siteEditor;
         this.siteExternalHost = siteExternalHost;
         this.siteExternalPort = siteExternalPort;

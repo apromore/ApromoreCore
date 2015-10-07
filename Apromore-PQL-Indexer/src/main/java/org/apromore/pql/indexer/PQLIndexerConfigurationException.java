@@ -7,6 +7,10 @@ package org.apromore.pql.indexer;
  */
 public class PQLIndexerConfigurationException extends Exception {
 
+    public PQLIndexerConfigurationException(String message) {
+        super(message);
+    }
+
     public PQLIndexerConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }
