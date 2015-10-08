@@ -59,7 +59,6 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
-                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.aspects;bundle-version="[3.1.0,4.0)",
