@@ -38,7 +38,10 @@
                         <Bundle-Name>pql OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pql-osgi</Bundle-SymbolicName>
                         <Export-Package>
+                            org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.lucene50,
                             org.apache.lucene.search.similarities,
+                            org.apache.lucene.util,
                             org.jbpt.persist,
                             org.jbpt.petri.persist,
                             org.pql.antlr,
@@ -75,7 +78,10 @@
                             org.themis.ir.vsm,
                             org.themis.pp,
                             org.themis.util,
+                            org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.lucene50,
                             org.apache.lucene.search.similarities,
+                            org.apache.lucene.util,
                             org.antlr.v4.runtime,
                             org.antlr.v4.runtime.atn,
                             org.antlr.v4.runtime.dfa,
