@@ -12,7 +12,7 @@
 
     <groupId>org.pql</groupId>
     <artifactId>pql-osgi</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <packaging>bundle</packaging>
 
     <repositories>
@@ -193,7 +193,7 @@
         <dependency>
             <groupId>org.pql</groupId>
             <artifactId>pql</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>

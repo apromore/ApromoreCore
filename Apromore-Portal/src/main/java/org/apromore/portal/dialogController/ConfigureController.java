@@ -36,10 +36,12 @@ import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+//import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Applet;
 import org.zkoss.zul.Window;
 
@@ -161,7 +163,8 @@ public class ConfigureController extends BaseController {
                 // Parse the cmap link into cmapURL
                 try {
                     //FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClientExternal");
-                    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+                    //ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+                    ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext());
                     FileStoreService fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal"); 
 
                     URI baseURI = fileStore.getBaseURI();
