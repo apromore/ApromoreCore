@@ -14,6 +14,7 @@ import javax.swing.JViewport;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 // Local classes
@@ -28,6 +29,7 @@ import com.apql.Apql.popup.PopupPanel;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
+@Ignore("Test disabled until it can be configured via OSGi")
 public class ContextControllerUnitTest {
 
     private final QueryText queryText = new QueryText();
