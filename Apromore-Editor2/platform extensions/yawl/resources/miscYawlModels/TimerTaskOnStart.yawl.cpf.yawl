@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="TimerTaskOnStart">
+        <name>TimerTaskOnStart</name>
+        <metaData>
+            <creator>Felix</creator>
+            <description>No description has been given.</description>
+            <contributor>Felix</contributor>
+            <version>0.1</version>
+            <persistent>false</persistent>
+            <identifier>UID_c9c74bd2-a6e8-4b9a-a23f-09608645b174</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idbf53dd5b-4524-4586-b89a-bf67601fe55a">
+            <name>A</name>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Net">
+            <name>Net</name>
+            <processControlElements>
+                <inputCondition id="C-InputCondition">
+                    <name>IN</name>
+                    <flowsInto>
+                        <nextElementRef id="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462"/>
+                    </flowsInto>
+                </inputCondition>
+                <condition id="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-A"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-A">
+                    <name>A</name>
+                    <flowsInto>
+                        <nextElementRef id="id8cf2d771-472e-496c-bb37-b0b97de14bdd"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <timer>
+                        <trigger>OnExecuting</trigger>
+                        <duration>P0Y0M0DT0H0M3.600S</duration>
+                    </timer>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="idbf53dd5b-4524-4586-b89a-bf67601fe55a"/>
+                </task>
+                <condition id="id8cf2d771-472e-496c-bb37-b0b97de14bdd">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition"/>
+                    </flowsInto>
+                </condition>
+                <outputCondition id="C-OutputCondition">
+                    <name>OUT</name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="de" country="DE"/>
+        <specification id="TimerTaskOnStart">
+            <size w="100" h="100"/>
+            <net id="N-Net">
+                <viewport x="0" y="0" w="1767" h="671"/>
+                <frame x="0" y="0" w="1767" h="671"/>
+                <bounds x="0" y="0" w="1767" h="671"/>
+                <container id="C-InputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="108,0" y="372,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="76,0" y="404,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462">
+                    <vertex>
+                        <attributes>
+                            <bounds x="208,0" y="50,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="192,0" y="82,0" w="96,0" h="64,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-A">
+                    <vertex>
+                        <attributes>
+                            <bounds x="188,0" y="372,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="156,0" y="404,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="id8cf2d771-472e-496c-bb37-b0b97de14bdd">
+                    <vertex>
+                        <attributes>
+                            <bounds x="288,0" y="50,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="272,0" y="82,0" w="96,0" h="64,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-OutputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="264,0" y="372,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="232,0" y="404,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-A" target="id8cf2d771-472e-496c-bb37-b0b97de14bdd">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="204,0" y="388,0"/>
+                            <value x="304,0" y="66,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition" target="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="124,0" y="388,0"/>
+                            <value x="224,0" y="66,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id92c43e0e-ea46-4c8a-a24e-d4b1259cf462" target="C-A">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="224,0" y="66,0"/>
+                            <value x="204,0" y="388,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="id8cf2d771-472e-496c-bb37-b0b97de14bdd" target="C-OutputCondition">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="304,0" y="66,0"/>
+                            <value x="280,0" y="388,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

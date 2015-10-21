@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="WP1Sequence">
+        <name>WP1Sequence</name>
+        <metaData>
+            <creator>Felix</creator>
+            <description>No description has been given.</description>
+            <contributor>Felix</contributor>
+            <version>0.1</version>
+            <persistent>false</persistent>
+            <identifier>UID_906532a6-116b-43af-926b-e5b8581b66c5</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id0b4d4da9-779a-407a-b62a-74298dbb67f5">
+            <name>A</name>
+            <inputParam>
+                <index>1</index>
+                <name>var</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>var</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id9c8438fd-91cc-464e-830d-2f39c37b949c">
+            <name>B</name>
+            <inputParam>
+                <index>1</index>
+                <name>var</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>var</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Net">
+            <name>Net</name>
+            <localVariable>
+                <index>0</index>
+                <name>var</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>test</initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-InputCondition">
+                    <name>IN</name>
+                    <flowsInto>
+                        <nextElementRef id="C-A"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-A">
+                    <name>A</name>
+                    <flowsInto>
+                        <nextElementRef id="C-B"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;var&gt;{/N-Net/var/text()}&lt;/var&gt;"/>
+                            <mapsTo>var</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;var&gt;{/C-A/var/text()}&lt;/var&gt;"/>
+                            <mapsTo>var</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id0b4d4da9-779a-407a-b62a-74298dbb67f5"/>
+                </task>
+                <task id="C-B">
+                    <name>B</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;var&gt;{/N-Net/var/text()}&lt;/var&gt;"/>
+                            <mapsTo>var</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;var&gt;{/C-B/var/text()}&lt;/var&gt;"/>
+                            <mapsTo>var</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id9c8438fd-91cc-464e-830d-2f39c37b949c"/>
+                </task>
+                <outputCondition id="C-OutputCondition">
+                    <name>OUT</name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="de" country="DE"/>
+        <specification id="WP1Sequence">
+            <size w="100" h="100"/>
+            <net id="N-Net">
+                <viewport x="0" y="0" w="866" h="671"/>
+                <frame x="0" y="0" w="866" h="671"/>
+                <bounds x="0" y="0" w="866" h="671"/>
+                <container id="C-InputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="44,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="12,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-A">
+                    <vertex>
+                        <attributes>
+                            <bounds x="116,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="84,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-B">
+                    <vertex>
+                        <attributes>
+                            <bounds x="188,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="156,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-OutputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="264,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="232,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-B" target="C-OutputCondition">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition" target="C-A">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+                <flow source="C-A" target="C-B">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

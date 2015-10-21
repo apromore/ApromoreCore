@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="CreditRatingProcess.ywl">
+        <name>Credit Rating Process</name>
+        <metaData>
+            <title>Credit Rating Process</title>
+            <creator>Chun Ouyang</creator>
+            <description>A simple process that provides credit rating service.</description>
+            <contributor>Chun Ouyang</contributor>
+            <validFrom>2008-09-15</validFrom>
+            <validUntil>2008-09-15</validUntil>
+            <version>1.0</version>
+            <identifier>UID_92fe0366-d6c6-42ec-9786-408f2b5c35c5</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="dbf3a219-023e-4793-873f-dd3fba6956c2">
+            <name>ReceiveSSN</name>
+            <outputParam>
+                <index>1</index>
+                <name>ssn</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id77ee9898-bf8a-42e7-8df0-697c4b6b6910">
+            <name>ReportFault</name>
+            <inputParam>
+                <index>1</index>
+                <name>fault</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="b34d76c2-ce7c-4c32-82af-193fd7e00193">
+            <name>DecideRating</name>
+            <inputParam>
+                <index>1</index>
+                <name>rating</name>
+                <type>double</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idf5d57e25-bf53-4078-b452-cc1cd99d9dd2"/>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Credit-Rating-Process">
+            <name>Credit_Rating_Process</name>
+            <localVariable>
+                <index>0</index>
+                <name>fault</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>Bankruptcy</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>1</index>
+                <name>rating</name>
+                <type>double</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>560</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>2</index>
+                <name>ssn</name>
+                <type>string</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue></initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-InputCondition-1">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-ReceiveSSN-3"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-ReceiveSSN-3">
+                    <name>ReceiveSSN</name>
+                    <flowsInto>
+                        <nextElementRef id="C-ReportFault-4"/>
+                        <predicate ordering="0">starts-with(/Credit_Rating_Process/ssn/text(),'0')</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-DecideRating-6"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;ssn&gt;{/C-ReceiveSSN-3/ssn/text()}&lt;/ssn&gt;"/>
+                            <mapsTo>ssn</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="dbf3a219-023e-4793-873f-dd3fba6956c2"/>
+                </task>
+                <task id="C-ReportFault-4">
+                    <name>ReportFault</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-5"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;fault&gt;{/N-Credit-Rating-Process/fault/text()}&lt;/fault&gt;"/>
+                            <mapsTo>fault</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id77ee9898-bf8a-42e7-8df0-697c4b6b6910"/>
+                </task>
+                <task id="C-DecideRating-6">
+                    <name>DecideRating</name>
+                    <flowsInto>
+                        <nextElementRef id="C-null-5"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;rating&gt;{/N-Credit-Rating-Process/rating/text()}&lt;/rating&gt;"/>
+                            <mapsTo>rating</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="b34d76c2-ce7c-4c32-82af-193fd7e00193"/>
+                </task>
+                <task id="C-null-5">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition-2"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="idf5d57e25-bf53-4078-b452-cc1cd99d9dd2"/>
+                </task>
+                <outputCondition id="C-OutputCondition-2">
+                    <name></name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="en" country="AU"/>
+        <specification id="CreditRatingProcess.ywl">
+            <size w="100" h="100"/>
+            <net id="N-Credit-Rating-Process">
+                <viewport x="0" y="0" w="838" h="258"/>
+                <frame x="0" y="0" w="838" h="258"/>
+                <bounds x="0" y="0" w="838" h="258"/>
+                <container id="C-InputCondition-1">
+                    <vertex>
+                        <attributes>
+                            <bounds x="20.0" y="70.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="4.0" y="102.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-ReceiveSSN-3">
+                    <vertex>
+                        <attributes>
+                            <bounds x="116.0" y="70.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="88.0" y="104.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="147.0" y="70.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-ReportFault-4">
+                    <vertex>
+                        <attributes>
+                            <bounds x="266.0" y="120.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="236.0" y="152.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-DecideRating-6">
+                    <vertex>
+                        <attributes>
+                            <bounds x="266.0" y="32.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="236.0" y="64.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-null-5">
+                    <vertex>
+                        <attributes>
+                            <bounds x="424.0" y="70.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="403.0" y="102.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="414.0" y="70.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-OutputCondition-2">
+                    <vertex>
+                        <attributes>
+                            <bounds x="512.0" y="70.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="496.0" y="102.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-ReceiveSSN-3" target="C-DecideRating-6">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="132.0" y="86.0"/>
+                            <value x="282.0" y="48.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-ReceiveSSN-3" target="C-ReportFault-4">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="132.0" y="86.0"/>
+                            <value x="282.0" y="136.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-ReportFault-4" target="C-null-5">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="282.0" y="136.0"/>
+                            <value x="440.0" y="86.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-DecideRating-6" target="C-null-5">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="282.0" y="48.0"/>
+                            <value x="440.0" y="86.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-null-5" target="C-OutputCondition-2">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="455.0" y="85.5"/>
+                            <value x="512.0" y="85.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition-1" target="C-ReceiveSSN-3">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="51.0" y="85.5"/>
+                            <value x="116.0" y="85.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	
+	<!--  
+			These definitions are needed for the YAWL extension. 
+			Currently they have to be copied manually to the 'plattform' web.xml.
+	 -->
+	
+	<servlet>
+		<display-name>YAWLImport</display-name>
+		<servlet-name>YAWLImportServlet</servlet-name>
+		<servlet-class>de.hbrs.oryx.yawl.servlets.YAWLImportServlet</servlet-class>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>YAWLImportServlet</servlet-name>
+		<url-pattern>/yawlimport</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<display-name>YAWLExport</display-name>
+		<servlet-name>YAWLExportServlet</servlet-name>
+		<servlet-class>de.hbrs.oryx.yawl.servlets.YAWLExportServlet</servlet-class>
+	</servlet>	
+
+	<servlet-mapping>
+		<servlet-name>YAWLExportServlet</servlet-name>
+		<url-pattern>/yawlexport</url-pattern>
+	</servlet-mapping>
+
+</web-app>

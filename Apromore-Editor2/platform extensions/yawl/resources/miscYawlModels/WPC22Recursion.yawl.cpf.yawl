@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="WP1Sequence">
+        <name>WP1Sequence</name>
+        <metaData>
+            <creator>Felix</creator>
+            <description>No description has been given.</description>
+            <contributor>Felix</contributor>
+            <version>0.1</version>
+            <persistent>false</persistent>
+            <identifier>UID_387b5b9b-207f-464b-aa95-a026245c9db0</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idfbc33495-8dcd-4b99-b24a-e31c4e33e9bb">
+            <name>A</name>
+            <inputParam>
+                <index>1</index>
+                <name>c</name>
+                <type>integer</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </inputParam>
+            <outputParam>
+                <index>1</index>
+                <name>c</name>
+                <type>integer</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Net">
+            <name>Net</name>
+            <localVariable>
+                <index>0</index>
+                <name>c</name>
+                <type>integer</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>0</initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-InputCondition">
+                    <name>IN</name>
+                    <flowsInto>
+                        <nextElementRef id="C-A"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-A">
+                    <name>A</name>
+                    <flowsInto>
+                        <nextElementRef id="C-Net"/>
+                        <predicate ordering="0">number(/Net/c/text())&lt;5</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <startingMappings>
+                        <mapping>
+                            <expression query="&lt;c&gt;{/N-Net/c/text()}&lt;/c&gt;"/>
+                            <mapsTo>c</mapsTo>
+                        </mapping>
+                    </startingMappings>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;c&gt;{/C/c/text()}&lt;/c&gt;"/>
+                            <mapsTo>c</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="idfbc33495-8dcd-4b99-b24a-e31c4e33e9bb"/>
+                </task>
+                <task id="C-Net">
+                    <name>Net</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <decomposesTo id="N-Net"/>
+                </task>
+                <outputCondition id="C-OutputCondition">
+                    <name>OUT</name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="de" country="DE"/>
+        <specification id="WP1Sequence">
+            <size w="100" h="100"/>
+            <net id="N-Net">
+                <viewport x="0" y="0" w="866" h="671"/>
+                <frame x="0" y="0" w="866" h="671"/>
+                <bounds x="0" y="0" w="866" h="671"/>
+                <container id="C-InputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="44,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="12,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-A">
+                    <vertex>
+                        <attributes>
+                            <bounds x="108,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="80,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="139,0" y="368,0" w="11,0" h="32,0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-Net">
+                    <vertex>
+                        <attributes>
+                            <bounds x="184,0" y="420,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="152,0" y="452,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-OutputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="264,0" y="368,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="232,0" y="400,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-A" target="C-OutputCondition">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="124,0" y="384,0"/>
+                            <value x="280,0" y="384,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-Net" target="C-OutputCondition">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="200,0" y="436,0"/>
+                            <value x="280,0" y="384,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-A" target="C-Net">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="124,0" y="384,0"/>
+                            <value x="200,0" y="436,0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition" target="C-A">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>
