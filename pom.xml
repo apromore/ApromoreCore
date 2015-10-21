@@ -93,13 +93,28 @@
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <module>Apromore-Editor</module>
+        <!-- <module>Apromore-Editor</module> -->
         <module>Apromore-PQL-Indexer</module>
 
+        <!-- Editor -->
+        <module>Apromore-Editor2/platform</module>
+        <module>Apromore-Editor2/platform extensions/bpmn20xmlbasic</module>
+        <module>Apromore-Editor2/platform extensions/bpstruct</module>
+        <module>Apromore-Editor2/platform extensions/diagram core</module>
+        <module>Apromore-Editor2/platform extensions/downloader</module>
+        <module>Apromore-Editor2/platform extensions/epc</module>
+        <module>Apromore-Editor2/platform extensions/jpdl</module>
+        <module>Apromore-Editor2/platform extensions/pdf</module>
+        <module>Apromore-Editor2/platform extensions/petrinet</module>
+        <module>Apromore-Editor2/platform extensions/syntaxchecker</module>
+        <module>Apromore-Editor2/platform extensions/xpdl</module>
+        <module>Apromore-Editor2/platform extensions/yawl</module>
+
         <!-- Assembles the Bundles and repositories -->
+        <module>Apromore-Assembly/Editor-Assembly</module>
+        <module>Apromore-Assembly/Filestore-Assembly</module>
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
-        <module>Apromore-Assembly/Filestore-Assembly</module>
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
 
         <!-- Command line tools -->

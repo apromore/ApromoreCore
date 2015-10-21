@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../../</relativePath>
+    </parent>
+
+    <artifactId>editor-platform-extension-epc</artifactId>
+    <packaging>bundle</packaging>
+    <version>2.0</version>
+    <name>Apromore Editor Extension: EPC</name>
+
+    <properties>
+        <editor-platform-extension.version>2.0</editor-platform-extension.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <unpackBundle>false</unpackBundle>
+                    <instructions>
+                        <Embed-Dependency>artifactId=epml-schema|jbpt</Embed-Dependency>
+                        <Import-Package>
+                            !hub.top.petrinet,
+                            !hub.top.petrinet.unfold,
+                            !hub.top.uma,
+                            !junit.framework,
+                            !org.junit,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            de.epml,
+                            org.apromore.common.converters.epml.servlet
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-diagram</artifactId>
+            <version>${editor-platform-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+
+        <!-- Quick and dirty bulk upload of original Signavio libraries -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>jbpt</artifactId>
+            <version>0.2.77</version>
+        </dependency>
+    </dependencies>
+
+</project>

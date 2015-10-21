@@ -1,0 +1,43 @@
+{
+	"title":"Choreography Core Elements",
+	"title_de":"Choreographie Kernelemente",
+	"namespace":"http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset/choreography#",
+	"description":"A basic subset of BPMN 2.0 Choreography containing only choreography task, sequence flow, start event, end event, parallel gateway and data-based XOR.",
+	"extends":"http://b3mn.org/stencilset/bpmn2.0choreography#",
+	"stencils":[],
+	"properties":[],
+	"rules": {
+		"connectionRules": [],
+        "cardinalityRules": [],
+		"containmentRules": []
+	},
+	"removestencils": [
+		"ITSystem",
+		"StartParallelMultipleEvent",
+		"IntermediateParallelMultipleEventCatching",
+		"IntermediateEscalationEvent",
+		"IntermediateEscalationEventThrowing",
+		"EventbasedGateway",
+		"InclusiveGateway",
+		"ComplexGateway",
+		"Group",
+		"TextAnnotation",
+		"StartTimerEvent",
+		"StartConditionalEvent",
+		"StartSignalEvent",
+		"StartMultipleEvent",
+		"IntermediateEvent",
+		"IntermediateMessageEventCatching",
+		"IntermediateTimerEvent",
+		"IntermediateErrorEvent",
+		"IntermediateCancelEvent",
+		"IntermediateCompensationEventCatching",
+		"IntermediateConditionalEvent",
+		"IntermediateSignalEventCatching",
+		"IntermediateMultipleEventCatching",
+		"IntermediateLinkEventCatching",
+		"IntermediateLinkEventThrowing",
+		"EndTerminateEvent"
+	],
+	"removeproperties": []
+}
