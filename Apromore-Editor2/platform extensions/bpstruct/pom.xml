@@ -30,6 +30,11 @@
                     <unpackBundle>false</unpackBundle>
                     <instructions>
                         <Embed-Dependency>artifactId=jbpt</Embed-Dependency>
+                        <Import-Bundle>
+                            org.apromore.manager-client;version="[1.1,1.1]",
+                            org.apromore.manager-ws-model;version="[1.1,1.1]",
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
+                        </Import-Bundle>
                         <Import-Package>
                             !hub.top.*,
                             !junit.framework,
@@ -57,8 +62,17 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-bpmn2_0</artifactId>
+            <version>${editor-platform-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-diagram</artifactId>
             <version>${editor-platform-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

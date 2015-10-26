@@ -79,6 +79,7 @@
                             org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             com.springsource.javax.validation;version="[1.0.0.GA,1.0.0.GA]",
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>

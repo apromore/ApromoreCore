@@ -2142,8 +2142,9 @@ ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		300;
 ORYX.CONFIG.APPNAME = 					'Signavio';
 ORYX.CONFIG.WEB_URL = 					"explorer";
 
-ORYX.CONFIG.PDF_EXPORT_URL = ORYX.CONFIG.EDITOR_PATH + '/pdf';
-ORYX.CONFIG.BPSTRUCT_URL = ORYX.CONFIG.EDITOR_PATH + '/bpstruct';
+ORYX.CONFIG.EDITOR_PATH = "/editor";
+ORYX.CONFIG.PDF_EXPORT_URL = ORYX.CONFIG.EDITOR_PATH + '/editor/pdf';
+ORYX.CONFIG.BPSTRUCT_URL = ORYX.CONFIG.EDITOR_PATH + '/editor/bpstruct';
 ORYX.CONFIG.BIMP_URL = "http://bimp.cs.ut.ee/uploadsignavio";
 ORYX.CONFIG.DIAGRAM_PRINTER_URL = "/printsvg";
 ORYX.CONFIG.LICENSE_URL = "/LICENSE";
@@ -25331,6 +25332,7 @@ ORYX.Plugins.ApromoreBpstruct = ORYX.Plugins.AbstractPlugin.extend({
         }
 
         var msg = Ext.Msg.wait("Waiting for BPStruct to process model.");
+        console.log("Artichoke " + ORYX.CONFIG.BPSTRUCT_URL);
         new Ajax.Request(ORYX.CONFIG.BPSTRUCT_URL, {
             parameters: {'data': json, 'type': this.getDiagramType()},
             method: 'POST',
