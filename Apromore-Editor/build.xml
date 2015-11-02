@@ -326,4 +326,16 @@
             </batchtest>
         </junit>
     </target>
+
+    <target name="install">
+        <exec executable="mvn">
+            <arg value="install:install-file"/>
+            <arg value="-Dfile=${target}/${site.editor}.war"/>
+            <arg value="-DgroupId=org.apromore"/>
+            <arg value="-DartifactId=apromore-editor"/>
+            <arg value="-Dversion=1.1"/>
+            <arg value="-Dpackaging=war"/>
+            <arg value="-DgeneratePom=true"/>
+        </exec>
+    </target>
 </project>

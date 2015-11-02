@@ -2,12 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
-    <context:property-placeholder location="classpath:/org/apromore/config/site.properties"/>
+    <context:property-placeholder properties-ref="filestoreClientProperties"/>
+    <osgi-compendium:cm-properties id="filestoreClientProperties" persistent-id="site"/>
 
     <bean id="fileStoreClient" class="org.apromore.filestore.client.FileStoreServiceClient">
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="fileStoreServiceTemplate" />

@@ -31,6 +31,7 @@ import org.apromore.service.DecomposerService;
 import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
+import org.apromore.service.PQLService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -77,8 +78,9 @@ public class ProcessServiceImplUnitTest {
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
+        PQLService pqlSrv = createMock(PQLService.class);
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv, pqlSrv);
     }
 
     @Test

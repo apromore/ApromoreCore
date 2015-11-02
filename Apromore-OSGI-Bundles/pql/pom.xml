@@ -1,11 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+    -->
 
     <groupId>org.pql</groupId>
     <artifactId>pql-osgi</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <packaging>bundle</packaging>
+
+    <repositories>
+        <repository>
+            <id>ApromoreDev.mvn-repo</id>
+            <name>Maven repository for JARs specific to the Apromore project</name>
+            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -15,19 +31,22 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>artifactId=pql|themis</Embed-Dependency>
+                        <Embed-Dependency>artifactId=pql|themis|lucene-analyzers-common|lucene-core|lucene-queryparser</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Bundle-Name>pql OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pql-osgi</Bundle-SymbolicName>
                         <Export-Package>
-                            org.eclipse.jdt.internal.jarinjarloader,
+                            org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.lucene50,
+                            org.apache.lucene.search.similarities,
+                            org.apache.lucene.util,
                             org.jbpt.persist,
                             org.jbpt.petri.persist,
                             org.pql.antlr,
                             org.pql.api,
-                            org.pql.cmd,
+                            org.pql.bot,
                             org.pql.core,
                             org.pql.index,
                             org.pql.label,
@@ -59,6 +78,10 @@
                             org.themis.ir.vsm,
                             org.themis.pp,
                             org.themis.util,
+                            org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.lucene50,
+                            org.apache.lucene.search.similarities,
+                            org.apache.lucene.util,
                             org.antlr.v4.runtime,
                             org.antlr.v4.runtime.atn,
                             org.antlr.v4.runtime.dfa,
@@ -116,22 +139,10 @@
             <version>5.1.31</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.themis</groupId>-->
-            <!--<artifactId>themis</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.themis</groupId>
             <artifactId>themis-osgi</artifactId>
             <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql-osgi</artifactId>
-            <version>9.3-1101-jdbc41</version>
         </dependency>
 
         <dependency>
@@ -144,6 +155,27 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime-osgi</artifactId>
             <version>4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>5.3.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>5.3.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>5.3.0</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -161,7 +193,7 @@
         <dependency>
             <groupId>org.pql</groupId>
             <artifactId>pql</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>

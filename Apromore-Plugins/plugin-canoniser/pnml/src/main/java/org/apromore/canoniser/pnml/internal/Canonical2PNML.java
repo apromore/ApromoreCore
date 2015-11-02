@@ -264,9 +264,41 @@ public class Canonical2PNML {
         return transition.getName() == null;
     }
 
-    public static void main(String[] arg) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(System.in, true).getValue();
-        PNMLSchema.marshalPNMLFormat(System.out, (new Canonical2PNML(cpf, null, false, false)).getPNML(), false);
+        final String HELP_TEXT = "A document in CPF format is read from standard input.\n" +
+                                 "The PNML conversion is written to standard output.\n" +
+                                 "Options:\n" +
+                                 "-e  CPF edges treated as having a duration, converted tp PNML places\n" +
+                                 "-h  this help text\n" +
+                                 "-t  CPF tasks treated as instantaneous, converted to PNML transitions\n" +
+                                 "-v  validate input against the CPF XML schema";
+
+        boolean validate = false;
+        boolean isCpfTaskPnmlTransition = false;
+        boolean isCpfEdgePnmlPlace = false;
+
+        for(String arg: args) {
+            switch(arg) {
+            case "-e":
+                isCpfEdgePnmlPlace = true;
+                break;
+            case "-h": case "-?": case "-help": case "--help":
+                System.out.println(HELP_TEXT);
+                System.exit(0);
+            case "-t":
+                isCpfTaskPnmlTransition = true;
+                break;
+            case "-v":
+                validate = true;
+                break;
+            default:
+                System.err.println(arg + " is not a supported option\n" + HELP_TEXT);
+                System.exit(-1);
+            }
+        }
+
+        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(System.in, validate).getValue();
+        PNMLSchema.marshalPNMLFormat(System.out, (new Canonical2PNML(cpf, null, isCpfTaskPnmlTransition, isCpfEdgePnmlPlace)).getPNML(), false);
     }
 }

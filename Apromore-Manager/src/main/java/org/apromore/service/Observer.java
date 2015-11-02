@@ -12,5 +12,6 @@ import org.apromore.helper.Version;
  */
 public interface Observer {
 
-    void update(User user, NativeType nativeType, ProcessModelVersion pmv, boolean delete);
+    void notifyUpdate(ProcessModelVersion pmv);
+    void notifyDelete(ProcessModelVersion pmv);
 }

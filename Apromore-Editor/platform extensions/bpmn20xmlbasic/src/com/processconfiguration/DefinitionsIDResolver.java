@@ -46,7 +46,7 @@ import de.hpi.bpmn2_0.model.event.BoundaryEvent;
  * unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
  * </pre>
  *
- * @author <a href="simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
+ * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @see <a href="http://weblogs.java.net/blog/kohsuke/archive/2005/08/pluggable_ididr.html">Pluggable
  * ID/IDREF handling in JAXB 2.0</a>
  */

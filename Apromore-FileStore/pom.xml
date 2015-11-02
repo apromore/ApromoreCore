@@ -66,7 +66,7 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
-                            org.apromore.config;bundle-version="[1.1.0,2.0)",
+                            org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
@@ -141,10 +141,6 @@
         <!-- Apromore Security/clients -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>
         </dependency>
         <dependency>
@@ -208,6 +204,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
         </dependency>
 
         <!-- Spring -->

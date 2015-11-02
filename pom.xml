@@ -42,6 +42,9 @@
     </distributionManagement>
 
     <modules>
+        <module>Apromore-Extras/Build-Tools</module>
+        <module>Apromore-Extras/Test-Tools</module>
+
         <!-- Schema's -->
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/aris-schema</module>
@@ -91,11 +94,13 @@
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
         <module>Apromore-Editor</module>
+        <module>Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
         <module>Apromore-Assembly/Filestore-Assembly</module>
+        <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
 
         <!-- Command line tools -->
         <module>Supplements/cpfImporter</module>
@@ -221,7 +226,7 @@
         <ini4j.version>0.5.2</ini4j.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
-        <pql.version>1.0</pql.version>
+        <pql.version>1.0.1</pql.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
@@ -434,11 +439,6 @@
                 <groupId>com.apql</groupId>
                 <artifactId>apql</artifactId>
                 <version>${apql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>config</artifactId>
-                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
@@ -1323,6 +1323,11 @@
     </dependencyManagement>
 
     <repositories>
+        <repository>
+            <id>ApromoreDev.mvn-repo</id>
+            <name>Maven repository for JARs specific to the Apromore project</name>
+            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+        </repository>
         <repository>
             <id>EclipseLink Repo</id>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
