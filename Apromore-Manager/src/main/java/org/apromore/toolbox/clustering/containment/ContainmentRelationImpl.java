@@ -21,16 +21,23 @@
 package org.apromore.toolbox.clustering.containment;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.dataObject.FragmentVersionDO;
 import org.apromore.dao.dataObject.FragmentVersionDagDO;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.toolbox.clustering.topologicalsort.TopologicalSortGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,8 +62,19 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
     /* Mapping from root fragment Id -> Ids of all ascendant fragments of that root fragment */
     private Map<Integer, List<Integer>> hierarchies = new HashMap<>();
-    private boolean[][] contmatrix;
+    private Set<Integer> contmatrix;
+    private Set<Integer> contmatrixTransitive;
+    private int base;
     private int minSize = 3;
+
+    private int coresUsed = 0;
+    private int coresAvailable = Runtime.getRuntime().availableProcessors();
+
+    private ReentrantLock coreLock = new ReentrantLock();
+    private ReentrantLock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
+
+    private ExecutorService executorService;
 
     /**
      * Public Constructor used for spring wiring of objects, also used for tests.
@@ -156,10 +174,21 @@ public class ContainmentRelationImpl implements ContainmentRelation {
      */
     @Override
     public boolean areInContainmentRelation(Integer frag1, Integer frag2) {
-        return contmatrix[frag1][frag2];
+        return contmatrix.contains(matrixToInt(frag1, frag2));
+    }
+
+    private int matrixToInt(int x, int y) {
+        return y + (x * base);
     }
 
 
+    private boolean isContainedTransitive(Integer fragment1, Integer fragment2) {
+        return contmatrixTransitive.contains(matrixToInt(fragment1, fragment2));
+    }
+
+    private boolean isContained(Integer fragment1, Integer fragment2) {
+        return contmatrix.contains(matrixToInt(fragment1, fragment2));
+    }
 
     /* Query the Fragments and setup the different data structures. */
     private void queryFragments() throws Exception {
@@ -175,9 +204,17 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
     /* Initialise the Containment Matrix. */
     private void initContainmentMatrix() throws Exception {
+        LOGGER.error("Starting with " + coresAvailable + " cores");
         Integer parentIndex;
         Integer childIndex;
-        contmatrix = new boolean[idIndexMap.size()][idIndexMap.size()];
+        executorService = Executors.newFixedThreadPool(40 * coresAvailable);
+        contmatrix = Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
+        contmatrixTransitive = Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
+        base = idIndexMap.size();
+
+        TopologicalSortGraph topologicalSortGraph = new TopologicalSortGraph(base);
+        TopologicalSortGraph.Node parentNode;
+        TopologicalSortGraph.Node childNode;
 
         // Initialize the containment matrix using the parent-child relation
         List<FragmentVersionDagDO> dags = fragmentVersionDagRepository.getAllDAGEntriesBySize(minSize);
@@ -185,30 +222,156 @@ public class ContainmentRelationImpl implements ContainmentRelation {
             parentIndex = idIndexMap.get(fdag.getFragmentVersionId());
             childIndex = idIndexMap.get(fdag.getChildFragmentVersionId());
             if (parentIndex != null && childIndex != null) {
-                contmatrix[parentIndex][childIndex] = true;
-            }
-        }
-        // Compute the transitive closure (i.e., ancestor-descendant relation)
-        for (int i = 0; i < contmatrix.length; i++) {
-            for (int j = 0; j < contmatrix.length; j++) {
-                if (contmatrix[j][i]) {
-                    for (int k = 0; k < contmatrix.length; k++) {
-                        contmatrix[j][k] = contmatrix[j][k] | contmatrix[i][k];
-                    }
-                }
+                contmatrix.add(matrixToInt(parentIndex, childIndex));
+
+                parentNode = topologicalSortGraph.new Node(parentIndex);
+                childNode = topologicalSortGraph.new Node(childIndex);
+                topologicalSortGraph.addNeighbor(parentNode, childNode);
             }
         }
 
+        int[] sortedFragments = topologicalSortGraph.topologicalSort();
+        int[] array = new int[base];
+        int max, i, j, k, iPos, jPos, kPos, pos;
+
+//        for (i = 0; i < base; i++) {
+//            max = 0;
+//            for (k = 0; k < base; k++) {
+//                if (i != k && isContainedAndSamefolder(i, k)) {
+//                    array[max] = k;
+//                    max++;
+//                }
+//            }
+//            if(i % 1000 == 0) LOGGER.error("Waiting " + i + " max " + max);
+//
+//            for (j = 0; j < base; j++) {
+//                if (i != j && isContained(j, i)) {
+//                    for (k = 0; k < max; k++) {
+//                        contmatrix.add(matrixToInt(j, array[k]));
+//                    }
+//                }
+//            }
+//        }
+
+//        for (i = 0; i < base; i++) {
+//            max = 0;
+//            if(i % 1000 == 0) LOGGER.error("Waiting " + i);
+//            for (k = 0; k < base; k++) {
+//                if (isContainedAndSamefolder(i, k)) {
+//                    array[max] = k;
+//                    max++;
+//                }
+//            }
+//
+//            for (j = 0; j < base; j++) {
+//                if (i != j) {
+//                    increaseUsedCores();
+//                    executorService.execute(new MatrixExecutor(j, i, max, array));
+//                }
+//            }
+//
+//            while(getUsedCores() > 0) {
+//                threadSleep();
+//            }
+//        }
+
+//        for (iPos = base - 1; iPos >= 0 ; iPos--) {
+//            max = 0;
+//            i = sortedFragments[iPos];
+//            for (kPos = iPos - 1; kPos >= 0 ; kPos--) {
+//                k = sortedFragments[kPos];
+//                if (i != k && isContainedAndSamefolder(i, k)) {
+//                    array[max] = k;
+//                    max++;
+//                }
+//            }
+//            if(iPos % 1000 == 0) LOGGER.error("Waiting " + iPos + " max " + max);
+//
+//            if(max > 0) {
+//                for (jPos = iPos - 1; jPos >= 0; jPos--) {
+//                    j = sortedFragments[jPos];
+//                    if (i != j && isContained(j, i)) {
+//                        for (k = 0; k < max; k++) {
+//                            contmatrix.add(matrixToInt(j, array[k]));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        MatrixExecutor[] matrixExecutors = new MatrixExecutor[base];
+        for (iPos = base - 1; iPos >= 0; iPos--) {
+            max = 0;
+            i = sortedFragments[iPos];
+            for (kPos = base - 1; kPos > iPos; kPos--) {
+                k = sortedFragments[kPos];
+                if (isContained(i, k) || isContainedTransitive(i, k)) {
+                    array[max] = k;
+                    max++;
+                }
+            }
+            if(iPos % 1000 == 0) LOGGER.error("Waiting " + iPos + " max " + max);
+//            if(max > 0) LOGGER.error("Waiting " + iPos + " max " + max);
+
+            if(max > 0) {
+                for (jPos = iPos - 1; jPos >= 0; jPos--) {
+                    j = sortedFragments[jPos];
+
+                    increaseUsedCores();
+                    pos = (base - 1) - jPos;
+                    if(matrixExecutors[pos] == null) {
+                        matrixExecutors[pos] = new MatrixExecutor();
+                    }
+                    matrixExecutors[pos].setParameters(j, i, max, array);
+                    executorService.execute(matrixExecutors[pos]);
+                }
+            }
+
+            while(getUsedCores() > 0) {
+                threadSleep();
+            }
+        }
+        contmatrix.addAll(contmatrixTransitive);
+
         // Compute the symmetric relation
-        for (int i = 0; i < contmatrix.length; i++) {
-            for (int j = 0; j < contmatrix.length; j++) {
-                if (contmatrix[i][j]) {
-                    contmatrix[j][i] = true;
+        for (i = 0; i < base; i++) {
+            for (j = 0; j < base; j++) {
+                if (contmatrix.contains(matrixToInt(i, j))) {
+                    contmatrix.add(matrixToInt(j, i));
                 }
             }
         }
 
         initHierarchies();
+        LOGGER.error("Completed");
+    }
+
+    private void increaseUsedCores() {
+        coreLock.lock();
+        coresUsed++;
+        coreLock.unlock();
+    }
+
+    private void decreaseUsedCores() {
+        coreLock.lock();
+        coresUsed--;
+        coreLock.unlock();
+    }
+
+    private int getUsedCores() {
+        coreLock.lock();
+        int res = coresUsed;
+        coreLock.unlock();
+        return res;
+    }
+
+    private void threadSleep() {
+        lock.lock();
+//        long time = System.nanoTime();
+        condition.awaitUninterruptibly();
+//        time = System.nanoTime() - time;
+//        LOGGER.error("Slept for " + time + " nanoseconds");
+        lock.unlock();
     }
 
     /* Initialise the Hierarchies. */
@@ -237,4 +400,48 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         return processModelVersionRepository.getRootFragments(minSize);
     }
 
+    class MatrixExecutor implements Runnable {
+        private int j;
+        private int i;
+        private int k;
+        private int max;
+        private int[] array;
+
+        public MatrixExecutor() {
+
+        }
+
+        public MatrixExecutor(int j, int i, int max, int[] array) {
+            this.j = j;
+            this.i = i;
+            this.max = max;
+            this.array = array;
+        }
+
+        public void setParameters(int j, int i, int max, int[] array) {
+            this.j = j;
+            this.i = i;
+            this.max = max;
+            this.array = array;
+        }
+
+        @Override
+        public void run() {
+            Set<Integer> set = new HashSet<>();
+            if(isContained(j, i)) {
+                for (k = 0; k < max; k++) {
+                    set.add(matrixToInt(j, array[k]));
+                }
+            }
+            contmatrixTransitive.addAll(set);
+
+            decreaseUsedCores();
+
+            lock.lock();
+            if(getUsedCores() == 0) {
+                condition.signalAll();
+            }
+            lock.unlock();
+        }
+    }
 }

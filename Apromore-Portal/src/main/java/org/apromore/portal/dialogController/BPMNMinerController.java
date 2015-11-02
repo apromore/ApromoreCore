@@ -38,10 +38,10 @@ public class BPMNMinerController extends BaseController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            "Heuristics Miner ProM 5.2 without unused relationships",
             "Inductive Miner",
+            "Heuristics Miner ProM 5.2 without unused relationships",
             "Heuristics Miner ProM 6",
-            "Fodina Miner",
+//            "Fodina Miner",
             "Alpha Algorithm",
             "ILP Miner",
             "Heuristics Miner ProM 5.2 with unused relationships"
