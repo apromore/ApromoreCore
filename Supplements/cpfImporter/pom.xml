@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
     <groupId>org.apromore</groupId>
     <artifactId>cpfImporter</artifactId>
     <version>1.0</version>
@@ -66,6 +73,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>3.1.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -174,22 +187,28 @@
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-xml</artifactId>
-            <version>2.1.0.RELEASE</version>
+            <version>${spring-ws.version}</version>
             <exclusions>
+<!--
                 <exclusion>
                     <artifactId>org.apache.commons.logging</artifactId>
                     <groupId>org.apache.commons</groupId>
+                </exclusion>
+-->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-support</artifactId>
-            <version>2.1.0.RELEASE</version>
+            <version>${spring-ws.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>org.apache.commons.logging</artifactId>
-                    <groupId>org.apache.commons</groupId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

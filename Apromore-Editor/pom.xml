@@ -25,6 +25,7 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>config</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
@@ -166,6 +167,23 @@
                                 <ant target="build-all" dir="platform extensions" />
 
                                 <ant target="build-all-in-one-war" inheritall="false" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <property name="test_classpath" refid="maven.test.classpath"/>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+
+                                <ant target="install" inheritall="false" />
                             </target>
                         </configuration>
                     </execution>

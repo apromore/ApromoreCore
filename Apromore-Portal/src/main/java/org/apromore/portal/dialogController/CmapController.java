@@ -39,10 +39,11 @@ import javax.xml.transform.stream.StreamSource;
 import com.github.sardine.SardineFactory;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Applet;
 import org.zkoss.zul.Window;
 
@@ -95,7 +96,8 @@ public class CmapController extends BaseController {
         URL qmlURL  = null;
 
         // Obtain the proxy for the WebDAV repository
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+        //ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
+        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext());
         fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal");
 
         // Look up JAXB context

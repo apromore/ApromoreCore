@@ -74,7 +74,13 @@
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
         <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
+        <constructor-arg type="int" value="${pql.numberOfQueryThreads}"/>
         <constructor-arg type="String" value="${pql.labelSimilaritySearch}"/>
+        <constructor-arg type="String" value="${pql.labelSimilarityConfig}"/>
+        <constructor-arg type="double" value="${pql.defaultLabelSimilarityThreshold}"/>
+        <constructor-arg type="String" value="${pql.indexedLabelSimilarityThresholds}"/>
+        <constructor-arg type="long" value="${pql.defaultBotSleepTime}"/>
+        <constructor-arg type="long" value="${pql.defaultBotMaxIndexTime}"/>
     </bean>
 
 

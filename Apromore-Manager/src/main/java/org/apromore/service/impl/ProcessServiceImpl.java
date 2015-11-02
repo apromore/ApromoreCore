@@ -142,9 +142,6 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
 
-    @Inject
-    private PQLService pqlService;
-    private boolean isPqlServiceCreate=false;
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param annotationRepo Annotations repository.
@@ -165,6 +162,8 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
      * @param composerSrv composer Service.
      * @param decomposerSrv decomposer Service.
      * @param ui User Interface Helper.
+     * @param workspaceService
+     * @param pqlService
      */
     @Inject
     public ProcessServiceImpl(final AnnotationRepository annotationRepo,
@@ -175,7 +174,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
-            final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
+            final UserInterfaceHelper ui, final WorkspaceService workspaceService, final PQLService pqlService) {
         this.annotationRepo = annotationRepo;
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
@@ -196,6 +195,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         this.decomposerSrv = decomposerSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
+
+        this.addObserver(pqlService);
+        pqlService.setProcessService(this);  // KLUDGE to work around the circular dependency between ProcessService and PQLService
     }
 
     /**
@@ -252,13 +254,10 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
-            if(!isPqlServiceCreate) {
-                addObserver(pqlService);
-                isPqlServiceCreate=true;
-            }
 
+            // Index for PQL
             if(process.getId()!=null) {
-                notifyObserver(user, nativeType, pmv, false);
+                notifyUpdate(pmv);
             }
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
@@ -288,7 +287,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                 Process process = processRepo.findOne(processId);
                 pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
 
-                notifyObserver(user,nativeType,pmv,false);
+                notifyUpdate(pmv);  // update PQL index
                 LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
 
             } else {
@@ -297,11 +296,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                     throw new ImportException("Permission to change this model denied.  No user specified.");
                 } else if (canUserWriteProcess(user, processId)) {
                     pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
-                    if(!isPqlServiceCreate) {
-                        addObserver(pqlService);
-                        isPqlServiceCreate=true;
-                    }
-                    notifyObserver(user,nativeType,pmv,false);
+                    notifyUpdate(pmv);  // update the PQL index
                     LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
                     throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
@@ -664,6 +659,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                         deleteProcessModelVersion(pvid);
                         processRepo.delete(process);
                     }
+
+                    // Also delete the PQL index for this process model version
+                    notifyDelete(pvid);
                 }
             } catch (Exception e) {
                 String msg = "Failed to delete the current version of the Process with id: " + entry.getId();

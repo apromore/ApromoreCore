@@ -34,7 +34,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apromore.config.Site;
+import org.apromore.filestore.ConfigBean;
 import org.apromore.filestore.webdav.exceptions.UnauthenticatedException;
 import org.apromore.filestore.webdav.exceptions.WebDavException;
 import org.apromore.filestore.webdav.locking.ResourceLocks;
@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HttpServletBean;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * A Spring defined Request Handler. This "Servlet" is handles by Spring.
@@ -80,6 +81,7 @@ public class WebDavSpringServlet extends HttpServletBean {
     private String insteadOf404;
     private int noContentLengthHeaders;
 
+    private ConfigBean filestoreConfig;
 
     /**
      * Default Constructor for this Servlet.
@@ -100,13 +102,17 @@ public class WebDavSpringServlet extends HttpServletBean {
      */
     @Override
     public void initServletBean() throws ServletException {
+        ConfigBean filestoreConfig = (ConfigBean) WebApplicationContextUtils.getWebApplicationContext(getServletContext())
+                                                                            .getAutowireCapableBeanFactory()
+                                                                            .getBean("filestoreConfig");
+
         resourceHandlerImplementation = getInitParameter("ResourceHandlerImplementation");
         if (resourceHandlerImplementation == null || resourceHandlerImplementation.equals("")) {
             resourceHandlerImplementation = LocalFileSystemStore.class.getName();
         }
 
         File root = getFileRoot();
-        servletPath = getInitParameter("servletPath").replace("${site.filestore}", Site.getSiteFilestore());
+        servletPath = getInitParameter("servletPath").replace("${site.filestore}", filestoreConfig.getSiteFilestore());
         store = constructStore(resourceHandlerImplementation, root);
 
         lazyFolderCreationOnPut = getInitParameter("lazyFolderCreationOnPut") != null && getInitParameter("lazyFolderCreationOnPut").equals("1");
@@ -221,7 +227,7 @@ public class WebDavSpringServlet extends HttpServletBean {
             }
         } else if (rootPath.equals("*APROMORE-CONFIG*")) {
             try {
-                rootPath = Site.getFilestoreDir();
+                rootPath = filestoreConfig.getFilestoreDir();
             } catch (Exception e) {
                 throw new WebDavException("Unable to initialize rootpath using *APROMORE-CONFIG*", e);
             }

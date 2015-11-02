@@ -63,8 +63,17 @@
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
                         <Import-Bundle>
-                            org.apromore.config;bundle-version="[1.1.0,2.0)",
                             com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
+                            com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
+                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
+                            com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",
+                            com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
+                            jackson-core-lgpl;version="[1.9.12,2.0.0]",
+                            jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
+                            org.apromore.manager-ws-model;version="[1.1,1.1]",
+                            org.apromore.manager-client;version="[1.1,1.1]",
+                            org.apromore.manager-security;version="[1.1,1.1]",
+                            org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
@@ -76,16 +85,7 @@
                             org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
-                            com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
-                            com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",
-                            jackson-core-lgpl;version="[1.9.12,2.0.0]",
-                            jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]",
-                            org.apromore.manager-client;version="[1.1,1.1]",
-                            org.apromore.manager-security;version="[1.1,1.1]"
+                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]"
                         </Import-Bundle>
                         <Import-Package>
                             org.eclipse.virgo.web.dm,
@@ -212,10 +212,6 @@
         <!-- Client -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>filestore-client</artifactId>
         </dependency>
         <dependency>
@@ -319,6 +315,10 @@
         </dependency>
 
         <!-- Blueprint OSGi -->
+        <dependency>
+            <groupId>org.eclipse.gemini</groupId>
+            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa</artifactId>

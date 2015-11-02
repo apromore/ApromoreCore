@@ -23,8 +23,8 @@ import org.jbpt.petri.Place;
 import org.jbpt.petri.Transition;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.pql.api.IPQLAPI;
-import org.pql.api.PQLQueryResult;
 import org.pql.core.PQLTask;
+import org.pql.query.PQLQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,7 +49,7 @@ public class PQLServiceImpl implements PQLService {
     private String PNMLCanoniser;
     @Inject
     private WorkspaceService workspaceService;
-    @Inject
+    // @Inject  kludge so that the constructor for ProcessServiceImpl can explicitly inject it; workaround for circular dependency
     private ProcessService processService;
     @Inject
     private PluginService pluginService;
@@ -67,8 +67,6 @@ public class PQLServiceImpl implements PQLService {
 
     private String parameterCategory = Canoniser.DECANONISE_PARAMETER;
 
-    private final Set<Double> indexedLabelSimilarities = new HashSet<Double>();
-
     private LolaDirBean lolaDir;
     private MySqlBeanImpl mySqlBean;
     private PGBeanImpl pgBean;
@@ -84,12 +82,11 @@ public class PQLServiceImpl implements PQLService {
         this.mySqlBean=mySqlBean;
         this.pgBean=pgBean;
         this.pqlBean=pqlBean;
-        indexedLabelSimilarities.add(new Double(0.5));
-        indexedLabelSimilarities.add(new Double(0.75));
-        indexedLabelSimilarities.add(new Double(1.0));
     }
 
-
+    public void setProcessService(ProcessService processService) {
+        this.processService = processService;
+    }
 
     @Override
     public void indexAllModels() {
@@ -143,32 +140,50 @@ public class PQLServiceImpl implements PQLService {
         Version version=new Version(pmv.getVersionNumber());
         Process process = pmv.getProcessBranch().getProcess();
         try {
-            PqlBean pqlBean= new PqlBeanImpl((LolaDirImpl)lolaDir,mySqlBean,pgBean,this.pqlBean.isIndexingEnabled(), this.pqlBean.getLabelSimilaritySearch());
             IPQLAPI api=pqlBean.getApi();
             LOGGER.info("-----------DELETE: " + pmv.getProcessBranch().getProcess().getId()+"/"+version.toString()+"/"+pmv.getProcessBranch().getBranchName());
 
+            // Obtain the PQL identifier
             String externalId = pmv.getProcessBranch().getProcess().getId() + "/" + version.toString() + "/" + pmv.getProcessBranch().getBranchName();
             int internalId = api.getInternalID(externalId);
-            if (internalId == 0) {
+            if (internalId <= 0) {
                 throw new Exception("No model with PQL external id " + externalId + " found in PQL database");
             }
-            if (!api.deleteIndex(internalId)) {
+            assert internalId > 0;
+
+            // Perform the deletion
+            if (api.deleteIndex(internalId)) {
+                LOGGER.info("Deleted model with PQL external id " + externalId + " and internal id " + internalId);
+            } else {
                 throw new Exception("Failed to delete model with PQL external id " + externalId + " and internal id " + internalId);
             }
+
+            /*
+            try {
+                LOGGER.info("Performing post-deletion cleanup");
+                api.cleanupIndex();
+                LOGGER.info("Performed post-deletion cleanup");
+            } catch (SQLException e) {
+                LOGGER.error("Unable to perform post-deletion cleanup", e);
+            }
+            */
         } catch(Exception e) {
             LOGGER.error("Unable to delete model " + process.getId() + " " + version, e);
+        }
+
+    }
+
+    @Override
+    public void notifyUpdate(final ProcessModelVersion pmv) {
+        if (pqlBean.isIndexingEnabled()) {
+            indexOneModel(pmv);
         }
     }
 
     @Override
-    public void update(User user, NativeType nativeType,final ProcessModelVersion pmv, final boolean delete) {
-
+    public void notifyDelete(final ProcessModelVersion pmv) {
         if (pqlBean.isIndexingEnabled()) {
-            if (delete) {
-                deleteModel(pmv);
-            } else {
-                indexOneModel(pmv);
-            }
+            deleteModel(pmv);
         }
     }
 
@@ -258,9 +273,9 @@ public class PQLServiceImpl implements PQLService {
         String externalId = procId.toString() + "/" + version.toString() + "/" + branchName;
 
         IPQLAPI api = pqlBean.getApi();
-        int internalId = api.storeNetSystem(bytes, externalId);
+        int internalId = api.storeModel(bytes, externalId);
 
-        LOGGER.info("SOUNDNESS: " + api.checkNetSystem(internalId));
+        LOGGER.info("SOUNDNESS: " + api.checkModel(internalId));
     }
 
     @Override

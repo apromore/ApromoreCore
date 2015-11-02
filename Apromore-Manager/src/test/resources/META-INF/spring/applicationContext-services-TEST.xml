@@ -78,7 +78,13 @@
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
         <constructor-arg type="boolean" value="false"/>
+        <constructor-arg type="int" value="1"/>
         <constructor-arg type="String" value="LEVENSHTEIN"/>
+        <constructor-arg type="String" value="/dev/null"/>
+        <constructor-arg type="double" value="0.75"/>
+        <constructor-arg type="String" value="0.5,0.75, 1.0"/>
+        <constructor-arg type="long" value="300"/>
+        <constructor-arg type="long" value="86400"/>
     </bean>
 
 
