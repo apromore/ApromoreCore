@@ -29,7 +29,6 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Embed-Dependency>artifactId=jbpt</Embed-Dependency>
                         <Import-Bundle>
                             org.apromore.manager-client;version="[1.1,1.1]",
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
@@ -82,13 +81,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
             <version>1.7.12</version>
-        </dependency>
-
-        <!-- Quick and dirty bulk upload of original Signavio libraries -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>jbpt</artifactId>
-            <version>0.2.77</version>
         </dependency>
     </dependencies>
 

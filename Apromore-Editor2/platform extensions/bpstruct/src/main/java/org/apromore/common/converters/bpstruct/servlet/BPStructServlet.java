@@ -25,15 +25,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-//import java.io.DataOutputStream;
 import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
 import java.io.StringReader;
-//import java.net.HttpURLConnection;
-//import java.net.URL;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.stream.StreamSource;
@@ -46,13 +40,7 @@ import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
-//import de.hpi.bpt.process.Process;
-//import de.hpi.bpt.process.serialize.SerializationException;
 import org.apache.log4j.Logger;
-//import org.apromore.common.converters.bpstruct.BasicDiagramToProcessModel;
-//import org.apromore.common.converters.bpstruct.JSON2Process;
-//import org.apromore.common.converters.bpstruct.Process2JSON;
-//import org.apromore.common.converters.bpstruct.ProcessModelToBasicDiagram;
 import org.apromore.manager.client.ManagerService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -174,132 +162,4 @@ public class BPStructServlet extends HttpServlet {
         //json.put("errors", ...);
         return json.toString();
     }
-
-    /*
-    private String convert(String jsonData) throws Exception {
-        BasicDiagram newDiagram ;
-        BasicDiagram diagram = BasicDiagramBuilder.parseJson(jsonData);
-
-        if (diagram != null) {
-            Process process = convertToProcessModel(diagram);
-            String json = getJsonFromProcess(process);
-
-            String structuredJson = processWithBPStruct(json);
-            Process newProcess = getProcessFromJson(structuredJson);
-
-            newDiagram = convertToBasicDiagram(newProcess);
-            newDiagram.setBounds(diagram.getBounds());
-
-            return updateDiagramWithBPStructExtras(newDiagram, structuredJson);
-        }
-
-        return null;
-    }
-    */
-
-    /** Update the json to send back with the BPStruct Extras. */
-    /*
-    private String updateDiagramWithBPStructExtras(BasicDiagram newDiagram, String structuredJson) throws JSONException {
-        JSONObject json = new JSONObject();
-        JSONObject bpJson = new JSONObject(structuredJson);
-
-        json.put("data_json", newDiagram.getJSON());
-        if (bpJson.has("hasChanged")) {
-            json.put("hasChanged", bpJson.get("hasChanged"));
-        }
-        if (bpJson.has("errors")) {
-            json.put("errors", bpJson.get("errors"));
-        }
-
-        return json.toString();
-    }
-    */
-
-    /* Convert a basicDiagram into the Format required for BPStruct. */
-    /*
-    private de.hpi.bpt.process.Process convertToProcessModel(BasicDiagram diagram) throws SerializationException {
-        BasicDiagramToProcessModel bd2pm = new BasicDiagramToProcessModel();
-        return bd2pm.convert(diagram);
-    }
-    */
-
-    /* Convert a basicDiagram into the Format required for BPStruct. */
-    /*
-    private BasicDiagram convertToBasicDiagram(Process process) throws SerializationException {
-        ProcessModelToBasicDiagram pm2bd = new ProcessModelToBasicDiagram();
-        return pm2bd.convert(process);
-    }
-    */
-
-    /* Converts the Process to JSon. */
-    /*
-    private String getJsonFromProcess(Process process) {
-        String json = null;
-        try {
-            json = Process2JSON.convert(process);
-        } catch (SerializationException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return json;
-    }
-    */
-
-    /* Converts the JSon to Process. */
-    /*
-    private Process getProcessFromJson(String json) {
-        Process process = null;
-        try {
-            process = JSON2Process.convert(json);
-        } catch (SerializationException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return process;
-    }
-    */
-
-    /* Send the converted document to BPStruct and see if we have any changes. */
-    /*
-    private String processWithBPStruct(String json) throws Exception {
-        if (json != null && !json.equals("")) {
-            HttpURLConnection connection = null;
-            try {
-                URL url = new URL(BPSTRUCT_SERVER);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("Content-Length", "" + Integer.toString(json.getBytes().length));
-                connection.setRequestProperty("Content-Language", "en-US");
-
-                connection.setUseCaches(false);
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-
-                //Send request
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(json);
-                wr.flush();
-                wr.close();
-
-                //Get Response
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuilder response = new StringBuilder();
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                    response.append('\r');
-                }
-                rd.close();
-                return response.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            }
-        }
-        return null;
-    }
-    */
 }
