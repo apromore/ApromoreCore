@@ -117,7 +117,8 @@
                             org.postgresql.util,
                             org.postgresql.xa,
                             org.postgresql.xa.jdbc3,
-                            org.postgresql.xa.jdbc4
+                            org.postgresql.xa.jdbc4,
+                            org.processmining.models.graphbased.directed.petrinet,
                         </Import-Package>
                     </instructions>
                 </configuration>
