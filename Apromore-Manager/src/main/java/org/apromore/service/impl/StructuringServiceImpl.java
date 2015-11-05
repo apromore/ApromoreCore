@@ -275,6 +275,7 @@ public class StructuringServiceImpl implements StructuringService {
 	}
 
 	private void checkFakeGateway(Gateway g) {
+		try {
 		LOGGER.info("Checking fake gateways: " + g.getId());
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> in = null;
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> out = null;
@@ -300,6 +301,10 @@ public class StructuringServiceImpl implements StructuringService {
 			diagram.removeEdge(in);
 			diagram.removeEdge(out);
 		}
+		} catch ( Exception e ) {
+			LOGGER.error("unable to remove fake gate.", e);
+		}
+
 	}
 
 	private void removeMultipleEndPlaces() {
