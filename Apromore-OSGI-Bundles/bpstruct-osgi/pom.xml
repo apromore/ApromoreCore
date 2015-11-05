@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>bpstruct-osgi</artifactId>
+    <version>1.0</version>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>artifactId=bpstruct|de-jbpt|stixar-graph|hub-pn|antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke|log4j|commons-lang3|jgraph
+                        </Embed-Dependency>
+                        <Embed-Transitive>false</Embed-Transitive>
+                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>BPstruct OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>org.bpstruct-osgi</Bundle-SymbolicName>
+                        <Import-Package>
+                            !oracle.xml.parser.v2,
+                            !org.apache.xerces.*,
+                            !org.antlr.stringtemplate,
+                            !javax.xml.*,
+                            !org.w3c.dom,
+                            !org.junit,
+                            !junit.*,
+                            !javax.swing.*,
+                            !org.xml.sax.*,
+                            !org.jaxen.*,
+                            !oracle.xml.parser,
+                            !com.sun.jdmk.comm,
+                            !javax.jmdns,
+                            !javax.naming,
+                            !javax.jms,
+                            !com.ibm.uvm.tools,
+                            !javax.mail.*,
+                            !javax.management,
+                            !ee.ut.bpstruct.epml.old,
+                            !org.jgraph.*,
+                            !com.touchgraph.graphlayout.interaction,
+                            !com.touchgraph.graphlayout,
+                            *;resolution=optional
+                        </Import-Package>
+                        <Export-Package>
+                            de.hpi.bpt.process.*,
+                            ee.ut.bpstruct2
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+    
+	<!-- bpstruct -->
+        <!-- to import/install -->
+        <dependency>
+            <groupId>org.bpstruct</groupId>
+            <artifactId>bpstruct</artifactId>
+            <version>0.1.104</version>
+        </dependency>
+        <dependency>
+            <groupId>de.hpi.jbpt</groupId>
+            <artifactId>de-jbpt</artifactId>
+            <version>0.2.77</version>
+        </dependency>
+        <dependency>
+            <groupId>net.stixar</groupId>
+            <artifactId>stixar-graph</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.stixar</groupId>
+            <artifactId>stixar-util</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>hub.top.petrinet</groupId>
+            <artifactId>hub-pn</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr.runtime</groupId>
+            <artifactId>antlr-rt</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>hub.top.uma</groupId>
+            <artifactId>uma</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bpt.hpi</groupId>
+            <artifactId>rpst</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>kohsuke</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgraph</groupId>
+            <artifactId>jgraph</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <!-- already installed -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+    </dependencies>
+</project>
+ 

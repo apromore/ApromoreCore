@@ -82,10 +82,14 @@ public class BPStructServlet extends HttpServlet {
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else {
+                LOGGER.info("0123456");
                 String diagramJson = convert(jsonData);
+                LOGGER.info("07654");
                 res.setContentType("application/xml; charset=UTF-8");
                 res.setStatus(200);
+                LOGGER.info("before writing");
                 res.getWriter().write(diagramJson);
+                LOGGER.info("after writing");
             }
         } catch (Exception e) {
             try {
@@ -131,12 +135,14 @@ public class BPStructServlet extends HttpServlet {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         jaxbContext.createMarshaller().marshal(bpmn, baos);
         String bpmnString = baos.toString("utf-8");
+        LOGGER.info("PROCESS TO STRUCTURE:\n" + bpmnString);
 
         // Ask the manager to restructure the BPMN-formatted String
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
         ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
-        log("Users " + manager.readAllUsers());  // Confirm that we really can talk to the manager
-        String bpstructedBpmnString = bpmnString;  //"manager.f(bpmnString)";  // Call to Adriano's code will go here
+        //log("Users " + manager.readAllUsers());  // Confirm that we really can talk to the manager
+        String bpstructedBpmnString = manager.structureBPMNModel(bpmnString); // Call to Adriano's code will go here
+        LOGGER.info("PROCESS STRUCTURED:\n" + bpstructedBpmnString);
 
         // BPMN-formatted String -> BPMN DOM
         StreamSource source = new StreamSource(new StringReader(bpstructedBpmnString));

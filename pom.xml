@@ -66,6 +66,7 @@
         <module>Apromore-OSGI-Bundles/json</module>
         <module>Apromore-OSGI-Bundles/jbpt-petri</module>
         <module>Apromore-OSGI-Bundles/pql</module>
+        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>

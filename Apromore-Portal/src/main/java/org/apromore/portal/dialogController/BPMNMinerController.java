@@ -55,6 +55,7 @@ public class BPMNMinerController extends BaseController {
     private Selectbox miningAlgorithms;
     private Radiogroup dependencyAlgorithms;
     private Radiogroup sortLog;
+    private Radiogroup structProcess;
     private Slider interruptingEventTolerance;
     private Slider multiInstancePercentage;
     private Slider multiInstanceTolerance;
@@ -94,7 +95,7 @@ public class BPMNMinerController extends BaseController {
 
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");
-
+            this.structProcess = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerStructProcess");
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
             this.multiInstancePercentage = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstancePercentage");
             this.multiInstanceTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstanceTolerance");
@@ -247,7 +248,7 @@ public class BPMNMinerController extends BaseController {
         try {
 
             this.bpmnMinerW.detach();
-            String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
+            String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
@@ -274,7 +275,7 @@ public class BPMNMinerController extends BaseController {
     public void noEntityException() {
         try {
             this.bpmnMinerW.detach();
-            String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
+            String model = getService().discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
