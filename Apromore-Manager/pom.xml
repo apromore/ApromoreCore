@@ -108,6 +108,9 @@
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
+                            !de.hpi.bpt.process.*,
+                            !de.hpi.bpt.process.checks.structural,
+                            !ee.ut.bpstruct2,
                             *
                         </Import-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
@@ -159,6 +162,12 @@
     </build>
 
     <dependencies>
+        <!-- diagramStructuring -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpstruct-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- PQL -->
         <dependency>

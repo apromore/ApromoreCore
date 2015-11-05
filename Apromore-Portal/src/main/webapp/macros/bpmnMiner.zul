@@ -54,6 +54,23 @@
             </radiogroup>
         </groupbox>
         <groupbox width="285px">
+			<caption label="Structured Process Model"/>
+			<radiogroup id="bpmnMinerStructProcess">
+				<grid>
+				    <columns>
+				        <column />
+				        <column />
+				    </columns>
+				    <rows>
+				        <row>
+				            <radio id="structured" label="Yes" />
+				            <radio id="notStructured" label="No" selected="true"/>
+				        </row>
+				    </rows>
+				</grid>
+			</radiogroup>
+		</groupbox>
+        <groupbox width="285px">
             <caption label="InterruptingEvent Tolerance Value" />
             <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
         </groupbox>

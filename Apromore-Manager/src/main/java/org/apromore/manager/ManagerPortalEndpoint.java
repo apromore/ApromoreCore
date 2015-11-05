@@ -101,6 +101,7 @@ public class ManagerPortalEndpoint {
     private PQLService pqlService;
     private DatabaseService dbService;
     private BPMNMinerService bpmnMinerService;
+    private StructuringService structuringService;
 
 
     /**
@@ -133,7 +134,7 @@ public class ManagerPortalEndpoint {
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
             final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService,
-			final ProDriftDetectionService proDriftSrv
+			final ProDriftDetectionService proDriftSrv, final StructuringService structuringService
     ) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
@@ -153,6 +154,7 @@ public class ManagerPortalEndpoint {
         this.pqlService = pqlService;
         this.dbService = dbService;
         this.bpmnMinerService = bpmnMinerService;
+        this.structuringService = structuringService;
 
     }
 
@@ -1432,6 +1434,7 @@ public class ManagerPortalEndpoint {
             int miningAlgorithm = payload.getMiningAlgorithm();
             int dependencyAlgorithm = payload.getDependencyAlgorithm();
             boolean sortLog = payload.isSortLog();
+            boolean structProcess = payload.isStructProcess();
             double interruptingEventTolerance = payload.getInterruptingEventTolerance();
             double multiInstancePercentage = payload.getMultiInstancePercentage();
             double multiInstanceTolerance = payload.getMultiInstanceTolerance();
@@ -1444,7 +1447,7 @@ public class ManagerPortalEndpoint {
                 primaryKeySelections.put(new HashSet<String>(entry.getKey().getElements()), new HashSet<String>(entry.getValue().getElements()));
             }
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog, miningAlgorithm, dependencyAlgorithm, interruptingEventTolerance,
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog, structProcess, miningAlgorithm, dependencyAlgorithm, interruptingEventTolerance,
                     timerEventPercentage, timerEventTolerance, multiInstancePercentage, multiInstanceTolerance, noiseThreshold,
                     listCandidates, primaryKeySelections);
 
@@ -1457,6 +1460,29 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createDiscoverBPMNModelResponse(res);
+    }
+
+    @PayloadRoot(localPart = "StructureBPMNModelRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<StructureBPMNModelOutputMsgType> structureBPMNModel(@RequestPayload final JAXBElement<StructureBPMNModelInputMsgType> req) {
+        LOGGER.trace("Executing operation structureBPMNModel");
+
+        StructureBPMNModelInputMsgType payload = req.getValue();
+        StructureBPMNModelOutputMsgType res = new StructureBPMNModelOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String process = payload.getProcess();
+
+        try {
+            result.setMessage( structuringService.structureBPMNModel(process) );
+            result.setCode(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(1);
+        }
+        return WS_OBJECT_FACTORY.createStructureBPMNModelResponse(res);
     }
 
 	@PayloadRoot(localPart = "ProDriftDetectorRequest", namespace = NAMESPACE)

@@ -133,6 +133,23 @@
     <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
     <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
 
+	<!-- DiagramStructuring -->
+    <xs:element name="StructureBPMNModelRequest" type="tns:StructureBPMNModelInputMsgType"/>
+    <xs:element name="StructureBPMNModelResponse" type="tns:StructureBPMNModelOutputMsgType"/>
+
+    <xs:complexType name="StructureBPMNModelInputMsgType">
+        <xs:sequence>
+            <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="StructureBPMNModelOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
     <!-- BPMNMiner -->
     <xs:element name="DiscoverBPMNModelRequest" type="tns:DiscoverBPMNModelInputMsgType"/>
     <xs:element name="DiscoverBPMNModelResponse" type="tns:DiscoverBPMNModelOutputMsgType"/>
@@ -143,6 +160,7 @@
             <xs:element name="miningAlgorithm" type="xs:int"/>
             <xs:element name="dependencyAlgorithm" type="xs:int"/>
             <xs:element name="sortLog" type="xs:boolean"/>
+            <xs:element name="structProcess" type="xs:boolean"/>
             <xs:element name="interruptingEventTolerance" type="xs:double"/>
             <xs:element name="multiInstancePercentage" type="xs:double"/>
             <xs:element name="multiInstanceTolerance" type="xs:double"/>

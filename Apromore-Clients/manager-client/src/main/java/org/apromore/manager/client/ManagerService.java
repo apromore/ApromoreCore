@@ -434,6 +434,7 @@ public interface ManagerService {
      * Mine BPMN Model from Log.
      * @param log input log for mining.
      * @param sortLog should the log be sorted based on timestamp.
+     * @param structProcess should the resulting Process Model be structured or not.
      * @param miningAlgorithm the mining algorithm (@see).
      * @param dependencyAlgorithm the algorithm for dependency discovery (1 normal, 2 noise tollerant).
      * @param interruptingEventTolerance the tolerance level for detecting interrupting events, a value between 0.0 and 1.0.
@@ -446,10 +447,15 @@ public interface ManagerService {
      * @param primaryKeySelections the selection of primary key for each activity.
      * @throws Exception ... change to be something more relevant
      */
-    String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                              double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                              double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
-    
+    /**
+     * Structure a BPMN process from its XML(BPMN 2.0) representation.
+     * @param process the XML(BPMN 2.0) representation of the process to be structured
+     */
+    String structureBPMNModel(String process) throws Exception;
+
 /**
      * Detect drifts in the log
      * @param logByteArray the log as a byte array

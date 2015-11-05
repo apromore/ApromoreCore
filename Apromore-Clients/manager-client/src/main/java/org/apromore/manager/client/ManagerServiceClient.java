@@ -1116,11 +1116,11 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#discoverBPMNModel(XLog, boolean, int, int, double, double, double, double, double, double, List, Map)
+     * @see ManagerService#discoverBPMNModel(XLog, boolean, boolean, int, int, double, double, double, double, double, double, List, Map)
      * {@inheritDoc}
      */
     @Override
-    public String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                                     double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
         LOGGER.debug("Preparing DiscoverBPMNModel Request...");
@@ -1136,6 +1136,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setMiningAlgorithm(miningAlgorithm);
         msg.setDependencyAlgorithm(dependencyAlgorithm);
         msg.setSortLog(sortLog);
+        msg.setStructProcess(structProcess);
         msg.setInterruptingEventTolerance(interruptingEventTolerance);
         msg.setMultiInstancePercentage(multiInstancePercentage);
         msg.setMultiInstanceTolerance(multiInstanceTolerance);
@@ -1179,6 +1180,29 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<DiscoverBPMNModelOutputMsgType> response = (JAXBElement<DiscoverBPMNModelOutputMsgType>)
                 webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }else {
+            return response.getValue().getResult().getMessage();
+        }
+    }
+
+    /**
+     * @see ManagerService#structureBPMNModel(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public String structureBPMNModel(String process) throws Exception {
+
+        StructureBPMNModelInputMsgType msg = new StructureBPMNModelInputMsgType();
+        msg.setProcess(process);
+
+        JAXBElement<StructureBPMNModelInputMsgType> request = WS_CLIENT_FACTORY.createStructureBPMNModelRequest(msg);
+
+        JAXBElement<StructureBPMNModelOutputMsgType> response = (JAXBElement<StructureBPMNModelOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+
+        if (response.getValue().getResult().getCode() != 0) {
             throw new Exception(response.getValue().getResult().getMessage());
         }else {
             return response.getValue().getResult().getMessage();
