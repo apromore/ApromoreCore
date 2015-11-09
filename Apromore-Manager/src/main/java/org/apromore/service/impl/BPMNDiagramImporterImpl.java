@@ -259,7 +259,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             if( event instanceof TEndEvent ) type = Event.EventType.END;
             else if( event instanceof TIntermediateThrowEvent ) type = Event.EventType.INTERMEDIATE;
             else if( event instanceof TImplicitThrowEvent ) type = Event.EventType.INTERMEDIATE;
-            
+
             if( ((TThrowEvent)event).getEventDefinition().size() > 1 ) trigger = Event.EventTrigger.MULTIPLE;
             else if( (((TThrowEvent)event).getEventDefinition().size() != 0) && ((TThrowEvent)event).getEventDefinition().get(0) != null ) {
                 TEventDefinition definition = ((TThrowEvent)event).getEventDefinition().get(0).getValue();

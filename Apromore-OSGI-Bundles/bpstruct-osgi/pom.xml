@@ -55,7 +55,7 @@
                         </Import-Package>
                         <Export-Package>
                             de.hpi.bpt.process.*,
-                            ee.ut.bpstruct2
+                            ee.ut.bpstruct
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.bpstruct</groupId>
             <artifactId>bpstruct</artifactId>
-            <version>0.1.104</version>
+            <version>0.1.117</version>
         </dependency>
         <dependency>
             <groupId>de.hpi.jbpt</groupId>
