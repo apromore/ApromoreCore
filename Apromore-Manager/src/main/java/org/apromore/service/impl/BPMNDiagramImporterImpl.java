@@ -38,7 +38,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private Set<TAssociation> associations;
     private Set<TSequenceFlow> flows;
     private Set<TMessageFlow> messageFlows;
-
+    private List<JAXBElement<? extends TRootElement>> processes;
 
     public BPMNDiagramImporterImpl() {}
 
@@ -55,6 +55,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         associations = new HashSet<>();
         flows = new HashSet();
         messageFlows = new HashSet<>();
+        processes = new LinkedList<>();
 
         try {
 
@@ -82,8 +83,6 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
             LOGGER.info("Definitions element got!");
             definitions = (TDefinitions) o;
-
-            List<JAXBElement<? extends TRootElement>> processes = new LinkedList<>();
 
             for( JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement() ) {
 
@@ -404,6 +403,9 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void unfoldProcess(TBaseElement root, SubProcess parentProcess) {
 
         if( root instanceof TProcess ) {
+            Swimlane pool = idToPool.get(root.getId());
+            if( (pool == null) && (processes.size() != 1) ) pool = diagram.addSwimlane("unNamed", null, SwimlaneType.POOL);
+
             /**** Artifact contains TextAnnotation and Association objects ****/
             for( JAXBElement artifact : ((TProcess) root).getArtifact() ) {
 
@@ -418,22 +420,22 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             for( JAXBElement flowElement : ((TProcess) root).getFlowElement() ) {
 
                 if( flowElement.getValue() instanceof TSubProcess )
-                    this.addSubProcess((TSubProcess) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addSubProcess((TSubProcess) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TEvent )
-                    this.addEvent((TEvent) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addEvent((TEvent) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TTask )
-                    this.addTask((TTask) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addTask((TTask) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TGateway )
-                    this.addGateway((TGateway) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addGateway((TGateway) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TCallActivity )
-                    this.addCallActivity((TCallActivity) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addCallActivity((TCallActivity) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TDataObject )
-                    this.addDataObject((TDataObject) flowElement.getValue(), parentProcess, idToPool.get(root.getId()));
+                    this.addDataObject((TDataObject) flowElement.getValue(), parentProcess, pool);
 
                 else if( flowElement.getValue() instanceof TSequenceFlow )
                     this.flows.add((TSequenceFlow) flowElement.getValue());
