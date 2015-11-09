@@ -44,18 +44,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class StructuringServiceImpl implements StructuringService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StructuringServiceImpl.class);
-    
+
 	private BPMNDiagram diagram;		//initial diagram
 	private long taskCounter = 0;		//id for processes and tasks
 
 	/**** not mappable elements on bpStruct json scheme ****/
 	private Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> unmappableEdges;
 	private Set<BPMNNode> unmappableNodes;
-	
+
 	/**** mappable elements on bpStruct json scheme ****/
 	private Map<Long, BPMNNode> mappedNodes;
 	private Set<NodeID> analyzedSubprocesses;
-	
+
 	/**** support maps to restore the diagram's edges correctly ****/
 	private Map<Event, Activity> boundaryEvents;
 	private Set<BPMNNode> endEvents;
@@ -63,7 +63,7 @@ public class StructuringServiceImpl implements StructuringService {
 	private Map<NodeID, Set<BPMNNode>> blackList;
 	private Map<NodeID, Set<BPMNNode>> whiteList;
 	private Map<NodeID, BPMNNode> matrices;
-	
+
 	/**** mapping between processes' IDs and their .json structured version ****/
 	private Map<Long, String> idToJson;
 	private Map<Long, SubProcess> standAloneSubprocesses;
@@ -71,14 +71,14 @@ public class StructuringServiceImpl implements StructuringService {
 
 
 	public StructuringServiceImpl() { }
-	
+
 	public StructuringServiceImpl(BPMNDiagram diagram) {
 		this.diagram = diagram;
 		taskCounter = 0;
-		
+
 		unmappableEdges = new HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>>();
 		unmappableNodes = new HashSet<BPMNNode>();
-		
+
 		mappedNodes = new HashMap<Long, BPMNNode>();
 		analyzedSubprocesses = new HashSet<NodeID>();
 
@@ -88,7 +88,7 @@ public class StructuringServiceImpl implements StructuringService {
 		blackList = new HashMap<NodeID, Set<BPMNNode>>();
 		whiteList = new HashMap<NodeID, Set<BPMNNode>>();
 		matrices = new HashMap<NodeID, BPMNNode>();
-		
+
 		idToJson = new HashMap<Long, String>();
 		standAloneSubprocesses = new HashMap<Long, SubProcess>();
 
@@ -108,7 +108,7 @@ public class StructuringServiceImpl implements StructuringService {
 
 		return xmlProcessChecked;
 	}
-	
+
 	@Override
 	public BPMNDiagram getStructuredDiagram() {	return diagram; }
 
@@ -172,7 +172,7 @@ public class StructuringServiceImpl implements StructuringService {
 
 
 	private void structureDiagram() {
-		
+
 		Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeToRemove = new HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>>();
 		Set<BPMNNode> nodeToRemove = new HashSet<BPMNNode>();
 
@@ -181,7 +181,7 @@ public class StructuringServiceImpl implements StructuringService {
 		unmappableEdges.addAll(diagram.getAssociations());
 		unmappableEdges.addAll(diagram.getDataAssociations());
 		unmappableEdges.addAll(diagram.getMessageFlows());
-		
+
 		unmappableNodes.addAll(diagram.getTextAnnotations());
 		unmappableNodes.addAll(diagram.getDataObjects());
 
@@ -223,7 +223,7 @@ public class StructuringServiceImpl implements StructuringService {
 		for( Gateway g : diagram.getGateways() ) nodeToRemove.add(g);
 		for( TextAnnotation ta : diagram.getTextAnnotations() ) nodeToRemove.add(ta);
 		for( DataObject d : diagram.getDataObjects() ) nodeToRemove.add(d);
-		
+
 		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : edgeToRemove ) diagram.removeEdge(e);
 		for( BPMNNode n : nodeToRemove ) {
 			LOGGER.info("Removing node: " + n.getId());
@@ -327,20 +327,20 @@ public class StructuringServiceImpl implements StructuringService {
 			}
 		}
 	}
-	
+
 	private void handleBoundaryEvents() {
 		Activity a;
 		Gateway g;
 		BPMNNode tgt;
-		
+
 		for( Event e : diagram.getEvents() )
 			if( (a = e.getBoundingNode()) != null )
 				for( Flow f : diagram.getFlows() )
 					if( f.getSource().equals(a) ) {
 						tgt = f.getTarget();
-						if( (tgt instanceof Gateway) && ((((Gateway) tgt).getGatewayType() == Gateway.GatewayType.EVENTBASED) || 
-					 			 						 (((Gateway) tgt).getGatewayType() == Gateway.GatewayType.DATABASED)) ) 
-						{ 
+						if( (tgt instanceof Gateway) && ((((Gateway) tgt).getGatewayType() == Gateway.GatewayType.EVENTBASED) ||
+					 			 						 (((Gateway) tgt).getGatewayType() == Gateway.GatewayType.DATABASED)) )
+						{
 					 			g = (Gateway) tgt;
 						} else {
 								g = pushGateway("XOR", a.getParentSubProcess());
@@ -355,42 +355,42 @@ public class StructuringServiceImpl implements StructuringService {
 						break;
 					}
 	}
-	
+
 	private String generateJson(long processID, SubProcess parentProcess, Collection<Flow> children, boolean recursive) {
-				
+
 		Map<NodeID, UUID> processedNodes = new HashMap<>();
 		Map<Long, SubProcess> subProcesses = new HashMap<>();
-		
+
 		Set<JsonTask> tasks = new HashSet<>();
 		Set<JsonGateway> gateways = new HashSet<>();
 		Set<JsonFlow> flows = new HashSet<>();
 		JsonTask jTask;
 		JsonGateway jGate;
 		JsonFlow jFlow;
-		JsonProcess jProcess;		
-		
+		JsonProcess jProcess;
+
 		String jResponse;
-		
+
 		BPMNNode src, tgt;
 		UUID srcUID, tgtUID;
-		
+
 
 		for( Flow flow : children ) {
-				
+
 			src = flow.getSource();
 			tgt = flow.getTarget();
-			
+
 			/**** we cannot map these elements within the json scheme and so neither the current flow ****/
 			if( src instanceof DataObject || src instanceof Swimlane || src instanceof TextAnnotation ||
-				tgt instanceof DataObject || tgt instanceof Swimlane || tgt instanceof TextAnnotation ) { 
+				tgt instanceof DataObject || tgt instanceof Swimlane || tgt instanceof TextAnnotation ) {
 					unmappableEdges.add(flow);
 					continue;
 			}
-			
+
 			/**** checking whether srcNode and tgtNode have been already processed before ****/
 			srcUID = processedNodes.get(src.getId());
 			tgtUID = processedNodes.get(tgt.getId());
-			
+
 			/**** first time we meet this tgtNode ****/
 			if( tgtUID == null ) {
 				taskCounter++;
@@ -418,7 +418,7 @@ public class StructuringServiceImpl implements StructuringService {
 			/**** first time we meet this srcNode ****/
 			if( srcUID == null ) {
 				taskCounter++;
-				if(src instanceof Gateway) { 
+				if(src instanceof Gateway) {
 					jGate = new JsonGateway(taskCounter, ((Gateway) src).getGatewayType());
 					gateways.add(jGate);
 					srcUID = jGate.uid;
@@ -459,7 +459,7 @@ public class StructuringServiceImpl implements StructuringService {
 			jResponse = jProcess.toString();
 			System.out.println("Response [COPY of Process]:" + jResponse);
 		}
-		
+
 		/**** for each subProcess discovered inside this processed subProcess we call recursively this method ****/
 		for( Long subprocessID : subProcesses.keySet() )
 			idToJson.put(subprocessID, generateJson(subprocessID, subProcesses.get(subprocessID), diagram.getFlows(subProcesses.get(subprocessID)), recursive));
@@ -467,51 +467,51 @@ public class StructuringServiceImpl implements StructuringService {
 		if(parentProcess != null) analyzedSubprocesses.add(parentProcess.getId());
 		return jResponse;
 	}
-	
+
 	private boolean rebuildProcess(long processID, SubProcess parentProcess) {
 		LOGGER.info("Rebuilding subProcess: " + processID);
 		Set<Long> greyList = new HashSet<Long>();
 		Map<String, BPMNNode> idToNode = new HashMap<String, BPMNNode>();
-		
+
     	JSONObject jsonProcessObject;
     	JSONArray tasks, gateways, flows;
     	JSONObject o;
 		int i = 0;
-		
+
 		Flow flow;
 		BPMNNode node, src, tgt;
 		String nodeUID, srcUID, tgtUID;
 		long taskID;
 
 		boolean error = false;
-		
-		try {	
+
+		try {
 			jsonProcessObject = new JSONObject(idToJson.get(processID));
-    		
+
     		/** populating the blackList with duplicated activities **/
             tasks = jsonProcessObject.getJSONArray("tasks");
             for( i = 0; i < tasks.length(); i++ ) {
             	o = tasks.getJSONObject(i);
     			taskID = Long.parseLong( o.getString("label") );
     			nodeUID = o.getString("id");
-    			
+
     			if( mappedNodes.containsKey(taskID) ) {
-    			
+
     				if( greyList.contains(taskID) ) {
-    					/* this node has been duplicated by BPstruct tool so we do the same. 
-    					 * NOTE: duplication is always performed using the original node as template 
-    					 */ 
+    					/* this node has been duplicated by BPstruct tool so we do the same.
+    					 * NOTE: duplication is always performed using the original node as template
+    					 */
     					node = duplicateNode(mappedNodes.get(taskID), parentProcess, true);
     					if( node == null ) return true;
     				} else {
     					/* the first time we encounter a node we retrieve the original one and mark it in the greyList */
     					node = mappedNodes.get(taskID);
     					greyList.add(taskID);
-    					
-    					/* 
+
+    					/*
     					 * if node is a subProcess we must rebuild it before continue,
     					 * because if accidently BPstruct has duplicated it while structuring
-    					 * @parentProcess we will find a duplicate of this node and we should duplicate it, 
+    					 * @parentProcess we will find a duplicate of this node and we should duplicate it,
     					 * but we could not perform a duplication if the subProcess has not been rebuilt yet.
     					 * In this way recursively we will rebuild all the subProcesses.
     					 */
@@ -519,7 +519,7 @@ public class StructuringServiceImpl implements StructuringService {
     					if( error ) return error;
     				}
     			} else throw new JSONException("errore: parsing tasks.");
-    			
+
     			idToNode.put(nodeUID, node);
     		}
 
@@ -532,123 +532,123 @@ public class StructuringServiceImpl implements StructuringService {
 				if( node == null ) return true;
 				idToNode.put(nodeUID, node);
     		}
-  
+
     		/** applying mapped flows **/
             flows = jsonProcessObject.getJSONArray("flows");
             for( i = 0; i < flows.length(); i++ ) {
             	o = flows.getJSONObject(i);
     			srcUID = o.getString("src");
     			tgtUID = o.getString("tgt");
-    			
+
     			if( idToNode.containsKey(srcUID) ) src = idToNode.get(srcUID);
     			else throw new JSONException("errore: parsing flows. Source not found: " + srcUID);
 
     			if( idToNode.containsKey(tgtUID) ) tgt = idToNode.get(tgtUID);
     			else throw new JSONException("errore: parsing flows. Target not found: " + tgtUID);
-    			
+
     			flow = diagram.addFlow(src, tgt, o.getString("label"));
 				flow.setParent(parentProcess);
     		}
-	    		
+
 		} catch(Exception e) {
 			LOGGER.error("Error rebuilding subProcess: " + processID, e);
-			error = true; 
-		}	
-		
+			error = true;
+		}
+
 		return error;
 	}
-	
+
 	private Gateway pushGateway(String gateType, SubProcess parentProcess) {
-		
+
 		if(gateType.equalsIgnoreCase("xor")) return diagram.addGateway("", Gateway.GatewayType.DATABASED, parentProcess );
 		else if(gateType.equalsIgnoreCase("or")) return diagram.addGateway("", Gateway.GatewayType.INCLUSIVE, parentProcess );
 		else if( gateType.equalsIgnoreCase("and")) return diagram.addGateway("", Gateway.GatewayType.PARALLEL, parentProcess );
 		return null;
 	}
-	
+
 	private BPMNNode duplicateNode(BPMNNode node, SubProcess parentProcess, boolean blackMark) {
 		BPMNNode duplicate = null;
 		NodeID nodeID = node.getId();
-		
-		
-		if( blackMark ) { 
+
+
+		if( blackMark ) {
 			if( !blackList.containsKey(nodeID) ) blackList.put(nodeID, new HashSet<BPMNNode>());
-		} else { 
+		} else {
 			if( !whiteList.containsKey(nodeID) ) whiteList.put(nodeID, new HashSet<BPMNNode>());
 		}
-		
+
 		if( node instanceof SubProcess ) {
 			Flow flow;
 			BPMNNode src, tgt;
 			boolean mark;
-			
-			duplicate = diagram.addSubProcess( ((SubProcess) node).getLabel(), 
-											   ((SubProcess) node).isBLooped(), 
-											   ((SubProcess) node).isBAdhoc(), 
-											   ((SubProcess) node).isBCompensation(), 
-											   ((SubProcess) node).isBMultiinstance(), 
-											   ((SubProcess) node).isBCollapsed(), 
-											   ((SubProcess) node).getTriggeredByEvent(), 
+
+			duplicate = diagram.addSubProcess( ((SubProcess) node).getLabel(),
+											   ((SubProcess) node).isBLooped(),
+											   ((SubProcess) node).isBAdhoc(),
+											   ((SubProcess) node).isBCompensation(),
+											   ((SubProcess) node).isBMultiinstance(),
+											   ((SubProcess) node).isBCollapsed(),
+											   ((SubProcess) node).getTriggeredByEvent(),
 											   parentProcess);
-			
+
 			((SubProcess) duplicate).setParentSwimlane(((SubProcess) node).getParentSwimlane());
 			((SubProcess) duplicate).setDecorator(((SubProcess) node).getDecorator());
-			
+
 			for( ContainableDirectedGraphElement e : ((SubProcess) node).getChildren() ) {
 				if( e instanceof Flow )	{
 					flow = ((Flow) e);
 					src = flow.getSource();
 					tgt = flow.getTarget();
-					
+
 					/* checking if these nodes have been duplicated or not */
 					mark = false;
-					if( matrices.containsKey(src.getId()) ) { 
+					if( matrices.containsKey(src.getId()) ) {
 						src = matrices.get(src.getId());
 						mark = blackList.containsKey(src.getId());
-					} 
+					}
 					src = duplicateNode(src, (SubProcess) duplicate, mark);
-					
+
 					mark = false;
-					if( matrices.containsKey(tgt.getId()) ) { 
+					if( matrices.containsKey(tgt.getId()) ) {
 						tgt = matrices.get(tgt.getId());
 						mark = blackList.containsKey(tgt.getId());
 					}
 					tgt = duplicateNode(tgt, (SubProcess) duplicate, mark);
-					
+
 					if( src == null || tgt == null ) return null;
-					
-	    			flow = diagram.addFlow( src, tgt, flow.getLabel() );			
+
+	    			flow = diagram.addFlow( src, tgt, flow.getLabel() );
 	    			flow.setParent((SubProcess) duplicate);
 				}
 			}
 		} else if( node instanceof Activity ) {
-			duplicate = diagram.addActivity(((Activity) node).getLabel(), 
-											((Activity) node).isBLooped(), 
-											((Activity) node).isBAdhoc(), 
-											((Activity) node).isBCompensation(), 
-											((Activity) node).isBMultiinstance(), 
+			duplicate = diagram.addActivity(((Activity) node).getLabel(),
+											((Activity) node).isBLooped(),
+											((Activity) node).isBAdhoc(),
+											((Activity) node).isBCompensation(),
+											((Activity) node).isBMultiinstance(),
 											((Activity) node).isBCollapsed(),
 											 parentProcess);
-			
+
 			((Activity) duplicate).setParentSwimlane(((Activity) node).getParentSwimlane());
 			((Activity) duplicate).setDecorator(((Activity) node).getDecorator());
-			
+
 		} else if( node instanceof CallActivity ) {
-			duplicate = diagram.addCallActivity(((CallActivity) node).getLabel(), 
-												((CallActivity) node).isBLooped(), 
-												((CallActivity) node).isBAdhoc(), 
-												((CallActivity) node).isBCompensation(), 
-												((CallActivity) node).isBMultiinstance(), 
+			duplicate = diagram.addCallActivity(((CallActivity) node).getLabel(),
+												((CallActivity) node).isBLooped(),
+												((CallActivity) node).isBAdhoc(),
+												((CallActivity) node).isBCompensation(),
+												((CallActivity) node).isBMultiinstance(),
 												((CallActivity) node).isBCollapsed(),
 												 parentProcess);
 
 			((CallActivity) duplicate).setParentSwimlane(((CallActivity) node).getParentSwimlane());
 			((CallActivity) duplicate).setDecorator(((CallActivity) node).getDecorator());
-			
+
 		} else if( node instanceof Event ) {
-			duplicate = diagram.addEvent(((Event) node).getLabel(), 
-										 ((Event) node).getEventType(), 
-										 ((Event) node).getEventTrigger(), 
+			duplicate = diagram.addEvent(((Event) node).getLabel(),
+										 ((Event) node).getEventType(),
+										 ((Event) node).getEventTrigger(),
 										 ((Event) node).getEventUse(),
 										 parentProcess,
 										 true,
@@ -660,12 +660,12 @@ public class StructuringServiceImpl implements StructuringService {
 			if( endEvents.contains((Event) node) ) endEvents.add((Event) duplicate);
 			/* this should happen only during a subProcess duplication, because BPstruct is supposed to do not duplicate end Events */
 			if( fakeEndEvents.contains((Event) node) ) fakeEndEvents.add((Event) duplicate);
-		
+
 		} else if( node instanceof Gateway ) {
-			duplicate = diagram.addGateway( ((Gateway) node).getLabel(), 
-											((Gateway) node).getGatewayType(), 
+			duplicate = diagram.addGateway( ((Gateway) node).getLabel(),
+											((Gateway) node).getGatewayType(),
 											parentProcess);
-			
+
 			//((Gateway) duplicate).setParentSwimlane(((Gateway) node).getParentSwimlane());
 			((Gateway) duplicate).setMarkerVisible(((Gateway) node).isMarkerVisible());
 			((Gateway) duplicate).setDecorator(((Gateway) node).getDecorator());
@@ -674,37 +674,37 @@ public class StructuringServiceImpl implements StructuringService {
 		if( duplicate != null ) {
 			if(blackMark) blackList.get(nodeID).add(duplicate);
 			else whiteList.get(nodeID).add(duplicate);
-			
+
 			matrices.put(duplicate.getId(), node);
 		}
-		
+
 		return duplicate;
 	}
-	
+
 	private void restoreEdges() {
 		BPMNNode src, tgt, node;
 		NodeID srcID, tgtID;
 		Set<BPMNNode> restorableNodes = new HashSet<BPMNNode>();
-		
+
 		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : unmappableEdges ) {
 			src = e.getSource();
 			tgt = e.getTarget();
 			srcID = src.getId();
 			tgtID = tgt.getId();
-			
+
 			if( blackList.containsKey(srcID) || blackList.containsKey(tgtID) ||
 				whiteList.containsKey(srcID) || whiteList.containsKey(tgtID) ) continue;
-			
+
 			if( unmappableNodes.contains(src) ) {
 				unmappableNodes.remove(src);
 				restorableNodes.add(src);
 			}
-			
+
 			if( unmappableNodes.contains(tgt) ) {
 				unmappableNodes.remove(tgt);
 				restorableNodes.add(tgt);
 			}
-			
+
 			if( e instanceof MessageFlow ) {
 				if( ((MessageFlow) e).getParentSubProcess() != null )
 					diagram.addMessageFlow(src, tgt, ((MessageFlow) e).getParentSubProcess(), e.getLabel());
@@ -717,21 +717,21 @@ public class StructuringServiceImpl implements StructuringService {
 
 			LOGGER.info("Edge restored: " + src.getLabel() + " => " + tgt.getLabel());
 		}
-		
+
 		for( BPMNNode n : restorableNodes ) {
 			node = null;
-			
+
 			if( n instanceof TextAnnotation ) node = diagram.addTextAnnotations((TextAnnotation) n);
 			else if( n instanceof DataObject ) node = diagram.addDataObject(n.getLabel());
-			
+
 			if( node != null ) {
 				node.setParentSubprocess(n.getParentSubProcess());
 				node.setParentSwimlane(n.getParentSwimlane());
-			}	
+			}
 		}
 	}
-	
-	private void restoreEvents() { 
+
+	private void restoreEvents() {
 		Activity a;
 		Gateway g;
 		boolean error;
@@ -748,10 +748,10 @@ public class StructuringServiceImpl implements StructuringService {
 				e.setExceptionFor(null);
 				continue;
 			}
-				
+
 			if( whiteList.containsKey(a.getId()) && whiteList.containsKey(e.getId()) ) {
 				tryToFixBound(e, a, false);
-				for( BPMNNode en : whiteList.get(e.getId()) ) 
+				for( BPMNNode en : whiteList.get(e.getId()) )
 					for( BPMNNode an : whiteList.get(a.getId()) ) tryToFixBound((Event) en, (Activity) an, true);
 			}
 		}
@@ -796,7 +796,7 @@ public class StructuringServiceImpl implements StructuringService {
 		}
 
 	}
-	
+
 	private void tryToFixBound(Event e, Activity a, boolean increment) {
 		Gateway g;
 		BPMNNode tgt = null;
@@ -879,7 +879,7 @@ public class StructuringServiceImpl implements StructuringService {
 
 	private class JsonProcess {
 		private String jsonProcess;
-		
+
 		private JsonProcess(String name, Set<JsonTask> tasks, Set<JsonGateway> gateways, Set<JsonFlow> flows) {
 			boolean first;
 			Set<String>  duplicate = new HashSet<String>();
@@ -891,7 +891,7 @@ public class StructuringServiceImpl implements StructuringService {
 				else first = false;
 				jsonProcess += g.toString();
 			}
-			
+
 			jsonProcess += "],\"tasks\":[";
 			first = true;
 			for(JsonTask t : tasks) {
@@ -899,7 +899,7 @@ public class StructuringServiceImpl implements StructuringService {
 				else first = false;
 				jsonProcess += t.toString();
 			}
-			
+
 			jsonProcess += "],\"flows\":[";
 			first = true;
 			for(JsonFlow f : flows) {
@@ -912,39 +912,39 @@ public class StructuringServiceImpl implements StructuringService {
 				else first = false;
 				jsonProcess += f.toString();
 			}
-			
+
 			jsonProcess += "]}";
 		}
-		
+
 		@Override
 		public String toString() {
 			return jsonProcess;
 		}
 	}
-	
+
 	private class JsonTask {
 		private UUID uid;
 		private String jTask;
-		
+
 		private JsonTask(long id, String label) {
 			this.uid = new UUID(id, id);
 			jTask = new String("{\"id\":\"" + uid.toString() + "\",\"label\":\"" + label + "\"}");
 		}
-		
+
 		@Override
 		public String toString() {
 			return jTask;
 		}
 	}
-	
+
 	private class JsonGateway {
 		private String jGate;
 		private UUID uid;
-		
+
 		private JsonGateway(long id, Gateway.GatewayType type) {
 			String sType = "XOR";
 			this.uid = new UUID(id, id);
-			
+
 			switch( type ) {
 			case DATABASED:
 			case EVENTBASED:

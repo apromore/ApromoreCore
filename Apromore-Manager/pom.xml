@@ -110,7 +110,7 @@
                             !net.didion.jwnl*,
                             !de.hpi.bpt.process.*,
                             !de.hpi.bpt.process.checks.structural,
-                            !ee.ut.bpstruct2,
+                            !ee.ut.bpstruct,
                             *
                         </Import-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
