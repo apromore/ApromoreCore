@@ -73,15 +73,12 @@ public class WebDavSpringServlet extends HttpServletBean {
     private IWebDavStore store;
     private HashMap<String, IMethodExecutor> methodMap = new HashMap<>();
 
-    private String rootPath;
     private String servletPath;
     private String resourceHandlerImplementation;
     private boolean lazyFolderCreationOnPut;
     private String defaultIndexFile;
     private String insteadOf404;
     private int noContentLengthHeaders;
-
-    private ConfigBean filestoreConfig;
 
     /**
      * Default Constructor for this Servlet.
@@ -111,7 +108,7 @@ public class WebDavSpringServlet extends HttpServletBean {
             resourceHandlerImplementation = LocalFileSystemStore.class.getName();
         }
 
-        File root = getFileRoot();
+        File root = getFileRoot(filestoreConfig, getInitParameter("rootpath"));
         servletPath = getInitParameter("servletPath").replace("${site.filestore}", filestoreConfig.getSiteFilestore());
         store = constructStore(resourceHandlerImplementation, root);
 
@@ -208,8 +205,7 @@ public class WebDavSpringServlet extends HttpServletBean {
     }
 
     /* Used to get a handle on where the file system root can be found. */
-    private File getFileRoot() {
-        rootPath = getInitParameter("rootpath");
+    private static File getFileRoot(ConfigBean filestoreConfig, String rootPath) {
         if (rootPath == null) {
             throw new WebDavException("The root path hasn't been initialized");
         }
