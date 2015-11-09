@@ -1,6 +1,5 @@
 package org.apromore.service.impl;
 
-import org.apache.commons.lang.SerializationException;
 import org.apromore.service.BPMNDiagramImporter;
 import org.processmining.models.graphbased.NodeID;
 import org.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
@@ -25,24 +24,19 @@ import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 
-import java.io.InputStream;
-
 import java.util.*;
-import java.io.ByteArrayInputStream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ee.ut.bpstruct.Restructurer;
+import de.hpi.bpt.process.Process;
+import de.hpi.bpt.process.serialize.JSON2Process;
+import de.hpi.bpt.process.serialize.Process2JSON;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.hpi.bpt.process.Process;
-import de.hpi.bpt.process.checks.structural.ProcessStructureChecker;
-import de.hpi.bpt.process.serialize.JSON2Process;
-import de.hpi.bpt.process.serialize.Process2JSON;
-import ee.ut.bpstruct2.BPStructAPI;
-import ee.ut.bpstruct2.BPStructResult;
 import org.apromore.service.StructuringService;
 import org.springframework.stereotype.Service;
 
@@ -232,7 +226,7 @@ public class StructuringServiceImpl implements StructuringService {
 		
 		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : edgeToRemove ) diagram.removeEdge(e);
 		for( BPMNNode n : nodeToRemove ) {
-			//LOGGER.info("Removing node: " + n.getId());
+			LOGGER.info("Removing node: " + n.getId());
 			diagram.removeNode(n);
 			subversives.add("<\\w+ id=\"" + n.getId() + "\" name=\"" + n.getLabel() + "\"/>\n");
 		}
@@ -275,7 +269,6 @@ public class StructuringServiceImpl implements StructuringService {
 	}
 
 	private void checkFakeGateway(Gateway g) {
-		try {
 		LOGGER.info("Checking fake gateways: " + g.getId());
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> in = null;
 		BPMNEdge<? extends BPMNNode, ? extends BPMNNode> out = null;
@@ -295,16 +288,12 @@ public class StructuringServiceImpl implements StructuringService {
 
 		if( (outgoing == 1) && (incoming == 1) ) {
 			LOGGER.info("Found a fake gate: " + g.getLabel() + "[" + g.getId() + "]");
-			diagram.removeGateway(g);
-			subversives.add("<\\w+ id=\"" + g.getId() + "\" name=\"" + g.getLabel() + "\"/>\n");
-			diagram.addFlow(in.getSource(), out.getTarget(), "");
 			diagram.removeEdge(in);
 			diagram.removeEdge(out);
+			diagram.addFlow(in.getSource(), out.getTarget(), "");
+			diagram.removeGateway(g);
+			subversives.add("<\\w+ id=\"" + g.getId() + "\" name=\"" + g.getLabel() + "\"/>\n");
 		}
-		} catch ( Exception e ) {
-			LOGGER.error("unable to remove fake gate.", e);
-		}
-
 	}
 
 	private void removeMultipleEndPlaces() {
@@ -324,7 +313,7 @@ public class StructuringServiceImpl implements StructuringService {
 			if( sp2ee.get(spe).size() > 1 ) {
 
 				g = diagram.addGateway("XOR_fakeEnd", Gateway.GatewayType.DATABASED, spe);
-				//LOGGER.info("Pushed NEW Gateway!");
+				LOGGER.info("Pushed NEW Gateway!");
 
 				for( Event e : sp2ee.get(spe) ) {
 					diagram.addFlow(e, g, "fake_endFlow");
@@ -334,7 +323,7 @@ public class StructuringServiceImpl implements StructuringService {
 				fakeEnd = diagram.addEvent("fakeEnd", Event.EventType.END, Event.EventTrigger.NONE, Event.EventUse.CATCH, spe, true, null);
 				fakeEndEvents.add(fakeEnd);
 				diagram.addFlow(g, fakeEnd, "toFakeEnd");
-				//LOGGER.info("Added NEW FakeEnd : " + fakeEnd.getId() );
+				LOGGER.info("Added NEW FakeEnd : " + fakeEnd.getId());
 			}
 		}
 	}
@@ -362,7 +351,7 @@ public class StructuringServiceImpl implements StructuringService {
 						diagram.addFlow(g, e, "");
 						e.setParentSubprocess(g.getParentSubProcess());
 						boundaryEvents.put(e, a);
-						//LOGGER.info("Boundary Event Found for Activity:Event - " + a.getLabel() + ":" + e.getLabel());
+						LOGGER.info("Boundary Event Found for Activity:Event - " + a.getLabel() + ":" + e.getLabel());
 						break;
 					}
 	}
@@ -409,17 +398,17 @@ public class StructuringServiceImpl implements StructuringService {
 					jGate = new JsonGateway(taskCounter, ((Gateway) tgt).getGatewayType());
 					gateways.add(jGate);
 					tgtUID = jGate.uid;
-					//LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + jGate.toString());
-					//LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + tgt.getId());
+					LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + jGate.toString());
+					LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + tgt.getId());
 				} else {
 					jTask = new JsonTask(taskCounter, Long.toString(taskCounter));
 					tasks.add(jTask);
 					tgtUID = jTask.uid;
 					if( (tgt instanceof SubProcess) && recursive) {
 						subProcesses.put(taskCounter, (SubProcess) tgt);
-						//LOGGER.info("[" + Long.toString(processID) + "] added SubProcess: " + jTask.toString());
+						LOGGER.info("[" + Long.toString(processID) + "] added SubProcess: " + jTask.toString());
 					} else {
-						//LOGGER.info("[" + Long.toString(processID) + "] added Task: " + jTask.toString());
+						LOGGER.info("[" + Long.toString(processID) + "] added Task: " + jTask.toString());
 					}
 				}
 				processedNodes.put(tgt.getId(), tgtUID);
@@ -433,16 +422,16 @@ public class StructuringServiceImpl implements StructuringService {
 					jGate = new JsonGateway(taskCounter, ((Gateway) src).getGatewayType());
 					gateways.add(jGate);
 					srcUID = jGate.uid;
-					//LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + jGate.toString());
+					LOGGER.info("[" + Long.toString(processID) + "] added Gate: " + jGate.toString());
 				} else {
 					jTask = new JsonTask(taskCounter, Long.toString(taskCounter));
 					tasks.add(jTask);
 					srcUID = jTask.uid;
 					if( (src instanceof SubProcess) && recursive ) {
 						subProcesses.put(taskCounter, (SubProcess) src);
-						//LOGGER.info("[" + Long.toString(processID) + "] added SubProcess: " + jTask.toString());
+						LOGGER.info("[" + Long.toString(processID) + "] added SubProcess: " + jTask.toString());
 					} else {
-						//LOGGER.info("[" + Long.toString(processID) + "] added Task: " + jTask.toString());
+						LOGGER.info("[" + Long.toString(processID) + "] added Task: " + jTask.toString());
 					}
 				}
 				processedNodes.put(src.getId(), srcUID);
@@ -451,53 +440,24 @@ public class StructuringServiceImpl implements StructuringService {
 
 			jFlow = new JsonFlow(flow.getLabel(), srcUID, tgtUID);
 			flows.add(jFlow);
-			//LOGGER.info("[" + Long.toString(processID) + "] added Flow: " + jFlow.toString());
+			LOGGER.info("[" + Long.toString(processID) + "] added Flow: " + jFlow.toString());
 		}
-		
+
 		jProcess = new JsonProcess(Long.toString(processID), tasks, gateways, flows);
 
-		Process process;
-		Process result;
-		BPStructResult bpRes;
-		List<String> errors = new ArrayList<String>();
-
 		try {
-			LOGGER.info("Process:" + jProcess.toString());
+			System.out.println("Process:" + jProcess.toString());
 
-			process = JSON2Process.convert(jProcess.toString());
+			jResponse = bpStruct(jProcess.toString());
+			if( jResponse == null ) throw new Exception("Process NULL.");
 
-			if( process != null ) {
-				errors.addAll(ProcessStructureChecker.checkStructure(process));
+			System.out.println("Response:" + jResponse);
 
-				if( errors.isEmpty() ) {
-					bpRes = BPStructAPI.structure(process, null, null);
-					if( bpRes != null ) {
-						result = bpRes.getProcess();
-						jResponse = Process2JSON.convert(result);
-					} else {
-						LOGGER.error("BPStruct Result NULL.");
-						throw new Exception("BPStruct Result NULL.");
-					}
-				} else {
-					for( String error : errors )
-						LOGGER.error("Structuring-ERROR [" + error + "] - Process: " + Long.toString(processID));
-					throw new Exception("Errors found.");
-				}
-			} else {
-				LOGGER.error("Process NULL.");
-				throw new Exception("Process NULL.");
-			}
-
-			LOGGER.info("Response:" + jResponse);
-
-		} catch (SerializationException e) {
-			LOGGER.error("SerializationException for process: " + Long.toString(processID), e);
-			jResponse = jProcess.toString();
-			LOGGER.info("Response [COPY of Process]:" + jResponse);
 		} catch (Exception e) {
-			LOGGER.error("Exception for process: " + Long.toString(processID) + "\t", e);
+			System.out.println("Exception [" + e.getClass().getName() + "] for process: " + Long.toString(processID) + "\t");
+			e.printStackTrace(System.out);
 			jResponse = jProcess.toString();
-			LOGGER.info("Response [COPY of Process]:" + jResponse);
+			System.out.println("Response [COPY of Process]:" + jResponse);
 		}
 		
 		/**** for each subProcess discovered inside this processed subProcess we call recursively this method ****/
@@ -691,7 +651,7 @@ public class StructuringServiceImpl implements StructuringService {
 										 ((Event) node).getEventTrigger(), 
 										 ((Event) node).getEventUse(),
 										 parentProcess,
-										 Boolean.getBoolean(((Event) node).isInterrupting()), 
+										 true,
 										 null);
 
 			((Event) duplicate).setParentSwimlane(((Event) node).getParentSwimlane());
@@ -755,7 +715,7 @@ public class StructuringServiceImpl implements StructuringService {
 			else if( e instanceof Association ) (diagram.addAssociation(src, tgt, ((Association) e).getDirection())).setParent(e.getParent());
 			else if( e instanceof DataAssociation ) (diagram.addDataAssociation(src, tgt, e.getLabel())).setParent(e.getParent());
 
-			//LOGGER.info("Edge restored: " + src.getLabel() + " => " + tgt.getLabel());
+			LOGGER.info("Edge restored: " + src.getLabel() + " => " + tgt.getLabel());
 		}
 		
 		for( BPMNNode n : restorableNodes ) {
@@ -799,7 +759,7 @@ public class StructuringServiceImpl implements StructuringService {
 
 		/* Restoring multiple end Events */
 		for( Event fee : fakeEndEvents ) {
-			//LOGGER.info("FakeEnd : " + fee.getId());
+			LOGGER.info("FakeEnd : " + fee.getId());
 			g = null;
 			error = false;
 			fakeFlows = new HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>>();
@@ -818,13 +778,13 @@ public class StructuringServiceImpl implements StructuringService {
 
 			if( g != null ) {
 				if (!error) {
-					//LOGGER.info("[REMOVING][NO ERRORS] for : " + fee.getId());
+					LOGGER.info("[REMOVING][NO ERRORS] for : " + fee.getId());
 					for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> fff : fakeFlows) diagram.removeEdge(fff);
 					diagram.removeGateway(g);
 					subversives.add("<\\w+ id=\"" + g.getId() + "\" name=\"" + g.getLabel() + "\"/>\n");
 					removableFakeEnds.add(fee);
 				} else {
-					//LOGGER.info("[FIXING][ERRORS] for : " + fee.getId());
+					LOGGER.info("[FIXING][ERRORS] for : " + fee.getId());
 					fixEndPoints(fakeFlows);
 				}
 			}
@@ -840,6 +800,7 @@ public class StructuringServiceImpl implements StructuringService {
 	private void tryToFixBound(Event e, Activity a, boolean increment) {
 		Gateway g;
 		BPMNNode tgt = null;
+		BPMNNode src = null;
 		Flow in = null;
 		Flow out = null;
 		long outgoing = 0;
@@ -864,22 +825,23 @@ public class StructuringServiceImpl implements StructuringService {
 					if( ff.getTarget().equals(g) ) {
 						incoming++;
 						in = ff;
+						src = ff.getSource();
 					}
 				}
 
 				if( (outgoing == 1) && (incoming == 1) )
 				{
-					diagram.addFlow(a, tgt, "");
+					diagram.addFlow(src, tgt, "");
 					diagram.removeEdge(in);
 					diagram.removeEdge(out);
 					diagram.removeGateway(g);
 					subversives.add("<\\w+ id=\"" + g.getId() + "\" name=\"" + g.getLabel() + "\"/>\n");
-					//LOGGER.info("Removed Boundary event gateway: " + e.getLabel() );
+					LOGGER.info("Removed Boundary event gateway: " + e.getLabel() );
 				}
 
 				e.setExceptionFor(a);
 				if( increment ) a.incNumOfBoundaryEvents();
-				//LOGGER.info("Event restored: " + e.getLabel() + " => " + a.getLabel());
+				LOGGER.info("Event restored: " + e.getLabel() + " => " + a.getLabel());
 				return;
 			}
 		}
@@ -898,19 +860,21 @@ public class StructuringServiceImpl implements StructuringService {
 	}
 
 
-	private class JsonRequest {
-		private String jsonRequest;
-		private final String options = "{\"json\": true,\"dot\": false}";
-		
-		private JsonRequest(JsonProcess process) { 
-			jsonRequest = new String("{\"process\":" + process.toString() + ",\"options\":" + options + "}");
+	private String bpStruct(String jsonProc) throws Exception {
+
+		Process process = JSON2Process.convert(jsonProc);
+
+		int gCounter = 0;
+		for(de.hpi.bpt.process.Gateway g : process.getGateways() ) {
+			if( g.getName().isEmpty() ) g.setName("gw" + gCounter++);
 		}
 
-		@Override
-		public String toString() {
-			return jsonRequest;
+		Restructurer restructurer = new Restructurer(process);
+		if(restructurer.perform()) {
+			return Process2JSON.convert(restructurer.proc);
+		} else {
+			return null;
 		}
-		
 	}
 
 	private class JsonProcess {
@@ -988,7 +952,7 @@ public class StructuringServiceImpl implements StructuringService {
 						break;
 			case INCLUSIVE:
 			case COMPLEX:
-						sType = "XOR";//OR
+						sType = "OR";//XOR
 						break;
 			case PARALLEL:
 						sType = "AND";
