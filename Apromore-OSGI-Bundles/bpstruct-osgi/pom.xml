@@ -68,7 +68,7 @@
 	<!-- bpstruct -->
         <!-- to import/install -->
         <dependency>
-            <groupId>org.bpstruct</groupId>
+            <groupId>ee.ut</groupId>
             <artifactId>bpstruct</artifactId>
             <version>0.1.117</version>
         </dependency>
