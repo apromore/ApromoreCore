@@ -32,7 +32,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
     private Map<String, Swimlane> idToPool;
     private Map<String, BPMNNode> idToNode;
-    private Map<Event, String> fixBound;
+    private Map<Event, String> boundToFix;
 
     private Set<TDataAssociation> dataAssociations;
     private Set<TAssociation> associations;
@@ -46,11 +46,11 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
         ClassLoader classLoader = getClass().getClassLoader();
         TDefinitions definitions;
-        diagram = new BPMNDiagramImpl("");
 
+        diagram = new BPMNDiagramImpl("");
         idToPool = new HashMap<>();
         idToNode = new HashMap<>();
-        fixBound = new HashMap<>();
+        boundToFix = new HashMap<>();
         dataAssociations = new HashSet<>();
         associations = new HashSet<>();
         flows = new HashSet();
@@ -60,13 +60,13 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         try {
 
 			/* Creating the JAXBContext from the xsd file */
-            LOGGER.info("importBPMNDiagram: Creating JAXBcontext...");
+            //LOGGER.info("importBPMNDiagram: Creating JAXBcontext...");
             jaxbContext = JAXBContext.newInstance( "org.omg.spec.bpmn._20100524.model" );
-            LOGGER.info("Created JAXBcontext!");
+            //LOGGER.info("Created JAXBcontext!");
 
-            LOGGER.info("importBPMNDiagram: Creating Unmarshaller...");
+            //LOGGER.info("importBPMNDiagram: Creating Unmarshaller...");
             unmarshaller = jaxbContext.createUnmarshaller();
-            LOGGER.info("Created Unmarshaller");
+            //LOGGER.info("Created Unmarshaller");
 
             SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
@@ -74,9 +74,9 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             Schema schema = sf.newSchema(schemaFile);
             unmarshaller.setSchema(schema);
 
-            LOGGER.info("importBPMNDiagram: Unmarshalling...");
+            //LOGGER.info("importBPMNDiagram: Unmarshalling...");
             Object o = unmarshaller.unmarshal(new StringReader(xmlProcess));
-            LOGGER.info("importBPMNDiagram: Unmarshalling... DONE!");
+            //LOGGER.info("importBPMNDiagram: Unmarshalling... DONE!");
 
             if( o instanceof JAXBElement ) o = ((JAXBElement) o).getValue();
             if( !(o instanceof TDefinitions) ) throw new Exception("TDefinition element NOT found!");
@@ -87,8 +87,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             for( JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement() ) {
 
                 if( rootElement.getValue() instanceof TProcess ) {
-                    //LOGGER.info("TProcess found: " + rootElement.getValue().getId());
-                    //unfoldProcess(rootElement.getValue(), null);
+                    LOGGER.info("TProcess found: " + rootElement.getValue().getId());
                     processes.add(rootElement);
                 } else if( rootElement.getValue() instanceof TCallableElement ) {
                     LOGGER.info("TCallableElement found: " + rootElement.getValue().getId() );
@@ -143,23 +142,25 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void buildEdges() {
         String src;
         String tgt;
+        String direction;
 
         for( TSequenceFlow flow : flows ) {
             src = flow.getSourceRef().getId();
             tgt = flow.getTargetRef().getId();
             if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
                 diagram.addFlow(idToNode.get(src), idToNode.get(tgt), flow.getName());
-                LOGGER.info("Flow found: " + src + " > " + tgt);
-            } else { LOGGER.info("Unfixable flow: " + src + " > " + tgt); }
+                LOGGER.info("Adding Flow: " + src + " > " + tgt);
+            } else LOGGER.info("Unfixable Flow: " + src + " > " + tgt);
         }
 
-        for( TAssociation association : associations ){
+        for( TAssociation association : associations ) {
             src = association.getSourceRef().getLocalPart();
             tgt = association.getTargetRef().getLocalPart();
             if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
-                    diagram.addAssociation(idToNode.get(src), idToNode.get(tgt), BpmnAssociation.AssociationDirection.NONE);
-                    LOGGER.info("Association found: " + src + " > " + tgt);
-            } else { LOGGER.info("Unfixable association: " + src + " > " + tgt); }
+                    direction = association.getAssociationDirection().value();
+                    diagram.addAssociation(idToNode.get(src), idToNode.get(tgt), BpmnAssociation.AssociationDirection.valueOf(direction));
+                    LOGGER.info("Adding Association: " + src + " > " + tgt);
+            } else LOGGER.info("Unfixable Association: " + src + " > " + tgt);
         }
 
         for( TDataAssociation dataAssociation: dataAssociations ) {
@@ -170,8 +171,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                     src = ((TBaseElement) je.getValue()).getId();
                     if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
                         diagram.addDataAssociation(idToNode.get(src), idToNode.get(tgt), "");
-                        LOGGER.info("dataAssociation found: " + src + " > " + tgt);
-                    } else { LOGGER.info("Unfixable dataAssociation: " + src + " > " + tgt); }
+                        LOGGER.info("Adding DataAssociation: " + src + " > " + tgt);
+                    } else { LOGGER.info("Unfixable DataAssociation: " + src + " > " + tgt); }
                 }
         }
 
@@ -180,50 +181,51 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             tgt = messageFlow.getTargetRef().getLocalPart();
             if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
                 diagram.addMessageFlow(idToNode.get(src), idToNode.get(tgt), "");
-                LOGGER.info("messageFlow found: " + src + " > " + tgt);
-            } else { LOGGER.info("Unfixable messageFlow: " + src + " > " + tgt); }
+                LOGGER.info("Adding MessageFlow: " + src + " > " + tgt);
+            } else LOGGER.info("Unfixable MessageFlow: " + src + " > " + tgt);
         }
 
     }
 
     private void fixBounds() {
-        for( Event e : fixBound.keySet() ) {
-            if( idToNode.get(fixBound.get(e)) instanceof Activity )
-                e.setExceptionFor( (Activity)idToNode.get(fixBound.get(e)) );
-            else
-                LOGGER.info("Unfixable boundaryEvent: " + e.getLabel() + " > " + fixBound.get(e));
-        }
+        for( Event e : boundToFix.keySet() )
+            if( idToNode.get(boundToFix.get(e)) instanceof Activity ) {
+                e.setExceptionFor((Activity) idToNode.get(boundToFix.get(e)));
+                ((Activity) idToNode.get(boundToFix.get(e))).incNumOfBoundaryEvents();
+            } else LOGGER.info("Unfixable boundaryEvent: " + e.getLabel() + " > " + boundToFix.get(e));
     }
 
 
     /**** adding methods for BPMNNode objects ****/
     private void addDataObject(TDataObject dataObject, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding dataObject: " + dataObject.getId());
+        LOGGER.info("Adding dataObject: " + dataObject.getName() + "(" + dataObject.getId() + ")");
         DataObject d = diagram.addDataObject(dataObject.getName());
+        d.setParentSubprocess(parentProcess);
         d.setParentSwimlane(pool);
         idToNode.put(dataObject.getId(), d);
     }
 
     private void addTextAnnotation(TTextAnnotation textAnnotation, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding textAnnotation: " + textAnnotation.getId());
-        TextAnnotation t = diagram.addTextAnnotation(textAnnotation.getText().getContent().toString());
-        t.setParentSwimlane(pool);
-        idToNode.put(textAnnotation.getId(), t);
+        String text = textAnnotation.getText().getContent().toString();
+        LOGGER.info("Adding textAnnotation: " + text + ":" + textAnnotation.getId());
+        TextAnnotation ta = diagram.addTextAnnotation(text);
+        ta.setParentSubprocess(parentProcess);
+        ta.setParentSwimlane(pool);
+        idToNode.put(textAnnotation.getId(), ta);
     }
 
     private void addEvent(TEvent event, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding event: " + event.getId());
         Event e;
-
         String label = event.getName();
-        Event.EventType type = Event.EventType.INTERMEDIATE;
+        LOGGER.info("Adding Event: " + label + ":" + event.getId());
+
         Event.EventUse use = Event.EventUse.CATCH;
+        Event.EventType type = Event.EventType.INTERMEDIATE;
         Event.EventTrigger trigger = Event.EventTrigger.NONE;
-        boolean interrupting = true;
         Activity activity = null;
         String activityID = null;
-
         boolean toFix = false;
+        boolean isInterrupting = true;
 
         if( event instanceof TCatchEvent ) {
             use = Event.EventUse.CATCH;
@@ -233,11 +235,11 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 type = Event.EventType.INTERMEDIATE;
                 toFix = true;
                 activityID = ((TBoundaryEvent) event).getAttachedToRef().getLocalPart();
-                LOGGER.info("Found activity attached to this event: " + activityID);
+                LOGGER.info("Boundary event for > " + activityID);
             }
 
             if( ((TCatchEvent)event).getEventDefinition().size() > 1 ) trigger = Event.EventTrigger.MULTIPLE;
-            else if( (((TCatchEvent)event).getEventDefinition().size() != 0) && ((TCatchEvent)event).getEventDefinition().get(0) != null )  {
+            else if( (((TCatchEvent)event).getEventDefinition().size() != 0) && (((TCatchEvent)event).getEventDefinition().get(0) != null) ) {
                 TEventDefinition definition = ((TCatchEvent)event).getEventDefinition().get(0).getValue();
                 if( definition instanceof TTimerEventDefinition ) trigger = Event.EventTrigger.TIMER;
                 else if( definition instanceof TCancelEventDefinition ) trigger = Event.EventTrigger.CANCEL;
@@ -248,7 +250,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 else if( definition instanceof TLinkEventDefinition ) trigger = Event.EventTrigger.LINK;
                 else if( definition instanceof TMessageEventDefinition ) trigger = Event.EventTrigger.MESSAGE;
                 else if( definition instanceof TSignalEventDefinition ) trigger = Event.EventTrigger.SIGNAL;
-                else if( definition instanceof TEscalationEventDefinition ) trigger = Event.EventTrigger.ERROR; //missing escalation trigger in BPMNDiagram!
+                else if( definition instanceof TEscalationEventDefinition ) trigger = Event.EventTrigger.NONE; //missing escalation trigger in BPMNDiagram!
             }
 
             for( TDataAssociation dataAssociation : ((TCatchEvent) event).getDataOutputAssociation() )
@@ -261,7 +263,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             else if( event instanceof TImplicitThrowEvent ) type = Event.EventType.INTERMEDIATE;
 
             if( ((TThrowEvent)event).getEventDefinition().size() > 1 ) trigger = Event.EventTrigger.MULTIPLE;
-            else if( (((TThrowEvent)event).getEventDefinition().size() != 0) && ((TThrowEvent)event).getEventDefinition().get(0) != null ) {
+            else if( (((TThrowEvent)event).getEventDefinition().size() != 0) && (((TThrowEvent)event).getEventDefinition().get(0)) != null ) {
                 TEventDefinition definition = ((TThrowEvent)event).getEventDefinition().get(0).getValue();
                 if( definition instanceof TTimerEventDefinition ) trigger = Event.EventTrigger.TIMER;
                 else if( definition instanceof TCancelEventDefinition ) trigger = Event.EventTrigger.CANCEL;
@@ -272,24 +274,24 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 else if( definition instanceof TLinkEventDefinition ) trigger = Event.EventTrigger.LINK;
                 else if( definition instanceof TMessageEventDefinition ) trigger = Event.EventTrigger.MESSAGE;
                 else if( definition instanceof TSignalEventDefinition ) trigger = Event.EventTrigger.SIGNAL;
-                else if( definition instanceof TEscalationEventDefinition ) trigger = Event.EventTrigger.ERROR; //missing escalation trigger in BPMNDiagram!
+                else if( definition instanceof TEscalationEventDefinition ) trigger = Event.EventTrigger.NONE; //missing escalation trigger in BPMNDiagram!
             }
 
             for( TDataAssociation dataAssociation : ((TThrowEvent) event).getDataInputAssociation() )
                 dataAssociations.add(dataAssociation);
         }
 
-        e = diagram.addEvent(label, type, trigger, use, parentProcess, interrupting, activity);
-        if( toFix ) fixBound.put(e, activityID);
+        e = diagram.addEvent(label, type, trigger, use, parentProcess, isInterrupting, activity);
         e.setParentSwimlane(pool);
+        if( toFix ) boundToFix.put(e, activityID);
         idToNode.put(event.getId(), e);
     }
 
     private void addTask(TTask task, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding task: " + task.getId());
-        Activity t;
-
+        Activity a;
         String label = task.getName();
+        LOGGER.info("Adding Activity: " + label + ":" + task.getId());
+
         boolean isBCompensation = task.isIsForCompensation();
         boolean isBMultiinstance = false;
         boolean isBLooped = false;
@@ -301,8 +303,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         JAXBElement loopCharacteristics = task.getLoopCharacteristics();
 
         if( loopCharacteristics != null ) {
-            if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBMultiinstance = true;
-            else if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBLooped = true;
+            isBLooped = true;
+            if( loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics ) isBMultiinstance = true;
         }
 
         for( TDataAssociation dataAssociation : task.getDataOutputAssociation() )
@@ -311,16 +313,15 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         for( TDataAssociation dataAssociation : task.getDataInputAssociation() )
             dataAssociations.add(dataAssociation);
 
-        t = diagram.addActivity(label, isBLooped, isBAdhoc, isBCompensation, isBMultiinstance, isBCollapsed, parentProcess);
-        t.setParentSwimlane(pool);
-        idToNode.put(task.getId(), t);
+        a = diagram.addActivity(label, isBLooped, isBAdhoc, isBCompensation, isBMultiinstance, isBCollapsed, parentProcess);
+        a.setParentSwimlane(pool);
+        idToNode.put(task.getId(), a);
     }
 
     private void addGateway(TGateway gateway, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding gateway: " + gateway.getId());
         Gateway g;
-
         String label = gateway.getName();
+        LOGGER.info("Adding gateway: " + label + ":" + gateway.getId());
         Gateway.GatewayType type = Gateway.GatewayType.DATABASED;
 
         if(gateway instanceof TComplexGateway) type = Gateway.GatewayType.COMPLEX;
@@ -335,10 +336,10 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     }
 
     private void addCallActivity(TCallActivity callActivity, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding callActivity: " + callActivity.getId());
         CallActivity ca;
-
         String label = callActivity.getName();
+        LOGGER.info("Adding CallActivity: " + label + ":" + callActivity.getId());
+
         boolean isBCompensation = callActivity.isIsForCompensation();
         boolean isBMultiinstance = false;
         boolean isBLooped = false;
@@ -350,8 +351,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         JAXBElement loopCharacteristics = callActivity.getLoopCharacteristics();
 
         if( loopCharacteristics != null ) {
+            isBLooped = true;
             if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBMultiinstance = true;
-            else if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBLooped = true;
         }
 
         for( TDataAssociation dataAssociation : callActivity.getDataOutputAssociation() )
@@ -367,10 +368,10 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     }
 
     private void addSubProcess(TSubProcess subProcess, SubProcess parentProcess, Swimlane pool) {
-        LOGGER.info("Adding subProcess: " + subProcess.getId());
         SubProcess sp;
-
         String label = subProcess.getName();
+        LOGGER.info("Adding SubProcess: " + label + ":" + subProcess.getId());
+
         boolean isBCompensation = subProcess.isIsForCompensation();
         boolean isTriggeredByEvent = subProcess.isTriggeredByEvent();
         boolean isBMultiinstance = false;
@@ -383,8 +384,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         JAXBElement loopCharacteristics = subProcess.getLoopCharacteristics();
 
         if( loopCharacteristics != null ) {
-            if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBMultiinstance = true;
-            else if (loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics) isBLooped = true;
+            isBLooped = true;
+            if( loopCharacteristics.getValue() instanceof TMultiInstanceLoopCharacteristics ) isBMultiinstance = true;
         }
 
         for( TDataAssociation dataAssociation : subProcess.getDataOutputAssociation() )
@@ -404,44 +405,48 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
         if( root instanceof TProcess ) {
             Swimlane pool = idToPool.get(root.getId());
-            if( (pool == null) && (processes.size() != 1) ) pool = diagram.addSwimlane("unNamed", null, SwimlaneType.POOL);
+            if( (pool == null) && (processes.size() > 1) ) {
+                //LOGGER.info("number of processes: " + processes.size() );
+                pool = diagram.addSwimlane("unknown", null, SwimlaneType.POOL);
+                LOGGER.info("Added Pool unknown: " + pool.getId());
+            }
 
             /**** Artifact contains TextAnnotation and Association objects ****/
             for( JAXBElement artifact : ((TProcess) root).getArtifact() ) {
 
-                if (artifact.getValue() instanceof TAssociation)
+                if( artifact.getValue() instanceof TAssociation )
                     this.associations.add((TAssociation) artifact.getValue());
 
-                if (artifact.getValue() instanceof TTextAnnotation)
-                    this.addTextAnnotation((TTextAnnotation) artifact.getValue(), parentProcess, idToPool.get(root.getId()));
+                if( artifact.getValue() instanceof TTextAnnotation )
+                    this.addTextAnnotation((TTextAnnotation) artifact.getValue(), null,  pool);
             }
 
             /**** FlowElement contains Flow, Event, DataObject, Activity, Gateway, CallActivity and SubProcess objects ****/
             for( JAXBElement flowElement : ((TProcess) root).getFlowElement() ) {
 
                 if( flowElement.getValue() instanceof TSubProcess )
-                    this.addSubProcess((TSubProcess) flowElement.getValue(), parentProcess, pool);
+                    this.addSubProcess((TSubProcess) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TEvent )
-                    this.addEvent((TEvent) flowElement.getValue(), parentProcess, pool);
+                    this.addEvent((TEvent) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TTask )
-                    this.addTask((TTask) flowElement.getValue(), parentProcess, pool);
+                    this.addTask((TTask) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TGateway )
-                    this.addGateway((TGateway) flowElement.getValue(), parentProcess, pool);
+                    this.addGateway((TGateway) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TCallActivity )
-                    this.addCallActivity((TCallActivity) flowElement.getValue(), parentProcess, pool);
+                    this.addCallActivity((TCallActivity) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TDataObject )
-                    this.addDataObject((TDataObject) flowElement.getValue(), parentProcess, pool);
+                    this.addDataObject((TDataObject) flowElement.getValue(), null, pool);
 
                 else if( flowElement.getValue() instanceof TSequenceFlow )
                     this.flows.add((TSequenceFlow) flowElement.getValue());
             }
 
-            for( TLaneSet laneSet : ((TProcess) root).getLaneSet() ) addLanes(laneSet, null);
+            for( TLaneSet laneSet : ((TProcess) root).getLaneSet() ) addLanes(laneSet, pool);
 
         } else if( root instanceof TSubProcess ) {
             /**** Artifact contains TextAnnotation and Association objects ****/
@@ -483,7 +488,6 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         }
     }
 
-
     private void addLanes(TLaneSet laneSet, Swimlane parent) {
         TLaneSet childSet;
         Swimlane s;
@@ -494,12 +498,11 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
             for( JAXBElement node : lane.getFlowNodeRef() ) {
                 id = node.getValue().toString();
+                LOGGER.info("Trying to set Lane > " + lane.getId() + " for:  " + id);
                 if( idToNode.containsKey(id) ) {
                     idToNode.get(id).setParentSwimlane(s);
-                    LOGGER.info("Set swimlane for:  " + id + " is " + lane.getId());
-                } else {
-                    LOGGER.info("Unsettable swimlane for:  " + id + " was " + lane.getId());
-                }
+                    LOGGER.info("Lane set.");
+                } else LOGGER.info("Unsettable Lane.");
             }
 
             childSet = lane.getChildLaneSet();
