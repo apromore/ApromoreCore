@@ -68,6 +68,9 @@ public class PQLFilterController extends BaseController {
         applet=(Applet)queryWindow.getFirstChild().getFirstChild();
 
         UserType user=UserSessionManager.getCurrentUser();
+        applet.setParam("manager_endpoint", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSiteManager() + "/services/manager");
+        applet.setParam("portal_endpoint", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSitePortal() + "/services/portal");
+        applet.setParam("filestore_url", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSiteFilestore());
         applet.setParam("user",user.getUsername());
         applet.setParam("idSession",user.getId());
 
