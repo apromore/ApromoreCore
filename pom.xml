@@ -89,15 +89,7 @@
         <module>Apromore-Clients/filestore-client</module>
         <module>Apromore-Clients/portal-client</module>
 
-        <!-- Manager Portal and Editor Web App creation -->
-        <module>Apromore-Config</module>
-        <module>Apromore-FileStore</module>
-        <module>Apromore-Portal</module>
-        <module>Apromore-Manager</module>
-        <!-- <module>Apromore-Editor</module> -->
-        <module>Apromore-PQL-Indexer</module>
-
-        <!-- Editor -->
+        <!-- Editor web application bundle and its platform extension bundles -->
         <module>Apromore-Editor2/platform</module>
         <module>Apromore-Editor2/platform extensions/bpmn20xmlbasic</module>
         <module>Apromore-Editor2/platform extensions/bpstruct</module>
@@ -110,6 +102,12 @@
         <module>Apromore-Editor2/platform extensions/syntaxchecker</module>
         <module>Apromore-Editor2/platform extensions/xpdl</module>
         <module>Apromore-Editor2/platform extensions/yawl</module>
+
+        <!-- Web application bundles -->
+        <module>Apromore-FileStore</module>
+        <module>Apromore-Portal</module>
+        <module>Apromore-Manager</module>
+        <module>Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Editor-Assembly</module>
