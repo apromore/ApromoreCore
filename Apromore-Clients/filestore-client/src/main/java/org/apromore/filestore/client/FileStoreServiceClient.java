@@ -24,17 +24,22 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
+import javax.xml.bind.JAXBElement;
 
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
-import org.apromore.model.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import static org.springframework.ws.soap.SoapVersion.SOAP_11;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import javax.xml.bind.JAXBElement;
+import org.apromore.model.*;
 
 /**
  * Implementation of the Apromore File Store Client.
@@ -68,6 +73,43 @@ public class FileStoreServiceClient implements FileStoreService {
     }
 
     /**
+     * @param filestoreURLString  the externally reachable URL of the WebDAV filestore, e.g. "http://localhost:9000/filestore"
+     */
+    public FileStoreServiceClient(URI filestoreURLString) throws SOAPException {
+
+        WebServiceTemplate webServiceTemplate = createWebServiceTemplate(filestoreURLString);
+        
+        try {
+            this.baseURI = new URI(webServiceTemplate.getDefaultUri());
+        } catch (URISyntaxException e) {
+            throw new Error("Bad hardcoded URI", e);
+        }
+
+        this.webServiceTemplate = webServiceTemplate;
+    }
+
+    private static WebServiceTemplate createWebServiceTemplate(URI defaultURI) throws SOAPException {
+
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.setSoapVersion(SOAP_11);
+
+        HttpComponentsMessageSender httpSender = new HttpComponentsMessageSender();
+        httpSender.setConnectionTimeout(1200000);
+        httpSender.setReadTimeout(1200000);
+
+        Jaxb2Marshaller serviceMarshaller = new Jaxb2Marshaller();
+        serviceMarshaller.setContextPath("org.apromore.model");
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        webServiceTemplate.setMarshaller(serviceMarshaller);
+        webServiceTemplate.setUnmarshaller(serviceMarshaller);
+        webServiceTemplate.setMessageSender(httpSender);
+        webServiceTemplate.setDefaultUri(defaultURI.toString());
+
+        return webServiceTemplate;
+    }
+
+    /**
      * @see FileStoreService#list(String)
      * {@inheritDoc}
      */
@@ -94,6 +136,7 @@ public class FileStoreServiceClient implements FileStoreService {
     @Override
     public InputStream getFile(String url) throws Exception {
         Sardine sardine = SardineFactory.begin(USERNAME, PASSWORD);
+        LOGGER.info("Getting DAV file from url=" + url + " rewritten as " + rewrite(url));
         return sardine.get(rewrite(url));
     }
 
@@ -209,6 +252,8 @@ public class FileStoreServiceClient implements FileStoreService {
      * @return the <var>UrlString</var> re-written to include the user information that Sardine demands
      */
     private String rewrite(String urlString) throws URISyntaxException {
+        return urlString;
+        /*
         URI uri = new URI(urlString);
         return new URI(uri.getScheme(),
                        USERNAME + ":"  + PASSWORD,
@@ -217,5 +262,6 @@ public class FileStoreServiceClient implements FileStoreService {
                        uri.getPath(),
                        uri.getQuery(),
                        uri.getFragment()).toString();
+        */
     }
 }

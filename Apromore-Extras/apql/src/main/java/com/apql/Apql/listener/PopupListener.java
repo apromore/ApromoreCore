@@ -1,7 +1,6 @@
 package com.apql.Apql.listener;
 
 import com.apql.Apql.controller.QueryController;
-import com.apql.Apql.controller.ServiceController;
 import com.apql.Apql.controller.ViewController;
 import com.apql.Apql.highlight.Highlight;
 import com.apql.Apql.popup.FolderLabel;
@@ -9,7 +8,6 @@ import com.apql.Apql.popup.PopupFrame;
 import com.apql.Apql.popup.PopupPanel;
 import com.apql.Apql.popup.ProcessLabel;
 import com.apql.Apql.tree.FolderProcessTree;
-import org.apromore.manager.client.ManagerService;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -36,7 +34,6 @@ public class PopupListener implements MouseListener {
     private String SEP;
     private PopupPanel panel;
     private JLabel lastChoose;
-    private ManagerService manager;
 
     public PopupListener(PopupPanel panel){
         this.textPane = queryController.getTextPane();
@@ -45,7 +42,6 @@ public class PopupListener implements MouseListener {
         StyleConstants.setBold(keyWord, true);
         StyleConstants.setForeground(normalWord, Color.BLACK);
         this.panel=panel;
-        this.manager= ServiceController.getManagerService();
     }
 
     @Override

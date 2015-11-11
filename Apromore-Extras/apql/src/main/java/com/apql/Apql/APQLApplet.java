@@ -1,14 +1,17 @@
 package com.apql.Apql;
 
-import com.apql.Apql.controller.QueryController;
-import com.apql.Apql.controller.ViewController;
-import org.apromore.model.UserType;
-
+import java.awt.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import java.awt.*;
+import javax.xml.soap.SOAPException;
+
+import com.apql.Apql.controller.QueryController;
+import com.apql.Apql.controller.ViewController;
+import org.apromore.model.UserType;
 
 public class APQLApplet extends JApplet {
 	private static final long serialVersionUID = 8477785817089483519L;
@@ -32,16 +35,14 @@ public class APQLApplet extends JApplet {
                     controller.setUsername(APQLApplet.this.getParameter("user"));
                     controller.setIdSession(APQLApplet.this.getParameter("idSession"));
                     controller.setApplet(APQLApplet.this);
-                    m=new Main();
-                    APQLApplet.this.add(m);
-                    APQLApplet.this.setMinimumSize(new Dimension(1000, 700));
-                    /*
-                    APQLApplet.this.add(new JButton(new AbstractAction("Hide") {
-                        public void actionPerformed(java.awt.event.ActionEvent event) {
-                            System.err.println("The Hide button in the applet was pressed.");
-                        }
-                    }));
-                    */
+                    try {
+                        APQLApplet.this.add(new Main(new URI(APQLApplet.this.getParameter("manager_endpoint")),
+                                                     new URI(APQLApplet.this.getParameter("portal_endpoint")),
+                                                     new URI(APQLApplet.this.getParameter("filestore_url"))));
+                        APQLApplet.this.setMinimumSize(new Dimension(1000, 700));
+                    } catch (SOAPException | URISyntaxException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         String OS = System.getProperty("os.name").toLowerCase();

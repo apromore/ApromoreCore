@@ -28,6 +28,7 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -170,12 +171,13 @@ public class QuaestioApplet extends JApplet {
                                 throw new Exception("Unable to parse apromore_model param: " + model);
                             }
 
-                            int    processID = Integer.valueOf(matcher.group(1));
-                            String branch    = matcher.group(2);
-                            String version   = matcher.group(3);
-                            String user      = getParameter("user");
+                            URI    managerEndpointURI = new URI(getParameter("manager_endpoint"));
+                            int    processID          = Integer.valueOf(matcher.group(1));
+                            String branch             = matcher.group(2);
+                            String version            = matcher.group(3);
+                            String user               = getParameter("user");
 
-                            main.setLinkedProcessModel(new ApromoreProcessModel(processID, branch, version, main, user));
+                            main.setLinkedProcessModel(new ApromoreProcessModel(managerEndpointURI, processID, branch, version, main, user));
 
                         } catch (Exception e) {
                             showStatus("Unable to read model " + model);

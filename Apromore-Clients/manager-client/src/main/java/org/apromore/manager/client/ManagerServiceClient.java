@@ -32,13 +32,21 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import static org.springframework.ws.soap.SoapVersion.SOAP_11;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
 import java.awt.*;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +69,47 @@ public class ManagerServiceClient implements ManagerService {
      */
     public ManagerServiceClient(WebServiceTemplate webServiceTemplate) {
         this.webServiceTemplate = webServiceTemplate;
+    }
+
+    /**
+     * Constructor for use outside the Spring IoC container.
+     *
+     * @param siteHost
+     * @param sitePort
+     * @param siteManager
+     */
+    public ManagerServiceClient(String siteHost, int sitePort, String siteManager) throws SOAPException, URISyntaxException {
+        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null);
+        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null));
+    }
+
+    public ManagerServiceClient(URI managerEndpointURI) throws SOAPException {
+        this.webServiceTemplate = createWebServiceTemplate(managerEndpointURI);
+    }
+
+
+    /**
+     * @param managerEndpointURLString  the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     */
+    private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
+
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.setSoapVersion(SOAP_11);
+
+        HttpComponentsMessageSender httpSender = new HttpComponentsMessageSender();
+        httpSender.setConnectionTimeout(1200000);
+        httpSender.setReadTimeout(1200000);
+
+        Jaxb2Marshaller serviceMarshaller = new Jaxb2Marshaller();
+        serviceMarshaller.setContextPath("org.apromore.model");
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        webServiceTemplate.setMarshaller(serviceMarshaller);
+        webServiceTemplate.setUnmarshaller(serviceMarshaller);
+        webServiceTemplate.setMessageSender(httpSender);
+        webServiceTemplate.setDefaultUri(managerEndpointURI.toString());
+
+        return webServiceTemplate;
     }
 
     /**
