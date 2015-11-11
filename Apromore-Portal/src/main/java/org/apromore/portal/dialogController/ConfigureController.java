@@ -21,6 +21,7 @@
 package org.apromore.portal.dialogController;
 
 // Java 2 Standard packages
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,6 +33,8 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
@@ -162,11 +165,7 @@ public class ConfigureController extends BaseController {
 
                 // Parse the cmap link into cmapURL
                 try {
-                    //FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClientExternal");
-                    //ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
-                    ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext());
-                    FileStoreService fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal"); 
-
+                    FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
                     URI baseURI = fileStore.getBaseURI();
                     System.err.println("FileStoreClient.getBaseURI=" + baseURI);
                     cmapURL = baseURI.resolve(cmapURLString).toURL();
@@ -181,9 +180,12 @@ public class ConfigureController extends BaseController {
                 try {
                     /*
                     // Obtain the proxy for the WebDAV repository
-                    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
-                    FileStoreService fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal"); 
+                    FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
 
+                    System.out.println("AMARANTH");
+                    System.out.println(org.apromore.portal.util.StreamUtil.convertStreamToString(fileStore.getFile(cmapURL.toString())));
+                    System.out.println("/AMARANTH");
+                    
                     // Deserialize a JAXB representation of the cmap document from the WebDAV repository
                     cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
                                              .createUnmarshaller()
@@ -224,6 +226,7 @@ public class ConfigureController extends BaseController {
                 configureA.setParam("apromore_model", process.getId() + " " + version.getName() + " " + version.getVersionNumber());
                 configureA.setParam("qml_url", qmlURL.toString());
                 configureA.setParam("cmap_url", cmapURL.toString());
+                configureA.setParam("manager_endpoint", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSiteManager() + "/services/manager");
 
                 UserType user = UserSessionManager.getCurrentUser();
                 if (user != null) {
