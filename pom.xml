@@ -89,21 +89,8 @@
         <module>Apromore-Clients/filestore-client</module>
         <module>Apromore-Clients/portal-client</module>
 
-        <!-- Editor web application bundle and its platform extension bundles -->
-        <module>Apromore-Editor2/platform</module>
-        <module>Apromore-Editor2/platform extensions/bpmn20xmlbasic</module>
-        <module>Apromore-Editor2/platform extensions/bpstruct</module>
-        <module>Apromore-Editor2/platform extensions/diagram core</module>
-        <module>Apromore-Editor2/platform extensions/downloader</module>
-        <module>Apromore-Editor2/platform extensions/epc</module>
-        <module>Apromore-Editor2/platform extensions/jpdl</module>
-        <module>Apromore-Editor2/platform extensions/pdf</module>
-        <module>Apromore-Editor2/platform extensions/petrinet</module>
-        <module>Apromore-Editor2/platform extensions/syntaxchecker</module>
-        <module>Apromore-Editor2/platform extensions/xpdl</module>
-        <module>Apromore-Editor2/platform extensions/yawl</module>
-
         <!-- Web application bundles -->
+        <module>Apromore-Editor2</module>
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
