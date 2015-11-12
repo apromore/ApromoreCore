@@ -18,6 +18,7 @@
 
     <properties>
         <editor-platform-extension.version>2.0</editor-platform-extension.version>
+        <unit.test.suffix>Test.java</unit.test.suffix>
     </properties>
 
     <build>
@@ -131,7 +132,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
