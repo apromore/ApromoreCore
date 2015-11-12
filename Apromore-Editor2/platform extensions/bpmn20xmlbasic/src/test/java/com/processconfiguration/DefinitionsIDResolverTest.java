@@ -34,6 +34,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
@@ -72,7 +73,7 @@ public class DefinitionsIDResolverTest {
      *
      * Initialized from the <code>tests.dir</code> system property.
      */
-    private static final File testsDirectory = new File(System.getProperty("tests.dir"));
+    private static final File testsDirectory = new File("src/test/resources");
 
     /**
      * The <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.
@@ -152,7 +153,7 @@ public class DefinitionsIDResolverTest {
     public static void assertValidBPMN(final Definitions definitions, final String filename)
         throws AssertionError, IOException, JAXBException, SAXException {
 
-        FileWriter writer = new FileWriter(new File(new File(testsDirectory, "out"), filename));
+        FileWriter writer = new FileWriter(new File(new File("target"), filename));
 
         ValidationEventCollector vec = new ValidationEventCollector();
 
@@ -164,7 +165,7 @@ public class DefinitionsIDResolverTest {
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
         marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                                          .newSchema(new File("xml/BPMN20.xsd")));
+                                          .newSchema(new File("src/test/xsd/BPMN20.xsd")));
 
         try {
              marshaller.marshal(definitions, writer);
