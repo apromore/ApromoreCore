@@ -124,7 +124,7 @@
         <ant.version>1.8.3</ant.version>
 
         <!-- Apromore Dependency Versions -->
-		<apql.version>1.0</apql.version>
+        <apql.version>1.0</apql.version>
         <manager-client.version>1.1</manager-client.version>
         <filestore-client.version>1.0</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
@@ -227,7 +227,7 @@
         <ini4j.version>0.5.2</ini4j.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
-        <pql.version>1.0.1</pql.version>
+        <pql.version>1.0.2</pql.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
@@ -428,15 +428,18 @@
                 <version>${pql.version}</version>
             </dependency>
 
-            <!--<dependency>-->
-                <!--<groupId>org.pql</groupId>-->
-                <!--<artifactId>pql</artifactId>-->
-                <!--<version>${pql.version}</version>-->
-            <!--</dependency>-->
+            <!-- There's no point in setting this unless pql-osgi has this POM as its parent
+            <dependency>
+                <groupId>org.pql</groupId>
+                <artifactId>pql</artifactId>
+                <version>${pql.version}</version>
+            </dependency>
+            -->
+
             <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
             <!-- Clients -->
-			<dependency>
+            <dependency>
                 <groupId>com.apql</groupId>
                 <artifactId>apql</artifactId>
                 <version>${apql.version}</version>
