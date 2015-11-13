@@ -69,7 +69,6 @@ public class BPMN2DiagramConverterTest {
      * Test the {@link BPMN2DiagramConverter#getDiagramFromBpmn20} method on
      * {@link ConfigurationAlgorithmTest#test1File}.
      */
-    @Ignore
     @Test public void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
 
         // Parse BPMN from XML to JAXB
@@ -92,7 +91,7 @@ public class BPMN2DiagramConverterTest {
         String actualJSON = diagrams.get(0).getString();
 
         // Write out a copy of the generated JSON
-        FileWriter writer = new FileWriter(new File(new File(ConfigurationAlgorithmTest.testsDirectory, "out"), "GetDiagramFromBpmn20_1.json"));
+        FileWriter writer = new FileWriter(new File(new File("target"), "GetDiagramFromBpmn20_1.json"));
         writer.write(actualJSON);
         writer.close();
 
