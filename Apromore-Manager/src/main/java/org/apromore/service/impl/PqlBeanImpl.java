@@ -2,19 +2,19 @@ package org.apromore.service.impl;
 
 import org.apromore.service.LolaDirBean;
 import org.apromore.service.PqlBean;
+import org.jbpt.persist.MySQLConnection;
 import org.pql.api.IPQLAPI;
 import org.pql.api.PQLAPI;
 import org.pql.core.IPQLBasicPredicatesOnTasks;
 import org.pql.core.PQLBasicPredicatesMC;
 import org.pql.core.PQLBasicPredicatesMySQL;
+import org.pql.index.IndexType;
 import org.pql.index.PQLIndexMySQL;
 import org.pql.label.ILabelManager;
 import org.pql.label.LabelManagerLevenshtein;
 import org.pql.label.LabelManagerLuceneVSM;
 import org.pql.label.LabelManagerThemisVSM;
 import org.pql.label.LabelManagerType;
-import org.pql.logic.IThreeValuedLogic;
-import org.pql.logic.KleeneLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,25 +112,26 @@ public class PqlBeanImpl implements PqlBean {
     @Override
     public PQLAPI getApi() {
         try {
-            IThreeValuedLogic logic = new KleeneLogic();
             ILabelManager     labelMngr;
+
+            MySQLConnection mysql = new MySQLConnection(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
 
             switch (labelManagerType) {
             case LEVENSHTEIN:
                 labelMngr = new LabelManagerLevenshtein(
-                    mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(),
+                    mysql.getConnection(),
                     defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
                 );
                 break;
             case LUCENE:
                 labelMngr = new LabelManagerLuceneVSM(
-                    mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(),
+                    mysql.getConnection(),
                     defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds, labelSimilarityConfig
                 );
                 break;
             case THEMIS_VSM:
                 labelMngr = new LabelManagerThemisVSM(
-                    mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword(),
+                    mysql.getConnection(),
                     pgBean.getHost(), pgBean.getName(), pgBean.getUser(), pgBean.getPassword(),
                     defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
                 );
@@ -150,9 +151,7 @@ public class PqlBeanImpl implements PqlBean {
 
                               (String) lolaDir.getLolaDir(),
                               labelSimilarityConfig,
-                              org.pql.logic.ThreeValuedLogicType.KLEENE,
-
-                              org.pql.index.IndexType.PREDICATES,
+                              IndexType.PREDICATES,
                               labelManagerType,
                               defaultLabelSimilarityThreshold,
                               indexedLabelSimilarityThresholds,
