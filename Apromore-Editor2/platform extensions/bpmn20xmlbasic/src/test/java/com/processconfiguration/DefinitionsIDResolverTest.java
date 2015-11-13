@@ -23,6 +23,7 @@ package com.processconfiguration;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
@@ -153,22 +154,28 @@ public class DefinitionsIDResolverTest {
     public static void assertValidBPMN(final Definitions definitions, final String filename)
         throws AssertionError, IOException, JAXBException, SAXException {
 
-        FileWriter writer = new FileWriter(new File(new File("target"), filename));
+        JAXBContext jaxb = JAXBContext.newInstance(Definitions.class,
+                                                   ConfigurationAnnotationAssociation.class,
+                                                   ConfigurationAnnotationShape.class);
 
+        // Marshal once without validation so that there's a complete (possibly invalid) file written out
+        Marshaller marshaller = jaxb.createMarshaller();
+        marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
+        //marshaller.marshal(definitions, new FileWriter(new File(new File("target"), filename)));  // TODO: figure out why marshalling definitions twice fails
+
+        // Marshal the second time to confirm schema-validity
         ValidationEventCollector vec = new ValidationEventCollector();
 
-        Marshaller marshaller = JAXBContext.newInstance(Definitions.class,
-                                                        ConfigurationAnnotationAssociation.class,
-                                                        ConfigurationAnnotationShape.class)
-                                           .createMarshaller();
+        OutputStream nullOutputStream = new OutputStream() {
+            @Override public void write(int b) throws IOException {}
+        };
+
         marshaller.setEventHandler(vec);
-        marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new BPMNPrefixMapper());
         marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                                          .newSchema(new File("src/test/xsd/BPMN20.xsd")));
-
+                                           .newSchema(new File("src/test/xsd/BPMN20.xsd")));
         try {
-             marshaller.marshal(definitions, writer);
+            marshaller.marshal(definitions, nullOutputStream);  // discard the result
         } catch (MarshalException e) {
              assertTrue("XML serialization failed, but no diagnostic message available", vec.hasEvents());
         }

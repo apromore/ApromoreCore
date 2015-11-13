@@ -69,7 +69,7 @@ public class Diagram2BpmnConverterTest {
         BasicDiagram diagram = BasicDiagramBuilder.parseJson(bpmnJson);
 
         // Execute the conversion
-        Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());;
+        Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
         Definitions definitions = converter.getDefinitionsFromDiagram();
 
         // Examine the resultant BPMN XML
