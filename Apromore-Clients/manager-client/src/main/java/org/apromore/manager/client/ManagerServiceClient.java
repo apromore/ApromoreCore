@@ -1210,6 +1210,37 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
+     * @see ManagerService#structureBPMNProcess(int, String, String, String, String, int, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public StructureBPMNProcessOutputMsgType structureBPMNProcess(final int processId, final String processName,
+                                       final String branchName, final String versionNumber, final String username,
+                                       final int folderId, final String domain) throws Exception {
+        StructureBPMNProcessInputMsgType msg = new StructureBPMNProcessInputMsgType();
+
+        msg.setProcessId(processId);
+        msg.setBranchName(branchName);
+        msg.setProcessName(processName);
+        msg.setVersionNumber(versionNumber);
+        msg.setFolderId(folderId);
+        msg.setUsername(username);
+        msg.setDomain(domain);
+
+        JAXBElement<StructureBPMNProcessInputMsgType> request = WS_CLIENT_FACTORY.createStructureBPMNProcessRequest(msg);
+
+        JAXBElement<StructureBPMNProcessOutputMsgType> response = (JAXBElement<StructureBPMNProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+
+        if (response.getValue().getResult().getCode() != 0) {
+            return null;
+        }else {
+            return response.getValue();
+        }
+    }
+
+    /**
      * @see ManagerService#proDriftDetector(byte[], int, String, String)
      * {@inheritDoc}
      */
