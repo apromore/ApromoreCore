@@ -82,7 +82,7 @@ public class ConfigurationAlgorithmTest {
      *
      * Initialized from the <code>tests.dir</code> system property.
      */
-    public static final File testsDirectory = new File(System.getProperty("tests.dir"));
+    public static final File testsDirectory = new File("src/test/resources");
 
     /**
      * A <a href="{@docRoot}/../tests/data/Test1.bpmn20.xml">test document</a> used in the test suite.

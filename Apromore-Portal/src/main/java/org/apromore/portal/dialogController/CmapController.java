@@ -96,9 +96,8 @@ public class CmapController extends BaseController {
         URL qmlURL  = null;
 
         // Obtain the proxy for the WebDAV repository
-        //ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext());
-        fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal");
+        fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClient");
 
         // Look up JAXB context
         JAXBContext context;
@@ -211,6 +210,8 @@ public class CmapController extends BaseController {
 
                 // Set the applet parameters
                 Applet configureA = (Applet) this.cmapW.getFellow("cmapper");
+                configureA.setParam("manager_endpoint", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSiteManager() + "/services/manager");
+                configureA.setParam("filestore_url", "http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort() + "/" + config.getSiteFilestore());
                 configureA.setParam("apromore_model", process.getId() + " " + version.getName() + " " + version.getVersionNumber());
                 if (qmlURL != null) {
                     configureA.setParam("qml_url", qmlURL.toString());

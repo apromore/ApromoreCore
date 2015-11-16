@@ -89,27 +89,12 @@
         <module>Apromore-Clients/filestore-client</module>
         <module>Apromore-Clients/portal-client</module>
 
-        <!-- Manager Portal and Editor Web App creation -->
-        <module>Apromore-Config</module>
+        <!-- Web application bundles -->
+        <module>Apromore-Editor2</module>
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
-        <!-- <module>Apromore-Editor</module> -->
         <module>Apromore-PQL-Indexer</module>
-
-        <!-- Editor -->
-        <module>Apromore-Editor2/platform</module>
-        <module>Apromore-Editor2/platform extensions/bpmn20xmlbasic</module>
-        <module>Apromore-Editor2/platform extensions/bpstruct</module>
-        <module>Apromore-Editor2/platform extensions/diagram core</module>
-        <module>Apromore-Editor2/platform extensions/downloader</module>
-        <module>Apromore-Editor2/platform extensions/epc</module>
-        <module>Apromore-Editor2/platform extensions/jpdl</module>
-        <module>Apromore-Editor2/platform extensions/pdf</module>
-        <module>Apromore-Editor2/platform extensions/petrinet</module>
-        <module>Apromore-Editor2/platform extensions/syntaxchecker</module>
-        <module>Apromore-Editor2/platform extensions/xpdl</module>
-        <module>Apromore-Editor2/platform extensions/yawl</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Editor-Assembly</module>
@@ -139,7 +124,7 @@
         <ant.version>1.8.3</ant.version>
 
         <!-- Apromore Dependency Versions -->
-		<apql.version>1.0</apql.version>
+        <apql.version>1.0</apql.version>
         <manager-client.version>1.1</manager-client.version>
         <filestore-client.version>1.0</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
@@ -242,7 +227,7 @@
         <ini4j.version>0.5.2</ini4j.version>
         <themis.version>1.0</themis.version>
         <postgresql.version>9.3-1101-jdbc41</postgresql.version>
-        <pql.version>1.0.1</pql.version>
+        <pql.version>1.0.2</pql.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
@@ -443,15 +428,18 @@
                 <version>${pql.version}</version>
             </dependency>
 
-            <!--<dependency>-->
-                <!--<groupId>org.pql</groupId>-->
-                <!--<artifactId>pql</artifactId>-->
-                <!--<version>${pql.version}</version>-->
-            <!--</dependency>-->
+            <!-- There's no point in setting this unless pql-osgi has this POM as its parent
+            <dependency>
+                <groupId>org.pql</groupId>
+                <artifactId>pql</artifactId>
+                <version>${pql.version}</version>
+            </dependency>
+            -->
+
             <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
 
             <!-- Clients -->
-			<dependency>
+            <dependency>
                 <groupId>com.apql</groupId>
                 <artifactId>apql</artifactId>
                 <version>${apql.version}</version>

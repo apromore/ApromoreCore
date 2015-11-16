@@ -53,6 +53,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.processconfiguration.quaestio.ApromoreProcessModel;
 import org.apromore.filestore.client.DavFileSystemView;
 import org.apromore.filestore.client.FileStoreService;
+import org.apromore.filestore.client.FileStoreServiceClient;
 
 /**
  * Present the Cmapper as an applet.
@@ -74,10 +75,8 @@ public class Applet extends JApplet {
 
                 public void run() {
                     try {
-
                         // Obtain the proxy for the WebDAV repository
-                        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/filestoreClientContext.xml");
-                        fileStore = (FileStoreService) applicationContext.getAutowireCapableBeanFactory().getBean("fileStoreClientExternal");
+                        fileStore = new FileStoreServiceClient(new URI(getParameter("filestore_url")));
 
                         // Check cmap_url parameter
                         try {
@@ -111,12 +110,13 @@ public class Applet extends JApplet {
                                     throw new Exception("Unable to parse apromore_model param: " + model);
                                 }
 
+                                URI    manager   = new URI(getParameter("manager_endpoint"));
                                 int    processID = Integer.valueOf(matcher.group(1));
                                 String branch    = matcher.group(2);
                                 String version   = matcher.group(3);
                                 String user      = getParameter("user");
 
-                                cmapper.setModel(new ApromoreProcessModel(processID, branch, version, Applet.this, user));
+                                cmapper.setModel(new ApromoreProcessModel(manager, processID, branch, version, Applet.this, user));
 
                             } catch (Exception e) {
                                 e.printStackTrace();

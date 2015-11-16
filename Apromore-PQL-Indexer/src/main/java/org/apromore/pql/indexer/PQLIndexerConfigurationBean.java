@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 // Third party packages
+import org.jbpt.persist.MySQLConnection;
 import org.pql.bot.PQLBot;
 import org.pql.core.PQLBasicPredicatesMC;
 import org.pql.index.IndexType;
@@ -17,8 +18,6 @@ import org.pql.label.LabelManagerLevenshtein;
 import org.pql.label.LabelManagerLuceneVSM;
 import org.pql.label.LabelManagerThemisVSM;
 import org.pql.label.LabelManagerType;
-import org.pql.logic.IThreeValuedLogic;
-import org.pql.logic.KleeneLogic;
 import org.pql.mc.LoLA2ModelChecker;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PQLIndexerConfigurationBean {
 
-    private String mysqlURL;
-    private String mysqlUser;
-    private String mysqlPassword;
-
     /** Whether PQL indexing is enabled at all. */
     private boolean isIndexingEnabled;
 
@@ -42,6 +37,7 @@ public class PQLIndexerConfigurationBean {
     /** Time between checks for unindexed models, in seconds. */
     private int defaultBotMaxIndexTime;
 
+    private MySQLConnection mysql;
     private IndexType indexType;
     private LoLA2ModelChecker mc;
     private PQLIndexMySQL index;
@@ -96,9 +92,11 @@ public class PQLIndexerConfigurationBean {
             " pql.postgres.name=" + postgresName +
             " pql.postgres.user=" + postgresUser);
 
-        this.mysqlURL               = mysqlURL;
-        this.mysqlUser              = mysqlUser;
-        this.mysqlPassword          = mysqlPassword;
+        try {
+            this.mysql = new MySQLConnection(mysqlURL, mysqlUser, mysqlPassword);
+        } catch(ClassNotFoundException | SQLException e) {
+            throw new PQLIndexerConfigurationException("MySQL connection could not be created", e);
+        }
 
         this.isIndexingEnabled      = isIndexingEnabled;
         this.defaultBotSleepTime    = defaultBotSleepTime;
@@ -117,24 +115,24 @@ public class PQLIndexerConfigurationBean {
             }
         }
 
-        IThreeValuedLogic    logic     = new KleeneLogic();
-        PQLBasicPredicatesMC bp        = new PQLBasicPredicatesMC(mc, logic);
+        PQLBasicPredicatesMC bp = new PQLBasicPredicatesMC(mc);
         
         // Initialize labelManager
         ILabelManager labelManager;
         try {
+
             switch (LabelManagerType.valueOf(labelSimilaritySearch)) {
             case LEVENSHTEIN:
-                labelManager = new LabelManagerLevenshtein(mysqlURL, mysqlUser, mysqlPassword,
+                labelManager = new LabelManagerLevenshtein(mysql.getConnection(),
                                                            defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet);
                 break;
             case LUCENE:
-                labelManager = new LabelManagerLuceneVSM(mysqlURL, mysqlUser, mysqlPassword,
+                labelManager = new LabelManagerLuceneVSM(mysql.getConnection(),
                                                          defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet,
                                                          labelSimilarityConfig);
                 break;
             case THEMIS_VSM:
-                labelManager = new LabelManagerThemisVSM(mysqlURL, mysqlUser, mysqlPassword,
+                labelManager = new LabelManagerThemisVSM(mysql.getConnection(),
                                                          postgresHost, postgresName, postgresUser, postgresPassword,
                                                          defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet);
                 break;
@@ -148,8 +146,8 @@ public class PQLIndexerConfigurationBean {
 
         // Initialize index
         try {
-            index = new PQLIndexMySQL(mysqlURL, mysqlUser, mysqlPassword,
-                                      bp, labelManager, mc, logic,
+            index = new PQLIndexMySQL(mysql.getConnection(),
+                                      bp, labelManager, mc,
                                       defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholdsSet, indexType,
                                       defaultBotMaxIndexTime, defaultBotSleepTime);
 
@@ -163,7 +161,7 @@ public class PQLIndexerConfigurationBean {
 
     public PQLBot createBot() throws PQLIndexerConfigurationException {
         try {
-            return new PQLBot(mysqlURL, mysqlUser, mysqlPassword,
+            return new PQLBot(mysql.getConnection(),
                               null,  // bot name will be a random UUID
                               index,
                               mc,
