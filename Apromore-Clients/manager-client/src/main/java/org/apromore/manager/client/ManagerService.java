@@ -456,6 +456,17 @@ public interface ManagerService {
      */
     String structureBPMNModel(String process) throws Exception;
 
+    /**
+     * Structure a BPMN process retrieved from the filestore.
+     * @param processId the Id of the process in the filestore
+     * @param processName the Name of the process in the filestore
+     * @param branchName the Branch of the process in the filestore
+     * @param versionNumber the Version of the process in the filestore
+     */
+    StructureBPMNProcessOutputMsgType structureBPMNProcess(final int processId, final String processName,
+                                final String branchName, final String versionNumber, final String username,
+                                final int folderId, final String domain) throws Exception;
+
 /**
      * Detect drifts in the log
      * @param logByteArray the log as a byte array

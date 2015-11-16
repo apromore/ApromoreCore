@@ -149,6 +149,25 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:element name="StructureBPMNProcessRequest" type="tns:StructureBPMNProcessInputMsgType"/>
+    <xs:element name="StructureBPMNProcessResponse" type="tns:StructureBPMNProcessOutputMsgType"/>
+
+    <xs:complexType name="StructureBPMNProcessInputMsgType">
+        <xs:attribute name="ProcessId" type="xs:int"/>
+        <xs:attribute name="ProcessName" type="xs:string"/>
+        <xs:attribute name="BranchName" type="xs:string"/>
+        <xs:attribute name="VersionNumber" type="xs:string"/>
+        <xs:attribute name="Username" type="xs:string"/>
+        <xs:attribute name="FolderId" type="xs:int"/>
+        <xs:attribute name="Domain" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="StructureBPMNProcessOutputMsgType">
+        <xs:sequence>
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <!-- BPMNMiner -->
     <xs:element name="DiscoverBPMNModelRequest" type="tns:DiscoverBPMNModelInputMsgType"/>

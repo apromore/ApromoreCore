@@ -63,6 +63,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
@@ -1483,6 +1486,57 @@ public class ManagerPortalEndpoint {
             result.setCode(1);
         }
         return WS_OBJECT_FACTORY.createStructureBPMNModelResponse(res);
+    }
+
+    @PayloadRoot(localPart = "StructureBPMNProcessRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<StructureBPMNProcessOutputMsgType> structureBPMNProcess(@RequestPayload final JAXBElement<StructureBPMNProcessInputMsgType> req) {
+        LOGGER.trace("Executing operation structureBPMNProcess");
+
+        StructureBPMNProcessInputMsgType payload = req.getValue();
+        StructureBPMNProcessOutputMsgType res = new StructureBPMNProcessOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        Integer processId = payload.getProcessId();
+        String name = payload.getProcessName();
+        String branch = payload.getBranchName();
+        Version version = new Version(payload.getVersionNumber());
+        Integer folderId = payload.getFolderId();
+        String username = payload.getUsername();
+        String domain = payload.getDomain();
+
+        String processName = "struct_"+ name;
+        String nativeType = "BPMN 2.0";
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Date date = new Date();
+        String creationDate = dateFormat.format(date);
+        String lastUpdate = dateFormat.format(date);
+        boolean publicModel = false;
+
+        try {
+            String xmlBPMNProcess = procSrv.getBPMNRepresentation(name, processId, branch, version);
+            String structBPMNProcess = structuringService.structureBPMNModel(xmlBPMNProcess);
+
+            version = new Version("1.0");
+            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+            CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, new ByteArrayInputStream(structBPMNProcess.getBytes(StandardCharsets.UTF_8)), canoniserProperties);
+            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, version, nativeType, canonisedProcess,
+                    domain, "", creationDate, lastUpdate, publicModel);
+            ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+                    nativeType, domain, creationDate, lastUpdate, username, publicModel);
+
+            res.setProcessSummary(process);
+            result.setMessage("Process: " + name + " structured successfully!");
+            result.setCode(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(1);
+            res.setProcessSummary(null);
+        }
+        return WS_OBJECT_FACTORY.createStructureBPMNProcessResponse(res);
     }
 
 	@PayloadRoot(localPart = "ProDriftDetectorRequest", namespace = NAMESPACE)
