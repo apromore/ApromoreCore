@@ -1,7 +1,6 @@
 package com.apql.Apql.tree;
 
 import com.apql.Apql.controller.QueryController;
-import com.apql.Apql.controller.ServiceController;
 import com.apql.Apql.controller.ViewController;
 import com.apql.Apql.popup.FolderLabel;
 import com.apql.Apql.popup.ProcessLabel;
@@ -32,15 +31,15 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
     private DragSource source;
     private HashSet<String> sound;
 
-    public FolderProcessTree(){
+    public FolderProcessTree(ManagerService manager){
         source = new DragSource();
         source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
         this.root=new DraggableNodeFolder("0","Home","Home");
         this.controller=ViewController.getController();
-        this.manager= ServiceController.getManagerService();
+        this.manager= manager;
         this.user=manager.readUserByUsername(controller.getUsername());
         try {
-            sound=new HashSet<>(ServiceController.getManagerService().getProcessesLabels("pql.jbpt_petri_nets","external_id"));
+            sound=new HashSet<>(manager.getProcessesLabels("pql.jbpt_petri_nets","external_id"));
         }catch(Exception ex){
             ex.printStackTrace();
         }

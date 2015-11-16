@@ -1,14 +1,22 @@
 package org.apromore.portal.client;
 
-import org.apromore.model.*;
+import java.net.URI;
+import java.util.List;
+import javax.xml.bind.JAXBElement;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import static org.springframework.ws.soap.SoapVersion.SOAP_11;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import javax.xml.bind.JAXBElement;
-import java.util.List;
+import org.apromore.model.*;
 
 /**
  * Created by corno on 9/07/2014.
@@ -21,6 +29,31 @@ public class PortalServiceClient implements PortalService{
 
     public PortalServiceClient(WebServiceTemplate webServiceTemplate) {
         this.webServiceTemplate = webServiceTemplate;
+    }
+
+    public PortalServiceClient(URI portalEndpointURI) throws SOAPException {
+        this.webServiceTemplate = createWebServiceTemplate(portalEndpointURI);
+    }
+
+    private static WebServiceTemplate createWebServiceTemplate(URI defaultURI) throws SOAPException {
+
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.setSoapVersion(SOAP_11);
+
+        HttpComponentsMessageSender httpSender = new HttpComponentsMessageSender();
+        httpSender.setConnectionTimeout(1200000);
+        httpSender.setReadTimeout(1200000);
+
+        Jaxb2Marshaller serviceMarshaller = new Jaxb2Marshaller();
+        serviceMarshaller.setContextPath("org.apromore.model");
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        webServiceTemplate.setMarshaller(serviceMarshaller);
+        webServiceTemplate.setUnmarshaller(serviceMarshaller);
+        webServiceTemplate.setMessageSender(httpSender);
+        webServiceTemplate.setDefaultUri(defaultURI.toString());
+
+        return webServiceTemplate;
     }
 
     @Override

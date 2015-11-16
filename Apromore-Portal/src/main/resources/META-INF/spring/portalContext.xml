@@ -18,6 +18,9 @@
         <constructor-arg type="String" value="${site.editor}"/>
         <constructor-arg type="String" value="${site.externalhost}"/>
         <constructor-arg type="int"    value="${site.externalport}"/>
+        <constructor-arg type="String" value="${site.filestore}"/>
+        <constructor-arg type="String" value="${site.manager}"/>
+        <constructor-arg type="String" value="${site.portal}"/>
         <constructor-arg type="String" value="${version.number}"/>
         <constructor-arg type="String" value="${version.builddate}"/>
     </bean>
