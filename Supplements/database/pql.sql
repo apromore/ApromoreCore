@@ -38,14 +38,14 @@ CREATE TABLE `jbpt_labels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `label` (`label`(5))
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -53,7 +53,7 @@ DELIMITER ;;
   FOR EACH ROW
 BEGIN
   DELETE FROM pql_tasks_sim WHERE pql_tasks_sim.label_id = OLD.id;
-  DELETE FROM pql_tasks WHERE pql_tasks.label_id=OLD.id;
+  DELETE FROM pql_tasks WHERE pql_tasks.label_id = OLD.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -113,23 +113,43 @@ CREATE TABLE `jbpt_petri_nets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`(20)),
   UNIQUE KEY `external_id` (`external_id`(20))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `jbpt_petri_nets_before_del_tr` BEFORE DELETE ON `jbpt_petri_nets`
   FOR EACH ROW
 BEGIN
-  DELETE FROM pql_index_status WHERE pql_index_status.net_id=OLD.id;
+  INSERT IGNORE INTO `pql_index_status`
+  VALUES (OLD.id,"DELETE",2,0,NULL,NULL,NULL);
+  
+  UPDATE `pql_index_status` SET `pql_index_status`.`status`=2
+  WHERE `pql_index_status`.`net_id` = OLD.id;
 
-  DELETE FROM jbpt_petri_nodes WHERE jbpt_petri_nodes.net_id=OLD.id;
+  DELETE FROM jbpt_petri_nodes  WHERE jbpt_petri_nodes.net_id=OLD.id;
+  
+  DELETE FROM pql_can_occur     WHERE pql_can_occur.net_id=OLD.id;
+  DELETE FROM pql_always_occurs WHERE pql_always_occurs.net_id=OLD.id;
+  DELETE FROM pql_can_conflict  WHERE pql_can_conflict.net_id=OLD.id;
+  DELETE FROM pql_can_cooccur   WHERE pql_can_cooccur.net_id=OLD.id;
+  DELETE FROM pql_total_causal  WHERE pql_total_causal.net_id=OLD.id;
+  DELETE FROM pql_total_concur  WHERE pql_total_concur.net_id=OLD.id;
+  
+  
+  
+
+
+  
+
+  
+  DELETE FROM pql_index_status WHERE pql_index_status.net_id=OLD.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -153,11 +173,13 @@ CREATE TABLE `jbpt_petri_nodes` (
   `label_id` int(10) unsigned DEFAULT NULL,
   `is_transition` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `net_id` (`net_id`),
   KEY `label_id` (`label_id`),
+  KEY `net_id` (`net_id`),
+  KEY `is_transition` (`is_transition`),
+  KEY `triple_index` (`net_id`,`is_transition`,`label_id`),
   CONSTRAINT `jbpt_nodes_fk` FOREIGN KEY (`net_id`) REFERENCES `jbpt_petri_nets` (`id`),
   CONSTRAINT `jbpt_petri_nodes_fk` FOREIGN KEY (`label_id`) REFERENCES `jbpt_labels` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -181,19 +203,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Temporary table structure for view `jbpt_unused_labels`
---
-
-DROP TABLE IF EXISTS `jbpt_unused_labels`;
-/*!50001 DROP VIEW IF EXISTS `jbpt_unused_labels`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `jbpt_unused_labels` (
-  `label_id` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `pql_always_occurs`
 --
 
@@ -203,7 +212,6 @@ DROP TABLE IF EXISTS `pql_always_occurs`;
 CREATE TABLE `pql_always_occurs` (
   `net_id` int(11) unsigned NOT NULL,
   `task_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`task_id`),
   KEY `net_id` (`net_id`),
   KEY `task_id` (`task_id`),
@@ -223,7 +231,6 @@ CREATE TABLE `pql_can_conflict` (
   `net_id` int(11) unsigned NOT NULL,
   `taskA_id` int(10) unsigned NOT NULL,
   `taskB_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
   KEY `net_id` (`net_id`),
   KEY `taskA_id` (`taskA_id`),
@@ -245,7 +252,6 @@ CREATE TABLE `pql_can_cooccur` (
   `net_id` int(11) unsigned NOT NULL,
   `taskA_id` int(10) unsigned NOT NULL,
   `taskB_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
   KEY `net_id` (`net_id`),
   KEY `taskA_id` (`taskA_id`),
@@ -266,7 +272,6 @@ DROP TABLE IF EXISTS `pql_can_occur`;
 CREATE TABLE `pql_can_occur` (
   `net_id` int(11) unsigned NOT NULL,
   `task_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`task_id`),
   KEY `net_id` (`net_id`),
   KEY `task_id` (`task_id`),
@@ -324,30 +329,6 @@ CREATE TABLE `pql_index_status` (
   CONSTRAINT `pql_index_status_fk` FOREIGN KEY (`net_id`) REFERENCES `jbpt_petri_nets` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `pql_index_status_before_del_tr` BEFORE DELETE ON `pql_index_status`
-  FOR EACH ROW
-BEGIN
-  DELETE FROM pql_can_occur WHERE pql_can_occur.net_id=OLD.net_id;
-  DELETE FROM pql_always_occurs WHERE pql_always_occurs.net_id=OLD.net_id;
-  DELETE FROM pql_can_conflict WHERE pql_can_conflict.net_id=OLD.net_id;
-  DELETE FROM pql_can_cooccur WHERE pql_can_cooccur.net_id=OLD.net_id;
-  DELETE FROM pql_total_causal WHERE pql_total_causal.net_id=OLD.net_id;
-  DELETE FROM pql_total_concur WHERE pql_total_concur.net_id=OLD.net_id;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Temporary table structure for view `pql_indexed_ids`
@@ -379,21 +360,21 @@ CREATE TABLE `pql_tasks` (
   UNIQUE KEY `label_id_and_sim` (`label_id`,`similarity`),
   KEY `label_id` (`label_id`),
   CONSTRAINT `pql_tasks_fk` FOREIGN KEY (`label_id`) REFERENCES `jbpt_labels` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `pql_tasks_before_del_tr` BEFORE DELETE ON `pql_tasks`
   FOR EACH ROW
 BEGIN
-  DELETE FROM pql_tasks_sim WHERE pql_tasks_sim.task_id=OLD.id;
+  DELETE FROM pql_tasks_sim WHERE pql_tasks_sim.task_id = OLD.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -429,7 +410,6 @@ CREATE TABLE `pql_total_causal` (
   `net_id` int(11) unsigned NOT NULL,
   `taskA_id` int(10) unsigned NOT NULL,
   `taskB_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
   KEY `net_id` (`net_id`),
   KEY `taskA_id` (`taskA_id`),
@@ -451,7 +431,6 @@ CREATE TABLE `pql_total_concur` (
   `net_id` int(11) unsigned NOT NULL,
   `taskA_id` int(10) unsigned NOT NULL,
   `taskB_id` int(10) unsigned NOT NULL,
-  `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`net_id`,`taskA_id`,`taskB_id`),
   KEY `net_id` (`net_id`),
   KEY `taskA_id` (`taskA_id`),
@@ -583,9 +562,9 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -594,22 +573,13 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `jbpt_petri_nets_delete`(internal_id 
 BEGIN
   DECLARE delID INTEGER;
   
-  SELECT id INTO delID FROM jbpt_petri_nets WHERE `jbpt_petri_nets`.`id` = internal_id;
+  SELECT id INTO delID FROM `jbpt_petri_nets` WHERE `jbpt_petri_nets`.`id` = internal_id;
   
   IF delID IS NULL THEN
     RETURN 0;
   END IF;
-  
-  DELETE FROM jbpt_petri_nets WHERE `jbpt_petri_nets`.`id` = delID;
-  
-  DELETE FROM jbpt_labels WHERE
-    (NOT(`jbpt_labels`.`id` IN (
-  SELECT
-    DISTINCT `jbpt_petri_nodes`.`label_id`
-  FROM
-    `jbpt_petri_nodes`
-  WHERE
-    (`jbpt_petri_nodes`.`label_id` is not null))));
+
+  DELETE FROM `jbpt_petri_nets` WHERE `jbpt_petri_nets`.`id` = delID;
 
   RETURN delID;
 END ;;
@@ -730,25 +700,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_always_occurs`(net_id INTEGER(11), task_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_always_occurs`.`value` INTO result
-  FROM `pql_always_occurs` WHERE `pql_always_occurs`.`net_id`=net_id AND `pql_always_occurs`.`task_id`=task_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_always_occurs` WHERE `pql_always_occurs`.`net_id`=net_id AND `pql_always_occurs`.`task_id`=task_id LIMIT 1) THEN
+    RETURN true;
   END IF;
-  
-  RETURN result;
+
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -759,25 +724,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_can_conflict`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_can_conflict`.`value` INTO result
-  FROM `pql_can_conflict` WHERE `pql_can_conflict`.`net_id`=net_id AND `pql_can_conflict`.`taskA_id`=taskA_id AND `pql_can_conflict`.`taskB_id`=taskB_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_can_conflict` WHERE `pql_can_conflict`.`net_id`=net_id AND `pql_can_conflict`.`taskA_id`=taskA_id AND `pql_can_conflict`.`taskB_id`=taskB_id LIMIT 1) THEN
+    RETURN true;
   END IF;
 
-  RETURN result;
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -788,25 +748,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_can_cooccur`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_can_cooccur`.`value` INTO result
-  FROM `pql_can_cooccur` WHERE `pql_can_cooccur`.`net_id`=net_id AND `pql_can_cooccur`.`taskA_id`=taskA_id AND `pql_can_cooccur`.`taskB_id`=taskB_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_can_cooccur` WHERE `pql_can_cooccur`.`net_id`=net_id AND `pql_can_cooccur`.`taskA_id`=taskA_id AND `pql_can_cooccur`.`taskB_id`=taskB_id LIMIT 1) THEN
+    RETURN true;
   END IF;
 
-  RETURN result;
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -817,25 +772,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_can_occur`(net_id INTEGER(11), task_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_can_occur`.`value` INTO result
-  FROM `pql_can_occur` WHERE `pql_can_occur`.`net_id`=net_id AND `pql_can_occur`.`task_id`=task_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_can_occur` WHERE `pql_can_occur`.`net_id`=net_id AND `pql_can_occur`.`task_id`=task_id LIMIT 1) THEN
+    RETURN true;
   END IF;
-  
-  RETURN result;
+
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1201,25 +1151,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_total_causal`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_total_causal`.`value` INTO result
-  FROM `pql_total_causal` WHERE `pql_total_causal`.`net_id`=net_id AND `pql_total_causal`.`taskA_id`=taskA_id AND `pql_total_causal`.`taskB_id`=taskB_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_total_causal` WHERE `pql_total_causal`.`net_id`=net_id AND `pql_total_causal`.`taskA_id`=taskA_id AND `pql_total_causal`.`taskB_id`=taskB_id LIMIT 1) THEN
+    RETURN true;
   END IF;
 
-  RETURN result;
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1230,25 +1175,20 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_total_concur`(net_id INTEGER(11), taskA_id INTEGER, taskB_id INTEGER) RETURNS tinyint(1)
     DETERMINISTIC
 BEGIN
-  DECLARE result tinyint(1);
-
-  SELECT `pql_total_concur`.`value` INTO result
-  FROM `pql_total_concur` WHERE `pql_total_concur`.`net_id`=net_id AND `pql_total_concur`.`taskA_id`=taskA_id AND `pql_total_concur`.`taskB_id`=taskB_id;
-
-  IF result IS NULL THEN
-    RETURN -1;
+  IF EXISTS(SELECT 1 FROM `pql_total_concur` WHERE `pql_total_concur`.`net_id`=net_id AND `pql_total_concur`.`taskA_id`=taskA_id AND `pql_total_concur`.`taskB_id`=taskB_id LIMIT 1) THEN
+    RETURN true;
   END IF;
 
-  RETURN result;
+  RETURN false;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1282,6 +1222,58 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `jbpt_get_net_labels_ext_id` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `jbpt_get_net_labels_ext_id`(IN identifier TEXT)
+    DETERMINISTIC
+BEGIN
+  DECLARE nid INTEGER;
+  
+  SELECT id INTO nid FROM jbpt_petri_nets WHERE jbpt_petri_nets.`external_id`=identifier;
+  
+  SELECT `jbpt_labels`.`label`
+  FROM `jbpt_labels`, `jbpt_petri_nodes`
+  WHERE `jbpt_petri_nodes`.`net_id`=nid AND
+        `jbpt_petri_nodes`.`label_id` IS NOT NULL AND
+        `jbpt_labels`.`id` = `jbpt_petri_nodes`.`label_id`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `jbpt_get_net_labels_int_id` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `jbpt_get_net_labels_int_id`(IN id INTEGER(11))
+    DETERMINISTIC
+BEGIN
+  SELECT `jbpt_labels`.`label`
+  FROM `jbpt_labels`, `jbpt_petri_nodes`
+  WHERE `jbpt_petri_nodes`.`net_id`=id AND
+        `jbpt_petri_nodes`.`is_transition`=1 AND
+        `jbpt_labels`.`id` = `jbpt_petri_nodes`.`label_id`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `jbpt_petri_nets_get_internal_ids` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1306,22 +1298,19 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_always_occurs_create`(IN net_id INTEGER(11), IN task_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_always_occurs_create`(IN net_id INTEGER(11), IN task_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_always_occurs`
-  WHERE `pql_always_occurs`.`net_id`=net_id AND `pql_always_occurs`.`task_id`=task_id;
-  
-  INSERT INTO `pql_always_occurs`
-  (`pql_always_occurs`.`net_id`,`pql_always_occurs`.`task_id`, `pql_always_occurs`.`value`)
+  INSERT IGNORE INTO `pql_always_occurs`
+  (`pql_always_occurs`.`net_id`,`pql_always_occurs`.`task_id`)
   VALUES
-  (net_id,task_id,value);
+  (net_id,task_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1332,23 +1321,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_conflict_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_conflict_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_can_conflict`
-  WHERE `pql_can_conflict`.`net_id`=net_id AND
-  `pql_can_conflict`.`taskA_id`=taskA_id AND
-  `pql_can_conflict`.`taskB_id`=taskB_id;
-
-  INSERT INTO `pql_can_conflict`
-  (`pql_can_conflict`.`net_id`,`pql_can_conflict`.`taskA_id`,`pql_can_conflict`.`taskB_id`,`pql_can_conflict`.`value`)
-  VALUES (net_id,taskA_id,taskB_id,value);
+  INSERT IGNORE INTO `pql_can_conflict`
+  (`pql_can_conflict`.`net_id`,`pql_can_conflict`.`taskA_id`,`pql_can_conflict`.`taskB_id`)
+  VALUES (net_id,taskA_id,taskB_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1359,23 +1343,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_cooccur_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_cooccur_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_can_cooccur`
-  WHERE `pql_can_cooccur`.`net_id`=net_id AND
-  `pql_can_cooccur`.`taskA_id`=taskA_id AND
-  `pql_can_cooccur`.`taskB_id`=taskB_id;
-
-  INSERT INTO `pql_can_cooccur`
-  (`pql_can_cooccur`.`net_id`,`pql_can_cooccur`.`taskA_id`,`pql_can_cooccur`.`taskB_id`,`pql_can_cooccur`.`value`)
-  VALUES (net_id,taskA_id,taskB_id,value);
+  INSERT IGNORE INTO `pql_can_cooccur`
+  (`pql_can_cooccur`.`net_id`,`pql_can_cooccur`.`taskA_id`,`pql_can_cooccur`.`taskB_id`)
+  VALUES (net_id,taskA_id,taskB_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1386,22 +1365,19 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_occur_create`(IN net_id INTEGER(11), IN task_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_can_occur_create`(IN net_id INTEGER(11), IN task_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_can_occur`
-  WHERE `pql_can_occur`.`net_id`=net_id AND `pql_can_occur`.`task_id`=task_id;
-  
-  INSERT INTO `pql_can_occur`
-  (`pql_can_occur`.`net_id`,`pql_can_occur`.`task_id`, `pql_can_occur`.`value`)
+  INSERT IGNORE INTO `pql_can_occur`
+  (`pql_can_occur`.`net_id`,`pql_can_occur`.`task_id`)
   VALUES
-  (net_id,task_id,value);
+  (net_id,task_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1673,23 +1649,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_total_causal_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_total_causal_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_total_causal`
-  WHERE `pql_total_causal`.`net_id`=net_id AND
-  `pql_total_causal`.`taskA_id`=taskA_id AND
-  `pql_total_causal`.`taskB_id`=taskB_id;
-
-  INSERT INTO `pql_total_causal`
-  (`pql_total_causal`.`net_id`,`pql_total_causal`.`taskA_id`,`pql_total_causal`.`taskB_id`,`pql_total_causal`.`value`)
-  VALUES (net_id,taskA_id,taskB_id,value);
+  INSERT IGNORE INTO `pql_total_causal`
+  (`pql_total_causal`.`net_id`,`pql_total_causal`.`taskA_id`,`pql_total_causal`.`taskB_id`)
+  VALUES (net_id,taskA_id,taskB_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1700,23 +1671,18 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_total_concur_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER, IN value BOOLEAN)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pql_total_concur_create`(IN net_id INTEGER(11), IN taskA_id INTEGER, IN taskB_id INTEGER)
     DETERMINISTIC
 BEGIN
-  DELETE FROM `pql_total_concur`
-  WHERE `pql_total_concur`.`net_id`=net_id AND
-  `pql_total_concur`.`taskA_id`=taskA_id AND
-  `pql_total_concur`.`taskB_id`=taskB_id;
-
-  INSERT INTO `pql_total_concur`
-  (`pql_total_concur`.`net_id`,`pql_total_concur`.`taskA_id`,`pql_total_concur`.`taskB_id`,`pql_total_concur`.`value`)
-  VALUES (net_id,taskA_id,taskB_id,value);
+  INSERT IGNORE INTO `pql_total_concur`
+  (`pql_total_concur`.`net_id`,`pql_total_concur`.`taskA_id`,`pql_total_concur`.`taskB_id`)
+  VALUES (net_id,taskA_id,taskB_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1727,9 +1693,9 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1745,10 +1711,10 @@ BEGIN
   DELETE FROM jbpt_labels WHERE `jbpt_labels`.`id` NOT IN
   (SELECT `jbpt_petri_nodes`.`label_id` FROM `jbpt_petri_nodes`);
   
-  ALTER TABLE jbpt_petri_nets AUTO_INCREMENT = 1;
+  ALTER TABLE jbpt_petri_nets  AUTO_INCREMENT = 1;
   ALTER TABLE jbpt_petri_nodes AUTO_INCREMENT = 1;
-  ALTER TABLE jbpt_labels AUTO_INCREMENT = 1;
-  ALTER TABLE pql_tasks AUTO_INCREMENT = 1;
+  ALTER TABLE jbpt_labels      AUTO_INCREMENT = 1;
+  ALTER TABLE pql_tasks        AUTO_INCREMENT = 1;
   
   DELETE FROM `pql_index_bots`;
 END ;;
@@ -1757,25 +1723,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Final view structure for view `jbpt_unused_labels`
---
-
-/*!50001 DROP TABLE IF EXISTS `jbpt_unused_labels`*/;
-/*!50001 DROP VIEW IF EXISTS `jbpt_unused_labels`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `jbpt_unused_labels` AS select `jbpt_labels`.`id` AS `label_id` from `jbpt_labels` where (not(`jbpt_labels`.`id` in (select distinct `jbpt_petri_nodes`.`label_id` from `jbpt_petri_nodes` where (`jbpt_petri_nodes`.`label_id` is not null)))) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
 -- Final view structure for view `pql_index_queue`
@@ -1824,4 +1771,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-01 16:11:59
+-- Dump completed on 2015-10-22  9:39:11
