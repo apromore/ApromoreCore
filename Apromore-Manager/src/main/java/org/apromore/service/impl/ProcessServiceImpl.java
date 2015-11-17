@@ -249,6 +249,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
+            if (process.getId() == null) {
+                throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
+            }
 
             pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
@@ -257,9 +260,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
             // Index for PQL
-            if(process.getId()!=null) {
-                notifyUpdate(pmv);
-            }
+            notifyUpdate(pmv);
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -973,7 +974,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
             process.setGroupProcesses(groupProcesses);
 
-            process = processRepo.save(process);
+            process = processRepo.saveAndFlush(process);
 
             return process;
         } catch (Exception ex) {
