@@ -12,4 +12,5 @@ Apromore-Assembly/Manager-Repository\.*
 Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
 
 # Site-specific configuration
+codesigning.properties
 site.properties
