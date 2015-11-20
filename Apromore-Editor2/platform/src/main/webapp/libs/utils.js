@@ -3506,14 +3506,14 @@ if (!window.Signavio) {
 
             var sum = 0.0;
             var result = "";
-            var wasTruncated = $A(text).any(function (char, i) {
+            var wasTruncated = $A(text).any(function (character, i) {
                 if (sum > width) {
                     return true;
                 }
 
                 // sum up the character widths
                 sum += _estimateCharacterWidth(text[i]) * ((fontSize || 14) / 14.0);
-                result += char;
+                result += character;
             });
 
             return (wasTruncated ? result + "..." : result);
