@@ -43,6 +43,85 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <configuration>
+                    <preProcessAggregates>true</preProcessAggregates>
+                    <aggregations>
+                        <aggregation>
+                            <insertNewLine>false</insertNewLine>
+                            <output>${basedir}/target/apromore-editor-2.0/editor/apromore-editor.js</output>
+                            <inputDir>${basedir}/src/main</inputDir>
+                            <includes>
+                                <include>../../target/classes/site.properties.js</include>
+                                <include>scripts/utils.js</include>
+                                <include>scripts/kickstart.js</include>
+                                <include>scripts/erdfparser.js</include>
+                                <include>scripts/datamanager.js</include>
+                                <include>scripts/clazz.js</include>
+                                <include>scripts/server.js</include>
+                                <include>scripts/config.js</include>
+                                <include>scripts/editor.js</include>
+                                <include>scripts/Core/SVG/editpathhandler.js</include>
+                                <include>scripts/Core/SVG/minmaxpathhandler.js</include>
+                                <include>scripts/Core/SVG/pointspathhandler.js</include>
+                                <include>scripts/Core/SVG/svgmarker.js</include>
+                                <include>scripts/Core/SVG/svgshape.js</include>
+                                <include>scripts/Core/SVG/label.js</include>
+                                <include>scripts/Core/Math/math.js</include>
+                                <include>scripts/Core/StencilSet/stencil.js</include>
+                                <include>scripts/Core/StencilSet/property.js</include>
+                                <include>scripts/Core/StencilSet/propertyitem.js</include>
+                                <include>scripts/Core/StencilSet/complexpropertyitem.js</include>
+                                <include>scripts/Core/StencilSet/rules.js</include>
+                                <include>scripts/Core/StencilSet/stencilset.js</include>
+                                <include>scripts/Core/StencilSet/stencilsets.js</include>
+                                <include>scripts/Core/command.js</include>
+                                <include>scripts/Core/bounds.js</include>
+                                <include>scripts/Core/uiobject.js</include>
+                                <include>scripts/Core/abstractshape.js</include>
+                                <include>scripts/Core/canvas.js</include>
+                                <include>scripts/Core/main.js</include>
+                                <include>scripts/Core/svgDrag.js</include>
+                                <include>scripts/Core/shape.js</include>
+                                <include>scripts/Core/Controls/control.js</include>
+                                <include>scripts/Core/Controls/docker.js</include>
+                                <include>scripts/Core/Controls/magnet.js</include>
+                                <include>scripts/Core/node.js</include>
+                                <include>scripts/Core/edge.js</include>
+                                <include>scripts/Core/abstractPlugin.js</include>
+                                <include>scripts/Core/abstractLayouter.js</include>
+                                <include>scripts/Plugins/**/*.js</include>
+                            </includes>
+                        </aggregation>
+                    </aggregations>
+                    <includes>
+                        <include>**/apromore-editor.js</include>
+                    </includes>
+                    <jswarn>false</jswarn>
+                    <nosuffix>false</nosuffix>
+                    <sourceDirectory>${basedir}/target/apromore-editor-2.0/editor</sourceDirectory>
+                    <outputDirectory>${basedir}/target/apromore-editor-2.0/editor</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compress_js_css</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
@@ -134,6 +213,19 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>site.properties.js</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
