@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="CreditAppProcess2.0">
+        <name>Credit application process</name>
+        <metaData>
+            <title>Credit application process</title>
+            <creator>tut</creator>
+            <description>Credit application process</description>
+            <contributor>tut</contributor>
+            <version>0.1</version>
+            <persistent>false</persistent>
+            <identifier>UID_a725098a-7fca-4ead-bb3d-485b721aee29</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="e6fac0a7-9c21-4074-bbd7-e7bc0fade511">
+            <name>receive application</name>
+            <outputParam>
+                <index>1</index>
+                <name>loanAmt</name>
+                <type>double</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="fdb1631b-158a-49df-9567-7f6472010a77">
+            <name>check for completeness</name>
+            <outputParam>
+                <index>1</index>
+                <name>completeApp</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id859fee44-cb2c-4e33-b17f-8e9775fb69f8">
+            <name>check loan amount</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idb9b5799f-5a64-40df-a46c-16fa36cbe46c">
+            <name>get more info</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id9b6e4ddf-496c-4fe9-9f22-d7059c3193cf">
+            <name>perform checks for small amount</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="idbd56d8b9-28fb-477f-bfbe-d2aaba77ed12">
+            <name>perform checks for large amount</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id73e6fdfa-56e2-4461-bb6a-e5c82ad548e7">
+            <name>make decision</name>
+            <outputParam>
+                <index>1</index>
+                <name>decideApp</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+            </outputParam>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id95ea1c92-37bc-44fe-891d-0b6dfc0ff316">
+            <name>start approval</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ida9ab730c-90cc-41ab-8d96-c74b649e8963">
+            <name>notify rejection</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ecc6f35a-bace-4f66-ab92-b34b7db8d996">
+            <name>deliver credit card</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="ided7b1dbd-b371-4d9c-9d22-98528c4d6536">
+            <name>notify acceptance</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="f4b6928f-64ed-4ec8-aa11-0ae3d2381710">
+            <name>complete approval</name>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-CreditApplication">
+            <name>CreditApplication</name>
+            <localVariable>
+                <index>0</index>
+                <name>completeApp</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>false</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>1</index>
+                <name>decideApp</name>
+                <type>boolean</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>false</initialValue>
+            </localVariable>
+            <localVariable>
+                <index>2</index>
+                <name>loanAmt</name>
+                <type>double</type>
+                <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                <initialValue>0.0</initialValue>
+            </localVariable>
+            <processControlElements>
+                <inputCondition id="C-InputCondition-1">
+                    <name></name>
+                    <flowsInto>
+                        <nextElementRef id="C-receive-application-3"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-receive-application-3">
+                    <name>receive application</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c1-13"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;loanAmt&gt;{/C-receive-application-3/loanAmt/text()}&lt;/loanAmt&gt;"/>
+                            <mapsTo>loanAmt</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="e6fac0a7-9c21-4074-bbd7-e7bc0fade511"/>
+                </task>
+                <condition id="C-c1-13">
+                    <name>c1</name>
+                    <flowsInto>
+                        <nextElementRef id="C-check-for-completeness-4"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-check-for-completeness-4">
+                    <name>check for completeness</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c4-16"/>
+                        <predicate ordering="0">/CreditApplication/completeApp/text() = 'true'</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-c2-15"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;completeApp&gt;{/C-check-for-completeness-4/completeApp/text()}&lt;/completeApp&gt;"/>
+                            <mapsTo>completeApp</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="fdb1631b-158a-49df-9567-7f6472010a77"/>
+                </task>
+                <condition id="C-c4-16">
+                    <name>c4</name>
+                    <flowsInto>
+                        <nextElementRef id="C-check-loan-amount-6"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c2-15">
+                    <name>c2</name>
+                    <flowsInto>
+                        <nextElementRef id="C-get-more-info-5"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-check-loan-amount-6">
+                    <name>check loan amount</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c5-27"/>
+                        <predicate ordering="0">number(/CreditApplication/loanAmt/text()) &gt; 500</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-c7-28"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id859fee44-cb2c-4e33-b17f-8e9775fb69f8"/>
+                </task>
+                <task id="C-get-more-info-5">
+                    <name>get more info</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c3-14"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="idb9b5799f-5a64-40df-a46c-16fa36cbe46c"/>
+                </task>
+                <condition id="C-c5-27">
+                    <name>c5</name>
+                    <flowsInto>
+                        <nextElementRef id="C-perform-checks-for-large-amount-7"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c7-28">
+                    <name>c7</name>
+                    <flowsInto>
+                        <nextElementRef id="C-perform-checks-for-small-amount-8"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c3-14">
+                    <name>c3</name>
+                    <flowsInto>
+                        <nextElementRef id="C-check-for-completeness-4"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-perform-checks-for-small-amount-8">
+                    <name>perform checks for small amount</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c8-29"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id9b6e4ddf-496c-4fe9-9f22-d7059c3193cf"/>
+                </task>
+                <task id="C-perform-checks-for-large-amount-7">
+                    <name>perform checks for large amount</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c6-17"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="idbd56d8b9-28fb-477f-bfbe-d2aaba77ed12"/>
+                </task>
+                <condition id="C-c8-29">
+                    <name>c8</name>
+                    <flowsInto>
+                        <nextElementRef id="C-make-decision-9"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c6-17">
+                    <name>c6</name>
+                    <flowsInto>
+                        <nextElementRef id="C-make-decision-9"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-make-decision-9">
+                    <name>make decision</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c9-18"/>
+                        <predicate ordering="0">/CreditApplication/decideApp/text() = 'true'</predicate>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-c10-20"/>
+                        <isDefaultFlow></isDefaultFlow>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="xor"/>
+                    <completedMappings>
+                        <mapping>
+                            <expression query="&lt;decideApp&gt;{/C-make-decision-9/decideApp/text()}&lt;/decideApp&gt;"/>
+                            <mapsTo>decideApp</mapsTo>
+                        </mapping>
+                    </completedMappings>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id73e6fdfa-56e2-4461-bb6a-e5c82ad548e7"/>
+                </task>
+                <condition id="C-c9-18">
+                    <name>c9</name>
+                    <flowsInto>
+                        <nextElementRef id="C-start-approval-23"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c10-20">
+                    <name>c10</name>
+                    <flowsInto>
+                        <nextElementRef id="C-notify-rejection-12"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-start-approval-23">
+                    <name>start approval</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c11-25"/>
+                    </flowsInto>
+                    <flowsInto>
+                        <nextElementRef id="C-c12-26"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id95ea1c92-37bc-44fe-891d-0b6dfc0ff316"/>
+                </task>
+                <task id="C-notify-rejection-12">
+                    <name>notify rejection</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition-2"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="ida9ab730c-90cc-41ab-8d96-c74b649e8963"/>
+                </task>
+                <condition id="C-c11-25">
+                    <name>c11</name>
+                    <flowsInto>
+                        <nextElementRef id="C-notify-acceptance-10"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c12-26">
+                    <name>c12</name>
+                    <flowsInto>
+                        <nextElementRef id="C-deliver-credit-card-11"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-deliver-credit-card-11">
+                    <name>deliver credit card</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c14-31"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="ecc6f35a-bace-4f66-ab92-b34b7db8d996"/>
+                </task>
+                <task id="C-notify-acceptance-10">
+                    <name>notify acceptance</name>
+                    <flowsInto>
+                        <nextElementRef id="C-c13-19"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="ided7b1dbd-b371-4d9c-9d22-98528c4d6536"/>
+                </task>
+                <condition id="C-c14-31">
+                    <name>c14</name>
+                    <flowsInto>
+                        <nextElementRef id="C-complete-approval-21"/>
+                    </flowsInto>
+                </condition>
+                <condition id="C-c13-19">
+                    <name>c13</name>
+                    <flowsInto>
+                        <nextElementRef id="C-complete-approval-21"/>
+                    </flowsInto>
+                </condition>
+                <task id="C-complete-approval-21">
+                    <name>complete approval</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition-2"/>
+                    </flowsInto>
+                    <join code="and"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="f4b6928f-64ed-4ec8-aa11-0ae3d2381710"/>
+                </task>
+                <outputCondition id="C-OutputCondition-2">
+                    <name></name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="en" country="AU"/>
+        <specification id="CreditAppProcess2.0">
+            <size w="100" h="100"/>
+            <net id="N-CreditApplication">
+                <viewport x="0" y="0" w="1287" h="511"/>
+                <frame x="0" y="0" w="1287" h="511"/>
+                <bounds x="0" y="0" w="1287" h="511"/>
+                <container id="C-InputCondition-1">
+                    <vertex>
+                        <attributes>
+                            <bounds x="36.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="20.0" y="208.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-receive-application-3">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="96.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="64.0" y="208.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c1-13">
+                    <vertex>
+                        <attributes>
+                            <bounds x="168.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="136.0" y="208.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-check-for-completeness-4">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="244.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="212.0" y="208.0" w="101.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="234.0" y="176.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="275.0" y="176.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-c4-16">
+                    <vertex>
+                        <attributes>
+                            <bounds x="324.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="292.0" y="208.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c2-15">
+                    <vertex>
+                        <attributes>
+                            <bounds x="336.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="304.0" y="144.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-check-loan-amount-6">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="380.0" y="176.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="352.0" y="208.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="411.0" y="176.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-get-more-info-5">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="244.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="212.0" y="144.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c5-27">
+                    <vertex>
+                        <attributes>
+                            <bounds x="452.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="420.0" y="144.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c7-28">
+                    <vertex>
+                        <attributes>
+                            <bounds x="452.0" y="216.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="420.0" y="248.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c3-14">
+                    <vertex>
+                        <attributes>
+                            <bounds x="164.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="132.0" y="144.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-perform-checks-for-large-amount-7">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="512.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="480.0" y="144.0" w="97.0" h="61.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-perform-checks-for-small-amount-8">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="516.0" y="216.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="484.0" y="248.0" w="97.0" h="61.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c6-17">
+                    <vertex>
+                        <attributes>
+                            <bounds x="576.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="548.0" y="144.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c8-29">
+                    <vertex>
+                        <attributes>
+                            <bounds x="580.0" y="216.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="548.0" y="248.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-make-decision-9">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="644.0" y="179.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="612.0" y="212.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="XOR_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="675.0" y="179.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                    <decorator type="XOR_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="634.0" y="179.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-c9-18">
+                    <vertex>
+                        <attributes>
+                            <bounds x="728.0" y="116.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="696.0" y="148.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c10-20">
+                    <vertex>
+                        <attributes>
+                            <bounds x="732.0" y="218.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="700.0" y="252.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-start-approval-23">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/RoutingTask.png</iconpath>
+                        <attributes>
+                            <bounds x="784.0" y="116.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="756.0" y="148.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_split">
+                        <position>13</position>
+                        <attributes>
+                            <bounds x="815.0" y="116.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <container id="C-notify-rejection-12">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="788.0" y="218.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="756.0" y="252.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c11-25">
+                    <vertex>
+                        <attributes>
+                            <bounds x="852.0" y="56.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="820.0" y="88.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c12-26">
+                    <vertex>
+                        <attributes>
+                            <bounds x="852.0" y="140.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="820.0" y="172.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-OutputCondition-2">
+                    <vertex>
+                        <attributes>
+                            <bounds x="1,108.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="1,092.0" y="144.0" w="96.0" h="64.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-notify-acceptance-10">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Automatic.png</iconpath>
+                        <attributes>
+                            <bounds x="916.0" y="56.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="884.0" y="88.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-deliver-credit-card-11">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/Manual.png</iconpath>
+                        <attributes>
+                            <bounds x="916.0" y="140.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="884.0" y="172.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c13-19">
+                    <vertex>
+                        <attributes>
+                            <bounds x="976.0" y="56.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="944.0" y="88.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-c14-31">
+                    <vertex>
+                        <attributes>
+                            <bounds x="976.0" y="140.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="944.0" y="172.0" w="97.0" h="21.0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-complete-approval-21">
+                    <vertex>
+                        <iconpath>/org/yawlfoundation/yawl/editor/resources/taskicons/RoutingTask.png</iconpath>
+                        <attributes>
+                            <bounds x="1,048.0" y="112.0" w="32.0" h="32.0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="1012.0" y="144.0" w="97.0" h="41.0"/>
+                        </attributes>
+                    </label>
+                    <decorator type="AND_join">
+                        <position>12</position>
+                        <attributes>
+                            <bounds x="1038.0" y="112.0" w="11.0" h="32.0"/>
+                            <size w="11" h="32"/>
+                        </attributes>
+                    </decorator>
+                </container>
+                <flow source="C-get-more-info-5" target="C-c3-14">
+                    <ports in="12" out="13"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="244.0" y="127.5"/>
+                            <value x="195.0" y="127.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-notify-rejection-12" target="C-OutputCondition-2">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="804.0" y="234.0"/>
+                            <value x="1,124.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-complete-approval-21" target="C-OutputCondition-2">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="1,064.0" y="128.0"/>
+                            <value x="1,124.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c12-26" target="C-deliver-credit-card-11">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="883.0" y="155.5"/>
+                            <value x="916.0" y="155.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-perform-checks-for-large-amount-7" target="C-c6-17">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="543.0" y="127.5"/>
+                            <value x="576.0" y="127.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c9-18" target="C-start-approval-23">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="759.0" y="131.5"/>
+                            <value x="784.0" y="131.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c14-31" target="C-complete-approval-21">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="992.0" y="156.0"/>
+                            <value x="1,064.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-check-loan-amount-6" target="C-c7-28">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="396.0" y="192.0"/>
+                            <value x="468.0" y="232.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-make-decision-9" target="C-c10-20">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="660.0" y="195.0"/>
+                            <value x="748.0" y="234.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-check-for-completeness-4" target="C-c2-15">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="260.0" y="192.0"/>
+                            <value x="352.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c8-29" target="C-make-decision-9">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="596.0" y="232.0"/>
+                            <value x="660.0" y="195.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-check-loan-amount-6" target="C-c5-27">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="396.0" y="192.0"/>
+                            <value x="468.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-receive-application-3" target="C-c1-13">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="127.0" y="191.5"/>
+                            <value x="168.0" y="191.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c7-28" target="C-perform-checks-for-small-amount-8">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="483.0" y="231.5"/>
+                            <value x="516.0" y="231.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-start-approval-23" target="C-c11-25">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="800.0" y="132.0"/>
+                            <value x="868.0" y="72.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-perform-checks-for-small-amount-8" target="C-c8-29">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="547.0" y="231.5"/>
+                            <value x="580.0" y="231.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c11-25" target="C-notify-acceptance-10">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="883.0" y="71.5"/>
+                            <value x="916.0" y="71.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c10-20" target="C-notify-rejection-12">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="763.0" y="233.5"/>
+                            <value x="788.0" y="233.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-notify-acceptance-10" target="C-c13-19">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="947.0" y="71.5"/>
+                            <value x="976.0" y="71.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c13-19" target="C-complete-approval-21">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="992.0" y="72.0"/>
+                            <value x="1,064.0" y="128.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-start-approval-23" target="C-c12-26">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="800.0" y="132.0"/>
+                            <value x="868.0" y="156.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition-1" target="C-receive-application-3">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="67.0" y="191.5"/>
+                            <value x="96.0" y="191.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c6-17" target="C-make-decision-9">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="592.0" y="128.0"/>
+                            <value x="660.0" y="195.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-make-decision-9" target="C-c9-18">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="660.0" y="195.0"/>
+                            <value x="744.0" y="132.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c1-13" target="C-check-for-completeness-4">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="184.0" y="192.0"/>
+                            <value x="260.0" y="192.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c2-15" target="C-get-more-info-5">
+                    <ports in="12" out="13"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="336.0" y="127.5"/>
+                            <value x="275.0" y="127.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c5-27" target="C-perform-checks-for-large-amount-7">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="483.0" y="127.5"/>
+                            <value x="512.0" y="127.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-deliver-credit-card-11" target="C-c14-31">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="947.0" y="155.5"/>
+                            <value x="976.0" y="155.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c3-14" target="C-check-for-completeness-4">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="180.0" y="128.0"/>
+                            <value x="260.0" y="192.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-check-for-completeness-4" target="C-c4-16">
+                    <ports in="14" out="14"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="260.0" y="192.0"/>
+                            <value x="340.0" y="192.0"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-c4-16" target="C-check-loan-amount-6">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="355.0" y="191.5"/>
+                            <value x="380.0" y="191.5"/>
+                        </points>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

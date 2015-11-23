@@ -110,6 +110,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Implementation of the ProcessService Contract.
@@ -248,6 +249,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             User user = userSrv.findUserByLogin(username);
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
+            if (process.getId() == null) {
+                throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
+            }
 
             pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
@@ -256,9 +260,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
             // Index for PQL
-            if(process.getId()!=null) {
-                notifyUpdate(pmv);
-            }
+            notifyUpdate(pmv);
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -671,6 +673,65 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
     }
 
 
+    /**
+     * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String, Version)
+     * {@inheritDoc}
+     */
+    @Override
+    public String getBPMNRepresentation(final String name, final Integer processId, final String branch, final Version version) throws RepositoryException {
+        String xmlBPMNProcess;
+        String format = "BPMN 2.0";
+        String annName = "BPMN 2.0";
+
+        try {
+            // Debug tracing of the authenticated principal
+            org.springframework.security.core.Authentication auth =
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                LOGGER.info("Authentication principal=" + auth.getPrincipal() + " details=" + auth.getDetails() + " thread=" + Thread.currentThread());
+            } else {
+                LOGGER.info("Authentication is null");
+            }
+
+            // Work out if we are looking at the original format or native format for this model.
+            if (isRequestForNativeFormat(processId, branch, version, format)) {
+                xmlBPMNProcess = nativeRepo.getNative(processId, branch, version.toString(), format).getContent();
+                LOGGER.info("native");
+            } else {
+                LOGGER.info("notNative");
+                CanonicalProcessType cpt = getProcessModelVersion(processId, name, branch, version, false);
+                Process process = processRepo.findOne(processId);
+                DecanonisedProcess dp;
+                AnnotationsType anf = null;
+
+                Annotation ann = annotationRepo.getAnnotation(processId, branch, version.toString(), annName);
+                if (ann != null) {
+                    String annotation = ann.getContent();
+                    if (annotation != null && !annotation.equals("")) {
+                        ByteArrayDataSource dataSource = new ByteArrayDataSource(annotation, Constants.XML_MIMETYPE);
+                        anf = ANFSchema.unmarshalAnnotationFormat(dataSource.getInputStream(), false).getValue();
+                    }
+                }
+
+                if (ann != null && !process.getNativeType().getNatType().equalsIgnoreCase(ann.getNatve().getNativeType().getNatType())) {
+                    anf = annotationSrv.preProcess(ann.getNatve().getNativeType().getNatType(), format, cpt, anf);
+                } else {
+                    anf = annotationSrv.preProcess(process.getNativeType().getNatType(), format, cpt, anf);
+                }
+                dp = canoniserSrv.deCanonise(format, cpt, anf, new HashSet<RequestParameterType<?>>());
+                xmlBPMNProcess = IOUtils.toString(dp.getNativeFormat(), "UTF-8");
+            }
+
+            //LOGGER.info("[new method] PROCESS:\n" + xmlBPMNProcess);
+            return xmlBPMNProcess;
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to retrive the process!");
+            LOGGER.error("Original exception was: ", e);
+            throw new RepositoryException(e);
+        }
+    }
+
     private void updateBranch(List<ProcessModelVersion> pmvs, ProcessModelVersion pvid, ProcessBranch branch) throws ExceptionDao {
         ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvid);
         if (newCurrent == null) {
@@ -913,7 +974,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
             process.setGroupProcesses(groupProcesses);
 
-            process = processRepo.save(process);
+            process = processRepo.saveAndFlush(process);
 
             return process;
         } catch (Exception ex) {

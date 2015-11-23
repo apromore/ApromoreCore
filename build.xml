@@ -26,6 +26,7 @@
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <fileset id="pickupRepo" dir=".">
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/org.apromore.editor.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/org.apromore.filestore.plan"/>
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/org.apromore.manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/org.apromore.portal.plan"/>
@@ -37,11 +38,6 @@
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
         <include name="site.properties"/>
     </fileset>
-
-    <fileset id="webAppRepo" dir=".">
-        <include name="Apromore-Editor/target/*.war"/>
-    </fileset>
-
 
     <!-- Virgo Related -->
     <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
@@ -166,7 +162,6 @@
             <fileset refid="usrRepo"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
-            <fileset refid="webAppRepo"/>
             <fileset refid="pickupRepo"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">

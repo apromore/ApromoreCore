@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class ContextController {
     private static ContextController context;
+    public static ManagerService manager;
     private ViewController viewController=ViewController.getController();
     private QueryController queryController=QueryController.getQueryController();
     private HashMap<String,List<JLabel>> cache=new HashMap<>();
@@ -301,7 +302,7 @@ public class ContextController {
         if (testProcessLabels != null) {
             return testProcessLabels;
         } else {
-            return ServiceController.getManagerService().getProcessesLabels("pql.jbpt_labels","label");
+            return manager.getProcessesLabels("pql.jbpt_labels","label");
         }
     }
 

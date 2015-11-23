@@ -33,9 +33,16 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
     public BPMNMinerServiceImpl() { }
 
     @Override
-    public String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                                     double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) {
+
+		//this.LOGGER.info("discoverBPMNModel - started.");
+
+        String xmlProcessModel;
+        StructuringServiceImpl ssi = null;
+
+		if(structProcess);
 
         LogOptimizer logOptimizer = new LogOptimizer();
         XLog optimizedLog = logOptimizer.optimizeLog(log);
@@ -92,6 +99,13 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
+//        if(structProcess) {
+//        	//this.LOGGER.info("structuring requested.");
+//        	ssi = new StructuringServiceImpl(diagram);
+//        	diagram = ssi.getStructuredDiagram();
+//        	//this.LOGGER.info("structuring completed.");
+//        }
+        
         System.out.println("Output file:");
         UIContext context = new UIContext();
         UIPluginContext uiPluginContext = context.getMainPluginContext();
@@ -111,7 +125,17 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         sb.append(definitions.exportElements());
         sb.append("</definitions>");
 
-        return sb.toString();
+        xmlProcessModel = sb.toString();
+
+        if( structProcess ) {
+            //LOGGER.info("Structuring: " + xmlProcessModel);
+            ssi = new StructuringServiceImpl();
+            xmlProcessModel = ssi.structureBPMNModel(xmlProcessModel);
+            //LOGGER.info("Got: " + xmlProcessModel);
+        }
+		//this.LOGGER.info("PROCESS.xml:" + xmlProcessModel);
+
+        return xmlProcessModel;
     }
 
     private HashMap<Set<String>, String> generateEntitiesNames(DiscoverERmodel erModel, Map<Set<String>, Set<String>> group) throws NoEntityException {

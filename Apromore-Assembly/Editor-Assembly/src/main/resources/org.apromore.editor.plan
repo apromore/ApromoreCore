@@ -1,0 +1,19 @@
+<plan name="org.apromore.editor" version="1.1" scoped="false" atomic="true" provisioning="auto"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+
+    <artifact type="configuration" name="site" version="0" />
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-diagram"       version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpmn2_0"       version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpstruct"      version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-downloader"    version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-epc"           version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-jpdl"          version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-pdf"           version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-petrinet"      version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-syntaxchecker" version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-xpdl"          version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-yawl"          version="[2.0, 3)"/>
+    <artifact type="bundle" name="org.apromore.editor" version="[2.0, 3)" />
+</plan>

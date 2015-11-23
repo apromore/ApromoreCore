@@ -32,13 +32,21 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import static org.springframework.ws.soap.SoapVersion.SOAP_11;
+import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
 import java.awt.*;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +69,47 @@ public class ManagerServiceClient implements ManagerService {
      */
     public ManagerServiceClient(WebServiceTemplate webServiceTemplate) {
         this.webServiceTemplate = webServiceTemplate;
+    }
+
+    /**
+     * Constructor for use outside the Spring IoC container.
+     *
+     * @param siteHost
+     * @param sitePort
+     * @param siteManager
+     */
+    public ManagerServiceClient(String siteHost, int sitePort, String siteManager) throws SOAPException, URISyntaxException {
+        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null);
+        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null));
+    }
+
+    public ManagerServiceClient(URI managerEndpointURI) throws SOAPException {
+        this.webServiceTemplate = createWebServiceTemplate(managerEndpointURI);
+    }
+
+
+    /**
+     * @param managerEndpointURLString  the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     */
+    private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
+
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory(MessageFactory.newInstance());
+        messageFactory.setSoapVersion(SOAP_11);
+
+        HttpComponentsMessageSender httpSender = new HttpComponentsMessageSender();
+        httpSender.setConnectionTimeout(1200000);
+        httpSender.setReadTimeout(1200000);
+
+        Jaxb2Marshaller serviceMarshaller = new Jaxb2Marshaller();
+        serviceMarshaller.setContextPath("org.apromore.model");
+
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate(messageFactory);
+        webServiceTemplate.setMarshaller(serviceMarshaller);
+        webServiceTemplate.setUnmarshaller(serviceMarshaller);
+        webServiceTemplate.setMessageSender(httpSender);
+        webServiceTemplate.setDefaultUri(managerEndpointURI.toString());
+
+        return webServiceTemplate;
     }
 
     /**
@@ -1116,11 +1165,11 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#discoverBPMNModel(XLog, boolean, int, int, double, double, double, double, double, double, List, Map)
+     * @see ManagerService#discoverBPMNModel(XLog, boolean, boolean, int, int, double, double, double, double, double, double, List, Map)
      * {@inheritDoc}
      */
     @Override
-    public String discoverBPMNModel(XLog log, boolean sortLog, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                                     double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
         LOGGER.debug("Preparing DiscoverBPMNModel Request...");
@@ -1136,6 +1185,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setMiningAlgorithm(miningAlgorithm);
         msg.setDependencyAlgorithm(dependencyAlgorithm);
         msg.setSortLog(sortLog);
+        msg.setStructProcess(structProcess);
         msg.setInterruptingEventTolerance(interruptingEventTolerance);
         msg.setMultiInstancePercentage(multiInstancePercentage);
         msg.setMultiInstanceTolerance(multiInstanceTolerance);
@@ -1182,6 +1232,60 @@ public class ManagerServiceClient implements ManagerService {
             throw new Exception(response.getValue().getResult().getMessage());
         }else {
             return response.getValue().getResult().getMessage();
+        }
+    }
+
+    /**
+     * @see ManagerService#structureBPMNModel(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public String structureBPMNModel(String process) throws Exception {
+
+        StructureBPMNModelInputMsgType msg = new StructureBPMNModelInputMsgType();
+        msg.setProcess(process);
+
+        JAXBElement<StructureBPMNModelInputMsgType> request = WS_CLIENT_FACTORY.createStructureBPMNModelRequest(msg);
+
+        JAXBElement<StructureBPMNModelOutputMsgType> response = (JAXBElement<StructureBPMNModelOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+
+        if (response.getValue().getResult().getCode() != 0) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }else {
+            return response.getValue().getResult().getMessage();
+        }
+    }
+
+    /**
+     * @see ManagerService#structureBPMNProcess(int, String, String, String, String, int, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public StructureBPMNProcessOutputMsgType structureBPMNProcess(final int processId, final String processName,
+                                       final String branchName, final String versionNumber, final String username,
+                                       final int folderId, final String domain) throws Exception {
+        StructureBPMNProcessInputMsgType msg = new StructureBPMNProcessInputMsgType();
+
+        msg.setProcessId(processId);
+        msg.setBranchName(branchName);
+        msg.setProcessName(processName);
+        msg.setVersionNumber(versionNumber);
+        msg.setFolderId(folderId);
+        msg.setUsername(username);
+        msg.setDomain(domain);
+
+        JAXBElement<StructureBPMNProcessInputMsgType> request = WS_CLIENT_FACTORY.createStructureBPMNProcessRequest(msg);
+
+        JAXBElement<StructureBPMNProcessOutputMsgType> response = (JAXBElement<StructureBPMNProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+
+        if (response.getValue().getResult().getCode() != 0) {
+            return null;
+        }else {
+            return response.getValue();
         }
     }
 

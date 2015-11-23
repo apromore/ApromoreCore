@@ -1,7 +1,6 @@
 package com.apql.Apql.listener;
 
 import com.apql.Apql.controller.QueryController;
-import com.apql.Apql.controller.ServiceController;
 import com.apql.Apql.controller.ViewController;
 import com.apql.Apql.highlight.ButtonAction;
 import com.apql.Apql.highlight.Highlight;
@@ -39,11 +38,10 @@ public class CommandListener implements ActionListener {
     private QueryController queryController=QueryController.getQueryController();
     private ViewController viewController=ViewController.getController();
 
-    public CommandListener(UserType user){
-        this.user=user;
-        this.manager= ServiceController.getManagerService();
-        this.portal=ServiceController.getPortalService();
-
+    public CommandListener(UserType user, ManagerService manager, PortalService portal){
+        this.user    = user;
+        this.manager = manager;
+        this.portal  = portal;
     }
 
     @Override
