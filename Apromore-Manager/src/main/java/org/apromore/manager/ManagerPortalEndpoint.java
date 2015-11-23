@@ -63,6 +63,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
@@ -101,6 +104,7 @@ public class ManagerPortalEndpoint {
     private PQLService pqlService;
     private DatabaseService dbService;
     private BPMNMinerService bpmnMinerService;
+    private StructuringService structuringService;
 
 
     /**
@@ -133,7 +137,7 @@ public class ManagerPortalEndpoint {
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
             final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService,
-			final ProDriftDetectionService proDriftSrv
+			final ProDriftDetectionService proDriftSrv, final StructuringService structuringService
     ) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
@@ -153,6 +157,7 @@ public class ManagerPortalEndpoint {
         this.pqlService = pqlService;
         this.dbService = dbService;
         this.bpmnMinerService = bpmnMinerService;
+        this.structuringService = structuringService;
 
 //        try {
 //            this.clusterService.computeGEDMatrix();
@@ -1437,6 +1442,7 @@ public class ManagerPortalEndpoint {
             int miningAlgorithm = payload.getMiningAlgorithm();
             int dependencyAlgorithm = payload.getDependencyAlgorithm();
             boolean sortLog = payload.isSortLog();
+            boolean structProcess = payload.isStructProcess();
             double interruptingEventTolerance = payload.getInterruptingEventTolerance();
             double multiInstancePercentage = payload.getMultiInstancePercentage();
             double multiInstanceTolerance = payload.getMultiInstanceTolerance();
@@ -1449,7 +1455,7 @@ public class ManagerPortalEndpoint {
                 primaryKeySelections.put(new HashSet<String>(entry.getKey().getElements()), new HashSet<String>(entry.getValue().getElements()));
             }
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog, miningAlgorithm, dependencyAlgorithm, interruptingEventTolerance,
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog, structProcess, miningAlgorithm, dependencyAlgorithm, interruptingEventTolerance,
                     timerEventPercentage, timerEventTolerance, multiInstancePercentage, multiInstanceTolerance, noiseThreshold,
                     listCandidates, primaryKeySelections);
 
@@ -1462,6 +1468,80 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createDiscoverBPMNModelResponse(res);
+    }
+
+    @PayloadRoot(localPart = "StructureBPMNModelRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<StructureBPMNModelOutputMsgType> structureBPMNModel(@RequestPayload final JAXBElement<StructureBPMNModelInputMsgType> req) {
+        LOGGER.trace("Executing operation structureBPMNModel");
+
+        StructureBPMNModelInputMsgType payload = req.getValue();
+        StructureBPMNModelOutputMsgType res = new StructureBPMNModelOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String process = payload.getProcess();
+
+        try {
+            result.setMessage( structuringService.structureBPMNModel(process) );
+            result.setCode(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(1);
+        }
+        return WS_OBJECT_FACTORY.createStructureBPMNModelResponse(res);
+    }
+
+    @PayloadRoot(localPart = "StructureBPMNProcessRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<StructureBPMNProcessOutputMsgType> structureBPMNProcess(@RequestPayload final JAXBElement<StructureBPMNProcessInputMsgType> req) {
+        LOGGER.trace("Executing operation structureBPMNProcess");
+
+        StructureBPMNProcessInputMsgType payload = req.getValue();
+        StructureBPMNProcessOutputMsgType res = new StructureBPMNProcessOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        Integer processId = payload.getProcessId();
+        String name = payload.getProcessName();
+        String branch = payload.getBranchName();
+        Version version = new Version(payload.getVersionNumber());
+        Integer folderId = payload.getFolderId();
+        String username = payload.getUsername();
+        String domain = payload.getDomain();
+
+        String processName = "struct_"+ name;
+        String nativeType = "BPMN 2.0";
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Date date = new Date();
+        String creationDate = dateFormat.format(date);
+        String lastUpdate = dateFormat.format(date);
+        boolean publicModel = false;
+
+        try {
+            String xmlBPMNProcess = procSrv.getBPMNRepresentation(name, processId, branch, version);
+            String structBPMNProcess = structuringService.structureBPMNModel(xmlBPMNProcess);
+
+            version = new Version("1.0");
+            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+            CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, new ByteArrayInputStream(structBPMNProcess.getBytes(StandardCharsets.UTF_8)), canoniserProperties);
+            ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, version, nativeType, canonisedProcess,
+                    domain, "", creationDate, lastUpdate, publicModel);
+            ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
+                    nativeType, domain, creationDate, lastUpdate, username, publicModel);
+
+            res.setProcessSummary(process);
+            result.setMessage("Process: " + name + " structured successfully!");
+            result.setCode(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage(e.getMessage());
+            result.setCode(1);
+            res.setProcessSummary(null);
+        }
+        return WS_OBJECT_FACTORY.createStructureBPMNProcessResponse(res);
     }
 
 	@PayloadRoot(localPart = "ProDriftDetectorRequest", namespace = NAMESPACE)

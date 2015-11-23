@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.1.xsd">
+    <specification uri="WPR5SeparationOfDuties">
+        <name>WPR5SeparationOfDuties</name>
+        <metaData>
+            <creator>Felix</creator>
+            <description>No description has been given.</description>
+            <contributor>Felix</contributor>
+            <version>0.1</version>
+            <persistent>false</persistent>
+            <identifier>UID_f38a43fb-2654-4352-bdd3-ce3587b8a9eb</identifier>
+        </metaData>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"/>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="id7838470f-d9ac-4889-9c3b-2e7f86e0a7e1">
+            <name>A</name>
+        </decomposition>
+        <decomposition xsi:type="WebServiceGatewayFactsType" id="a7049d75-4285-4411-97e5-bb9cc8c258d5">
+            <name>B</name>
+        </decomposition>
+        <decomposition xsi:type="NetFactsType" isRootNet="true" id="N-Net">
+            <name>Net</name>
+            <processControlElements>
+                <inputCondition id="C-InputCondition">
+                    <name>IN</name>
+                    <flowsInto>
+                        <nextElementRef id="C-A"/>
+                    </flowsInto>
+                </inputCondition>
+                <task id="C-A">
+                    <name>A</name>
+                    <flowsInto>
+                        <nextElementRef id="C-B"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="id7838470f-d9ac-4889-9c3b-2e7f86e0a7e1"/>
+                </task>
+                <task id="C-B">
+                    <name>B</name>
+                    <flowsInto>
+                        <nextElementRef id="C-OutputCondition"/>
+                    </flowsInto>
+                    <join code="xor"/>
+                    <split code="and"/>
+                    <resourcing>
+                        <offer initiator="system">
+                            <distributionSet>
+<initialSet/>
+                            </distributionSet>
+                        </offer>
+                        <allocate initiator="user"/>
+                        <start initiator="user"/>
+                    </resourcing>
+                    <decomposesTo id="a7049d75-4285-4411-97e5-bb9cc8c258d5"/>
+                </task>
+                <outputCondition id="C-OutputCondition">
+                    <name>OUT</name>
+                </outputCondition>
+            </processControlElements>
+        </decomposition>
+    </specification>
+    <layout>
+        <locale language="de" country="DE"/>
+        <specification id="WPR5SeparationOfDuties">
+            <size w="100" h="100"/>
+            <net id="N-Net">
+                <viewport x="0" y="0" w="1527" h="700"/>
+                <frame x="0" y="0" w="1527" h="700"/>
+                <bounds x="0" y="0" w="1527" h="700"/>
+                <container id="C-InputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="60,0" y="420,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="28,0" y="452,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-A">
+                    <vertex>
+                        <attributes>
+                            <bounds x="132,0" y="420,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="100,0" y="452,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-B">
+                    <vertex>
+                        <attributes>
+                            <bounds x="224,0" y="420,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="192,0" y="452,0" w="96,0" h="20,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <container id="C-OutputCondition">
+                    <vertex>
+                        <attributes>
+                            <bounds x="312,0" y="420,0" w="32,0" h="32,0"/>
+                        </attributes>
+                    </vertex>
+                    <label>
+                        <attributes>
+                            <bounds x="280,0" y="452,0" w="97,0" h="21,0"/>
+                        </attributes>
+                    </label>
+                </container>
+                <flow source="C-B" target="C-OutputCondition">
+                    <label></label>
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+                <flow source="C-InputCondition" target="C-A">
+                    <label></label>
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <offset x="18,0" y="0,0"/>
+                        <labelposition x="1000,0" y="-27,5"/>
+                        <lineStyle>11</lineStyle>
+                        <points>
+                            <value x="91,0" y="435,5"/>
+                            <value x="132,0" y="435,5"/>
+                        </points>
+                    </attributes>
+                </flow>
+                <flow source="C-A" target="C-B">
+                    <ports in="13" out="12"/>
+                    <attributes>
+                        <lineStyle>11</lineStyle>
+                    </attributes>
+                </flow>
+            </net>
+        </specification>
+    </layout>
+</specificationSet>

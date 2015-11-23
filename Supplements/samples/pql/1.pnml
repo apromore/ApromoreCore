@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pnml>
-	<module>
 		<net id="petrinet" type="PTNet">
 			<place id="sid-B3BFA337-4D5B-4D3F-AB2C-591A698E46F3">
 				<initialMarking>
@@ -63,5 +62,4 @@
 				</place>
 			</marking>
 		</finalmarkings>
-	</module>
 </pnml>

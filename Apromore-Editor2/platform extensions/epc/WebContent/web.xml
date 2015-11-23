@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <!--
+             These definitions are needed for the EPC extension.
+             Currently they have to be copied manually to the 'plattform' web.xml.
+      -->
+
+    <servlet>
+        <display-name>EPMLImport</display-name>
+        <servlet-name>EPMLImportServlet</servlet-name>
+        <servlet-class>org.apromore.common.converters.epml.servlet.EPMLImportServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EPMLImportServlet</servlet-name>
+        <url-pattern>/epmlimport</url-pattern>
+    </servlet-mapping>
+
+    <!-- Auto Layout for EPC -->
+    <servlet>
+        <display-name>EPCLayout</display-name>
+        <servlet-name>EPCLayoutServlet</servlet-name>
+        <servlet-class>org.apromore.common.converters.epml.servlet.EPCLayoutServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EPCLayoutServlet</servlet-name>
+        <url-pattern>/epmllayout</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>

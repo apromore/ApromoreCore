@@ -86,6 +86,14 @@ public class MenuController extends Menubar {
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
         Menuitem bpmnMinerMI = (Menuitem) this.menuB.getFellow("miningBPMNMiner");
 
+        Menuitem structMI = (Menuitem) this.menuB.getFellow("structProcess");
+        structMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                structureProcess();
+            }
+        });
+
         bpmnMinerMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -184,6 +192,20 @@ public class MenuController extends Menubar {
                 proDriftGetParameters();
             }
         });
+    }
+
+    /**
+     * Structure a list of selected processes
+     * @throws InterruptedException
+     * @throws ParseException
+     */
+    protected void structureProcess() throws InterruptedException, ParseException  {
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        if( selectedProcessVersions.size() == 1 ) {
+            new StructureProcessController(this.mainC, selectedProcessVersions);
+        } else {
+            Messagebox.show("Select exactly one process.", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     /**

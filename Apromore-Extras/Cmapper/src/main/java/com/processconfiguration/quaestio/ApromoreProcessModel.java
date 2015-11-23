@@ -30,6 +30,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.text.ParseException;
 import java.util.Collections;
 import javax.swing.*;
@@ -37,6 +38,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.model.ExportFormatResultType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -64,17 +66,16 @@ public class ApromoreProcessModel implements ProcessModel {
          *
          * This reads a process model from an Apromore manager service.
          *
-         * @param processId      the ID of the process model
-         * @param branch         the branch name of the process model
-	 * @param versionString  the version number of the process model
-         * @param parent         the UI component, used only for aligning dialog windows
-         * @param user           the user principal in whose name updates are made
+         * @param managerEndpointURI  the externally reachable SOAP endpoint of the Apromore manager, e.g. <code>http://localhost:80/manager/services/manager</code>
+         * @param processId           the ID of the process model
+         * @param branch              the branch name of the process model
+	 * @param versionString       the version number of the process model
+         * @param parent              the UI component, used only for aligning dialog windows
+         * @param user                the user principal in whose name updates are made
          */
-	public ApromoreProcessModel(final int processId, String branch, String versionString, final Component parent, final String user) throws Exception {
+	public ApromoreProcessModel(final URI managerEndpointURI, final int processId, String branch, String versionString, final Component parent, final String user) throws Exception {
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
-		manager = (ManagerService) context.getAutowireCapableBeanFactory().getBean("managerClientExternal");
-
+                this.manager       = new ManagerServiceClient(managerEndpointURI);
 		this.processId     = processId;
 		this.branch        = branch;
 		this.version       = new Version(versionString);

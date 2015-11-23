@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-editor-parent</artifactId>
+        <version>2.0</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <artifactId>editor-platform-extension-downloader</artifactId>
+    <packaging>bundle</packaging>
+    <version>2.0</version>
+    <name>Apromore Editor Extension: Downloader</name>
+
+    <properties>
+        <editor-platform-extension.version>2.0</editor-platform-extension.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <unpackBundle>false</unpackBundle>
+                    <instructions>
+                        <Export-Package>
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!--
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-diagram</artifactId>
+            <version>${editor-platform-extension.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        -->
+
+        <!-- Quick and dirty bulk upload of original Signavio libraries -->
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>jbpt</artifactId>
+            <version>0.2.77</version>
+        </dependency>
+        -->
+    </dependencies>
+
+</project>

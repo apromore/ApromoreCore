@@ -38,6 +38,8 @@
     </menu>
     <menu id="design" label="Design">
         <menupopup>
+            <menuitem id="structProcess" label="Structure process" disabled="true" image="img/BPStruct.png"/>
+            <menuseparator/>
             <menuitem id="miningBPMNMiner" label="Automated discovery" disabled="true" image="img/icon/bpmn-22x22.png"/>
             <menuseparator/>
             <menuitem id="designMerging" label="Merging" disabled="true" image="/img/merge.png"/>
