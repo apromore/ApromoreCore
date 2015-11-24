@@ -4,16 +4,16 @@
         xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
     <artifact type="configuration" name="site" version="0" />
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-diagram"       version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpmn2_0"       version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpstruct"      version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-downloader"    version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-epc"           version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-jpdl"          version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-pdf"           version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-petrinet"      version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-syntaxchecker" version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-xpdl"          version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor-platform-extension-yawl"          version="[2.0, 3)"/>
-    <artifact type="bundle" name="org.apromore.editor" version="[2.0, 3)" />
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-diagram"       version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpmn2_0"       version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-bpstruct"      version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-downloader"    version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-epc"           version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-jpdl"          version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-pdf"           version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-petrinet"      version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-syntaxchecker" version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-xpdl"          version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-yawl"          version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor" version="[1.2, 2)" />
 </plan>

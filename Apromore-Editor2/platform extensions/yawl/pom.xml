@@ -7,17 +7,17 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-editor-parent</artifactId>
-        <version>2.0</version>
+        <version>1.2</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <artifactId>editor-platform-extension-yawl</artifactId>
     <packaging>bundle</packaging>
-    <version>2.0</version>
+    <version>1.2</version>
     <name>Apromore Editor Extension: YAWL</name>
 
     <properties>
-        <editor-platform-extension.version>2.0</editor-platform-extension.version>
+        <editor-platform-extension.version>1.2</editor-platform-extension.version>
     </properties>
 
     <build>

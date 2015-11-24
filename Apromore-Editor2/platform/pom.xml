@@ -7,18 +7,18 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-editor-parent</artifactId>
-        <version>2.0</version>
+        <version>1.2</version>
         <relativePath>../</relativePath>
     </parent>
 
     <artifactId>apromore-editor</artifactId>
     <packaging>war</packaging>
-    <version>2.0</version>
+    <version>1.2</version>
     <name>Apromore Editor</name>
 
     <properties>
         <batik.version>1.8</batik.version>
-        <editor-platform-extension.version>2.0</editor-platform-extension.version>
+        <editor-platform-extension.version>1.2</editor-platform-extension.version>
     </properties>
 
     <build>
@@ -57,7 +57,7 @@
                     <aggregations>
                         <aggregation>
                             <insertNewLine>false</insertNewLine>
-                            <output>${basedir}/target/apromore-editor-2.0/editor/apromore-editor.js</output>
+                            <output>${basedir}/target/apromore-editor-${version}/editor/apromore-editor.js</output>
                             <inputDir>${basedir}/src/main</inputDir>
                             <includes>
                                 <include>../../target/classes/site.properties.js</include>
@@ -107,8 +107,8 @@
                     </includes>
                     <jswarn>false</jswarn>
                     <nosuffix>false</nosuffix>
-                    <sourceDirectory>${basedir}/target/apromore-editor-2.0/editor</sourceDirectory>
-                    <outputDirectory>${basedir}/target/apromore-editor-2.0/editor</outputDirectory>
+                    <sourceDirectory>${basedir}/target/apromore-editor-${version}/editor</sourceDirectory>
+                    <outputDirectory>${basedir}/target/apromore-editor-${version}/editor</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -134,17 +134,17 @@
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Import-Bundle>
                             org.apache.catalina;version="[7.0.35.v201302131125,7.0.35.v201302131125]",
-                            org.apromore.editor-platform-extension-bpmn2_0;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-bpstruct;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-diagram;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-downloader;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-epc;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-jpdl;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-pdf;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-petrinet;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-syntaxchecker;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-xpdl;version="[2.0,3)",
-                            org.apromore.editor-platform-extension-yawl;version="[2.0,3)",
+                            org.apromore.editor-platform-extension-bpmn2_0;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-bpstruct;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-diagram;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-downloader;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-epc;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-jpdl;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-pdf;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-petrinet;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-syntaxchecker;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-xpdl;version="[1.2,2)",
+                            org.apromore.editor-platform-extension-yawl;version="[1.2,2)",
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             org.apromore.filestore-client;version="[1.0,1.1]",

@@ -13,7 +13,6 @@
 
     <artifactId>apromore-editor-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0</version>
     <name>Apromore Editor parent</name>
 
     <modules>
