@@ -23,6 +23,7 @@ package org.apromore.tools.cpfimporter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -33,12 +34,11 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apromore.manager.client.ManagerService;
+import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.model.FolderType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Simple application to import CPF and ANF files into Apromore so testing can be performed.
@@ -49,12 +49,10 @@ public final class Import {
 
     private final static String PWD = "./";
 
-    private static ManagerService manager;
+    private static ManagerService manager = null;
 
     /* The Canonical Process Importer Starting point. */
     public static void main(String[] args) throws Exception {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/managerClientContext.xml");
-        manager = (ManagerService) ctx.getAutowireCapableBeanFactory().getBean("managerClient");
 
         File fromDir = new File(PWD);  // default to reading files from the current directory
         File toDir = null;          // default to keeping the existing subdirectory path form inside the fromDir
@@ -71,6 +69,9 @@ public final class Import {
             case "--help":
                 displayHelp(System.out);
                 System.exit(0);
+                break;
+            case "-manager":
+                manager = new ManagerServiceClient(new URI(args[++i]));
                 break;
             case "-from":
                 fromDir = new File(args[++i]);
@@ -102,6 +103,7 @@ public final class Import {
         out.println("cpfImporter takes a list of the following arguments:\n" +
                     "  <file>                 add a single process model\n" +
                     "  <directory>            recursively add all process models in the directory\n" +
+                    "  -manager <url>         use the specified manager, e.g. http://localhost:9000/manager/services/manager\n" +
                     "  -from <directory>      use the specified base directory\n" +
                     "  -to <directory>        use the specified directory as the base folder within Apromore\n" +
                     "  -h, -help, --help, -?  show this message");
@@ -141,19 +143,23 @@ public final class Import {
 
                 String now = DateFormat.getInstance().format(new Date());
 
-                manager.importProcess(
-                    userName,                                     // user name
-                    parentId,                                     // folder ID
-                    getNativeFormat(ext),                         // native type
-                    FilenameUtils.getBaseName(toFile.getName()),  // process name
-                    "1.0",                                        // version number
-                    new FileInputStream(file),                    // XML serialization of the process
-                    "domain",
-                    "documentation",
-                    now,                                          // creation timestamp
-                    now,                                          // last modification timestamp
-                    true,                                         // make public?
-                    noCanoniserParameters);
+                if (manager == null) {
+                    LOGGER.error("Failed to load file {} because no -manager parameter was specified");
+                } else {
+                    manager.importProcess(
+                        userName,                                     // user name
+                        parentId,                                     // folder ID
+                        getNativeFormat(ext),                         // native type
+                        FilenameUtils.getBaseName(toFile.getName()),  // process name
+                        "1.0",                                        // version number
+                        new FileInputStream(file),                    // XML serialization of the process
+                        "domain",
+                        "documentation",
+                        now,                                          // creation timestamp
+                        now,                                          // last modification timestamp
+                        true,                                         // make public?
+                        noCanoniserParameters);
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Failed to load file {} due to {}", file.getName(), e.getMessage());
