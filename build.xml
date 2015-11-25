@@ -215,8 +215,9 @@
     <target name="install-sample-data">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
             <!-- Configurable BPMN samples -->
-            <arg value="-from"/> <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
-            <arg value="-to"/>   <arg value="airport"/>
+            <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
+            <arg value="-from"/>    <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
+            <arg value="-to"/>      <arg value="airport"/>
             <arg value="International departure.bpmn"/>
             <arg value="1 Terminal entry.bpmn"/>
             <arg value="1x Manage LAGs in belongings.bpmn"/>
