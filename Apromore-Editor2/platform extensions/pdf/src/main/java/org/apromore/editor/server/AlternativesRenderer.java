@@ -50,14 +50,14 @@ public class AlternativesRenderer extends HttpServlet {
             BufferedWriter out = new BufferedWriter(new FileWriter(inFile));
             out.write(data);
             out.close();
-            makePDF();
+            makePDF(inFile, outFile);
             res.getOutputStream().print(contextPath + "/tmp/" + baseFilename + ".pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected void makePDF() throws TranscoderException, IOException {
+    protected static void makePDF(String inFile, String outFile) throws TranscoderException, IOException {
         PDFTranscoder transcoder = new PDFTranscoder();
         InputStream in = new java.io.FileInputStream(inFile);
 

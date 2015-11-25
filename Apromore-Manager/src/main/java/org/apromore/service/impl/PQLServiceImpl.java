@@ -152,7 +152,7 @@ public class PQLServiceImpl implements PQLService {
             assert internalId > 0;
 
             // Perform the deletion
-            if (api.deleteIndex(internalId)) {
+            if (api.deleteModel(internalId)) {
                 LOGGER.info("Deleted model with PQL external id " + externalId + " and internal id " + internalId);
             } else {
                 throw new Exception("Failed to delete model with PQL external id " + externalId + " and internal id " + internalId);
