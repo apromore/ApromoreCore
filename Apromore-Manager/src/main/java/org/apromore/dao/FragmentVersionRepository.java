@@ -49,8 +49,16 @@ public interface FragmentVersionRepository extends JpaRepository<FragmentVersion
      * @param childFragmentVersionId the child fragment id.
      * @return the list of parent fragments.
      */
-    @Query("SELECT fvd FROM FragmentVersionDag fvd WHERE fvd.childFragmentVersion.id = ?1")
+    @Query("SELECT fvd FROM FragmentVersionDag fvd WHERE fvd.fragmentVersion.id = ?1")
     List<FragmentVersion> getParentFragments(Integer childFragmentVersionId);
+
+    /**
+     * Return the parent fragment for a fragment.
+     * @param childFragmentVersionId the child fragment id.
+     * @return the list of parent fragments.
+     */
+    @Query("SELECT fvd FROM FragmentVersionDag fvd WHERE fvd.childFragmentVersion.id = ?1")
+    List<FragmentVersion> getRealParentFragments(Integer childFragmentVersionId);
 
     /**
      * find all the parent fragments that are locked.

@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import java.lang.Object;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,7 +35,6 @@ import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.FragmentVersionRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.model.*;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ComposerService;
@@ -93,11 +94,15 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ReentrantLock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
 
+    private ExecutorService executor;
+
     private Set<FragmentVersion> getRootFragments(Integer fragmentID) {
         Set<FragmentVersion> rootFragments = new HashSet<>();
-        List parentFragments = fragmentVersionRepository.getParentFragments(fragmentID);
+        List parentFragments = fragmentVersionRepository.getRealParentFragments(fragmentID);
         if(parentFragments.isEmpty()) {
-            rootFragments.add(fragmentVersionRepository.findOne(fragmentID));
+            if(fragmentVersionRepository.findOne(fragmentID) != null) {
+                rootFragments.add(fragmentVersionRepository.findOne(fragmentID));
+            }
         }else {
             for(FragmentVersionDag fragmentVersionDag : (List<FragmentVersionDag>) parentFragments) {
                 if(!fragmentID.equals(fragmentVersionDag.getFragmentVersion().getId())) {
@@ -115,7 +120,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
             folders = new HashSet<>();
             for (FragmentVersion rootFragment : rootFragments) {
-                for(ProcessModelVersion processModelVersionRoot : rootFragment.getRootProcessModelVersions()) {
+                for (ProcessModelVersion processModelVersionRoot : rootFragment.getRootProcessModelVersions()) {
                     folders.add(processModelVersionRoot.getProcessBranch().getProcess().getFolder());
                 }
             }
@@ -201,7 +206,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         }
         writeLockDiss.unlock();
         if(clone != null && !clone.isEmpty()) {
-            new Thread(new MatrixStorer(clone)).start();
+            executor.execute(new MatrixStorer(clone));
         }
     }
 
@@ -266,12 +271,10 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
     public void computeDissimilarity() {
         Integer intraRoot;
-//        Integer interRoot;
-//        List<Integer> h1;
-//        List<Integer> h2;
+        executor = Executors.newFixedThreadPool(coresAvailable);
 
         startedTime = System.currentTimeMillis();
-        List<Integer> processedFragmentIds = new ArrayList<>();
+        Set<Integer> processedFragmentIds = new HashSet<>();
 
         dissimmap = new MultiKeyMap();
         int nfrag = crel.getNumberOfFragments();
@@ -288,48 +291,26 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
             while(coresUsed.get() >= coresAvailable) {
                 lock.lock();
-                try {
-                    condition.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                condition.awaitUninterruptibly();
                 lock.unlock();
-//                try {
-//                    Thread.currentThread().sleep(1000L);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
             }
 
             coresUsed.incrementAndGet();
-//            MatrixExecutor matrixExecutor = new MatrixExecutor(intraRoot, processedFragmentIds, roots, p);
-//            Thread t = new Thread(matrixExecutor);
-//            t.start();
 
-            new Thread(new MatrixExecutor(intraRoot, processedFragmentIds, roots, p)).start();
+            executor.execute(new MatrixExecutor(intraRoot, processedFragmentIds, roots, p));
+            processedFragmentIds.addAll(crel.getHierarchy(intraRoot));
+        }
 
-//            h1 = crel.getHierarchy(intraRoot);
-//            h1.removeAll(processedFragmentIds);
-//
-//            LOGGER.info("Processing Root: " + intraRoot);
-//            computeIntraHierarchyGEDs(h1);
-//
-//            if (p < roots.size() - 1) {
-//                for (int q = p + 1; q < roots.size(); q++) {
-//                    interRoot = roots.get(q);
-//                    h2 = crel.getHierarchy(interRoot);
-//                    computeInterHierarchyGEDs(h1, h2);
-//                }
-//            }
-//
-//            // at this point we have processed all fragments of h1, with fragments in the entire repository.
-//            // so we can remove all h1's fragments from the cache
-//            clearCaches(processedFragmentIds, h1);
+        while(coresUsed.get() > 0) {
+            lock.lock();
+            condition.awaitUninterruptibly();
+            lock.unlock();
         }
 
         // ged values are written to the database periodically after reporting period. if there are left over geds we have to write them here.
         saveDissimmap();
 
+        folderMap.clear();
         writtenDiss.clear();
 
         if(reporting.length() > 0) {
@@ -337,13 +318,20 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         }
     }
 
-    private void clearCaches(List<Integer> processedFragmentIds, List<Integer> h1) {
-        processedFragmentIds.addAll(h1);
+    private void clearCaches(List<Integer> h1) {
         for (Integer fragmentId : h1) {
             models.remove(fragmentId);
             canModels.remove(fragmentId);
         }
     }
+
+//    private void clearCaches(List<Integer> processedFragmentIds, List<Integer> h1) {
+//        processedFragmentIds.addAll(h1);
+//        for (Integer fragmentId : h1) {
+//            models.remove(fragmentId);
+//            canModels.remove(fragmentId);
+//        }
+//    }
 
 
     /* Computers the Intra (Outer) root fragments dissimilarity. */
@@ -395,15 +383,12 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
                 double percentage = (double) p * 100 / totalPairs;
                 percentage = (double) Math.round((percentage * 1000)) / 1000d;
                 int s = sizeDissimmap();
-                if (s > 0) {
+                if (s > 1000) {
                     LOGGER.info(p + " processed out of " + totalPairs + " | " + percentage + " % completed. | Elapsed time: " + duration + " s | Distances to write: " + s);
                     saveDissimmap();
                 }
             }
-        } catch (Exception e) {
-            reporting.append("Failed to compute GED between " + fid1 + " and " + fid2 + " due to " + e.getMessage() + ".\n");
-//            LOGGER.error("Failed to compute GED between {} and {} due to {}. GED computation between other fragments will proceed normally.", fid1, fid2, e.getMessage());
-        }
+        } catch (Exception e) { }
     }
 
 
@@ -496,13 +481,13 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         Integer interRoot;
         List<Integer> h1;
         List<Integer> h2;
-        List<Integer> processedFragmentIds;
+        Set<Integer> processedFragmentIds;
         List<Integer> roots;
         int p;
 
-        MatrixExecutor(Integer intraRoot, List<Integer> processedFragmentIds, List<Integer> roots, int p){
+        MatrixExecutor(Integer intraRoot, Set<Integer> processedFragmentIds, List<Integer> roots, int p){
             this.intraRoot = intraRoot;
-            this.processedFragmentIds = processedFragmentIds;
+            this.processedFragmentIds = (Set<Integer>) ((HashSet) processedFragmentIds).clone();
             this.roots = roots;
             this.p = p;
         }
@@ -510,29 +495,22 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         @Override
         public void run() {
             h1 = crel.getHierarchy(intraRoot);
-
-            List<Integer> cloneH1 = new ArrayList<Integer>(h1); //Added by Raf
-            cloneH1.removeAll(processedFragmentIds); //Added by Raf
-//            h1.removeAll(processedFragmentIds); //Removed by Raf
+            h1.removeAll(processedFragmentIds); //Added by Raf
 
             LOGGER.info("Processing Root: " + intraRoot);
-            computeIntraHierarchyGEDs(cloneH1); //Added by Raf
-//            computeIntraHierarchyGEDs(h1); //Removed by Raf
+            computeIntraHierarchyGEDs(h1); //Added by Raf
 
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
                     interRoot = roots.get(q);
                     h2 = crel.getHierarchy(interRoot);
-                    computeInterHierarchyGEDs(cloneH1, h2); //Added by Raf
-//                    computeInterHierarchyGEDs(h1, h2); //Removed by Raf
+                    computeInterHierarchyGEDs(h1, h2); //Added by Raf
                 }
             }
 
             // at this point we have processed all fragments of h1, with fragments in the entire repository.
             // so we can remove all h1's fragments from the cache
-            h1.removeAll(processedFragmentIds); //Added by Raf
-
-            clearCaches(processedFragmentIds, h1);
+            clearCaches(h1);
 
             coresUsed.decrementAndGet();
 

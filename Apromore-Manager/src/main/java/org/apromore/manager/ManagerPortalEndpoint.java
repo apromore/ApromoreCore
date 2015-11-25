@@ -159,6 +159,11 @@ public class ManagerPortalEndpoint {
         this.bpmnMinerService = bpmnMinerService;
         this.structuringService = structuringService;
 
+//        try {
+//            this.clusterService.computeGEDMatrix();
+//        } catch (RepositoryException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
