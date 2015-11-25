@@ -65,7 +65,11 @@ public class CandidatesEntitiesController extends BaseController {
             }
         });
 
-        this.candidateEntitiesW.doModal();
+        if(listCandidates != null && listCandidates.size() > 0) {
+            this.candidateEntitiesW.doModal();
+        }else {
+            next();
+        }
     }
 
     protected void cancel() {
