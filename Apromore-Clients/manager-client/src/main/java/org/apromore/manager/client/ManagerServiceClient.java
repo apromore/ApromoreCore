@@ -1283,7 +1283,7 @@ public class ManagerServiceClient implements ManagerService {
                 webServiceTemplate.marshalSendAndReceive(request);
 
         if (response.getValue().getResult().getCode() != 0) {
-            return null;
+            return response.getValue();
         }else {
             return response.getValue();
         }

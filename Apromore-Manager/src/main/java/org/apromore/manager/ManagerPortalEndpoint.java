@@ -1502,6 +1502,7 @@ public class ManagerPortalEndpoint {
         String name = payload.getProcessName();
         String branch = payload.getBranchName();
         Version version = new Version(payload.getVersionNumber());
+
         Integer folderId = payload.getFolderId();
         String username = payload.getUsername();
         String domain = payload.getDomain();
@@ -1532,7 +1533,7 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
         } catch (Exception e) {
             e.printStackTrace();
-            result.setMessage(e.getMessage());
+            result.setMessage(e.getClass().getName());
             result.setCode(1);
             res.setProcessSummary(null);
         }
