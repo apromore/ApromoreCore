@@ -17,7 +17,7 @@
 
     <properties>
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
-        <editor.version>2.0</editor.version>
+        <editor.version>1.2</editor.version>
     </properties>
 
     <dependencies>
