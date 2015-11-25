@@ -15,6 +15,6 @@ public interface BPMNMinerService {
 
     String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                              double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
-                             double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections);
+                             double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
 
 }

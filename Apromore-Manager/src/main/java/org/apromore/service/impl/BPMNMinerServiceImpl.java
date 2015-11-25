@@ -35,7 +35,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
     @Override
     public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
-                                    double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) {
+                                    double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
 
 		//this.LOGGER.info("discoverBPMNModel - started.");
 
@@ -99,42 +99,35 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
-//        if(structProcess) {
-//        	//this.LOGGER.info("structuring requested.");
-//        	ssi = new StructuringServiceImpl(diagram);
-//        	diagram = ssi.getStructuredDiagram();
-//        	//this.LOGGER.info("structuring completed.");
-//        }
-        
-        System.out.println("Output file:");
-        UIContext context = new UIContext();
-        UIPluginContext uiPluginContext = context.getMainPluginContext();
-        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
-        BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
-
-        sb.append(definitions.exportElements());
-        sb.append("</definitions>");
-
-        xmlProcessModel = sb.toString();
-
         if( structProcess ) {
-            //LOGGER.info("Structuring: " + xmlProcessModel);
-            ssi = new StructuringServiceImpl();
-            xmlProcessModel = ssi.structureBPMNModel(xmlProcessModel);
-            //LOGGER.info("Got: " + xmlProcessModel);
-        }
-		//this.LOGGER.info("PROCESS.xml:" + xmlProcessModel);
+        	ssi = new StructuringServiceImpl();
+            try {
+                xmlProcessModel = ssi.structureBPMNModel(diagram);
+            } catch (Exception e) {
+                LOGGER.error("Exception got while structuring the process!", e);
+                throw e;
+            }
+        } else {
+            System.out.println("Output file:");
+            UIContext context = new UIContext();
+            UIPluginContext uiPluginContext = context.getMainPluginContext();
+            BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+            BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
+            StringBuilder sb = new StringBuilder();
+            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
+                    "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
+                    "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
+                    "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
+                    "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
+                    "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
+                    "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
+
+            sb.append(definitions.exportElements());
+            sb.append("</definitions>");
+            xmlProcessModel = sb.toString();
+        }
         return xmlProcessModel;
     }
 
