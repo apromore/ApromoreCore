@@ -78,11 +78,11 @@ public class Diagram2BpmnConverterTest {
         assertEquals("sid-B8EA9D11-3DF2-46E9-8498-9351EEB1C3B4", airbus.getId());
         assertEquals(1, airbus.getIncoming().size());
         assertEquals("sid-B6C60809-2232-4F2B-B290-A4639AD05BCD", airbus.getIncoming().get(0).getId());
-        assertEquals(1, ((FlowNode) airbus).get_incomingSequenceFlows().size());
-        assertEquals("sid-B6C60809-2232-4F2B-B290-A4639AD05BCD", ((FlowNode) airbus).get_incomingSequenceFlows().get(0).getId());
+        assertEquals(1, ((FlowNode) airbus).getIncomingSequenceFlows().size());
+        assertEquals("sid-B6C60809-2232-4F2B-B290-A4639AD05BCD", ((FlowNode) airbus).getIncomingSequenceFlows().get(0).getId());
         assertEquals(1, airbus.getOutgoing().size());
         assertEquals("sid-F44D88A1-2E18-43E6-93C7-7F038AB2C2A1", airbus.getOutgoing().get(0).getId());
-        assertEquals(1, ((FlowNode) airbus).get_outgoingSequenceFlows().size());
-        assertEquals("sid-F44D88A1-2E18-43E6-93C7-7F038AB2C2A1", ((FlowNode) airbus).get_outgoingSequenceFlows().get(0).getId());
+        assertEquals(1, ((FlowNode) airbus).getOutgoingSequenceFlows().size());
+        assertEquals("sid-F44D88A1-2E18-43E6-93C7-7F038AB2C2A1", ((FlowNode) airbus).getOutgoingSequenceFlows().get(0).getId());
     }
 }
