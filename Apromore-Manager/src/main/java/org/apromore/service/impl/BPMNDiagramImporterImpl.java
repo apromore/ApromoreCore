@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.service.BPMNDiagramImporter;
+import org.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.processmining.models.graphbased.directed.DirectedGraphEdge;
 import org.processmining.models.graphbased.directed.DirectedGraphNode;
 import org.processmining.models.graphbased.directed.bpmn.*;
@@ -110,6 +111,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             buildEdges();
             fixBounds();
             checkCollapsedSubprocesses();
+            checkCollapsedPools();
 
             //LOGGER.info("Parsing DONE!");
             return diagram;
@@ -158,7 +160,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             tgt = flow.getTargetRef().getId();
             if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
                 diagram.addFlow(idToNode.get(src), idToNode.get(tgt), flow.getName());
-                //LOGGER.info("Adding Flow: " + src + " > " + tgt);
+                if( (idToNode.get(src) instanceof Event) || (idToNode.get(tgt) instanceof Event) )
+                        LOGGER.info("Adding Event Flow: " + src + " > " + tgt);
             } else LOGGER.info("[" + idToNode.containsKey(src) + ":" + idToNode.containsKey(tgt)  + "] Unfixable Flow: " + src + " > " + tgt);
         }
 
@@ -202,11 +205,60 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 e.setExceptionFor((Activity) idToNode.get(boundToFix.get(e)));
                 ((Activity) idToNode.get(boundToFix.get(e))).incNumOfBoundaryEvents();
             } else LOGGER.info("Unfixable boundaryEvent: " + e.getLabel() + " > " + boundToFix.get(e));
+
+        for( Event e : diagram.getEvents() )
+            if( (e.getEventUse() == Event.EventUse.CATCH) && (e.getEventType() == Event.EventType.INTERMEDIATE) && (diagram.getInEdges(e).size() == 0) ) {
+                if( e.getParentSubProcess() != null ) {
+                    e.setExceptionFor(e.getParentSubProcess());
+                    e.getParentSubProcess().incNumOfBoundaryEvents();
+                    LOGGER.info("found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
+                    SubProcess parentProcess = e.getParentSubProcess().getParentSubProcess();
+                    Swimlane pool = e.getParentSubProcess().getParentPool();
+                    e.getParentSubProcess().getChildren().remove(e);
+                    e.setParentSubprocess(parentProcess);
+                    if(e.getParentSwimlane() != null) e.getParentSwimlane().getChildren().remove(e);
+                    e.setParentSwimlane(pool);
+                    for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : diagram.getOutEdges(e) )
+                        fixExceptionFlowParents(oe.getTarget(), pool, parentProcess);
+                } else LOGGER.error("error fixing ghost boundary event: " + e.getId());
+            }
+    }
+
+    private void fixExceptionFlowParents(BPMNNode n, Swimlane pool, SubProcess parentProcess) {
+        if( (n.getParentPool() == pool) && (n.getParentSubProcess() == parentProcess) ) return;
+
+        if( n.getParentSubProcess() != null ) n.getParentSubProcess().getChildren().remove(n);
+        if( n.getParentPool() != null ) n.getParentPool().getChildren().remove(n);
+
+        n.setParentSubprocess(parentProcess);
+        n.setParentSwimlane(pool);
+
+        for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : diagram.getOutEdges(n) )
+            fixExceptionFlowParents(oe.getTarget(), pool, parentProcess);
     }
 
     private void checkCollapsedSubprocesses() {
         for( SubProcess sp : diagram.getSubProcesses() )
             if( sp.getChildren().size() == 0 ) sp.setBCollapsed(true);
+    }
+
+    private void checkCollapsedPools() {
+        boolean uselessPool;
+
+        for( Swimlane p : diagram.getPools() ) {
+            uselessPool = true;
+            for( ContainableDirectedGraphElement n : p.getChildren() )
+                    if( !(n instanceof SubProcess) ) uselessPool = false;
+
+            if(uselessPool) {
+                if( p.getChildren().size() != 0 )
+                    for( ContainableDirectedGraphElement n : p.getChildren() )
+                        if( n instanceof SubProcess ) ((SubProcess) n).setParentSwimlane(null);
+
+                diagram.removeSwimlane(p);
+                LOGGER.info("removed useless pool: " + p.getId());
+            }
+        }
     }
 
     /**** adding methods for BPMNNode objects ****/
@@ -250,7 +302,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 type = Event.EventType.INTERMEDIATE;
                 toFix = true;
                 activityID = ((TBoundaryEvent) event).getAttachedToRef().getLocalPart();
-                //LOGGER.info("Boundary event for > " + activityID);
+                LOGGER.info("Boundary event found: " + activityID + " < " + event.getId() );
             }
 
             if( ((TCatchEvent)event).getEventDefinition().size() > 1 ) trigger = Event.EventTrigger.MULTIPLE;
