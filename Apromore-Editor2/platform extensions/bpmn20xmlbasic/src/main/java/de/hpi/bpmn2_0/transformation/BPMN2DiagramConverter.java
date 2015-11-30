@@ -322,9 +322,10 @@ public class BPMN2DiagramConverter {
         Map<FlowNode, BasicShape>      subProcessShapeMap    = new HashMap<>();
 
         for (final FlowElement flowElement: flowElements) {
-            System.err.println("Flow element id " + flowElement.getId());
+            System.out.println("Analyzing flow element id " + flowElement.getId());
             BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, originX, originY);
             DiagramElement diagramElement = bpmndiMap.get(flowElement);
+            if(diagramElement == null) continue;
             diagramElement.acceptVisitor(visitor);
 
             if (flowElement instanceof FlowNode) {
