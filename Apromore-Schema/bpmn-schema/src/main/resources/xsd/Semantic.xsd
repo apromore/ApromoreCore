@@ -69,6 +69,7 @@
 			<xsd:extension base="tArtifact">
 				<xsd:attribute name="sourceRef" type="xsd:QName" use="required"/>
 				<xsd:attribute name="targetRef" type="xsd:QName" use="required"/>
+				<xsd:attribute name="name" type="xsd:string" use="optional"/>
 				<xsd:attribute name="associationDirection" type="tAssociationDirection" default="None"/>
 			</xsd:extension>
 		</xsd:complexContent>

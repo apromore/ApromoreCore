@@ -6,7 +6,7 @@ public interface StructuringService {
 
 	BPMNDiagram getStructuredDiagram();
 
-	String structureBPMNModel(BPMNDiagram diagram);
+	String structureBPMNModel(BPMNDiagram diagram) throws Exception;
 
-	String structureBPMNModel(String xmlProcess);
+	String structureBPMNModel(String xmlProcess) throws Exception;
 }

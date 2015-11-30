@@ -97,6 +97,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
             return result;
 
         } catch (Exception e) {
+            LOGGER.error("ERROR CANONISER: ", e);
             throw new CanoniserException("Could not canonise to BPMN stream", e);
         }
     }
