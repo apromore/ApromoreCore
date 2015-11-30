@@ -49,7 +49,7 @@ public interface FolderRepositoryCustom {
      * @param userId the users Id.
      * @return the list of ProcessModelVersion.
      */
-    List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(int parentFolderId, String userId);
+    List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(Integer parentFolderId, String userId);
 
 
     /**
