@@ -93,16 +93,11 @@ public class BPStructServlet extends HttpServlet {
             }
         } catch (Exception e) {
             try {
-                LOGGER.fatal(e.toString());
+                LOGGER.error(e.toString(), e);
                 res.setStatus(500);
                 res.setContentType("text/plain; charset=UTF-8");
-                if (e.getCause() != null) {
-                    res.getWriter().write(e.getCause().getMessage());
-                } else {
-                    res.getWriter().write(e.getMessage());
-                }
             } catch (Exception e1) {
-                e1.printStackTrace();
+                LOGGER.error(e.toString(), e);
             }
         }
     }
@@ -128,32 +123,32 @@ public class BPStructServlet extends HttpServlet {
         assert diagram != null;
 
         // Signavio Diagram -> BPMN DOM
-        Diagram2BpmnConverter bpmnConverter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
-        Definitions bpmn = bpmnConverter.getDefinitionsFromDiagram();
+        Diagram2BpmnConverter diagram2BpmnConverter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
+        Definitions unstructuredBpmnModel = diagram2BpmnConverter.getDefinitionsFromDiagram();
 
         // BPMN DOM -> BPMN-formatted String
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        jaxbContext.createMarshaller().marshal(bpmn, baos);
-        String bpmnString = baos.toString("utf-8");
-        LOGGER.info("PROCESS TO STRUCTURE:\n" + bpmnString);
+        jaxbContext.createMarshaller().marshal(unstructuredBpmnModel, baos);
+        String unstructuredBpmnModelString = baos.toString("utf-8");
+        LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
 
         // Ask the manager to restructure the BPMN-formatted String
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
         ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
-        //log("Users " + manager.readAllUsers());  // Confirm that we really can talk to the manager
-        String bpstructedBpmnString = manager.structureBPMNModel(bpmnString); // Call to Adriano's code will go here
-        LOGGER.info("PROCESS STRUCTURED:\n" + bpstructedBpmnString);
+
+        String structuredBpmnModelString = manager.structureBPMNModel(unstructuredBpmnModelString);
+        LOGGER.info("PROCESS STRUCTURED:\n" + structuredBpmnModelString);
 
         // BPMN-formatted String -> BPMN DOM
-        StreamSource source = new StreamSource(new StringReader(bpstructedBpmnString));
-        Definitions definitions = jaxbContext.createUnmarshaller().unmarshal(source, Definitions.class).getValue();
+        StreamSource source = new StreamSource(new StringReader(structuredBpmnModelString));
+        Definitions structuredBpmnModel = jaxbContext.createUnmarshaller().unmarshal(source, Definitions.class).getValue();
 
         // BPMN DOM -> Signavio Diagram
-        BPMN2DiagramConverter jsonConverter = new BPMN2DiagramConverter("/signaviocore/editor/");
-        List<BasicDiagram> diagrams = jsonConverter.getDiagramFromBpmn20(bpmn);
+        BPMN2DiagramConverter bpmn2DiagramConverter = new BPMN2DiagramConverter("/signaviocore/editor/");
+        List<BasicDiagram> diagrams = bpmn2DiagramConverter.getDiagramFromBpmn20(structuredBpmnModel);
         assert diagrams != null;
         if (diagrams.size() < 1) {
-            throw new Exception("Signavio JSON diagram could not be obtained from restructured BPMN model: " + bpstructedBpmnString);
+            throw new Exception("Signavio JSON diagram could not be obtained from restructured BPMN model: ");// + structuredBpmnModelString);
         }
         else if (diagrams.size() > 1) {
             log("Multiple diagrams obtained from restructured BPMN model; arbitrarily choosing the first to reload into the editor");

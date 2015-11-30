@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +20,8 @@ public class StructureProcessController extends BaseController  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StructureProcessController.class);
 
-    public StructureProcessController(final MainController mainC,HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+    public StructureProcessController(final MainController mainC, HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+
         try {
             for (ProcessSummaryType process : processVersions.keySet()) {
                 for (VersionSummaryType version : processVersions.get(process)) {
@@ -26,11 +29,6 @@ public class StructureProcessController extends BaseController  {
                     String processName = process.getName();
                     String branchName = version.getName();
                     String versionNumber = version.getVersionNumber();
-
-//                    LOGGER.info("00-Process ID > " + process.getId());
-//                    LOGGER.info("01-Process Name > " + process.getName());
-//                    LOGGER.info("10-Process Branch > " + version.getName());
-//                    LOGGER.info("11-Process Version > " + version.getVersionNumber());
 
                     int folderId = 0;
                     if( UserSessionManager.getCurrentFolder() != null )
@@ -42,7 +40,7 @@ public class StructureProcessController extends BaseController  {
 
                     StructureBPMNProcessOutputMsgType result = getService().structureBPMNProcess(processId, processName, branchName, versionNumber, username, folderId, domain);
 
-                    if( result != null ) {
+                    if( result.getResult().getCode() == 0 ) {
                         mainC.displayNewProcess(result.getProcessSummary());
                         Messagebox.show("Process: " + processName + " structured successful!");
                     } else {
