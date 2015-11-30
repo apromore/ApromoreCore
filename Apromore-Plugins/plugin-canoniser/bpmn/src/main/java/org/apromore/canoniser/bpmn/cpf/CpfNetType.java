@@ -223,6 +223,10 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
                                    // Arbitrarily assume a split -- can't tell from either the explicit direction or incoming/outgoing counts
                                    routing = new CpfXORSplitType();
                                    break;
+                               } else {
+                                   System.out.println("[Warning] Found a detached gateway while parsing: " + exclusiveGateway.getId() );
+                                   routing = new CpfXORSplitType();
+                                   break;
                                }
                             default:
                                 throw new RuntimeException(

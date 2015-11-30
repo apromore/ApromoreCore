@@ -46,10 +46,7 @@ import de.hpi.bpmn2_0.model.conversation.ConversationElement;
 import de.hpi.bpmn2_0.model.conversation.ConversationLink;
 import de.hpi.bpmn2_0.model.conversation.ConversationNode;
 import de.hpi.bpmn2_0.model.data_object.*;
-import de.hpi.bpmn2_0.model.event.BoundaryEvent;
-import de.hpi.bpmn2_0.model.event.CompensateEventDefinition;
-import de.hpi.bpmn2_0.model.event.Event;
-import de.hpi.bpmn2_0.model.event.SignalEventDefinition;
+import de.hpi.bpmn2_0.model.event.*;
 import de.hpi.bpmn2_0.model.extension.ExtensionElements;
 import de.hpi.bpmn2_0.model.extension.signavio.SignavioMessageName;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
@@ -356,12 +353,19 @@ public class Diagram2BpmnConverter {
                 continue;
             }
 
-            for (GenericShape outShape : shape.getOutgoingsReadOnly()) {
+            for (GenericShape<?, ?> outShape : shape.getOutgoingsReadOnly()) {
                 if (edgeIds.contains(outShape.getStencilId()))
                     continue;
-                IntermediateCatchEventFactory.changeToBoundaryEvent(
-                        this.bpmnElements.get(shape.getResourceId()),
-                        this.bpmnElements.get(outShape.getResourceId()));
+
+                BPMNElement activity = this.bpmnElements.get(shape.getResourceId());
+                BPMNElement event = this.bpmnElements.get(outShape.getResourceId());
+                IntermediateCatchEventFactory.changeToBoundaryEvent(activity, event);
+
+                System.out.println("StencilID: " + outShape.getStencilId());
+                outShape.setStencilId("BoundaryEvent");
+                System.out.println("new- StencilID: " + outShape.getStencilId());
+                System.out.println("new- StencilID: " + outShape.getQualifiedStencilId());
+
             }
         }
     }
@@ -377,8 +381,7 @@ public class Diagram2BpmnConverter {
             }
 
             /* Retrieve connector element */
-            BPMNElement bpmnConnector = this.bpmnElements.get(edge
-                    .getResourceId());
+            BPMNElement bpmnConnector = this.bpmnElements.get(edge.getResourceId());
 
             if (bpmnConnector == null) {
                 // This can happen in the case of unserialized edges, like the ones attached to a configuration annotation
@@ -752,6 +755,7 @@ public class Diagram2BpmnConverter {
         this.getAllNodesRecursively(this.diagramChilds, allNodes);
 
         // handle subprocesses => trivial
+        //allNodes contains all the nodes conteined by the elements collected at the beginning
         for (FlowNode flowNode : allNodes) {
             if (flowNode instanceof SubProcess) {
                 handleSubProcess((SubProcess) flowNode);
@@ -809,7 +813,6 @@ public class Diagram2BpmnConverter {
 
                 this.processes.add(process);
             }
-
         }
 
         /* Identify components within allNodes */
@@ -981,6 +984,7 @@ public class Diagram2BpmnConverter {
      * Adds the node to the connected set of nodes.
      *
      * @param process
+     * @param element
      * @param element
      * @param allNodes
      */
@@ -1836,7 +1840,6 @@ public class Diagram2BpmnConverter {
         this.setDefinitionsAttributes();
 
         /* Convert shapes to BPMN 2.0 elements */
-
         try {
             createBpmnElementsRecursively(diagram);
         } catch (Exception e) {
@@ -1933,6 +1936,11 @@ public class Diagram2BpmnConverter {
 
         this.checkUniquenessOfProcessIDs();
 
+        for(String id : this.bpmnElements.keySet()) {
+            System.out.print(bpmnElements.get(id).getNode().getId() + " > " + bpmnElements.get(id).getNode().getClass().getSimpleName());
+            if( bpmnElements.get(id).getNode() instanceof FlowElement ) System.out.println(" inside: " + ((((FlowElement) bpmnElements.get(id).getNode()).getSubProcess() == null) ? "top-Level" : ((FlowElement) bpmnElements.get(id).getNode()).getSubProcess().getId()) );
+            else System.out.println();
+        }
         return definitions;
     }
 
