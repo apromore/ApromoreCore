@@ -108,6 +108,22 @@ public interface ProcessModelVersionRepository extends JpaRepository<ProcessMode
     List<ProcessModelVersion> getLatestProcessModelVersions();
 
     /**
+     * Returns all the ProcessModels for all version or the latest versions.
+     * @return returns the list of processModelVersions
+     */
+    @Query("SELECT pmv FROM ProcessModelVersion pmv, ProcessBranch pb, GroupProcess gp, User u " +
+            "WHERE pb.id = pmv.processBranch.id " +
+            "AND pb.process = gp.process AND gp.group = u.group AND (u.rowGuid = ?1) " +
+            "AND pb.createDate in " +
+            "  (SELECT max(pb2.createDate) FROM ProcessBranch pb2 WHERE pb2.id = pmv.processBranch.id GROUP BY pb2.id) " +
+            "ORDER by pb.id, pb.createDate")
+    @QueryHints(value = {
+            @QueryHint(name = "eclipselink.query-results-cache", value = "true"),
+            @QueryHint(name = "eclipselink.query-results-cache.size", value = "1000")
+    }, forCounting = false)
+    List<ProcessModelVersion> getLatestProcessModelVersionsByUser(final String userId);
+
+    /**
      * Find all process model version that use the fragment version.
      * @param originalFragmentVersion the fragment version we are looking for that has been used.
      * @return the found list of process model versions.

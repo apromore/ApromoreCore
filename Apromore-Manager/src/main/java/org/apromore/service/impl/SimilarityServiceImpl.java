@@ -114,8 +114,13 @@ public class SimilarityServiceImpl implements SimilarityService {
         List<ProcessModelVersion> models;
         if (folderId == 0) {
             // We are searching the whole Repo.
+//            if (latestVersions) {
+//                models = processModelVersionRepo.getLatestProcessModelVersions();
+//            } else {
+//                models = processModelVersionRepo.findAll();
+//            }
             if (latestVersions) {
-                models = processModelVersionRepo.getLatestProcessModelVersions();
+                models = processModelVersionRepo.getLatestProcessModelVersionsByUser(userGuid);
             } else {
                 models = processModelVersionRepo.findAll();
             }
