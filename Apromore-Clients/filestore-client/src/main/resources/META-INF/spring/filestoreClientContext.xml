@@ -16,12 +16,6 @@
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="fileStoreServiceTemplate" />
     </bean>
 
-    <bean id="fileStoreServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
-          p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${site.host}:${site.port}/${site.filestore}">
-        <constructor-arg ref="messageFactory"/>
-    </bean>
-
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
         <property name="soapVersion">
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11" />
@@ -33,6 +27,12 @@
 
     <bean id="serviceMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"
           p:contextPath="org.apromore.model" />
+
+    <bean id="fileStoreServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
+          p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
+          p:defaultUri="http://${site.host}:${site.port}/${site.filestore}">
+        <constructor-arg ref="messageFactory"/>
+    </bean>
 
     <!-- for clients connecting from outside a redirector (e.g. mapping port 80 to port 9000) -->
 
