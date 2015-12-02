@@ -96,11 +96,11 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
 
 
     /**
-     * @see FolderRepositoryCustom#getProcessModelVersionByFolderUserRecursive(int, String)
+     * @see FolderRepositoryCustom#getProcessModelVersionByFolderUserRecursive(Integer, String)
      * {@inheritDoc}
      */
     @Override
-    public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(int parentFolderId, String userId) {
+    public List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(Integer parentFolderId, String userId) {
         List<ProcessModelVersion> processes = new ArrayList<>();
         processes.addAll(getProcessModelVersions(groupProcessRepository.findAllProcessesInFolderForUser(parentFolderId, userId)));
 
