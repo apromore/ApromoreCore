@@ -340,7 +340,7 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 		}
 
 		IntermediateCatchEvent ice = (IntermediateCatchEvent) event.getNode();
-		System.out.println("Event class- " + event.getClass().getSimpleName());
+//		System.out.println("Event class- " + event.getClass().getSimpleName());
 
 		BoundaryEvent bEvent = new BoundaryEvent();
 
@@ -357,7 +357,7 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 
 		for(de.hpi.bpmn2_0.model.connector.Edge e : ice.getOutgoing()) bEvent.getOutgoing().add(e);
 		bEvent.setSubProcess(ice.getSubProcess());
-		System.out.println("subProcess- SET: " + ((bEvent.getSubProcess() == null) ? "top-Level" : bEvent.getSubProcess().getId()) );
+//		System.out.println("subProcess- SET: " + ((bEvent.getSubProcess() == null) ? "top-Level" : bEvent.getSubProcess().getId()) );
 
 		bEvent.setSubChoreography(ice.getSubChoreography());
 		bEvent.setProcessid(ice.getProcessid());
@@ -383,10 +383,10 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 			}
 		}
 
-		System.out.println(bEvent.getId() + " attachedTo " + bEvent.getAttachedToRef().getId());
-		System.out.println(bEvent.getId() + " boundary event refs: " + bEvent.getAttachedToRef().getBoundaryEventRefs());
-		System.out.println(bEvent.getId() + " attached boundary event refs: " + bEvent.getAttachedToRef().getAttachedBoundaryEvents());
-		System.out.println(bEvent.getAttachedToRef().getId() + " outgoing " + bEvent.getOutgoing());
+//		System.out.println(bEvent.getId() + " attachedTo " + bEvent.getAttachedToRef().getId());
+//		System.out.println(bEvent.getId() + " boundary event refs: " + bEvent.getAttachedToRef().getBoundaryEventRefs());
+//		System.out.println(bEvent.getId() + " attached boundary event refs: " + bEvent.getAttachedToRef().getAttachedBoundaryEvents());
+//		System.out.println(bEvent.getAttachedToRef().getId() + " outgoing " + bEvent.getOutgoing());
 
 	}
 }

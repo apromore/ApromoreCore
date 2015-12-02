@@ -1520,10 +1520,13 @@ public class ManagerPortalEndpoint {
         String creationDate = dateFormat.format(date);
         String lastUpdate = dateFormat.format(date);
         boolean publicModel = false;
+        String structResult = "";
 
         try {
             String xmlBPMNProcess = procSrv.getBPMNRepresentation(name, processId, branch, version);
             String structBPMNProcess = structuringService.structureBPMNModel(xmlBPMNProcess);
+            for( Long l : structuringService.getErrors().keySet() )
+                structResult += "\nprocess_" + l + ":" + structuringService.getErrors().get(l);
 
             version = new Version("1.0");
             Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
@@ -1534,8 +1537,8 @@ public class ManagerPortalEndpoint {
                     nativeType, domain, creationDate, lastUpdate, username, publicModel);
 
             res.setProcessSummary(process);
-            result.setMessage("Process: " + name + " structured successfully!");
-            result.setCode(0);
+            result.setMessage("Structuring result:" + structResult);
+                    result.setCode(0);
         } catch (Exception e) {
             e.printStackTrace();
             result.setMessage(e.getClass().getName());

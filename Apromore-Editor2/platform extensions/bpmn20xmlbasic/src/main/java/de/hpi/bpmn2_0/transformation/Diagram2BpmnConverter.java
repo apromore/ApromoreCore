@@ -361,10 +361,10 @@ public class Diagram2BpmnConverter {
                 BPMNElement event = this.bpmnElements.get(outShape.getResourceId());
                 IntermediateCatchEventFactory.changeToBoundaryEvent(activity, event);
 
-                System.out.println("StencilID: " + outShape.getStencilId());
-                outShape.setStencilId("BoundaryEvent");
-                System.out.println("new- StencilID: " + outShape.getStencilId());
-                System.out.println("new- StencilID: " + outShape.getQualifiedStencilId());
+//                System.out.println("StencilID: " + outShape.getStencilId());
+//                outShape.setStencilId("BoundaryEvent");
+//                System.out.println("new- StencilID: " + outShape.getStencilId());
+//                System.out.println("new- StencilID: " + outShape.getQualifiedStencilId());
 
             }
         }
@@ -1936,11 +1936,12 @@ public class Diagram2BpmnConverter {
 
         this.checkUniquenessOfProcessIDs();
 
-        for(String id : this.bpmnElements.keySet()) {
-            System.out.print(bpmnElements.get(id).getNode().getId() + " > " + bpmnElements.get(id).getNode().getClass().getSimpleName());
-            if( bpmnElements.get(id).getNode() instanceof FlowElement ) System.out.println(" inside: " + ((((FlowElement) bpmnElements.get(id).getNode()).getSubProcess() == null) ? "top-Level" : ((FlowElement) bpmnElements.get(id).getNode()).getSubProcess().getId()) );
-            else System.out.println();
-        }
+//        for(String id : this.bpmnElements.keySet()) {
+//            System.out.print(bpmnElements.get(id).getNode().getId() + " > " + bpmnElements.get(id).getNode().getClass().getSimpleName());
+//            if( bpmnElements.get(id).getNode() instanceof FlowElement ) System.out.println(" inside: " + ((((FlowElement) bpmnElements.get(id).getNode()).getSubProcess() == null) ? "top-Level" : ((FlowElement) bpmnElements.get(id).getNode()).getSubProcess().getId()) );
+//            else System.out.println();
+//        }
+
         return definitions;
     }
 

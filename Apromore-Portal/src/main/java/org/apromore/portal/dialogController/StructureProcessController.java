@@ -42,7 +42,7 @@ public class StructureProcessController extends BaseController  {
 
                     if( result.getResult().getCode() == 0 ) {
                         mainC.displayNewProcess(result.getProcessSummary());
-                        Messagebox.show("Process: " + processName + " structured successful!");
+                        Messagebox.show("Structuring result: " + result.getResult().getMessage());
                     } else {
                         Messagebox.show(result.getResult().getMessage() + " - failed to structure process: " + processName, "Attention", Messagebox.OK, Messagebox.ERROR);
                     }
