@@ -104,7 +104,7 @@ public class InMemoryClusterer {
         LOGGER.debug("Starting the clustering process...");
         long t1 = System.currentTimeMillis();
         while (!unprocessedFragments.isEmpty()) {
-            LOGGER.info("Still to process: " + unprocessedFragments.size());
+            if(unprocessedFragments.size() % 1000 == 0) LOGGER.info("Still to process: " + unprocessedFragments.size());
             FragmentDataObject unclassifiedFragment = unprocessedFragments.remove(0);
             if (unclassifiedFragment != null) {
                 if (2 < unclassifiedFragment.getSize() && unclassifiedFragment.getSize() < settings.getMaxClusteringFragmentSize()) {
