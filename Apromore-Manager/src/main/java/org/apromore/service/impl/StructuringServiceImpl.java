@@ -75,8 +75,15 @@ public class StructuringServiceImpl implements StructuringService {
 	private Map<Long, String> idToJson;
 
     private boolean isValid;
+	private Map<Long, String> errors;
 
 	public StructuringServiceImpl() { }
+
+	@Override
+	public Map<Long, String> getErrors() {
+		if( isValid ) return this.errors;
+		else return null;
+	}
 
 	@Override
 	public BPMNDiagram getStructuredDiagram() {
@@ -131,11 +138,12 @@ public class StructuringServiceImpl implements StructuringService {
 		xmlProcessChecked = xmlProcessChecked.replaceAll(">&#10;", ">\n");
 		xmlProcessChecked = xmlProcessChecked.replaceAll("\"&#10;", "\"\n");
 
-		LOGGER.info("Final Process >\n" + xmlProcessChecked);
+		//LOGGER.info("Final Process >\n" + xmlProcessChecked);
 		return xmlProcessChecked;
 	}
 
 	private void structureDiagram() throws Exception {
+		errors = new HashMap<>();
 		taskCounter = 0;
 		unmappableEdges = new HashSet<>();
 		unmappableNodes = new HashSet<>();
@@ -228,7 +236,7 @@ public class StructuringServiceImpl implements StructuringService {
 		for( SubProcess sp : subProcessesToParse )
 			if( sp.getParentSubProcess() == parent ) {
 				generateJson(subProcessToID.get(sp), diagram.getFlows(sp));
-				LOGGER.info("Analyzed: subProcess_" + subProcessToID.get(sp));
+				//LOGGER.info("Analyzed: subProcess_" + subProcessToID.get(sp));
 				analyzed.add(sp);
 			}
 
@@ -565,25 +573,29 @@ public class StructuringServiceImpl implements StructuringService {
 			jResponse = bpStruct(jProcess.toString());
             //jResponse = jProcess.toString();
 			if( jResponse == null ) throw new Exception("Process NULL.");
-			LOGGER.info("Response:" + jResponse);
+			LOGGER.info("Response GOT.");
+			errors.put(processID, "Successfully structured.");
 		} catch (Exception e) {
-			LOGGER.info(e.getClass().getSimpleName() + " - ERROR [" + e.getMessage() + "] for process: " + Long.toString(processID));
-            if( retry ) {
+			if( retry ) {
                 try {
                     LOGGER.info("Attempting again, without OR gates");
                     jProcess.deleteORgates();
                     LOGGER.info("Process:" + jProcess.toString());
                     jResponse = bpStruct(jProcess.toString());
                     if( jResponse == null ) throw new Exception("Process NULL.");
-                    LOGGER.info("Response:" + jResponse);
+                    LOGGER.info("Response GOT.");
+					errors.put(processID, "Successfully structured [turned OR into XOR].");
                 } catch (Exception ee) {
                     LOGGER.error("Exception [" + ee.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", ee);
                     jResponse = jProcess.toString();
-                    LOGGER.info("Response [COPY of Process]:" + jResponse);
+                    LOGGER.info("Response COPIED.");
+					errors.put(processID, "Got exception in bpstruct, check manager.log.");
                 }
             } else {
+				LOGGER.error("Exception [" + e.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", e);
                 jResponse = jProcess.toString();
-                LOGGER.info("Response [COPY of Process]:" + jResponse);
+                LOGGER.info("Response COPIED.");
+				errors.put(processID, "Got exception in bpstruct, check manager.log.");
             }
 		}
 
@@ -691,12 +703,12 @@ public class StructuringServiceImpl implements StructuringService {
 		if( blackMark ) {
 			if( !blackList.containsKey(node) ) blackList.put(node, new HashSet<BPMNNode>());
 		} else {
-			LOGGER.info("Duplicating (" + blackMark + "): " + node.getClass().getSimpleName() + " : " + node.getId() + " with Parent: " + (parentProcess == null ? "top-Level" : parentProcess.getId()));
+			//LOGGER.info("Duplicating (" + blackMark + "): " + node.getClass().getSimpleName() + " : " + node.getId() + " with Parent: " + (parentProcess == null ? "top-Level" : parentProcess.getId()));
 			if( !whiteList.containsKey(node) ) whiteList.put(node, new HashSet<BPMNNode>());
 		}
 
 		if( node instanceof SubProcess ) {
-            LOGGER.info("Duplicating subProcess: " + node.getId());
+            //LOGGER.info("Duplicating subProcess: " + node.getId());
 			BPMNNode src, tgt, osrc, otgt;
 			boolean mark;
             HashMap<BPMNNode, BPMNNode> mapping = new HashMap<>();
