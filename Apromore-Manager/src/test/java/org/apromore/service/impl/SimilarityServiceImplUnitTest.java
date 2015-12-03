@@ -111,7 +111,7 @@ public class SimilarityServiceImplUnitTest {
         pvs.getProcessVersion().add(pv);
 
         expect(pmvDao.getLatestProcessModelVersion(processId, "MAIN")).andReturn(pmv);
-        expect(pmvDao.getLatestProcessModelVersions()).andReturn(pmvList);
+        expect(pmvDao.getLatestProcessModelVersionsByUser("admin")).andReturn(pmvList);
         expect(canSvc.XMLtoCPF(null)).andReturn(cpf).times(2);
         expect(uiHelp.buildProcessSummaryList("admin", 0, pvs)).andReturn(null);  // <-- this is where we compare expected and actual results
 
