@@ -92,12 +92,6 @@ public class PQLIndexerConfigurationBean {
             " pql.postgres.name=" + postgresName +
             " pql.postgres.user=" + postgresUser);
 
-        try {
-            this.mysql = new MySQLConnection(mysqlURL, mysqlUser, mysqlPassword);
-        } catch(ClassNotFoundException | SQLException e) {
-            throw new PQLIndexerConfigurationException("MySQL connection could not be created", e);
-        }
-
         this.isIndexingEnabled      = isIndexingEnabled;
         this.defaultBotSleepTime    = defaultBotSleepTime;
         this.defaultBotMaxIndexTime = defaultBotMaxIndexTime;
@@ -117,6 +111,18 @@ public class PQLIndexerConfigurationBean {
 
         PQLBasicPredicatesMC bp = new PQLBasicPredicatesMC(mc);
         
+        
+        try {
+            this.mysql = new MySQLConnection(mysqlURL, mysqlUser, mysqlPassword);
+        } catch(ClassNotFoundException | SQLException e) {
+            if (isIndexingEnabled) {
+                throw new PQLIndexerConfigurationException("MySQL connection could not be created", e);
+            } else {
+                LoggerFactory.getLogger(getClass()).info("MySQL connection could not be created for PQL indexer, but this doesn't matter since indexing is disabled.");
+                return;
+            }
+        }
+
         // Initialize labelManager
         ILabelManager labelManager;
         try {

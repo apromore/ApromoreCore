@@ -361,6 +361,8 @@ public class Diagram2BpmnConverter {
                 BPMNElement event = this.bpmnElements.get(outShape.getResourceId());
                 IntermediateCatchEventFactory.changeToBoundaryEvent(activity, event);
 
+                this.diagramChilds.add(event);
+
 //                System.out.println("StencilID: " + outShape.getStencilId());
 //                outShape.setStencilId("BoundaryEvent");
 //                System.out.println("new- StencilID: " + outShape.getStencilId());

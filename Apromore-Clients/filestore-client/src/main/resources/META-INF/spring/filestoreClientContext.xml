@@ -9,17 +9,11 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
-    <context:property-placeholder properties-ref="filestoreClientProperties"/>
     <osgi-compendium:cm-properties id="filestoreClientProperties" persistent-id="site"/>
+    <context:property-placeholder properties-ref="filestoreClientProperties"/>
 
     <bean id="fileStoreClient" class="org.apromore.filestore.client.FileStoreServiceClient">
         <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="fileStoreServiceTemplate" />
-    </bean>
-
-    <bean id="fileStoreServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
-          p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
-          p:defaultUri="http://${site.host}:${site.port}/${site.filestore}">
-        <constructor-arg ref="messageFactory"/>
     </bean>
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
@@ -33,6 +27,12 @@
 
     <bean id="serviceMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"
           p:contextPath="org.apromore.model" />
+
+    <bean id="fileStoreServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"
+          p:marshaller-ref="serviceMarshaller" p:unmarshaller-ref="serviceMarshaller" p:messageSender-ref="httpSender"
+          p:defaultUri="http://${site.host}:${site.port}/${site.filestore}">
+        <constructor-arg ref="messageFactory"/>
+    </bean>
 
     <!-- for clients connecting from outside a redirector (e.g. mapping port 80 to port 9000) -->
 
