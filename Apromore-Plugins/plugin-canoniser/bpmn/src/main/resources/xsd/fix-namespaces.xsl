@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2015 The Apromore Initiative.
+  ~ Copyright (c) 2009-2015 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
