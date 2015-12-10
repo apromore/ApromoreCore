@@ -464,7 +464,6 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.svg"/></div>
      */
-    //@Ignore("Tests the case when CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testCanoniseSubprocess() throws Exception {
         CanonicalProcessType cpf = testCanonise("Subprocess.bpmn");
@@ -538,7 +537,6 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
     /**
      * Test canonization of the <a href="{@docRoot}/../../../src/test/resources/BPMN_models/ch4_ExpenseReport2.bpmn">chapter 4 expense report example</a>.
      */
-    //@Ignore("Tests the case where CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testCh4ExpenseReport2() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("ch4_ExpenseReport2.bpmn");
@@ -696,7 +694,6 @@ public class CpfCanonicalProcessTypeUnitTest implements TestConstants {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Terminate.svg"/></div>
      */
-    //@Ignore("Tests case where CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS is true")
     @Test
     public void testTerminate() throws Exception {
         CpfCanonicalProcessType cpf = testCanonise("Terminate.bpmn");
