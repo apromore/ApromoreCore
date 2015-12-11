@@ -39,26 +39,32 @@ public class TranslateOriginalIDS {
     public void mapIDS() {
         for (PlaceType place : data.getNet().getPlace()) {
             if (!place.getId().contains("CENTER_PLACE_")) {
-                originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(place.getId())));
-                if (originalid != null) {
-                    place.setId(originalid);
-                }
+                try {
+                    originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(place.getId())));
+                    if (originalid != null) {
+                        place.setId(originalid);
+                    }
+                } catch (NumberFormatException e) { /* do nothing */ }
             }
         }
         for (TransitionType tran : data.getNet().getTransition()) {
             if (!tran.getId().contains("op")) {
-                originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(tran.getId())));
-                if (originalid != null) {
-                    tran.setId(originalid);
-                }
+                try {
+                    originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(tran.getId())));
+                    if (originalid != null) {
+                        tran.setId(originalid);
+                    }
+                } catch (NumberFormatException e) { /* do nothing */ }
             }
         }
         for (ArcType arc : data.getNet().getArc()) {
             if (!arc.getId().contains("a")) {
-                originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(arc.getId())));
-                if (originalid != null) {
-                    arc.setId(originalid);
-                }
+                try {
+                    originalid = data.get_originalid_map_value(BigInteger.valueOf(Long.valueOf(arc.getId())));
+                    if (originalid != null) {
+                        arc.setId(originalid);
+                    }
+                } catch (NumberFormatException e) { /* do nothing */ }
             }
         }
     }
