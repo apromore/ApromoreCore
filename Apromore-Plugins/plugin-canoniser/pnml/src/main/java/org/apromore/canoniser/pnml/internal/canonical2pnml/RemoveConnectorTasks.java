@@ -177,7 +177,9 @@ public class RemoveConnectorTasks {
                     if (nodemap.containsKey(node.getName())) {
                         NodeType remove = nodemap.get(node.getName());
                         EdgeType upedge = joinmap.get(remove.getId());
-                        upedge.setSourceId(node.getId());
+                        if (upedge != null) {
+                            upedge.setSourceId(node.getId());
+                        }
                         removenodes.add(remove);
                         // net.getNode().remove(remove);
                         if (node instanceof ANDJoinType) {
@@ -193,7 +195,9 @@ public class RemoveConnectorTasks {
                     if (nodemap.containsKey(node.getName())) {
                         NodeType remove = nodemap.get(node.getName());
                         EdgeType upedge = splitmap.get(remove.getId());
-                        upedge.setTargetId(node.getId());
+                        if (upedge != null) {
+                            upedge.setTargetId(node.getId());
+                        }
                         removenodes.add(remove);
                         if (node instanceof ANDSplitType) {
                             data.put_andsplitmap(node.getName(),

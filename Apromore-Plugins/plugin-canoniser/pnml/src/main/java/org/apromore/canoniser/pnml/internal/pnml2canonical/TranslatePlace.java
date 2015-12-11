@@ -57,14 +57,18 @@ public abstract class TranslatePlace {
         // (event)
         EventType node = new EventType();
         node.setId(String.valueOf(data.nextId()));
-        node.setName(place.getName().getText());
+        if (place.getName() != null) {
+            node.setName(place.getName().getText());
+        }
         node.setOriginalID(place.getId());
         data.getNet().getNode().add(node);
 
         // (state)
         StateType state = new StateType();
         state.setId(String.valueOf(data.nextId()));
-        state.setName(place.getName().getText());
+        if (place.getName() != null) {
+            state.setName(place.getName().getText());
+        }
         data.setInputEvent(state.getId());
         data.getNet().getNode().add(state);
 
@@ -82,14 +86,18 @@ public abstract class TranslatePlace {
         // (event)
         EventType node = new EventType();
         node.setId(String.valueOf(data.nextId()));
-        node.setName(place.getName().getText());
+        if (place.getName() != null) {
+            node.setName(place.getName().getText());
+        }
         node.setOriginalID(place.getId());
         data.getNet().getNode().add(node);
 
         // (state)
         StateType state = new StateType();
         state.setId(String.valueOf(data.nextId()));
-        state.setName(place.getName().getText());
+        if (place.getName() != null) {
+            state.setName(place.getName().getText());
+        }
         data.setOutputState(state.getId());
         data.getNet().getNode().add(state);
 
