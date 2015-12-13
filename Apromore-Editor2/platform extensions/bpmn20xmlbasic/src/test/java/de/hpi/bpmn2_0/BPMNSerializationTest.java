@@ -1,20 +1,20 @@
 /*
- * Copyright © 2009-2014 The Apromore Initiative.
+ * Copyright © 2009-2015 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
  * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
@@ -55,7 +55,7 @@ public class BPMNSerializationTest {
 	//final static String path = "C:\\Users\\Sven Wagner-Boysen\\workspace\\oryx\\editor\\server\\src\\de\\hpi\\bpmn2_0\\";
 	final static String path = "platform extensions/bpmn20xmlbasic/src/de/hpi/bpmn2_0/";
 	//final static String schemaFilePath = "C:\\Users\\Sven Wagner-Boysen\\workspace\\oryx\\editor\\lib\\xsd\\bpmn20\\Bpmn20.xsd";
-	final static String schemaFilePath = "platform extensions/syntaxchecker/src/de/hpi/bpmn2_0/validation/xsd/BPMN20.xsd";
+	final static String schemaFilePath = "src/test/xsd/BPMN20.xsd";
 	
 	final static String batchPath = "C:\\Users\\Sven Wagner-Boysen\\Documents\\oryx\\BPMN2.0\\TestProcesses";
 	final static boolean doBatchTest = false;
