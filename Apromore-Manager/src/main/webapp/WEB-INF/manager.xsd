@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2009-2015 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:manager"
            xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            targetNamespace="urn:qut-edu-au:schema:apromore:manager"
@@ -893,6 +913,7 @@
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderName" type="xs:string"/>
         <xs:attribute name="parentFolderId" type="xs:int"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderOutputMsgType">
@@ -915,6 +936,7 @@
     <xs:complexType name="UpdateFolderInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="folderName" type="xs:string"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="UpdateFolderOutputMsgType">

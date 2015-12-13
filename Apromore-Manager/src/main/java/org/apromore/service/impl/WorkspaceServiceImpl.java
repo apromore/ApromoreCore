@@ -1,20 +1,20 @@
 /*
- * Copyright © 2009-2014 The Apromore Initiative.
+ * Copyright © 2009-2015 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
  * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
@@ -127,7 +127,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public void createFolder(String userId, String folderName, Integer parentFolderId) {
+    public void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
         Folder folder = new Folder();
         folder.setName(folderName);
         User user = userRepo.findByRowGuid(userId);
@@ -146,6 +146,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         folder.setDateCreated(Calendar.getInstance().getTime());
         folder.setDateModified(Calendar.getInstance().getTime());
         folder.setDescription("");
+        if(isGEDMatrixReady != null) folder.setGEDMatrixReady(isGEDMatrixReady);
         folder = folderRepo.save(folder);
 
         GroupFolder gf = new GroupFolder();
@@ -159,9 +160,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void updateFolder(Integer folderId, String folderName) {
+    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady) {
         Folder folder = folderRepo.findOne(folderId);
         folder.setName(folderName);
+        if(isGEDMatrixReady != null) folder.setGEDMatrixReady(isGEDMatrixReady);
     }
 
     @Override
