@@ -8,6 +8,26 @@
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 
+<!--
+  ~ Copyright © 2009-2015 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -124,6 +144,7 @@
                             <button id="btnAddProcess" label="" image="img/new.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
                             <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
                             <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
+                            <button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>
                             <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/key.png" tooltiptext="Security"/>
                         </hbox>
                     </hbox>
