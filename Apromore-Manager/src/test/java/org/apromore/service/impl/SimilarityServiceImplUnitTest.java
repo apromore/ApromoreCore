@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2015 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package org.apromore.service.impl;
 
 // Java 2 Standard packages
@@ -111,7 +131,7 @@ public class SimilarityServiceImplUnitTest {
         pvs.getProcessVersion().add(pv);
 
         expect(pmvDao.getLatestProcessModelVersion(processId, "MAIN")).andReturn(pmv);
-        expect(pmvDao.getLatestProcessModelVersions()).andReturn(pmvList);
+        expect(pmvDao.getLatestProcessModelVersionsByUser("admin")).andReturn(pmvList);
         expect(canSvc.XMLtoCPF(null)).andReturn(cpf).times(2);
         expect(uiHelp.buildProcessSummaryList("admin", 0, pvs)).andReturn(null);  // <-- this is where we compare expected and actual results
 

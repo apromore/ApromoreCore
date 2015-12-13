@@ -20,13 +20,16 @@
 
 package de.hpi.bpmn2_0.transformation;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import com.sun.xml.bind.IDResolver;
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import static com.processconfiguration.ConfigurationAlgorithmTest.testsDirectory;
@@ -37,6 +40,7 @@ import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 
 /**
  * Test that applies {@link BPMN2DiagramConverter} followed by {@link Diagram2BpmnConverter}.
@@ -46,28 +50,56 @@ import org.oryxeditor.server.diagram.basic.BasicDiagram;
 public class RoundTrippingTest {
 
   /**
+   * Round-trip a trivial BPMN model.
+   */
+  @Test public void testCase1() throws Exception {
+      roundTrip("Case 1.bpmn");
+  }
+
+  /**
    * Confirm that a BPMN boundary event is retained during a round trip to JSON and back.
    */
-  @Ignore("Boundary events can't be round-tripped yet")
   @Test public void testCase12() throws Exception {
+      roundTrip("Case 12.bpmn");
+  }
 
+  /**
+   * @param fileName  a BPMN file in the test/resources/data directory
+   */
+  private void roundTrip(String fileName) throws Exception {
+    
     // Parse BPMN from XML to JAXB
     Unmarshaller unmarshaller = JAXBContext.newInstance(Definitions.class,
                                                         ConfigurationAnnotationAssociation.class,
                                                         ConfigurationAnnotationShape.class)
                                            .createUnmarshaller();
     unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-    Definitions definitions = (Definitions) unmarshaller.unmarshal(new File(new File(testsDirectory, "data"), "Case 12.bpmn"));
+    Definitions definitions = (Definitions) unmarshaller.unmarshal(new File(new File(testsDirectory, "data"), fileName));
 
     // BPMN JAXB to JSON
     BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
     List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
+    assertEquals(1, diagrams.size());
+    File json = new File("target/test-RoundTripping." + fileName + ".json");
+    FileWriter writer = new FileWriter(json);
+    writer.write(diagrams.get(0).getJSON().toString());
+    writer.close();
+
+    // Yoinked from BPMNSerializationTest
+    BufferedReader br = new BufferedReader(new FileReader(json));
+                String bpmnJson = "";
+                String line;
+                while ((line = br.readLine()) != null) {
+                        bpmnJson += line;
+                }
+    BasicDiagram diagram = BasicDiagramBuilder.parseJson(bpmnJson);
+
     // JSON to BPMN JAXB
-    Diagram2BpmnConverter converter2 = new Diagram2BpmnConverter(diagrams.get(0), AbstractBpmnFactory.getFactoryClasses());
+    Diagram2BpmnConverter converter2 = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
     Definitions definitions2 = converter2.getDefinitionsFromDiagram();
 
     // Examine the resultant BPMN XML
-    assertValidBPMN(definitions2, "test-RoundTripping.testCase12.bpmn");
+    assertValidBPMN(definitions2, "test-RoundTripping." + fileName + ".json.bpmn");
   }
 }
