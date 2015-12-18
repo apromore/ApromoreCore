@@ -62,13 +62,11 @@ $ mysqladmin -u root password MAcri
 
 Create a database named 'apromore' in your MySQL server
 $ mysqladmin --user=root --password=MAcri create apromore
-$ mysqladmin --user=root --password=MAcri create pql
 
 Create a user named 'apromore' with the required permissions
 $ mysql --user=root --password=MAcri
 	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
 	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON apromore.* TO 'apromore'@'localhost';
-	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON pql.* TO 'apromore'@'localhost';
 
 Create and populate the database tables.
 $ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
@@ -87,6 +85,10 @@ PQL requires its own MySQL database, distinct from the main Apromore database.  
 Create a database named 'pql' in your MySQL server
 $ mysqladmin --user=root --password=MAcri create pql
 
+Grant the appropriate permissions to the 'apromore' user
+$ mysql --user=root --password=MAcri
+	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON pql.* TO 'apromore'@'localhost';
+
 Create and populate the database tables.
 $ mysql --user=root --password=MAcri < Supplements/database/pql.sql
 
@@ -98,3 +100,20 @@ In site.properties, perform the following changes:
 Stop and restart the server so that it picks up the changes to site.properties.
 NOTE: a known bug prevents the server from shutting down cleanly while PQL indexing is enabled.
 The workaround is to force-quit the server from the OS.
+
+
+COMMON PROBLEMS
+===============
+
+Server fails to start.
+* If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
+* If you already run another server (e.g. OS X Server) may need to change the port number 8443 in Supplements/Virgo/tomcat-server.xml.
+
+Login screen appears, but "admin" / "password" doesn't work.
+* You may need to run "ant create-h2" to populate the H2 database.
+
+Models always show up in the log as unable to be indexed.
+* Check that LoLA executable is correctly configured.
+
+Where is the server log?
+* Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/serviceability/logs/log.log
