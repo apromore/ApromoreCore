@@ -215,7 +215,7 @@ public class StructuringServiceImpl implements StructuringService {
         parsePool(null);
 		parseSubProcesses(null);
 
-		LOGGER.info("Total gateways found: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+		LOGGER.info("Total gateways before structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
 
 		xorGates = 0;
 		andGates = 0;
@@ -235,6 +235,9 @@ public class StructuringServiceImpl implements StructuringService {
 			if( err ) throw new Exception("Unable to rebuild the subProcess_" + idp);
 		}
 
+		LOGGER.info("Total gateways after structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+		LOGGER.info("Total duplicates: " + matrices.size());
+
 		/**** STEP5: restore edges and boundary, start, end events where feasible ****/
         restoreEdges();
 		restoreEvents();
@@ -243,8 +246,6 @@ public class StructuringServiceImpl implements StructuringService {
 		removeDoubleEdges();
 		for( Gateway g : new HashSet<>(diagram.getGateways()) ) checkFakeGateway(g);
 
-		LOGGER.info("Total final gateways found: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
-		LOGGER.info("Total duplicates: " + matrices.size());
 	}
 
 	private void parsePool(Swimlane pool) {
@@ -515,6 +516,7 @@ public class StructuringServiceImpl implements StructuringService {
 		JsonFlow jFlow;
 		JsonProcess jProcess;
 		String jResponse;
+		String jResponse_tmp;
 
 		BPMNNode src, tgt;
 		UUID srcUID, tgtUID;
@@ -590,30 +592,30 @@ public class StructuringServiceImpl implements StructuringService {
 		try {
 			//LOGGER.info("Process:" + jProcess.toString());
 			jResponse = bpStruct(jProcess.toString());
-            //jResponse = jProcess.toString();
 			if( jResponse == null ) throw new Exception("Process NULL.");
-			LOGGER.info("Response GOT.");
+			LOGGER.info("Process_" + processID + ": Response GOT.");
 			errors.put(processID, "Successfully structured.");
 		} catch (Exception e) {
 			if( orGates != 0 ) {
+				jResponse_tmp = jProcess.toString();
                 try {
                     LOGGER.info("Attempting again, without OR gates");
                     jProcess.deleteORgates();
                     //LOGGER.info("Process:" + jProcess.toString());
                     jResponse = bpStruct(jProcess.toString());
                     if( jResponse == null ) throw new Exception("Process NULL.");
-                    LOGGER.info("Response GOT.");
+                    LOGGER.info("Process_" + processID + ": Response GOT.");
 					errors.put(processID, "Successfully structured [turned OR into XOR].");
                 } catch (Exception ee) {
-                    LOGGER.error("Exception [" + ee.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", ee);
-                    jResponse = jProcess.toString();
-                    LOGGER.info("Response COPIED.");
+                    LOGGER.error("Exception [" + ee.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t");
+                    LOGGER.info("Process_" + processID + ": Response COPIED.");
 					errors.put(processID, "Got exception in bpstruct, check manager.log.");
+					jResponse = jResponse_tmp;
                 }
             } else {
-				LOGGER.error("Exception [" + e.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", e);
+				LOGGER.error("Exception [" + e.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t");
                 jResponse = jProcess.toString();
-                LOGGER.info("Response COPIED.");
+                LOGGER.info("Process_" + processID + ": Response COPIED.");
 				errors.put(processID, "Got exception in bpstruct, check manager.log.");
             }
 		}
@@ -623,7 +625,7 @@ public class StructuringServiceImpl implements StructuringService {
 	}
 
 	private boolean rebuildProcess(long processID) {
-		LOGGER.info("Rebuilding: subProcess_" + processID);
+		LOGGER.info("Rebuilding: Process_" + processID);
 		SubProcess parentProcess;
 
 		Set<Long> greyList = new HashSet<>();
