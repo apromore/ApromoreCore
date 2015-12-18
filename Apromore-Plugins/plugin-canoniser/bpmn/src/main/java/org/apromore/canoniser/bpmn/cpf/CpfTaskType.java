@@ -1,20 +1,20 @@
 /*
- * Copyright © 2009-2014 The Apromore Initiative.
+ * Copyright © 2009-2015 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
  * "Apromore" is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
  *
  * "Apromore" is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
@@ -53,7 +53,7 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
      * We can indicate a BPMN Subprocess by creating a link from a CPF Task to a CPF Net,
      * but because the net won't contain any nodes it'll be invalid CPF.
      */
-    public static boolean CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS = true;
+    public static boolean CREATE_PLACEHOLDER_CPF_NET_FOR_EMPTY_BPMN_SUBPROCESS = false;
 
     // Extension attribute names
 
@@ -109,7 +109,7 @@ public class CpfTaskType extends TaskType implements CpfWorkType {
                        final Initializer initializer,
                        final NetType     net) throws CanoniserException {
 
-        if (CREATE_PLACEHOLDER_CPF_NET_FOR_BPMN_SUBPROCESS) {
+        if (CREATE_PLACEHOLDER_CPF_NET_FOR_EMPTY_BPMN_SUBPROCESS || !subProcess.getFlowElement().isEmpty()) {
             // Add the CPF child net
             NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.newId("subprocess")),
                                             net,
