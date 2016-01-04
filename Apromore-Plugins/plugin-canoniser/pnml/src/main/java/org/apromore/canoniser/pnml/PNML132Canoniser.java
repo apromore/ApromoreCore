@@ -46,6 +46,7 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.pnml.NetType;
+import org.apromore.pnml.PNMLSchema;
 import org.apromore.pnml.PnmlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,6 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
                                    final OutputStream         nativeOutput,
                                    final PluginRequest        request) throws CanoniserException {
         try {
-
             Canonical2PNML canonical2pnml = new Canonical2PNML(
                 canonicalFormat,
                 annotationFormat,
@@ -169,10 +169,10 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
                 request.getRequestParameter(CPF_EDGE_TO_PNML_PLACE).getValue()
             );
 
-            marshalNativeFormat(canonical2pnml.getPNML(), nativeOutput);
+            PNMLSchema.marshalPNMLFormat(nativeOutput, canonical2pnml.getPNML(), false);
 
             return newPluginResult();
-        } catch (JAXBException | PluginPropertyNotFoundException e) {
+        } catch (JAXBException | PluginPropertyNotFoundException | SAXException | RuntimeException e) {
             throw new CanoniserException(e);
         }
     }
@@ -182,14 +182,6 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
         JAXBContext jc1 = JAXBContext.newInstance(PNML_CONTEXT, org.apromore.pnml.ObjectFactory.class.getClassLoader());
         Unmarshaller u = jc1.createUnmarshaller();
         return (JAXBElement<PnmlType>) u.unmarshal(nativeFormat);
-    }
-
-    private void marshalNativeFormat(final PnmlType pnml, final OutputStream nativeFormat) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(PNML_CONTEXT, org.apromore.pnml.ObjectFactory.class.getClassLoader());
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<PnmlType> rootepml = new org.apromore.pnml.ObjectFactory().createPnml(pnml);
-        m.marshal(rootepml, nativeFormat);
     }
 
     /* (non-Javadoc)
@@ -203,8 +195,9 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
                                                   final Date          processCreated,
                                                   final PluginRequest request) {
         try {
-            marshalNativeFormat(createEmptyPNML(), nativeOutput);
-        } catch (JAXBException e) {
+            PNMLSchema.marshalPNMLFormat(nativeOutput, createEmptyPNML(), false);
+            //marshalNativeFormat(createEmptyPNML(), nativeOutput);
+        } catch (JAXBException | SAXException e) {
             LOGGER.error("Could not create initial PNML", e);
         }
         return newPluginResult();
