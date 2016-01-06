@@ -153,6 +153,12 @@ ORYX.I18N.BPStruct.group = "BPStruct";
 ORYX.I18N.BPStruct.upload = "laden";
 ORYX.I18N.BPStruct.uploadDesc = "Datei hochladen, um BPStruct";
 
+if(!ORYX.I18N.Measurement) ORYX.I18N.Measurement = {};
+
+ORYX.I18N.Measurement.group = "Measurement";
+ORYX.I18N.Measurement.upload = "laden";
+ORYX.I18N.Measurement.uploadDesc = "Datei hochladen, um Measurement";
+
 if(!ORYX.I18N.File) ORYX.I18N.File = {};
 
 ORYX.I18N.File.group = "File";

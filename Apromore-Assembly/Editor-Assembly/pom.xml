@@ -85,6 +85,12 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-measurement</artifactId>
+            <version>${editor.version}</version>
+            <type>bundle</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-pdf</artifactId>
             <version>${editor.version}</version>
             <type>bundle</type>
