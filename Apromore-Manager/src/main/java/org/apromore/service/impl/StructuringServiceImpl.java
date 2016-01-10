@@ -69,6 +69,10 @@ public class StructuringServiceImpl implements StructuringService {
 	private BPMNDiagram diagram;		//initial diagram
 	private long taskCounter = 0;		//id for processes and tasks
 
+	private long xorGates;
+	private long andGates;
+	private long orGates;
+
 	/**** not mappable elements on bpStruct json scheme ****/
 	private Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> unmappableEdges;
 	private Set<BPMNNode> unmappableNodes;
@@ -109,6 +113,15 @@ public class StructuringServiceImpl implements StructuringService {
 	public BPMNDiagram getStructuredDiagram() {
 		if( isValid ) return this.diagram;
         else return null;
+	}
+
+	@Override
+	public BPMNDiagram structureDiagram(BPMNDiagram diagram) throws Exception {
+		isValid = false;
+		this.diagram = diagram;
+		structureDiagram();
+		isValid = true;
+		return this.diagram;
 	}
 
 	@Override
@@ -183,6 +196,10 @@ public class StructuringServiceImpl implements StructuringService {
 		matrices = new HashMap<>();
 		idToJson = new HashMap<>();
 
+		xorGates = 0;
+		andGates = 0;
+		orGates = 0;
+
 		Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeToRemove = new HashSet<>();
 		Set<BPMNNode> nodeToRemove = new HashSet<>();
 
@@ -218,6 +235,12 @@ public class StructuringServiceImpl implements StructuringService {
         parsePool(null);
 		parseSubProcesses(null);
 
+		LOGGER.info("Total gateways before structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+
+		xorGates = 0;
+		andGates = 0;
+		orGates = 0;
+
 		/**** STEP3: remove all the edges and not mappable nodes from the diagram ****/
 		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getEdges() ) edgeToRemove.add(e);
 		for( Gateway g : diagram.getGateways() ) nodeToRemove.add(g);
@@ -232,6 +255,9 @@ public class StructuringServiceImpl implements StructuringService {
 			if( err ) throw new Exception("Unable to rebuild the subProcess_" + idp);
 		}
 
+		LOGGER.info("Total gateways after structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+		LOGGER.info("Total duplicates: " + matrices.size());
+
 		/**** STEP5: restore edges and boundary, start, end events where feasible ****/
         restoreEdges();
 		restoreEvents();
@@ -239,6 +265,7 @@ public class StructuringServiceImpl implements StructuringService {
 		/**** STEP6: fixing possible not valid configurations ****/
 		removeDoubleEdges();
 		for( Gateway g : new HashSet<>(diagram.getGateways()) ) checkFakeGateway(g);
+
 	}
 
 	private void parsePool(Swimlane pool) {
@@ -509,7 +536,7 @@ public class StructuringServiceImpl implements StructuringService {
 		JsonFlow jFlow;
 		JsonProcess jProcess;
 		String jResponse;
-        boolean retry = false;
+		String jResponse_tmp;
 
 		BPMNNode src, tgt;
 		UUID srcUID, tgtUID;
@@ -540,9 +567,6 @@ public class StructuringServiceImpl implements StructuringService {
 				} else {
 					taskCounter++;
 					if(tgt instanceof Gateway) {
-                        if( (((Gateway) tgt).getGatewayType() == Gateway.GatewayType.COMPLEX) ||
-                            (((Gateway) tgt).getGatewayType() == Gateway.GatewayType.INCLUSIVE) ) retry = true;
-
 						jGate = new JsonGateway(taskCounter, ((Gateway) tgt).getGatewayType());
 						gateways.add(jGate);
 						tgtUID = jGate.uid;
@@ -565,9 +589,6 @@ public class StructuringServiceImpl implements StructuringService {
 				} else {
 					taskCounter++;
 					if (src instanceof Gateway) {
-                        if( (((Gateway) src).getGatewayType() == Gateway.GatewayType.COMPLEX) ||
-                            (((Gateway) src).getGatewayType() == Gateway.GatewayType.INCLUSIVE) ) retry = true;
-
 						jGate = new JsonGateway(taskCounter, ((Gateway) src).getGatewayType());
 						gateways.add(jGate);
 						srcUID = jGate.uid;
@@ -589,32 +610,32 @@ public class StructuringServiceImpl implements StructuringService {
 		jProcess = new JsonProcess(Long.toString(processID), tasks, gateways, flows);
 
 		try {
-			LOGGER.info("Process:" + jProcess.toString());
+			//LOGGER.info("Process:" + jProcess.toString());
 			jResponse = bpStruct(jProcess.toString());
-            //jResponse = jProcess.toString();
 			if( jResponse == null ) throw new Exception("Process NULL.");
-			LOGGER.info("Response GOT.");
+			LOGGER.info("Process_" + processID + ": Response GOT.");
 			errors.put(processID, "Successfully structured.");
 		} catch (Exception e) {
-			if( retry ) {
+			if( orGates != 0 ) {
+				jResponse_tmp = jProcess.toString();
                 try {
                     LOGGER.info("Attempting again, without OR gates");
                     jProcess.deleteORgates();
-                    LOGGER.info("Process:" + jProcess.toString());
+                    //LOGGER.info("Process:" + jProcess.toString());
                     jResponse = bpStruct(jProcess.toString());
                     if( jResponse == null ) throw new Exception("Process NULL.");
-                    LOGGER.info("Response GOT.");
+                    LOGGER.info("Process_" + processID + ": Response GOT.");
 					errors.put(processID, "Successfully structured [turned OR into XOR].");
                 } catch (Exception ee) {
-                    LOGGER.error("Exception [" + ee.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", ee);
-                    jResponse = jProcess.toString();
-                    LOGGER.info("Response COPIED.");
+                    LOGGER.error("Exception [" + ee.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t");
+                    LOGGER.info("Process_" + processID + ": Response COPIED.");
 					errors.put(processID, "Got exception in bpstruct, check manager.log.");
+					jResponse = jResponse_tmp;
                 }
             } else {
-				LOGGER.error("Exception [" + e.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t", e);
+				LOGGER.error("Exception [" + e.getClass().getSimpleName() + "] for process: " + Long.toString(processID) + "\t");
                 jResponse = jProcess.toString();
-                LOGGER.info("Response COPIED.");
+                LOGGER.info("Process_" + processID + ": Response COPIED.");
 				errors.put(processID, "Got exception in bpstruct, check manager.log.");
             }
 		}
@@ -624,7 +645,7 @@ public class StructuringServiceImpl implements StructuringService {
 	}
 
 	private boolean rebuildProcess(long processID) {
-		LOGGER.info("Rebuilding: subProcess_" + processID);
+		LOGGER.info("Rebuilding: Process_" + processID);
 		SubProcess parentProcess;
 
 		Set<Long> greyList = new HashSet<>();
@@ -709,9 +730,16 @@ public class StructuringServiceImpl implements StructuringService {
 	private Gateway pushGateway(String gateType, SubProcess parentProcess, long processID) {
 		Gateway g = null;
 
-		if( gateType.equalsIgnoreCase("xor") ) g = diagram.addGateway("", Gateway.GatewayType.DATABASED, parentProcess );
-		else if( gateType.equalsIgnoreCase("or") ) g = diagram.addGateway("", Gateway.GatewayType.INCLUSIVE, parentProcess );
-		else if( gateType.equalsIgnoreCase("and") ) g = diagram.addGateway("", Gateway.GatewayType.PARALLEL, parentProcess );
+		if( gateType.equalsIgnoreCase("xor") ) {
+			g = diagram.addGateway("", Gateway.GatewayType.DATABASED, parentProcess);
+			xorGates++;
+		} else if( gateType.equalsIgnoreCase("or") ) {
+			g = diagram.addGateway("", Gateway.GatewayType.INCLUSIVE, parentProcess);
+			orGates++;
+		} else if( gateType.equalsIgnoreCase("and") ) {
+			g = diagram.addGateway("", Gateway.GatewayType.PARALLEL, parentProcess);
+			andGates++;
+		}
 
         if( g != null && idToPool.containsKey(processID) ) g.setParentSwimlane(idToPool.get(processID));
 		return g;
@@ -1132,13 +1160,16 @@ public class StructuringServiceImpl implements StructuringService {
 			switch( type ) {
 			case DATABASED:
 			case EVENTBASED:
+						xorGates++;
 						sType = "XOR";
 						break;
 			case INCLUSIVE:
 			case COMPLEX:
-						sType = "OR";//XOR
+						orGates++;
+						sType = "OR";
 						break;
 			case PARALLEL:
+						andGates++;
 						sType = "AND";
 						break;
 			}
