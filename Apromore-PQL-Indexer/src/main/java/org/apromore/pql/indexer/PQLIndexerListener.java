@@ -64,7 +64,8 @@ public class PQLIndexerListener implements ServletContextListener {
         // Create PQL bot
         try {
             bot = config.createBot();
-            bot.run();
+            bot.setDaemon(true);
+            bot.start();
             LOGGER.info("PQL Indexer created bot");
 
         } catch (PQLIndexerConfigurationException e) {
