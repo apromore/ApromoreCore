@@ -33,6 +33,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
+import org.apromore.dao.FolderRepository;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.FragmentVersionRepository;
 import org.apromore.dao.model.*;
@@ -56,6 +57,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
 
+    private FolderRepository folderRepo;
     private FragmentVersionRepository fragmentVersionRepository;
 
     private ContainmentRelation crel;
@@ -135,7 +137,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
         for(Folder folder1 : foldersRoot1) {
             for(Folder folder2 : foldersRoot2) {
-                if(isSubFolder(folder1, folder2) || isSubFolder(folder2, folder1)) {
+                if(isGEDFolder(folder1) && isGEDFolder(folder2) && (isSubFolder(folder1, folder2) || isSubFolder(folder2, folder1))) {
                     return true;
                 }
             }
@@ -145,6 +147,11 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     private boolean isSameFolder(Folder folder1, Folder folder2) {
         return convertFolderToString(folder1).equals(convertFolderToString(folder2));
+    }
+
+    private boolean isGEDFolder(Folder folder1) {
+        Folder folder = folderRepo.findOne(folder1.getId());
+        return folder.isGEDMatrixReady();
     }
 
     private String convertFolderToString(Folder folder) {
@@ -212,10 +219,11 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
     @Inject
     public HierarchyAwareDissimMatrixGenerator(final ContainmentRelation rel, final FragmentDistanceRepository fragDistRepo,
-            final ComposerService compSrv, final FragmentVersionRepository fragmentVersionRepository) {
+            final ComposerService compSrv, final FragmentVersionRepository fragmentVersionRepository, final  FolderRepository folderRepository) {
         crel = rel;
         fragmentDistanceRepository = fragDistRepo;
         composerService = compSrv;
+        folderRepo = folderRepository;
         this.fragmentVersionRepository = fragmentVersionRepository;
     }
 

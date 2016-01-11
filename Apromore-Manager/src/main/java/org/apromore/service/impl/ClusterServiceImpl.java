@@ -35,6 +35,7 @@ import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.ClusterService;
 import org.apromore.service.FragmentService;
+import org.apromore.service.GEDMatrixBean;
 import org.apromore.service.HistoryEventService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.apromore.service.model.ClusterFilter;
@@ -85,6 +86,8 @@ public class ClusterServiceImpl implements ClusterService {
 
     private DMatrix dmatrix;
 
+    private GEDMatrixBean gedMatrixBean;
+
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -99,7 +102,7 @@ public class ClusterServiceImpl implements ClusterService {
     public ClusterServiceImpl(final ClusterRepository clusterRepository, final ClusterAssignmentRepository clusterAssignmentRepository,
             final FragmentDistanceRepository fragmentDistanceRepository, final HistoryEventService historyEventService,
             final FragmentService fragmentService, final InMemoryClusterer inMemoryClusterer, final HACClusterer hacClusterer,
-            final DMatrix matrix) {
+            final DMatrix matrix, final GEDMatrixBean gedMatrixBean) {
         cRepository = clusterRepository;
         caRepository = clusterAssignmentRepository;
         fdRepository = fragmentDistanceRepository;
@@ -108,6 +111,7 @@ public class ClusterServiceImpl implements ClusterService {
         hacCluster = hacClusterer;
         fService = fragmentService;
         dmatrix = matrix;
+        this.gedMatrixBean = gedMatrixBean;
     }
 
 
@@ -139,15 +143,17 @@ public class ClusterServiceImpl implements ClusterService {
     @Event(message = HistoryEnum.GED_MATRIX_COMPUTATION)
     public void computeGEDMatrix() throws RepositoryException {
         LOGGER.debug("Computing the GED Matrix....");
-        clearGEDMatrix();
+        if(gedMatrixBean.isEnabled()) {
+            clearGEDMatrix();
 
-        try {
-            dmatrix.compute();
-        } catch (Exception e) {
-            LOGGER.error("An error occurred while computing the GED matrix for the first time. This could result in lesser number of clusters. PLEASE RERUN THE COMPUTATION.", e);
-            throw new RepositoryException(e);
+            try {
+                dmatrix.compute();
+            } catch (Exception e) {
+                LOGGER.error("An error occurred while computing the GED matrix for the first time. This could result in lesser number of clusters. PLEASE RERUN THE COMPUTATION.", e);
+                throw new RepositoryException(e);
+            }
+            LOGGER.debug("Completed computing the GED Matrix....");
         }
-        LOGGER.debug("Completed computing the GED Matrix....");
     }
 
     /**

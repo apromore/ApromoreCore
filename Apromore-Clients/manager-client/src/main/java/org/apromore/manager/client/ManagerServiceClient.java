@@ -89,7 +89,7 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @param managerEndpointURLString  the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
      */
     private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
 
@@ -378,7 +378,7 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void createFolder(String userId, String folderName, int parentFolderId) {
+    public void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         CreateFolderInputMsgType msg = new CreateFolderInputMsgType();
@@ -409,12 +409,27 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void updateFolder(int folderId, String folderName) {
+    public boolean isGEDReadyFolder(int folderId) {
+        LOGGER.debug("Preparing addProcessToFolderRequest.....");
+
+        IsGEDReadyInputMsgType msg = new IsGEDReadyInputMsgType();
+        msg.setFolderId(folderId);
+
+        JAXBElement<IsGEDReadyInputMsgType> request = WS_CLIENT_FACTORY.createIsGEDReadyRequest(msg);
+
+        JAXBElement<IsGEDReadyOutputMsgType> response = (JAXBElement<IsGEDReadyOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().isGEDReady();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void updateFolder(int folderId, String folderName, Boolean isGEDMatrixReady) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         UpdateFolderInputMsgType msg = new UpdateFolderInputMsgType();
         msg.setFolderId(folderId);
         msg.setFolderName(folderName);
+        msg.setGEDMatrixReady(isGEDMatrixReady);
 
         JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
 

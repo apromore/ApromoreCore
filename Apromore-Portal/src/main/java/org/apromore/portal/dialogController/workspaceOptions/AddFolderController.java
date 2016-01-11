@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class AddFolderController extends BaseController {
 
@@ -42,6 +43,7 @@ public class AddFolderController extends BaseController {
     private Textbox txtName;
     private Checkbox checkboxGED;
     private int folderId;
+    private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
 
     public AddFolderController(MainController mainController, int folderId, String name, Boolean isGEDMatrixReady) throws DialogException {
         this.mainController = mainController;
@@ -50,11 +52,7 @@ public class AddFolderController extends BaseController {
 //            final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
             final Window win = getWindow(name, isGEDMatrixReady);
 
-            if (folderId != 0) {
-                this.folderId = folderId;
-                if(name != null) txtName.setValue(name);
-                if(isGEDMatrixReady != null) checkboxGED.setValue(isGEDMatrixReady);
-            }
+            this.folderId = folderId;
 
             folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -90,10 +88,14 @@ public class AddFolderController extends BaseController {
             win = (Window) Executions.createComponents("macros/folderGED.zul", null, null);
             this.folderEditWindow = (Window) win.getFellow("winFolderGED");
             this.checkboxGED = (Checkbox) this.folderEditWindow.getFellow("checkboxGED");
+            this.checkboxGED.setChecked(isGEDMatrixReady);
+            this.txtName = null;
         }else if(name != null) {
             win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
             this.folderEditWindow = (Window) win.getFellow("winFolderRename");
+            this.checkboxGED = null;
             this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
+            this.txtName.setValue(name);
         }
 
         this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
@@ -109,13 +111,14 @@ public class AddFolderController extends BaseController {
     private void save() throws InterruptedException {
         try {
             String folderName = txtName!=null?txtName.getValue():null;
-            boolean isGEDMatrixReady = checkboxGED!=null?checkboxGED.isChecked():null;
-            if (folderName.isEmpty()) {
+            Boolean isGEDMatrixReady = checkboxGED!=null?checkboxGED.isChecked():null;
+            if (txtName != null && folderName.isEmpty()) {
                 Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
-                String userId = UserSessionManager.getCurrentUser().getId();
-                int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+                LOGGER.warning("folderName " + folderName);
                 if (this.folderId == 0) {
+                    String userId = UserSessionManager.getCurrentUser().getId();
+                    int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
                     this.mainController.getService().createFolder(userId, folderName, currentParentFolderId, isGEDMatrixReady);
                 } else {
                     this.mainController.getService().updateFolder(this.folderId, folderName, isGEDMatrixReady);
@@ -124,6 +127,10 @@ public class AddFolderController extends BaseController {
                 this.mainController.reloadProcessSummaries();
             }
         } catch (Exception ex) {
+            LOGGER.warning("Exception ");
+            StackTraceElement[] trace = ex.getStackTrace();
+            for (StackTraceElement traceElement : trace)
+                LOGGER.warning("\tat " + traceElement);
 
         }
         this.folderEditWindow.detach();
