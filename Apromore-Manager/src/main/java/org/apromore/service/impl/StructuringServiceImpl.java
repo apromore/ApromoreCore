@@ -21,7 +21,6 @@
 package org.apromore.service.impl;
 
 import org.apromore.service.BPMNDiagramImporter;
-import org.processmining.models.graphbased.directed.DirectedGraphEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;

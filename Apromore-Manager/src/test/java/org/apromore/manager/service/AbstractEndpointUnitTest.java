@@ -52,6 +52,7 @@ public abstract class AbstractEndpointUnitTest {
     protected BPMNMinerService bpmnMinerSrv;
     protected ProDriftDetectionService proDriftSrv;
     protected StructuringService structuringServ;
+    protected MeasurementsService measurementsServ;
 
     @Before
     public void setUp() throws Exception {
@@ -74,9 +75,10 @@ public abstract class AbstractEndpointUnitTest {
         bpmnMinerSrv = createMock(BPMNMinerServiceImpl.class);
         proDriftSrv = createMock(ProDriftDetectionServiceImpl.class);
         structuringServ = createMock(StructuringServiceImpl.class);
+        measurementsServ = createMock(MeasurementsServiceImpl.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
                 clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, secSrv, wrkSrv, uiHelper,
-                pqlSrv, dbSrv, bpmnMinerSrv, proDriftSrv, structuringServ);
+                pqlSrv, dbSrv, bpmnMinerSrv, proDriftSrv, structuringServ, measurementsServ);
     }
 }
