@@ -58,6 +58,8 @@ public interface WorkspaceService {
 
     void addProcessToFolder(Integer processId, Integer folderId);
 
+    boolean isGEDReadyFolder(Integer folderId);
+
     void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady);
 
     void deleteFolder(Integer folderId);

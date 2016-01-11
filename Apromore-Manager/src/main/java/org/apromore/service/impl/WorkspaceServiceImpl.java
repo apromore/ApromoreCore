@@ -160,9 +160,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    public boolean isGEDReadyFolder(Integer folderId) {
+        Folder folder = folderRepo.findOne(folderId);
+        return folder.isGEDMatrixReady();
+    }
+
+    @Override
     public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady) {
         Folder folder = folderRepo.findOne(folderId);
-        folder.setName(folderName);
+        if(folderName != null && !folderName.isEmpty()) folder.setName(folderName);
         if(isGEDMatrixReady != null) folder.setGEDMatrixReady(isGEDMatrixReady);
     }
 

@@ -1410,6 +1410,18 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createUpdateFolderResponse(res);
     }
 
+    @PayloadRoot(localPart = "IsGEDReadyRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<IsGEDReadyOutputMsgType> isGEDReadyFolder(@RequestPayload final JAXBElement<IsGEDReadyInputMsgType> req) {
+        LOGGER.trace("Executing operation updateFolder");
+        IsGEDReadyInputMsgType payload = req.getValue();
+        IsGEDReadyOutputMsgType res = new IsGEDReadyOutputMsgType();
+
+        res.setGEDReady(workspaceSrv.isGEDReadyFolder(payload.getFolderId()));
+
+        return new ObjectFactory().createISGEDReadyResponse(res);
+    }
+
     @PayloadRoot(localPart = "DeleteFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeleteFolderOutputMsgType> deleteFolder(@RequestPayload final JAXBElement<DeleteFolderInputMsgType> req) {
