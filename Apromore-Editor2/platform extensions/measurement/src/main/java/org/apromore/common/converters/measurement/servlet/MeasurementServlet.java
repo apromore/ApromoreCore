@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.log4j.Logger;
+import org.apromore.manager.client.ManagerService;
 import org.json.JSONObject;
 
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
@@ -40,6 +41,8 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Servlet to access the BPStruct service.
@@ -112,15 +115,19 @@ public class MeasurementServlet extends HttpServlet {
                                                           Variants.class);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         jaxbContext.createMarshaller().marshal(bpmn, baos);
-        String bpmnString = baos.toString("utf-8");
+        String process = baos.toString("utf-8");
 
-        // TODO: Adriano's measurement 
+        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
+        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
 
-        // Return the JSON-formatted measurement results
-        JSONObject result = new JSONObject();
-        result.put("measurement1", "value");
-        result.put("measurement2", 1.23);
-        //result.put("errors", ...);
-        return result.toString();
+        /* result already in json format */
+        String measures = manager.computeMeasurements(process);
+        LOGGER.info("measures: " + measures);
+
+        if( measures == null ) {
+            LOGGER.info("Error computing measurements.");
+        }
+
+        return measures;
     }
 }

@@ -1325,4 +1325,28 @@ public class ManagerServiceClient implements ManagerService {
 
         return result;
     }
+
+    /**
+     * @see ManagerService#computeMeasurements(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public String computeMeasurements(String process) throws Exception {
+
+        ComputeMeasurementsInputMsgType msg = new ComputeMeasurementsInputMsgType();
+        msg.setProcess(process);
+
+        JAXBElement<ComputeMeasurementsInputMsgType> request = WS_CLIENT_FACTORY.createComputeMeasurementsRequest(msg);
+
+        JAXBElement<ComputeMeasurementsOutputMsgType> response = (JAXBElement<ComputeMeasurementsOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+
+        if (response.getValue().getResult().getCode() != 0) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }else {
+            return response.getValue().getResult().getMessage();
+        }
+    }
+
 }

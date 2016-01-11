@@ -83,23 +83,64 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
     },
 
     showMeasurements: function (responseJson) {
+
+        var measures = [];
+
+        if (responseJson.hasOwnProperty('size')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'size',
+                                    value: responseJson['size'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('CFC')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'CFC',
+                                    value: responseJson['CFC'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('ACD')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'ACD',
+                                    value: responseJson['ACD'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('MCD')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'MCD',
+                                    value: responseJson['MCD'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('CNC')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'CNC',
+                                    value: responseJson['CNC'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('density')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'density',
+                                    value: responseJson['density'],
+                                    width: 150
+                                }));
+        }
+
         var formPanel = new Ext.form.FormPanel({
             baseCls: 'x-plain',
             labelWidth: 50,
             defaultType: 'textfield',
-            items: [
-                new Ext.form.TextField({
-                    fieldLabel: "One",
-                    value: responseJson.measurement1,
-                    width: 150
-                }),
-                new Ext.form.NumberField({
-                    fieldLabel: "Two",
-                    value: responseJson.measurement2,
-                    width: 150
-                })
-            ]
+            items: measures
         });
+
         var formWindow = new Ext.Window({
             resizable: true,
             closeable: true,

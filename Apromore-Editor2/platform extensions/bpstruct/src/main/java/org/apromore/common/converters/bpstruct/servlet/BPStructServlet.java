@@ -82,14 +82,10 @@ public class BPStructServlet extends HttpServlet {
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else {
-                LOGGER.info("0123456");
                 String diagramJson = convert(jsonData);
-                LOGGER.info("07654");
                 res.setContentType("application/xml; charset=UTF-8");
                 res.setStatus(200);
-                LOGGER.info("before writing");
                 res.getWriter().write(diagramJson);
-                LOGGER.info("after writing");
             }
         } catch (Exception e) {
             try {

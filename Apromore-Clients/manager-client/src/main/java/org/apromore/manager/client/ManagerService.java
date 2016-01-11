@@ -477,4 +477,10 @@ public interface ManagerService {
      */
     ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName);
 
+    /**
+     * Compute measurements on a BPMN process from its XML(BPMN 2.0) representation.
+     * @param process the XML(BPMN 2.0) representation of the process on which compute the measurements
+     */
+    String computeMeasurements(String process) throws Exception;
+
 }
