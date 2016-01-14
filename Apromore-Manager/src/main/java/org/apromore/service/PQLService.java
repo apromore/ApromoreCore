@@ -20,15 +20,17 @@
 
 package org.apromore.service;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.model.Detail;
-
-import java.util.List;
-import java.util.Set;
+import org.pql.index.IndexStatus;
 
 /**
  * Created by corno on 2/07/2014.
@@ -41,6 +43,15 @@ public interface PQLService extends Observer{
     void deleteModel(ProcessModelVersion pmv);
     List<String> runAPQLQuery(String queryPQL,List<String> IDs,String userID);
     List<Detail> getDetails();
+    IndexStatus getIndexStatus(String id) throws SQLException;
+
+    /**
+     * Is the PQL index present?  If this is false, none of the other methods of this service will function.
+     *
+     * @return the value of the <code>pql.isIndexingEnabled</code> property from
+     *         the <code>site.properties</code> Spring configuration artifact.
+     */
+    boolean isIndexingEnabled();
 
     /**
      * This is a kludge to work around the circular dependency between {@link ProcessServiceImpl} and {@link PQLServiceImpl}.

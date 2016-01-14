@@ -28,6 +28,7 @@
         <listheader hflex="min" label="Domain" sort="auto(domain)" />
         <listheader hflex="min" label="Ranking" sort="auto(ranking)" />
         <listheader hflex="min" label="Latest version" sort="auto(lastVersion)" />
-        <listheader hflex="min" label="Owner" sort="auto(owner)"  />
+        <listheader hflex="min" label="Owner" sort="auto(owner)" />
+        <listheader hflex="min" label="Queryable?" />
     </listhead>
 </listbox>
