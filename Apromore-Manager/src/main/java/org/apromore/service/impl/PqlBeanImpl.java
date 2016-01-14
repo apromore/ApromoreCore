@@ -66,6 +66,8 @@ public class PqlBeanImpl implements PqlBean {
     private long defaultBotSleepTime;
     private long defaultBotMaxIndexTime;
 
+    private PQLAPI api = null;
+
     /**
     * @throws IllegalArgumentException if <var>labelSimilaritySearch</var> isn't one of the
     *   values <code>LEVENSHTEIN</code>, <code>LUCENE</code> or <code>THEMIS_VSM</code>.
@@ -131,36 +133,39 @@ public class PqlBeanImpl implements PqlBean {
 
     @Override
     public PQLAPI getApi() {
-        try {
-            ILabelManager     labelMngr;
 
-            MySQLConnection mysql = new MySQLConnection(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
+        if (api == null) {
+            try {
+                ILabelManager     labelMngr;
 
-            switch (labelManagerType) {
-            case LEVENSHTEIN:
-                labelMngr = new LabelManagerLevenshtein(
-                    mysql.getConnection(),
-                    defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
-                );
-                break;
-            case LUCENE:
-                labelMngr = new LabelManagerLuceneVSM(
-                    mysql.getConnection(),
-                    defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds, labelSimilarityConfig
-                );
-                break;
-            case THEMIS_VSM:
-                labelMngr = new LabelManagerThemisVSM(
-                    mysql.getConnection(),
-                    pgBean.getHost(), pgBean.getName(), pgBean.getUser(), pgBean.getPassword(),
-                    defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
-                );
-                break;
-            default:
-                throw new RuntimeException("Label similiarity search property was \"" + labelSimilaritySearch + "\"; valid options are \"LEVENSHTEIN\", \"LUCENE\" or \"THEMIS_VSM\"");
-            }
+                MySQLConnection mysql = new MySQLConnection(mySqlBean.getURL(), mySqlBean.getUser(), mySqlBean.getPassword());
+                LOGGER.info("Created a PQL database connection");
 
-            return new PQLAPI(mySqlBean.getURL(),
+                switch (labelManagerType) {
+                case LEVENSHTEIN:
+                    labelMngr = new LabelManagerLevenshtein(
+                        mysql.getConnection(),
+                        defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
+                    );
+                    break;
+                case LUCENE:
+                    labelMngr = new LabelManagerLuceneVSM(
+                        mysql.getConnection(),
+                        defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds, labelSimilarityConfig
+                    );
+                    break;
+                case THEMIS_VSM:
+                    labelMngr = new LabelManagerThemisVSM(
+                        mysql.getConnection(),
+                        pgBean.getHost(), pgBean.getName(), pgBean.getUser(), pgBean.getPassword(),
+                        defaultLabelSimilarityThreshold, indexedLabelSimilarityThresholds
+                    );
+                    break;
+                default:
+                    throw new RuntimeException("Label similiarity search property was \"" + labelSimilaritySearch + "\"; valid options are \"LEVENSHTEIN\", \"LUCENE\" or \"THEMIS_VSM\"");
+                }
+
+                api = new PQLAPI(mySqlBean.getURL(),
                               mySqlBean.getUser(),
                               mySqlBean.getPassword(),
 
@@ -179,10 +184,12 @@ public class PqlBeanImpl implements PqlBean {
                               defaultBotMaxIndexTime,
                               defaultBotSleepTime);
 
-        } catch(ClassNotFoundException | IOException | SQLException e){
-            //LOGGER.error("------------------" + ex.toString());
-            throw new RuntimeException("Failed to initialize PQL API", e);
+            } catch(ClassNotFoundException | IOException | SQLException e){
+                LOGGER.error("Failed to initialize PQL API", e);
+                throw new RuntimeException("Failed to initialize PQL API", e);
+            }
         }
+        return api;
     }
 
     @Override

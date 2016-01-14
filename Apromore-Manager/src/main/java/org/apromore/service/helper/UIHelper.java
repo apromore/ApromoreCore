@@ -20,6 +20,20 @@
 
 package org.apromore.service.helper;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FolderRepository;
@@ -34,22 +48,14 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.AnnotationsType;
+import org.apromore.model.IndexStatus;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.PQLService;
 import org.apromore.service.WorkspaceService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
 * Used By the Services to generate the data objects used by the UI.
@@ -60,12 +66,15 @@ import java.util.Map;
 @Transactional
 public class UIHelper implements UserInterfaceHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInterfaceHelper.class);
+
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
     private GroupProcessRepository gpRepository;
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
     private WorkspaceService workspaceService;
+    private PQLService pqlService;
 
 
     /**
@@ -76,6 +85,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @param processModelVersionRepository process model version Repository.
      * @param folderRepository folder repository.
      * @param workspaceService Workspace Services.
+     * @param pqlService Process Query Lanuage services
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository,
@@ -91,6 +101,11 @@ public class UIHelper implements UserInterfaceHelper {
         this.pmvRepository = processModelVersionRepository;
         this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
+    }
+
+    // KLUDGE to work around circular dependency
+    public void setPQLService(PQLService pqlService) {
+        this.pqlService = pqlService;
     }
 
 
@@ -308,6 +323,7 @@ public class UIHelper implements UserInterfaceHelper {
         // Find the branches for a RootFragment.
         Version pmVersion;
         Version lastVersion;
+        String externalId = null;
         for (ProcessBranch branch : pro.getProcessBranches()) {
             for (ProcessModelVersion processModelVersion : branch.getProcessModelVersions()) {
                 versionSummary = new VersionSummaryType();
@@ -337,6 +353,22 @@ public class UIHelper implements UserInterfaceHelper {
                         processSummary.setLastVersion(processModelVersion.getVersionNumber());
                     }
                 }
+
+                externalId = pro.getId() + "/" + pmVersion + "/" + branch.getBranchName();
+            }
+        }
+        assert externalId != null;
+
+        if (pqlService.isIndexingEnabled()) {
+            // Find the status of the process in the PQL index
+            try {
+                org.pql.index.IndexStatus pqlStatus = pqlService.getIndexStatus(externalId);
+                IndexStatus status = pqlStatus == null ? null : Enum.valueOf(IndexStatus.class, pqlStatus.name());
+                LOGGER.debug("Index status of process with id " + pro.getId() + " is " + status);
+                processSummary.setPqlIndexerStatus(status);
+            } catch (SQLException e) {
+                LOGGER.warn("Unable to get index status for process with id " + pro.getId(), e);
+                processSummary.setPqlIndexerStatus(null);  // Rendered as an error icon
             }
         }
     }

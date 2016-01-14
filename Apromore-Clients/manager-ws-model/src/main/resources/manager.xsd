@@ -647,7 +647,18 @@
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
+        <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
     </xs:complexType>
+
+    <!-- These enumeration names correspond to org.pql.index.IndexStatus. -->
+    <xs:simpleType name="IndexStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNINDEXED"/>
+            <xs:enumeration value="INDEXING"/>
+            <xs:enumeration value="INDEXED"/>
+            <xs:enumeration value="CANNOTINDEX"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="VersionSummaryType">
         <xs:sequence>
