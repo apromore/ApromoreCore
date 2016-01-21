@@ -29,6 +29,7 @@ import java.util.Set;
 
 // Third party packages
 import org.jbpt.persist.MySQLConnection;
+import org.pql.bot.AbstractPQLBot.NameInUseException;
 import org.pql.bot.PQLBot;
 import org.pql.core.PQLBasicPredicatesMC;
 import org.pql.index.IndexType;
@@ -193,9 +194,8 @@ public class PQLIndexerConfigurationBean {
                               mc,
                               indexType,
                               defaultBotMaxIndexTime,
-                              defaultBotSleepTime,
-                              true  /* verbose */);
-        } catch (ClassNotFoundException | SQLException e) {
+                              defaultBotSleepTime);
+        } catch (ClassNotFoundException | NameInUseException | SQLException e) {
             throw new PQLIndexerConfigurationException("Unable to create bot", e);
         }
     }
