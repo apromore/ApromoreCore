@@ -1,11 +1,11 @@
-[![Build Status](https://travis-ci.org/spacegaier/ApromoreCode.svg?branch=master)](https://travis-ci.org/spacegaier/ApromoreCode)
+Travis  CI Build Status: [![Build Status](https://travis-ci.org/spacegaier/ApromoreCode.svg?branch=master)](https://travis-ci.org/spacegaier/ApromoreCode)
 
 ----------------------------------------------------------------------------------------
 
-Apromore Build Instructions with Eclipse Virgo
+# Apromore Build Instructions with Eclipse Virgo
 
 
-REQUIREMENTS
+## REQUIREMENTS
 ============
 
 Apromore has been successfully installed on the following platforms:
@@ -24,7 +24,7 @@ Additional software required for PQL support:
 - LoLA 2.0 (http://service-technology.org/lola/)
 
 
-DEFAULT INSTALLATION
+## DEFAULT INSTALLATION
 ====================
 
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
@@ -36,7 +36,7 @@ DEFAULT INSTALLATION
 * Ctrl-C on the command line will shut the server down.
 
 
-CONFIGURATION
+## CONFIGURATION
 =============
 
 Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
@@ -53,7 +53,7 @@ certificate (not an SSL certificate), you can edit the top-level codesigning.pro
 than the self-signed certificate included in the source tree.  This will avoid browser warnings.
 
 
-DATABASE SETUP (MySQL)
+## DATABASE SETUP (MySQL)
 ======================
 
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
@@ -81,7 +81,7 @@ Edit the top-level site.properties file, replacing the H2 declarations in "Datab
 Stop and restart the server so that it picks up the changes to site.properties.
 
 
-PQL SETUP
+## PQL SETUP
 =========
 
 PQL requires its own MySQL database, distinct from the main Apromore database.  You can run both on the same server.
@@ -106,7 +106,7 @@ NOTE: a known bug prevents the server from shutting down cleanly while PQL index
 The workaround is to force-quit the server from the OS.
 
 
-COMMON PROBLEMS
+## COMMON PROBLEMS
 ===============
 
 Server fails to start.
