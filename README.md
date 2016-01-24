@@ -2,11 +2,9 @@ Travis  CI Build Status: [![Build Status](https://travis-ci.org/spacegaier/Aprom
 
 ----------------------------------------------------------------------------------------
 
-# Apromore Build Instructions with Eclipse Virgo
+## Apromore Build Instructions with Eclipse Virgo
 
-
-## REQUIREMENTS
-============
+### REQUIREMENTS
 
 Apromore has been successfully installed on the following platforms:
 - Windows 7
@@ -23,9 +21,7 @@ Additional software required for PQL support:
 - MySQL 5.6.x
 - LoLA 2.0 (http://service-technology.org/lola/)
 
-
-## DEFAULT INSTALLATION
-====================
+### DEFAULT INSTALLATION
 
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
 * Change to the root of the project you checked out of git.  'cd ApromoreCore'
@@ -35,9 +31,7 @@ Additional software required for PQL support:
 * Apromore runs on all modern browsers, browse http://localhost:9000/portal
 * Ctrl-C on the command line will shut the server down.
 
-
-## CONFIGURATION
-=============
+### CONFIGURATION
 
 Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
 checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
@@ -52,9 +46,7 @@ Some of Apromore's features are implemented as Java applets running client-side 
 certificate (not an SSL certificate), you can edit the top-level codesigning.properties file to use your certificate rather
 than the self-signed certificate included in the source tree.  This will avoid browser warnings.
 
-
-## DATABASE SETUP (MySQL)
-======================
+### DATABASE SETUP (MySQL)
 
 Ensure MySQL is configured to accept local TCP connections on port 3306 in its .cnf file; "skip-networking" should not be present.
 
@@ -80,9 +72,7 @@ At the end of the db-mysql.sql script is where we populate some of the system da
 Edit the top-level site.properties file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 Stop and restart the server so that it picks up the changes to site.properties.
 
-
-## PQL SETUP
-=========
+### PQL SETUP
 
 PQL requires its own MySQL database, distinct from the main Apromore database.  You can run both on the same server.
 
@@ -105,9 +95,7 @@ Stop and restart the server so that it picks up the changes to site.properties.
 NOTE: a known bug prevents the server from shutting down cleanly while PQL indexing is enabled.
 The workaround is to force-quit the server from the OS.
 
-
-## COMMON PROBLEMS
-===============
+### COMMON PROBLEMS
 
 Server fails to start.
 * If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
