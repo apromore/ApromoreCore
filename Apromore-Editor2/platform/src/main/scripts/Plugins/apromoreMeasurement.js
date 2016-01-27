@@ -134,9 +134,25 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                 }));
         }
 
+        if (responseJson.hasOwnProperty('structuredness')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: 'structuredness',
+                                            value: responseJson['structuredness'],
+                                            width: 150
+                                        }));
+        }
+
+        if (responseJson.hasOwnProperty('separability')) {
+                            measures.push( new Ext.form.TextField({
+                                                    fieldLabel: 'separability',
+                                                    value: responseJson['separability'],
+                                                    width: 150
+                                                }));
+        }
+
         var formPanel = new Ext.form.FormPanel({
             baseCls: 'x-plain',
-            labelWidth: 50,
+            labelWidth: 100,
             defaultType: 'textfield',
             items: measures
         });

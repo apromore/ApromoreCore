@@ -75,6 +75,10 @@
                         </Import-Package>
                         <Export-Package>
                             de.hpi.bpt.process.*,
+                            de.hpi.bpt.graph.*,
+                            de.hpi.bpt.graph.abs.*,
+                            de.hpi.bpt.graph.algo.rpst.*,
+                            de.hpi.bpt.hypergraph.abs.*,
                             ee.ut.bpstruct
                         </Export-Package>
                     </instructions>
