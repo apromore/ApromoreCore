@@ -198,7 +198,10 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         this.workspaceSrv = workspaceService;
 
         this.addObserver(pqlService);
-        pqlService.setProcessService(this);  // KLUDGE to work around the circular dependency between ProcessService and PQLService
+
+        // KLUDGE to work around the circular dependency between ProcessService and PQLService
+        pqlService.setProcessService(this);
+        ui.setPQLService(pqlService);
     }
 
     /**

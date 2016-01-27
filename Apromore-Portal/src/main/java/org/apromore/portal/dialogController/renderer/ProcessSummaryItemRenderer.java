@@ -23,14 +23,6 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -43,6 +35,15 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+
+import org.apromore.model.AnnotationsType;
+import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.MainController;
 
 public class ProcessSummaryItemRenderer implements ListitemRenderer {
 
@@ -72,7 +73,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         }
     }
 
-    /* Used to render the process summary infomation into the list box. */
+    /* Used to render the process summary information into the list box. */
     private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
         listItem.appendChild(renderProcessImage());
         listItem.appendChild(renderProcessScore(process));
@@ -83,6 +84,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
         listItem.appendChild(renderProcessOwner(process));
+        listItem.appendChild(renderProcessPQLIndexerStatus(process));
 
         listItem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
@@ -207,6 +209,30 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
         }
 
         return wrapIntoListCell(processScoreLb);
+    }
+
+    protected Listcell renderProcessPQLIndexerStatus(final ProcessSummaryType process) {
+
+        // Associate an icon with the indexing status
+        String iconPath;
+        if (process.getPqlIndexerStatus() == null) {
+            iconPath = Constants.PQL_ERROR_ICON;
+        } else {
+            switch (process.getPqlIndexerStatus()) {
+            case UNINDEXED:   iconPath = Constants.PQL_UNINDEXED_ICON;    break;
+            case INDEXING:    iconPath = Constants.PQL_INDEXING_ICON;     break;
+            case INDEXED:     iconPath = Constants.PQL_INDEXED_ICON;      break;
+            case CANNOTINDEX: iconPath = Constants.PQL_CANNOTINDEX_ICON;  break;
+            default:          iconPath = Constants.PQL_ERROR_ICON;
+            }
+        }
+        assert iconPath != null;
+
+        // Return a list cell containing the indexing status icon
+        Listcell lc = new Listcell();
+        lc.appendChild(new Image(iconPath));
+        lc.setStyle(CENTRE_ALIGN);
+        return lc;
     }
 
     private Listcell wrapIntoListCell(Component cp) {

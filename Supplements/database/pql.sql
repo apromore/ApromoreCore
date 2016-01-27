@@ -870,8 +870,10 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `pql_index_get_next_job`() RETURNS int(11)
 BEGIN
   DECLARE result INTEGER;
+  DECLARE randomIndex INTEGER;
 
-  SELECT id INTO result FROM `pql_index_queue` LIMIT 0,1;
+  SELECT ROUND(RAND() * COUNT(*)) INTO randomIndex FROM `pql_index_queue`;
+  SELECT id INTO result FROM `pql_index_queue` LIMIT randomIndex,1;
 
   IF result IS NULL THEN RETURN 0; END IF;
   

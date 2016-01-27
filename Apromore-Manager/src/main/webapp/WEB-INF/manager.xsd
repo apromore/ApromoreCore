@@ -87,8 +87,8 @@
             <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-
-
+		   
+		   
     <!-- Manager -->
     <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
     <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
@@ -152,6 +152,7 @@
     <xs:element name="RemoveProcessPermissionsResponse" type="tns:RemoveProcessPermissionsOutputMsgType"/>
     <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
     <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
+
 
     <!-- ComputeMeasurements -->
     <xs:element name="ComputeMeasurementsRequest" type="tns:ComputeMeasurementsInputMsgType"/>
@@ -296,6 +297,7 @@
     <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType"/>
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
+
 
     <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
     <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
@@ -645,7 +647,18 @@
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
+        <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
     </xs:complexType>
+
+    <!-- These enumeration names correspond to org.pql.index.IndexStatus. -->
+    <xs:simpleType name="IndexStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNINDEXED"/>
+            <xs:enumeration value="INDEXING"/>
+            <xs:enumeration value="INDEXED"/>
+            <xs:enumeration value="CANNOTINDEX"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="VersionSummaryType">
         <xs:sequence>
@@ -1166,7 +1179,6 @@
         </xs:sequence>
     </xs:complexType>
 
-
     <xs:complexType name="ProDriftDetectorInputMsgType">
         <xs:sequence>
             <xs:element name="logByteArray" minOccurs="0" type="xs:base64Binary"/>
@@ -1178,7 +1190,7 @@
 
     <xs:complexType name="ProDriftDetectorOutputMsgType">
         <xs:sequence>
-            <xs:element name="pValuesDiagram" minOccurs="0" type="xs:base64Binary" xmime:expectedContentTypes="image/jpeg"/>
+            <xs:element name="pValuesDiagram" minOccurs="0" type="xs:base64Binary" xmime:expectedContentTypes="image/png"/>
             <xs:element name="driftPoints" minOccurs="0" type="tns:listofintegers"/>
             <xs:element name="lastReadTrace" minOccurs="0" type="tns:listofintegers"/>
             <xs:element name="startOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
