@@ -3,8 +3,6 @@ package org.apromore.service.impl;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
-import de.hpi.bpt.graph.abs.IGraph;
-import de.hpi.bpt.graph.algo.GraphAlgorithms;
 import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 
 /**
@@ -207,10 +204,11 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         double nodes = 0;
 
         if(diagram == null) return -1;
+        LOGGER.info("computing structuredness...");
 
-        HashMap<BPMNNode, Vertex> mapping = new HashMap<>();
-        HashSet<String> gates = new HashSet<>();
-        HashSet<String> removed = new HashSet<>();
+        HashMap<BPMNNode, Vertex> mapping = new HashMap<BPMNNode, Vertex>();
+        HashMap<String, Gateway> gates = new HashMap<String, Gateway>();
+        HashSet<String> removed = new HashSet<String>();
 
         IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
         Vertex src;
@@ -219,13 +217,13 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         for( Flow f : diagram.getFlows() ) {
             if( !mapping.containsKey(f.getSource()) ) {
                 src = new Vertex(f.getSource().getId().toString());
-                if( f.getSource() instanceof Gateway ) gates.add(f.getSource().getId().toString());
+                if( f.getSource() instanceof Gateway ) gates.put(f.getSource().getId().toString(), (Gateway) f.getSource());
                 mapping.put(f.getSource(), src);
             } else src = mapping.get(f.getSource());
 
             if( !mapping.containsKey(f.getTarget()) ) {
                 tgt = new Vertex(f.getTarget().getId().toString());
-                if( f.getTarget() instanceof Gateway ) gates.add(f.getTarget().getId().toString());
+                if( f.getTarget() instanceof Gateway ) gates.put(f.getTarget().getId().toString(), (Gateway) f.getTarget());
                 mapping.put(f.getTarget(), tgt);
             } else tgt = mapping.get(f.getTarget());
 
@@ -235,7 +233,7 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         RPST rpst = new RPST(graph);
 
         RPSTNode root = rpst.getRoot();
-        LinkedList<RPSTNode> toAnalize = new LinkedList<>();
+        LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
         toAnalize.add(root);
 
         boolean count = true;
@@ -247,7 +245,15 @@ public class MeasurementsServiceImpl implements MeasurementsService {
 
             if( !count && (root.getType() == TCType.P) && (rpst.getParent(root).getType() == TCType.B) ) {
                 //LOGGER.info("counter enabled.");
-                count = true;
+                try {
+                    Gateway entry = gates.get(rpst.getParent(root).getEntry().getName());
+                    Gateway exit = gates.get(rpst.getParent(root).getExit().getName());
+                    count = ((entry != null) && (exit != null) && (entry.getGatewayType() == exit.getGatewayType()));
+                    //LOGGER.info("Counter: " + count);
+                } catch(ClassCastException cce) {
+                    count = false;
+                    LOGGER.info("Error, found entry or exit point different than a gateway.");
+                }
             }
 
             for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
@@ -261,8 +267,8 @@ public class MeasurementsServiceImpl implements MeasurementsService {
                         if( count ) {
                             src = (Vertex) n.getEntry();
                             tgt = (Vertex) n.getExit();
-                            if( !gates.contains(src.getName())) removed.add(src.getName());
-                            if( !gates.contains(tgt.getName()) ) removed.add(tgt.getName());
+                            if (!gates.containsKey(src.getName())) removed.add(src.getName());
+                            if (!gates.containsKey(tgt.getName())) removed.add(tgt.getName());
                         }
                         break;
                     case P:
@@ -271,6 +277,8 @@ public class MeasurementsServiceImpl implements MeasurementsService {
                         break;
                     case B:
                         //LOGGER.info("found a: BOND with: " +  n.getFragment().getVertices().size() + " fragment nodes.");
+                        removed.add(n.getEntry().getName());
+                        removed.add(n.getExit().getName());
                         toAnalize.add(n);
                         break;
                     default:
@@ -282,7 +290,7 @@ public class MeasurementsServiceImpl implements MeasurementsService {
             toAnalize.remove(root);
         }
 
-        LOGGER.info("*removable: " + removed.size());
+        LOGGER.info("Removable nodes: " + removed.size());
 
         nodes += diagram.getGateways().size();
         nodes += diagram.getActivities().size();
@@ -292,15 +300,18 @@ public class MeasurementsServiceImpl implements MeasurementsService {
 
         structuredness = 1 - ((nodes-removed.size())/nodes);
 
+        LOGGER.info(" done!");
         return structuredness;
     }
 
+    
     public double computeSeparability() {
         double separability;
         double nodes = 0;
         if(diagram == null) return -1;
+        LOGGER.info("computing separability...");
 
-        HashMap<BPMNNode, Vertex> mapping = new HashMap<>();
+        HashMap<BPMNNode, Vertex> mapping = new HashMap<BPMNNode, Vertex>();
         IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
         Vertex src;
         Vertex tgt;
@@ -308,7 +319,6 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         for( Flow f : diagram.getFlows() ) {
             if( !mapping.containsKey(f.getSource()) ) {
                 src = new Vertex(f.getSource().getLabel());
-                //if( f.getSource() instanceof Event && (((Event) f.getSource()).getEventType()==Event.EventType.START) )  root = src;
                 mapping.put(f.getSource(), src);
             } else src = mapping.get(f.getSource());
 
@@ -322,7 +332,7 @@ public class MeasurementsServiceImpl implements MeasurementsService {
 
         RPST rpst = new RPST(graph);
         RPSTNode root = rpst.getRoot();
-        HashSet<IVertex> articulationPoints = new HashSet<>();
+        HashSet<IVertex> articulationPoints = new HashSet<IVertex>();
 
         for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
             switch(n.getType()) {
@@ -354,52 +364,10 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         nodes += diagram.getEvents().size();
 
         LOGGER.info("Articulation points: " + (articulationPoints.size()-2));
-        separability = (articulationPoints.size()-2) / nodes;
+        separability = (articulationPoints.size()-2) / (nodes-2);
 
+        LOGGER.info(" done!");
         return separability;
-    }
-
-    public Set<Vertex> getArticulationPoints(Vertex root, IGraph<DirectedEdge, Vertex> graph) {
-        HashSet<Vertex> articulationPoints = new HashSet<>();
-        HashMap<Vertex, Vertex> visited = new HashMap<>();
-        HashMap<Vertex, Integer> time = new HashMap<>();
-        HashMap<Vertex, Integer> lowTime = new HashMap<>();
-
-        visit(root, graph, visited, time, lowTime, articulationPoints, null);
-
-        LOGGER.info("Algorithm:");
-        for( Vertex v : time.keySet() ) LOGGER.info("[" + visited.get(v) + "]" + v.getName() + " : " + time.get(v) + "/" + lowTime.get(v));
-
-        LOGGER.info("Articulation points: " + articulationPoints.size());
-        for( Vertex v : articulationPoints ) LOGGER.info(v.getName());
-
-        return articulationPoints;
-    }
-
-    private void visit( Vertex root, IGraph<DirectedEdge, Vertex> graph,
-                           HashMap<Vertex, Vertex> visited,
-                           HashMap<Vertex, Integer> time, HashMap<Vertex, Integer> lowTime,
-                           HashSet<Vertex> articulationPoints, Vertex parent ) {
-
-        HashSet<Vertex> backVertices = new HashSet<>();
-        boolean ap = (graph.getAdjacent(root).size() > 1);
-
-        visited.put(root, parent);
-        time.put(root, visited.size());
-        lowTime.put(root, visited.size());
-
-        for( Vertex v : graph.getAdjacent(root) ) {
-            if( !visited.containsKey(v) ) visit(v, graph, visited, time, lowTime, articulationPoints, root);
-            backVertices.add(v);
-        }
-
-        for( Vertex v : backVertices )
-            if( (v != parent) && (time.get(root) > lowTime.get(v)) ) {
-                ap = false;
-                lowTime.put(root, lowTime.get(v));
-            }
-
-        if( ap ) articulationPoints.add(root);
     }
 
 }

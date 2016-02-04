@@ -102,18 +102,35 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                 }));
         }
 
-        if (responseJson.hasOwnProperty('ACD')) {
-            measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'ACD',
-                                    value: responseJson['ACD'],
-                                    width: 150
-                                }));
+        if (responseJson.hasOwnProperty('structuredness')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: 'structuredness',
+                                            value: responseJson['structuredness'],
+                                            width: 150
+                                        }));
         }
+
+        if (responseJson.hasOwnProperty('separability')) {
+                            measures.push( new Ext.form.TextField({
+                                                    fieldLabel: 'separability',
+                                                    value: responseJson['separability'],
+                                                    width: 150
+                                                }));
+        }
+
 
         if (responseJson.hasOwnProperty('MCD')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'MCD',
                                     value: responseJson['MCD'],
+                                    width: 150
+                                }));
+        }
+
+        if (responseJson.hasOwnProperty('ACD')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'ACD',
+                                    value: responseJson['ACD'],
                                     width: 150
                                 }));
         }
@@ -134,21 +151,6 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                 }));
         }
 
-        if (responseJson.hasOwnProperty('structuredness')) {
-                    measures.push( new Ext.form.TextField({
-                                            fieldLabel: 'structuredness',
-                                            value: responseJson['structuredness'],
-                                            width: 150
-                                        }));
-        }
-
-        if (responseJson.hasOwnProperty('separability')) {
-                            measures.push( new Ext.form.TextField({
-                                                    fieldLabel: 'separability',
-                                                    value: responseJson['separability'],
-                                                    width: 150
-                                                }));
-        }
 
         var formPanel = new Ext.form.FormPanel({
             baseCls: 'x-plain',
