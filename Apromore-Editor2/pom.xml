@@ -37,6 +37,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>sscompressor-maven-plugin</module>
         <module>platform</module>
         <module>platform extensions/bpmn20xmlbasic</module>
         <module>platform extensions/bpstruct</module>

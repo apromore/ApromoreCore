@@ -69,6 +69,25 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apromore</groupId>
+                <artifactId>sscompressor-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <ssDirString>${project.basedir}/src/main/stencilsets</ssDirString>
+                    <outDirString>${project.basedir}/target/sscompressor</outDirString>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compress_stencilsets</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
                 <version>1.5.1</version>
@@ -77,7 +96,7 @@
                     <aggregations>
                         <aggregation>
                             <insertNewLine>false</insertNewLine>
-                            <output>${basedir}/target/apromore-editor-${version}/editor/apromore-editor.js</output>
+                            <output>${basedir}/target/apromore-editor-${project.version}/editor/apromore-editor.js</output>
                             <inputDir>${basedir}/src/main</inputDir>
                             <includes>
                                 <include>../../target/classes/site.properties.js</include>
@@ -127,8 +146,8 @@
                     </includes>
                     <jswarn>false</jswarn>
                     <nosuffix>false</nosuffix>
-                    <sourceDirectory>${basedir}/target/apromore-editor-${version}/editor</sourceDirectory>
-                    <outputDirectory>${basedir}/target/apromore-editor-${version}/editor</outputDirectory>
+                    <sourceDirectory>${basedir}/target/apromore-editor-${project.version}/editor</sourceDirectory>
+                    <outputDirectory>${basedir}/target/apromore-editor-${project.version}/editor</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -217,20 +236,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <!--
-                    <packagingExcludes>
-                        WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,WEB-INF/lib/manager*.jar,WEB-INF/lib/plugin*.jar,
-                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,
-                        WEB-INF/lib/jbpt*.jar,WEB-INF/lib/jcl*.jar,WEB-INF/lib/joda-time*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/mysql-connector-java*.jar,WEB-INF/lib/org.*.jar,
-                        WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/logback*.jar,WEB-INF/lib/filestore*.jar
-                    </packagingExcludes>
-                    -->
-                    <archive>
-                        <manifestFile>
-                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-                        </manifestFile>
-                    </archive>
+                    <webResources>
+		        <resource>
+                            <directory>src/main/stencilsets</directory>
+                            <targetPath>editor</targetPath>
+		        </resource>
+		        <resource>
+                            <directory>target/sscompressor</directory>
+                            <targetPath>editor/stencilsets</targetPath>
+		        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
         </plugins>
