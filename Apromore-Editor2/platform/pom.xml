@@ -239,7 +239,7 @@
                     <webResources>
 		        <resource>
                             <directory>src/main/stencilsets</directory>
-                            <targetPath>editor</targetPath>
+                            <targetPath>editor/stencilsets</targetPath>
 		        </resource>
 		        <resource>
                             <directory>target/sscompressor</directory>
