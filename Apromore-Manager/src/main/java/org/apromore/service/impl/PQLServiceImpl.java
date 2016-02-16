@@ -44,11 +44,15 @@ import org.jbpt.petri.Transition;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.pql.api.IPQLAPI;
 import org.pql.core.PQLTask;
+import org.pql.index.IndexStatus;
 import org.pql.query.PQLQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -84,8 +88,6 @@ public class PQLServiceImpl implements PQLService {
     private CanoniserProvider canoniserProviderService;
     @Inject
     private ProcessModelVersionRepository processModelVersionRepository;
-
-    private String parameterCategory = Canoniser.DECANONISE_PARAMETER;
 
     private LolaDirBean lolaDir;
     private MySqlBeanImpl mySqlBean;
@@ -144,7 +146,7 @@ public class PQLServiceImpl implements PQLService {
 
         Process process=pmv.getProcessBranch().getProcess();
         Version version2=new Version(pmv.getVersionNumber());
-        Set<RequestParameterType<?>> canoniserProperties=readPluginProperties(parameterCategory);
+        Set<RequestParameterType<?>> canoniserProperties=readPluginProperties(Canoniser.DECANONISE_PARAMETER);
 
         try {
             LOGGER.info("indexOneModel name=" + process.getName() + " id=" + process.getId() + " branch=" + pmv.getProcessBranch().getBranchName() + " version=" + version2 + " canoniser=" + getPNMLCanoniser() + " canoniserProperties=" + canoniserProperties);
@@ -196,7 +198,11 @@ public class PQLServiceImpl implements PQLService {
     @Override
     public void notifyUpdate(final ProcessModelVersion pmv) {
         if (pqlBean.isIndexingEnabled()) {
-            indexOneModel(pmv);
+            try {
+                indexOneModel(pmv);
+            } catch (RuntimeException e) {
+                LOGGER.warn("Unable to PQL index model", e);
+            }
         }
     }
 
@@ -249,7 +255,7 @@ public class PQLServiceImpl implements PQLService {
                 String nativeType = currentProc.getNativeType().getNatType();
                 String annotationName = null;
                 boolean withAnnotation = false;
-                Set<RequestParameterType<?>> canoniserProperties = readPluginProperties(parameterCategory);
+                Set<RequestParameterType<?>> canoniserProperties = readPluginProperties(Canoniser.DECANONISE_PARAMETER);
 
                 for (ProcessSummaryType pst : helperService.buildProcessSummaryList(userID, folderId, null).getProcessSummary()) {
                     if (pst.getName().equals(procName)) {
@@ -350,4 +356,20 @@ public class PQLServiceImpl implements PQLService {
         return details;
     }
 
+    /**
+     * @param id  a process ID in the Apromore database (the "external ID" from PQL's point of view)
+     * @return the indexing status of the identified process in the PQL index
+     */
+    @Override
+    public IndexStatus getIndexStatus(String id) throws SQLException {
+        IPQLAPI api = pqlBean.getApi();
+        int internalId = api.getInternalID(id);
+        return api.getIndexStatus(internalId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isIndexingEnabled() {
+        return pqlBean.isIndexingEnabled();
+    }
 }
