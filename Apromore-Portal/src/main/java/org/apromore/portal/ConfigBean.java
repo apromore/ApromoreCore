@@ -25,16 +25,17 @@ import org.slf4j.LoggerFactory;
 
 public class ConfigBean {
 
-    private String siteEditor;
-    private String siteExternalHost;
-    private int    siteExternalPort;
-    private String siteFilestore;
-    private String siteManager;
-    private String sitePortal;
-    private String versionNumber;
-    private String versionBuildDate;
+    private String  siteEditor;
+    private String  siteExternalHost;
+    private int     siteExternalPort;
+    private String  siteFilestore;
+    private String  siteManager;
+    private String  sitePortal;
+    private String  versionNumber;
+    private String  versionBuildDate;
+    private boolean pqlIndexingEnabled;
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate, boolean pqlEnableIndexing) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -44,16 +45,18 @@ public class ConfigBean {
             " site.manager=" + siteManager +
             " site.portal=" + sitePortal +
             " version.number=" + versionNumber +
-            " version.builddate=" + versionBuildDate);
+            " version.builddate=" + versionBuildDate +
+            " pql.enableIndexing=" + pqlEnableIndexing);
 
-        this.siteEditor       = siteEditor;
-        this.siteExternalHost = siteExternalHost;
-        this.siteExternalPort = siteExternalPort;
-        this.siteFilestore    = siteFilestore;
-        this.siteManager      = siteManager;
-        this.sitePortal       = sitePortal;
-        this.versionNumber    = versionNumber;
-        this.versionBuildDate = versionBuildDate;
+        this.siteEditor         = siteEditor;
+        this.siteExternalHost   = siteExternalHost;
+        this.siteExternalPort   = siteExternalPort;
+        this.siteFilestore      = siteFilestore;
+        this.siteManager        = siteManager;
+        this.sitePortal         = sitePortal;
+        this.versionNumber      = versionNumber;
+        this.versionBuildDate   = versionBuildDate;
+        this.pqlIndexingEnabled = pqlEnableIndexing;
     }
 
     public String getSiteEditor()       { return siteEditor; }
@@ -64,4 +67,5 @@ public class ConfigBean {
     public String getSitePortal()       { return sitePortal; }
     public String getVersionNumber()    { return versionNumber; }
     public String getVersionBuildDate() { return versionBuildDate; }
+    public boolean isPQLIndexingEnabled() { return pqlIndexingEnabled; }
 }

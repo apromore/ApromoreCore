@@ -105,6 +105,7 @@ public class ManagerPortalEndpoint {
     private DatabaseService dbService;
     private BPMNMinerService bpmnMinerService;
     private StructuringService structuringService;
+    private MeasurementsService measurementsService;
 
 
     /**
@@ -137,7 +138,8 @@ public class ManagerPortalEndpoint {
             final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
             final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService,
-			final ProDriftDetectionService proDriftSrv, final StructuringService structuringService
+			final ProDriftDetectionService proDriftSrv, final StructuringService structuringService,
+            final MeasurementsService measurementsService
     ) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
@@ -158,6 +160,7 @@ public class ManagerPortalEndpoint {
         this.dbService = dbService;
         this.bpmnMinerService = bpmnMinerService;
         this.structuringService = structuringService;
+        this.measurementsService = measurementsService;
 
 //        try {
 //            this.clusterService.computeGEDMatrix();
@@ -1594,5 +1597,28 @@ public class ManagerPortalEndpoint {
 
         return WS_OBJECT_FACTORY.createProDriftDetectorResponse(res);
     }
+
+    @PayloadRoot(localPart = "ComputeMeasurementsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ComputeMeasurementsOutputMsgType> computeMeasurements(@RequestPayload final JAXBElement<ComputeMeasurementsInputMsgType> req) {
+        LOGGER.trace("Executing operation ComputeMeasurements");
+
+        ComputeMeasurementsInputMsgType payload = req.getValue();
+        ComputeMeasurementsOutputMsgType res = new ComputeMeasurementsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        String process = payload.getProcess();
+
+        try {
+            result.setMessage( measurementsService.computeSimplicity(process) );
+            result.setCode(0);
+        } catch (Exception e) {
+            result.setMessage(null);
+            result.setCode(1);
+        }
+        return WS_OBJECT_FACTORY.createComputeMeasurementsResponse(res);
+    }
+
 
 }

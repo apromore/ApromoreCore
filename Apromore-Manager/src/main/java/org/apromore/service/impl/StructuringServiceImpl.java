@@ -21,7 +21,6 @@
 package org.apromore.service.impl;
 
 import org.apromore.service.BPMNDiagramImporter;
-import org.processmining.models.graphbased.directed.DirectedGraphEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -219,6 +218,10 @@ public class StructuringServiceImpl implements StructuringService {
 		 **/
 		fixImplicitGateways();
 		removeDoubleEdges();
+
+		collapseSplitGateways();
+		//collapseJoinGateways();
+
 		removeMultipleStartEvents();
 		removeMultipleEndEvents();
 		handleBoundaryEvents();
@@ -266,6 +269,8 @@ public class StructuringServiceImpl implements StructuringService {
 		removeDoubleEdges();
 		for( Gateway g : new HashSet<>(diagram.getGateways()) ) checkFakeGateway(g);
 
+		//collapseSplitGateways();
+		collapseJoinGateways();
 	}
 
 	private void parsePool(Swimlane pool) {
@@ -377,6 +382,104 @@ public class StructuringServiceImpl implements StructuringService {
 			removeNode(g);
 			LOGGER.info("Found and removed a fake gate: " + g.getId());
 		}
+	}
+
+	private void collapseSplitGateways() {
+		LinkedList<Gateway> gates = new LinkedList<>(diagram.getGateways());
+		Set<Gateway> eaten = new HashSet<>();
+		Gateway eater;
+		Gateway meal;
+		boolean unhealthy;
+
+		do {
+			eater = gates.pollFirst();
+			while( !eaten.contains(eater) ) {
+				meal = null;
+				unhealthy = true;
+
+				for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(eater) )
+					if( (e.getTarget() instanceof Gateway) && ((meal = (Gateway) e.getTarget()).getGatewayType() == eater.getGatewayType()) ) {
+						unhealthy = false;
+						for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ee : diagram.getInEdges(meal) )
+							if( ee.getSource() != eater ) {
+								unhealthy = true;
+								break;
+							}
+
+						if( unhealthy ) continue;
+						break;
+					}
+
+				if( unhealthy ) break;
+				else {
+					eatSplit(meal, eater);
+					eaten.add(meal);
+				}
+			}
+		} while( eater != null );
+		LOGGER.info("Collapsed gateways [split]: " + eaten.size());
+	}
+
+	private void collapseJoinGateways() {
+		LinkedList<Gateway> gates = new LinkedList<>(diagram.getGateways());
+		Set<Gateway> eaten = new HashSet<>();
+		Gateway eater;
+		Gateway meal;
+		boolean unhealthy;
+
+		do {
+			eater = gates.pollFirst();
+			while( !eaten.contains(eater) ) {
+				meal = null;
+				unhealthy = true;
+
+				for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getInEdges(eater) )
+					if( (e.getSource() instanceof Gateway) && ((meal = (Gateway) e.getSource()).getGatewayType() == eater.getGatewayType()) ) {
+						unhealthy = false;
+						for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ee : diagram.getOutEdges(meal) )
+							if( ee.getTarget() != eater ) {
+								unhealthy = true;
+								break;
+							}
+
+						if( unhealthy ) continue;
+						break;
+					}
+
+				if( unhealthy ) break;
+				else {
+					eatJoin(meal, eater);
+					eaten.add(meal);
+				}
+			}
+		} while( eater != null );
+		LOGGER.info("Collapsed gateways [join]: " + eaten.size());
+	}
+
+	private void eatSplit(Gateway meal, Gateway eater) {
+		Set<BPMNEdge> mealRemains = new HashSet<>();
+
+		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getInEdges(meal) ) mealRemains.add(e);
+		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(meal) ) {
+			mealRemains.add(e);
+			diagram.addFlow(eater, e.getTarget(), "");
+		}
+
+		for(BPMNEdge e : mealRemains) diagram.removeEdge(e);
+		removeNode(meal);
+	}
+
+	private void eatJoin(Gateway meal, Gateway eater) {
+		Set<BPMNEdge> mealRemains = new HashSet<>();
+
+		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(meal) ) mealRemains.add(e);
+		for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getInEdges(meal) ) {
+			mealRemains.add(e);
+			diagram.addFlow(e.getSource(), eater, "");
+		}
+
+		for(BPMNEdge e : mealRemains) diagram.removeEdge(e);
+		removeNode(meal);
 	}
 
 	private void removeMultipleStartEvents() {

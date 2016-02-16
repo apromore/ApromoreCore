@@ -12,6 +12,7 @@
     <artifact type="bundle" name="org.apromore.editor-platform-extension-downloader"    version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-epc"           version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-jpdl"          version="[1.2, 2)"/>
+    <artifact type="bundle" name="org.apromore.editor-platform-extension-measurement"   version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-pdf"           version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-petrinet"      version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-syntaxchecker" version="[1.2, 2)"/>

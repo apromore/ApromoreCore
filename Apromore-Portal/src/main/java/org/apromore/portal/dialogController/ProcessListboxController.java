@@ -27,6 +27,7 @@ import java.util.List;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
@@ -50,6 +51,10 @@ public class ProcessListboxController extends BaseListboxController {
         super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
+
+        // Hide the "Queryable?" column if PQL indexing is disabled
+        Listheader queryable = (Listheader) this.getListBox().getFellow("queryable");
+        queryable.setVisible(config.isPQLIndexingEnabled());
 
         // TODO should be replaced by ListModel listener in zk 6
         getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {

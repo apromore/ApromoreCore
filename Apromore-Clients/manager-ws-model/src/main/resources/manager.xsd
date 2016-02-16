@@ -71,7 +71,24 @@
     <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
     <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
 
-    <!-- DiagramStructuring -->
+
+    <!-- ComputeMeasurements -->
+    <xs:element name="ComputeMeasurementsRequest" type="tns:ComputeMeasurementsInputMsgType"/>
+    <xs:element name="ComputeMeasurementsResponse" type="tns:ComputeMeasurementsOutputMsgType"/>
+
+    <xs:complexType name="ComputeMeasurementsInputMsgType">
+        <xs:sequence>
+            <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ComputeMeasurementsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- DiagramStructuring from Editor -->
     <xs:element name="StructureBPMNModelRequest" type="tns:StructureBPMNModelInputMsgType"/>
     <xs:element name="StructureBPMNModelResponse" type="tns:StructureBPMNModelOutputMsgType"/>
 
@@ -87,6 +104,7 @@
         </xs:sequence>
     </xs:complexType>
 
+    <!-- DiagramStructuring from Manager -->
     <xs:element name="StructureBPMNProcessRequest" type="tns:StructureBPMNProcessInputMsgType"/>
     <xs:element name="StructureBPMNProcessResponse" type="tns:StructureBPMNProcessOutputMsgType"/>
 
@@ -611,7 +629,18 @@
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
+        <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
     </xs:complexType>
+
+    <!-- These enumeration names correspond to org.pql.index.IndexStatus. -->
+    <xs:simpleType name="IndexStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNINDEXED"/>
+            <xs:enumeration value="INDEXING"/>
+            <xs:enumeration value="INDEXED"/>
+            <xs:enumeration value="CANNOTINDEX"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="VersionSummaryType">
         <xs:sequence>

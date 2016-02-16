@@ -131,6 +131,10 @@
                             !de.hpi.bpt.process.*,
                             !de.hpi.bpt.process.checks.structural,
                             !ee.ut.bpstruct,
+                            !de.hpi.bpt.graph,
+                            !de.hpi.bpt.graph.abs,
+                            !de.hpi.bpt.hypergraph.abs,
+                            !de.hpi.bpt.graph.algo.*,
                             *
                         </Import-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
