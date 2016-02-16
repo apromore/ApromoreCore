@@ -197,7 +197,8 @@ CREATE TABLE folder
    creatorId int,
    date_created timestamp,
    modifiedById int,
-   date_modified timestamp
+   date_modified timestamp,
+   ged_matrix_computation bit DEFAULT 0
 )
 ;
 CREATE TABLE folder_process
