@@ -54,11 +54,13 @@ public interface WorkspaceService {
 
     Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
 
-    void createFolder(String userId, String folderName, Integer parentFolderId);
+    void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 
     void addProcessToFolder(Integer processId, Integer folderId);
 
-    void updateFolder(Integer folderId, String folderName);
+    boolean isGEDReadyFolder(Integer folderId);
+
+    void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady);
 
     void deleteFolder(Integer folderId);
 

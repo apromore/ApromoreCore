@@ -54,7 +54,6 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
     @Inject
     private GroupProcessRepository groupProcessRepository;
 
-
     /**
      * @see FolderRepositoryCustom#getFolderTreeByUser(int, String)
      * {@inheritDoc}

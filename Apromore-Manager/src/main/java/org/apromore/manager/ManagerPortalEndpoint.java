@@ -1380,7 +1380,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        workspaceSrv.createFolder(payload.getUserId(), payload.getFolderName(), payload.getParentFolderId());
+        workspaceSrv.createFolder(payload.getUserId(), payload.getFolderName(), payload.getParentFolderId(), payload.isGEDMatrixReady());
 
         return new ObjectFactory().createCreateFolderResponse(res);
     }
@@ -1408,9 +1408,21 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        workspaceSrv.updateFolder(payload.getFolderId(), payload.getFolderName());
+        workspaceSrv.updateFolder(payload.getFolderId(), payload.getFolderName(), payload.isGEDMatrixReady());
 
         return new ObjectFactory().createUpdateFolderResponse(res);
+    }
+
+    @PayloadRoot(localPart = "IsGEDReadyRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<IsGEDReadyOutputMsgType> isGEDReadyFolder(@RequestPayload final JAXBElement<IsGEDReadyInputMsgType> req) {
+        LOGGER.trace("Executing operation updateFolder");
+        IsGEDReadyInputMsgType payload = req.getValue();
+        IsGEDReadyOutputMsgType res = new IsGEDReadyOutputMsgType();
+
+        res.setGEDReady(workspaceSrv.isGEDReadyFolder(payload.getFolderId()));
+
+        return new ObjectFactory().createISGEDReadyResponse(res);
     }
 
     @PayloadRoot(localPart = "DeleteFolderRequest", namespace = NAMESPACE)

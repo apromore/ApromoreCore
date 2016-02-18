@@ -87,9 +87,11 @@
             <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-		   
-		   
+
+
     <!-- Manager -->
+    <xs:element name="IsGEDReadyRequest" type="tns:IsGEDReadyInputMsgType"/>
+    <xs:element name="ISGEDReadyResponse" type="tns:IsGEDReadyOutputMsgType"/>
     <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
     <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
     <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType"/>
@@ -179,7 +181,7 @@
             <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-
+    
     <xs:complexType name="StructureBPMNModelOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
@@ -297,7 +299,6 @@
     <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType"/>
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
-
 
     <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
     <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
@@ -782,6 +783,14 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="IsGEDReadyInputMsgType">
+        <xs:attribute name="folderId" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="IsGEDReadyOutputMsgType">
+        <xs:attribute name="GEDReady" type="xs:boolean" />
+    </xs:complexType>
+
     <xs:complexType name="ReadDomainsInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
     </xs:complexType>
@@ -942,6 +951,7 @@
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderName" type="xs:string"/>
         <xs:attribute name="parentFolderId" type="xs:int"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderOutputMsgType">
@@ -964,6 +974,7 @@
     <xs:complexType name="UpdateFolderInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="folderName" type="xs:string"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="UpdateFolderOutputMsgType">

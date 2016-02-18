@@ -180,7 +180,7 @@ public final class Import {
             parentId = getFolderId(parentFile);
         }
         if (getFolderId(file) == -1) {
-            manager.createFolder(user, file.getName(), parentId);
+            manager.createFolder(user, file.getName(), parentId, false);
             LOGGER.info(file + " created");
         } else {
             LOGGER.debug(file + " already exists");

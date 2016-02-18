@@ -144,6 +144,7 @@
                             <button id="btnAddProcess" label="" image="img/new.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
                             <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
                             <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
+                            <button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>
                             <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/key.png" tooltiptext="Security"/>
                         </hbox>
                     </hbox>

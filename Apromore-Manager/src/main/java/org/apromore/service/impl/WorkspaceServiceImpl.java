@@ -127,7 +127,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
-    public void createFolder(String userId, String folderName, Integer parentFolderId) {
+    public void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady) {
         Folder folder = new Folder();
         folder.setName(folderName);
         User user = userRepo.findByRowGuid(userId);
@@ -146,6 +146,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         folder.setDateCreated(Calendar.getInstance().getTime());
         folder.setDateModified(Calendar.getInstance().getTime());
         folder.setDescription("");
+        if(isGEDMatrixReady != null) folder.setGEDMatrixReady(isGEDMatrixReady);
         folder = folderRepo.save(folder);
 
         GroupFolder gf = new GroupFolder();
@@ -159,9 +160,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void updateFolder(Integer folderId, String folderName) {
+    public boolean isGEDReadyFolder(Integer folderId) {
         Folder folder = folderRepo.findOne(folderId);
-        folder.setName(folderName);
+        return folder.isGEDMatrixReady();
+    }
+
+    @Override
+    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady) {
+        Folder folder = folderRepo.findOne(folderId);
+        if(folderName != null && !folderName.isEmpty()) folder.setName(folderName);
+        if(isGEDMatrixReady != null) {
+            folder.setGEDMatrixReady(isGEDMatrixReady);
+            for(Folder subfolder : folder.getSubFolders()) {
+                updateFolder(subfolder.getId(), null, isGEDMatrixReady);
+            }
+        }
     }
 
     @Override

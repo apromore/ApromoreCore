@@ -146,6 +146,8 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                                     width: 150
                                                 }));
         }
+
+
         if (responseJson.hasOwnProperty('MCD')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'MCD',
