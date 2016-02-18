@@ -110,6 +110,38 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                         }));
         }
 
+        if (responseJson.hasOwnProperty('nBond')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: '#Bonds',
+                                            value: responseJson['nBond'],
+                                            width: 150
+                                        }));
+        }
+
+        if (responseJson.hasOwnProperty('nRigid')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: '#Rigids',
+                                            value: responseJson['nRigid'],
+                                            width: 150
+                                        }));
+        }
+
+        if (responseJson.hasOwnProperty('avgBNodes')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: 'avg Bond Size',
+                                            value: responseJson['avgBNodes'],
+                                            width: 150
+                                        }));
+        }
+
+        if (responseJson.hasOwnProperty('avgRNodes')) {
+                    measures.push( new Ext.form.TextField({
+                                            fieldLabel: 'avg Rigid Size',
+                                            value: responseJson['avgRNodes'],
+                                            width: 150
+                                        }));
+        }
+
         if (responseJson.hasOwnProperty('separability')) {
                             measures.push( new Ext.form.TextField({
                                                     fieldLabel: 'separability',

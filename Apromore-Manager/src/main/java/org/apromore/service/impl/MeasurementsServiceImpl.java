@@ -37,6 +37,10 @@ public class MeasurementsServiceImpl implements MeasurementsService {
     private BPMNDiagramImporter diagramImporter;
     private JSONObject result;
 
+    private Integer nBond = 0;
+    private Integer nRigid = 0;
+    private Double avgBNodes = 0.0;
+    private Double avgRNodes = 0.0;
 
     public MeasurementsServiceImpl() {
         diagram = null;
@@ -82,17 +86,22 @@ public class MeasurementsServiceImpl implements MeasurementsService {
     public String computeSimplicity(String process) {
         result = new JSONObject();
 
+
         try {
             diagram = diagramImporter.importBPMNDiagram(process);
 
             result.put("size", computeSize());
             result.put("density", computeDensity());
             result.put("structuredness", computeStructuredness());
+            result.put("nBond", nBond);
+            result.put("nRigid", nRigid);
+            result.put("avgBNodes", avgBNodes);
+            result.put("avgRNodes", avgRNodes);
+            result.put("separability", computeSeparability());
             result.put("CFC", computeCFC());
             result.put("CNC", computeCNC());
             result.put("ACD", computeACD());
             result.put("MCD", computeMCD());
-            result.put("separability", computeSeparability());
 
             return result.toString();
         } catch(Exception e) {
@@ -238,6 +247,11 @@ public class MeasurementsServiceImpl implements MeasurementsService {
 
         boolean count = true;
 
+        HashSet<RPSTNode> rigids = new HashSet<>();
+        HashSet<RPSTNode> bonds = new HashSet<>();
+        HashSet<Vertex> rChildren = new HashSet<>();
+        HashSet<Vertex> bChildren = new HashSet<>();
+
         while( toAnalize.size() != 0 ) {
 
             root = toAnalize.pollFirst();
@@ -261,9 +275,18 @@ public class MeasurementsServiceImpl implements MeasurementsService {
                     case R:
                         //LOGGER.info("found a: RIGID with: " +  n.getFragment().getVertices().size() + " fragment nodes.");
                         toAnalize.add(n);
+                        rigids.add(n);
                         break;
                     case T:
                         //LOGGER.info("found a: TRIVIAL with: " +  n.getFragment().getVertices().size() + " fragment nodes.");
+                        if( (root != rpst.getRoot()) && (root.getType() == TCType.P) && (rpst.getParent(root).getType() == TCType.R)) {
+                            rChildren.add((Vertex) n.getEntry());
+                            rChildren.add((Vertex) n.getExit());
+                        }
+                        if( (root != rpst.getRoot()) && (root.getType() == TCType.P) && (rpst.getParent(root).getType() == TCType.B)) {
+                            bChildren.add((Vertex) n.getEntry());
+                            bChildren.add((Vertex) n.getExit());
+                        }
                         if( count ) {
                             src = (Vertex) n.getEntry();
                             tgt = (Vertex) n.getExit();
@@ -280,6 +303,7 @@ public class MeasurementsServiceImpl implements MeasurementsService {
                         removed.add(n.getEntry().getName());
                         removed.add(n.getExit().getName());
                         toAnalize.add(n);
+                        bonds.add(n);
                         break;
                     default:
                         LOGGER.info("found something weird.");
@@ -299,6 +323,11 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         nodes += diagram.getEvents().size();
 
         structuredness = 1 - ((nodes-removed.size())/nodes);
+
+        nBond = bonds.size();
+        nRigid = rigids.size();
+        avgBNodes = ((double)bChildren.size())/nBond;
+        avgRNodes = ((double)rChildren.size())/nRigid;
 
         LOGGER.info(" done!");
         return structuredness;
