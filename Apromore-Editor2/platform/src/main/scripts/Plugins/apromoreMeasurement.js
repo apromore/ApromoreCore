@@ -110,6 +110,7 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                         }));
         }
 
+
         if (responseJson.hasOwnProperty('nBond')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: '#Bonds',
