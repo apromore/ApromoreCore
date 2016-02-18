@@ -125,7 +125,6 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                             width: 150
                                         }));
         }
-
         if (responseJson.hasOwnProperty('avgBNodes')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: 'avg Bond Size',
@@ -133,7 +132,6 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                             width: 150
                                         }));
         }
-
         if (responseJson.hasOwnProperty('avgRNodes')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: 'avg Rigid Size',
@@ -141,7 +139,6 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                             width: 150
                                         }));
         }
-
         if (responseJson.hasOwnProperty('separability')) {
                             measures.push( new Ext.form.TextField({
                                                     fieldLabel: 'separability',
@@ -149,8 +146,6 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                                     width: 150
                                                 }));
         }
-
-
         if (responseJson.hasOwnProperty('MCD')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'MCD',

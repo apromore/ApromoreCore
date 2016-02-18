@@ -255,10 +255,8 @@ public class MeasurementsServiceImpl implements MeasurementsService {
         while( toAnalize.size() != 0 ) {
 
             root = toAnalize.pollFirst();
-            //LOGGER.info("Iteration on a: " + root.getType());
 
             if( !count && (root.getType() == TCType.P) && (rpst.getParent(root).getType() == TCType.B) ) {
-                //LOGGER.info("counter enabled.");
                 try {
                     Gateway entry = gates.get(rpst.getParent(root).getEntry().getName());
                     Gateway exit = gates.get(rpst.getParent(root).getExit().getName());
