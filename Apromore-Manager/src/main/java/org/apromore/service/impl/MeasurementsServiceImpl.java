@@ -256,6 +256,7 @@ public class MeasurementsServiceImpl implements MeasurementsService {
 
             root = toAnalize.pollFirst();
 
+
             if( !count && (root.getType() == TCType.P) && (rpst.getParent(root).getType() == TCType.B) ) {
                 try {
                     Gateway entry = gates.get(rpst.getParent(root).getEntry().getName());
