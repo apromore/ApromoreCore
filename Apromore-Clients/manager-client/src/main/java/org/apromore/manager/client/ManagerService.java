@@ -87,11 +87,13 @@ public interface ManagerService {
 
     ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
 
-    void createFolder(String userId, String folderName, int parentFolderId);
+    void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady);
 
     void addProcessToFolder(int processId, int folderId);
 
-    void updateFolder(int folderId, String folderName);
+    boolean isGEDReadyFolder(int folderId);
+
+    void updateFolder(int folderId, String folderName, Boolean isGEDMatrixReady);
 
     void deleteFolder(int folderId);
 

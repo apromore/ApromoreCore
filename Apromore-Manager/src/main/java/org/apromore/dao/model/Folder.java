@@ -65,6 +65,8 @@ public class Folder implements Serializable {
     private Date dateCreated;
     private Date dateModified;
 
+    private boolean gedMatrixReady;
+
     private User createdBy;
     private User modifiedBy;
     private Workspace workspace;
@@ -132,6 +134,23 @@ public class Folder implements Serializable {
      */
     public void setDescription(final String newDescription) {
         this.description = newDescription;
+    }
+
+    /**
+     * Get the gedMatrixReady for the Object.
+     * @return Returns the gedMatrixReady description.
+     */
+    @Column(name = "ged_matrix_computation")
+    public boolean isGEDMatrixReady() {
+        return gedMatrixReady;
+    }
+
+    /**
+     * Set the gedMatrixReady for the Object.
+     * @param gedMatrixReady The folder gedMatrixComputation to set.
+     */
+    public void setGEDMatrixReady(final boolean gedMatrixReady) {
+        this.gedMatrixReady = gedMatrixReady;
     }
 
     /**

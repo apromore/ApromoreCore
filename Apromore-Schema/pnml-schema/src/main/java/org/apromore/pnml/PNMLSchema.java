@@ -88,8 +88,8 @@ public class PNMLSchema {
         if (isValidating) {
             marshaller.setSchema(getPNMLSchema());
         }
-        final JAXBElement<PnmlType> epmlSpecElement = new org.apromore.pnml.ObjectFactory().createPnml(pnmlSpec);
-        marshaller.marshal(epmlSpecElement, pnmlFormat);
+        final JAXBElement<PnmlType> pnmlSpecElement = new org.apromore.pnml.ObjectFactory().createPnml(pnmlSpec);
+        marshaller.marshal(pnmlSpecElement, pnmlFormat);
     }
 
     /**

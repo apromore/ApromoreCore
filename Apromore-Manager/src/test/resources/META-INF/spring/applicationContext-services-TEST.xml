@@ -106,6 +106,9 @@
         <constructor-arg type="long" value="300"/>
         <constructor-arg type="long" value="86400"/>
     </bean>
+    <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
+        <constructor-arg value="false"/>
+    </bean>
 
 
     <!-- ************************** Non WebServices ************************** -->

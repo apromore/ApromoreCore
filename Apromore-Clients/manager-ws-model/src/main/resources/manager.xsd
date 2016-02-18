@@ -1,95 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright © 2009-2015 The Apromore Initiative.
-  ~
-  ~ This file is part of "Apromore".
-  ~
-  ~ "Apromore" is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this program.
-  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  -->
-
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:manager"
            xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            targetNamespace="urn:qut-edu-au:schema:apromore:manager"
            elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0"
            xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime" >
 
-    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
-    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
-
-    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
-    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
-
-    <xs:complexType name="DBInputMsgType">
-        <xs:attribute name="table" type="xs:string"/>
-        <xs:attribute name="columnName" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="DBOutputMsgType">
-        <xs:sequence>
-            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLInputMsgType">
-        <xs:sequence>
-            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-        <xs:attribute name="query" type="xs:string"/>
-        <xs:attribute name="nameQuery" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="ResultPQL">
-        <xs:sequence>
-            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
-            <xs:element name="pst" type="tns:ProcessSummaryType"/>
-            <xs:element name="vst" type="tns:VersionSummaryType"/>
-        </xs:sequence>
-
-    </xs:complexType>
-
-    <xs:complexType name="Detail">
-        <xs:sequence>
-            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="labelOne" type="xs:string"/>
-        <xs:attribute name="similarityLabelOne" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
-    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
-
-    <xs:complexType name="DetailInputMsgType">
-    </xs:complexType>
-
-    <xs:complexType name="DetailOutputMsgType">
-        <xs:sequence>
-            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-		   
-		   
     <!-- Manager -->
+    <xs:element name="IsGEDReadyRequest" type="tns:IsGEDReadyInputMsgType"/>
+    <xs:element name="ISGEDReadyResponse" type="tns:IsGEDReadyOutputMsgType"/>
     <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
     <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
     <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType"/>
@@ -204,6 +122,70 @@
         <xs:sequence>
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- APQL -->
+    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
+    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
+
+    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
+    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
+
+    <xs:complexType name="DBInputMsgType">
+        <xs:attribute name="table" type="xs:string"/>
+        <xs:attribute name="columnName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DBOutputMsgType">
+        <xs:sequence>
+            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLInputMsgType">
+        <xs:sequence>
+            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+        <xs:attribute name="query" type="xs:string"/>
+        <xs:attribute name="nameQuery" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ResultPQL">
+        <xs:sequence>
+            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
+            <xs:element name="pst" type="tns:ProcessSummaryType"/>
+            <xs:element name="vst" type="tns:VersionSummaryType"/>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="Detail">
+        <xs:sequence>
+            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="labelOne" type="xs:string"/>
+        <xs:attribute name="similarityLabelOne" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
+    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
+
+    <xs:complexType name="DetailInputMsgType">
+    </xs:complexType>
+
+    <xs:complexType name="DetailOutputMsgType">
+        <xs:sequence>
+            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -782,6 +764,14 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="IsGEDReadyInputMsgType">
+        <xs:attribute name="folderId" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="IsGEDReadyOutputMsgType">
+        <xs:attribute name="GEDReady" type="xs:boolean" />
+    </xs:complexType>
+
     <xs:complexType name="ReadDomainsInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
     </xs:complexType>
@@ -942,6 +932,7 @@
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderName" type="xs:string"/>
         <xs:attribute name="parentFolderId" type="xs:int"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderOutputMsgType">
@@ -964,6 +955,7 @@
     <xs:complexType name="UpdateFolderInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="folderName" type="xs:string"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="UpdateFolderOutputMsgType">

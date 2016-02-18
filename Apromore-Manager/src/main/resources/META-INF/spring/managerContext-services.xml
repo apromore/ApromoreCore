@@ -102,7 +102,9 @@
         <constructor-arg type="long" value="${pql.defaultBotSleepTime}"/>
         <constructor-arg type="long" value="${pql.defaultBotMaxIndexTime}"/>
     </bean>
-
+    <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
+        <constructor-arg value="${ged.enabled}"/>
+    </bean>
 
     <!-- ************************** Non WebServices ************************** -->
 

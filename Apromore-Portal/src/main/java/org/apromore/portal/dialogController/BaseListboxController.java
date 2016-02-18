@@ -65,6 +65,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
+    private final Button btnGEDFolder;
     private final Button btnRenameFolder;
     private final Button btnRemoveFolder;
     private final Button btnSecurity;
@@ -83,6 +84,7 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
+        btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
         btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
         btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
@@ -122,6 +124,12 @@ public abstract class BaseListboxController extends BaseController {
         this.btnAddProcess.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 addProcess();
+            }
+        });
+
+        this.btnGEDFolder.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                changeGED();
             }
         });
 
@@ -172,7 +180,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            new AddFolderController(getMainController(), 0, "");
+            new AddFolderController(getMainController(), 0, "", false);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -211,6 +219,22 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    protected void changeGED() throws InterruptedException {
+        getMainController().eraseMessage();
+        try {
+            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+
+            if (folderIds.size() == 1) {
+                boolean isGEDReady = this.mainController.getService().isGEDReadyFolder(folderIds.get(0));
+                new AddFolderController(getMainController(), folderIds.get(0), null, isGEDReady);
+            } else if (folderIds.size() > 1) {
+                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
     protected void renameFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
@@ -227,7 +251,7 @@ public abstract class BaseListboxController extends BaseController {
                     }
                 }
 
-                new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName);
+                new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName, null);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {

@@ -352,6 +352,7 @@ CREATE TABLE `folder` (
   `date_created` datetime DEFAULT NULL,
   `modifiedById` int(11) DEFAULT NULL,
   `date_modified` datetime DEFAULT NULL,
+  `ged_matrix_computation` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `folder_creator` (`creatorId`),
   KEY `folder_modified_by` (`modifiedById`),

@@ -234,71 +234,6 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         int[] array = new int[base];
         int max, i, j, k, iPos, jPos, kPos, pos;
 
-//        for (i = 0; i < base; i++) {
-//            max = 0;
-//            for (k = 0; k < base; k++) {
-//                if (i != k && isContainedAndSamefolder(i, k)) {
-//                    array[max] = k;
-//                    max++;
-//                }
-//            }
-//            if(i % 1000 == 0) LOGGER.error("Waiting " + i + " max " + max);
-//
-//            for (j = 0; j < base; j++) {
-//                if (i != j && isContained(j, i)) {
-//                    for (k = 0; k < max; k++) {
-//                        contmatrix.add(matrixToInt(j, array[k]));
-//                    }
-//                }
-//            }
-//        }
-
-//        for (i = 0; i < base; i++) {
-//            max = 0;
-//            if(i % 1000 == 0) LOGGER.error("Waiting " + i);
-//            for (k = 0; k < base; k++) {
-//                if (isContainedAndSamefolder(i, k)) {
-//                    array[max] = k;
-//                    max++;
-//                }
-//            }
-//
-//            for (j = 0; j < base; j++) {
-//                if (i != j) {
-//                    increaseUsedCores();
-//                    executorService.execute(new MatrixExecutor(j, i, max, array));
-//                }
-//            }
-//
-//            while(getUsedCores() > 0) {
-//                threadSleep();
-//            }
-//        }
-
-//        for (iPos = base - 1; iPos >= 0 ; iPos--) {
-//            max = 0;
-//            i = sortedFragments[iPos];
-//            for (kPos = iPos - 1; kPos >= 0 ; kPos--) {
-//                k = sortedFragments[kPos];
-//                if (i != k && isContainedAndSamefolder(i, k)) {
-//                    array[max] = k;
-//                    max++;
-//                }
-//            }
-//            if(iPos % 1000 == 0) LOGGER.error("Waiting " + iPos + " max " + max);
-//
-//            if(max > 0) {
-//                for (jPos = iPos - 1; jPos >= 0; jPos--) {
-//                    j = sortedFragments[jPos];
-//                    if (i != j && isContained(j, i)) {
-//                        for (k = 0; k < max; k++) {
-//                            contmatrix.add(matrixToInt(j, array[k]));
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         MatrixExecutor[] matrixExecutors = new MatrixExecutor[base];
         for (iPos = base - 1; iPos >= 0; iPos--) {
             max = 0;
@@ -311,7 +246,6 @@ public class ContainmentRelationImpl implements ContainmentRelation {
                 }
             }
             if(iPos % 1000 == 0) LOGGER.error("Waiting " + iPos + " max " + max);
-//            if(max > 0) LOGGER.error("Waiting " + iPos + " max " + max);
 
             if(max > 0) {
                 for (jPos = iPos - 1; jPos >= 0; jPos--) {

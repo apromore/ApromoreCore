@@ -65,4 +65,5 @@ public interface GroupFolderRepository extends JpaRepository<GroupFolder, Intege
            "               User u JOIN u.groups g2 " +
            "WHERE ((?1 = 0 AND f1 IS NULL) OR (f1.id = ?1)) AND (u.rowGuid = ?2) AND (g1 = g2) order by f.name asc")
     List<GroupFolder> findByParentFolderAndUser(final Integer parentFolderId, final String userGuid);
+
 }
