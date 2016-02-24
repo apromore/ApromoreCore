@@ -28,9 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -40,7 +38,7 @@ public class StructureProcessController extends BaseController  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StructureProcessController.class);
 
-    public StructureProcessController(final MainController mainC, HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+    public StructureProcessController(final MainController mainC, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
 
         try {
             for (ProcessSummaryType process : processVersions.keySet()) {

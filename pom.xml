@@ -95,6 +95,9 @@
         <module>Apromore-OSGI-Bundles/prom6-osgi</module>
         <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
 
+        <!-- ZK Osgi -->
+        <module>Apromore-OSGI-Bundles/zk-osgi</module>
+
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>Apromore-Extras/bpmncmap</module>
@@ -255,7 +258,7 @@
         <maven.aspectj.plugin>1.4</maven.aspectj.plugin>
         <maven.assembly.plugin>2.4</maven.assembly.plugin>
         <maven.build.helper.plugin>1.8</maven.build.helper.plugin>
-        <maven.bundle.plugin>2.3.7</maven.bundle.plugin>
+        <maven.bundle.plugin>3.0.1</maven.bundle.plugin>
         <maven.changelog.plugin>2.2</maven.changelog.plugin>
         <maven.checkstyle.plugin>2.10</maven.checkstyle.plugin>
         <maven.clean.plugin>2.5</maven.clean.plugin>
@@ -556,6 +559,13 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>metric-api-provider</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+
+            <!-- Portal Plugin API -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>portal-plugin-api</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
 

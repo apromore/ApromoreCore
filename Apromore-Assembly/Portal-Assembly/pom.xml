@@ -54,6 +54,13 @@
             <version>6.0</version>
         </dependency>
 
+        <!-- ZK OSGI -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>zk-osgi</artifactId>
+            <version>6.5.3</version>
+        </dependency>
+
         <!-- Schema Bundles -->
         <dependency>
             <groupId>org.apromore</groupId>
@@ -76,7 +83,14 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- *** Plugin Implementation Bundles *** -->
+        <!-- *** Plugin API Bundles -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Plugin Implementation Bundles -->
 
         <!-- Manager Bundles -->
         <dependency>
@@ -275,6 +289,7 @@
                             <outputDirectory>${deploy.dir}/usr</outputDirectory>
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <excludeTransitive>false</excludeTransitive>
+                            <!-- Prevent these non-OSGI dependencies to be copied to /usr -->
                             <excludeArtifactIds>
                                 org.junit,org.apromore,com.springsource.org.aopalliance,fluent-hc,httpclient,httpcore,jcl-over-slf4j,logback-core,
                                 jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,logback-classic,
@@ -283,8 +298,11 @@
                                 org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
                                 org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
                                 org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
-                                com.springsource.javax.xml.bind
+                                com.springsource.javax.xml.bind,
                             </excludeArtifactIds>
+                            <excludeGroupIds>
+                                org.zkoss.zk, org.zkoss.common, org.beanshell
+                            </excludeGroupIds>
                         </configuration>
                     </execution>
                 </executions>

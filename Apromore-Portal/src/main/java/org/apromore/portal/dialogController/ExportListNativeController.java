@@ -21,7 +21,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ public class ExportListNativeController extends BaseController {
     private List<ExportOneNativeController> exportedList; // list of exports done
 
     public ExportListNativeController(MainController mainC, MenuController menuC,
-            HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions)
+            Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
         this.mainC = mainC;
         this.toExportList = new ArrayList<>();

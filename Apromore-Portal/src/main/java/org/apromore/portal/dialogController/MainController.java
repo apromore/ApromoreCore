@@ -29,6 +29,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
@@ -50,6 +51,7 @@ import org.zkoss.zul.ext.Paginal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
@@ -478,6 +480,42 @@ public class MainController extends BaseController {
             return new HashSet<>();
         }
     }
+
+    /**
+     * @return a map with all currently selected process models and the corresponding selected versions
+     * @throws ParseException
+     */
+    public Map<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() {
+        Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
+        String versionNumber;
+
+        if (getBaseListboxController() instanceof ProcessListboxController) {
+            ArrayList<VersionSummaryType> versionList;
+
+            Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) getDetailListbox()).getListModel().getSelection();
+            Set<Object> selectedProcesses = (Set<Object>) getBaseListboxController().getListModel().getSelection();
+            for (Object obj : selectedProcesses) {
+                if (obj instanceof ProcessSummaryType) {
+                    versionList = new ArrayList<>();
+                    if (selectedVersions != null) {
+                        for (VersionDetailType detail: selectedVersions) {
+                            versionList.add(detail.getVersion());
+                        }
+                    } else {
+                        for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
+                            versionNumber = ((ProcessSummaryType) obj).getLastVersion();
+                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
+                                versionList.add(summaryType);
+                            }
+                        }
+                    }
+                    processVersions.put((ProcessSummaryType) obj, versionList);
+                }
+            }
+        }
+        return processVersions;
+    }
+
 
     /**
      * Show the messages we get back from plugins.

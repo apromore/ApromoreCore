@@ -23,9 +23,12 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.TabListitem;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
@@ -53,7 +56,21 @@ public class MenuController extends Menubar {
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
+
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
+
+
+        for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
+            Menuitem menuitem = new Menuitem();
+            menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
+            menuB.getChildren().add(menuitem);
+            menuitem.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    plugin.execute(new PluginPortalContext(mainC));
+                }
+            });
+        }
 
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
@@ -200,7 +217,7 @@ public class MenuController extends Menubar {
      * @throws ParseException
      */
     protected void structureProcess() throws InterruptedException, ParseException  {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if( selectedProcessVersions.size() == 1 ) {
             new StructureProcessController(this.mainC, selectedProcessVersions);
         } else {
@@ -225,7 +242,7 @@ public class MenuController extends Menubar {
      */
     protected void deployProcessModel() throws WrongValueException, InterruptedException, ParseException {
         this.mainC.eraseMessage();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if (selectedProcessVersions.size() == 1) {
             new DeployProcessModelController(this.mainC, selectedProcessVersions.entrySet().iterator().next());
         } else {
@@ -240,7 +257,7 @@ public class MenuController extends Menubar {
      * @throws InterruptedException
      */
     protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         this.mainC.eraseMessage();
 
         int countSelected=0;
@@ -298,7 +315,7 @@ public class MenuController extends Menubar {
      * @throws SuspendNotAllowedException
      */
     protected void compareSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         this.mainC.eraseMessage();
 
         // Populate "details" with the process:version selections
@@ -342,7 +359,7 @@ public class MenuController extends Menubar {
     }
 
     protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains, ParseException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         this.mainC.eraseMessage();
 
         LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
@@ -444,7 +461,7 @@ public class MenuController extends Menubar {
                 }
             }
         }
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if (selectedProcessVersions.size() == 1) {
             try {
                 new CmapController(this.mainC, selectedProcessVersions);
@@ -495,7 +512,7 @@ public class MenuController extends Menubar {
 
 
 
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
 
         if (selectedProcessVersions.size() == 1) {
             try {
@@ -574,7 +591,7 @@ public class MenuController extends Menubar {
                 }
             }
         }
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             new EditListProcessesController(this.mainC, this, selectedProcessVersions);
         } else {
@@ -589,7 +606,7 @@ public class MenuController extends Menubar {
      */
     protected void deleteSelectedProcessVersions() throws Exception {
         this.mainC.eraseMessage();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             this.mainC.deleteProcessVersions(selectedProcessVersions);
             mainC.clearProcessVersions();
@@ -628,7 +645,7 @@ public class MenuController extends Menubar {
             }
         }
 
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             new ExportListNativeController(this.mainC, this, selectedProcessVersions);
         } else {
@@ -643,45 +660,6 @@ public class MenuController extends Menubar {
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
-    }
-
-    /**
-     * Return all selected process versions structured in an Hash map:
-     * <p, l> belongs to the result <=> for the process whose id is p, all versions whose
-     * name belong to l are selected.
-     * @return HashMap
-     */
-    @SuppressWarnings("unchecked")
-    protected HashMap<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() throws ParseException {
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
-        String versionNumber;
-        mainC.eraseMessage();
-
-        if (mainC.getBaseListboxController() instanceof ProcessListboxController) {
-            ArrayList<VersionSummaryType> versionList;
-
-            Set<VersionDetailType> selectedVersions = ((ProcessVersionDetailController) mainC.getDetailListbox()).getListModel().getSelection();
-            Set<Object> selectedProcesses = (Set<Object>) mainC.getBaseListboxController().getListModel().getSelection();
-            for (Object obj : selectedProcesses) {
-                if (obj instanceof ProcessSummaryType) {
-                    versionList = new ArrayList<>();
-                    if (selectedVersions != null) {
-                        for (VersionDetailType detail: selectedVersions) {
-                            versionList.add(detail.getVersion());
-                        }
-                    } else {
-                        for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
-                            versionNumber = ((ProcessSummaryType) obj).getLastVersion();
-                            if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
-                                versionList.add(summaryType);
-                            }
-                        }
-                    }
-                    processVersions.put((ProcessSummaryType) obj, versionList);
-                }
-            }
-        }
-        return processVersions;
     }
 
     /**
@@ -719,7 +697,7 @@ public class MenuController extends Menubar {
      */
     protected void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers, ParseException {
         mainC.eraseMessage();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
 
         if (selectedProcessVersions.size() != 0) {
             new EditListProcessDataController(mainC, selectedProcessVersions);

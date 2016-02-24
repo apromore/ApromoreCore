@@ -45,7 +45,7 @@ import org.zkoss.zul.Paging;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 public abstract class BaseListboxController extends BaseController {
@@ -265,7 +265,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
         ArrayList<FolderType> folders =  getMainController().getMenu().getSelectedFolders();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> processes =  getMainController().getMenu().getSelectedProcessVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> processes =  getMainController().getSelectedProcessVersions();
 
         if (doesSelectionContainFoldersAndProcesses(folders, processes)) {
             showMessageFoldersAndProcessesDelete(getMainController(), folders);
@@ -352,7 +352,7 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     /* Does the selection in the main detail list contain folders and processes. */
-    private boolean doesSelectionContainFoldersAndProcesses(ArrayList<FolderType> folders, HashMap<ProcessSummaryType, List<VersionSummaryType>> processes) throws Exception {
+    private boolean doesSelectionContainFoldersAndProcesses(ArrayList<FolderType> folders, Map<ProcessSummaryType, List<VersionSummaryType>> processes) throws Exception {
         return (folders != null && !folders.isEmpty()) && (processes != null && !processes.isEmpty());
     }
 
