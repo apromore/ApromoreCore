@@ -64,6 +64,9 @@
         <module>plugin-core/core/api</module>
         <module>plugin-core/core/provider</module>
 
+        <!-- Portal Plugin Interfaces -->
+        <module>plugin-core/portal/api</module>
+
         <!-- Canoniser Interface -->
         <module>plugin-canoniser/core/api</module>
         <module>plugin-canoniser/core/provider</module>
@@ -108,6 +111,10 @@
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
+
+        <!-- Portal Plugins -->
+        <module>plugin-portal/sample</module>
+
     </modules>
 
     <repositories>
@@ -140,6 +147,12 @@
                 <!--<artifactId>search-api</artifactId>-->
                 <!--<version>${apromore.plugin.version}</version>-->
             <!--</dependency>-->
+
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>portal-plugin-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
 
             <!-- Canonisers -->
             <dependency>

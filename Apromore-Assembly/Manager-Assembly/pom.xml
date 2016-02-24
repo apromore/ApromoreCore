@@ -263,6 +263,7 @@
             <version>${project.version}</version>
         </dependency>
 
+
         <!-- Plugin API/Provider Bundles -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>

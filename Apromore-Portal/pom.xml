@@ -71,17 +71,18 @@
                     <unpackBundle>false</unpackBundle>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=json|jaxb2-basics-runtime|spring-social-core|spring-social-facebook|spring-social-twitter|
-                            zk|zcommon|zel|zkbind|zkplus|zul|zhtml|zweb|zkspring-core|zkspring-security|bsh
+                            artifactId=json|jaxb2-basics-runtime|spring-social-core|spring-social-facebook|spring-social-twitter
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <!--
                         <Require-Bundle>
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)"
                         </Require-Bundle>
+                        -->
                         <Import-Bundle>
                             com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
@@ -105,7 +106,8 @@
                             org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]"
+                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.zkoss-osgi;bundle-version="[6.5,7)"
                         </Import-Bundle>
                         <Import-Package>
                             org.eclipse.virgo.web.dm,
@@ -315,6 +317,10 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>canoniser-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
@@ -462,29 +468,13 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
 
-
-        <!-- ZK Libraries -->
+        <!-- ZK Dependencies -->
         <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkbind</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>zk-osgi</artifactId>
+            <version>6.5.3</version>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zul</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkplus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zhtml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkspring-core</artifactId>
-        </dependency>
-
 
         <!-- Dependencies that aren't OSGI, included in war -->
         <!-- Spring Social Dependencies -->

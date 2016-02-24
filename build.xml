@@ -41,6 +41,7 @@
     <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
     <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/"/>
     <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
+    <property name="dir-portal-plugins" location="${basedir}/Apromore-Plugins/plugin-portal/"/>
     <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
     <property name="dir-metric" location="${basedir}/Apromore-Plugins/plugin-toolbox/plugin-metric/"/>
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
@@ -191,6 +192,11 @@
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
             <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-portal-plugins}">
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>

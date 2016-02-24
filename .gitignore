@@ -8,9 +8,10 @@
 Apromore-Assembly/Editor-Repository
 Apromore-Assembly/Filestore-Repository
 Apromore-Assembly/Lucene-Repository
-Apromore-Assembly/Manager-Repository\.*
+Apromore-Assembly/Manager-Repository*
 Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE
 
 # Site-specific configuration
-codesigning.properties
-site.properties
+**/.settings/*
+*.project
+*.classpath

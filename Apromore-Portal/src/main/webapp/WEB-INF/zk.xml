@@ -348,6 +348,7 @@
     -->
     <device-config>
         <device-type>ajax</device-type>
+        <device-class>org.zkoss.zk.device.AjaxDevice</device-class>
         <timeout-uri>/login.zul?error=2</timeout-uri>
     </device-config>
 
