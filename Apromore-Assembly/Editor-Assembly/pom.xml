@@ -49,12 +49,6 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>sample-plugin</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-bpmn2_0</artifactId>
             <version>${editor.version}</version>
             <type>bundle</type>
