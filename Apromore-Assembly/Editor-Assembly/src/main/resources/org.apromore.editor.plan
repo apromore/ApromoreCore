@@ -19,4 +19,5 @@
     <artifact type="bundle" name="org.apromore.editor-platform-extension-xpdl"          version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor-platform-extension-yawl"          version="[1.2, 2)"/>
     <artifact type="bundle" name="org.apromore.editor" version="[1.2, 2)" />
+    <artifact type="bundle" name="org.apromore.sample-plugin" version="[1.0, 2)" />
 </plan>
