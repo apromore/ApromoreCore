@@ -51,6 +51,7 @@
         <module>platform extensions/syntaxchecker</module>
         <module>platform extensions/xpdl</module>
         <module>platform extensions/yawl</module>
+        <module>sample-plugin</module>
     </modules>
 
 </project>

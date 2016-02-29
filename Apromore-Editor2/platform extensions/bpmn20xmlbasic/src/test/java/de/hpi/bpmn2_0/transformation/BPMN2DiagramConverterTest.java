@@ -69,6 +69,7 @@ public class BPMN2DiagramConverterTest {
      * Test the {@link BPMN2DiagramConverter#getDiagramFromBpmn20} method on
      * {@link ConfigurationAlgorithmTest#test1File}.
      */
+    @Ignore("Need to make the comparison of JSON files ignore order of object properties")
     @Test public void testGetDiagramFromBpmn20_1() throws IOException, JAXBException, JSONException {
 
         // Parse BPMN from XML to JAXB
