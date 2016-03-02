@@ -1,10 +1,14 @@
 package org.apromore.plugin.portal;
 
-import org.zkoss.zk.ui.Component;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
+
+import org.zkoss.zk.ui.Component;
+
+import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.UserType;
 
 /**
  * Communication interface that provides access to the Apromore portal
@@ -26,4 +30,20 @@ public interface PortalContext {
      */
     PortalUI getUI();
 
+    /**
+     * Request to add a <var>process</var> to the table.
+     *
+     * @param process
+     */
+    void displayNewProcess(ProcessSummaryType process);
+
+    /**
+     * @return the current folder displayed by the portal screen
+     */
+    FolderType getCurrentFolder();
+
+    /**
+     * @return the authenticated user
+     */
+    UserType getCurrentUser();
 }

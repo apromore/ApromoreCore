@@ -1,0 +1,89 @@
+<!--
+  ~ Copyright © 2009-2015 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window width="300px" closable="false" position="center" title="Merge process models">
+    <vbox>
+        <grid>
+            <columns sizable="true">
+                <column width="60%"></column>
+                <column width="40%"></column>
+            </columns>
+            <rows>
+                <row id="mergednamep">
+                    <label value="Process name*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergednamev">
+                    <label value="Version Number*" width="100%"/>
+                    <textbox width="100%"/>
+                </row>
+                <row id="mergeddomainR">
+                    <label value="Domain" width="100%"/>
+                </row>
+                <row id="removeEnt">
+                    <label value="Remove entanglements"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
+                </row>
+                <row id="makePublic">
+                    <label value="Make Process Public"/>
+                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                </row>
+                <row id="mergeAlgoChoice">
+                    <label value="Algorithm (please choose one)" width="100%"/>
+                    <listbox width="100%"/>
+                </row>
+                <row id="mergethreshold" visible="false">
+                    <label value="Model merge threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="labelthreshold" visible="false">
+                    <label value="Label sim. threshold" width="100%"/>
+                    <doublebox value="0.6" width="100%"/>
+                </row>
+                <row id="contextthreshold" visible="false">
+                    <label value="Context sim. threshold" width="100%"/>
+                    <doublebox value="0.75" width="100%"/>
+                </row>
+                <row id="skipeweight" visible="false">
+                    <label value="Skip-e weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="skipnweight" visible="false">
+                    <label value="Skip-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="subnweight" visible="false">
+                    <label value="Sub-n weight" width="100%"/>
+                    <doublebox value="1" width="100%"/>
+                </row>
+                <row id="mergeButtons" spans="2">
+                    <div align="center">
+                        <button id="mergeOKButton" label="OK" image="img/ok.png" disabled="true"></button>
+                        <button id="mergeCancelButton" label="Cancel" image="img/cancel2.png">
+                        </button>
+                    </div>
+                </row>
+                <row>
+                    <label value="*: value is mandatory" style="color: red"/>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>

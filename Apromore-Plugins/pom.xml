@@ -113,6 +113,7 @@
         <module>plugin-deployment/deployment-yawl</module>
 
         <!-- Portal Plugins -->
+        <module>plugin-portal/merge</module>
         <module>plugin-portal/sample</module>
 
     </modules>
