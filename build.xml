@@ -198,6 +198,8 @@
             </fileset>
             <fileset dir="${dir-portal-plugins}">
                 <include name="**/target/*.jar"/>
+                <!-- The merge plugin is omitted because it causes the manager-client to mysteriously fail.  Dropping it into the pickup directory after startup works, though. -->
+                <exclude name="**/target/merge-portal-plugin-1.1.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>

@@ -1,8 +1,11 @@
 package org.apromore.portal.context;
 
 import org.apache.commons.io.IOUtils;
+import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.plugin.portal.*;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Component;
@@ -96,4 +99,21 @@ public class PluginPortalContext implements PortalContext {
         return new PortalUIImpl();
     }
 
+
+    // Scratch area for methods required during porting
+
+    @Override
+    public void displayNewProcess(ProcessSummaryType process) {
+        mainController.displayNewProcess(process);
+    }
+
+    @Override
+    public FolderType getCurrentFolder() {
+        return UserSessionManager.getCurrentFolder();
+    }
+
+    @Override
+    public UserType getCurrentUser() {
+        return UserSessionManager.getCurrentUser();
+    }
 }
