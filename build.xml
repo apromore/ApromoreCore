@@ -47,11 +47,11 @@
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <fileset id="pickupRepo" dir=".">
-        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/org.apromore.editor.plan"/>
-        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/org.apromore.filestore.plan"/>
-        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/org.apromore.manager.plan"/>
-        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/org.apromore.portal.plan"/>
-        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/org.apromore.pql-indexer.plan"/>
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
+        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -198,8 +198,6 @@
             </fileset>
             <fileset dir="${dir-portal-plugins}">
                 <include name="**/target/*.jar"/>
-                <!-- The merge plugin is omitted because it causes the manager-client to mysteriously fail.  Dropping it into the pickup directory after startup works, though. -->
-                <exclude name="**/target/merge-portal-plugin-1.1.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
