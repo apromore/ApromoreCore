@@ -155,13 +155,13 @@ ORYX.Plugins.ApromoreBimp = ORYX.Plugins.AbstractPlugin.extend({
     getExportUrl: function(namespace) {
         switch (namespace) {
             case "xpdl":
-                return ORYX.CONFIG.EDITOR_PATH + '/xpdlexport';
+                return ORYX.CONFIG.EDITOR_PATH + '/editor/xpdlexport';
             case "bpmn":
-                return ORYX.CONFIG.EDITOR_PATH + '/bpmnexport';
+                return ORYX.CONFIG.EDITOR_PATH + '/editor/bpmnexport';
             case "epml":
-                return ORYX.CONFIG.EDITOR_PATH + '/epmlexport';
+                return ORYX.CONFIG.EDITOR_PATH + '/editor/epmlexport';
             case "yawl":
-                return ORYX.CONFIG.EDITOR_PATH + '/yawlexport';
+                return ORYX.CONFIG.EDITOR_PATH + '/editor/yawlexport';
             default:
                 return("");
         }
