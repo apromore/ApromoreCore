@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.sf.javabdd:javabdd:1.0b2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/javabdd/javabdd/1.0b2/javabdd-1.0b2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/javabdd/javabdd/1.0b2/javabdd-1.0b2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/sf/javabdd/javabdd/1.0b2/javabdd-1.0b2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.security:org.springframework.security.remoting:3.1.4.RELEASE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/org.springframework.security.remoting/3.1.4.RELEASE/org.springframework.security.remoting-3.1.4.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/org.springframework.security.remoting/3.1.4.RELEASE/org.springframework.security.remoting-3.1.4.RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/org.springframework.security.remoting/3.1.4.RELEASE/org.springframework.security.remoting-3.1.4.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
