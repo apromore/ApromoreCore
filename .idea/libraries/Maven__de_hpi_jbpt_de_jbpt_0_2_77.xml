@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.hpi.jbpt:de-jbpt:0.2.77">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/hpi/jbpt/de-jbpt/0.2.77/de-jbpt-0.2.77.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/hpi/jbpt/de-jbpt/0.2.77/de-jbpt-0.2.77-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/hpi/jbpt/de-jbpt/0.2.77/de-jbpt-0.2.77-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

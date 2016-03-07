@@ -284,7 +284,7 @@
 
             <h:footer class="footer">
                 <h:div class="web-description span12">
-                    <h:h5><![CDATA[ &copy; ]]> 2009-2015, The Apromore Initiative.</h:h5>
+                    <h:h5><![CDATA[ &copy; ]]> 2009-2016, The Apromore Initiative.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
                     <h:p>

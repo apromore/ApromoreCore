@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.ow2.bundles:ow2-util-log:1.0.19">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/bundles/ow2-util-log/1.0.19/ow2-util-log-1.0.19.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/bundles/ow2-util-log/1.0.19/ow2-util-log-1.0.19-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/bundles/ow2-util-log/1.0.19/ow2-util-log-1.0.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

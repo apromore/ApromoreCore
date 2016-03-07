@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache:catalina:7.0.35.v201302131125">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/catalina/7.0.35.v201302131125/catalina-7.0.35.v201302131125.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/catalina/7.0.35.v201302131125/catalina-7.0.35.v201302131125-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/catalina/7.0.35.v201302131125/catalina-7.0.35.v201302131125-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
