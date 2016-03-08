@@ -82,7 +82,7 @@ public class NewUserRegistrationHttpServletRequestHandler extends BaseServletReq
         } catch (Exception e) {
             LOGGER.error("Error with registering a new user!", e);
             messages.add("Error with registering a new user! Please try again.");
-            url += ERROR_EXTENSION;
+            url += USER_EXISTS_EXTENSION;
         }
 
         sendRedirect(request, response, url);

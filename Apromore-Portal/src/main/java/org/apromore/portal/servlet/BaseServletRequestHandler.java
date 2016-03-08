@@ -52,6 +52,7 @@ public abstract class BaseServletRequestHandler implements HttpRequestHandler {
 
     protected static final String LOGIN_PAGE = "/login.zul";
     protected static final String ERROR_EXTENSION = "?error=3";
+    protected static final String USER_EXISTS_EXTENSION = "?error=4";
     protected static final String MESSAGE_EXTENSION = "?success=1";
     protected static final String RESET_EXTENSION = "?success=2";
 
