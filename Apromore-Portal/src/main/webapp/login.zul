@@ -97,6 +97,18 @@
                             </div>
                             ]]>
                         </h:div>
+                        <h:div if="${param['error'] == '4'}">
+                            <![CDATA[
+                            <div class="row">
+                                <div class="span6 offset3">
+                                    <div class="alert alert-error">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <i class="icon-remove-circle"></i> Username or e-mail address already in use. Please try a different username or Username or e-mail address.
+                                    </div>
+                                </div>
+                            </div>
+                            ]]>
+                        </h:div>
                         <h:div if="${param['success'] == '1'}">
                             <![CDATA[
                             <div class="row">
