@@ -20,7 +20,7 @@
 
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
@@ -31,13 +31,13 @@ public class SemanticSimilarity {
 
     public static double getSemanticSimilarity(Vertex v1, Vertex v2, double labelTreshold) {
 
-        LinkedList<Vertex> v1NonGWParents = v1.getAllNonGWParents();
-        LinkedList<Vertex> v2NonGWParents = v2.getAllNonGWParents();
-        LinkedList<Vertex> v1NonGWChildren = v1.getAllNonGWChildren();
-        LinkedList<Vertex> v2NonGWChildren = v2.getAllNonGWChildren();
+        ArrayList<Vertex> v1NonGWParents = v1.getAllNonGWParents();
+        ArrayList<Vertex> v2NonGWParents = v2.getAllNonGWParents();
+        ArrayList<Vertex> v1NonGWChildren = v1.getAllNonGWChildren();
+        ArrayList<Vertex> v2NonGWChildren = v2.getAllNonGWChildren();
 
-        LinkedList<VertexPair> parentMappings = AssingmentProblem.getMappingsVetrex(v1NonGWParents, v2NonGWParents, labelTreshold, Settings.getEnglishStemmer(), 0);
-        LinkedList<VertexPair> childMappings = AssingmentProblem.getMappingsVetrex(v1NonGWChildren, v2NonGWChildren, labelTreshold, Settings.getEnglishStemmer(), 0);
+        ArrayList<VertexPair> parentMappings = AssingmentProblem.getMappingsVetrex(v1NonGWParents, v2NonGWParents, labelTreshold, Settings.getEnglishStemmer(), 0);
+        ArrayList<VertexPair> childMappings = AssingmentProblem.getMappingsVetrex(v1NonGWChildren, v2NonGWChildren, labelTreshold, Settings.getEnglishStemmer(), 0);
 
         return (double) (parentMappings.size() + childMappings.size())
                 / (double) (Math.max(v1NonGWParents.size(), v2NonGWParents.size()) + Math.max(v1NonGWChildren.size(), v2NonGWChildren.size()));

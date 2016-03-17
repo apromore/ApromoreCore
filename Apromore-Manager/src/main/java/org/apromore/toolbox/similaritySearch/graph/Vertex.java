@@ -27,7 +27,7 @@ import org.apromore.toolbox.similaritySearch.common.Settings;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 
 public class Vertex {
@@ -102,13 +102,13 @@ public class Vertex {
     // label
     private String label;
     private GWType gwType;
-    private LinkedList<Vertex> childNodes = new LinkedList<Vertex>();
-    private LinkedList<Vertex> parentNodes = new LinkedList<Vertex>();
+    private ArrayList<Vertex> childNodes = new ArrayList<Vertex>();
+    private ArrayList<Vertex> parentNodes = new ArrayList<Vertex>();
     boolean isProcessed = false;
     boolean processedGW = false;
-//	LinkedList<Node> toAddConfigurable = new LinkedList<Node>();
+//	ArrayList<Node> toAddConfigurable = new ArrayList<Node>();
 
-    //	LinkedList<Edge> toAddEdges = new LinkedList<Edge>();
+    //	ArrayList<Edge> toAddEdges = new ArrayList<Edge>();
     Vertex prevConfVertex = null;
     Edge toAddEdge = null;
 
@@ -185,12 +185,12 @@ public class Vertex {
             childNodes.add(child);
     }
 
-    public LinkedList<Vertex> getChildren() {
+    public ArrayList<Vertex> getChildren() {
         return childNodes;
     }
 
     public void removeChildren() {
-        childNodes = new LinkedList<Vertex>();
+        childNodes = new ArrayList<Vertex>();
     }
 
     public void removeChild(String id) {
@@ -221,23 +221,23 @@ public class Vertex {
     }
 
     public void removeParents() {
-        parentNodes = new LinkedList<Vertex>();
+        parentNodes = new ArrayList<Vertex>();
     }
 
-    public static void removeParents(LinkedList<Vertex> list) {
+    public static void removeParents(ArrayList<Vertex> list) {
         for (Vertex v : list) {
             v.removeParents();
         }
     }
 
-    public static void removeChildren(LinkedList<Vertex> list) {
+    public static void removeChildren(ArrayList<Vertex> list) {
         for (Vertex v : list) {
             v.removeChildren();
         }
     }
 
-    public LinkedList<Vertex> getChildrenList() {
-        LinkedList<Vertex> result = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getChildrenList() {
+        ArrayList<Vertex> result = new ArrayList<Vertex>();
 
         for (Vertex v : childNodes) {
             if (v.getType().equals(Type.function)
@@ -250,8 +250,8 @@ public class Vertex {
         return result;
     }
 
-    public LinkedList<Vertex> getChildrenListAll() {
-        LinkedList<Vertex> result = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getChildrenListAll() {
+        ArrayList<Vertex> result = new ArrayList<Vertex>();
 
         for (Vertex v : childNodes) {
             result.add(v);
@@ -261,12 +261,12 @@ public class Vertex {
     }
 
 
-    public LinkedList<Vertex> getParents() {
+    public ArrayList<Vertex> getParents() {
         return parentNodes;
     }
 
-    public LinkedList<Vertex> getParentsList() {
-        LinkedList<Vertex> result = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getParentsList() {
+        ArrayList<Vertex> result = new ArrayList<Vertex>();
 
         if (parentNodes == null) {
             return result;
@@ -283,8 +283,8 @@ public class Vertex {
         return result;
     }
 
-    public LinkedList<Vertex> getParentsListAll() {
-        LinkedList<Vertex> result = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getParentsListAll() {
+        ArrayList<Vertex> result = new ArrayList<Vertex>();
 
         if (parentNodes == null) {
             return result;
@@ -300,7 +300,7 @@ public class Vertex {
 
     public void addParent(Vertex parent) {
         if (parentNodes == null) {
-            parentNodes = new LinkedList<Vertex>();
+            parentNodes = new ArrayList<Vertex>();
         }
         if (!parentNodes.contains(parent))
             parentNodes.add(parent);
@@ -369,9 +369,9 @@ public class Vertex {
         this.label = label;
     }
 
-    public LinkedList<Vertex> getAllNonGWParents() {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
-        LinkedList<Vertex> toProcesGWs = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getAllNonGWParents() {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
+        ArrayList<Vertex> toProcesGWs = new ArrayList<Vertex>();
 
         Vertex currentVertex = this;
         while (true) {
@@ -385,7 +385,7 @@ public class Vertex {
                 }
             }
             if (toProcesGWs.size() > 0) {
-                currentVertex = toProcesGWs.removeFirst();
+                currentVertex = toProcesGWs.remove(0);
             } else {
                 break;
             }
@@ -394,9 +394,9 @@ public class Vertex {
         return toReturn;
     }
 
-    public LinkedList<Vertex> getAllNonGWChildren() {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
-        LinkedList<Vertex> toProcesGWs = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getAllNonGWChildren() {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
+        ArrayList<Vertex> toProcesGWs = new ArrayList<Vertex>();
 
         Vertex currentVertex = this;
         while (true) {
@@ -410,7 +410,7 @@ public class Vertex {
                 }
             }
             if (toProcesGWs.size() > 0) {
-                currentVertex = toProcesGWs.removeFirst();
+                currentVertex = toProcesGWs.remove(0);
             } else {
                 break;
             }

@@ -20,7 +20,7 @@
 
 package org.apromore.toolbox.similaritySearch.algorithms;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
@@ -41,7 +41,7 @@ public class FindModelSimilarity {
             return (1 - (weight < 0.0000001 ? 0 : (weight > 1 ? 1 : weight)));
 
         } else if (algortithm.equals("Hungarian")) {
-            LinkedList<VertexPair> mapping = AssingmentProblem.getMappingsVetrexUsingNodeMapping(g1, g2, param[0], param[1]);
+            ArrayList<VertexPair> mapping = AssingmentProblem.getMappingsVetrexUsingNodeMapping(g1, g2, param[0], param[1]);
             double weight = 0.0;
             for (VertexPair vp : mapping) {
                 weight += vp.getWeight();

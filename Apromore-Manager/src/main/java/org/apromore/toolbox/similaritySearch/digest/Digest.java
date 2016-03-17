@@ -27,7 +27,7 @@ import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
 
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Digest {
 
@@ -107,7 +107,7 @@ public class Digest {
     }
 
     private static boolean hasPath(Vertex mergedP, Vertex mergedCh, Graph digested) {
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
         HashSet<String> processed = new HashSet<String>();
 
 
@@ -118,7 +118,7 @@ public class Digest {
         }
 
         while (toProcess.size() > 0) {
-            Vertex processing = toProcess.removeFirst();
+            Vertex processing = toProcess.remove(0);
 
             if (processing.getID().equals(mergedCh.getID())) {
                 return true;

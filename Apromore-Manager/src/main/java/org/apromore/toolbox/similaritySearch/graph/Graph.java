@@ -26,15 +26,15 @@ import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class Graph {
 
-    private List<Edge> edges = new LinkedList<Edge>();
-    private List<Vertex> vertices = new LinkedList<Vertex>();
+    private List<Edge> edges = new ArrayList<Edge>();
+    private List<Vertex> vertices = new ArrayList<Vertex>();
 
     private HashMap<String, VertexObject> objectMap = new HashMap<String, VertexObject>();
     private HashMap<String, VertexResource> resourceMap = new HashMap<String, VertexResource>();
@@ -76,11 +76,11 @@ public class Graph {
     }
 
     private HashSet<String> performFullDominanceSearch(Vertex v) {
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>(v.getChildren());
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>(v.getChildren());
         HashSet<String> domList = new HashSet<String>();
 
         while (toProcess.size() > 0) {
-            Vertex process = toProcess.removeFirst();
+            Vertex process = toProcess.remove(0);
             if (domList.contains(process)) {
                 continue;
             }
@@ -95,16 +95,16 @@ public class Graph {
     }
 
     @SuppressWarnings("unused")
-    private static LinkedList<Edge> copyEdges(List<Edge> toCopy) {
-        LinkedList<Edge> toReturn = new LinkedList<Edge>();
+    private static ArrayList<Edge> copyEdges(List<Edge> toCopy) {
+        ArrayList<Edge> toReturn = new ArrayList<Edge>();
         for (Edge e : toCopy) {
             toReturn.add(Edge.copyEdge(e));
         }
         return toReturn;
     }
 
-    public static LinkedList<Vertex> copyVertices(List<Vertex> toCopy) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
+    public static ArrayList<Vertex> copyVertices(List<Vertex> toCopy) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
         for (Vertex e : toCopy) {
             toReturn.add(Vertex.copyVertex(e));
         }
@@ -217,12 +217,12 @@ public class Graph {
         return false;
     }
 
-    private void setLabelsToParents(HashSet<String> labels, Vertex v, LinkedList<Vertex> toProcessConfGWs) {
-        LinkedList<Vertex> toProcessVertices = new LinkedList<Vertex>();
+    private void setLabelsToParents(HashSet<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
+        ArrayList<Vertex> toProcessVertices = new ArrayList<Vertex>();
         toProcessVertices.add(v);
 
         while (toProcessVertices.size() > 0) {
-            Vertex current = toProcessVertices.removeFirst();
+            Vertex current = toProcessVertices.remove(0);
 
             for (Vertex p : current.getParents()) {
                 Edge e = containsEdge(p.getID(), current.getID());
@@ -249,12 +249,12 @@ public class Graph {
         }
     }
 
-    private void setLabelsToChildren(HashSet<String> labels, Vertex v, LinkedList<Vertex> toProcessConfGWs) {
-        LinkedList<Vertex> toProcessVertices = new LinkedList<Vertex>();
+    private void setLabelsToChildren(HashSet<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
+        ArrayList<Vertex> toProcessVertices = new ArrayList<Vertex>();
         toProcessVertices.add(v);
 
         while (toProcessVertices.size() > 0) {
-            Vertex current = toProcessVertices.removeFirst();
+            Vertex current = toProcessVertices.remove(0);
 
             for (Vertex ch : current.getChildren()) {
                 Edge e = containsEdge(current.getID(), ch.getID());
@@ -281,6 +281,14 @@ public class Graph {
         }
     }
 
+    private HashSet<String> extractLabels() {
+        HashSet<String> labels = new HashSet<String>();
+        for(Edge edge : getEdges()) {
+            labels.addAll(edge.getLabels());
+        }
+        return labels;
+    }
+
     public void addLabelsToUnNamedEdges() {
         // the graph is not configurable
         // add all new labels
@@ -300,8 +308,37 @@ public class Graph {
             }
 
             // find the labels for edges that does not have labels
+            HashSet<String> labels = extractLabels();
+            if(labels.size() == 0) labels.add(label);
+
             for (Edge e : edges) {
-                e.addLabel(label);
+                boolean found = false;
+                for (Vertex v : vertices) {
+                    if(e.getToVertex().equals(v.getID())) {
+                        if (v.getType().equals(Type.gateway)) {
+                            found = true;
+                            int countTo = 0;
+                            int countFrom = 0;
+                            for (Edge e1 : edges) {
+                                if (e1.getFromVertex().equals(v.getID())) {
+                                    countFrom++;
+                                }
+                            }
+                            if (countFrom > 1) {
+                                e.addLabels(labels);
+                            }
+                        }
+                        break;
+                    }
+                }
+                if(!found) {
+                    for (Vertex v : vertices) {
+                        if(e.getToVertex().equals(v.getID()) && !v.getType().equals(Type.gateway)) {
+                            e.addLabels(labels);
+                            break;
+                        }
+                    }
+                }
             }
             for (Vertex v : vertices) {
                 if (v.getType().equals(Vertex.Type.gateway)) {
@@ -335,7 +372,7 @@ public class Graph {
             return;
         }
         // contribute edge labels
-        LinkedList<Vertex> toProcessConfGWs = new LinkedList<Vertex>();
+        ArrayList<Vertex> toProcessConfGWs = new ArrayList<Vertex>();
         // get configurable gw-s
         for (Vertex v : vertices) {
             if (v.getType().equals(Type.gateway) && v.isConfigurable()) {
@@ -345,7 +382,7 @@ public class Graph {
 
         // contribute labels
         while (toProcessConfGWs.size() > 0) {
-            Vertex currentGW = toProcessConfGWs.removeFirst();
+            Vertex currentGW = toProcessConfGWs.remove(0);
             if (isJoin(currentGW)) {
                 HashSet<String> labelsForChildren = getCombinedLabels(currentGW, true);
                 setLabelsToChildren(labelsForChildren, currentGW, toProcessConfGWs);
@@ -413,8 +450,8 @@ public class Graph {
     }
 
     public void removeEmptyNodes() {
-        LinkedList<Vertex> vToRemove = new LinkedList<Vertex>();
-        LinkedList<Vertex> vToRemove2 = new LinkedList<Vertex>();
+        ArrayList<Vertex> vToRemove = new ArrayList<Vertex>();
+        ArrayList<Vertex> vToRemove2 = new ArrayList<Vertex>();
         for (Vertex v : vertices) {
             if (v.getChildren().size() == 0 && v.getParents().size() == 0) {
                 vToRemove2.add(v);
@@ -472,7 +509,7 @@ public class Graph {
     }
 
     public void removeSplitJoins() {
-        LinkedList<Vertex> gateways = new LinkedList<Vertex>();
+        ArrayList<Vertex> gateways = new ArrayList<Vertex>();
         beforeReduction = vertices.size();
 
         // get all gateways
@@ -488,7 +525,7 @@ public class Graph {
     // remove gateways that have no sense
     public void cleanGraph() {
 
-        LinkedList<Vertex> gateways = new LinkedList<Vertex>();
+        ArrayList<Vertex> gateways = new ArrayList<Vertex>();
         beforeReduction = vertices.size();
 
         // get all gateways
@@ -515,7 +552,7 @@ public class Graph {
 
 
     public void setEdgeLabelsVisible() {
-        LinkedList<Vertex> gateways = new LinkedList<Vertex>();
+        ArrayList<Vertex> gateways = new ArrayList<Vertex>();
 
         for (Vertex v : vertices) {
             if (v.getType() == Type.gateway) {
@@ -550,15 +587,15 @@ public class Graph {
     }
 
 
-    public void removeSplitJoins(LinkedList<Vertex> gateways) {
-        LinkedList<Vertex> toAdd = new LinkedList<Vertex>();
+    public void removeSplitJoins(ArrayList<Vertex> gateways) {
+        ArrayList<Vertex> toAdd = new ArrayList<Vertex>();
         for (Vertex gw : gateways) {
             if (gw.getParents().size() > 1 && gw.getChildren().size() > 1) {
                 Vertex v = new Vertex(gw.getGWType(), idGenerator.getNextId());
                 if (gw.isConfigurable()) {
                     v.setConfigurable(true);
                 }
-                LinkedList<Vertex> gwChildren = new LinkedList<Vertex>(gw.getChildren());
+                ArrayList<Vertex> gwChildren = new ArrayList<Vertex>(gw.getChildren());
 
                 addVertex(v);
                 toAdd.add(v);
@@ -579,7 +616,7 @@ public class Graph {
 
 
     @SuppressWarnings("unused")
-    private boolean removeCrossingGWs(LinkedList<Vertex> gateways) {
+    private boolean removeCrossingGWs(ArrayList<Vertex> gateways) {
 
         for (int i = 0; i < gateways.size() - 1; i++) {
             for (int j = i + 1; j < gateways.size(); j++) {
@@ -590,7 +627,7 @@ public class Graph {
                         g1.getChildren().size() > 1 &&
                         g1.getChildren().size() == g2.getChildren().size()) {
                     boolean crossing = true;
-                    LinkedList<Vertex> children = g1.getChildren();
+                    ArrayList<Vertex> children = g1.getChildren();
                     for (Vertex gwChild : children) {
                         if (!gwChild.getType().equals(Type.gateway)
                                 || !containsVertex(gwChild.getParents(), g2)
@@ -632,7 +669,7 @@ public class Graph {
                             c2.addLabels(labels);
                         }
 
-                        LinkedList<Vertex> toRemoveG1Child = new LinkedList<Vertex>();
+                        ArrayList<Vertex> toRemoveG1Child = new ArrayList<Vertex>();
 
                         for (int k = 1; k < g1.getChildren().size(); k++) {
                             Vertex toRemove = g1.getChildren().get(k);
@@ -682,7 +719,7 @@ public class Graph {
         return false;
     }
 
-    private boolean containsAny(LinkedList<Vertex> list1, LinkedList<Vertex> list2) {
+    private boolean containsAny(ArrayList<Vertex> list1, ArrayList<Vertex> list2) {
 
         for (Vertex v1 : list1) {
             for (Vertex ch : v1.getChildren()) {
@@ -697,8 +734,8 @@ public class Graph {
         return false;
     }
 
-    private LinkedList<Vertex> getChildGWs(Vertex gw) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
+    private ArrayList<Vertex> getChildGWs(Vertex gw) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
 
         for (Vertex v : gw.getChildren()) {
             if (v.getType().equals(Vertex.Type.gateway)) {
@@ -708,16 +745,16 @@ public class Graph {
         return toReturn;
     }
 
-    private LinkedList<Vertex> getAllChildGWs(Vertex gw) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+    private ArrayList<Vertex> getAllChildGWs(Vertex gw) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
 
         toProcess = getChildGWs(gw);
         toReturn.addAll(toProcess);
 
         while (toProcess.size() > 0) {
-            Vertex pr = toProcess.removeFirst();
-            LinkedList<Vertex> prCh = getChildGWs(pr);
+            Vertex pr = toProcess.remove(0);
+            ArrayList<Vertex> prCh = getChildGWs(pr);
             toProcess.addAll(prCh);
             toReturn.addAll(prCh);
         }
@@ -725,8 +762,8 @@ public class Graph {
         return toReturn;
     }
 
-    private LinkedList<Vertex> getParentGWs(Vertex gw) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
+    private ArrayList<Vertex> getParentGWs(Vertex gw) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
 
         for (Vertex v : gw.getParents()) {
             if (v.getType().equals(Vertex.Type.gateway)) {
@@ -736,16 +773,16 @@ public class Graph {
         return toReturn;
     }
 
-    private LinkedList<Vertex> getAllParentGWs(Vertex gw) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+    private ArrayList<Vertex> getAllParentGWs(Vertex gw) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
 
         toProcess = getParentGWs(gw);
         toReturn.addAll(toProcess);
 
         while (toProcess.size() > 0) {
-            Vertex pr = toProcess.removeFirst();
-            LinkedList<Vertex> prCh = getParentGWs(pr);
+            Vertex pr = toProcess.remove(0);
+            ArrayList<Vertex> prCh = getParentGWs(pr);
             toProcess.addAll(prCh);
             toReturn.addAll(prCh);
         }
@@ -753,7 +790,7 @@ public class Graph {
         return toReturn;
     }
 
-    private void addConfList(LinkedList<Vertex> vList, Vertex gw) {
+    private void addConfList(ArrayList<Vertex> vList, Vertex gw) {
         for (Vertex v : vList) {
             Edge e = containsEdge(gw.getID(), v.getID());
             if (e != null) {
@@ -772,7 +809,7 @@ public class Graph {
         v.prevConfVertex = gw;
     }
 
-    private boolean containsVertex(LinkedList<Vertex> list, Vertex v1) {
+    private boolean containsVertex(ArrayList<Vertex> list, Vertex v1) {
         for (Vertex v : list) {
             if (v.getID().equals(v1.getID())) {
                 return true;
@@ -781,23 +818,23 @@ public class Graph {
         return false;
     }
 
-    private boolean removeCycles(LinkedList<Vertex> gateways) {
+    private boolean removeCycles(ArrayList<Vertex> gateways) {
         for (Vertex gw : gateways) {
             if (gw.processedGW == false) {
-                LinkedList<Vertex> childGWs = getChildGWs(gw);
-                LinkedList<Vertex> gWsToProcess = new LinkedList<Vertex>();
-                LinkedList<Vertex> gWsProcessed = new LinkedList<Vertex>();
+                ArrayList<Vertex> childGWs = getChildGWs(gw);
+                ArrayList<Vertex> gWsToProcess = new ArrayList<Vertex>();
+                ArrayList<Vertex> gWsProcessed = new ArrayList<Vertex>();
                 addConfList(childGWs, gw);
 
                 for (Vertex g : childGWs) {
 
-                    LinkedList<Vertex> toA = getChildGWs(g);
+                    ArrayList<Vertex> toA = getChildGWs(g);
                     addConfList(toA, g);
                     gWsToProcess.addAll(toA);
                 }
 
                 while (gWsToProcess.size() > 0) {
-                    Vertex toProcess = gWsToProcess.removeFirst();
+                    Vertex toProcess = gWsToProcess.remove(0);
 
                     if (containsVertex(gWsProcessed, toProcess)) {
                         continue;
@@ -835,7 +872,7 @@ public class Graph {
 
                         return true;
                     } else {
-                        LinkedList<Vertex> toA = getChildGWs(toProcess);
+                        ArrayList<Vertex> toA = getChildGWs(toProcess);
                         addConfList(toA, toProcess);
                         gWsToProcess.addAll(toA);
                     }
@@ -882,7 +919,7 @@ public class Graph {
         return false;
     }
 
-    private Vertex getSplit(LinkedList<Vertex> vList) {
+    private Vertex getSplit(ArrayList<Vertex> vList) {
         for (Vertex v : vList) {
             if (v.getType().equals(Vertex.Type.gateway) && isSplit(v)) {
                 return v;
@@ -891,7 +928,7 @@ public class Graph {
         return null;
     }
 
-    private Vertex getJoin(LinkedList<Vertex> vList) {
+    private Vertex getJoin(ArrayList<Vertex> vList) {
         for (Vertex v : vList) {
             if (v.getType().equals(Vertex.Type.gateway) && isJoin(v)) {
                 return v;
@@ -908,7 +945,7 @@ public class Graph {
         return false;
     }
 
-    private boolean mergeSplitsAndJoins(LinkedList<Vertex> gateways) {
+    private boolean mergeSplitsAndJoins(ArrayList<Vertex> gateways) {
         Vertex tmp = null;
 
         for (Vertex v : gateways) {
@@ -920,7 +957,7 @@ public class Graph {
                     v.removeChild(tmp.getID());
                     removeEdge(v.getID(), tmp.getID());
 
-                    LinkedList<Vertex> toConnect = tmp.getChildren();
+                    ArrayList<Vertex> toConnect = tmp.getChildren();
 
                     for (Vertex tmpChild : toConnect) {
                         HashSet<String> labels = removeEdge(tmp.getID(), tmpChild.getID());
@@ -952,7 +989,7 @@ public class Graph {
                     tmp.removeParent(v.getID());
                     removeEdge(v.getID(), tmp.getID());
 
-                    LinkedList<Vertex> toConnect = v.getParents();
+                    ArrayList<Vertex> toConnect = v.getParents();
 
                     for (Vertex vParent : toConnect) {
                         HashSet<String> labels = removeEdge(vParent.getID(), v.getID());
@@ -990,7 +1027,7 @@ public class Graph {
             return true;
         }
 
-        LinkedList<Vertex> childGWs = getAllChildGWs(gw);
+        ArrayList<Vertex> childGWs = getAllChildGWs(gw);
         for (Vertex v : childGWs) {
             if (!v.initialGW) {
                 if (move) {
@@ -1000,7 +1037,7 @@ public class Graph {
             }
         }
         // look parents
-        LinkedList<Vertex> parentGWs = getAllParentGWs(gw);
+        ArrayList<Vertex> parentGWs = getAllParentGWs(gw);
         for (Vertex v : parentGWs) {
             if (!v.initialGW) {
                 if (move) {
@@ -1012,8 +1049,8 @@ public class Graph {
         return false;
     }
 
-    private boolean cleanGatewaysRemove(LinkedList<Vertex> gateways) {
-        LinkedList<Vertex> toRemove = new LinkedList<Vertex>();
+    private boolean cleanGatewaysRemove(ArrayList<Vertex> gateways) {
+        ArrayList<Vertex> toRemove = new ArrayList<Vertex>();
 
         for (Vertex v : gateways) {
             if (v.getParents().size() < 2 && v.getChildren().size() < 2) {
@@ -1029,13 +1066,13 @@ public class Graph {
             if (v.getParents().size() == 0 && v.getChildren().size() == 0) {
                 gateways.remove(v);
             } else if (v.getParents().size() == 0) {
-                Vertex child = v.getChildren().getFirst();
+                Vertex child = v.getChildren().get(0);
                 removeEdge(v.getID(), child.getID());
                 removeVertex(v.getID());
                 child.removeParent(v.getID());
                 gateways.remove(v);
             } else if (v.getChildren().size() == 0) {
-                Vertex parent = v.getParents().getFirst();
+                Vertex parent = v.getParents().get(0);
                 parent.removeChild(v.getID());
                 removeEdge(parent.getID(), v.getID());
                 removeVertex(v.getID());
@@ -1052,8 +1089,8 @@ public class Graph {
 //						continue;
 //					}
 //				}
-                Vertex parent = v.getParents().getFirst();
-                Vertex child = v.getChildren().getFirst();
+                Vertex parent = v.getParents().get(0);
+                Vertex child = v.getChildren().get(0);
                 HashSet<String> parentLabels = removeEdge(parent.getID(), v.getID());
                 HashSet<String> childLabels = removeEdge(v.getID(), child.getID());
 
@@ -1070,7 +1107,7 @@ public class Graph {
     }
 
     public Edge connectVertices(Vertex v1, Vertex v2, HashSet<String> labels) {
-        if (v1.getID() == v2.getID()) {
+        if (v1.getID().equals(v2.getID())) {
             return null;
         }
 
@@ -1185,8 +1222,8 @@ public class Graph {
     }
 
     public void removeGateways() {
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
-        LinkedList<Vertex> gateways = new LinkedList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
+        ArrayList<Vertex> gateways = new ArrayList<Vertex>();
 
         for (Vertex v : vertices) {
             if (v.getType() == Type.gateway) {
@@ -1223,7 +1260,7 @@ public class Graph {
             }
 
             for (Vertex toPr : toProcess) {
-                LinkedList<Vertex> toPrParents = toPr.getParentsListAll();
+                ArrayList<Vertex> toPrParents = toPr.getParentsListAll();
                 for (Vertex toPrCh : toPr.getChildren()) {
                     toPrCh.getParents().addAll(toPrParents);
                 }
@@ -1264,7 +1301,7 @@ public class Graph {
             }
 
             for (Vertex toPr : toProcess) {
-                LinkedList<Vertex> toPrChildren = toPr.getChildrenListAll();
+                ArrayList<Vertex> toPrChildren = toPr.getChildrenListAll();
                 for (Vertex toPrCh : toPr.getParentsListAll()) {
                     toPrCh.getChildren().addAll(toPrChildren);
                 }
@@ -1329,8 +1366,8 @@ public class Graph {
     }
 
 
-    public LinkedList<Vertex> getFunctions() {
-        LinkedList<Vertex> functions = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getFunctions() {
+        ArrayList<Vertex> functions = new ArrayList<Vertex>();
         for (Vertex v : vertices) {
             if (v.getType().equals(Vertex.Type.function)) {
                 functions.add(v);
@@ -1339,8 +1376,8 @@ public class Graph {
         return functions;
     }
 
-    public LinkedList<Vertex> getEvents() {
-        LinkedList<Vertex> events = new LinkedList<Vertex>();
+    public ArrayList<Vertex> getEvents() {
+        ArrayList<Vertex> events = new ArrayList<Vertex>();
         for (Vertex v : vertices) {
             if (v.getType().equals(Vertex.Type.event)) {
                 events.add(v);
