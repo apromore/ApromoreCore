@@ -20,7 +20,7 @@
 
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.StringPair;
@@ -43,11 +43,11 @@ public class AssingmentProblem {
      * @param stemmer   - stemmer for wrord stemming, if == null, then english stemmer is used
      * @return matching vertex pairs
      */
-    public static LinkedList<VertexPair> getMappingsGraph(Graph g1, Graph g2,
+    public static ArrayList<VertexPair> getMappingsGraph(Graph g1, Graph g2,
                                                           double threshold, SnowballStemmer stemmer) {
 
-        LinkedList<Vertex> g1Vertices = g1.getFunctions();
-        LinkedList<Vertex> g2Vertices = g2.getFunctions();
+        ArrayList<Vertex> g1Vertices = g1.getFunctions();
+        ArrayList<Vertex> g2Vertices = g2.getFunctions();
 
 
         if (Settings.considerEvents) {
@@ -69,8 +69,8 @@ public class AssingmentProblem {
      * @return matching vertex pairs
      */
 
-    public static LinkedList<VertexPair> getMappingsVetrex(
-            LinkedList<Vertex> g1Vertices, LinkedList<Vertex> g2Vertices,
+    public static ArrayList<VertexPair> getMappingsVetrex(
+            ArrayList<Vertex> g1Vertices, ArrayList<Vertex> g2Vertices,
             double threshold, SnowballStemmer stemmer) {
         return getMappingsVetrex(g1Vertices, g2Vertices, threshold, stemmer, 0);
     }
@@ -94,14 +94,14 @@ public class AssingmentProblem {
      *                   if == 2, then only children are looked
      * @return matching vertex pairs
      */
-    public static LinkedList<VertexPair> getMappingsVetrex(
-            LinkedList<Vertex> g1Vertices,
-            LinkedList<Vertex> g2Vertices,
+    public static ArrayList<VertexPair> getMappingsVetrex(
+            ArrayList<Vertex> g1Vertices,
+            ArrayList<Vertex> g2Vertices,
             double threshold,
             SnowballStemmer stemmer,
             int gateways) {
 
-        LinkedList<VertexPair> solutionMappings = new LinkedList<VertexPair>();
+        ArrayList<VertexPair> solutionMappings = new ArrayList<VertexPair>();
 
         if (g1Vertices.size() == 0 || g2Vertices.size() == 0) {
             return solutionMappings;
@@ -111,8 +111,8 @@ public class AssingmentProblem {
             stemmer = Settings.getEnglishStemmer();
         }
 
-        LinkedList<Vertex> g1Vertices_fe = new LinkedList<Vertex>();
-        LinkedList<Vertex> g2Vertices_fe = new LinkedList<Vertex>();
+        ArrayList<Vertex> g1Vertices_fe = new ArrayList<Vertex>();
+        ArrayList<Vertex> g2Vertices_fe = new ArrayList<Vertex>();
 
         for (Vertex v : g1Vertices) {
             if (!v.getType().equals(Vertex.Type.gateway)) {
@@ -185,12 +185,12 @@ public class AssingmentProblem {
         return solutionMappings;
     }
 
-    public static LinkedList<VertexPair> getMappingsVetrexUsingNodeMapping(Graph g1, Graph g2, double threshold, double semanticThreshold) {
+    public static ArrayList<VertexPair> getMappingsVetrexUsingNodeMapping(Graph g1, Graph g2, double threshold, double semanticThreshold) {
 
-        LinkedList<Vertex> g1Vertices = (LinkedList<Vertex>) g1.getVertices();
-        LinkedList<Vertex> g2Vertices = (LinkedList<Vertex>) g2.getVertices();
+        ArrayList<Vertex> g1Vertices = (ArrayList<Vertex>) g1.getVertices();
+        ArrayList<Vertex> g2Vertices = (ArrayList<Vertex>) g2.getVertices();
 
-        LinkedList<VertexPair> solutionMappings = new LinkedList<VertexPair>();
+        ArrayList<VertexPair> solutionMappings = new ArrayList<VertexPair>();
 
         if (g1Vertices.size() == 0 || g2Vertices.size() == 0) {
             return solutionMappings;
@@ -249,7 +249,7 @@ public class AssingmentProblem {
     }
 
 
-    public static boolean listContains(LinkedList<Vertex> list, Vertex v) {
+    public static boolean listContains(ArrayList<Vertex> list, Vertex v) {
         for (Vertex lv : list) {
             if (v.getID().equals(lv.getID())) {
                 return true;
@@ -258,7 +258,7 @@ public class AssingmentProblem {
         return false;
     }
 
-    public static boolean mappingContainsVertexRight(LinkedList<VertexPair> mapping, Vertex v) {
+    public static boolean mappingContainsVertexRight(ArrayList<VertexPair> mapping, Vertex v) {
 
         for (VertexPair vp : mapping) {
             if (vp.getRight().getID().equals(v.getID())) {
@@ -268,7 +268,7 @@ public class AssingmentProblem {
         return false;
     }
 
-    public static boolean mappingContainsVertexLeft(LinkedList<VertexPair> mapping, Vertex v) {
+    public static boolean mappingContainsVertexLeft(ArrayList<VertexPair> mapping, Vertex v) {
 
         for (VertexPair vp : mapping) {
             if (vp.getLeft().getID().equals(v.getID())) {
@@ -291,17 +291,17 @@ public class AssingmentProblem {
      *                    if == 2, then only children are looked
      * @return
      */
-    public static LinkedList<VertexPair> getMappingsGateways(
-            LinkedList<Vertex> g1Vertices,
-            LinkedList<Vertex> g2Vertices,
+    public static ArrayList<VertexPair> getMappingsGateways(
+            ArrayList<Vertex> g1Vertices,
+            ArrayList<Vertex> g2Vertices,
             double threshold,
             SnowballStemmer stemmer,
             int lookParents) {
 
-        LinkedList<Vertex> g1Gateways = new LinkedList<Vertex>();
-        LinkedList<Vertex> g2Gateways = new LinkedList<Vertex>();
+        ArrayList<Vertex> g1Gateways = new ArrayList<Vertex>();
+        ArrayList<Vertex> g2Gateways = new ArrayList<Vertex>();
 
-        LinkedList<VertexPair> possibleMatches = new LinkedList<VertexPair>();
+        ArrayList<VertexPair> possibleMatches = new ArrayList<VertexPair>();
 
         for (Vertex v : g1Vertices) {
             if (v.getType().equals(Vertex.Type.gateway)) {
@@ -328,7 +328,7 @@ public class AssingmentProblem {
         for (int i = 0; i < g1Gateways.size(); i++) {
             for (int j = 0; j < g2Gateways.size(); j++) {
                 double edScore = 0;
-                LinkedList<VertexPair> map;
+                ArrayList<VertexPair> map;
                 if (lookParents == 2) {
                     map = getMappingsVetrex(g1Gateways.get(i).getChildren(), g2Gateways.get(j).getChildren(),
                             threshold, stemmer, lookParents);
@@ -375,11 +375,11 @@ public class AssingmentProblem {
         return possibleMatches;
     }
 
-    private static LinkedList<Vertex> getParentGWs(Vertex gw) {
+    private static ArrayList<Vertex> getParentGWs(Vertex gw) {
 
-        LinkedList<Vertex> parentGws = new LinkedList<Vertex>();
+        ArrayList<Vertex> parentGws = new ArrayList<Vertex>();
         parentGws.add(gw);
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
 
         for (Vertex v : gw.getParents()) {
             if (v.getType().equals(Type.gateway)) {
@@ -391,7 +391,7 @@ public class AssingmentProblem {
 
         while (toProcess.size() > 0) {
 
-            Vertex currGw = toProcess.removeFirst();
+            Vertex currGw = toProcess.remove(0);
 
             for (Vertex v : currGw.getParents()) {
                 if (v.getType().equals(Type.gateway)) {
@@ -404,12 +404,12 @@ public class AssingmentProblem {
         return parentGws;
     }
 
-    private static LinkedList<Vertex> getChildGWs(Vertex gw) {
+    private static ArrayList<Vertex> getChildGWs(Vertex gw) {
 
-        LinkedList<Vertex> childGws = new LinkedList<Vertex>();
+        ArrayList<Vertex> childGws = new ArrayList<Vertex>();
         childGws.add(gw);
 
-        LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
+        ArrayList<Vertex> toProcess = new ArrayList<Vertex>();
 
         for (Vertex v : gw.getChildren()) {
             if (v.getType().equals(Type.gateway)) {
@@ -421,7 +421,7 @@ public class AssingmentProblem {
 
         while (toProcess.size() > 0) {
 
-            Vertex currGw = toProcess.removeFirst();
+            Vertex currGw = toProcess.remove(0);
 
             for (Vertex v : currGw.getChildren()) {
                 if (v.getType().equals(Type.gateway)) {
@@ -434,8 +434,8 @@ public class AssingmentProblem {
         return childGws;
     }
 
-    static LinkedList<StringPair> getMappingsLabels(
-            LinkedList<String> g1Labels, LinkedList<String> g2Labels,
+    static ArrayList<StringPair> getMappingsLabels(
+            ArrayList<String> g1Labels, ArrayList<String> g2Labels,
             double threshold) {
 
         SnowballStemmer englishStemmer = Settings.getStemmer("english");
@@ -443,7 +443,7 @@ public class AssingmentProblem {
                 : g2Labels.size();
         double costs[][] = new double[dimFunc][dimFunc];
         double costsCopy[][] = new double[dimFunc][dimFunc];
-        LinkedList<StringPair> solutionMappings = new LinkedList<StringPair>();
+        ArrayList<StringPair> solutionMappings = new ArrayList<StringPair>();
 
         if (g1Labels.size() == 0 || g2Labels.size() == 0) {
             return solutionMappings;

@@ -69,7 +69,7 @@ public class CPFModelParser {
     }
 
     public static List<Graph> readModels(CanonicalProcessType cpf) {
-        LinkedList<Graph> l = new LinkedList<Graph>();
+        ArrayList<Graph> l = new ArrayList<Graph>();
 
         for (NetType mainNet : cpf.getNet()) {
             if (mainNet.getNode().size() > 0) {

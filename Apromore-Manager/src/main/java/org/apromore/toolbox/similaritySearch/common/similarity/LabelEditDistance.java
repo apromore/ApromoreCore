@@ -24,7 +24,7 @@ import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.stemmer.PorterStemmer;
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -38,11 +38,11 @@ public class LabelEditDistance {
         if(a != null && b != null && a.equals(b)) return 1;
         else if(a == null && b == null) return 1;
 
-        LinkedList<String> aTokensInit = new LinkedList<String>();
-        LinkedList<String> bTokensInit = new LinkedList<String>();
+        ArrayList<String> aTokensInit = new ArrayList<String>();
+        ArrayList<String> bTokensInit = new ArrayList<String>();
 
-        LinkedList<String> aTokens = new LinkedList<String>();
-        LinkedList<String> bTokens = new LinkedList<String>();
+        ArrayList<String> aTokens = new ArrayList<String>();
+        ArrayList<String> bTokens = new ArrayList<String>();
 
         StringTokenizer tokensA = new StringTokenizer(a, delimeter);
         while (tokensA.hasMoreTokens()) {
@@ -129,9 +129,9 @@ public class LabelEditDistance {
     }
 
 
-    private static LinkedList<String> removeStopWordsAndStem(LinkedList<String> toRemove, SnowballStemmer stemmer) {
+    private static ArrayList<String> removeStopWordsAndStem(ArrayList<String> toRemove, SnowballStemmer stemmer) {
 
-        LinkedList<String> result = new LinkedList<String>();
+        ArrayList<String> result = new ArrayList<String>();
         Set<String> stopWords = stemmer.getStopWords();
         int repeat = 1;
 
@@ -156,9 +156,9 @@ public class LabelEditDistance {
         return result;
     }
 
-    private static LinkedList<String> removeStopWordsAndStem1(LinkedList<String> toRemove, SnowballStemmer stemmer) {
+    private static ArrayList<String> removeStopWordsAndStem1(ArrayList<String> toRemove, SnowballStemmer stemmer) {
 
-        LinkedList<String> result = new LinkedList<String>();
+        ArrayList<String> result = new ArrayList<String>();
         int repeat = 1;
 
         for (String s : toRemove) {

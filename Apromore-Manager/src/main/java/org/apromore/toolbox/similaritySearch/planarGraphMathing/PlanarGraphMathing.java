@@ -20,7 +20,7 @@
 
 package org.apromore.toolbox.similaritySearch.planarGraphMathing;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
@@ -32,8 +32,8 @@ import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
 
 public class PlanarGraphMathing {
 
-    LinkedList<VertexPair> nodesToVisit = new LinkedList<VertexPair>();
-    static LinkedList<VertexPair> mappings = new LinkedList<VertexPair>();
+    ArrayList<VertexPair> nodesToVisit = new ArrayList<VertexPair>();
+    static ArrayList<VertexPair> mappings = new ArrayList<VertexPair>();
 
     /**
      * Finds matching regions. Also adds gateways, if in one modelass, the gateway exist and in other modelass does not
@@ -47,8 +47,8 @@ public class PlanarGraphMathing {
      */
     public static MappingRegions findMatchWithGWAdding(Graph g1, Graph g2, double threshold, SnowballStemmer stemmer) {
 
-        LinkedList<VertexPair> process = new LinkedList<VertexPair>();
-        LinkedList<VertexPair> processed = new LinkedList<VertexPair>();
+        ArrayList<VertexPair> process = new ArrayList<VertexPair>();
+        ArrayList<VertexPair> processed = new ArrayList<VertexPair>();
 
         MappingRegions map = new MappingRegions();
 
@@ -56,13 +56,13 @@ public class PlanarGraphMathing {
             stemmer = Settings.getEnglishStemmer();
         }
 
-        LinkedList<VertexPair> mappings = AssingmentProblem.getMappingsGraph(g1, g2, threshold, stemmer);
+        ArrayList<VertexPair> mappings = AssingmentProblem.getMappingsGraph(g1, g2, threshold, stemmer);
 
         if (mappings == null || mappings.size() == 0) {
             return map;
         }
 
-        VertexPair v = mappings.removeFirst();
+        VertexPair v = mappings.remove(0);
 
         process.clear();
         processed.clear();
@@ -70,7 +70,7 @@ public class PlanarGraphMathing {
         process.add(v);
 
         while (true) {
-            LinkedList<VertexPair> mapRegion = new LinkedList<VertexPair>();
+            ArrayList<VertexPair> mapRegion = new ArrayList<VertexPair>();
             if (process.size() == 0) {
                 break;
             }
@@ -81,13 +81,13 @@ public class PlanarGraphMathing {
                     break;
                 }
 
-                VertexPair toProcess = process.getFirst();
+                VertexPair toProcess = process.get(0);
 
                 // match parents
-                LinkedList<Vertex> leftParents = removeVertices((LinkedList<Vertex>) toProcess.getLeft().getParentsList());
-                LinkedList<Vertex> rightParents = removeVertices((LinkedList<Vertex>) toProcess.getRight().getParentsList());
+                ArrayList<Vertex> leftParents = removeVertices((ArrayList<Vertex>) toProcess.getLeft().getParentsList());
+                ArrayList<Vertex> rightParents = removeVertices((ArrayList<Vertex>) toProcess.getRight().getParentsList());
 
-                LinkedList<VertexPair> nodeMappings = AssingmentProblem.getMappingsVetrex(leftParents, rightParents, threshold, stemmer, 1);
+                ArrayList<VertexPair> nodeMappings = AssingmentProblem.getMappingsVetrex(leftParents, rightParents, threshold, stemmer, 1);
                 for (VertexPair vp : nodeMappings) {
                     if (!hasProcessed(processed, vp) && !hasProcessed(process, vp)) {
                         process.add(vp);
@@ -95,8 +95,8 @@ public class PlanarGraphMathing {
                 }
 
                 // match children
-                LinkedList<Vertex> leftChildren = removeVertices((LinkedList<Vertex>) toProcess.getLeft().getChildrenList());
-                LinkedList<Vertex> rightChildren = removeVertices((LinkedList<Vertex>) toProcess.getRight().getChildrenList());
+                ArrayList<Vertex> leftChildren = removeVertices((ArrayList<Vertex>) toProcess.getLeft().getChildrenList());
+                ArrayList<Vertex> rightChildren = removeVertices((ArrayList<Vertex>) toProcess.getRight().getChildrenList());
 
                 nodeMappings = AssingmentProblem.getMappingsVetrex(leftChildren, rightChildren, threshold, stemmer, 2);
                 for (VertexPair vp : nodeMappings) {
@@ -113,7 +113,7 @@ public class PlanarGraphMathing {
                 map.addRegion(mapRegion);
             }
 
-            LinkedList<VertexPair> mappingsCopy = new LinkedList<VertexPair>(mappings);
+            ArrayList<VertexPair> mappingsCopy = new ArrayList<VertexPair>(mappings);
 
             for (VertexPair v1 : mappingsCopy) {
                 // this has already processed
@@ -129,8 +129,8 @@ public class PlanarGraphMathing {
     }
 
 
-    static LinkedList<Vertex> removeVertices(LinkedList<Vertex> vList) {
-        LinkedList<Vertex> toReturn = new LinkedList<Vertex>();
+    static ArrayList<Vertex> removeVertices(ArrayList<Vertex> vList) {
+        ArrayList<Vertex> toReturn = new ArrayList<Vertex>();
 
         if (vList == null) {
             return toReturn;
@@ -146,7 +146,7 @@ public class PlanarGraphMathing {
         return toReturn;
     }
 
-    static double calculateWeight(LinkedList<VertexPair> processedVertices) {
+    static double calculateWeight(ArrayList<VertexPair> processedVertices) {
         double result = 0;
 
         for (VertexPair vp : processedVertices) {
@@ -155,7 +155,7 @@ public class PlanarGraphMathing {
         return result;
     }
 
-    static boolean hasProcessed(LinkedList<VertexPair> processedVertices, VertexPair vp) {
+    static boolean hasProcessed(ArrayList<VertexPair> processedVertices, VertexPair vp) {
 
         for (VertexPair processed : processedVertices) {
             if (processed.getLeft().getID() == vp.getLeft().getID() || processed.getRight().getID() == vp.getRight().getID()) {
@@ -167,13 +167,13 @@ public class PlanarGraphMathing {
 
     public static class MappingRegions {
 
-        private LinkedList<LinkedList<VertexPair>> regions = new LinkedList<LinkedList<VertexPair>>();
+        private ArrayList<ArrayList<VertexPair>> regions = new ArrayList<ArrayList<VertexPair>>();
 
-        public void addRegion(LinkedList<VertexPair> region) {
+        public void addRegion(ArrayList<VertexPair> region) {
             regions.add(region);
         }
 
-        public LinkedList<LinkedList<VertexPair>> getRegions() {
+        public ArrayList<ArrayList<VertexPair>> getRegions() {
             return regions;
         }
     }
