@@ -328,9 +328,9 @@ public class MergeModels {
                         g1Source.removeParent(v.getID());
                         v.removeChild(g1Source.getID());
 
-                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg1));
+//                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg1));
 //                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg1));
-//                        merged.connectVertices(v, newSource);
+                        merged.connectVertices(v, newSource);
                     }
 
                     for (Vertex v : g2SourcePrev) {
@@ -339,9 +339,9 @@ public class MergeModels {
                         g2Source.removeParent(v.getID());
                         v.removeChild(g2Source.getID());
 
-                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg2));
+//                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg2));
 //                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg2));
-//                        merged.connectVertices(v, newSource);
+                        merged.connectVertices(v, newSource);
                     }
                 }
                 // this is gateway
@@ -350,8 +350,8 @@ public class MergeModels {
                         v.removeChild(g2Source.getID());
                         if (!containsVertex(mapping, v)) {
                             HashSet<String> labels = merged.removeEdge(v.getID(), g2Source.getID());
-                            merged.connectVertices(v, g1Source, getLabelsExclusive(labels, labelsg2));
-//                            merged.connectVertices(v, g1Source);
+//                            merged.connectVertices(v, g1Source, getLabelsExclusive(labels, labelsg2));
+                            merged.connectVertices(v, g1Source);
                         }
                     }
                 }
