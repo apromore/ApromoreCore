@@ -54,17 +54,33 @@ public class MergeModels {
 
     private static HashSet<String> extractLabels(Graph g) {
         HashSet<String> labels = new HashSet<String>();
-//        if(!("###merged###").equals(g.getGraphLabel())) {
-//            labels.add(g.getGraphLabel());
-//        }else {
-            for(Edge edge : g.getEdges()) {
-                labels.addAll(edge.getLabels());
-            }
-//        }
+        for(Edge edge : g.getEdges()) {
+            labels.addAll(edge.getLabels());
+        }
         return labels;
     }
 
+    private static int countGateways(Graph g) {
+        int gateways = 0;
+        for(Vertex v : g.getVertices()) {
+            if(v.getType().equals(Vertex.Type.gateway)) {
+                gateways++;
+            }
+        }
+        return gateways;
+    }
+
+
     public static Graph mergeModels(Graph g1, Graph g2, IdGeneratorHelper idGenerator, boolean removeEnt, String algortithm, double... param) {
+
+        int g1_gateways = countGateways(g1);
+        int g2_gateways = countGateways(g2);
+
+        if(g1_gateways < g2_gateways) {
+            Graph tmp = g1;
+            g1 = g2;
+            g2 = tmp;
+        }
 
         HashMap<String, String> objectresourceIDMap = new HashMap<String, String>();
 
