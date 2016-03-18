@@ -535,7 +535,7 @@ public class Graph {
             }
         }
 
-        removeSplitJoins(gateways);
+//        removeSplitJoins(gateways);
 
         boolean process = true;
         while (process) {
@@ -543,11 +543,30 @@ public class Graph {
             process = mergeSplitsAndJoins(gateways);
             process |= removeCycles(gateways);
             process |= cleanGatewaysRemove(gateways);
+            process |= removeLabelsFromJoinSplit(gateways);
         }
 
         for (Vertex gw : gateways) {
             gw.processedGW = false;
         }
+    }
+
+    private boolean removeLabelsFromJoinSplit(ArrayList<Vertex> gateways) {
+        boolean changed = false;
+        for (Vertex v1 : gateways) {
+            if (isJoin(v1)) {
+                for (Vertex v2 : gateways) {
+                    if (isSplit(v2)) {
+                        Edge e = containsEdge(v1.getID(), v2.getID());
+                        if(e != null && e.getLabels().size() > 0) {
+                            e.getLabels().clear();
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+        return changed;
     }
 
 
@@ -955,14 +974,23 @@ public class Graph {
                 // merge these spilts
                 if (tmp != null/* && tmp.isConfigurable()*/ && canMerge(tmp, v)) {
                     v.removeChild(tmp.getID());
-                    removeEdge(v.getID(), tmp.getID());
+                    HashSet<String> label = removeEdge(v.getID(), tmp.getID());
 
                     ArrayList<Vertex> toConnect = tmp.getChildren();
 
                     for (Vertex tmpChild : toConnect) {
                         HashSet<String> labels = removeEdge(tmp.getID(), tmpChild.getID());
+
+                        HashSet<String> labelsToExclude = new HashSet<>(labels.size());
+                        labelsToExclude.addAll(labels);
+                        labelsToExclude.removeAll(label);
+
+                        HashSet<String> labelsToAdd = new HashSet<>(labels.size());
+                        labelsToAdd.addAll(labels);
+                        labelsToAdd.removeAll(labelsToExclude);
+
                         tmpChild.removeParent(tmp.getID());
-                        connectVertices(v, tmpChild, labels);
+                        connectVertices(v, tmpChild, labelsToAdd);
                     }
                     v.setConfigurable(true);
                     if (!v.getGWType().equals(tmp.getGWType())) {
@@ -987,14 +1015,23 @@ public class Graph {
                 // merge these spilts
                 if (tmp != null /*&& tmp.isConfigurable()*/ && canMerge(tmp, v)) {
                     tmp.removeParent(v.getID());
-                    removeEdge(v.getID(), tmp.getID());
+                    HashSet<String> label = removeEdge(v.getID(), tmp.getID());
 
                     ArrayList<Vertex> toConnect = v.getParents();
 
                     for (Vertex vParent : toConnect) {
                         HashSet<String> labels = removeEdge(vParent.getID(), v.getID());
+
+                        HashSet<String> labelsToExclude = new HashSet<>(labels.size());
+                        labelsToExclude.addAll(labels);
+                        labelsToExclude.removeAll(label);
+
+                        HashSet<String> labelsToAdd = new HashSet<>(labels.size());
+                        labelsToAdd.addAll(labels);
+                        labelsToAdd.removeAll(labelsToExclude);
+
                         vParent.removeChild(v.getID());
-                        connectVertices(vParent, tmp, labels);
+                        connectVertices(vParent, tmp, labelsToAdd);
                     }
                     tmp.setConfigurable(true);
                     if (!v.getGWType().equals(tmp.getGWType())) {
@@ -1097,7 +1134,25 @@ public class Graph {
                 removeVertex(v.getID());
                 parent.removeChild(v.getID());
                 child.removeParent(v.getID());
-                Edge e = connectVertices(parent, child, childLabels);
+
+                HashSet<String> labels = new HashSet<>(parentLabels.size() + childLabels.size());
+                labels.addAll(parentLabels);
+                labels.addAll(childLabels);
+
+                HashSet<String> labelsToExclude1 = new HashSet<>(labels.size());
+                labelsToExclude1.addAll(labels);
+                labelsToExclude1.removeAll(parentLabels);
+
+                HashSet<String> labelsToExclude2 = new HashSet<>(labels.size());
+                labelsToExclude2.addAll(labels);
+                labelsToExclude2.removeAll(childLabels);
+
+                HashSet<String> labelsToAdd = new HashSet<>(labels.size());
+                labelsToAdd.addAll(labels);
+                labelsToAdd.removeAll(labelsToExclude1);
+                labelsToAdd.removeAll(labelsToExclude2);
+
+                Edge e = connectVertices(parent, child, labelsToAdd);
 //                e.addLabels(childLabels);
                 gateways.remove(v);
             }
