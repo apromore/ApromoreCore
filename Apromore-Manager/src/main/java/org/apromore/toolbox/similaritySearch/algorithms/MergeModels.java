@@ -260,7 +260,8 @@ public class MergeModels {
                     }
 
                     merged.addVertex(newSink);
-                    merged.connectVertices(g1Sink, newSink);
+                    Edge edge = merged.connectVertices(g1Sink, newSink);
+                    HashSet<String> originalLabels = new HashSet<String>();
 
                     for (Vertex v : g1SourceFoll) {
                         HashSet<String> labels = merged.removeEdge(g1Sink.getID(), v.getID());
@@ -271,9 +272,13 @@ public class MergeModels {
                         Edge e = merged.containsEdge(newSink.getID(), v.getID());
                         if(e != null && e.getLabels().size() > 0) {
                             merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
+                        }else if(e == null) {
+                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
                         }else {
                             merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg1));
                         }
+
+                        originalLabels.addAll(labels);
                     }
 
                     for (Vertex v : g2SourceFoll) {
@@ -285,10 +290,16 @@ public class MergeModels {
                         Edge e = merged.containsEdge(newSink.getID(), v.getID());
                         if(e != null && e.getLabels().size() > 0) {
                             merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
+                        }else if(e == null) {
+                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
                         }else {
                             merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg2));
                         }
+
+                        originalLabels.addAll(labels);
                     }
+
+                    edge.addLabels(originalLabels);
                 } else {
                     for (Vertex v : g2SourceFoll) {
                         v.removeParent(g2Sink.getID());
@@ -297,6 +308,8 @@ public class MergeModels {
 
                             Edge e = merged.containsEdge(g1Sink.getID(), v.getID());
                             if(e != null && e.getLabels().size() > 0) {
+                                merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
+                            }else if(e == null) {
                                 merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
                             }else {
                                 merged.connectVertices(g1Sink, v, getLabelsExclusive(labels, labelsg2));
@@ -329,8 +342,8 @@ public class MergeModels {
                         v.removeChild(g1Source.getID());
 
 //                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg1));
-//                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg1));
-                        merged.connectVertices(v, newSource);
+                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg1));
+//                        merged.connectVertices(v, newSource);
                     }
 
                     for (Vertex v : g2SourcePrev) {
@@ -340,8 +353,8 @@ public class MergeModels {
                         v.removeChild(g2Source.getID());
 
 //                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg2));
-//                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg2));
-                        merged.connectVertices(v, newSource);
+                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg2));
+//                        merged.connectVertices(v, newSource);
                     }
                 }
                 // this is gateway
@@ -351,7 +364,8 @@ public class MergeModels {
                         if (!containsVertex(mapping, v)) {
                             HashSet<String> labels = merged.removeEdge(v.getID(), g2Source.getID());
 //                            merged.connectVertices(v, g1Source, getLabelsExclusive(labels, labelsg2));
-                            merged.connectVertices(v, g1Source);
+                            merged.connectVertices(v, g1Source, getLabelsInclusive(labels, labelsg2));
+//                            merged.connectVertices(v, g1Source);
                         }
                     }
                 }
@@ -425,6 +439,45 @@ public class MergeModels {
 //               e.addLabels(labelsg1g2);
 //            }
 //        }
+
+        merged.cleanGraph();
+
+        boolean changed = true;
+        while(changed) {
+            changed = false;
+            outterloop:
+            for (Edge e1 : merged.getEdges()) {
+                if(e1.getLabels().size() > 0) {
+                    for (Vertex v : merged.getVertices()) {
+                        if (e1.getToVertex().equals(v.getID()) && v.getType().equals(Vertex.Type.function)) {
+                            for (Edge e2 : merged.getEdges()) {
+                                if (e2.getFromVertex().equals(v.getID()) &&
+                                        e2.getLabels().size() == 0) {
+                                    e2.addLabels(e1.getLabels());
+                                    changed = true;
+                                    break outterloop;
+                                }
+                            }
+                        }
+                    }
+                    for (Vertex v : merged.getVertices()) {
+                        if (e1.getFromVertex().equals(v.getID()) && v.getType().equals(Vertex.Type.function)) {
+                            for (Edge e2 : merged.getEdges()) {
+                                if (e2.getToVertex().equals(v.getID()) &&
+                                        e2.getLabels().size() == 0) {
+                                    e2.addLabels(e1.getLabels());
+                                    changed = true;
+                                    break outterloop;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        merged.cleanGraph();
+
         for (Edge e : merged.getEdges()) {
             boolean found = false;
             for (Vertex v : merged.getVertices()) {
