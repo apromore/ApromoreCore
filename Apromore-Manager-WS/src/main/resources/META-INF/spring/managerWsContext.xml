@@ -19,31 +19,23 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns                ="http://www.springframework.org/schema/beans"
+       xmlns:aop            ="http://www.springframework.org/schema/aop"
+       xmlns:context        ="http://www.springframework.org/schema/context"
+       xmlns:xsi            ="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/aop             http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
-            http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd
-            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
-
-    <context:property-placeholder properties-ref="managerProperties"/>
-    <osgi-compendium:cm-properties id="managerProperties" persistent-id="site"/>
+            http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
     <context:annotation-config />
     <context:spring-configured />
 
     <aop:aspectj-autoproxy />
 
-    <bean id="historyEventAspect" class="org.apromore.aop.HistoryEventAspect"/>
-
     <!-- Import other Application Context used to construct the Spring context. -->
-    <import resource="manager-osgi-context.xml" />
-    <import resource="managerContext-jpa.xml" />
-    <import resource="managerContext-services.xml" />
-    <import resource="managerContext-scheduler.xml" />
+    <import resource="manager-ws-osgi-context.xml" />
+    <import resource="managerWsContext-services.xml" />
+    <import resource="managerWsContext-security.xml" />
 
 </beans>

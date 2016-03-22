@@ -35,4 +35,30 @@
     <!--<osgi:reference id="searchByTextProvider" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>-->
     <osgi:reference id="metricProvider" interface="org.apromore.plugin.metric.provider.MetricPluginProvider"/>
 
+    <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
+
+    <osgi:service ref="deploymentServiceImpl" interface="org.apromore.service.DeploymentService" auto-export="interfaces"/>
+    <osgi:service ref="pluginServiceImpl" interface="org.apromore.service.PluginService" auto-export="interfaces"/>
+    <osgi:service ref="fragmentServiceImpl" interface="org.apromore.service.FragmentService" auto-export="interfaces"/>
+    <osgi:service ref="canoniserServiceImpl" interface="org.apromore.service.CanoniserService" auto-export="interfaces"/>
+    <osgi:service ref="processServiceImpl" interface="org.apromore.service.ProcessService" auto-export="interfaces"/>
+    <osgi:service ref="clusterServiceImpl" interface="org.apromore.service.ClusterService" auto-export="interfaces"/>
+    <osgi:service ref="formatServiceImpl" interface="org.apromore.service.FormatService" auto-export="interfaces"/>
+    <osgi:service ref="domainServiceImpl" interface="org.apromore.service.DomainService" auto-export="interfaces"/>
+    <osgi:service ref="userServiceImpl" interface="org.apromore.service.UserService" auto-export="interfaces"/>
+    <osgi:service ref="similarityServiceImpl" interface="org.apromore.service.SimilarityService" auto-export="interfaces"/>
+    <osgi:service ref="mergeServiceImpl" interface="org.apromore.service.MergeService" auto-export="interfaces"/>
+    <osgi:service ref="securityServiceImpl" interface="org.apromore.service.SecurityService" auto-export="interfaces"/>
+    <osgi:service ref="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService" auto-export="interfaces"/>
+    <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
+    <osgi:service ref="PQLServiceImpl" interface="org.apromore.service.PQLService" auto-export="interfaces"/>
+    <osgi:service ref="databaseServiceImpl" interface="org.apromore.service.DatabaseService" auto-export="interfaces"/>
+    <osgi:service ref="BPMNMinerServiceImpl" interface="org.apromore.service.BPMNMinerService" auto-export="interfaces"/>
+    <osgi:service ref="proDriftDetectionServiceImpl" interface="org.apromore.service.ProDriftDetectionService" auto-export="interfaces"/>
+    <osgi:service ref="structuringServiceImpl" interface="org.apromore.service.StructuringService" auto-export="interfaces"/>
+    <osgi:service ref="measurementsServiceImpl" interface="org.apromore.service.MeasurementsService" auto-export="interfaces"/>
+
+    <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>
+    <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>
+
 </beans:beans>
