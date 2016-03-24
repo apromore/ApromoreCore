@@ -66,4 +66,6 @@ public interface PortalContext {
      * @return the authenticated user
      */
     UserType getCurrentUser();
+
+    void refreshContent();
 }

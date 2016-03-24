@@ -116,6 +116,9 @@
         <module>plugin-portal/merge</module>
         <module>plugin-portal/sample</module>
 
+        <!-- Portal Plugin Templates -->
+        <module>plugins/portal-custom-gui</module>
+
     </modules>
 
     <repositories>

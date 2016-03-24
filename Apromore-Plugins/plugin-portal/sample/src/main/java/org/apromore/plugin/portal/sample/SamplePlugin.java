@@ -23,10 +23,15 @@ package org.apromore.plugin.portal.sample;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.Level;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.custom.gui.PortalTab;
+import org.apromore.portal.custom.gui.impl.PortalTabImpl;
+import org.apromore.portal.custom.gui.impl.RowValue;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -43,6 +48,22 @@ public class SamplePlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext context) {
         // Show a message on the portal
+
+        List<RowValue> rows = new ArrayList<>();
+        RowValue rowValue1 = new RowValue();
+        rowValue1.add("A");
+
+        RowValue rowValue2 = new RowValue();
+        rowValue1.add("B");
+
+        rows.add(rowValue1);
+        rows.add(rowValue2);
+
+        List<String> labels = new ArrayList<>();
+        labels.add("Name");
+
+        PortalTab<String> portalTab = new PortalTabImpl<String>(rows, labels, null, context.getCurrentUser().getId(), "new tab", context);
+
         context.getMessageHandler().displayInfo("Executed example plug-in!");
         try {
             // Create a window based on the ZUL file, which is controlled by SampleController

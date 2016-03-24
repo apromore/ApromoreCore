@@ -22,31 +22,23 @@ package org.apromore.portal.common;
 
 import org.apromore.model.*;
 import org.apromore.model.Detail;
-import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.custom.gui.AbstractPortalTab;
 import org.apromore.portal.dialogController.DetailsTabController;
 import org.apromore.portal.dialogController.MainController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
-import org.apromore.portal.util.SessionTab;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 
-import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by corno on 17/07/2014.
  */
-public class TabQuery extends Tab implements Comparable<TabQuery>{
-    private static final Logger LOGGER = LoggerFactory.getLogger(TabQuery.class.getName());
-    private boolean isClose=false;
-    private boolean isNew=false;
-    private Tabpanel tabpanel;
+public class TabQuery<T extends Comparable<T>> extends AbstractPortalTab<T> implements Comparable<TabQuery>{
+
     private Listbox listBox;
-    private String userID;
     private static int progressID=1;
     private List<Detail> details;
     private long timeCreation;
@@ -61,7 +53,8 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
 
     private String query;
 
-    public TabQuery(String label, String userID, final List<Detail> details, final String query){
+    public TabQuery(String label, String userID, final List<Detail> details, final String query, PortalContext portalContext){
+        super(userID, label, portalContext);
         if(label.equals("") || label==null){
             setLabel("Query "+progressID);
             progressID++;
@@ -72,24 +65,12 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
         this.userID=userID;
         this.query=query;
         timeCreation=System.currentTimeMillis();
-        setClosable(true);
-        setSelected(true);
-        setNew(true);
-        setTooltiptext("Double click to show more info");
-        setImage("img/info25.png");
 //        setDraggable("true");
 //        setDroppable("true");
         addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 new DetailsTabController(MainController.getController(), details, query);
-            }
-        });
-        addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                LOGGER.debug("-------------------CLOSE: ");
-                TabQuery.this.close(true);
             }
         });
     }
@@ -100,18 +81,6 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
 
     public String getUserID(){
         return userID;
-    }
-
-    public void close(boolean close){
-        SessionTab.getTabsSession(userID).remove(this);
-    }
-
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean isNew) {
-        this.isNew = isNew;
     }
 
     public void setTabpanel(List<ResultPQL> processes){
@@ -154,10 +123,10 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
 
         TabListitem item =null;
 
-            for (final ResultPQL process : processes) {
-                item=new TabListitem(process.getPst(),process.getVst(),process.getAttributesToShow());
-                list.appendChild(item);
-            }
+        for (final ResultPQL process : processes) {
+            item=new TabListitem(process.getPst(),process.getVst(),process.getAttributesToShow());
+            list.appendChild(item);
+        }
 
         if(item==null) {
             item = new TabListitem();
@@ -166,10 +135,6 @@ public class TabQuery extends Tab implements Comparable<TabQuery>{
         newTabpanel.appendChild(list);
         this.listBox=list;
         this.tabpanel=newTabpanel;
-    }
-
-    public Tabpanel getTabpanel(){
-        return tabpanel;
     }
 
     public void setTabpanel(Tabpanel tabpanel){

@@ -50,20 +50,20 @@ public class TabListitem extends Listitem {
         this.attributesToShow=attributesToShow;
         buildListitem();
         addEventListener(Events.ON_DOUBLE_CLICK,new EventListener<Event>() {
-                    private MainController mainController = MainController.getController();
+            private MainController mainController = MainController.getController();
 
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        AnnotationsType annotation = new AnnotationsType();
-                        annotation.getAnnotationName().add(TabListitem.this.pst.getOriginalNativeType());
-                        if (annotation!=null) {
-                            mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), annotation.getAnnotationName().get(0),
-                                    "false", new HashSet<RequestParameterType<?>>());
-                        } else {
-                            mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>());
-                        }
-                    }
-                });
+            @Override
+            public void onEvent(Event event) throws Exception {
+                AnnotationsType annotation = new AnnotationsType();
+                annotation.getAnnotationName().add(TabListitem.this.pst.getOriginalNativeType());
+                if (annotation!=null) {
+                    mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), annotation.getAnnotationName().get(0),
+                            "false", new HashSet<RequestParameterType<?>>());
+                } else {
+                    mainController.editProcess(TabListitem.this.pst, TabListitem.this.vst, TabListitem.this.pst.getOriginalNativeType(), null, "false", new HashSet<RequestParameterType<?>>());
+                }
+            }
+        });
     }
 
     public TabListitem(){

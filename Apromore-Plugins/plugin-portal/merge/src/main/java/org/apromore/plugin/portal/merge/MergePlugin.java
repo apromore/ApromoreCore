@@ -22,13 +22,12 @@ package org.apromore.plugin.portal.merge;
 
 // Java packages
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 // Third party packages
+import org.apromore.portal.custom.gui.PortalTab;
+import org.apromore.portal.custom.gui.impl.PortalTabImpl;
+import org.apromore.portal.custom.gui.impl.RowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -102,6 +101,8 @@ public class MergePlugin extends DefaultPortalPlugin {
             }
 
             showDialog(context, selectedProcessVersions);
+
+
             LOGGER.info("Executed");
 
         } catch (Exception e) {
