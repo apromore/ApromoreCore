@@ -136,4 +136,10 @@ public class PluginPortalContext implements PortalContext {
     public UserType getCurrentUser() {
         return UserSessionManager.getCurrentUser();
     }
+
+    @Override
+    public void refreshContent() {
+        mainController.loadWorkspace();
+    }
+
 }

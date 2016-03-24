@@ -23,7 +23,9 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
+import org.apromore.plugin.portal.SessionTab;
 import org.apromore.portal.common.TabListitem;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
@@ -35,7 +37,6 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.util.SessionTab;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -53,10 +54,11 @@ public class MenuController extends Menubar {
 
     private final MainController mainC;
     private Menubar menuB;
+    private PortalContext portalContext;
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
-
+        this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 
 
@@ -262,7 +264,7 @@ public class MenuController extends Menubar {
 
         int countSelected=0;
         TabQuery tabQuery = null;
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
 
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){
@@ -362,7 +364,7 @@ public class MenuController extends Menubar {
         Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
         this.mainC.eraseMessage();
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
 
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){
@@ -432,7 +434,7 @@ public class MenuController extends Menubar {
 
         this.mainC.eraseMessage();
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
         int count=0;
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){
@@ -480,7 +482,7 @@ public class MenuController extends Menubar {
     protected void configureModel() throws ParseException {
         this.mainC.eraseMessage();
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
         int count=0;
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){
@@ -572,7 +574,7 @@ public class MenuController extends Menubar {
     protected void editNative() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats, ParseException {
         this.mainC.eraseMessage();
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
 
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){
@@ -625,7 +627,7 @@ public class MenuController extends Menubar {
     protected void exportNative() throws SuspendNotAllowedException, InterruptedException, ExceptionFormats, ParseException {
         this.mainC.eraseMessage();
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(UserSessionManager.getCurrentUser().getId());
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
 
         for(Tab tab : tabs){
             if(tab.isSelected() && tab instanceof TabQuery){

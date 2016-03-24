@@ -23,11 +23,14 @@ package org.apromore.portal.dialogController;
 import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.custom.gui.PortalTab;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -36,8 +39,6 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.util.SessionTab;
-import org.wfmc._2002.xpdl1.Tool;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -50,7 +51,6 @@ import org.zkoss.zul.*;
 import org.zkoss.zul.ext.Paginal;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Map;
@@ -69,6 +69,7 @@ public class MainController extends BaseController {
 
     private static final String WELCOME_TEXT = "Welcome %s. Release notes (%s)"; //Welcome %s.
 
+    private PortalContext portalContext;
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
@@ -108,6 +109,7 @@ public class MainController extends BaseController {
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
             this.menu = new MenuController(this);
+            this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
             Toolbarbutton moreButton = (Toolbarbutton) this.getFellow("moreButton");
             Toolbarbutton releaseNotes = (Toolbarbutton) this.getFellow("releaseNotes");
@@ -180,7 +182,6 @@ public class MainController extends BaseController {
         }
         controller=this;
     }
-
 
     public void loadWorkspace() {
         setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
@@ -636,7 +637,6 @@ public class MainController extends BaseController {
         );
     }
 
-
     @Command
     protected void displayInstalledPlugins() throws InterruptedException {
         final Window pluginWindow = (Window) Executions.createComponents("macros/pluginInfo.zul", this, null);
@@ -676,9 +676,6 @@ public class MainController extends BaseController {
                     Messagebox.ERROR);
         }
     }
-
-
-
 
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
@@ -758,8 +755,6 @@ public class MainController extends BaseController {
         return max.toString();
     }
 
-
-
     public MenuController getMenu() {
         return menu;
     }
@@ -797,12 +792,8 @@ public class MainController extends BaseController {
     }
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
-
-        LinkedList<Tab> listTabs = SessionTab.getTabsSession(userID);
-        TabQuery newTab = new TabQuery(nameQuery, userID, details, query);
+        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, portalContext);
         newTab.setTabpanel(results);
-        listTabs.addLast(newTab);
-        SessionTab.setTabsSession(userID, listTabs);
     }
 
     private void updateTabs(String userId){
@@ -810,26 +801,23 @@ public class MainController extends BaseController {
 
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
 
-        LinkedList<Tab> tabs = SessionTab.getTabsSession(userId);
-        if(tabs == null) {
-            tabs = new LinkedList<Tab>();
-            for(Component component : tabbox.getTabs().getChildren()) {
-                Tab tab = (Tab) component;
-                if(tab.isClosable()) {
-                    tabs.addLast(tab);
-                }
-            }
-            SessionTab.setTabsSession(userId, tabs);
-        }else if(!tabs.isEmpty()){
-            tabs=SessionTab.getTabsSession(userId);
-            for(Tab tab : tabs) {
-                if(tab instanceof TabQuery && ((TabQuery)tab).isNew()){
-                    ((TabQuery) tab).setNew(false);
+//        LinkedList<Tab> tabs = SessionTab.getSessionTab().getTabsSession(userId);
+//        if(tabs.isEmpty()) {
+//            for(Component component : tabbox.getTabs().getChildren()) {
+//                Tab tab = (Tab) component;
+//                if(tab.isClosable()) {
+//                    SessionTab.getSessionTab().addTabToSession(userId, tab);
+//                }
+//            }
+//        }else if(!tabs.isEmpty()){
+            for(Tab tab : SessionTab.getSessionTab(portalContext).getTabsSession(userId)) {
+                if(tab instanceof PortalTab && ((PortalTab) tab).isNew()){
+                    ((PortalTab) tab).setNew(false);
                     tabbox.getTabs().appendChild(tab);
-                    ((TabQuery) tab).getTabpanel().setParent(tabbox.getTabpanels());
+                    ((PortalTab) tab).getTabpanel().setParent(tabbox.getTabpanels());
                 }
             }
-        }
+//        }
     }
 
 }

@@ -89,6 +89,11 @@
             <artifactId>portal-plugin-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-custom-gui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Plugin Implementation Bundles -->
 

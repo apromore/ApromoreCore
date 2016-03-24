@@ -134,6 +134,7 @@
         <module>Supplements/cpf2pnml</module>
         <module>Supplements/epml2cpf</module>
         <module>Supplements/pnml2cpf</module>
+
     </modules>
 
     <properties>
@@ -566,6 +567,13 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>portal-plugin-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+
+            <!-- Portal Plugin Templates -->
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>portal-custom-gui</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
 
