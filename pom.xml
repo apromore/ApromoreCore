@@ -117,6 +117,7 @@
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
+        <module>Apromore-Manager-WS</module>
         <module>Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
@@ -190,7 +191,6 @@
         <javassist.version>3.15.0.GA</javassist.version>
         <aopalliance.version>1.0.0</aopalliance.version>
         <aspectj.version>1.6.12.RELEASE</aspectj.version>
-        <commons.collections.version>3.2.1</commons.collections.version>
         <commons.fileupload.version>1.3</commons.fileupload.version>
         <commons.lang.version>2.6</commons.lang.version>
         <commons.io.version>2.4</commons.io.version>
@@ -1091,11 +1091,6 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons.codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons.collections.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>

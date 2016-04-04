@@ -1273,11 +1273,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.commons-collections</artifactId>
-            <version>3.2.1_3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.commons-digester</artifactId>
             <version>1.8_4</version>
             <exclusions>
