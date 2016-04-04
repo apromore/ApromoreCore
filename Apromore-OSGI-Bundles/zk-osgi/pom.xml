@@ -43,10 +43,11 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=bsh|zk|zcommon|zel|zkbind|zkplus|zul|zhtml|zweb|zkspring-core
+                            artifactId=
+                            bsh|zk|zcommon|zel|zkbind|zkplus
+                            |zul|zhtml|zweb|zkspring-core
                         </Embed-Dependency>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Bundle-Name>ZK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.zkoss-osgi</Bundle-SymbolicName>
@@ -93,7 +94,6 @@
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
-            <version>${zk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
@@ -107,22 +107,30 @@
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zweb</artifactId>
-            <version>${zk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zel</artifactId>
-            <version>${zk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zcommon</artifactId>
-            <version>${zk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkspring-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Replacement for the org.javassist from the hibernate package -->
+        <dependency>
+            <groupId>org.jboss.javassist</groupId>
+            <artifactId>com.springsource.javassist</artifactId>
         </dependency>
 
     </dependencies>

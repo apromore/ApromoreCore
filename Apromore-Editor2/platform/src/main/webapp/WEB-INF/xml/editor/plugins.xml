@@ -141,13 +141,16 @@
             <requires namespace="http://b3mn.org/stencilset/yawl2.2#"/>
         </plugin>
 
-
         <!-- Added for Test purposes -->
         <plugin source="file.js" name="ORYX.Plugins.Save"/>
         <plugin source="pdf.js" name="ORYX.Plugins.File"/>
         <plugin source="jsonSupport.js" name="ORYX.Plugins.JSONSupport">
             <property name="color" value="red"/>
         </plugin>
+
+		<!-- Added to dynamically include Apromore plug-ins -->
+		<?EDITOR-PLUGINS?>
+
 	</plugins>
 	
 	<properties>

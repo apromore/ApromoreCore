@@ -47,11 +47,12 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=bpstruct|de-jbpt|stixar-graph|hub-pn|antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke|log4j|commons-lang3|jgraph
+                            artifactId=bpstruct|de-jbpt|stixar-graph|hub-pn
+                            |antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke
+                            |log4j|commons-lang3|jgraph
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>BPstruct OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.bpstruct-osgi</Bundle-SymbolicName>
                         <Import-Package>
@@ -158,7 +159,7 @@
             <version>1.6</version>
         </dependency>
 
-        <!-- already installed -->
+        <!-- TODO use the OSGI bundles -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

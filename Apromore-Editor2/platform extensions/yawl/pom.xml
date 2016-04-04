@@ -49,7 +49,9 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Embed-Dependency>artifactId=jdom|Saxon-HE|yawl-lib|yawleditor-layout</Embed-Dependency>
+                        <Embed-Dependency>
+                            artifactId=jdom|Saxon-HE|yawl-lib|yawleditor-layout|json;inline=true
+                        </Embed-Dependency>
                         <Import-Package>
                             !com.sun.rave.web.ui.*,
                             !edu.uci.ics.jung.*,
@@ -79,38 +81,46 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>editor-platform-extension-diagram</artifactId>
+            <version>${editor-platform-extension.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Embedded and inlined dependencies -->
         <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <version>9.6.0-7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>editor-platform-extension-diagram</artifactId>
-            <version>${editor-platform-extension.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>yawleditor-layout</artifactId>
             <version>2.3</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>yawl-lib</artifactId>
             <version>2.3</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>2.0.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- JAXB -->

@@ -32,13 +32,15 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.0.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>artifactId=org.abego.treelayout.core|antlr4-annotations|antlr4-runtime</Embed-Dependency>
+                        <Embed-Dependency>
+                            artifactId=org.abego.treelayout.core|antlr4-annotations|antlr4-runtime;inline=true
+                        </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Antlr4 Runtime Library</Bundle-Name>
                         <Bundle-SymbolicName>org.antlr.antlr4-osgi</Bundle-SymbolicName>
                         <Export-Package>
@@ -63,27 +65,16 @@
             <groupId>org.abego.treelayout</groupId>
             <artifactId>org.abego.treelayout.core</artifactId>
             <version>1.0.1</version>
-            <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-annotations</artifactId>
             <version>4.3</version>
-            <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.3</version>
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--&lt;!&ndash;  UI Related Dependency &ndash;&gt;-->
-                    <!--<artifactId>org.abego.treelayout.core</artifactId>-->
-                    <!--<groupId>org.abego.treelayout</groupId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
         </dependency>
     </dependencies>
 </project>

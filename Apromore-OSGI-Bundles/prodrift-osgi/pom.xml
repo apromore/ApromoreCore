@@ -41,12 +41,18 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>artifactId=jsc|OpenXES-XStream|weka-dev|
+                        <Embed-Dependency>
+                            <!--
+                                All those dependencies are inline so that their scope can be set to "provided".
+                                By doing so these non-osgi dependencies are not included in the assembly projects!
+                             -->
+                            artifactId=
+                            java_cup|
+                            jsc|OpenXES-XStream|weka-dev|
                             lingpipe|jama|prodrift
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>ProDrift OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.prodrift-osgi</Bundle-SymbolicName>
                         <Import-Package>
@@ -141,7 +147,7 @@
     </build>
 
     <dependencies>
-    
+
 	<!-- prodrift-->
         <dependency>
             <groupId>org.apromore</groupId>
@@ -157,56 +163,38 @@
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
             <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES-Stream</artifactId>
             <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>spex</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>log</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>logabstractions</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-core</artifactId>
             <version>0.2.433</version>
-            <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.jbpt</groupId>-->
-            <!--<artifactId>jbpt</artifactId>-->
-            <!--<version>1.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jcommon</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <!-- No-->
         <dependency>
@@ -231,7 +219,6 @@
             <groupId>org.processmining</groupId>
             <artifactId>weka</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -41,12 +41,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions><!-- commons-logging|log4j| -->
-                        <Embed-Dependency>artifactId=
-                            jgoodies-common|jgoodies-forms|kxml2|nikefsmonitor|fodina
+                        <Embed-Dependency>
+                            artifactId=jgoodies-common|jgoodies-forms|kxml2|nikefsmonitor|fodina
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Fodina OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.fodina-osgi</Bundle-SymbolicName>
                         <Import-Package>
@@ -106,31 +105,26 @@
             <groupId>org.processmining</groupId>
             <artifactId>jgoodies-common</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jgoodies-forms</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>kxml2</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>nikefsmonitor</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>fodina</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

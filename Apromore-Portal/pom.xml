@@ -71,18 +71,17 @@
                     <unpackBundle>false</unpackBundle>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=json|jaxb2-basics-runtime|spring-social-core|spring-social-facebook|spring-social-twitter
+                            <!-- Embedded non-OSGI libraries.
+                                 Remember to always keep the maven-war-plugin in sync.
+                                 These dependencies should be in scope provided!
+                            -->
+                            artifactId=
+                            json|jaxb2-basics-runtime
+                            |spring-social-core|spring-social-facebook|spring-social-twitter
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <!--
-                        <Require-Bundle>
-                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)"
-                        </Require-Bundle>
-                        -->
                         <Import-Bundle>
                             com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
@@ -182,13 +181,8 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <packagingExcludes>  <!-- WEB-INF/lib/json*.jar, -->
-                        WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,WEB-INF/lib/manager*.jar,
-                        WEB-INF/lib/jackson*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,WEB-INF/lib/logback*.jar,
-                        WEB-INF/lib/jcl*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/org.*.jar,WEB-INF/lib/plugin*.jar,WEB-INF/lib/slf4j-api*.jar,
-                        WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/epml-schema*.jar,WEB-INF/lib/bpmn-schema*.jar,WEB-INF/lib/mail*.jar,
-                        WEB-INF/lib/javax.persistence*.jar,WEB-INF/lib/javax.validation*.jar,,WEB-INF/lib/javax.inject*.jar,
-                        WEB-INF/lib/javaassist*.jar,WEB-INF/lib/jcommon-1.0.15.jar,WEB-INF/lib/jfreechart-1.0.15.jar
+                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified in maven-bundle-plugin -->
+                        %regex[WEB-INF/lib/(?!json|jaxb2|spring-social).*jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -200,35 +194,56 @@
 
     <dependencies>
 
+        <!--
+            Dependencies that were defined only in the assembly
+            TODO: check if these are really neded!
+        -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-lgpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-lgpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>com.springsource.javax.xml.bind</artifactId>
+        </dependency>
+
         <!-- BPMNMiner -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--
+
+        <!-- ProDrift -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>prodrift-osgi</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>ee.ut</groupId>
-            <artifactId>prodrift</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>bpmnminer</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Client -->
@@ -249,7 +264,9 @@
             <artifactId>manager-security</artifactId>
         </dependency>
 
-        <!-- BP-diff and its dependencies -->
+        <!-- BP-diff and its dependencies
+             TODO: are those embedded or OSGI?
+        -->
         <dependency>
             <groupId>diffbp</groupId>
             <artifactId>diffbp</artifactId>
@@ -263,7 +280,19 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>4.2.2.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- Replacement for the org.javassist from the hibernate package -->
+        <dependency>
+            <groupId>org.jboss.javassist</groupId>
+            <artifactId>com.springsource.javassist</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
@@ -326,6 +355,11 @@
             <artifactId>portal-custom-gui</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>editor-plugin-api</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -342,20 +376,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-        </dependency>
-
-        <!-- Blueprint OSGi -->
-        <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.core</artifactId>
         </dependency>
 
         <!-- Spring dependencies -->
@@ -444,12 +464,6 @@
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
 
-        <!-- JSon Settings -->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-        </dependency>
-
         <!-- Commons Libraries -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -477,10 +491,12 @@
             <groupId>org.apromore</groupId>
             <artifactId>zk-osgi</artifactId>
             <version>6.5.3</version>
-            <scope>provided</scope>
         </dependency>
-
         <!-- Dependencies that aren't OSGI, included in war -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
         <!-- Spring Social Dependencies -->
         <dependency>
             <groupId>org.springframework.social</groupId>

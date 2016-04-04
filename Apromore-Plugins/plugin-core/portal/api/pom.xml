@@ -52,10 +52,7 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api</artifactId>
@@ -67,11 +64,10 @@
             <artifactId>manager-ws-model</artifactId>
         </dependency>
 
-        <!-- ZK Libraries -->
+        <!-- OSGI ZK Wrapper -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>zk-osgi</artifactId>
-            <version>6.5.3</version>
         </dependency>
 
     </dependencies>

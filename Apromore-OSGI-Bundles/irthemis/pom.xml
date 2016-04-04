@@ -43,8 +43,7 @@
                     <instructions>
                         <Embed-Dependency>artifactId=themis</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Themis OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.themis-osgi</Bundle-SymbolicName>
                         <Export-Package>

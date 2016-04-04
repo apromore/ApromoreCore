@@ -259,10 +259,6 @@
           <artifactId>zkspring-core</artifactId>
       </dependency>
       <dependency>
-          <groupId>org.zkoss.zk</groupId>
-          <artifactId>zul</artifactId>
-      </dependency>
-      <dependency>
           <groupId>org.deckfour.xes</groupId>
           <artifactId>OpenXES</artifactId>
           <scope>runtime</scope>
@@ -277,9 +273,5 @@
           <artifactId>mysql-connector-java</artifactId>
       </dependency>
 
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-      </dependency>
   </dependencies>
 </project>

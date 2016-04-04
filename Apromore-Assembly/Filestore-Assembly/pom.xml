@@ -125,34 +125,16 @@
             <artifactId>org.springframework.security.remoting</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/src/main/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.parent.basedir}/</directory>
-                                    <includes>
-                                        <include>site.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -177,6 +159,25 @@
                                 org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
                                 com.springsource.javax.xml.bind
                             </excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.apromore.osgihelper.RemoveNonOSGIJars</mainClass>
+                            <arguments>
+                                <argument>${deploy.dir}/usr</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

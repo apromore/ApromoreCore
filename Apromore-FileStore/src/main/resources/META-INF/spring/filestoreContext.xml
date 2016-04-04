@@ -26,13 +26,13 @@
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
             http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.0.xsd
-            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <context:annotation-config/>
     <context:component-scan base-package="org.apromore"/>
 
     <context:property-placeholder properties-ref="filestoreProperties"/>
-    <osgi-compendium:cm-properties id="filestoreProperties" persistent-id="site"/>
+    <osgi-compendium:cm-properties id="filestoreProperties" persistent-id="site" init-timeout="60" />
 
     <bean id="filestoreConfig" class="org.apromore.filestore.ConfigBean">
         <constructor-arg type="String" value="${site.filestore}"/>
