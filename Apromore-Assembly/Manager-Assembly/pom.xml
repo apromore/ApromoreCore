@@ -157,6 +157,17 @@
             <artifactId>build-tools</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager-ws</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
     </dependencies>
 
     <build>

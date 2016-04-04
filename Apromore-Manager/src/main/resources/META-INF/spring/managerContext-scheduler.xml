@@ -31,6 +31,8 @@
     <!-- A task scheduler that will call @Scheduled methods -->
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:executor id="executor" pool-size="10"/>
+<!--
     <task:annotation-driven scheduler="scheduler" executor="executor"/>
+-->
 
 </beans>
