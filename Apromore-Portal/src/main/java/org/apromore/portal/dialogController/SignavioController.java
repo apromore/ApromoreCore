@@ -23,20 +23,20 @@ package org.apromore.portal.dialogController;
 // Java 2 Standard packages
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -99,7 +99,7 @@ public class SignavioController extends BaseController {
             params =  session.getParams();
         }
 
-        Map<String, String> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         try {
             String title = editSession1.getProcessName() + " (" + editSession1.getNativeType() + ")";
             if (editSession2 != null) {
@@ -190,7 +190,13 @@ public class SignavioController extends BaseController {
                     param.put("doAutoLayout", "true");
                 }
             }
+
+
+            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve();
+            param.put("plugins", editorPlugins);
+
             Executions.getCurrent().pushArg(param);
+
         } catch (Exception e) {
             LOGGER.error("",e);
             e.printStackTrace();

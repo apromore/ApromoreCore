@@ -43,11 +43,17 @@
     </scm>
 
     <dependencies>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- BPMNMiner -->
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Pro Drift Dependancies -->

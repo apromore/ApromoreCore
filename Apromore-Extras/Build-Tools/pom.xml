@@ -33,4 +33,18 @@
     <name>Apromore Build Tools Extension</name>
     <description>The Build tools are to help track changes in the code and a place to store checkstyle configuration for all the other projects in Apromore.</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

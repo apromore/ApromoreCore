@@ -45,6 +45,9 @@ public interface PortalContext {
      */
     PortalSelection getSelection();
 
+    //TODO expose the manager web-service client
+    // getManagerClient();
+
     /**
      * @return a PortalUI object that MUST be used to generate new UI elements using the ZK library.
      */

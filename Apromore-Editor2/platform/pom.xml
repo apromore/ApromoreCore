@@ -165,12 +165,18 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <unpackBundle>false</unpackBundle>
+                    <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-                        <Embed-Dependency>artifactId=batik-anim|batik-awt-util|batik-bridge|batik-codec|batik-css|batik-dom|batik-ext|batik-extension|batik-gui-util|batik-gvt|batik-parser|batik-script|batik-svg-dom|batik-svggen|batik-swing|batik-transcoder|batik-util|batik-xml|jaxb2-basics-runtime|xmlgraphics-commons</Embed-Dependency>
+                        <Embed-Dependency> <!-- Embedded non-OSGI libraries. Remember to always keep the maven-war-plugin in sync -->
+                            artifactId=
+                                batik-anim|batik-awt-util|batik-bridge|batik-codec|batik-css|batik-dom|batik-ext
+                                |batik-extension|batik-gui-util|batik-gvt|batik-parser|batik-script|batik-svg-dom|batik-svggen
+                                |batik-swing|batik-transcoder|batik-util|batik-xml
+                                |jaxb2-basics-runtime|xmlgraphics-commons
+                        </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Bundle>
                             org.apache.catalina;version="[7.0.35.v201302131125,7.0.35.v201302131125]",
                             org.apromore.editor-platform-extension-bpmn2_0;version="[1.2,2)",
@@ -236,16 +242,25 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified in maven-bundle-plugin -->
+                        %regex[WEB-INF/lib/(?!batik|jaxb2|xmlgraphics).*jar]
+                    </packagingExcludes>
                     <webResources>
-		        <resource>
+                        <resource>
                             <directory>src/main/stencilsets</directory>
                             <targetPath>editor/stencilsets</targetPath>
-		        </resource>
-		        <resource>
+                        </resource>
+                        <resource>
                             <directory>target/sscompressor</directory>
                             <targetPath>editor/stencilsets</targetPath>
-		        </resource>
+                        </resource>
                     </webResources>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
@@ -265,47 +280,49 @@
     </build>
 
     <dependencies>
-        <!-- OSGi, Spring, J2EE platforms -->
+        <!-- JEE dependencies -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Spring dependencies -->
         <dependency>
-            <groupId>org.eclipse.gemini</groupId>
-            <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-            <scope>provided</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.aspects</artifactId>
-            <scope>provided</scope>
+            <artifactId>org.springframework.beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context.support</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>provided</scope>
+            <artifactId>org.springframework.web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.web.servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aop</artifactId>
         </dependency>
 
         <!-- Signavio platform -->
@@ -421,6 +438,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- TODO: Those aren't OSGI!! Why are they here and not embedded? Are those really needed? -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -436,73 +455,61 @@
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-bpmn2_0</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-bpstruct</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-diagram</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-downloader</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-epc</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-jpdl</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-measurement</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-pdf</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-petrinet</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-syntaxchecker</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-xpdl</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-yawl</artifactId>
             <version>${editor-platform-extension.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Logging -->
@@ -528,12 +535,22 @@
             <artifactId>logback-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>editor-plugin-api</artifactId>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>

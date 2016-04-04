@@ -19,9 +19,12 @@
  */
 package com.signavio.editor.handler;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
+import java.util.Locale;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,15 +34,25 @@ import com.signavio.platform.exceptions.RequestException;
 import com.signavio.platform.handler.BasisHandler;
 import com.signavio.platform.security.business.FsAccessToken;
 import com.signavio.platform.security.business.FsSecureBusinessObject;
+import org.apache.commons.io.IOUtils;
+import org.apromore.plugin.editor.EditorPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 
 @HandlerConfiguration(uri = "/editor_plugins", rel="plugins")
 public class PluginsHandler extends BasisHandler {
-	
+
+	@Autowired
+	private ApplicationContext appContext;
+
 	public PluginsHandler(ServletContext servletContext) {
 		super(servletContext);
-		
-
+		//Workaround to get the Spring applicationContext injected properly
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, servletContext);
 	}
 
 	/**
@@ -50,16 +63,29 @@ public class PluginsHandler extends BasisHandler {
     public <T extends FsSecureBusinessObject> void doGet(HttpServletRequest req, HttpServletResponse res, FsAccessToken token, T sbo) {
   	
   		File pluginConf = new File(this.getRootDirectory() + "/WEB-INF/xml/editor/plugins.xml");
-  		
-  		if(pluginConf.exists()) {
+
+		List<EditorPlugin> editorPlugins = (List<EditorPlugin>) appContext.getBean("editorPlugins");
+		StringBuilder additionalPlugins = new StringBuilder();
+		for (EditorPlugin plugin: editorPlugins) {
+			additionalPlugins.append("<plugin source=\""+plugin.getJavaScriptURI()+"\" name=\""+plugin.getJavaScriptPackage()+"\"/>");
+		}
+
+		if(pluginConf.exists()) {
   			res.setStatus(200);
   	  		res.setContentType("text/xml");
-  	  		
-  	  		try {
-				this.writeFileToResponse(pluginConf, res);
+
+			try {
+				String pluginDef = IOUtils.toString(new FileReader(pluginConf));
+
+				// Insert the Editor plug-ins replacing the placeholde
+				//TODO switch to a real XML reader/writer based implementation
+				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
+
+				res.getWriter().append(pluginDef);
 			} catch (IOException e) {
 				throw new RequestException("platform.ioexception", e);
 			}
+
   		} else {
   			throw new RequestException("editor.pluginXmlForProfileNotFound");
   		}

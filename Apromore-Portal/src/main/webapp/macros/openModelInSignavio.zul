@@ -18,7 +18,9 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.SignavioController">
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        use="org.apromore.portal.dialogController.SignavioController">
 
     <n:style media="screen" type="text/css">
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
@@ -54,6 +56,11 @@
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
+        <!-- Include all Editor plug-ins -->
+        <z:zk forEach="${arg.plugins}">
+            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+        </z:zk>
 
         <n:span id="oryxstartupcode">
             <n:script>

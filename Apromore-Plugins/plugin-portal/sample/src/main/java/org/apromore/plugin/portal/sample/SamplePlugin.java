@@ -69,6 +69,7 @@ public class SamplePlugin extends DefaultPortalPlugin {
             // Create a window based on the ZUL file, which is controlled by SampleController
             // Please note that it is important to pass a ClassLoader of a class within the plug-in bundle!
             Window window = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/sample.zul", null, null);
+            // Show the windows on top of everything
             window.doModal();
         } catch (IOException e) {
             context.getMessageHandler().displayError("Could not load component ", e);

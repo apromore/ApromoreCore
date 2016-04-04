@@ -50,7 +50,12 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Embed-Dependency>artifactId=jaxb2-basics-runtime|commons-collections4|jgrapht-core|junit</Embed-Dependency>
+                        <Embed-Dependency>
+                            artifactId=
+                            jaxb2-basics-runtime|commons-collections4|jgrapht-core
+                            |junit <!-- TODO Why is Junit needed at runtime? -->
+                            ;inline=true
+                        </Embed-Dependency>
                         <Export-Package>
                             com.sun.xml.bind.v2,
                             de.hpi.bpmn2_0.exceptions,
@@ -103,27 +108,9 @@
             <version>${joda-time.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-diagram</artifactId>
             <version>${editor-platform-extension.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
         </dependency>
 
         <!-- JAXB -->
@@ -142,11 +129,36 @@
             <artifactId>com.springsource.javax.xml.bind</artifactId>
             <version>${jaxb-api.version}</version>
         </dependency>
+
+        <!-- Embedded non-OSGI dependencies -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+            <version>0.9.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- TODO why is this needed and not embedded? -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
             <version>${jaxb2-basics-runtime.version}</version>
+            <scope>provided</scope>
         </dependency>
+
 
         <!-- Tests -->
         <dependency>

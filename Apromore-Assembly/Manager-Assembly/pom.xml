@@ -46,177 +46,26 @@
     </scm>
 
     <dependencies>
+
+        <!-- Manager Web Application -->
         <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-petri-osgi</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
         </dependency>
+        <!--
+            Extra Dependencies on just the 'classes' of the Manager to pull in transitive dependencies.
+            The JAR itself needs to be excluded manually.
+        -->
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.pql</groupId>
-            <artifactId>pql-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <version>1.3</version>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
         </dependency>
 
-        <!-- BPMNMiner -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>apacheutils-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>basicutils-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>bpmnminer-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>fodina-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>lpsolve-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>ilpminer-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>prom5-osgi</artifactId>-->
-            <!--<version>5.0</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <version>6.0</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.thoughtworks.xstream</groupId>-->
-            <!--<artifactId>xstream</artifactId>-->
-            <!--<version>1.4.8</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.google.guava</groupId>-->
-            <!--<artifactId>guava</artifactId>-->
-            <!--<version>14.0.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.ow2.orchestra</groupId>-->
-            <!--<artifactId>orchestra-axis-osgi</artifactId>-->
-            <!--<version>4.3.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.collections-generic</artifactId>-->
-            <!--<version>4.01_1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-compress</artifactId>-->
-            <!--<version>1.9</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-math3</artifactId>-->
-            <!--<version>3.4.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.jcommon</artifactId>-->
-            <!--<version>1.0.16_1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.jdom</artifactId>-->
-            <!--<version>1.1.2_1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>-->
-            <!--<version>1.0.12_1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.jung-api</artifactId>-->
-            <!--<version>2.0.1_2</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.jung-graph-impl</artifactId>-->
-            <!--<version>2.0.1_2</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.ant</artifactId>-->
-            <!--<version>1.9.4_1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.commons-beanutils</artifactId>-->
-            <!--<version>1.8.3_2</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-logging</groupId>-->
-                    <!--<artifactId>commons-logging</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>log4j</groupId>-->
-                    <!--<artifactId>log4j</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.processmining</groupId>-->
-            <!--<artifactId>commons-cli</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.commons-collections</artifactId>-->
-            <!--<version>3.2.1_3</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.commons-digester</artifactId>-->
-            <!--<version>1.8_4</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-logging</groupId>-->
-                    <!--<artifactId>commons-logging</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>log4j</groupId>-->
-                    <!--<artifactId>log4j</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.servicemix.bundles</groupId>-->
-            <!--<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>-->
-            <!--<version>1.4_3</version>-->
-        <!--</dependency>-->
-
-        <!-- Schema Bundles -->
+        <!-- Schema's, these are independant of the Manager, but needed by our plan -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
@@ -264,38 +113,7 @@
         </dependency>
 
 
-        <!-- Plugin API/Provider Bundles -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>canoniser-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>annotation-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>deployment-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>search-api</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
+        <!-- Plugin Provider, these are independent of the Apromore Manager, but needed by our plan -->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>plugin-api-provider</artifactId>
@@ -316,18 +134,11 @@
             <artifactId>deployment-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>search-api-provider</artifactId>-->
-            <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>metric-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- *** Plugin Implementation Bundles *** -->
 
         <!-- MYSQL,Postgres and Oracle Bundles -->
         <dependency>
@@ -341,168 +152,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Common Bundles -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-graph</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Manager Bundles -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>manager-security</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-
-        <!-- Required for the web bundle as dependancies are not propagated up from war build types -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.javassist</groupId>
-            <artifactId>com.springsource.javassist</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-deco</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.quartz-scheduler</groupId>-->
-            <!--<artifactId>quartz</artifactId>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>com.springsource.org.aspectj.runtime</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>com.springsource.org.aspectj.weaver</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.cglib</groupId>
-            <artifactId>com.springsource.net.sf.cglib</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.joda</groupId>
-            <artifactId>com.springsource.org.joda.time</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.ws</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.ws.support</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>org.springframework.xml</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.xmlschema</groupId>
-            <artifactId>xmlschema-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.wsdl</groupId>
-            <artifactId>com.springsource.javax.wsdl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>com.springsource.javax.inject</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>org.springframework.security.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>org.springframework.security.config</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>org.springframework.security.web</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>org.springframework.security.remoting</artifactId>
-            <scope>provided</scope>
+            <artifactId>build-tools</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
@@ -514,24 +167,66 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${deploy.dir}/usr</outputDirectory>
                             <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeScope>compile</includeScope>
                             <excludeTransitive>false</excludeTransitive>
+                            <!-- Those artifacts are OSGI bundles already in Virgo -->
                             <excludeArtifactIds>
-                                org.junit,org.apromore,com.springsource.org.aopalliance,fluent-hc,httpclient,httpcore,jcl-over-slf4j,logback-core,
-                                jaxb2-basics-runtime,org.eclipse.gemini.blueprint.extender,org.eclipse.gemini.blueprint.io,logback-classic
-                                org.eclipse.gemini.blueprint.core,org.eclipse.osgi,org.eclipse.osgi.services,slf4j-api,org.springframework.aop,
-                                org.springframework.asm,org.springframework.beans,org.springframework.context,org.springframework.core,
-                                org.springframework.expression,org.springframework.jdbc,org.springframework.jms,org.springframework.orm,
-                                org.springframework.oxm,org.springframework.transaction,org.springframework.web,org.springframework.web.servlet,
-                                org.springframework.aspects,org.springframework.context.support,commons-httpclient,javax.persistence,
-                                com.springsource.javax.xml.bind
+                                logback-core,logback-classic,
+                                javax.persistence,
+                                com.springsource.javax.xml.bind,
+                                org.springframework.asm,
+                                org.springframework.aop,
+                                org.springframework.core,
+                                org.springframework.aspects,
+                                org.springframework.beans,
+                                org.springframework.context,
+                                org.springframework.context.support,
+                                org.springframework.expression,
+                                org.springframework.jdbc,
+                                org.springframework.jms,
+                                org.springframework.orm,
+                                org.springframework.oxm,
+                                org.springframework.transaction,
+                                org.springframework.web,
+                                org.springframework.web.servlet
                             </excludeArtifactIds>
+                            <!-- Spring and Gemini are already bundled with Virgo -->
+                            <excludeGroupIds>
+                                org.springframework.security,
+                                org.eclipse.gemini,
+                                org.eclipse.osgi,
+                                javax.servlet
+                            </excludeGroupIds>
+                            <!-- Exclude the manager-classes.jar which is only used to pull in transitive dependencies -->
+                            <excludeClassifiers>
+                                classes
+                            </excludeClassifiers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.apromore.osgihelper.RemoveNonOSGIJars</mainClass>
+                            <arguments>
+                                <argument>${deploy.dir}/usr</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
