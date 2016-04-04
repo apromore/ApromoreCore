@@ -113,7 +113,7 @@
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Web application bundles -->
-        <module>Apromore-Editor2</module>
+        <module>Apromore-Editor</module>
         <module>Apromore-FileStore</module>
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
