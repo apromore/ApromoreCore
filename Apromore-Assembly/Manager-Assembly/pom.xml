@@ -52,15 +52,20 @@
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager-ws</artifactId>
+            <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <!--
-            Extra Dependencies on just the 'classes' of the Manager to pull in transitive dependencies.
+            Extra Dependencies on just the 'classes' of Manager-WS to pull in transitive dependencies.
             The JAR itself needs to be excluded manually.
         -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
+            <artifactId>apromore-manager-ws</artifactId>
             <version>${project.version}</version>
             <classifier>classes</classifier>
         </dependency>
@@ -156,17 +161,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>build-tools</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager-ws</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
         </dependency>
     </dependencies>
 
