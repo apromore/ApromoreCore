@@ -1,0 +1,122 @@
+<!--
+  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="win" width="300px" closable="false" position="center" title="BPMN Miner">
+    <vbox>
+        <groupbox width="285px">
+            <label value="Log File(.mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
+            <hbox align="center">
+                <button id="bpmnMinerUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"/>
+                <label id="fileName" value="File Name" width="100%"/>
+            </hbox>
+        </groupbox>
+	    <groupbox width="285px">
+            <caption label="Select Model Name"/>
+            <textbox name="Select Mining Algorithm" id="bpmnMinerModelName" width="270px" />
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="Select Mining Algorithm"/>
+            <selectbox name="Select Mining Algorithm" id="bpmnMinerMiningAlgorithm" model="${win$composer.miningAlgorithmsModel}" width="270px">
+                <template name="model">
+                    <label value="${each}" />
+                </template>
+            </selectbox>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="Select Dependency Discover Algorithm"/>
+            <radiogroup id="bpmnMinerDependencyAlgorithm">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="normal" label="Normal" selected="true"/>
+                            <radio id="noiseTolerant" label="Noise Tolerant" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="Sort Log Based on Timestamp"/>
+            <radiogroup id="bpmnMinerSort">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="sort" label="Yes" />
+                            <radio id="notSort" label="No" selected="true"/>
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+        <groupbox width="285px">
+			<caption label="Structured Process Model"/>
+			<radiogroup id="bpmnMinerStructProcess">
+				<grid>
+				    <columns>
+				        <column />
+				        <column />
+				    </columns>
+				    <rows>
+				        <row>
+				            <radio id="structured" label="Yes" />
+				            <radio id="notStructured" label="No" selected="true"/>
+				        </row>
+				    </rows>
+				</grid>
+			</radiogroup>
+		</groupbox>
+        <groupbox width="285px">
+            <caption label="InterruptingEvent Tolerance Value" />
+            <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="MultiInstance Percentage Value" />
+            <slider id="bpmnMinerMultiInstancePercentage" mold="scale" maxpos="100" width="270px"/>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="MultiInstance Tolerance Value" />
+            <slider id="bpmnMinerMultiInstanceTolerance" mold="scale" maxpos="100" curpos="50" width="270px"/>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="TimerEvent Percentage Value" />
+            <slider id="bpmnMinerTimerEventPercentage" mold="scale" maxpos="100" width="270px"/>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="TimerEvent Tolerance Value" />
+            <slider id="bpmnMinerTimerEventTolerance" mold="scale" maxpos="100" width="270px"/>
+        </groupbox>
+        <groupbox width="285px">
+            <caption label="Noise Threshold Value" />
+            <slider id="bpmnMinerNoiseThreshold" mold="scale" maxpos="100" curpos="50" width="270px"/>
+        </groupbox>
+        <div align="center">
+            <button id="bpmnMinerCancelButton" label="Cancel" image="img/cancel2.png"></button>
+            <button id="bpmnMinerOKButton" label="OK" image="img/ok.png"></button>
+        </div>
+    </vbox>
+</window>
