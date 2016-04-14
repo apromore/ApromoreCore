@@ -103,6 +103,9 @@
         <module>BPMNMiner-API</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
+        <module>ProDrift-API</module>
+        <module>ProDrift-Logic</module>
+        <module>ProDrift-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
