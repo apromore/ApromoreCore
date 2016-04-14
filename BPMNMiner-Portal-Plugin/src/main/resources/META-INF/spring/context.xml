@@ -38,6 +38,7 @@
     <reference id="domainService" interface="org.apromore.service.DomainService"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
     <reference id="userService" interface="org.apromore.service.UserService"/>
+    <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal" />

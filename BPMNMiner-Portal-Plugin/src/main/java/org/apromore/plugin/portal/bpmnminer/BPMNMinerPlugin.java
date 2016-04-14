@@ -37,6 +37,7 @@ import org.apromore.service.bpmnminer.BPMNMinerService;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.helper.UserInterfaceHelper;
 
 /**
  * A user interface to the BPMN miner service.
@@ -44,21 +45,24 @@ import org.apromore.service.ProcessService;
 @Component("plugin")
 public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
-    private final BPMNMinerService bpmnMinerService;
-    private final CanoniserService canoniserService;
-    private final DomainService    domainService;
-    private final ProcessService   processService;
+    private final BPMNMinerService    bpmnMinerService;
+    private final CanoniserService    canoniserService;
+    private final DomainService       domainService;
+    private final ProcessService      processService;
+    private final UserInterfaceHelper userInterfaceHelper;
 
     @Inject
-    public BPMNMinerPlugin(final BPMNMinerService bpmnMinerService,
-                           final CanoniserService canoniserService,
-                           final DomainService    domainService,
-                           final ProcessService   processService) {
+    public BPMNMinerPlugin(final BPMNMinerService    bpmnMinerService,
+                           final CanoniserService    canoniserService,
+                           final DomainService       domainService,
+                           final ProcessService      processService,
+                           final UserInterfaceHelper userInterfaceHelper) {
 
-        this.bpmnMinerService = bpmnMinerService;
-        this.canoniserService = canoniserService;
-        this.domainService    = domainService;
-        this.processService   = processService;
+        this.bpmnMinerService    = bpmnMinerService;
+        this.canoniserService    = canoniserService;
+        this.domainService       = domainService;
+        this.processService      = processService;
+        this.userInterfaceHelper = userInterfaceHelper;
     }
 
     @Override
@@ -71,7 +75,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
 
-        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService);
+        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, userInterfaceHelper);
     }
 
 }
