@@ -138,7 +138,8 @@
                         <Export-Package>
                             ee.ut.eventstr,
                             ee.ut.eventstr.test,
-                            ee.ut.eventstr.model
+                            ee.ut.eventstr.model,
+                            ee.ut.mining.log
                         </Export-Package>
                     </instructions>
                 </configuration>
