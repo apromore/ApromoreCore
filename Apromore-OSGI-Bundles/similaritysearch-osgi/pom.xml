@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>apromore</artifactId>
+        <groupId>org.apromore</groupId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>similaritysearch-osgi</artifactId>
+    <packaging>bundle</packaging>
+    <version>1.1</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.similaritysearch.*,
+                            org.apromore.similaritysearch.algorithms.*,
+                            org.apromore.similaritysearch.common.*,
+                            org.apromore.similaritysearch.common.algos.*,
+                            org.apromore.similaritysearch.common.prom.*,
+                            org.apromore.similaritysearch.common.similarity.*,
+                            org.apromore.similaritysearch.common.stemmer.*,
+                            org.apromore.similaritysearch.common.stemmer.ext.*,
+                            org.apromore.similaritysearch.digest.*,
+                            org.apromore.similaritysearch.graph.*,
+                            org.apromore.similaritysearch.digest.*,
+                            org.apromore.similaritysearch.planarGraphMathing.*,
+                            org.apromore.similaritysearch.tools.*,
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-graph</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>
