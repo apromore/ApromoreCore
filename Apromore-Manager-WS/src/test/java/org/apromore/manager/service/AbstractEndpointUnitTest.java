@@ -42,8 +42,6 @@ public abstract class AbstractEndpointUnitTest {
     protected FormatService frmSrv;
     protected DomainService domSrv;
     protected UserService userSrv;
-    protected SimilarityService simSrv;
-    protected MergeService merSrv;
     protected SecurityService secSrv;
     protected WorkspaceService wrkSrv;
     protected UserInterfaceHelper uiHelper;
@@ -65,8 +63,6 @@ public abstract class AbstractEndpointUnitTest {
         frmSrv = createMock(FormatServiceImpl.class);
         domSrv = createMock(DomainServiceImpl.class);
         userSrv = createMock(UserServiceImpl.class);
-        simSrv = createMock(SimilarityServiceImpl.class);
-        merSrv = createMock(MergeServiceImpl.class);
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
@@ -78,7 +74,7 @@ public abstract class AbstractEndpointUnitTest {
         measurementsServ = createMock(MeasurementsServiceImpl.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, simSrv, merSrv, secSrv, wrkSrv, uiHelper,
+                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper,
                 pqlSrv, dbSrv, bpmnMinerSrv, proDriftSrv, structuringServ, measurementsServ);
     }
 }

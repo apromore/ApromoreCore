@@ -25,14 +25,10 @@ import java.io.IOException;
 import java.util.*;
 
 // Third party packages
-import org.apromore.portal.custom.gui.PortalTab;
-import org.apromore.portal.custom.gui.impl.PortalTabImpl;
-import org.apromore.portal.custom.gui.impl.RowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.spring.SpringUtil;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -50,7 +46,6 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.Level;
 import org.apromore.plugin.portal.PortalContext;
 
 

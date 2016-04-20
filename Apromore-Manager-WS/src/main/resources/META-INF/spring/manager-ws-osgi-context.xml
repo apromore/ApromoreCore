@@ -54,8 +54,8 @@
     <osgi:reference id="formatServiceImpl" interface="org.apromore.service.FormatService"/>
     <osgi:reference id="domainServiceImpl" interface="org.apromore.service.DomainService"/>
     <osgi:reference id="userServiceImpl" interface="org.apromore.service.UserService"/>
-    <osgi:reference id="similarityServiceImpl" interface="org.apromore.service.SimilarityService"/>
-    <osgi:reference id="mergeServiceImpl" interface="org.apromore.service.MergeService"/>
+    <!--<osgi:reference id="similarityServiceImpl" interface="org.apromore.service.SimilarityService"/>-->
+    <!--<osgi:reference id="mergeServiceImpl" interface="org.apromore.service.MergeService"/>-->
     <osgi:reference id="securityServiceImpl" interface="org.apromore.service.SecurityService"/>
     <osgi:reference id="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService"/>
     <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>

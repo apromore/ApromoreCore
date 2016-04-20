@@ -99,6 +99,9 @@
         <!-- ZK Osgi -->
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
 
+        <!-- Similarity Search -->
+        <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
+
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>IBPStruct-API</module>
@@ -166,6 +169,7 @@
         <filestore-client.version>1.0</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
+        <apromore.plugin.custom.gui.version>1.1.0</apromore.plugin.custom.gui.version>
         <apromore.canoniser.plugin.version>1.1</apromore.canoniser.plugin.version>
         <apromore.annotation.plugin.version>1.1</apromore.annotation.plugin.version>
         <apromore.metric.plugin.version>1.1</apromore.metric.plugin.version>
@@ -583,7 +587,7 @@
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
                 <artifactId>portal-custom-gui</artifactId>
-                <version>${apromore.plugin.version}</version>
+                <version>${apromore.plugin.custom.gui.version}</version>
             </dependency>
 
             <!-- Editor Plugin API -->
