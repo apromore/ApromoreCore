@@ -40,11 +40,13 @@ import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.processmining.plugins.bpmn.BpmnAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 
 /**
  * Created by Adriano on 29/10/2015.
  */
+@Service
 public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMNDiagramImporterImpl.class);
 
