@@ -111,12 +111,16 @@
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>
 
+        <!-- Logic Plugins -->
+        <module>plugin-logic/similaritysearch-logic</module>
+
         <!-- Portal Plugins -->
         <module>plugin-portal/merge</module>
         <module>plugin-portal/sample</module>
+        <module>plugin-portal/similaritysearch-portal</module>
 
         <!-- Portal Plugin Templates -->
-        <module>plugins/portal-custom-gui</module>
+        <module>plugin-templates/portal-custom-gui</module>
 
 		<!-- Editor Plugins -->
         <module>plugin-editor/sample</module>

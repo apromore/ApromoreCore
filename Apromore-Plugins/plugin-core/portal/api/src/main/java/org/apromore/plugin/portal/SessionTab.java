@@ -47,11 +47,7 @@ public class SessionTab {
         return sessionTab;
     }
 
-    public void setTabsSession(String id, LinkedList<Tab> tabs) {
-        mapTabs.put(id, tabs);
-    }
-
-    public List<Tab> getTabsSession(String id) {
+    private List<Tab> getTabs(String id) {
         LinkedList<Tab> tabs;
         if((tabs = mapTabs.get(id)) == null) {
             tabs = new LinkedList<>();
@@ -60,18 +56,20 @@ public class SessionTab {
         return tabs;
     }
 
+    public List<Tab> getTabsSession(String id) {
+        LinkedList<Tab> copyTabs = new LinkedList<>();
+        List<Tab> tabs = getTabs(id);
+        copyTabs.addAll(tabs);
+        return tabs;
+    }
+
     public void addTabToSession(String id, Tab tab) {
-//        LinkedList<Tab> tabs;
-//        if((tabs = mapTabs.get(id)) == null) {
-//            tabs = new LinkedList<>();
-//            mapTabs.put(id, tabs);
-//        }
-        getTabsSession(id).add(tab);
+        getTabs(id).add(tab);
         portalContext.refreshContent();
     }
 
     public void removeTabFromSession(String id, Tab tab) {
-        getTabsSession(id).remove(tab);
+        getTabs(id).remove(tab);
         portalContext.refreshContent();
     }
 

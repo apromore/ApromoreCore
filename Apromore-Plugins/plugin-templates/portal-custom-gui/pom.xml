@@ -22,20 +22,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore.plugin</groupId>
         <artifactId>plugin</artifactId>
         <version>1.1</version>
         <relativePath>../../</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.apromore.plugin</groupId>
+    <artifactId>portal-custom-gui</artifactId>
     <packaging>bundle</packaging>
-    <!-- Unique name of the plug-in -->
-    <artifactId>sample-portal-plugin</artifactId>
-    <name>Example portal plugin</name>
-    <description>Some description</description>
+    <version>1.1.0</version>
 
     <build>
         <plugins>
@@ -45,14 +43,10 @@
                 <configuration>
                     <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
-                        <Import-Bundle>
-                            org.apromore.plugin.portal-custom-gui;version="[1.1.0,2.0)"
-                        </Import-Bundle>
+                        <Bundle-ClassPath>.,resources,img</Bundle-ClassPath>
                         <Import-Package>
+                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
-                            org.apromore.portal.custom.gui,
-                            org.apromore.portal.custom.gui.tab,
-                            org.apromore.portal.custom.gui.tab.impl,
                             *
                         </Import-Package>
                         <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
@@ -62,26 +56,22 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Directory>lib</Embed-Directory>
                         -->
+                        <Export-Package>
+                            org.apromore.portal.custom.gui,
+                            org.apromore.portal.custom.gui.plugin,
+                            org.apromore.portal.custom.gui.tab,
+                            org.apromore.portal.custom.gui.tab.impl
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
-
     <dependencies>
-        <!-- Mandatory dependencies on the plugin and portal plugin APIs -->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-api</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-custom-gui</artifactId>
         </dependency>
     </dependencies>
 

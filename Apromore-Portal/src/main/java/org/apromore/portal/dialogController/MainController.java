@@ -30,7 +30,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.custom.gui.PortalTab;
+import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -801,23 +801,23 @@ public class MainController extends BaseController {
 
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
 
-//        LinkedList<Tab> tabs = SessionTab.getSessionTab().getTabsSession(userId);
-//        if(tabs.isEmpty()) {
-//            for(Component component : tabbox.getTabs().getChildren()) {
-//                Tab tab = (Tab) component;
-//                if(tab.isClosable()) {
-//                    SessionTab.getSessionTab().addTabToSession(userId, tab);
-//                }
-//            }
-//        }else if(!tabs.isEmpty()){
-            for(Tab tab : SessionTab.getSessionTab(portalContext).getTabsSession(userId)) {
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
+        if(tabs.isEmpty()) {
+            for(Component component : tabbox.getTabs().getChildren()) {
+                Tab tab = (Tab) component;
+                if(tab.isClosable()) {
+                    SessionTab.getSessionTab(portalContext).addTabToSession(userId, tab);
+                }
+            }
+        }else {
+            for(Tab tab : tabs) {
                 if(tab instanceof PortalTab && ((PortalTab) tab).isNew()){
                     ((PortalTab) tab).setNew(false);
                     tabbox.getTabs().appendChild(tab);
                     ((PortalTab) tab).getTabpanel().setParent(tabbox.getTabpanels());
                 }
             }
-//        }
+        }
     }
 
 }

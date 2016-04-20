@@ -23,7 +23,8 @@ package org.apromore.portal.common;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.custom.gui.AbstractPortalTab;
+import org.apromore.plugin.portal.SessionTab;
+import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.dialogController.DetailsTabController;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.event.Event;
@@ -36,7 +37,7 @@ import java.util.List;
 /**
  * Created by corno on 17/07/2014.
  */
-public class TabQuery<T extends Comparable<T>> extends AbstractPortalTab<T> implements Comparable<TabQuery>{
+public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
 
     private Listbox listBox;
     private static int progressID=1;
@@ -54,7 +55,7 @@ public class TabQuery<T extends Comparable<T>> extends AbstractPortalTab<T> impl
     private String query;
 
     public TabQuery(String label, String userID, final List<Detail> details, final String query, PortalContext portalContext){
-        super(userID, label, portalContext);
+        super(label, userID, portalContext);
         if(label.equals("") || label==null){
             setLabel("Query "+progressID);
             progressID++;
@@ -73,6 +74,8 @@ public class TabQuery<T extends Comparable<T>> extends AbstractPortalTab<T> impl
                 new DetailsTabController(MainController.getController(), details, query);
             }
         });
+
+        SessionTab.getSessionTab(portalContext).addTabToSession(userID, this);
     }
 
     public int getProgressID(){
