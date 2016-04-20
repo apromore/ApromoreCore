@@ -809,8 +809,8 @@ public class MainController extends BaseController {
                     SessionTab.getSessionTab(portalContext).addTabToSession(userId, tab);
                 }
             }
-        }else if(!tabs.isEmpty()){
-            for(Tab tab : SessionTab.getSessionTab(portalContext).getTabsSession(userId)) {
+        }else {
+            for(Tab tab : tabs) {
                 if(tab instanceof PortalTab && ((PortalTab) tab).isNew()){
                     ((PortalTab) tab).setNew(false);
                     tabbox.getTabs().appendChild(tab);
