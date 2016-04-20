@@ -87,6 +87,7 @@
         <module>Apromore-OSGI-Bundles/jbpt-petri</module>
         <module>Apromore-OSGI-Bundles/pql</module>
         <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
+        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>
@@ -100,6 +101,9 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>IBPStruct-API</module>
+        <module>IBPStruct-Logic</module>
+        <module>IBPStruct-Portal-Plugin</module>
         <module>BPMNMiner-API</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
