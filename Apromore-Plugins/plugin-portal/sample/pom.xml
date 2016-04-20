@@ -49,7 +49,8 @@
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
                             org.apromore.portal.custom.gui,
-                            org.apromore.portal.custom.gui.impl,
+                            org.apromore.portal.custom.gui.tab,
+                            org.apromore.portal.custom.gui.tab.impl,
                             *
                         </Import-Package>
                         <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
