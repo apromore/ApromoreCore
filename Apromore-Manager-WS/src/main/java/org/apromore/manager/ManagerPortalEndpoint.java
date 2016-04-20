@@ -48,7 +48,6 @@ import org.apromore.service.model.*;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -69,8 +68,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * The WebService Endpoint Used by the Portal.
@@ -95,8 +92,6 @@ public class ManagerPortalEndpoint {
     private FormatService frmSrv;
     private DomainService domSrv;
     private UserService userSrv;
-    private SimilarityService simSrv;
-    private MergeService merSrv;
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private ProDriftDetectionService proDriftSrv;
@@ -124,8 +119,6 @@ public class ManagerPortalEndpoint {
      * @param frmSrv Format Service.
      * @param domSrv domain Service.
      * @param userSrv User Service.
-     * @param simSrv Similarity Service.
-     * @param merSrv Merge Service.
      * @param secSrv security Service.
      * @param wrkSrv workspace service.
      * @param proDriftSrv Process Drift Detection Service.
@@ -135,7 +128,7 @@ public class ManagerPortalEndpoint {
     public ManagerPortalEndpoint(final DeploymentService deploymentService, final PluginService pluginService,
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
-            final UserService userSrv, final SimilarityService simSrv, final MergeService merSrv,
+            final UserService userSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
             final PQLService pqlService,  final DatabaseService dbService, final BPMNMinerService bpmnMinerService,
 			final ProDriftDetectionService proDriftSrv, final StructuringService structuringService,
@@ -150,8 +143,6 @@ public class ManagerPortalEndpoint {
         this.frmSrv = frmSrv;
         this.domSrv = domSrv;
         this.userSrv = userSrv;
-        this.simSrv = simSrv;
-        this.merSrv = merSrv;
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.proDriftSrv = proDriftSrv;
@@ -199,97 +190,6 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createEditProcessDataResponse(res);
-    }
-
-    @PayloadRoot(localPart = "MergeProcessesRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<MergeProcessesOutputMsgType> mergeProcesses(@RequestPayload final JAXBElement<MergeProcessesInputMsgType> req) {
-        LOGGER.trace("Executing operation mergeProcesses");
-        MergeProcessesInputMsgType payload = req.getValue();
-        MergeProcessesOutputMsgType res = new MergeProcessesOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            // Build data to send to toolbox
-            String algo = payload.getAlgorithm();
-            String processName = payload.getProcessName();
-            String version = payload.getVersionName();
-            String domain = payload.getDomain();
-            Integer folderId = payload.getFolderId();
-            String username = payload.getUsername();
-            boolean makePublic = payload.isMakePublic();
-            ParametersType parameters = new ParametersType();
-            for (ParameterType p : payload.getParameters().getParameter()) {
-                ParameterType param = new ParameterType();
-                param.setName(p.getName());
-                param.setValue(p.getValue());
-                parameters.getParameter().add(param);
-            }
-            // processes
-            ProcessVersionIdsType ids = new ProcessVersionIdsType();
-            for (ProcessVersionIdType t : payload.getProcessVersionIds().getProcessVersionId()) {
-                ProcessVersionIdType id = new ProcessVersionIdType();
-                id.setProcessId(t.getProcessId());
-                id.setBranchName(t.getBranchName());
-                id.setVersionNumber(t.getVersionNumber());
-                ids.getProcessVersionId().add(id);
-            }
-            ProcessModelVersion pmv = merSrv.mergeProcesses(processName, version, domain, username, algo, folderId, parameters, ids, makePublic);
-            ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
-                    "", domain, pmv.getCreateDate(), pmv.getLastUpdateDate(), username, makePublic);
-
-            res.setProcessSummary(process);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createMergeProcessesResponse(res);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.manager.service_portal1.ManagerPortalPortType#searchForSimilarProcesses(SearchForSimilarProcessesInputMsgType payload )*
-     */
-    @PayloadRoot(localPart = "SearchForSimilarProcessesRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<SearchForSimilarProcessesOutputMsgType> searchForSimilarProcesses(
-            @RequestPayload final JAXBElement<SearchForSimilarProcessesInputMsgType> req) {
-        LOGGER.trace("Executing operation searchForSimilarProcesses");
-        SearchForSimilarProcessesInputMsgType payload = req.getValue();
-        SearchForSimilarProcessesOutputMsgType res = new SearchForSimilarProcessesOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            String algo = payload.getAlgorithm();
-            Integer processId = payload.getProcessId();
-            String versionName = payload.getVersionName();
-            Boolean latestVersions = payload.isLatestVersions();
-            Integer folderId = payload.getFolderId();
-            String userId = payload.getUserId();
-            ParametersType paramsT = new ParametersType();
-            for (ParameterType p : payload.getParameters().getParameter()) {
-                ParameterType paramT = new ParameterType();
-                paramsT.getParameter().add(paramT);
-                paramT.setName(p.getName());
-                paramT.setValue(p.getValue());
-            }
-
-            ProcessSummariesType processes = simSrv.SearchForSimilarProcesses(processId, versionName, latestVersions, folderId, userId,
-                    algo, paramsT);
-
-            res.setProcessSummaries(processes);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return WS_OBJECT_FACTORY.createSearchForSimilarProcessesResponse(res);
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "GetAllClustersRequest")

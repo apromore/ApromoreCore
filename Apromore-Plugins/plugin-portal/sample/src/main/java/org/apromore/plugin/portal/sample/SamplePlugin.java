@@ -20,12 +20,13 @@
 
 package org.apromore.plugin.portal.sample;
 
-import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.Level;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.custom.gui.PortalTab;
-import org.apromore.portal.custom.gui.impl.PortalTabImpl;
-import org.apromore.portal.custom.gui.impl.RowValue;
+import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
+import org.apromore.portal.custom.gui.tab.PortalTab;
+import org.apromore.portal.custom.gui.tab.TabItemExecutor;
+import org.apromore.portal.custom.gui.tab.impl.TabHeader;
+import org.apromore.portal.custom.gui.tab.impl.TabItem;
+import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Window;
 
@@ -38,7 +39,7 @@ import java.util.Locale;
  * An example Portal Plugin, which display an Hello World dialog
  */
 @Component("plugin")
-public class SamplePlugin extends DefaultPortalPlugin {
+public class SamplePlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
@@ -49,20 +50,13 @@ public class SamplePlugin extends DefaultPortalPlugin {
     public void execute(PortalContext context) {
         // Show a message on the portal
 
-        List<RowValue> rows = new ArrayList<>();
-        RowValue rowValue1 = new RowValue();
-        rowValue1.add("A");
+        List<TabRowValue> rows = new ArrayList<>();
+        rows.add(createTabRowValue("A"));
+        rows.add(createTabRowValue("B"));
 
-        RowValue rowValue2 = new RowValue();
-        rowValue1.add("B");
+        TabHeader tabHeader = createTabHeader("Name");
 
-        rows.add(rowValue1);
-        rows.add(rowValue2);
-
-        List<String> labels = new ArrayList<>();
-        labels.add("Name");
-
-        PortalTab<String> portalTab = new PortalTabImpl<String>(rows, labels, null, context.getCurrentUser().getId(), "new tab", context);
+        addTab("new tab", "", rows, tabHeader, null, context);
 
         context.getMessageHandler().displayInfo("Executed example plug-in!");
         try {

@@ -134,17 +134,17 @@ public class ProcessListboxController extends BaseListboxController {
     }
 
     public ProcessSummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean isQueryResult) {
-	this.columnScore.setVisible(isQueryResult);
+        this.columnScore.setVisible(isQueryResult);
 
-	getListBox().clearSelection();
-	ProcessSummaryListModel model = new ProcessSummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
-	getListBox().setModel(model);
+        getListBox().clearSelection();
+        ProcessSummaryListModel model = new ProcessSummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+        getListBox().setModel(model);
 
-        if (isQueryResult && getListBox().getItemCount() > 0) {
-            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-        }
+            if (isQueryResult && getListBox().getItemCount() > 0) {
+                getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+            }
 
-	return model;
+        return model;
     }
 
     /**
