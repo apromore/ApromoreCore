@@ -31,9 +31,9 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <artifactId>ibpstruct-logic</artifactId>
+    <artifactId>metrics-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>iBPSruct service</name>
+    <name>Metrics service</name>
 
     <build>
         <plugins>
@@ -47,11 +47,11 @@
                     <instructions>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            au.edu.qut.structuring,
+                            au.edu.qut.metrics,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.ibpstruct.impl
+                            org.apromore.service.metrics.impl
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -62,7 +62,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>ibpstruct-api</artifactId>
+            <artifactId>metrics-api</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>
