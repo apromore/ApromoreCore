@@ -50,11 +50,13 @@
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.bpmntk-osgi</Bundle-SymbolicName>
                         <Import-Package>
+                            !junit.framework.*,
+                            !org.junit.*,
                             *
                         </Import-Package>
                         <Export-Package>
-                            au.edu.qut.structuring.StructuringService,
-                            au.edu.qut.metrics.Complexity
+                            au.edu.qut.structuring,
+                            au.edu.qut.metrics
                         </Export-Package>
                     </instructions>
                 </configuration>
