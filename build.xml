@@ -192,6 +192,7 @@
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/bpmntk-osgi-1.0.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
             </fileset>
         </copy>
