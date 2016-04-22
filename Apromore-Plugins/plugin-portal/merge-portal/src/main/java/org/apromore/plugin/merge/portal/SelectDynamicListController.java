@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.merge;
+package org.apromore.plugin.merge.portal;
 
 import java.util.ArrayList;
 import java.util.Iterator;

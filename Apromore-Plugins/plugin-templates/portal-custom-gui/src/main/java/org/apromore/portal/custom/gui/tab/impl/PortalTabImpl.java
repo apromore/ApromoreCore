@@ -21,7 +21,6 @@
 package org.apromore.portal.custom.gui.tab.impl;
 
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.SessionTab;
 import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.zkoss.zul.*;

@@ -33,7 +33,7 @@
 
     <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
-    <artifactId>merge-portal-plugin</artifactId>
+    <artifactId>merge-portal</artifactId>
     <name>Merge portal plugin</name>
     <description>Some description</description>
 
@@ -45,11 +45,6 @@
                 <configuration>
                     <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
-                        <Import-Bundle>
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
-                        </Import-Bundle>
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
@@ -83,11 +78,8 @@
         <!-- Dependency allowing access to manager services -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-custom-gui</artifactId>
+            <artifactId>merge-logic</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 
