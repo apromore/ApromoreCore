@@ -18,42 +18,41 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.merge;
+package org.apromore.plugin.merge.portal;
 
 // Java packages
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
 // Third party packages
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.model.*;
+import org.apromore.plugin.merge.logic.MergeService;
+import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Doublebox;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 
-// Local packages
-import org.apromore.manager.client.ManagerService;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.PortalContext;
+import javax.inject.Inject;
 
-
-@Component("plugin")
+@Component
 public class MergePlugin extends DefaultPortalPlugin {
 
+    @Inject
+    private MergeService mergeService;
+    @Inject
+    private DomainService domainService;
+
+    private final String GREEDY_ALGORITHM = "Greedy";
+
     public static final String INITIAL_VERSION = "1.0";
-    public static final String MANAGER_SERVICE = "managerClient";
     private static final Logger LOGGER = LoggerFactory.getLogger(MergePlugin.class.getCanonicalName());
 
     private PortalContext context;
@@ -102,7 +101,13 @@ public class MergePlugin extends DefaultPortalPlugin {
 
         } catch (Exception e) {
             LOGGER.info("Unable to perform merge", e);
-            context.getMessageHandler().displayError("Unable to perform merge", e);
+            StringBuilder sb = new StringBuilder();
+            e.printStackTrace();
+            for(StackTraceElement element : e.getStackTrace()) {
+                sb.append(element.toString() + "\n");
+            }
+            String message = "Search failed (" + sb.toString() + ")";
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -126,9 +131,7 @@ public class MergePlugin extends DefaultPortalPlugin {
 
         Row mergeDomainR = (Row) this.processMergeW.getFellow("mergeddomainR");
 
-        ManagerService manager = (ManagerService) SpringUtil.getBean(MANAGER_SERVICE);
-        LOGGER.info(MANAGER_SERVICE + " Spring bean from SpringUtil  bound to " + manager);
-        List<String> domains = manager.readDomains().getDomain();
+        List<String> domains = domainService.findAllDomains();
         this.domainCB = new SelectDynamicListController(domains);
         this.domainCB.setReference(domains);
         this.domainCB.setAutodrop(true);
@@ -212,23 +215,32 @@ public class MergePlugin extends DefaultPortalPlugin {
                     folderId = context.getCurrentFolder().getId();
                 }
 
-                ManagerService manager = (ManagerService) SpringUtil.getBean(MANAGER_SERVICE);
-                LOGGER.info("Manager " + manager);
-                if (manager == null) {
-                    throw new RuntimeException("Unable to get Spring bean \"" + MANAGER_SERVICE + "\"");
-                }
-                ProcessSummaryType result = manager.mergeProcesses(selectedProcessVersions, this.processNameT.getValue(),
-                        this.versionNameT.getValue(), this.domainCB.getValue(), context.getCurrentUser().getUsername(), folderId,
-                        this.makePublic.isChecked(), this.algosLB.getSelectedItem().getLabel(), this.removeEnt.isChecked(),
+                ParametersType parametersType = setParams(
+                        this.algosLB.getSelectedItem().getLabel(),
+                        this.removeEnt.isChecked(),
                         ((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.skipnweight.getFirstChild().getNextSibling()).getValue(),
                         ((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
-                        ((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
+                        ((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue()
+                );
+
+                ProcessVersionIdsType processVersionIdsType = setProcessModels(selectedProcessVersions);
+
+                ProcessSummaryType result = mergeService.mergeProcesses(this.processNameT.getValue(),
+                        this.versionNameT.getValue(), this.domainCB.getValue(), context.getCurrentUser().getUsername(),
+                        this.algosLB.getSelectedItem().getLabel(), folderId, parametersType,
+                        processVersionIdsType,
+                        this.makePublic.isChecked());
+
+
 
                 message = "Merge built one process.";
+
                 context.displayNewProcess(result);
+                context.refreshContent();
+
             } catch (Exception e) {
                 message = "Merge failed (" + e.getMessage() + ")";
             }
@@ -236,6 +248,49 @@ public class MergePlugin extends DefaultPortalPlugin {
             context.getMessageHandler().displayInfo(message);
             this.processMergeW.detach();
         }
+    }
+
+    private static ProcessVersionIdsType setProcessModels(Map<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions) {
+        ProcessVersionIdType id;
+        ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
+
+        for (Map.Entry<ProcessSummaryType, List<VersionSummaryType>> i : selectedProcessVersions.entrySet()) {
+            for (VersionSummaryType v : i.getKey().getVersionSummaries()) {
+                id = new ProcessVersionIdType();
+                id.setProcessId(i.getKey().getId());
+                id.setBranchName(v.getName());
+                id.setVersionNumber(v.getVersionNumber());
+                modelIdList.getProcessVersionId().add(id);
+            }
+        }
+
+        return modelIdList;
+    }
+
+    private ParametersType setParams(String method, boolean removeEntanglements, double mergeThreshold, double labelThreshold,
+                                     double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight) {
+        ParametersType params = new ParametersType();
+
+        params.getParameter().add(addParam("removeent", removeEntanglements ? 1 : 0));
+        params.getParameter().add(addParam("modelthreshold", mergeThreshold));
+        params.getParameter().add(addParam("labelthreshold", labelThreshold));
+        params.getParameter().add(addParam("contextthreshold", contextThreshold));
+
+        if (GREEDY_ALGORITHM.equals(method)) {
+            params.getParameter().add(addParam("skipnweight", skipnWeight));
+            params.getParameter().add(addParam("subnweight", subnWeight));
+            params.getParameter().add(addParam("skipeweight", skipeWeight));
+        }
+
+        return params;
+    }
+
+    /* Used to create a parameter object. */
+    private ParameterType addParam(String name, double value) {
+        ParameterType p = new ParameterType();
+        p.setName(name);
+        p.setValue(value);
+        return p;
     }
 
     protected void updateActions() {

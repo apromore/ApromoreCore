@@ -21,13 +21,9 @@
 package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.model.*;
-import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.portal.common.Constants;
+import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
-import org.apromore.portal.custom.gui.tab.impl.ProcessSummaryRowValue;
-import org.apromore.portal.custom.gui.tab.impl.TabHeader;
-import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.portal.dialogController.FolderTreeController;
 import org.apromore.portal.exception.DialogException;
 import org.springframework.stereotype.Component;
@@ -179,6 +175,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                     ((Doublebox) this.skipnweight.getFirstChild().getNextSibling()).getValue(),
                     ((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
                     ((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
+
             ProcessSummariesType result = similarityService.searchForSimilarProcesses(
                     process.getId(), version.getName(),
                     latestVersions, folderId, context.getCurrentUser().getId(),

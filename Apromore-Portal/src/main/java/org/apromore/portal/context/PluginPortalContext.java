@@ -25,8 +25,8 @@ import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.plugin.portal.*;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -62,7 +62,7 @@ public class PluginPortalContext implements PortalContext {
 
         @Override
         public void displayInfo(String message) {
-            displayMessage(org.apromore.plugin.portal.Level.INFO, message);
+            displayMessage(Level.INFO, message);
         }
 
         @Override
@@ -71,7 +71,7 @@ public class PluginPortalContext implements PortalContext {
         }
 
         @Override
-        public void displayMessage(org.apromore.plugin.portal.Level level, String message) {
+        public void displayMessage(Level level, String message) {
             //TODO implement different colors for different message levels
             mainController.displayMessage(message);
         }

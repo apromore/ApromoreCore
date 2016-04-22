@@ -320,7 +320,7 @@
         <!-- Config locations -->
         <checkstyle.ruleset.location>checkstyle.xml</checkstyle.ruleset.location>
         <pmd.ruleset.location>http://apromore.googlecode.com/svn/trunk/Extras/Build-Tools/src/main/resources/pmd.xml</pmd.ruleset.location>
-        <surefire.jvm.args>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</surefire.jvm.args>
+        <surefire.jvm.args>-Xms512m -Xmx4048m -XX:MaxPermSize=1024m</surefire.jvm.args>
 
         <!-- Testing Settings -->
         <integration.test.package>itest</integration.test.package>

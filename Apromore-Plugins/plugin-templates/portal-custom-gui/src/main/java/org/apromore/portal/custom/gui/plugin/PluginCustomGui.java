@@ -1,6 +1,5 @@
 package org.apromore.portal.custom.gui.plugin;
 
-import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummariesType;
@@ -9,24 +8,15 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
-import org.apromore.plugin.provider.PluginProviderHelper;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.*;
-import org.zkoss.image.Image;
-import org.zkoss.image.Images;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;
 
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderedImageFactory;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.UUID;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 25/03/2016.
