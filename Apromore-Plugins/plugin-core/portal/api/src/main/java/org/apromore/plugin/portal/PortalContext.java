@@ -20,12 +20,6 @@
 
 package org.apromore.plugin.portal;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
-
-import org.zkoss.zk.ui.Component;
-
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;

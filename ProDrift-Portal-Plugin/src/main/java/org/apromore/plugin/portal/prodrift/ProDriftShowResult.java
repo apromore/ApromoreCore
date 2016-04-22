@@ -22,7 +22,7 @@ package org.apromore.plugin.portal.prodrift;
 
 import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
 import ee.ut.mining.log.XLogReader;
-import org.apache.commons.io.FileUtils;
+import org.apromore.plugin.portal.PortalContext;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.apromore.plugin.portal.PortalContext;
 
 
 public class ProDriftShowResult extends Window {
