@@ -104,6 +104,9 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>Metrics-API</module>
+        <module>Metrics-Logic</module>
+        <module>Metrics-Portal-Plugin</module>
         <module>IBPStruct-API</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>

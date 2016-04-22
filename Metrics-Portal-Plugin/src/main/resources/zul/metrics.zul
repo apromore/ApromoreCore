@@ -1,0 +1,190 @@
+<!--
+  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="win" width="300px" closable="false" position="center" title="Select Metrics">
+    <vbox>
+        <groupbox width="285px">
+            <caption label="Size"/>
+            <radiogroup id="size">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ysize" label="yes" selected="true"/>
+                            <radio id="nsize" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="CFC"/>
+            <radiogroup id="cfc">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ycfc" label="yes" selected="true"/>
+                            <radio id="ncfc" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="ACD"/>
+            <radiogroup id="acd">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="yacd" label="yes" selected="true"/>
+                            <radio id="nacd" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="MCD"/>
+            <radiogroup id="mcd">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ymcd" label="yes" selected="true"/>
+                            <radio id="nmcd" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="CNC"/>
+            <radiogroup id="cnc">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ycnc" label="yes" selected="true"/>
+                            <radio id="ncnc" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="Density"/>
+            <radiogroup id="density">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ydensity" label="yes" selected="true"/>
+                            <radio id="ndensity" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="Structuredness"/>
+            <radiogroup id="structuredness">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="ystructuredness" label="yes" selected="true"/>
+                            <radio id="nstructuredness" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="Separability"/>
+            <radiogroup id="separability">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="yseparability" label="yes" selected="true"/>
+                            <radio id="nseparability" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <groupbox width="285px">
+            <caption label="Duplicates Activities"/>
+            <radiogroup id="duplicates">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <radio id="yduplicates" label="yes" selected="true"/>
+                            <radio id="nduplicates" label="no" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+        </groupbox>
+
+        <div align="center">
+            <button id="CancelButton" label="Cancel" image="img/cancel2.png"></button>
+            <button id="OKButton" label="OK" image="img/ok.png"></button>
+        </div>
+    </vbox>
+</window>
