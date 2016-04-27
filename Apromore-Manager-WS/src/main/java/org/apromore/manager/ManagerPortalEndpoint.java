@@ -1519,6 +1519,4 @@ public class ManagerPortalEndpoint {
         }
         return WS_OBJECT_FACTORY.createComputeMeasurementsResponse(res);
     }
-
-
 }

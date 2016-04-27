@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=de-jbpt
+                            artifactId=de-jbpt|bpmn-schema
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -52,13 +52,26 @@
                         <Import-Package>
                             !junit.framework.*,
                             !org.junit.*,
+                            !org.omg.spec.bpmn._20100524.model.*,
                             *
                         </Import-Package>
                         <Export-Package>
                             au.edu.qut.structuring,
-                            au.edu.qut.metrics
+                            au.edu.qut.metrics,
+                            <!--au.edu.qut.bpmn.importer,-->
+                            <!--au.edu.qut.bpmn.importer.impl,-->
+                            au.edu.qut.bpmn.exporter,
+                            au.edu.qut.bpmn.exporter.impl
                         </Export-Package>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
@@ -69,12 +82,16 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
         </dependency>
-
         <dependency>
             <groupId>de.hpi.jbpt</groupId>
             <artifactId>de-jbpt</artifactId>
             <version>0.2.77</version>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
     </dependencies>
+
 </project>
  

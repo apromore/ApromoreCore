@@ -21,19 +21,22 @@
 package org.apromore.common.converters.measurement.servlet;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
+//import au.edu.qut.bpmn.importer.BPMNDiagramImporter;
+//import au.edu.qut.bpmn.importer.impl.BPMNDiagramImporterImpl;
+import au.edu.qut.metrics.ComplexityCalculator;
+
 import org.apache.log4j.Logger;
-import org.apromore.manager.client.ManagerService;
 import org.json.JSONObject;
 
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
@@ -41,8 +44,7 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
  * Servlet to access the BPStruct service.
@@ -117,17 +119,26 @@ public class MeasurementServlet extends HttpServlet {
         jaxbContext.createMarshaller().marshal(bpmn, baos);
         String process = baos.toString("utf-8");
 
-        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
-        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+//        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
+//        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
 
         /* result already in json format */
-        String measures = manager.computeMeasurements(process);
-        LOGGER.info("measures: " + measures);
+//        BPMNDiagramImporter importer = new BPMNDiagramImporterImpl();
+//        BPMNDiagram bpmnDiagram = importer.importBPMNDiagram(process);
 
-        if( measures == null ) {
+        ComplexityCalculator cc = new ComplexityCalculator();
+        Map<String, String> metrics = cc.computeComplexity(null, true, true, true, true, true, true, true, true, true);
+
+        JSONObject result = new JSONObject();
+        for (String key : metrics.keySet()) {
+//            LOGGER.info(key + " : " + metrics.get(key));
+            result.put(key, metrics.get(key));
+        }
+        LOGGER.info("metrics: " + metrics);
+        if( metrics == null ) {
             LOGGER.info("Error computing measurements.");
         }
 
-        return measures;
+        return result.toString();
     }
 }
