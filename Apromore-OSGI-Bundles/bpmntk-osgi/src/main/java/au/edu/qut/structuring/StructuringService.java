@@ -18,7 +18,17 @@ import java.util.*;
  */
 public class StructuringService {
 
+    private static final int MAX_DEPTH = 100;
+    private static final int MAX_CHILDREN = 10;
+    private static final int MAX_SOL = 500;
+    private static final int MAX_STATES = 100;
+    private static final int MAX_MINUTES = 2;
+
     public StructuringService(){}
+
+    public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
+        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, true);
+    }
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram,
                                         String  policy,

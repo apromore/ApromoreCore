@@ -194,7 +194,8 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                 resultToDisplay = result;
             }
 
-            displayProcessSummaries(resultToDisplay, context);
+            if(result.getTotalProcessCount() > 1) displayProcessSummaries(resultToDisplay, context);
+            Messagebox.show(message);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
             e.printStackTrace();

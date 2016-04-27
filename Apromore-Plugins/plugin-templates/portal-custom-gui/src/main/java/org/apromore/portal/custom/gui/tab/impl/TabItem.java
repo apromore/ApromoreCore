@@ -58,7 +58,7 @@ public class TabItem extends Listitem {
     }
 
     public String getValue(int pos) {
-        return listcells[pos].getLabel();
+        return listcells[pos - 1].getLabel();
     }
 
     private void buildListitem(){
