@@ -30,7 +30,9 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.custom.gui.tab.PortalTab;
+import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -42,10 +44,8 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 import org.zkoss.zul.ext.Paginal;
@@ -190,7 +190,6 @@ public class MainController extends BaseController {
         updateTabs(userId);
         updateActions();
 
-        setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
         this.loadTree();
@@ -800,23 +799,35 @@ public class MainController extends BaseController {
         Window mainW = (Window) this.getFellow("mainW");
 
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
+//        Tabs tabs = tabbox.getTabs();
+//        Tabpanels tabpanels = tabbox.getTabpanels();
 
-        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
-        if(tabs.isEmpty()) {
+        List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
+        if(tabList.isEmpty()) {
             for(Component component : tabbox.getTabs().getChildren()) {
                 Tab tab = (Tab) component;
-                if(tab.isClosable()) {
-                    SessionTab.getSessionTab(portalContext).addTabToSession(userId, tab);
+                if(tab instanceof PortalTab) {
+                    SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, tab);
                 }
             }
-        }else {
-            for(Tab tab : tabs) {
-                if(tab instanceof PortalTab && ((PortalTab) tab).isNew()){
-                    ((PortalTab) tab).setNew(false);
-                    tabbox.getTabs().appendChild(tab);
-                    ((PortalTab) tab).getTabpanel().setParent(tabbox.getTabpanels());
-                }
-            }
+        }
+
+        tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
+
+        for(Tab tab : tabList) {
+            AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
+            portalTab.setNew(false);
+            SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
+            SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
+
+//            System.out.println("2TABS " + tabbox.getTabs().getChildren().size());
+//            System.out.println("TAB " + portalTab.toString());
+//            tabbox.getTabs().getChildren().add(portalTab);
+
+            portalTab.getTab().setParent(tabbox.getTabs());
+
+//            System.out.println("SECOND");
+            portalTab.getTabpanel().setParent(tabbox.getTabpanels());
         }
     }
 

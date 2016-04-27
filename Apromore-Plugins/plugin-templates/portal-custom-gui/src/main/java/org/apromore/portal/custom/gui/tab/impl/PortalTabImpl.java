@@ -33,15 +33,21 @@ import java.util.List;
 public class PortalTabImpl extends AbstractPortalTab {
 
     private Listbox listBox;
-    private int pos = 0;
+    private String tabName;
+    private String tabRowImage;
+    private List<TabRowValue> tabRowValues;
+    private TabHeader tabHeader;
+    private TabItemExecutor tabItemExecutor;
 
-    public PortalTabImpl(String image, String tabName, Tabpanel tabpanel, PortalContext portalContext) {
-        super(image, tabName, portalContext);
-        this.tabpanel = tabpanel;
-    }
+    private int pos = 0;
 
     public PortalTabImpl(String tabName, String tabRowImage, List<TabRowValue> tabRowValues, TabHeader tabHeader, TabItemExecutor tabItemExecutor, PortalContext portalContext) {
         super(tabName, portalContext);
+        this.tabName = tabName;
+        this.tabRowImage = tabRowImage;
+        this.tabRowValues = tabRowValues;
+        this.tabHeader = tabHeader;
+        this.tabItemExecutor = tabItemExecutor;
         this.tabpanel = generateTabpanel(tabHeader, tabRowImage, tabRowValues, tabItemExecutor);
     }
 
@@ -56,7 +62,11 @@ public class PortalTabImpl extends AbstractPortalTab {
         return tabpanel;
     }
 
-    public Listbox generateListbox(String image, TabHeader tabHeader, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor) {
+    public AbstractPortalTab clone() {
+        return new PortalTabImpl(tabName, tabRowImage, tabRowValues, tabHeader, tabItemExecutor, portalContext);
+    }
+
+    private Listbox generateListbox(String image, TabHeader tabHeader, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor) {
         Listbox list = new Listbox();
         list.setMultiple(true);
 
@@ -119,4 +129,5 @@ public class PortalTabImpl extends AbstractPortalTab {
             header.setWidth(visible);
         return header;
     }
+
 }

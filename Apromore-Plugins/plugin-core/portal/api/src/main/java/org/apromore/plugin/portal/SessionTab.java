@@ -22,6 +22,7 @@ package org.apromore.plugin.portal;
 
 import org.zkoss.zul.Tab;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,15 +58,20 @@ public class SessionTab {
     }
 
     public List<Tab> getTabsSession(String id) {
-        LinkedList<Tab> copyTabs = new LinkedList<>();
-        List<Tab> tabs = getTabs(id);
-        copyTabs.addAll(tabs);
-        return tabs;
+        return new ArrayList<>(getTabs(id));
+    }
+
+    public void addTabToSessionNoRefresh(String id, Tab tab) {
+        getTabs(id).add(tab);
     }
 
     public void addTabToSession(String id, Tab tab) {
         getTabs(id).add(tab);
         portalContext.refreshContent();
+    }
+
+    public void removeTabFromSessionNoRefresh(String id, Tab tab) {
+        getTabs(id).remove(tab);
     }
 
     public void removeTabFromSession(String id, Tab tab) {
