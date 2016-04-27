@@ -85,58 +85,66 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
     showMeasurements: function (responseJson) {
 
         var measures = [];
-
         if (responseJson.hasOwnProperty('size')) {
             measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'size',
+                                    fieldLabel: 'Size',
                                     value: responseJson['size'],
                                     width: 150
                                 }));
         }
-
-        if (responseJson.hasOwnProperty('CFC')) {
+        if (responseJson.hasOwnProperty('cfc')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'CFC',
-                                    value: responseJson['CFC'],
+                                    value: responseJson['cfc'],
                                     width: 150
                                 }));
         }
-
+        if (responseJson.hasOwnProperty('acd')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'ACD',
+                                    value: responseJson['acd'],
+                                    width: 150
+                                }));
+        }
+        if (responseJson.hasOwnProperty('mcd')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'MCD',
+                                    value: responseJson['mcd'],
+                                    width: 150
+                                }));
+        }
+        if (responseJson.hasOwnProperty('cnc')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'CNC',
+                                    value: responseJson['cnc'],
+                                    width: 150
+                                }));
+        }
+        if (responseJson.hasOwnProperty('density')) {
+            measures.push( new Ext.form.TextField({
+                                    fieldLabel: 'Density',
+                                    value: responseJson['density'],
+                                    width: 150
+                                }));
+        }
         if (responseJson.hasOwnProperty('structuredness')) {
                     measures.push( new Ext.form.TextField({
-                                            fieldLabel: 'structuredness',
+                                            fieldLabel: 'Structuredness',
                                             value: responseJson['structuredness'],
                                             width: 150
                                         }));
         }
-
-
-        if (responseJson.hasOwnProperty('nBond')) {
+        if (responseJson.hasOwnProperty('bonds')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: '#Bonds',
-                                            value: responseJson['nBond'],
+                                            value: responseJson['bonds'],
                                             width: 150
                                         }));
         }
-
-        if (responseJson.hasOwnProperty('nRigid')) {
+        if (responseJson.hasOwnProperty('rigids')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: '#Rigids',
-                                            value: responseJson['nRigid'],
-                                            width: 150
-                                        }));
-        }
-        if (responseJson.hasOwnProperty('avgBNodes')) {
-                    measures.push( new Ext.form.TextField({
-                                            fieldLabel: 'avg Bond Size',
-                                            value: responseJson['avgBNodes'],
-                                            width: 150
-                                        }));
-        }
-        if (responseJson.hasOwnProperty('avgRNodes')) {
-                    measures.push( new Ext.form.TextField({
-                                            fieldLabel: 'avg Rigid Size',
-                                            value: responseJson['avgRNodes'],
+                                            value: responseJson['rigids'],
                                             width: 150
                                         }));
         }
@@ -147,38 +155,12 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
                                                     width: 150
                                                 }));
         }
-
-
-        if (responseJson.hasOwnProperty('MCD')) {
-            measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'MCD',
-                                    value: responseJson['MCD'],
-                                    width: 150
-                                }));
-        }
-
-        if (responseJson.hasOwnProperty('ACD')) {
-            measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'ACD',
-                                    value: responseJson['ACD'],
-                                    width: 150
-                                }));
-        }
-
-        if (responseJson.hasOwnProperty('CNC')) {
-            measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'CNC',
-                                    value: responseJson['CNC'],
-                                    width: 150
-                                }));
-        }
-
-        if (responseJson.hasOwnProperty('density')) {
-            measures.push( new Ext.form.TextField({
-                                    fieldLabel: 'density',
-                                    value: responseJson['density'],
-                                    width: 150
-                                }));
+        if (responseJson.hasOwnProperty('duplicates')) {
+                            measures.push( new Ext.form.TextField({
+                                                    fieldLabel: '#Duplicates',
+                                                    value: responseJson['duplicates'],
+                                                    width: 150
+                                                }));
         }
 
 

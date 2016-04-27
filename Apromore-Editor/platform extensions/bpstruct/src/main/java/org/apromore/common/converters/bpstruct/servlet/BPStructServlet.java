@@ -26,12 +26,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.stream.StreamSource;
 
+import au.edu.qut.bpmn.importer.BPMNDiagramImporter;
+import au.edu.qut.bpmn.importer.impl.BPMNDiagramImporterImpl;
+import au.edu.qut.structuring.StructuringService;
+import au.edu.qut.bpmn.exporter.BPMNDiagramExporter;
+import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
@@ -41,13 +45,12 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociatio
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.apache.log4j.Logger;
-import org.apromore.manager.client.ManagerService;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
+
 
 /**
  * Servlet to access the BPStruct service.
@@ -128,11 +131,21 @@ public class BPStructServlet extends HttpServlet {
         String unstructuredBpmnModelString = baos.toString("utf-8");
         LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
 
-        // Ask the manager to restructure the BPMN-formatted String
-        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
-        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+//        // Ask the manager to restructure the BPMN-formatted String
+//        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
+//        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+//
+//        String structuredBpmnModelString = manager.structureBPMNModel(unstructuredBpmnModelString);
 
-        String structuredBpmnModelString = manager.structureBPMNModel(unstructuredBpmnModelString);
+//        BPMNDiagramImporter importerService = new BPMNDiagramImporterImpl();
+//        BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
+
+        StructuringService ss = new StructuringService();
+        BPMNDiagram structuredDiagram = ss.structureDiagram(new BPMNDiagramImpl("test_bpmn"));
+
+        BPMNDiagramExporter exporterService = new BPMNDiagramExporterImpl();
+        String structuredBpmnModelString = exporterService.exportBPMNDiagram(structuredDiagram);
+
         LOGGER.info("PROCESS STRUCTURED:\n" + structuredBpmnModelString);
 
         // BPMN-formatted String -> BPMN DOM
