@@ -189,4 +189,9 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
             return 0;
         return -1;
     }
+
+    @Override
+    public AbstractPortalTab clone() {
+        return null;
+    }
 }

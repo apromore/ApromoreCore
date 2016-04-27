@@ -13,7 +13,8 @@ import org.zkoss.zul.Tabpanel;
  */
 public abstract class AbstractPortalTab extends Tab implements PortalTab {
 
-    protected boolean isNew;
+    protected boolean isNew = true;
+    protected Tab tab;
     protected Tabpanel tabpanel;
     protected String userID;
     protected PortalContext portalContext;
@@ -24,17 +25,17 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
     }
 
     public AbstractPortalTab(String tabName, PortalContext portalContext) {
-        super(tabName);
+
         this.userID = portalContext.getCurrentUser().getId();
-        this.isNew = true;
         this.portalContext = portalContext;
 
-        setClosable(true);
-        setSelected(true);
-        setTooltiptext("Double click to show more info");
-        setImage("img/info25.png");
+        this.tab = new Tab(tabName);
+        this.tab.setClosable(true);
+        this.tab.setSelected(true);
+        this.tab.setTooltiptext("Double click to show more info");
+        this.tab.setImage("img/info25.png");
 
-        addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
+        this.tab.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 AbstractPortalTab.this.remove();
@@ -42,24 +43,28 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
         });
     }
 
+    public abstract AbstractPortalTab clone();
+
     @Override
     public Tabpanel getTabpanel(){
         return tabpanel;
     }
 
     @Override
-    public boolean isNew() {
-        return isNew;
-    }
-
-    @Override
-    public void setNew(boolean isNew) {
-        this.isNew = isNew;
+    public Tab getTab(){
+        return tab;
     }
 
     @Override
     public void remove(){
-        SessionTab.getSessionTab(portalContext).removeTabFromSession(userID, this);
+        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userID, this);
     }
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
+    }
 }

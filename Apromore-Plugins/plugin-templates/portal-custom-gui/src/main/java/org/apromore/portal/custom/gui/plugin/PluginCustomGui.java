@@ -47,12 +47,6 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         return tab;
     }
 
-    public final PortalTab addTab(String tabName, String tabRowImage, Tabpanel tabpanel, PortalContext portalContext) {
-        PortalTabImpl tab = new PortalTabImpl(tabName, tabRowImage, tabpanel, portalContext);
-        addTab(tab, portalContext);
-        return tab;
-    }
-
     private void addTab(Tab tab, PortalContext portalContext) {
         SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab);
     }
