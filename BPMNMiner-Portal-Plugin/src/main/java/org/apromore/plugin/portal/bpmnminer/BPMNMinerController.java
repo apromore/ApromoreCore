@@ -24,6 +24,7 @@ import java.io.*;
 import java.util.*;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.plugin.portal.PortalContext;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -33,7 +34,6 @@ import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -41,8 +41,6 @@ import org.zkoss.zul.*;
 
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
-import org.apromore.model.DomainsType;
-import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.bpmnminer.BPMNMinerService;
 import org.apromore.service.CanoniserService;

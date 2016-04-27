@@ -28,14 +28,14 @@
         <groupId>org.apromore.plugin</groupId>
         <artifactId>plugin</artifactId>
         <version>1.1</version>
-        <relativePath>../Apromore-Plugins/</relativePath>
+        <relativePath>../../</relativePath>
     </parent>
 
     <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
-    <artifactId>metrics-portal-plugin</artifactId>
-    <name>Metrics portal plugin</name>
-    <description>Metrics Plugin</description>
+    <artifactId>merge-portal</artifactId>
+    <name>Merge portal plugin</name>
+    <description>Some description</description>
 
     <build>
         <plugins>
@@ -43,15 +43,14 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
-                    <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
+                    <!-- Generally, no change should be neccessary here unless your plug-in relies on a non-OSGI dependency -->
                     <instructions>
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
-                            org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
-                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
+                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGI bundle
                         <Embed-Dependency>
                             artifactId=fooBar
                         </Embed-Dependency>
@@ -64,23 +63,22 @@
         </plugins>
     </build>
 
+
     <dependencies>
+        <!-- Mandatory dependencies on the plugin and portal plugin APIs -->
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>metrics-api</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
+
+        <!-- Dependency allowing access to manager services -->
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-custom-gui</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>merge-logic</artifactId>
             <version>1.1.0</version>
         </dependency>
     </dependencies>

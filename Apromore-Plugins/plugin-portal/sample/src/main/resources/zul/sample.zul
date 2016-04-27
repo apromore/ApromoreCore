@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 <window id="sample" position="center" title="Example Portal Plugin" closable="true" width="600px"
-        apply="org.apromore.plugin.portal.sample.SampleController">
+        apply="org.apromore.plugin.merge.portal.sample.SampleController">
     <vbox>
         <textbox id="sampleText" sclass="style1" value="" cols="120" rows="35"/>
         <button id="ok" label="OK" />

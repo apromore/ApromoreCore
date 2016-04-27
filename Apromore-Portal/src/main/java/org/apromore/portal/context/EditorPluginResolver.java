@@ -1,7 +1,6 @@
 package org.apromore.portal.context;
 
 import org.apromore.plugin.editor.EditorPlugin;
-import org.apromore.plugin.portal.PortalPlugin;
 import org.zkoss.spring.SpringUtil;
 
 import java.util.List;
