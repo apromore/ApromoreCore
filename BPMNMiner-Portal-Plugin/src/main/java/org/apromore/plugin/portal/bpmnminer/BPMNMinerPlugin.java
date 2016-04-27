@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 // Third party packages
 import org.springframework.stereotype.Component;
-import org.zkoss.zul.Window;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;

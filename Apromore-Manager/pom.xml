@@ -113,6 +113,7 @@
                         </Import-Package>
                         <Export-Package>
                             org.apromore.annotation.provider,
+                            org.apromore.common,
                             org.apromore.dao,
                             org.apromore.dao.model,
                             org.apromore.exception,

@@ -22,10 +22,7 @@ package org.apromore.plugin.portal.sample;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
-import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.impl.TabHeader;
-import org.apromore.portal.custom.gui.tab.impl.TabItem;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Window;
