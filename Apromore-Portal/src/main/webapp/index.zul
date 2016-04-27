@@ -84,7 +84,7 @@
         }
     </style>
 
-    <window id="mainW" border="none" height="100%" width="100%" vflex="true" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" vflex="true" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
         <div height="40px">
             <div style="float:left; margin-top: 5px;" >
@@ -173,14 +173,14 @@
                     <html id="folders" width="100%" visible="false" height="0"/>
 
                     <tabbox id="tabbox" vflex="true" height="100%">
-                    <tabs>
-                        <tab label="Processes"/>
-                    </tabs>
-                    <tabpanels>
-                        <tabpanel vflex="true">
-							<BaseListbox id="baseListbox" vflex="true"/>
-                        </tabpanel> 
-                    </tabpanels>
+                        <tabs id="tabs" >
+                            <tab label="Processes"/>
+                        </tabs>
+                        <tabpanels id="tabpanels" >
+                            <tabpanel vflex="true">
+                                <BaseListbox id="baseListbox" vflex="true"/>
+                            </tabpanel>
+                        </tabpanels>
                     </tabbox>
                 </div>
             </center>
