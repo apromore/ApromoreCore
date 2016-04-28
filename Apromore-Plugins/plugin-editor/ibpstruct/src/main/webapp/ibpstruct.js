@@ -37,7 +37,7 @@ ORYX.Plugins.IBPStruct = ORYX.Plugins.AbstractPlugin.extend({
         this.facade = facade;
         this.facade.offer({
             'name': 'iBPStruct',
-            'functionality': this.structure.bind(this, false),
+            'functionality': this.showInfoDialog.bind(this, false),
             'group': 'bpmn-toolkit',
             'icon': this.contextPath +  "/images/ibpstruct.png",
             'description': 'Structure a BPMN process model',
@@ -56,12 +56,12 @@ ORYX.Plugins.IBPStruct = ORYX.Plugins.AbstractPlugin.extend({
             minHeight: 300,
             layout: "anchor",
             bodyStyle: "background-color:white; padding: 10px; color: black; overflow: visible;",
-            title: "BPStruct",
+            title: "iBPStruct",
             html: '<style>.format p { margin-bottom: 10px; } </style><div class="format" style="width: 100%; position: relative; left: 0; top: 0; float: left;"><p style="text-align: justify;">iBPStruct is a tool for transforming unstructured programs/service compositions/(business) process models (models of concurrency) into well-structured ones. A model is well-structured, if for every node with multiple outgoing arcs (a split) there is a corresponding node with multiple incoming arcs (a join), and vice versa, such that the fragment of the model between the split and the join forms a single-entry-single-exit (SESE) component; otherwise the model is unstructured. The transformation preserves concurrency in resulting well-structured models.</p></div><div style="clear: both;"></div>',
             buttons: [
                 {
                     text: "Transform",
-                    handler: this.bpstruct.bind(this)
+                    handler: this.structure.bind(this)
                 },
                 {
                     text: "Cancel",
@@ -100,8 +100,8 @@ ORYX.Plugins.IBPStruct = ORYX.Plugins.AbstractPlugin.extend({
                     return;
         }
 
-        var msg = Ext.Msg.wait("Waiting for BPStruct to process model.");
-        new Ajax.Request(ORYX.CONFIG.BPSTRUCT_URL, {
+        var msg = Ext.Msg.wait("Waiting for iBPStruct to process model.");
+        new Ajax.Request(this.servletPath, {
             parameters: {'data': json, 'type': this.getDiagramType()},
             method: 'POST',
             asynchronous: true,
