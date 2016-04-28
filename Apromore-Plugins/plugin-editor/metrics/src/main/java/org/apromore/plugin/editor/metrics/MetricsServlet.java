@@ -76,14 +76,6 @@ public class MetricsServlet extends HttpServlet {
                 LOGGER.error("Unable to report servlet error to JSON: " + e1.toString(), e1);
             }
         }
-//
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/plain");
-//        response.setStatus(HttpServletResponse.SC_OK);
-//
-//        Writer w = response.getWriter();
-//        w.write("Hello world!");
-//        w.close();
     }
 
 
@@ -101,20 +93,19 @@ public class MetricsServlet extends HttpServlet {
         Definitions bpmn = diagram2BpmnConverter.getDefinitionsFromDiagram();
 
         // BPMN DOM -> BPMN-formatted String
-        JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class,
-                Configurable.class,
-                ConfigurationAnnotationAssociation.class,
-                ConfigurationAnnotationShape.class,
-                Variants.class);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        jaxbContext.createMarshaller().marshal(bpmn, baos);
-        String process = baos.toString("utf-8");
-
-        ComplexityCalculator cc = new ComplexityCalculator();
-        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
+//        JAXBContext jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
+//                                                            ConfigurationAnnotationAssociation.class,
+//                                                            ConfigurationAnnotationShape.class, Variants.class );
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        jaxbContext.createMarshaller().marshal(bpmn, baos);
+//        String process = baos.toString("utf-8");
+//        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
 
         /* result already in json format */
-        Map<String, String> metrics = cc.computeComplexity(bpmnDiagram, true, true, true, true, true, true, true, true, true);
+        ComplexityCalculator cc = new ComplexityCalculator();
+//        Map<String, String> metrics = cc.computeComplexity(bpmnDiagram, true, true, true, true, true, true, true, true, true);
+        Map<String, String> metrics = cc.computeComplexity(null, true, true, true, true, true, true, true, true, true);
 
         JSONObject result = new JSONObject();
 
