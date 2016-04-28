@@ -51,7 +51,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab);
     }
 
-    protected void displayProcessSummaries(ProcessSummariesType processSummaries, PortalContext portalContext) {
+    protected void displayProcessSummaries(String tabName, ProcessSummariesType processSummaries, PortalContext portalContext) {
         List<TabRowValue> rows = new ArrayList<>();
         for(ProcessSummaryType processSummaryType : processSummaries.getProcessSummary()) {
             rows.add(createProcessSummaryRowValue(processSummaryType));
@@ -64,7 +64,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
             tabHeader = createTabHeader("Name", "Id", "Original language", "Domain", "Ranking", "Latest version", "Owner");
         }
 
-        addTab("new tab", "img/icon/bpmn-22x22.png", rows, tabHeader, null, portalContext);
+        addTab(tabName, "img/icon/bpmn-22x22.png", rows, tabHeader, null, portalContext);
     }
 
 //    protected TabItemExecutor createTabItemExecutor(final PortalContext portalContext) {

@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -46,7 +47,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     private final String GREEDY_ALGORITHM = "Greedy";
 
-    private DecimalFormat decimalFormat = new DecimalFormat();
+    private int count = 1;
     private PortalContext context;
     private Window similaritySearchW;
     private Listbox algosLB;
@@ -72,11 +73,10 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
         // Show a message on the portal
         try {
             Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = context.getSelection().getSelectedProcessModelVersions();
-            Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() != 1) {
-                context.getMessageHandler().displayInfo("Select 1process models for similarity search.");
+                context.getMessageHandler().displayInfo("Select one process model for similarity search.");
                 return;
             }
 
@@ -95,7 +95,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
         this.process = entry.getKey();
         this.version = entry.getValue().iterator().next();
 
-        this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
+        try {
+            this.similaritySearchW = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/similaritysearch.zul", null, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         FolderTreeController folderTreeController = new FolderTreeController(similaritySearchW);
 
@@ -198,7 +202,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                 resultToDisplay = result;
             }
 
-            if(result.getTotalProcessCount() > 1) displayProcessSummaries(resultToDisplay, context);
+            if(result.getTotalProcessCount() > 1) displayProcessSummaries("Sim Search " + count++, resultToDisplay, context);
             Messagebox.show(message);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
