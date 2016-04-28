@@ -163,7 +163,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
         try {
             ProcessSummariesType resultToDisplay;
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
-            Integer folderId = context.getCurrentFolder().getId();
+
+            Integer folderId = 0;
+            if(context.getCurrentFolder() != null) {
+               folderId = context.getCurrentFolder().getId();
+            }
             if (folderId == null) {
                 folderId = 0;
             }

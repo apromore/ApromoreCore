@@ -813,21 +813,17 @@ public class MainController extends BaseController {
         }
 
         tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
+        if(tabbox.getTabs().getChildren().size() < tabList.size() + 1) {
+            for (Tab tab : tabList) {
+                if (!tabbox.getTabs().getChildren().contains(tab)) {
+                    AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
+                    SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
+                    SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
 
-        for(Tab tab : tabList) {
-            AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
-            portalTab.setNew(false);
-            SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-            SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
-
-//            System.out.println("2TABS " + tabbox.getTabs().getChildren().size());
-//            System.out.println("TAB " + portalTab.toString());
-//            tabbox.getTabs().getChildren().add(portalTab);
-
-            portalTab.getTab().setParent(tabbox.getTabs());
-
-//            System.out.println("SECOND");
-            portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                    portalTab.getTab().setParent(tabbox.getTabs());
+                    portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                }
+            }
         }
     }
 

@@ -14,7 +14,7 @@ import org.zkoss.zul.Tabpanel;
 public abstract class AbstractPortalTab extends Tab implements PortalTab {
 
     protected boolean isNew = true;
-    protected Tab tab;
+//    protected Tab tab;
     protected Tabpanel tabpanel;
     protected String userID;
     protected PortalContext portalContext;
@@ -25,17 +25,29 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
     }
 
     public AbstractPortalTab(String tabName, PortalContext portalContext) {
-
+        super(tabName);
         this.userID = portalContext.getCurrentUser().getId();
         this.portalContext = portalContext;
 
-        this.tab = new Tab(tabName);
-        this.tab.setClosable(true);
-        this.tab.setSelected(true);
-        this.tab.setTooltiptext("Double click to show more info");
-        this.tab.setImage("img/info25.png");
+//        this.tab = new Tab(tabName);
+//        this.tab.setClosable(true);
+//        this.tab.setSelected(true);
+//        this.tab.setTooltiptext("Double click to show more info");
+//        this.tab.setImage("img/info25.png");
+//
+//        this.tab.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
+//            @Override
+//            public void onEvent(Event event) throws Exception {
+//                AbstractPortalTab.this.remove();
+//            }
+//        });
 
-        this.tab.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
+        this.setClosable(true);
+        this.setSelected(true);
+        this.setTooltiptext("Double click to show more info");
+        this.setImage("img/info25.png");
+
+        this.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 AbstractPortalTab.this.remove();
@@ -52,7 +64,7 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
 
     @Override
     public Tab getTab(){
-        return tab;
+        return this;
     }
 
     @Override
