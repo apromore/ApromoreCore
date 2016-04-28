@@ -31,15 +31,19 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <artifactId>ibpstruct-logic</artifactId>
+    <artifactId>pql-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>iBPSruct service</name>
+    <name>PQL query service</name>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <!--
+                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
+                    So we use the older version as workaround
+                -->
                 <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -47,11 +51,10 @@
                     <instructions>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            au.edu.qut.structuring,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.ibpstruct
+                            org.apromore.service.pql
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -61,9 +64,40 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>com.springsource.javax.inject</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
-            <version>${manager-client.version}</version>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-ws-model</artifactId>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>pql-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pql</groupId>
+            <artifactId>pql-osgi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -74,9 +108,8 @@
             <artifactId>org.springframework.context</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmntk-osgi</artifactId>
-            <version>1.0</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.transaction</artifactId>
         </dependency>
     </dependencies>
 </project>

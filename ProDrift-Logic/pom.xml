@@ -54,7 +54,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.prodrift.impl
+                            org.apromore.service.prodrift
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -70,8 +70,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prodrift-api</artifactId>
-            <version>1.1</version>
+            <artifactId>prodrift-osgi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
