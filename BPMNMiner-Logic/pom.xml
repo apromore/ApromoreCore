@@ -54,7 +54,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.bpmnminer.impl
+                            org.apromore.service.bpmnminer
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -65,8 +65,8 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>bpmnminer-api</artifactId>
-            <version>1.1</version>
+            <artifactId>apromore-manager</artifactId>
+            <version>${manager-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prodrift-api</artifactId>
+            <artifactId>prodrift-logic</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>

@@ -104,16 +104,14 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
-        <module>Metrics-API</module>
-        <module>Metrics-Logic</module>
-        <module>Metrics-Portal-Plugin</module>
-        <module>IBPStruct-API</module>
-        <module>IBPStruct-Logic</module>
-        <module>IBPStruct-Portal-Plugin</module>
-        <module>BPMNMiner-API</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
-        <module>ProDrift-API</module>
+        <module>IBPStruct-Logic</module>
+        <module>IBPStruct-Portal-Plugin</module>
+        <module>Metrics-Logic</module>
+        <module>Metrics-Portal-Plugin</module>
+        <module>PQL-Logic</module>
+        <module>PQL-Portal-Plugin</module>
         <module>ProDrift-Logic</module>
         <module>ProDrift-Portal-Plugin</module>
 
