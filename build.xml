@@ -63,6 +63,14 @@
         <include name="ProDrift-API/target/prodrift-api-1.1.jar"/>
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <include name="IBPStruct-API/target/ibpstruct-api-1.1.jar"/>
+        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+
+        <include name="Metrics-API/target/metrics-api-1.1.jar"/>
+        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">

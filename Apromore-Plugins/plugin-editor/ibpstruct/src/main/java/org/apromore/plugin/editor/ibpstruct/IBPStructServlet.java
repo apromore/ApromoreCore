@@ -33,6 +33,7 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class IBPStructServlet extends HttpServlet {
@@ -94,22 +95,25 @@ public class IBPStructServlet extends HttpServlet {
         // Signavio Diagram -> BPMN DOM
         Diagram2BpmnConverter diagram2BpmnConverter = new Diagram2BpmnConverter(basicDiagram, AbstractBpmnFactory.getFactoryClasses());
         Definitions bpmn = diagram2BpmnConverter.getDefinitionsFromDiagram();
+        JAXBContext jaxbContext = null;
 
         // BPMN DOM -> BPMN-formatted String
-        JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class,
-                Configurable.class,
-                ConfigurationAnnotationAssociation.class,
-                ConfigurationAnnotationShape.class,
-                Variants.class);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        jaxbContext.createMarshaller().marshal(bpmn, baos);
-        String unstructuredBpmnModelString = baos.toString("utf-8");
-        LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
+//        jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
+//                                                ConfigurationAnnotationAssociation.class,
+//                                                ConfigurationAnnotationShape.class, Variants.class );
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        jaxbContext.createMarshaller().marshal(bpmn, baos);
+//        String process = baos.toString("utf-8");
+//        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
 
-        BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
+//        LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
+
+//        BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
 
         StructuringService ss = new StructuringService();
-        BPMNDiagram structuredDiagram = ss.structureDiagram(unstructuredDiagram);
+//        BPMNDiagram structuredDiagram = ss.structureDiagram(unstructuredDiagram);
+        BPMNDiagram structuredDiagram = ss.structureDiagram(new BPMNDiagramImpl("test_bpmn"));
 
         BPMNDiagramExporter exporterService = new BPMNDiagramExporterImpl();
         String structuredBpmnModelString = exporterService.exportBPMNDiagram(structuredDiagram);
