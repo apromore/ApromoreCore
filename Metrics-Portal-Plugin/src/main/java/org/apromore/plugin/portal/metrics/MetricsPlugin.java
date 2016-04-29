@@ -100,37 +100,45 @@ public class MetricsPlugin extends PluginCustomGui {
     public void execute(PortalContext context) {
         this.portalContext = context;
         portalContext.getMessageHandler().displayInfo("Executing Metrics service!");
+        processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
 
-        try {
-            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
-
-            this.size = (Radiogroup) this.settings.getFellow("size");
-            this.cfc = (Radiogroup) this.settings.getFellow("cfc");
-            this.acd = (Radiogroup) this.settings.getFellow("acd");
-            this.mcd = (Radiogroup) this.settings.getFellow("mcd");
-            this.cnc = (Radiogroup) this.settings.getFellow("cnc");
-            this.density = (Radiogroup) this.settings.getFellow("density");
-            this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
-            this.separability = (Radiogroup) this.settings.getFellow("separability");
-            this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
-
-            this.cancelButton = (Button) this.settings.getFellow("CancelButton");
-            this.okButton = (Button) this.settings.getFellow("OKButton");
-
-            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    cancel();
-                }
-            });
-            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    runComputation();
-                }
-            });
-            this.settings.doModal();
-        } catch (IOException e) {
-            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        if( processVersions.size() != 1 ) {
+            Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+            return;
         }
+
+        runComputation();
+//
+//        try {
+//            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
+//
+//            this.size = (Radiogroup) this.settings.getFellow("size");
+//            this.cfc = (Radiogroup) this.settings.getFellow("cfc");
+//            this.acd = (Radiogroup) this.settings.getFellow("acd");
+//            this.mcd = (Radiogroup) this.settings.getFellow("mcd");
+//            this.cnc = (Radiogroup) this.settings.getFellow("cnc");
+//            this.density = (Radiogroup) this.settings.getFellow("density");
+//            this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
+//            this.separability = (Radiogroup) this.settings.getFellow("separability");
+//            this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
+//
+//            this.cancelButton = (Button) this.settings.getFellow("CancelButton");
+//            this.okButton = (Button) this.settings.getFellow("OKButton");
+//
+//            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+//                public void onEvent(Event event) throws Exception {
+//                    cancel();
+//                }
+//            });
+//            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+//                public void onEvent(Event event) throws Exception {
+//                    runComputation();
+//                }
+//            });
+//            this.settings.doModal();
+//        } catch (IOException e) {
+//            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
     }
 
 
@@ -141,20 +149,30 @@ public class MetricsPlugin extends PluginCustomGui {
 
     protected void runComputation() {
         Map<String, String> metrics;
-        this.settings.detach();
 
-        boolean size = this.size.getSelectedIndex() == 0 ? true : false;
-        boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
-        boolean acd  = this.acd.getSelectedIndex() == 0 ? true : false;
-        boolean mcd = this.mcd.getSelectedIndex() == 0 ? true : false;
-        boolean cnc = this.cnc.getSelectedIndex() == 0 ? true : false;
-        boolean density  = this.density.getSelectedIndex() == 0 ? true : false;
-        boolean structuredness = this.structuredness.getSelectedIndex() == 0 ? true : false;
-        boolean separability = this.separability.getSelectedIndex() == 0 ? true : false;
-        boolean duplicates  = this.duplicates.getSelectedIndex() == 0 ? true : false;
+//        this.settings.detach();
+//
+//        boolean size = this.size.getSelectedIndex() == 0 ? true : false;
+//        boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
+//        boolean acd  = this.acd.getSelectedIndex() == 0 ? true : false;
+//        boolean mcd = this.mcd.getSelectedIndex() == 0 ? true : false;
+//        boolean cnc = this.cnc.getSelectedIndex() == 0 ? true : false;
+//        boolean density  = this.density.getSelectedIndex() == 0 ? true : false;
+//        boolean structuredness = this.structuredness.getSelectedIndex() == 0 ? true : false;
+//        boolean separability = this.separability.getSelectedIndex() == 0 ? true : false;
+//        boolean duplicates  = this.duplicates.getSelectedIndex() == 0 ? true : false;
+
+        boolean size = true;
+        boolean cfc = true;
+        boolean acd  = true;
+        boolean mcd = true;
+        boolean cnc = true;
+        boolean density  = true;
+        boolean structuredness = true;
+        boolean separability = true;
+        boolean duplicates  = true;
 
         try {
-            processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
             for (ProcessSummaryType process : processVersions.keySet()) {
                 for (VersionSummaryType vst : processVersions.get(process)) {
                     int procID = process.getId();
@@ -176,7 +194,7 @@ public class MetricsPlugin extends PluginCustomGui {
                             rows.add(createTabRowValue(key, metrics.get(key)));
                         }
                         TabHeader tabHeader = createTabHeader("Metric", "Value");
-                        addTab("Metrics", "", rows, tabHeader, null, portalContext);
+                        addTab(procName + ": metrics", "", rows, tabHeader, null, portalContext);
                     }
 
                     LOGGER.info("Metrics - done!");

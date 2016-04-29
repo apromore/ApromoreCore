@@ -71,6 +71,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.6.0-7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -106,6 +112,15 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>${manager-client.version}</version>
         </dependency>
     </dependencies>
 

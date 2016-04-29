@@ -20,8 +20,10 @@
 
 package org.apromore.service;
 
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+
 public interface MeasurementsService {
 
-    String computeSimplicity();
+    String computeSimplicity(BPMNDiagram diagram);
     String computeSimplicity(String process);
 }
